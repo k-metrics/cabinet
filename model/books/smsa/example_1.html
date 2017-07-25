@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>第1章 例題解答例</title>
+
+<script src="site_libs/jquery-1.12.4/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cerulean.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<script src="site_libs/htmlwidgets-0.8/htmlwidgets.js"></script>
+<script src="site_libs/datatables-binding-0.2/datatables.js"></script>
+<link href="site_libs/dt-core-bootstrap-1.10.12/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+<link href="site_libs/dt-core-bootstrap-1.10.12/css/dataTables.bootstrap.extra.css" rel="stylesheet" />
+<script src="site_libs/dt-core-bootstrap-1.10.12/js/jquery.dataTables.min.js"></script>
+<script src="site_libs/dt-core-bootstrap-1.10.12/js/dataTables.bootstrap.min.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = false;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">ソフトウェアメトリクス統計分析入門</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    例題
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="./example_1.html">第1章 例題解答例</a>
+    </li>
+    <li>
+      <a href="./example_2.html">第2章 例題解答例</a>
+    </li>
+    <li>
+      <a href="./example_3.html">第3章 例題解答例</a>
+    </li>
+    <li>
+      <a href="./example_4.html">第4章 例題解答例</a>
+    </li>
+    <li>
+      <a href="./example_5.html">第5章 例題解答例</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    演習
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="./exercise_1.html">第1章 演習解答例</a>
+    </li>
+    <li>
+      <a href="./exercise_2.html">第2章 演習解答例</a>
+    </li>
+    <li>
+      <a href="./exercise_3.html">第3章 演習解答例</a>
+    </li>
+    <li>
+      <a href="./exercise_4.html">第4章 演習解答例</a>
+    </li>
+    <li>
+      <a href="./exercise_5.html">第5章 演習解答例</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    その他
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="./about.html">R環境情報</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Model/Infer
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../../index.html">
+        <span class="fa fa-home"></span>
+         
+        Model/Infer Top
+      </a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="../../stats/index.html">
+        <span class="fa fa-bar-chart"></span>
+         
+        統計
+      </a>
+    </li>
+    <li>
+      <a href="../../books/index.html">
+        <span class="fa fa-book"></span>
+         
+        書籍
+      </a>
+    </li>
+    <li>
+      <a href="../../gacco/index.html">
+        <span class="fa fa-graduation-cap"></span>
+         
+        gacco
+      </a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-github"></span>
+     
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../../../">
+        <span class="fa fa-github"></span>
+         
+        Cabinet
+      </a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="../../../import/">　Import</a>
+    </li>
+    <li>
+      <a href="../../../tidy/">　Tidy/Transform</a>
+    </li>
+    <li>
+      <a href="../../index.html">
+        <span class="fa fa-home"></span>
+         
+        Model/Infer
+      </a>
+    </li>
+    <li>
+      <a href="../../visualize/">　Visualize</a>
+    </li>
+    <li>
+      <a href="../../communicate/">　Communicate/Automate</a>
+    </li>
+    <li>
+      <a href="../../program/">　Program</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="https://sites.google.com/site/kantometrics/home">
+        <span class="fa fa-google"></span>
+         
+        データ分析勉強会
+      </a>
+    </li>
+  </ul>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">第1章 例題解答例</h1>
+
+</div>
+
+
+<!-- SQiP -->
+<!-- Books -->
+<!-- Creative Commons -->
+<!-- R -->
+<!-- RStudio -->
+<!-- Cabinet Pages -->
+<div id="はじめに" class="section level1">
+<h1>はじめに</h1>
+<p>本資料は『<a href="http://www.juse-p.co.jp/cgi-bin/html.pl5?i=ISBN978-4-8171-9558-6" title="ソフトウェアメトリクス統計分析入門">ソフトウェアメトリクス統計分析入門</a>』(以降、テキストと記載)の第1章の例題を<a href="https://www.r-project.org/" title="The R Project">R</a>で解いた際の解答例を示したものです。また、<a href="http://rmarkdown.rstudio.com/" title="R Markdown form RStudio">R Markdown</a>を使うメリットを示すための一手段として作成していますので、テキストにおける計算方法とは異なる部分もあります。本資料で使用しているデータの入手に関してはテキストにてご確認下さい。<br />
+本資料がHTML形式の場合、Rのコードを参照するには右側にある<strong><code>[Code]</code></strong>ボタンをクリックして下さい。なお、JavaScriptは必ずOnにしてご覧下さい。</p>
+</div>
+<div id="例題1.1" class="section level1">
+<h1>例題1.1</h1>
+<blockquote>
+<p>生産性の測定を開始し、あるプロジェクトの生産性が0.09FP/人時となりました。まだデータをとり始めたばかりなので、この0.09という値の良否が判断できません。 そこで、『ソフトウェア開発データ白書』をベンチマークとして、業界内において、どの程度の位置づけとなるのかを調べることにしました。<br />
+『ソフトウェア開発データ白書2012-2013』のp.288に業種別FP生産性データが掲載されています。それを図1.1に示します。この組織の業種は、「K. 金融・保険業」に該当します。さて、このプロジェクトの生産性をどのように評価すればよいでしょうか。<br />
+出典：ソフトウェアメトリクス統計分析入門 P12</p>
+</blockquote>
+<div id="データの設定" class="section level2">
+<h2>データの設定</h2>
+<p>本例題で利用するデータの数は多くないので、直接、Rのコードで変数として設定します。</p>
+<pre class="r"><code>x.prod &lt;- 0.090   # 評価対象となる生産性(productivity)
+x.mean &lt;- 0.051   # 同業種での生産性の平均値
+x.sd &lt;- 0.029     # 同業種での生産性の標準偏差(不偏標準偏差)</code></pre>
+<p>評価対象となる生産性：<span class="math inline">\(0.09\)</span></p>
+<p>同業種での生産性の平均値：<span class="math inline">\(0.051\)</span><br />
+同業種での生産性の標準偏差：<span class="math inline">\(0.029\)</span></p>
+</div>
+<div id="zスコアの計算" class="section level2">
+<h2>Zスコアの計算</h2>
+<p>テキストではZスコアを計算してから標準正規分布を用いて上位確率を計算していますが、本資料では平均値<span class="math inline">\(0.051\)</span>、標準偏差<span class="math inline">\(0.029\)</span>の正規分布から直接上位確率を求めています。</p>
+<pre class="r"><code># Zスコアを計算しないでも確率は計算できる(上位からの確率)
+prob &lt;- pnorm(x.prod, mean = x.mean, sd = x.sd, lower.tail = FALSE)
+# 偏差値(standard score)を出す場合は平均値50、標準偏差10の正規分布の確率から
+# 逆算すればよい
+ss &lt;- qnorm(prob, mean = 50, sd = 10, lower.tail = FALSE)</code></pre>
+<p>計算の結果、対象プロジェクトは上位<span class="math inline">\(9\%\)</span>に位置し、その偏差値は<span class="math inline">\(63\)</span>となることがわかります。</p>
+</div>
+</div>
+<div id="例題1.2" class="section level1">
+<h1>例題1.2</h1>
+<blockquote>
+<p>以下に、ある組織でプロジェクトごとに測定された最終システムテストの欠陥検出率のデータが76 個あります。<br />
+欠陥検出率が高いほど製品の信頼性が低く、良くないプロジェクトと考えます。 これらのデータを活用して欠陥検出率上限の基準値を設定し、それを超える場合はプロジェクト終了後に次期プロジェクトに向けて何らかの改善施策を実施してもらう などの管理をしたいと考えています。 管理レベルとして、全体の10％ぐらいが改善対象になるように基準値を設定してください。 出典：ソフトウェアメトリクス統計分析入門 P22</p>
+</blockquote>
+<p>本例題で利用するデータは、予めCSVファイルとして保存されているものとします。<br />
+データ名は日本語のままでも構いませんが、RStudioでコーディングする場合は、色々と不都合なので、読み込んだ後で変更しておきます。</p>
+<div id="データ分布の確認" class="section level2 tabset">
+<h2>データ分布の確認</h2>
+<p>例題1.1では、対象となるデータが正規分布にしたがっているものと仮定していましたが、本例題では、最初にデータが正規分布に従っていることを確認します。<br />
+テキストではヒストグラムのみを確認して、詳細は補足1.3に記載されていますが、ここではヒストグラム、箱ひげ図、QQプロット、シャピロ・ウィルクの正規性の検定の四つの手段で確認を行います。</p>
+<div id="ヒストグラム" class="section level3 unnumbered">
+<h3>ヒストグラム</h3>
+<pre class="r"><code>hist(dataset$productivity)</code></pre>
+<p><img src="example_1_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>若干、左に偏っている(右に歪んだ)形をしていますが、概ね正規分布と言っても差し障りない分布のように見えます。</p>
+</div>
+<div id="箱ひげ図" class="section level3 unnumbered">
+<h3>箱ひげ図</h3>
+<pre class="r"><code>boxplot(dataset$productivity)</code></pre>
+<p><img src="example_1_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>外れ値が一つ示されていますが、中央値も上下ヒンジのほぼ中央にあり、こちらからも正規分布と言っても差し障りのない分布のように見えます。</p>
+</div>
+<div id="qqプロット" class="section level3 unnumbered">
+<h3>QQプロット</h3>
+<pre class="r"><code># 分布の正規性を確認
+car::qqPlot(dataset$productivity, dist = &quot;norm&quot;, id.method = &quot;y&quot;, id.n = 2,
+            labels = rownames(dataset))</code></pre>
+<p><img src="example_1_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<pre><code>## 31 15 
+## 76 75</code></pre>
+<p>データは全て点線の内側に収まっており、正規分布と見えます。</p>
+</div>
+<div id="正規性の検定" class="section level3 unnumbered">
+<h3>正規性の検定</h3>
+<pre class="r"><code>shapiro.test(dataset$productivity)</code></pre>
+<pre><code>## 
+##  Shapiro-Wilk normality test
+## 
+## data:  dataset$productivity
+## W = 0.98179, p-value = 0.3463</code></pre>
+<p>検定の結果、<span class="math inline">\(p = 0.3463\)</span>となり帰無仮説が棄却されませんでしたので、正規分布にしたがっていないとは言えません。</p>
+</div>
+</div>
+<div id="外れ値の確認" class="section level2">
+<h2>外れ値の確認</h2>
+<p>データ分布の確認において、対象のデータ分布は正規分布とみなせるという結論になりましたが、<span class="math inline">\(0.12\)</span>というデータが外れ値で ある可能性があります。念の為にドットチャートを使って確認します。</p>
+<pre class="r"><code># ドットチャートによるデータの確認
+stripchart(productivity ~ pj.no, vertical = TRUE, method = &quot;stack&quot;,
+           ylab = &quot;欠陥検出率&quot;, data = dataset)</code></pre>
+<p><img src="example_1_files/figure-html/unnamed-chunk-8-1.png" width="672" /> ドットチャートをみると<span class="math inline">\(0.12\)</span>という値は突出しているようにも見えますが、近くの<span class="math inline">\(0.106\)</span>と比べると 然程、突出しているようにも思えません。そこで、</p>
+<ol style="list-style-type: decimal">
+<li><span class="math inline">\(0.12\)</span>を外れ値としない</li>
+<li><span class="math inline">\(0.12\)</span>を外れ値とする</li>
+</ol>
+<p>という2つのパターンで算出し、その結果を比較してみることにします。</p>
+</div>
+<div id="平均値と標準偏差の算出" class="section level2">
+<h2>平均値と標準偏差の算出</h2>
+<p>では、上記の2パターンで平均値と標準偏差を算出してみます。</p>
+<div id="外れ値としない場合" class="section level3">
+<h3>外れ値としない場合</h3>
+<pre class="r"><code># 平均値と標準偏差
+dataset.mean &lt;- mean(dataset$productivity)
+dataset.sd &lt;- sd(dataset$productivity)</code></pre>
+<p>当該データを外れ値とみなさない場合の平均値<span class="math inline">\((mean)\)</span>と標準偏差<span class="math inline">\((sd)\)</span>は以下の通り</p>
+<p><span class="math display">\[\mbox{平均値} = 0.0501\]</span> <span class="math display">\[\mbox{標準偏差} = 0.0254\]</span></p>
+</div>
+<div id="外れ値とした場合" class="section level3">
+<h3>外れ値とした場合</h3>
+<pre class="r"><code># 外れ値の行数を得る
+row.num &lt;- which(dataset$productivity &gt;= 
+                   min(boxplot.stats(dataset$productivity)$out))
+# 平均値と標準偏差(外れ値を外した場合)
+dataset.mean.removed &lt;- mean(dataset$productivity[-row.num])
+dataset.sd.removed &lt;- sd(dataset$productivity[-row.num])</code></pre>
+<p>当該データを外れ値とみなした場合の平均値<span class="math inline">\((mean)\)</span>と標準偏差<span class="math inline">\((sd)\)</span>は以下の通り</p>
+<p><span class="math display">\[\mbox{平均値} = 0.0491\]</span> <span class="math display">\[\mbox{標準偏差} = 0.0242\]</span></p>
+</div>
+<div id="両者の差の確認" class="section level3">
+<h3>両者の差の確認</h3>
+<pre class="r"><code># 外さない場合と外した場合の差(平均値と標準偏差)
+diff.mean &lt;- dataset.mean - dataset.mean.removed
+diff.sd &lt;- dataset.sd - dataset.sd.removed
+
+per.mean &lt;- (dataset.mean - dataset.mean.removed) / dataset.mean * 100
+per.sd &lt;- (dataset.sd - dataset.sd.removed) / dataset.sd * 100</code></pre>
+<p>平均値の差は<span class="math inline">\(9\times 10^{-4}\)</span>、標準偏差の差は<span class="math inline">\(0.0012\)</span>と共に約0.001ですが、率<span class="math inline">\([\%]\)</span>で見ると<span class="math inline">\(1.9\%\)</span>と<span class="math inline">\(4.6\%\)</span>なため基準値も2パターンで出してみます。</p>
+</div>
+</div>
+<div id="基準値の算出" class="section level2">
+<h2>基準値の算出</h2>
+<p>テキストではZスコアを計算してから標準正規分布を用いて計算していますが、本資料では例題1.1でやったように各々の正規分布から直接基準値を算出します。</p>
+<pre class="r"><code># 基準値の算出
+std.value &lt;- qnorm(0.1, mean = dataset.mean, sd = dataset.sd,
+                   lower.tail = FALSE)
+std.value.removed &lt;- qnorm(0.1, mean = dataset.mean.removed,
+                           sd = dataset.sd.removed,
+                           lower.tail = FALSE)</code></pre>
+<p>外れ値としない場合の基準値は<span class="math display">\[0.083\]</span> 外れ値とした場合の基準値は、<span class="math display">\[0.08\]</span></p>
+<p>となります。念のためにこの基準値を用いた場合、基準値外となる要改善数を確認します。</p>
+</div>
+<div id="基準値の確認" class="section level2">
+<h2>基準値の確認</h2>
+<pre class="r"><code># 条件を満たすデータの数を数える
+num &lt;- sum(dataset$productivity &gt; std.value)
+num.removed &lt;- sum(dataset$productivity &gt; std.value.removed)
+# 比率を算出する
+per.num &lt;- round(num / length(dataset$productivity) * 100)
+per.num.removed &lt;- round(num.removed / length(dataset$productivity) * 100)</code></pre>
+<p>外れ値としない場合の要改善数は<span class="math display">\[9(12\%)\]</span> 外れ値とした場合の要改善数は<span class="math display">\[10(13\%)\]</span> となり、当初目標であった<span class="math inline">\(\underline{10\%\mbox{程度}}\)</span>を概ね満たしていると言える。</p>
+<hr />
+<!-- Include Footer -->
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" title="CC BY-NC-SA 4.0 icon" alt="Sampo Suzuki" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0</a>, Sampo Suzuki [2017-04-22 14:22(JST)]</p>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

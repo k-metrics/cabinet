@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>RStudio Server</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cerulean.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = false;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">分析環境</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    R
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="./install.html">Install R</a>
+    </li>
+    <li>
+      <a href="./install_tls.html">Install Rtools</a>
+    </li>
+    <li>
+      <a href="./install_rcmdr.html">Install Rcmdr Packages</a>
+    </li>
+    <li>
+      <a href="./install_dtp.html">Install RStudio Desktop</a>
+    </li>
+    <li>
+      <a href="./install_pkg.html">Install R Packages</a>
+    </li>
+    <li class="dropdown-header">Install TeX</li>
+    <li class="dropdown-header">Install Git/SVN</li>
+    <li class="divider"></li>
+    <li>
+      <a href="./update.html">Update R</a>
+    </li>
+    <li>
+      <a href="./install_svr.html">Install RStudio Server</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="./ubuntu.html">Ubuntu</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Others
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li class="dropdown-header">Microsoft R Open</li>
+    <li class="dropdown-header">R Tools for VisualStudio</li>
+    <li class="dropdown-header">RExcel</li>
+    <li class="dropdown-header">SRATS</li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Program
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../index.html">
+        <span class="fa fa-home"></span>
+         
+        Program Top
+      </a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="./index.html">
+        <span class="fa fa-laptop"></span>
+         
+        分析環境
+      </a>
+    </li>
+    <li>
+      <a href="../basics/index.html">
+        <span class="fa fa-info-circle"></span>
+         
+        環境基礎
+      </a>
+    </li>
+    <li>
+      <a href="../others/">
+        <span class="fa fa-commenting"></span>
+         
+        その他
+      </a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-github"></span>
+     
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../../">
+        <span class="fa fa-github"></span>
+         
+        Cabinet
+      </a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="../../import/">　Import</a>
+    </li>
+    <li>
+      <a href="../tidy/">　Tidy/Transform</a>
+    </li>
+    <li>
+      <a href="../index.html">　Model/Infer</a>
+    </li>
+    <li>
+      <a href="../../visualize/">　Visualize</a>
+    </li>
+    <li>
+      <a href="../../communicate/">　Communicate/Automate</a>
+    </li>
+    <li>
+      <a href="../../program/">
+        <span class="fa fa-home"></span>
+         
+        Program
+      </a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="https://sites.google.com/site/kantometrics/home">
+        <span class="fa fa-google"></span>
+         
+        データ分析勉強会
+      </a>
+    </li>
+  </ul>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">RStudio Server</h1>
+
+</div>
+
+
+<!-- Include Common Links -->
+<!-- SQiP and others -->
+<!-- Books -->
+<!-- Net Community -->
+<!-- Style Guide -->
+<!-- Creative Commons -->
+<!-- R -->
+<!-- RStudio -->
+<!-- Docker -->
+<!-- Cabinet Pages -->
+<p>RStudio ServerはWebブラウザをクライアントとして利用するサーバ向けのRStudioです。見た目は殆どデスクトップ版と同じです。チームでの開発で開発環境を共有したい場合やプラットフォームに依存しない環境を構築したい場合には便利です。<a href="https://www.r-project.org/" title="The R Project">R</a>や<a href="https://www.rstudio.com/" title="RStudio">RStudio</a>はクロスプラットフォームだと言われますが、意外と厄介なのが文字コードや日本語入力関係です。仮想環境上でRStudio Serverを動かすことによりプラットフォームに依存しない環境が構築可能になります。 　</p>
+<div id="仮想環境" class="section level1">
+<h1>仮想環境</h1>
+<p>最近のOSは仮想環境を標準で用意していたりもしますがリソースをあまり要求しないシンプルで軽量な仮想環境としてはDockerコンテナがお薦めです。仮想環境の利点はクロスプラットフォーム対応だけでなく常にクリーンな環境を確保しておき必要に応じて短時間でクリーンな環境に戻せる点にもあります。 　</p>
+<div id="docker" class="section level2">
+<h2>Docker</h2>
+<p>Dockerは乱暴な言い方をするとOS不要の仮想環境です。OS不要といっても一般的な仮想環境で必要とされるゲストOSが不要（OSレベルで仮想化している）という話で、当然、ホストOSは必要です。コンテナで扱えるアプリケーションはlinux系に限定されますが動作が他の仮想環境と比べると軽快なのが大きな特徴です。また、Docker Hubと呼ばれる公式リポジトリには仮想環境用のファイル（Dockerイメージ）が多数公開されておりDoker導入後にすぐに仮想環境で様々なアプリケーションを動作させることが可能な点も特徴の一つです。公式リポジトリ以外にもGit Hub等に非公式なDockerイメージが多数公開されておりベータ版的なアプリケーション等を仮想環境で試すことが可能です。Dockerの特徴や他の仮想マシンとの違いなどはこちらの<a href="http://paiza.hatenablog.com/entry/docker_intro">参考資料</a>をご覧ください。 　</p>
+</div>
+<div id="rocker" class="section level2">
+<h2>Rocker</h2>
+<p><a href="https://www.r-project.org/" title="The R Project">R</a>の公式なDockerイメージは<a href="https://hub.docker.com/u/rocker/" title="Rocker Project">Rocker</a>というプロジェクトで公開されています。<a href="https://hub.docker.com/u/rocker/" title="Rocker Project">Rocker</a>では構成の違いによるいくつかのイメージが提供されています。メトリクス分析の利用者側の視点からみた場合は、以下のいずれかを選択すれば良いと思います（とりあえず<code>tidyverse</code>を選んでおけば1GB近くありますが無難ではあります）。</p>
+<table>
+<thead>
+<tr class="header">
+<th>image</th>
+<th>r-base</th>
+<th>rstudio</th>
+<th>tidyverse</th>
+<th>LaTeX</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>r-base</td>
+<td>o</td>
+<td>x</td>
+<td>x</td>
+<td>x</td>
+</tr>
+<tr class="even">
+<td>rstudio</td>
+<td>o</td>
+<td>o</td>
+<td>x</td>
+<td>x</td>
+</tr>
+<tr class="odd">
+<td>tidyverse</td>
+<td>o</td>
+<td>o</td>
+<td>o</td>
+<td>o</td>
+</tr>
+</tbody>
+</table>
+<p>　</p>
+</div>
+</div>
+<div id="install" class="section level1">
+<h1>Install</h1>
+<p>Dockerのインストールの全体概要については<a href="https://docs.docker.com/engine/installation/">こちら</a>をご覧ください。以降は、Ubuntuにインストールする場合です。 　</p>
+<div id="docker-1" class="section level2">
+<h2>Docker</h2>
+<p>旧バージョンがある場合はアンインストールしておきます。</p>
+<pre><code>sudo apt-get remove docker docker-engine</code></pre>
+<p>　</p>
+<div id="recommended-extra-packages-for-trusty-14.04" class="section level3">
+<h3>Recommended extra packages for Trusty 14.04</h3>
+<pre><code>sudo apt-get update
+sudo apt-get install \
+    linux-image-extra-$(uname -r) \
+    linux-image-extra-virtual</code></pre>
+<p>　</p>
+</div>
+<div id="install-using-the-repository" class="section level3">
+<h3>Install using the repository</h3>
+<pre><code>sudo apt-get install \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    software-properties-common
+
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo apt-key fingerprint 0EBFCD88
+
+sudo add-apt-repository \
+   &quot;deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+   $(lsb_release -cs) \
+   stable&quot;</code></pre>
+</div>
+<div id="install-docker" class="section level3">
+<h3>Install Docker</h3>
+<pre><code>sudo apt-get update
+sudo apt-get install docker-ce</code></pre>
+<p>　</p>
+</div>
+</div>
+<div id="boot-rocker-image" class="section level2">
+<h2>Boot Rocker Image</h2>
+<pre><code>docker pull rocker/tidyverse
+docker run -p 8787:8787 rocker/tidyverse</code></pre>
+<p>　</p>
+</div>
+</div>
+<div id="rcokerの課題点" class="section level1">
+<h1>Rcokerの課題点</h1>
+<p>上記のように簡単な手順で予め用意された仮想環境が使えるのですが、下記のような課題も残っています。</p>
+<ul>
+<li>仮想環境が日本語化されていない（Dockerの仕様？イメージ作成時の仕様？）</li>
+<li>日本語入力時に豆腐文字が表示される</li>
+<li>描画系の豆腐文字問題が解決されていない（イメージ作成時の仕様）</li>
+</ul>
+<p>基本的に日本語の言語環境は考慮されていないのですが最低限の日本語表示は可能です。ただ、フォントの嗜好や豆腐文字が許容できない場合は、自身でDockerイメージを変更するしかありません。 Rockerをベースに日本語対応したDockerイメージは<a href="http://y-mattu.hatenablog.com/entry/2017/03/28/002200">RStudio Server + tidyverse + RMeCab で日本語もOKなDockerイメージを作りました</a>で公開されていますが日本語入力時の豆腐文字は残念ながら解決されていませんでした。ただし、RMeCabが標準で利用可能になっていますのでコンテナ環境で日本語解析を行いたい場合には便利です。</p>
+<div class="figure">
+<img src="fig/tofu.png" alt="fig. 豆腐文字" />
+<p class="caption">fig. 豆腐文字</p>
+</div>
+<hr />
+<!-- Include Footer -->
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" title="CC BY-NC-SA 4.0 icon" alt="Sampo Suzuki" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0</a>, Sampo Suzuki [2017-05-29 17:22(JST)]</p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

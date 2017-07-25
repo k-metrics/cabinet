@@ -1,0 +1,228 @@
+---
+title: "scatterplot"
+author: "Sampo Suzuki"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+require(tidyverse)
+require(gridExtra)
+require(DT)
+require(knitr)
+
+tidyverse::tidyverse_conflicts()
+
+class <- c("display cell-border compact")
+style <- ifelse(!interactive(), c("bootstrap"), c("default"))
+```
+
+# はじめに
+Rでヒストグラムを描くには、大きく、以下の二つの方法（関数）があります。
+
+* graphics::hist()
+* ggplot2::geom_histogram()
+
+Rでグラフを描く場合には`ggplot2`パッケージを利用した方が統一感のあるコード記述で統一感のある体裁のグラフが描けるので、
+
+可能であれば`ggplot2`を利用したい
+
+デフォルトの`graphics`パッケージは極力利用したくないのですが、
+
+は`ggplot2`パッケージに比べつと扱いが比較的簡単で、描いたデータに対する各種計算値が簡単に得られることもあり
+
+
+# 課題
+`ggplot2::geom_histgram()`のデフォルト設定でヒストグラムを描くと`graphics::hist()`を使た場合と形状の異なるヒストグラムが描かれます。例えば組み込みデータセットである`mtcars`の`disp`と`hp`の二つのデータでヒストグラムを描くと次のような違いとなります。
+
+## dispデータのヒストグラム
+```{r}
+graphics::hist(mtcars$disp)
+mtcars %>% 
+  ggplot2::ggplot(aes(x = disp)) +
+    geom_histogram()
+```
+
+## hpデータのヒストグラム
+```{r}
+graphics::hist(mtcars$hp)
+mtcars %>% 
+  ggplot2::ggplot(aes(x = hp)) +
+    geom_histogram()
+```
+
+このようにデフォルト設定ではヒストグラムを描くと似ても似つかぬ分布になることがあります。これは、`ggplot2::geom_histgram()`はデータ範囲を30分割したものを階級幅とし、`graphics::hist()`では、Sturgesの公式を用いて階級幅を決めているためです。
+
+そこで、`ggplot2::geom_histgram()`で`graphics::hist()`と同様のヒストグラムを描くためのオプション指定方法を探ります。
+
+# 前提条件
+`dataset::mtcars`のデータを用いて`graphics::hist()`で描けるヒストグラムを正とし、同様のグラフを`ggplot2::geom_histgram()`で描くためのオプションを探ります。
+```{r}
+DT::datatable(mtcars, class = class, style = style, caption = "mtcars dataset")
+```
+
+# 方法
+## 基本的な考え方
+ヒストグラムを描くためには最初にデータから度数分布表を作成する必要があります。この際にポイントとなるのが階級幅や階級数をどのように設定するかです。階級数の決め方には色々な方法がありますが代表的な公式としては以下のものがあげられます。
+
+階級数の計算方法        | Rでの関数        | Package
+------------------------|------------------|-----------
+Sturges's formula       | nclass.Sturges() | grDevices
+Scott's choice          | nclass.scott()   | grDevices 
+Freedman-Diacnis choice | nclass.FD()      | grDevices
+
+これらの公式は階級数を求めるもので、描画の際に必要となる階級幅を決めるために`graphics::hist()`では`base::pretty()`という関数を利用しています。`base::pretty()`はデータにより適切な階級幅を計算しますので、上記の公式で求めた階級数と計算結果が異なる場合があります。  
+実際に`mtcars`の`disp`と`hp`はStargesの公式で階級数を計算すると同じ`6`になりますが、階級幅を計算すると`disp`の階級数が`9`、`hp`の階級数が`6`となります。
+```{r}
+nclass.Sturges(mtcars$disp)
+pretty(range(mtcars$disp), n = nclass.Sturges(mtcars$disp), min.n = 1)
+
+nclass.Sturges(mtcars$hp)
+pretty(range(mtcars$hp), n = nclass.Sturges(mtcars$hp), min.n = 1)
+```
+
+## 度数分布表
+度数分布表は求めた階級幅を元に階級毎にいくつのデータがあるかを集計したものです。一般的には次のような形を取ります。
+```{r}
+mtcars %>% 
+  dplyr::mutate(bin.w = cut(disp,
+                            pretty(range(disp), n = nclass.Sturges(disp), min.n = 1),
+                            right = TRUE, include.lowest = FALSE)) %>% 
+  dplyr::select(bin.w, disp) %>% 
+  dplyr::group_by(bin.w) %>% 
+  dplyr::summarise(freq = n()) %>%
+  dplyr::rename('階級' = bin.w, '度数' = freq) %>%  
+  DT::datatable(class = class, style = style, caption = "度数分布表")
+```
+
+### 集計条件
+各階級毎の度数の集計方法ですが、階級の境界値をどちら側で集計するかでヒストグラムの形が変わってきます。
+
+#### 境界値の扱い
+各階級の下限値側を含まず、上限値側を含む集計方法を**右閉じ**といい**(lwr, upr]**と表現します。数式で表すと以下のようになります。
+
+$$各階級の下限値（lwr） \lt データ \le 各階級の上限値（upr）$$
+```{r}
+mtcars %>% 
+  dplyr::mutate(bin.w = cut(disp,
+                            pretty(range(disp), n = nclass.Sturges(disp), min.n = 1),
+                            right = TRUE, include.lowest = FALSE)) %>% 
+  dplyr::select(bin.w, disp) %>% 
+  dplyr::group_by(bin.w) %>% 
+  dplyr::summarise(freq = n()) %>%
+  dplyr::rename('階級' = bin.w, '度数' = freq) %>%
+  t() %>% as.data.frame() %>% DT::datatable(class = class, style = style,
+                                            caption = "右閉じの場合")
+```
+
+逆に各階級の下限値側を含み上限値側を含まない集計方法を**左閉じ**といい**[lwr, upr)**と表現します。数式で表すと以下のようになります。
+
+$$各階級の下限値（lwr） \le データ \lt 各階級の上限値（upr）$$
+```{r}
+mtcars %>% 
+  dplyr::mutate(bin.w = cut(disp,
+                            pretty(range(disp), n = nclass.Sturges(disp), min.n = 1),
+                            right = FALSE, include.lowest = FALSE)) %>% 
+  dplyr::select(bin.w, disp) %>% 
+  dplyr::group_by(bin.w) %>% 
+  dplyr::summarise(freq = n()) %>%
+  dplyr::rename('階級' = bin.w, '度数' = freq) %>% 
+  t() %>% as.data.frame() %>% DT::datatable(class = class, style = style,
+                                            caption = "左閉じの場合")
+```
+
+右閉じと比べてV6～V8の度数が異なっていることが分かります。
+
+#### 最下限値の扱い
+**右閉じ**で集計する際に最も小さいデータの値が階級の再下限値と同値の場合、この最も小さい値を集計対象とするか否かでヒストグラムの形が変わってきます。
+```{r}
+mtcars %>% 
+  dplyr::mutate(bin.w = cut(disp,
+                            pretty(range(disp), n = nclass.Sturges(disp), min.n = 1),
+                            right = TRUE, include.lowest = TRUE)) %>% 
+  dplyr::select(bin.w, disp) %>% 
+  dplyr::group_by(bin.w) %>% 
+  dplyr::summarise(freq = n()) %>%
+  dplyr::rename('階級' = bin.w, '度数' = freq) %>%
+  t() %>% as.data.frame() %>% DT::datatable(class = class, style = style,
+                                            caption = "右閉じ＆再下限を含む場合")
+```
+
+## geom_histgram
+`ggplot2::geom_histgram()`で`graphics::hist()`と同等のヒストグラムを描くには、前述の階級指定がポイントになります。
+
+`ggplot2::geom_histgram()`で利用できるオプションは
+
+option   | 
+---------|---
+breaks   | 境界値による
+bins     | 階級数を指定する
+binwidth | 階級幅を指定する
+closed   | 右閉じまはた左閉じの指定
+boundary | 
+center   | 
+
+```{r}
+graphics::hist(mtcars$disp)
+mtcars %>% 
+  ggplot2::ggplot(aes(x = disp)) +
+    geom_histogram(breaks = pretty(range(mtcars$disp),
+                                   n = nclass.Sturges(mtcars$disp), min.n = 1),
+                   closed = "right")
+```
+
+```{r}
+graphics::hist(mtcars$hp)
+mtcars %>% 
+  ggplot2::ggplot(aes(x = hp)) +
+    geom_histogram(breaks = pretty(range(mtcars$hp),
+                                   n = nclass.Sturges(mtcars$hp), min.n = 1),
+                   closed = "right")
+```
+
+```{r, include=FALSE}
+# # breaks
+# q %>%
+#   dplyr::filter(price < 500000) %>%
+#   dplyr::mutate(price.k = price/1000) %>%
+#   ggplot(aes(x = price.k)) +
+#     geom_histogram(breaks = seq(0, 500, by = 50), closed = "right") +
+#     stat_bin(aes(y = ..count.., label = ..count..), geom = "text", vjust = -.5,
+#              breaks = seq(0, 500, by = 50), boundary = 0) +
+#     xlab("") + ylab("度数") +
+#     ggtitle("", subtitle = "")
+# 
+# # bins
+# q %>%
+#   dplyr::filter(price < 500000) %>%
+#   dplyr::mutate(price.k = price/1000) %>%
+#   ggplot(aes(x = price.k)) +
+#     geom_histogram(bins = 10, closed = "right", boundary = 0) +
+#     stat_bin(aes(y = ..count.., label = ..count..), geom = "text", vjust = -.5,
+#              bins = 10, boundary = 0) +
+#     xlab("") + ylab("度数") +
+#     ggtitle("", subtitle = "")
+# 
+# # binwidth
+# q %>%
+#   dplyr::filter(price < 500000) %>%
+#   dplyr::mutate(price.k = price/1000) %>%
+#   ggplot(aes(x = price.k)) +
+#     geom_histogram(binwidth = 50, closed = "right", boundary = 0) +
+#     stat_bin(aes(y = ..count.., label = ..count..), geom = "text", vjust = -.5,
+#              binwidth = 50, boundary = 0) +
+#     xlab("") + ylab("度数") +
+#     ggtitle("", subtitle = "")
+# 
+# # binwidth, no boundary
+# q %>%
+#   dplyr::filter(price < 500000) %>%
+#   dplyr::mutate(price.k = price/1000) %>%
+#   ggplot(aes(x = price.k)) +
+#     geom_histogram(binwidth = 50, closed = "right") +
+#     stat_bin(aes(y = ..count.., label = ..count..), geom = "text", vjust = -.5,
+#              binwidth = 50) +
+#     xlab("") + ylab("度数") +
+#     ggtitle("", subtitle = "")
+```
+

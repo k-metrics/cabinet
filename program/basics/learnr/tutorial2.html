@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+<meta name="progressive" content="false" />
+<meta name="allow-skip" content="false" />
+
+<title>R Basics 2</title>
+
+
+<!-- highlightjs -->
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+</head>
+
+<body>
+
+
+
+<div class="pageContent band">
+<div class="bandContent page">
+
+<div class="topics">
+
+<!-- 必要なパッケージ
+本チュートリアルファイルを実行するためには以下のパッケージが必要です。必ず
+インストールされていることを確認して下さい。
+
+car, DT, formatR, knitr, learnr, rmarkdown, shiny, tidyverse
+
+インストールされていない場合、以下のページを参考にパッケージをインストール
+してください。
+
+https://k-metrics.github.io/cabinet/program/env/install_chk.html
+-->
+<div id="section-introduction" class="section level2">
+<h2>Introduction</h2>
+<p>本ファイルは<a href="https://sites.google.com/site/kantometrics/" title="データ分析勉強会">データ分析勉強会</a>で使用した『RStudioのすゝめ』の講義資料を再整理し<code>learnr</code>パッケージを用いて編集しなおした初学者向けのチュートリアルです。実際にRのコードを入力して実行することが可能ですが<code>shiny</code>サーバが必要となりますので<a href="https://www.rstudio.com/" title="RStudio">RStudio</a>にて実行してください。</p>
+<div id="section-実行方法" class="section level3">
+<h3>実行方法</h3>
+<p>本ファイルを<a href="https://www.rstudio.com/" title="RStudio">RStudio</a>で開くと上段に<strong>[Run Document]</strong>というボタンが表示されますので、これをクリックしてください。コンパイル後にローカルホスト(127.0.0.1)上に<code>shiny</code>サーバが起動し<strong>[Viewer]</strong>ウィンドウに実行可能なファイルが表示されます。ファイルが表示されたら<strong>[Code]</strong>と左上に書いてある欄に実行コードを記述し右側の<strong>[Run Code]</strong>ボタンを押せば記述されている（記述した) コードが実行されます。当然、間違っている場合はエラーがでます。コードを追加・記入したい場合は最終行の行末にカーソルを持っていき改行することで追加ができます。 学習結果は記録されますがリセットしたい場合はTOCの一番下にある<strong>[Start Over]</strong> をクリックしてください。</p>
+<p>なお、<code>learnr</code>パッケージの多国語対応が不十分なためメニューを英語表記にしていますが各Chapterは以下のようになっています。</p>
+<table>
+<thead>
+<tr class="header">
+<th>Chapter</th>
+<th>日本語項目名</th>
+<th>Chapter</th>
+<th>日本語項目名</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Chapter 1</td>
+<td>統計量 - 要約</td>
+<td>Chapter 11</td>
+<td>グラフ - 散布図行列</td>
+</tr>
+<tr class="even">
+<td>Chapter 2</td>
+<td>統計量 - 平均値と中央値</td>
+<td>Chapter 12</td>
+<td>グラフ - QQプロット</td>
+</tr>
+<tr class="odd">
+<td>Chapter 3</td>
+<td>統計量 - 最大値と最小値</td>
+<td>Chapter 13</td>
+<td>モデル - 線形回帰</td>
+</tr>
+<tr class="even">
+<td>Chapter 4</td>
+<td>統計量 - 四分位数と五数要約</td>
+<td>Chapter 14</td>
+<td>モデル - 基本診断プロット</td>
+</tr>
+<tr class="odd">
+<td>Chapter 5</td>
+<td>統計量 - 層別統計量</td>
+<td>Chapter 15</td>
+<td>検定 - 平均</td>
+</tr>
+<tr class="even">
+<td>Chapter 6</td>
+<td>統計量 - 度数</td>
+<td>Chapter 16</td>
+<td>検定 - 分散比</td>
+</tr>
+<tr class="odd">
+<td>Chapter 7</td>
+<td>統計量 - 相関係数と共分散</td>
+<td>Chapter 17</td>
+<td>検定 - 分散分析</td>
+</tr>
+<tr class="even">
+<td>Chapter 8</td>
+<td>グラフ - ヒストグラム</td>
+<td>Chapter 18</td>
+<td>検定 - 比率</td>
+</tr>
+<tr class="odd">
+<td>Chapter 9</td>
+<td>グラフ - 箱ひげ図</td>
+<td>Chapter 19</td>
+<td>分布 - 正規分布</td>
+</tr>
+<tr class="even">
+<td>Chapter 10</td>
+<td>グラフ - 散布図</td>
+<td>Appendix</td>
+<td>付録</td>
+</tr>
+</tbody>
+</table>
+<p>それではインタラクティブな学習を始めてみましょう。</p>
+</div>
+</div>
+<div id="section-chapter-1---summary" class="section level2">
+<h2>Chapter 1 - summary</h2>
+<div id="section-要約" class="section level3">
+<h3>要約</h3>
+<p>はじめに<code>iris</code>データセットの要約を<code>summary</code>関数を用いて表示してみましょう。</p>
+<pre class="r"><code>summary(object, ...)</code></pre>
+<div class="tutorial-exercise" data-label="summary" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="3">
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="summary-hint" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>summary(iris)</code></pre>
+</div>
+<p>このように<code>summary</code>関数は数値データに対しては最小値、第一四分位数、中央値（第二四分位数）、平均値、第三四分位数、最大値を表示し、非数値データに対しては度数を表示します。</p>
+</div>
+</div>
+<div id="section-chapter-2---mean-median" class="section level2">
+<h2>Chapter 2 - mean, median</h2>
+<div id="section-平均値" class="section level3">
+<h3>平均値</h3>
+<p>次に<code>iris</code>データセットにおける四つの数値データに対する平均値を<code>mean</code>関数で求めてみましょう。</p>
+<pre class="r"><code>mean(x, trim = 0, na.rm = FALSE, ...)</code></pre>
+<div class="tutorial-exercise" data-label="mean" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="5">
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="mean-hint" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>mean(iris$Sepal.Length)
+mean(iris$Sepal.Width)
+mean(iris$Petal.Length)
+mean(iris$Petal.Width)</code></pre>
+</div>
+</div>
+<div id="section-中央値" class="section level3">
+<h3>中央値</h3>
+<p>次に<code>iris</code>データセットにおける四つの数値データに対する中央値を<code>median</code>関数で求めてみましょう。</p>
+<pre class="r"><code>median(x, na.rm = FALSE, ...)</code></pre>
+<div class="tutorial-exercise" data-label="median" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="5">
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="median-solution" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># 一度に計算したい場合は`apply`ファリミーを用います
+sapply(iris[, -5], median)</code></pre>
+</div>
+</div>
+</div>
+<div id="section-chapter-3---max-min-range" class="section level2">
+<h2>Chapter 3 - max, min, range</h2>
+<div id="section-最大値と最小値" class="section level3">
+<h3>最大値と最小値</h3>
+<p><code>iris</code>データセットにおける四つの数値データに対する最大値と最小値を求めてみましょう。</p>
+<pre class="r"><code>max(..., na.rm = FALSE)
+min(..., na.rm = FALSE)</code></pre>
+<div class="tutorial-exercise" data-label="max_min" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="9">
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="max_min-solution" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># 一度に計算したい場合は`apply`ファリミーを用います
+sapply(iris[, -5], max)
+sapply(iris[, -5], min)</code></pre>
+</div>
+</div>
+<div id="section-範囲" class="section level3">
+<h3>範囲</h3>
+<p>最大値と最小値を同時に計算するには<code>range</code>関数を用います。</p>
+<pre class="r"><code>range(..., na.rm = FALSE)</code></pre>
+<div class="tutorial-exercise" data-label="range" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="9">
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="range-solution" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>sapply(iris[, -5], range)</code></pre>
+</div>
+</div>
+</div>
+<div id="section-chapter-4---quantile-fivenum" class="section level2">
+<h2>Chapter 4 - quantile, fivenum</h2>
+<div id="section-四分位数" class="section level3">
+<h3>四分位数</h3>
+<p><code>iris</code>データセットにおける四つの数値データに対する四分位数を<code>quantile</code>関数を用いて求めてみましょう。</p>
+<pre class="r"><code>quantile(x, probs = seq(0, 1, 0.25), na.rm = FALSE, names = TRUE,
+         type = 7, ...)</code></pre>
+<div class="tutorial-exercise" data-label="quantile" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="5">
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="quantile-solution" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># 一度に計算したい場合は`apply`ファリミーを用います
+sapply(iris[, -5], quantile)</code></pre>
+</div>
+</div>
+<div id="section-五数要約" class="section level3">
+<h3>五数要約</h3>
+<p>次に<code>iris</code>データセットにおける四つの数値データに対する五数要約を<code>fivenum</code>関数を用いて求めてみましょう。</p>
+<pre class="r"><code>fivenum(x, na.rm = TRUE)</code></pre>
+<div class="tutorial-exercise" data-label="fivenum" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="5">
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="fivenum-solution" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># 一度に計算したい場合は`apply`ファリミーを用います
+sapply(iris[, -5], fivenum)</code></pre>
+</div>
+</div>
+<div id="section-四分位数と五数要約の比較" class="section level3">
+<h3>四分位数と五数要約の比較</h3>
+<p>計算した四分位数と五数要約の値を比較してみましょう。</p>
+<pre class="r"><code>sapply(iris[, -5], quantile) - sapply(iris[, -5], fivenum)</code></pre>
+<pre><code>##      Sepal.Length Sepal.Width Petal.Length Petal.Width
+## 0%              0           0            0           0
+## 25%             0           0            0           0
+## 50%             0           0            0           0
+## 75%             0           0            0           0
+## 100%            0           0            0           0</code></pre>
+</div>
+</div>
+<div id="section-chapter-5---tapply-aggregate" class="section level2">
+<h2>Chapter 5 - tapply, aggregate</h2>
+<div id="section-層別統計量" class="section level3">
+<h3>層別統計量</h3>
+<p><code>iris</code>データセットの四つの数値データに対して種別（<code>Species</code>）毎の統計量を計算してみましょう。<code>apply</code>ファミリーの<code>tapply</code>関数を用いて求めてみましょう。</p>
+<pre class="r"><code>tapply(X, INDEX, FUN = NULL, ..., default = NA, simplify = TRUE)</code></pre>
+<div class="tutorial-exercise" data-label="tapply" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="5">
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="tapply-hint" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>tapply(iris$Sepal.Length, INDEX = list(iris$Species), FUN = mean)
+tapply(iris$Sepal.Width, INDEX = list(iris$Species), FUN = mean)
+tapply(iris$Petal.Length, INDEX = list(iris$Species), FUN = mean)
+tapply(iris$Petal.Width, INDEX = list(iris$Species), FUN = mean)</code></pre>
+</div>
+<p><code>tapply</code>関数は返り値が<code>array</code>型になる点に留意してください。</p>
+</div>
+<div id="section-層別統計量-1" class="section level3">
+<h3>層別統計量</h3>
+<p>返り値を<code>data.frame</code>型で得たい場合は<code>aggregate</code>関数を用います。<code>aggregate</code>関数の基本的な使い方は<code>formula</code>形式で引数を指定する方法です。</p>
+<pre class="r"><code>aggregate(formula, data, FUN, ..., subset, na.action = na.omit)</code></pre>
+<div class="tutorial-exercise" data-label="aggregate" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="5">
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="aggregate-hint" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>aggregate(Sepal.Length ~ Species, data = iris, FUN = mean)
+aggregate(Sepal.Width ~ Species, data = iris, FUN = mean)
+aggregate(Petal.Length ~ Species, data = iris, FUN = mean)
+aggregate(Petal.Width ~ Species, data = iris, FUN = mean)</code></pre>
+</div>
+<div id="section-一度に求める方法" class="section level4">
+<h4>一度に求める方法</h4>
+<p><code>aggregate</code>関数はデータフレーム全体を計算対象にして一度に層別統計量を求めることも可能です。ヘルプで引数の指定方法を確認して事項してみましょう。</p>
+<pre class="r"><code>aggregate(x, by, FUN, ..., simplify = TRUE, drop = TRUE)</code></pre>
+<div class="tutorial-exercise" data-label="aggregate_2" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="5">
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="aggregate_2-hint" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>aggregate(iris[, -5], by = list(iris$Species), FUN = mean)</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div id="section-chapter-6---nclass-pretty-cut-table" class="section level2">
+<h2>Chapter 6 - nclass, pretty, cut, table</h2>
+<div id="section-度数" class="section level3">
+<h3>度数</h3>
+<p>度数はデータの分布を確認するために使う度数分布表やヒストグラムを作る上で必要となる統計量の一つです。度数を求めるためには度数を求めるための区間である階級（幅）を定める必要があります。<br />
+階級はデータに合わせて任意に決めることができますが、なんらかの基準を用いて階級を決める場合にはスタージェスの公式やスコットの選択、フリードマン＝ダイアコニスの選択を用いて階級数を求めてから階級を求めます。</p>
+</div>
+<div id="section-階級数を求める" class="section level3">
+<h3>階級数を求める</h3>
+<p>スタージェスの公式（<code>nclass.Sturges</code>関数）を用いて<code>iris</code>データセットの四つの数値データに対する階級数を求めて見ましょう。</p>
+<pre class="r"><code>nclass.Sturges(x)
+nclass.scott(x)
+nclass.FD(x)</code></pre>
+<div class="tutorial-exercise" data-label="nclass" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="3">
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="nclass-hint" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>sapply(iris[, -5], FUN = nclass.Sturges)</code></pre>
+</div>
+</div>
+<div id="section-階級幅を求める" class="section level3">
+<h3>階級(幅)を求める</h3>
+<p>階級数が求められましたので、これを元に階級(幅)を求めてみましょう。度数分布表やヒストグラムを作るのが最終目標ですから単純にデータの範囲を階級数で分割してしまうと都合が悪くなりますので、ここでは階級境界値(Breakpoints)を計算する<code>pretty</code>関数を用いて<code>iris</code>データセットの四つの数値データに対する階級境界値を求めて見ましょう。</p>
+<pre class="r"><code>pretty(x, n = 5, min.n = n %/% 3,  shrink.sml = 0.75,
+       high.u.bias = 1.5, u5.bias = .5 + 1.5*high.u.bias,
+       eps.correct = 0, ...)</code></pre>
+<div class="tutorial-exercise" data-label="pretty" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="5">
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="pretty-hint" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>pretty(range(iris$Sepal.Length), n = nclass.Sturges(iris$Sepal.Length))
+pretty(range(iris$Sepal.Width), n = nclass.Sturges(iris$Sepal.Width))
+pretty(range(iris$Petal.Length), n = nclass.Sturges(iris$Petal.Length))
+pretty(range(iris$Petal.Width), n = nclass.Sturges(iris$Petal.Width))</code></pre>
+</div>
+</div>
+<div id="section-階級を知る" class="section level3">
+<h3>階級を知る</h3>
+<p>度数を求める前に<code>iris</code>データセットの四つの個々の数値データがどの階級に含まれるのかを知る必要がありますが、この処理には<code>cut</code>関数を用います。</p>
+<pre class="r"><code>cut(x, breaks, labels = NULL,
+    include.lowest = FALSE, right = TRUE, dig.lab = 3,
+    ordered_result = FALSE, ...)</code></pre>
+<div class="tutorial-exercise" data-label="cut" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="9">
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="cut-hint" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>cut(iris$Sepal.Length, breaks = pretty(range(iris$Sepal.Length),
+    n = nclass.Sturges(iris$Sepal.Length)))
+cut(iris$Sepal.Length, breaks = pretty(range(iris$Sepal.Length),
+    n = nclass.Sturges(iris$Sepal.Length)))
+cut(iris$Sepal.Length, breaks = pretty(range(iris$Sepal.Length),
+    n = nclass.Sturges(iris$Sepal.Length)))
+cut(iris$Sepal.Length, breaks = pretty(range(iris$Sepal.Length),
+    n = nclass.Sturges(iris$Sepal.Length)))</code></pre>
+</div>
+</div>
+<div id="section-度数集計" class="section level3">
+<h3>度数集計</h3>
+<p>これにより<code>iris</code>データセットの四つの個々の数値データに対する階級が求められましたので、このデータを元に<code>table</code>関数を用いて度数(分布表)を求めます。</p>
+<pre class="r"><code>table(...,
+      exclude = if (useNA == &quot;no&quot;) c(NA, NaN),
+      useNA = c(&quot;no&quot;, &quot;ifany&quot;, &quot;always&quot;),
+      dnn = list.names(...), deparse.level = 1)</code></pre>
+<div class="tutorial-exercise" data-label="table" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="13">
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="table-hint" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>table(cut(iris$Sepal.Length,
+          breaks = pretty(range(iris$Sepal.Length),
+                          n = nclass.Sturges(iris$Sepal.Length))))
+table(cut(iris$Sepal.Length,
+          breaks = pretty(range(iris$Sepal.Length),
+                          n = nclass.Sturges(iris$Sepal.Length))))
+table(cut(iris$Sepal.Length,
+          breaks = pretty(range(iris$Sepal.Length),
+                          n = nclass.Sturges(iris$Sepal.Length))))
+table(cut(iris$Sepal.Length,
+          breaks = pretty(range(iris$Sepal.Length),
+                          n = nclass.Sturges(iris$Sepal.Length))))</code></pre>
+</div>
+</div>
+</div>
+<div id="section-chapter-7---cor-cov" class="section level2">
+<h2>Chapter 7 - cor, cov</h2>
+<div id="section-相関" class="section level3">
+<h3>相関</h3>
+<p><code>iris</code>データセットの四つの数値データの組み合わせに対する相関係数を<code>cor</code>関数を用いて求めてみましょう。</p>
+<pre class="r"><code>cor(x, y = NULL, use = &quot;everything&quot;,
+    method = c(&quot;pearson&quot;, &quot;kendall&quot;, &quot;spearman&quot;))</code></pre>
+<div class="tutorial-exercise" data-label="cor" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="7">
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="cor-hint" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>cor(iris[, -5])</code></pre>
+</div>
+</div>
+<div id="section-共分散" class="section level3">
+<h3>共分散</h3>
+<p>同様に共分散を<code>cov</code>関数を用いて求めてみましょう。</p>
+<pre class="r"><code>cov(x, y = NULL, use = &quot;everything&quot;,
+    method = c(&quot;pearson&quot;, &quot;kendall&quot;, &quot;spearman&quot;))</code></pre>
+<div class="tutorial-exercise" data-label="cov" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="7">
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="cov-hint" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>cov(iris[, -5])</code></pre>
+</div>
+</div>
+</div>
+<div id="section-chapter-8---hist" class="section level2">
+<h2>Chapter 8 - hist</h2>
+<div id="section-ヒストグラム" class="section level3">
+<h3>ヒストグラム</h3>
+<p>ヒストグラムは度数分布表を元に描かれますが[R][R]では関数一つで描くことが可能です。<code>iris</code>データセットの四つの数値データに対するヒストグラムを<code>hist</code>関数を用いて描いてみましょう。</p>
+<pre class="r"><code>hist(x, breaks = &quot;Sturges&quot;,
+     freq = NULL, probability = !freq, include.lowest = TRUE, right = TRUE,
+     density = NULL, angle = 45, col = NULL, border = NULL,
+     main = paste(&quot;Histogram of&quot; , xname), xlim = range(breaks), ylim = NULL,
+     xlab = xname, ylab, axes = TRUE, plot = TRUE, labels = FALSE,
+     nclass = NULL, warn.unused = TRUE, ...)</code></pre>
+<div class="tutorial-exercise" data-label="hist" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="5">
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="hist-hint" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>lapply(iris[, -5], hist)</code></pre>
+</div>
+</div>
+</div>
+<div id="section-chapter-9---boxplot" class="section level2">
+<h2>Chapter 9 - boxplot</h2>
+<div id="section-箱ひげ図" class="section level3">
+<h3>箱ひげ図</h3>
+<p><code>iris</code>データセットの四つの数値データに対する箱ひげ図を<code>boxplot</code>関数を用いて描いてみましょう。</p>
+<pre class="r"><code>boxplot(x, ..., range = 1.5, width = NULL, varwidth = FALSE,
+        notch = FALSE, outline = TRUE, names, plot = TRUE,
+        border = par(&quot;fg&quot;), col = NULL, log = &quot;&quot;,
+        pars = list(boxwex = 0.8, staplewex = 0.5, outwex = 0.5),
+        horizontal = FALSE, add = FALSE, at = NULL)</code></pre>
+<div class="tutorial-exercise" data-label="boxplot" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="5">
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="boxplot-hint" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>boxplot(iris[, -5])</code></pre>
+</div>
+</div>
+<div id="section-層別箱ひげ図" class="section level3">
+<h3>層別箱ひげ図</h3>
+<p>フォーミュラを用いると層別した箱ひげ図を描くこもと可能です。種別（<code>Species</code>）で層別した箱ひげ図を描いてみましょう。</p>
+<pre class="r"><code>boxplot(formula, data = NULL, ..., subset, na.action = NULL,
+        drop = FALSE, sep = &quot;.&quot;, lex.order = FALSE)</code></pre>
+<div class="tutorial-exercise" data-label="l_boxplot" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="5">
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="l_boxplot-hint" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>boxplot(Sepal.Length ~ Species, data = iris)</code></pre>
+</div>
+</div>
+</div>
+<div id="section-chapter-10---plot" class="section level2">
+<h2>Chapter 10 - plot</h2>
+<div id="section-散布図" class="section level3">
+<h3>散布図</h3>
+<p><code>iris</code>データセットの四つの数値データに対する個々の散布図を<code>plot</code>関数を用いて描いてみましょう。</p>
+<pre class="r"><code>plot(x, y, ...)</code></pre>
+<div class="tutorial-exercise" data-label="plot" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="7">
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="plot-hint" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>plot(iris$Sepal.Length, iris$Sepal.Width)
+plot(iris$Sepal.Length, iris$Petal.Length)
+plot(iris$Sepal.Length, iris$Petal.Width)
+plot(iris$Sepal.Width, iris$Petal.Length)
+plot(iris$Sepal.Width, iris$Petal.Width)
+plot(iris$Petal.Length, iris$Petal.Width)</code></pre>
+</div>
+</div>
+<div id="section-散布図行列" class="section level3">
+<h3>散布図行列</h3>
+<p>個々に散布図を描く手間を省くのが散布図行列です。<code>iris</code>データセットの四つの数値データに対する散布図行列を<code>plot</code>関数を用いて描いてみましょう。</p>
+<pre class="r"><code>plot(x, y, ...)</code></pre>
+<div class="tutorial-exercise" data-label="plot_matrix" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="3">
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="plot_matrix-hint" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>plot(iris[, -5])</code></pre>
+</div>
+</div>
+</div>
+<div id="section-chapter-11---scatterplot" class="section level2">
+<h2>Chapter 11 - scatterplot</h2>
+<p>R Commanderの散布図は<code>car</code>パッケージにて定義されている<code>car::catterplot</code>関数を使っています。<code>scatterplot</code>関数は散布図の外周に箱ひげ図を描いてくれるので何かと便利です。</p>
+<div id="section-散布図-1" class="section level3">
+<h3>散布図</h3>
+<p><code>iris</code>データセットの四つの数値データに対する個々の散布図を<code>car::scatterplot</code>関数を用いて描いてみましょう。</p>
+<pre class="r"><code>scatterplot(x, y, smoother=loessLine, smoother.args=list(), smooth, span,
+            spread=!by.groups, reg.line=lm, boxplots=if (by.groups) &quot;&quot; else &quot;xy&quot;,
+            xlab=deparse(substitute(x)), ylab=deparse(substitute(y)),
+            las=par(&quot;las&quot;), lwd=1, lty=1, labels, id.method = &quot;mahal&quot;, 
+            id.n = if(id.method[1]==&quot;identify&quot;) length(x) else 0, 
+            id.cex = 1, id.col = palette()[1], id.location=&quot;lr&quot;,
+            log=&quot;&quot;, jitter=list(), xlim=NULL, ylim=NULL,
+            cex=par(&quot;cex&quot;), cex.axis=par(&quot;cex.axis&quot;), cex.lab=par(&quot;cex.lab&quot;), 
+            cex.main=par(&quot;cex.main&quot;), cex.sub=par(&quot;cex.sub&quot;),
+            groups, by.groups=!missing(groups), 
+            legend.title=deparse(substitute(groups)), legend.coords,
+            legend.columns, ellipse=FALSE, levels=c(.5, .95), robust=TRUE,
+            col=if (n.groups == 1) palette()[3:1]
+                else rep(palette(), length=n.groups),
+            pch=1:n.groups, legend.plot=!missing(groups), reset.par=TRUE,
+            grid=TRUE, ...)
+
+scatterplot(formula, data, subset, xlab, ylab, legend.title, legend.coords,
+            labels, ...)</code></pre>
+<div class="tutorial-exercise" data-label="scatterplot" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="7">
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="scatterplot-hint" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>car::scatterplot(Sepal.Length ~ Sepal.Width, data = iris, smooth = FALSE)
+car::scatterplot(Sepal.Length ~ Petal.Length, data = iris, smooth = FALSE)
+car::scatterplot(Sepal.Length ~ Petal.Width, data = iris, smooth = FALSE)
+car::scatterplot(Sepal.Width ~ Petal.Length, data = iris, smooth = FALSE)
+car::scatterplot(Sepal.Width ~ Petal.Width, data = iris, smooth = FALSE)
+car::scatterplot(Petal.Length ~ Petal.Width, data = iris, smooth = FALSE)</code></pre>
+</div>
+</div>
+<div id="section-散布図行列-1" class="section level3">
+<h3>散布図行列</h3>
+<p><code>iris</code>データセットの四つの数値データに対する散布図行列を<code>scatterplotMatrix</code>関数を用いて描いてみましょう。</p>
+<pre class="r"><code>scatterplotMatrix(x, var.labels=colnames(x), 
+                  diagonal=c(&quot;density&quot;, &quot;boxplot&quot;, &quot;histogram&quot;, &quot;oned&quot;,
+                             &quot;qqplot&quot;, &quot;none&quot;), 
+                  adjust=1, nclass, plot.points=TRUE, smoother=loessLine,
+                  smoother.args=list(), smooth, span, spread = !by.groups,
+                  reg.line=lm, transform=FALSE, family=c(&quot;bcPower&quot;, &quot;yjPower&quot;),
+                  ellipse=FALSE, levels=c(.5, .95), robust=TRUE, groups=NULL,
+                  by.groups=FALSE, 
+                  use=c(&quot;complete.obs&quot;, &quot;pairwise.complete.obs&quot;), labels,
+                  id.method=&quot;mahal&quot;, id.n=0, id.cex=1, id.col=palette()[1],
+                  id.location=&quot;lr&quot;,
+                  col=if (n.groups == 1) palette()[3:1]
+                     else rep(palette(), length=n.groups),
+                  pch=1:n.groups, lwd=1, lty=1, cex=par(&quot;cex&quot;),
+                  cex.axis=par(&quot;cex.axis&quot;), cex.labels=NULL, 
+                  cex.main=par(&quot;cex.main&quot;), 
+                  legend.plot=length(levels(groups)) &gt; 1, legend.pos=NULL,
+                  row1attop=TRUE, ...)</code></pre>
+<div class="tutorial-exercise" data-label="scatterplotMatrix" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="3">
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="scatterplotMatrix-hint" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>car::scatterplotMatrix(iris[, -5], smooth = FALSE)</code></pre>
+</div>
+</div>
+<div id="section-層別散布図行列" class="section level3">
+<h3>層別散布図行列</h3>
+<p><code>iris</code>データセットの四つの数値データに対して種別（<code>Species</code>）で層別した散布図行列を<code>car::scatterplotMatrix</code>関数を用いて描いてみましょう。</p>
+<pre class="r"><code>scatterplotMatrix(formula, data=NULL, subset, labels, ...)</code></pre>
+<div class="tutorial-exercise" data-label="l_scatterplotMatrix" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="5">
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="l_scatterplotMatrix-hint" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>car::scatterplotMatrix(~ Petal.Length + Petal.Width +
+                         Sepal.Length + Sepal.Width | Species,
+                       data = iris, smooth = FALSE)</code></pre>
+</div>
+</div>
+</div>
+<div id="section-chapter-12---qqplot" class="section level2">
+<h2>Chapter 12 - qqPlot</h2>
+<div id="section-qqプロット" class="section level3">
+<h3>QQプロット</h3>
+<p>QQプロットは<code>car</code>パッケージにある<code>car::qqPlot</code>関数が見やすいので、これを使うのがおすゝめです。<code>iris</code>データセットの四つの数値データに対してQQプロットを<code>car::qqPlot</code>関数を用いて描いてみましょう。</p>
+<pre class="r"><code>qqPlot(x, distribution=&quot;norm&quot;, ...,
+       ylab=deparse(substitute(x)), xlab=paste(distribution, &quot;quantiles&quot;), 
+       main=NULL, las=par(&quot;las&quot;),   envelope=.95, col=palette()[1],
+       col.lines=palette()[2], lwd=2, pch=1, cex=par(&quot;cex&quot;), 
+       line=c(&quot;quartiles&quot;, &quot;robust&quot;, &quot;none&quot;),  
+       labels = if(!is.null(names(x))) names(x) else seq(along=x),
+       id.method = &quot;y&quot;, id.n =if(id.method[1]==&quot;identify&quot;) Inf else 0,
+       id.cex=1, id.col=palette()[1], id.location=&quot;lr&quot;, grid=TRUE)</code></pre>
+<div class="tutorial-exercise" data-label="qqPlot" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="5">
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="qqPlot-hint" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>car::qqPlot(iris$Sepal.Length)
+car::qqPlot(iris$Sepal.Width)
+car::qqPlot(iris$Petal.Length)
+car::qqPlot(iris$Petal.Width)</code></pre>
+</div>
+</div>
+</div>
+<div id="section-chapter-13---lm" class="section level2">
+<h2>Chapter 13 - lm</h2>
+<div id="section-線形回帰" class="section level3">
+<h3>線形回帰</h3>
+<p><code>iris</code>データセットの<code>Sepal</code>と<code>Petal</code>の長さと幅に対する線形回帰モデルを<code>lm</code>関数を用いて計算してみましょう。</p>
+<pre class="r"><code>lm(formula, data, subset, weights, na.action, method = &quot;qr&quot;, model = TRUE,
+   x = FALSE, y = FALSE, qr = TRUE, singular.ok = TRUE, contrasts = NULL,
+   offset, ...)</code></pre>
+<div class="tutorial-exercise" data-label="lm" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="5">
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="lm-hint" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>lm(Sepal.Length ~ Sepal.Width, data = iris)
+lm(Petal.Length ~ Petal.Width, data = iris)</code></pre>
+</div>
+</div>
+<div id="section-回帰分析" class="section level3">
+<h3>回帰分析</h3>
+<p>線形回帰モデルの評価には<code>summary</code>関数を使います。</p>
+<pre class="r"><code>summary(lm(Sepal.Length ~ Sepal.Width, data = iris))</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = Sepal.Length ~ Sepal.Width, data = iris)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -1.5561 -0.6333 -0.1120  0.5579  2.2226 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)   6.5262     0.4789   13.63   &lt;2e-16 ***
+## Sepal.Width  -0.2234     0.1551   -1.44    0.152    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.8251 on 148 degrees of freedom
+## Multiple R-squared:  0.01382,    Adjusted R-squared:  0.007159 
+## F-statistic: 2.074 on 1 and 148 DF,  p-value: 0.1519</code></pre>
+<pre class="r"><code>summary(lm(Petal.Length ~ Petal.Width, data = iris))</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = Petal.Length ~ Petal.Width, data = iris)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -1.33542 -0.30347 -0.02955  0.25776  1.39453 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  1.08356    0.07297   14.85   &lt;2e-16 ***
+## Petal.Width  2.22994    0.05140   43.39   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.4782 on 148 degrees of freedom
+## Multiple R-squared:  0.9271, Adjusted R-squared:  0.9266 
+## F-statistic:  1882 on 1 and 148 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<div id="section-chapter-14---plot" class="section level2">
+<h2>Chapter 14 - plot</h2>
+<div id="section-基本診断プロット" class="section level3">
+<h3>基本診断プロット</h3>
+通常単回帰では回帰診断は必須ではありませんが、残差を確認して妙な傾向が出ていないか確認する癖はつけておいた方がいいかも知れません。基本診断プロットは線形回帰モデルの計算結果を<code>plot</code>関数に渡すだけです。
+<div class="tutorial-exercise" data-label="lm_plot" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="3">
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="lm_plot-hint" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>plot(lm(Sepal.Length ~ Sepal.Width, data = iris))
+plot(lm(Sepal.Width ~ Sepal.Length, data = iris))</code></pre>
+</div>
+</div>
+</div>
+<div id="section-chapter-15---t.test" class="section level2">
+<h2>Chapter 15 - t.test</h2>
+<div id="section-検定---平均" class="section level3">
+<h3>検定 - 平均</h3>
+<p>平均値の検定には一般的にt検定を用います。t検定は<code>t.test</code>関数を用います。<code>t.test</code>関数は様々な使い方ができます。</p>
+<table>
+<thead>
+<tr class="header">
+<th>標本</th>
+<th>関係</th>
+<th>分散</th>
+<th>指定方法</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1標本の</td>
+<td>N/A</td>
+<td>N/A</td>
+<td>t.test(x, mu = <span class="math inline">\(\mu\)</span>)</td>
+</tr>
+<tr class="even">
+<td>2群間の</td>
+<td>対応のない</td>
+<td>等分散</td>
+<td>t.test(x, y, var.equal = TRUE)</td>
+</tr>
+<tr class="odd">
+<td>2群間の</td>
+<td>対応のない</td>
+<td>不等分散</td>
+<td>t.test(x, y, var.equal = FALSE)</td>
+</tr>
+<tr class="even">
+<td>2群間の</td>
+<td>対応のある</td>
+<td>N/A</td>
+<td>t.test(x, y, paired = TRUE)</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr class="header">
+<th>標本</th>
+<th>関係</th>
+<th>分散</th>
+<th>指定方法（formula）</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2群間の</td>
+<td>対応のない</td>
+<td>等分散</td>
+<td>t.test(value ~ factor, data = x, var.equal = TRUE)</td>
+</tr>
+<tr class="even">
+<td>2群間の</td>
+<td>対応のない</td>
+<td>不等分散</td>
+<td>t.test(v ~ f, data = x, var.equal = FALSE)</td>
+</tr>
+<tr class="odd">
+<td>2群間の</td>
+<td>対応のある</td>
+<td>N/A</td>
+<td>t.test(v ~ f, data = x, paired = TRUE)</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>t.test(x, y = NULL,
+       alternative = c(&quot;two.sided&quot;, &quot;less&quot;, &quot;greater&quot;),
+       mu = 0, paired = FALSE, var.equal = FALSE,
+       conf.level = 0.95, ...)
+
+t.test(formula, data, subset, na.action, ...)</code></pre>
+<code>mtcars</code>データセットを用いて、変速機種別(<code>am</code>)による燃費（<code>mpg</code>）の平均値の差を検定してみましょう。
+<div class="tutorial-exercise" data-label="t_test" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="3">
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<pre class="r"><code>t.test(mpg ~ am, data = mtcars)</code></pre>
+<pre><code>## 
+##  Welch Two Sample t-test
+## 
+## data:  mpg by am
+## t = -3.7671, df = 18.332, p-value = 0.001374
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -11.280194  -3.209684
+## sample estimates:
+## mean in group 0 mean in group 1 
+##        17.14737        24.39231</code></pre>
+</div>
+</div>
+<div id="section-chapter-16" class="section level2">
+<h2>Chapter 16</h2>
+<div id="section-検定---分散比" class="section level3">
+<h3>検定 - 分散比</h3>
+</div>
+</div>
+<div id="section-chapter-17" class="section level2">
+<h2>Chapter 17</h2>
+<div id="section-検定---分散分析" class="section level3">
+<h3>検定 - 分散分析</h3>
+</div>
+</div>
+<div id="section-chapter-18" class="section level2">
+<h2>Chapter 18</h2>
+<div id="section-検定---比率" class="section level3">
+<h3>検定 - 比率</h3>
+</div>
+</div>
+<div id="section-chapter-19" class="section level2">
+<h2>Chapter 19</h2>
+<div id="section-分布---正規分布" class="section level3">
+<h3>分布 - 正規分布</h3>
+</div>
+</div>
+<div id="section-appendix" class="section level2">
+<h2>Appendix</h2>
+<p>更に詳しくRを学ぶには以下の図書やコミュニティを活用してください。</p>
+<p>統計の基礎とRで処理方法を学びたい場合は<a href="http://www.tokyo-tosho.co.jp/books/978-4-489-02227-2/" title="統計学基礎">改定版 統計学基礎</a>や<a href="http://www.kyoritsu-pub.co.jp/bookdetail/9784320112414" title="Rで楽しむ統計">Rで楽しむ統計</a>。 Rの基礎から学びたい場合は<a href="https://book.mynavi.jp/ec/products/detail/id=39763" title="みんなのR">みんなのR</a>や<a href="http://gihyo.jp/book/2017/978-4-7741-8812-6" title="パーフェクトR">パーフェクトR</a>。</p>
+<p>ネットコミュニティで質問したい場合は、日本のR界の著名人が集まっている<a href="http://qiita.com/uri/items/5583e91bb5301ed5a4ba" title="R-wakalang">R-wakalang</a>や <a href="http://www.okadajp.org/RWiki/" title="RjpWiki">Rjp Wiki</a>で、検索にはRに特化した検索エンジンである<a href="http://seekr.jp/" title="seek R">seek R</a>がおすゝめです。</p>
+<hr />
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" title="CC BY-NC-SA 4.0 icon" alt="Sampo Suzuki" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0</a>, Sampo Suzuki [2017-07-22 00:11(JST)]</p>
+<!-- Books -->
+<!-- Net Community -->
+
+<script type="application/shiny-prerendered" data-context="server-start">
+# 共通chunkオプションの指定
+knitr::opts_chunk$set(warning = FALSE, echo = TRUE)
+
+require(learnr)
+require(DT)
+require(knitr)
+require(tidyverse)
+tidyverse::tidyverse_conflicts()
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+learnr:::register_http_handlers(session, metadata = NULL)
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-summary-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-summary-code-editor`)), session)
+output$`tutorial-exercise-summary-output` <- renderUI({
+  `tutorial-exercise-summary-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-mean-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-mean-code-editor`)), session)
+output$`tutorial-exercise-mean-output` <- renderUI({
+  `tutorial-exercise-mean-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-median-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-median-code-editor`)), session)
+output$`tutorial-exercise-median-output` <- renderUI({
+  `tutorial-exercise-median-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-max_min-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-max_min-code-editor`)), session)
+output$`tutorial-exercise-max_min-output` <- renderUI({
+  `tutorial-exercise-max_min-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-range-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-range-code-editor`)), session)
+output$`tutorial-exercise-range-output` <- renderUI({
+  `tutorial-exercise-range-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-quantile-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-quantile-code-editor`)), session)
+output$`tutorial-exercise-quantile-output` <- renderUI({
+  `tutorial-exercise-quantile-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-fivenum-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-fivenum-code-editor`)), session)
+output$`tutorial-exercise-fivenum-output` <- renderUI({
+  `tutorial-exercise-fivenum-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-tapply-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-tapply-code-editor`)), session)
+output$`tutorial-exercise-tapply-output` <- renderUI({
+  `tutorial-exercise-tapply-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-aggregate-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-aggregate-code-editor`)), session)
+output$`tutorial-exercise-aggregate-output` <- renderUI({
+  `tutorial-exercise-aggregate-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-aggregate_2-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-aggregate_2-code-editor`)), session)
+output$`tutorial-exercise-aggregate_2-output` <- renderUI({
+  `tutorial-exercise-aggregate_2-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-nclass-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-nclass-code-editor`)), session)
+output$`tutorial-exercise-nclass-output` <- renderUI({
+  `tutorial-exercise-nclass-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-pretty-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-pretty-code-editor`)), session)
+output$`tutorial-exercise-pretty-output` <- renderUI({
+  `tutorial-exercise-pretty-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-cut-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-cut-code-editor`)), session)
+output$`tutorial-exercise-cut-output` <- renderUI({
+  `tutorial-exercise-cut-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-table-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-table-code-editor`)), session)
+output$`tutorial-exercise-table-output` <- renderUI({
+  `tutorial-exercise-table-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-cor-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-cor-code-editor`)), session)
+output$`tutorial-exercise-cor-output` <- renderUI({
+  `tutorial-exercise-cor-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-cov-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-cov-code-editor`)), session)
+output$`tutorial-exercise-cov-output` <- renderUI({
+  `tutorial-exercise-cov-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-hist-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-hist-code-editor`)), session)
+output$`tutorial-exercise-hist-output` <- renderUI({
+  `tutorial-exercise-hist-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-boxplot-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-boxplot-code-editor`)), session)
+output$`tutorial-exercise-boxplot-output` <- renderUI({
+  `tutorial-exercise-boxplot-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-l_boxplot-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-l_boxplot-code-editor`)), session)
+output$`tutorial-exercise-l_boxplot-output` <- renderUI({
+  `tutorial-exercise-l_boxplot-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-plot-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-plot-code-editor`)), session)
+output$`tutorial-exercise-plot-output` <- renderUI({
+  `tutorial-exercise-plot-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-plot_matrix-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-plot_matrix-code-editor`)), session)
+output$`tutorial-exercise-plot_matrix-output` <- renderUI({
+  `tutorial-exercise-plot_matrix-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-scatterplot-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-scatterplot-code-editor`)), session)
+output$`tutorial-exercise-scatterplot-output` <- renderUI({
+  `tutorial-exercise-scatterplot-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-scatterplotMatrix-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-scatterplotMatrix-code-editor`)), session)
+output$`tutorial-exercise-scatterplotMatrix-output` <- renderUI({
+  `tutorial-exercise-scatterplotMatrix-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-l_scatterplotMatrix-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-l_scatterplotMatrix-code-editor`)), session)
+output$`tutorial-exercise-l_scatterplotMatrix-output` <- renderUI({
+  `tutorial-exercise-l_scatterplotMatrix-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-qqPlot-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-qqPlot-code-editor`)), session)
+output$`tutorial-exercise-qqPlot-output` <- renderUI({
+  `tutorial-exercise-qqPlot-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-lm-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-lm-code-editor`)), session)
+output$`tutorial-exercise-lm-output` <- renderUI({
+  `tutorial-exercise-lm-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-lm_plot-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-lm_plot-code-editor`)), session)
+output$`tutorial-exercise-lm_plot-output` <- renderUI({
+  `tutorial-exercise-lm_plot-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-t_test-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-t_test-code-editor`)), session)
+output$`tutorial-exercise-t_test-output` <- renderUI({
+  `tutorial-exercise-t_test-result`()
+})
+</script>
+ <!--html_preserve-->
+<script type="application/shiny-prerendered" data-context="dependencies">
+{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["jquery"]},{"type":"character","attributes":{},"value":["1.11.3"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/jquery-1.11.3"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["jquery.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["bootstrap"]},{"type":"character","attributes":{},"value":["3.3.5"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/bootstrap-3.3.5"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["viewport"]}},"value":[{"type":"character","attributes":{},"value":["width=device-width, initial-scale=1"]}]},{"type":"character","attributes":{},"value":["js/bootstrap.min.js","shim/html5shiv.min.js","shim/respond.min.js"]},{"type":"character","attributes":{},"value":["css/cerulean.min.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["pagedtable"]},{"type":"character","attributes":{},"value":["1.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/pagedtable-1.1"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["js/pagedtable.js"]},{"type":"character","attributes":{},"value":["css/pagedtable.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["highlightjs"]},{"type":"character","attributes":{},"value":["1.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/highlightjs-1.1"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["highlight.js"]},{"type":"character","attributes":{},"value":["textmate.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial"]},{"type":"character","attributes":{},"value":["0.9"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial.js"]},{"type":"character","attributes":{},"value":["tutorial.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-autocompletion"]},{"type":"character","attributes":{},"value":["0.9"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-autocompletion.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-diagnostics"]},{"type":"character","attributes":{},"value":["0.9"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-diagnostics.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-format"]},{"type":"character","attributes":{},"value":["0.9"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmarkdown/templates/tutorial/resources"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-format.js"]},{"type":"character","attributes":{},"value":["tutorial-format.css","rstudio-theme.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["jquery"]},{"type":"character","attributes":{},"value":["1.11.3"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/jquery-1.11.3"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["jquery.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["font-awesome"]},{"type":"character","attributes":{},"value":["4.5.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/font-awesome-4.5.0"]}]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["css/font-awesome.min.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["bootbox"]},{"type":"character","attributes":{},"value":["4.4.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/bootbox"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["bootbox.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["localforage"]},{"type":"character","attributes":{},"value":["1.5"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/localforage"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["localforage.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial"]},{"type":"character","attributes":{},"value":["0.9"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial.js"]},{"type":"character","attributes":{},"value":["tutorial.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-autocompletion"]},{"type":"character","attributes":{},"value":["0.9"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-autocompletion.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-diagnostics"]},{"type":"character","attributes":{},"value":["0.9"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-diagnostics.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]}]}
+</script>
+<!--/html_preserve-->
+</div>
+
+</div> <!-- topics -->
+
+<div class="topicsContainer">
+<div class="topicsPositioner">
+<div class="band">
+<div class="bandContent topicsListContainer">
+
+<!-- begin doc-metadata -->
+<div id="doc-metadata">
+<h2 class="title toc-ignore" style="display:none;">R Basics 2</h2>
+</div>
+<!-- end doc-metadata -->
+
+</div> <!-- bandContent.topicsListContainer -->
+</div> <!-- band -->
+</div> <!-- topicsPositioner -->
+</div> <!-- topicsContainer -->
+
+
+</div> <!-- bandContent page -->
+</div> <!-- pageContent band -->
+
+
+
+
+<script>
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+</script>
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+
+</html>

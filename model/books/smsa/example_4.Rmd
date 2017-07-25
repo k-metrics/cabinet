@@ -1,0 +1,185 @@
+---
+title: "第4章 例題解答例"
+output: 
+  html_document:  
+    number_section: no
+---
+
+<!-- Include Common Links -->
+```{r example_4, child="../../../common/links.Rmd"}
+```
+
+```{r setup, include=FALSE}
+# 共通chunkオプションの指定
+knitr::opts_chunk$set(warning = FALSE, echo = TRUE)
+
+# データハンドリングで利用するパッケージの読み込み
+require(tidyverse)
+
+# 表示で利用する外部パッケージの読み込み
+require(gridExtra)
+require(DT)
+require(knitr)
+require(extrafont)
+
+# モデリングで利用するパッケージの読み込み
+require(psych)
+
+# コンフリクトの解消
+tidyverse::tidyverse_conflicts()
+
+# 共通ローカル関数の読み込み
+source("../../../common/common.R")
+```
+
+# はじめに {.unnumbered}
+本資料は『[ソフトウェアメトリクス統計分析入門][5]』(以降、テキストと記載)の第4章の例題を[R][R]で解いた際の解答例を示したものです。また、[R Markdown][RM]を使うメリットを示すための一手段として作成していますので、テキストにおける計算方法とは異なる部分もあります。本資料で使用しているデータの入手に関してはテキストにてご確認下さい。  
+本資料がHTML形式の場合、Rのコードを参照するには右側にある**`[Code]`**ボタンをクリックして下さい。なお、JavaScriptは必ずOnにしてご覧下さい。  
+
+
+# 例題 4.1
+> 以下にプロジェクトごとに測定された「開発規模（KLOC）」、「レビュー工数」、「モジュールテスト工数」、「システムテストバグ件数」のデータがあります。
+システムテスト開始時点で「システムテストバグ件数」を予測する式を作成したいと考えています。
+> まずは、「システムテストバグ件数」を予測するのに「開発規模」、「レビュー工数」、「モジュールテスト工数」のいずれが最適かを調べてください。
+> ※部分的に欠損値（未入力データ）があります。
+
+## データの設定
+本例題で利用するデータは予めCSVファイルとして保存されているものとします。
+```{r, include=FALSE}
+file <- "./data/ex_4.1.csv"
+x <- read.csv(file, header = TRUE, sep = ",", fileEncoding = "CP932")
+df_print(x)
+```
+
+## データ分布の確認
+散布図行列を用いてデータの分布を確認します。散布図行列は`psych`パッケージにある`pairs.panels {psych}`関数を使うと相関係数まで同時に確認できるので便利です。
+```{r}
+x %>% 
+  select(-Project) %>% 
+  psych::pairs.panels(smooth = FALSE, scale = TRUE, lm = TRUE)
+```
+
+### 外れ値の除去
+```{r}
+x.rm <- x %>% 
+  dplyr::filter(`モジュール.テスト工数` <= 950) # %>% 
+  # tidyr::drop_na()
+
+df_print(x.rm)
+```
+
+## 再確認
+```{r}
+x.rm %>% 
+  select(-Project) %>% 
+  psych::pairs.panels(smooth = FALSE, scale = TRUE, lm = TRUE)
+```
+
+## 相関係数の確認
+ここではRcmdrで使っている`rcorr.adjust {RcmdrMisc}`関数を使っています。
+```{r}
+x %>% 
+  dplyr::select(-Project) %>% 
+  dplyr::rename(ST.bug = システムテスト.バグ件数,
+                MT.time = モジュール.テスト工数,
+                Review.time = レビュー.工数, KLOC = 開発規模) %>% 
+  RcmdrMisc::rcorr.adjust(type = "pearson", use = "complete")
+```
+計算の結果、p値を見ると相関があると言えます。
+
+## 偏相関の確認
+次に擬似相関が含まれていないかを偏相関係数で確認してみます。ここでもRcmdrの`partial.cor {RcmdrMisc}`関数を使っています。
+```{r}
+x %>% 
+  dplyr::select(-Project, -レビュー.工数) %>% 
+  dplyr::rename(ST.bug = システムテスト.バグ件数,
+                MT.time = モジュール.テスト工数, KLOC = 開発規模) %>% 
+  RcmdrMisc::partial.cor(tests = TRUE, use = "complete")
+```
+計算の結果、開発規模(KLOC)とシステムバグ件数(ST.bug)の間には相関があると認められます。一方、モジュールテスト工数(MT.time)とシステムバグ件数(ST.bug)の間は修正p値から判断して相関があるとは認められない、すなわち擬似相関であると判断できます。
+
+```{r}
+x.cor <- cor.test(x$開発規模, x$システムテスト.バグ件数)$estimate %>% 
+  round(2)
+
+x %>% 
+  dplyr::select(-Project, -レビュー.工数, -モジュール.テスト工数) %>% 
+  dplyr::rename(ST.bug = システムテスト.バグ件数, KLOC = 開発規模) %>% 
+  ggplot(aes(x = KLOC, y = ST.bug)) +
+    geom_point() + 
+    geom_smooth(method = "lm", se = TRUE) +
+    xlab("開発規模[KLOC]") + ylab("システムテストバグ件数") +
+    ggtitle(label = "外れ値除去前", subtitle = paste("　相関係数:", x.cor))
+
+x.rm.cor <- cor.test(x.rm$開発規模, x.rm$システムテスト.バグ件数)$estimate %>% 
+  round(2)
+
+x.rm %>% 
+  dplyr::select(-Project, -レビュー.工数, -モジュール.テスト工数) %>% 
+  dplyr::rename(ST.bug = システムテスト.バグ件数, KLOC = 開発規模) %>% 
+  ggplot(aes(x = KLOC, y = ST.bug)) +
+    geom_point() + 
+    geom_smooth(method = "lm", se = TRUE) +
+    xlab("開発規模[KLOC]") + ylab("システムテストバグ件数") +
+    ggtitle(label = "外れ値除去後", subtitle = paste("　相関係数:", x.rm.cor))
+```
+
+
+# 例題 4.2
+> システムテスト開始時点の「開発規模」の測定値で、「システムテストバグ件数」を予測したいと考えています。
+> 例題4.1と同じデータを使って、回帰分析を行い、予測式を作成してください。
+
+## データの設定
+本例題で利用するデータは例題4.1のデータをそのまま使い、必要な部分だけを取り出します。
+```{r, include=FALSE}
+file <- "./data/ex_4.1.csv"
+x <- read.csv(file, header = TRUE, sep = ",", fileEncoding = "CP932") %>% 
+  dplyr::select(-Project, -レビュー.工数, -モジュール.テスト工数) %>% 
+  dplyr::rename(KLOC = 開発規模, ST.bug = システムテスト.バグ件数) 
+df_print(x)
+```
+
+## 回帰分析
+### 線形回帰モデルの算出
+```{r}
+result.lm <- x %>% 
+  lm(ST.bug ~ KLOC, data = .)
+
+summary(result.lm)
+```
+
+### 予測値のプロット
+回帰分析の結果を確認してみます。
+```{r}
+x %>% 
+  mutate(fit = fitted(result.lm)) %>% 
+  ggplot(aes(x = ST.bug, y = fit)) +
+    geom_point() +
+    geom_text(aes(x = ST.bug + 0, y = fit + 1, label = row.names(x))) +
+    coord_equal() +
+    xlab("実測値") + ylab("予測値") +
+    ggtitle("線形モデルの確認",
+            subtitle = "ST.bug = 2.06 + 0.51*KLOC, R^2 = 0.847") +
+    geom_abline(linetype = "dashed", colour = "red")
+```
+
+
+### 残差プロット
+単回帰分析ではここまで確認する必要はないですが参考までに残差QQプロットを確認します。
+```{r}
+# plot(result.lm)
+
+x %>%
+  mutate(res = scale(residuals(result.lm))) %>%
+  ggplot(aes(sample = res)) +
+    geom_abline(col = "red", linetype = "dashed") +
+    geom_qq() +
+    coord_equal() +
+    ggtitle("残差のQQプロット")
+```
+
+---
+
+<!-- Include Footer -->
+```{r child="../../../common/footer.Rmd"}
+```

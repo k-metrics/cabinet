@@ -1,0 +1,365 @@
+---
+title: "第2章 演習解答例"
+output: 
+  html_document:  
+    number_section: no
+---
+
+<!-- Include Common Links -->
+```{r exercise_2, child="../../../common/links.Rmd"}
+```
+
+```{r setup, include=FALSE}
+# 共通chunkオプションの指定
+knitr::opts_chunk$set(warning = FALSE, echo = TRUE)
+
+# データハンドリングで利用するパッケージの読み込み
+require(tidyverse)
+
+# 表示で利用する外部パッケージの読み込み
+require(gridExtra)
+require(DT)
+require(knitr)
+require(extrafont)
+
+# モデリングで利用するパッケージの読み込み
+require(psych)
+
+# コンフリクトの解消
+tidyverse::tidyverse_conflicts()
+
+# 共通ローカル関数の読み込み
+source("../../../common/common.R")
+```
+
+# はじめに
+本資料は『[ソフトウェアメトリクス統計分析入門][5]』(以降、テキストと記載)の第2章の演習問題を[R][R]で解いた際の解答例を示したものです。また、[R Markdown][RM]を使うメリットを示すための一手段として作成していますので、テキストにおける計算方法とは異なる部分もあります。本資料で使用しているデータの入手に関してはテキストにてご確認下さい。  
+本資料がHTML形式の場合、Rのコードを参照するには右側にある**`[Code]`**ボタンをクリックして下さい。なお、JavaScriptは必ずOnにしてご覧下さい。  
+
+
+# 演習問題
+> 第2章は全ての演習問題でダウンロードファイル内の「第2章_例題演習データ」ファイルの各シートにある演習データを使用します。
+
+
+# 演習 2.1
+> あるアウトソース先から100個のモジュールが納品されました。納品されたモジュールの品質を確認するために10個のモジュールをサンプリングして受入確認テストを実施しました。
+> その結果、各モジュールの欠陥密度は以下のとおりでした。
+> 
+> 欠陥密度： 2.8, 5.2, 5.3, 4.7, 4.8, 5.8, 4.0, 2.2, 2.1, 3.5
+> 
+> この組織ではプロジェクトトータルの欠陥密度の標準値が3.0 となっており、今回納品されたモジュール全体の平均がその組織標準を超えていそうならば受入はせず、品質を高めてから再納品してもらうことを考えています。
+> そのためにはアウトソース先にも納得できる形で、判断の根拠を示す必要があります。受入の許可か拒否か、どちらが妥当な判断といえるでしょうか。
+
+## データの設定
+本演習で利用するデータの数は多くなので、直接、Rのコードで変数として設定します。
+```{r}
+ref <- c(3.0)                                               # 標準値
+dd <- c(2.8, 5.2, 5.3, 4.7, 4.8, 5.8, 4.0, 2.2, 2.1, 3.5)   # 欠陥密度
+```
+
+## 検定
+固定的な基準値に対してサンプリングデータの平均値に差があるかどうかを確認しますので、例題2.2と同じ1標本t検定を用います。対立仮説（帰無仮説）については省略。
+```{r}
+# 返り値をinline chunkで利用するために一度、変数に代入する
+result.t.test <- t.test(dd, alternative = "less", mu = ref)
+result.t.test
+```
+検定の結果$p = `r result.t.test$p.value`$、95\%信頼区間は($`r result.t.test$conf.int`$)となり、帰無仮説は棄却されませんでしたので、基準値より納入されたモジュールの欠陥密度の平均値が小さいとは言えず、受入れは基準に達して
+いるとは言いがたく、受入れ拒否とみなせます。
+
+
+# 演習 2.2
+> テスト技法の改善を行いました。実験として5つのモジュールに対して、新旧2つの技法を用いてテストを行い、以下の欠陥密度のデータを得ました。
+> 新技法は欠陥検出能力が向上したといえるでしょうか。
+
+## データの設定
+本演習で利用するデータは予めCSVファイルとして保存されているものとします。
+```{r, include=FALSE}
+file <- "./data/ex2_2.csv"
+x <- read.csv(file, header = TRUE, sep = ",", fileEncoding = "CP932")
+colnames(x) <- c("new", "old")
+df_print(x)
+```
+
+## データの確認
+```{r, fig.height=3}
+x.stacked <- stack(x)
+stripchart(values ~ ind, data = x.stacked)
+```
+
+## 検定
+```{r}
+# 返り値をinline chunkで利用するために一度、変数に代入する
+result.t.test <- t.test(x$new, x$old, alternative = "greater", paired=TRUE)
+result.t.test <- t.test(values ~ ind, data = x.stacked, alternative = "greater", paired=TRUE)
+result.t.test
+```
+検定の結果$p = `r result.t.test$p.value`$、95\%信頼区間は$(`r result.t.test$conf.int`)$となり、帰無仮説は棄却されましたので、平均値の差に
+有意差があり、新技法は欠陥検出能力が向上しているといえます。
+
+
+# 演習 2.3
+> 開発時の品質状況を示すメトリクスとリリース後の品質問題の有無の関連性を示すために、リリースして1年以上経過したプロジェクトを品質問題の有無の2つに分けて、それぞれの開発終了時のシステムテストでの欠陥密度のデータを比較することにしました。
+> 得られたデータは以下のとおりです。システムテストでの欠陥密度とリリース後の品質問題の有無の関連性はあるといえるでしょうか。
+
+## データの設定
+本演習で利用するデータは予めCSVファイルとして保存されているものとします。
+```{r, include=FALSE}
+file <- "./data/ex2_3.csv"
+x <- read.csv(file, header = TRUE, sep = ",", fileEncoding = "CP932")
+colnames(x) <- c("yes", "no")
+df_print(x)
+```
+
+## データの変換
+本演習のデータは、「欠陥あり」と「欠陥なし」は異なるプロジェクトであることから独立サンプルt検定`t.test {stats}`にて有意差を確認します。
+読み込んだデータは2変数のデータフレームになっていますので、独立サンプルt検定を行うために以下のように1変数と因子の形に変換しておきます。
+```{r}
+x.stacked <- stack(x)
+# 念の為にNAを含むデータを外す
+x.stacked <- na.omit(x.stacked)
+
+df_print(x)
+```
+
+## データの確認
+```{r, fig.height=3}
+stripchart(values ~ ind, data = x.stacked)
+```
+
+## 検定
+変換したデータを用いて、その分布を確認し等分散か否かをF検定`var.test {stats}`で確認します。
+```{r}
+# var.test(x$yes, x$no, alternative = "less")
+var.test(x$yes, x$no, alternative = "two.sided")
+```
+F検定の結果、帰無仮説は棄却されなかったので、2つのデータは等分散とは言えないのでWelchのt検定`t.test {stats}`を用います。
+
+```{r}
+# 返り値をinline chunkで利用するために一度、変数に代入する
+result.t.test <- t.test(values ~ ind, alternative = "two.sided",
+                        var.equal = FALSE, data = x.stacked)
+result.t.test
+```
+検定の結果$p = `r result.t.test$p.value`$、95\%信頼区間は$(`r result.t.test$conf.int`)$となり、帰無仮説は棄却されませんしたので、平均値の差に有意差があるとは言えず、システムテストでの欠陥密度とリリース後の品質問題の有無の「関連性はある」とも言えません。
+
+
+# 演習 2.4
+> ベースとなるシステムに改良を加えました。そして。改良システムのユーザビリティテストを行い、ベースシステムとの比較で以下の5段階評価を行いました。
+> 
+> 　1：非常に使いづらい  
+> 　2：使いづらい  
+> 　3：あまり変わらない  
+> 　4：使いやすい  
+> 　5：非常に使いやすい
+> 
+> 被験者10名のそれぞれの評点は以下のとおりです。改良システムはベースシステムに比べて使いやすくなったといえるでしょうか。
+
+## データの設定
+本演習で利用するデータは予めCSVファイルとして保存されているものとします。
+```{r, include=FALSE}
+file <- "./data/ex2_4.csv"
+x <- read.csv(file, header = TRUE, sep = ",", fileEncoding = "CP932")
+colnames(x) <- c("tester", "evaluation")
+
+df_print(x)
+```
+
+## 検定
+演習2.2と同じで固定的な基準値(3:あまり変わらない)に対するアンケート結果の平均の差があるかどうかを見ることから「1標本t検定」を用います。Rで1標本t検定を行う場合、`t.test {stats}`を使い、対立仮説（帰無仮説）は基準値($\mu_0$)に対するアンケートの平均値($\mu$)として以下の3通りが考えられます。
+
+1. $\mu \neq \mu_0$ （帰無仮説 $\mu = \mu_0$）
+1. $\mu < \mu_0$ （帰無仮説 $\mu \geq \mu_0$）
+1. $\mu > \mu_0$ （帰無仮説 $\mu \leq \mu_0$）
+
+設問として「使いやすくなったと言えるか？」なので、アンケートの5段階評価の平均値が$\mu > \mu_0$（帰無仮説 $\mu \leq \mu_0$）となるかを検定します。
+
+```{r}
+# 返り値をinline chunkで利用するために一度、変数に代入する
+result.t.test <- t.test(x$evaluation, alternative = "greater", mu = 3.0)
+result.t.test
+```
+検定の結果p値は$p = `r result.t.test$p.value`$であり帰無仮説は棄却され、平均値は$\mu = `r result.t.test$estimate`$、95%信頼区間は$(`r result.t.test$conf.int`)$であることから改良システムは使いやすくなったと言えます。
+
+
+# 演習 2.5
+> 図2.16 に4 パターンのA とB の2 群データを示します。	いずれのパターンも平均はA群が1.2でB群が1.0 なっており、	平均の差は0.2で統一されています。
+> また、A群とB群のデータ数と標準偏差（n－1で割ったもの）の値も同じです。
+> グラフはA群とB群のデータ分布の違いを可視化しています。4つのパターンの違いは表2.5のとおりです。
+> 
+> (表2.5 4パターンのデータセットの各種指標の違い)
+> 
+パターン  | 平均値の差 |データ数 | 標準偏差
+--------- | ---------- | ------- | --------
+パターン1 | 0.2        |       9 | 0.27
+パターン2	| 0.2        |       9 | 0.14
+パターン3 | 0.2        |      18 | 0.27
+パターン4 | 0.2        |       4 | 0.14	
+> 
+> これらの数値を使えばt値およびp値を算出して有意差の違いを確認できますが、まずは図2.16のグラフだけを見て、パターン1と比較して、パターン2～4のp値の大きさの違いを予想してみてください。
+> そしてその後それぞれのパターンの検定結果のp値を算出して、予想が合っていたかを確認してください．
+> 
+> ![図2.16](./data/ex2_5_fig.jpg)
+> 
+
+## データの設定
+本演習で利用するデータは予めCSVファイルとして保存されているものとします。
+```{r, include=FALSE}
+file <- "./data/ex2_5.csv"
+x <- read.csv(file, header = TRUE, sep = ",", fileEncoding = "CP932")
+# colnames(x) <- c("data.1", "group.1", "data.2", "group.2", "data.3", "group.3",
+#                  "data.4", "group.4")
+# 以降のコードを共通化するために重複する名前にしていますが、Rcmdrで使うとフリーズ
+# する可能性があるのであまりお勧めできる方法ではありません
+colnames(x) <- c("data", "group", "data", "group", "data", "group",
+                 "data", "group")
+
+# この処理ではデータ数の異なるデータをデータフレームとして扱っていますので、
+# データの少ないパターンでは、データの無い行の数値の項目にNA、因子の項目にNULLが
+# 強制的に入力されますので、事後の処理は注意して下さい。
+df_print(x)
+```
+
+## データの確認
+```{r, fig.height=3}
+# stripchart(data.1 ~ group.1, xlim = c(0, 2), data = na.omit(x[1:2]))
+# stripchart(data.2 ~ group.2, xlim = c(0, 2), data = na.omit(x[3:4]))
+# stripchart(data.3 ~ group.3, xlim = c(0, 2), data = na.omit(x[5:6]))
+# stripchart(data.4 ~ group.4, xlim = c(0, 2), data = na.omit(x[7:8]))
+
+# NAを削除するためにna.omit {stats}、NULL因子を削除するためにdroplevels {base}を
+# 用います
+stripchart(data ~ group, xlim = c(0, 2), data = droplevels(na.omit(x[1:2])),
+           main = "Pattern A")
+with(droplevels(na.omit(x[1:2])), tapply(data, INDEX = group, FUN = mean))
+with(droplevels(na.omit(x[1:2])), tapply(data, INDEX = group, FUN = sd))
+
+stripchart(data ~ group, xlim = c(0, 2), data = droplevels(na.omit(x[3:4])),
+           main = "Pattern B")
+with(droplevels(na.omit(x[3:4])), tapply(data, INDEX = group, FUN = mean))
+with(droplevels(na.omit(x[3:4])), tapply(data, INDEX = group, FUN = sd))
+
+stripchart(data ~ group, xlim = c(0, 2), data = droplevels(na.omit(x[5:6])),
+           main = "Pattern C")
+with(droplevels(na.omit(x[5:6])), tapply(data, INDEX = group, FUN = mean))
+with(droplevels(na.omit(x[5:6])), tapply(data, INDEX = group, FUN = sd))
+
+stripchart(data ~ group, xlim = c(0, 2), data = droplevels(na.omit(x[7:8])),
+           main = "Pattern D")
+with(droplevels(na.omit(x[7:8])), tapply(data, INDEX = group, FUN = mean))
+with(droplevels(na.omit(x[7:8])), tapply(data, INDEX = group, FUN = sd))
+```
+
+
+# おまけ
+## t.test {stats}でのt検定
+`t.test {stats}`関数は、引数の指定により様々なt検定を行えます。そこで、t検定の種類と`t.test {stats}`での計算方法を整理しておきます。
+
+標本     | 関係       | 分散     | 指定方法 
+-------- | ---------- | -------- | --------------------------------
+1標本の  | N/A        | N/A      | t.test(x, mu = a)
+2群間の  | 対応のない | 等分散   | t.test(x, y, var.equal = TRUE)
+2群間の  | 対応のない | 不等分散 | t.test(x, y, var.equal = FALSE)
+2群間の  | 対応のある | N/A      | t.test(x, y, paired = TRUE)        
+
+なお、`mu`の既定値は`0`。`var.equal`、`paired`の既定値は共に`FALSE`です。
+
+2群間の検定については、`formula`形式を用いた指定も可能で、データフレーム`x`において数値`value`、層別変数`factor`にデータが格納されているとした場合、以下のように指定します。  
+
+    # 2群間の対応のない（等分散） - 独立サンプルt検定はこの計算式@Rcmdr
+    t.test(value ~ factor, data = x, var.equal = TURE)
+    
+    # 2群間の対応のない（不等分散） - 独立サンプルt検定はこの計算式@Rcmdr
+    t.test(value ~ factor, data = x, var.equal = FALSE)
+    
+    # 2群間の対応のある - 対応のあるt検定はこの計算式を使わない@Rcmdr
+    t.test(value ~ factor, data = x, paired = TURE)
+
+`factor`は因子名でソートされた順で評価されますので、順番に注意して下さい。
+
+<!--
+ TeXで「~」を表記する場合は、\verb|~|とする。その他の特殊文字は以下を参照
+ \textasciitildeや\textasciicircumは使えない
+ http://www.rsch.tuis.ac.jp/~mizutani/online/latex/specialchar.html
+ http://www.latex-cmd.com/struct/verb.html
+-->
+
+## t.test {stats}での対立仮説指定方法
+### １標本の場合
+対立仮説`alternative hypothesis`の指定（引数`alternative`）は1標本の場合、
+
+    t.test(x, mu = mu0, alternative = "option")
+
+と指定し、平均$\mu$と基準値(比較値)$\mu_0$に対して下表のようになります。
+
+対立仮説 （帰無仮説）               | 指定方法 
+----------------------------------- | --------------------------
+$\mu \neq \mu_0$ （$\mu = \mu_0$）  | alternative = "two.sided"
+$\mu < \mu_0$ （$\mu \geq \mu_0$）  | alternative = "less"
+$\mu > \mu_0$ （$\mu \leq \mu_0$）  | alternative = "greater"
+
+![](image/1標本.jpg)  
+1標本t検定  
+
+### ２群間の場合
+対応のある2群間の場合は、以下のように指定し
+
+    t.test(x, y, alternative = "option", ...)
+
+対立仮説の指定(引数`alternative`)は平均の差（$\delta = \mu_x - \mu_y$）に対して下表のようになります。
+
+対立仮説 （帰無仮説）             | 指定方法 
+--------------------------------- | --------------------------
+$\delta \neq 0$ （$\delta = 0$）  | alternative = "two.sided"
+$\delta < 0$ （$\delta \geq 0$）  | alternative = "less"
+$\delta > 0$ （$\delta \leq 0$）  | alternative = "greater"
+
+![](image/2標本_対応のある.jpg)  
+対応のあるt検定  
+
+　  
+対応のない2群間の場合は同様の指定で、平均の差（$\delta = \mu_x - \mu_y$）で考える場合は上表のように平均値$\mu_x$,  $\mu_y$に対して考える場合は下表のようになります。
+
+対立仮説 （帰無仮説）                   | 指定方法 
+--------------------------------------- | --------------------------
+$\mu_x \neq \mu_y$ （$\mu_x = \mu_y$）  | alternative = "two.sided"
+$\mu_x < \mu_y$ （$\mu_x \geq \mu_y$）  | alternative = "less"
+$\mu_x > \mu_y$ （$\mu_x \leq \mu_y$）  | alternative = "greater"
+
+![](image/2標本_対応のない.jpg)  
+独立サンプルt検定  
+　  
+`formula`形式で指定した場合は、因子順にx, yと読み替えて下さい。また、他のオプションについてはヘルプで確認して下さい。
+
+
+<!-- ## t.test {stats}を使わない方法 -->
+<!-- Excel使った場合と同じ方法（テキストの方法）で1標本t検定を解いてみます。 -->
+<!-- ```{r} -->
+<!-- x.omit <- droplevels(na.omit(x[1:2])) -->
+<!-- # データ数 -->
+<!-- n <- tapply(x.omit$data, INDEX = x.omit$group, FUN = length) -->
+<!-- # 自由度 = データ数 - 1 -->
+<!-- f <- n - 1 -->
+<!-- # 平均値 -->
+<!-- m <- tapply(x.omit$data, INDEX = x.omit$group, FUN = mean) -->
+<!-- # 標準偏差 -->
+<!-- s <- tapply(x.omit$data, INDEX = x.omit$group, FUN = sd) -->
+<!-- # t分布の標準偏差 -->
+<!-- # t値 -->
+<!-- # p値 -->
+
+<!-- x.omit <- droplevels(na.omit(x[3:4])) -->
+<!-- n <- tapply(x.omit$data, INDEX = x.omit$group, FUN = length) -->
+
+<!-- x.omit <- droplevels(na.omit(x[5:6])) -->
+<!-- n <- tapply(x.omit$data, INDEX = x.omit$group, FUN = length) -->
+
+<!-- x.omit <- droplevels(na.omit(x[7:8])) -->
+<!-- n <- tapply(x.omit$data, INDEX = x.omit$group, FUN = length) -->
+<!-- ``` -->
+
+---
+
+<!-- Include Footer -->
+```{r child="../../../common/footer.Rmd"}
+```

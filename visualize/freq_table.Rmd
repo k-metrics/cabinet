@@ -1,0 +1,112 @@
+---
+title: "度数分布表の作り方"
+author: "Sampo Suzuki"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+require(tidyverse)
+require(gridExtra)
+require(DT)
+require(knitr)
+
+tidyverse::tidyverse_conflicts()
+
+class <- c("display cell-border compact")
+style <- ifelse(!interactive(), c("bootstrap"), c("default"))
+```
+
+# はじめに
+Rで度数分布表を作るにはヒストグラムを描く関数`graphics::hist()`の返り値である`counts`と`breaks`を使う方法がありますが`breaks`から階級を起こすのが面倒です。`dplyr`パッケージを使うことで比較的簡単に度数分布表を作成することができます。
+
+# 階級の決め方
+度数分布表の階級は描きたいヒストグラムに応じて任意に決めることができますが、階級の決め方で困った場合は公式を用いて対象となるデータを元に階級数を求め、それを元に階級を決める方法が使えます。
+
+## 階級数の求め方
+階級数を決めるのに比較的広く使われているのがスタージェスの公式です。スタージェスの公式はデータ数が多い場合やデータ分布が偏っている場合には不向きと言われており、該当する場合は、スコットの選択やフリードマン・ダイアコニスの選択（FD法）を用いてみて下さい。
+
+階級数の計算方法        | Rでの関数        | 備考
+------------------------|------------------|--------------------
+Square-root choice      | round(sqrt())    | 最もシンプルな方法
+Sturges's formula       | nclass.Sturges() | 最も一般的な方法
+Scott's choice          | nclass.scott()   |  
+Freedman-Diacnis choice | nclass.FD()      | 
+
+## 階級幅の求め方
+次に階級数に基づいて適切な階級幅を決めます。対象となるデータの範囲をカバーし等間隔の階級幅を求める場合には**`base::pretty()`**が便利です。
+
+# 度数の求め方
+階級幅が求められたら個々の階級に入るデータの個数、すなわち度数を求めます。これには**`base::cut()`**という関数を用いてデータを階級毎に分類してから度数をカウントするのが簡単です。この時、注意するのは階級の境界に当たるデータをどのように扱うかです。
+
+境界条件 | 判定式              | 表現式
+---------|---------------------|--------------
+右閉じ   | $lwr \lt x \le upr$ | $(lwr, upr]$
+左閉じ   | $lwr \le x \lt upr$ | $[lwr, upr)$
+
+また、右閉じとした場合のデータの最小値が最下限階級の境界にあたる場合、度数カウントに含むか含まないかを指定することができます。
+
+では、実際に度数分布表を作成してみます。データはRに組み込まれている
+
+
+```{r}
+mtcars %>% 
+  dplyr::mutate(bin.w = cut(disp,
+                            pretty(range(disp), n = nclass.Sturges(disp)),
+                            right = TRUE, include.lowest = FALSE)) %>% 
+  dplyr::select(bin.w, disp) %>% 
+  dplyr::group_by(bin.w) %>% 
+  dplyr::summarise(freq = n()) %>%
+  dplyr::rename('階級' = bin.w, '度数' = freq) %>% knitr::kable()
+  # t() %>% as.data.frame() %>%
+  # DT::datatable(class = class, style = style,
+  #               caption = "度数分布表")
+```
+
+
+
+
+```{r, eval=FALSE}
+cut(data, breaks = breaks, right = TRUE, include.lowest = TRUE)
+```
+
+
+
+```{r, eval=FALSE}
+# `mtcars`
+data <- mtcars$disp
+
+# Sturgesの公式により階級数を求める
+n <- nclass.Sturges(data)
+
+# 階級幅を求める
+breaks <- pretty(x = range(data), n = n)
+```
+
+
+# 度数分布表を作る
+```{r}
+mtcars %>% 
+  dplyr::mutate(bin.w = cut(disp,
+                            pretty(range(disp), n = nclass.Sturges(disp)),
+                            right = TRUE, include.lowest = FALSE)) %>% 
+  dplyr::select(bin.w, disp) %>% 
+  dplyr::group_by(bin.w) %>% 
+  dplyr::summarise(freq = n()) %>%
+  dplyr::rename('階級' = bin.w, '度数' = freq) %>% knitr::kable()
+  # t() %>% as.data.frame() %>%
+  # DT::datatable(class = class, style = style,
+  #               caption = "度数分布表")
+```
+
+# 参考資料
+* 
+
+# R Session information
+```{r}
+devtools::session_info()$platform
+```
+## Packages
+```{r}
+DT::datatable(devtools::session_info()$packages)
+```

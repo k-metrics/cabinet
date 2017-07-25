@@ -1,0 +1,127 @@
+---
+title: "RでSolver"
+output: 
+  html_document:  
+    number_section: no
+---
+
+<!-- Include Common Links -->
+```{r solver, child="../../common/links.Rmd"}
+```
+
+```{r setup, include=FALSE}
+# 共通chunkオプションの指定
+knitr::opts_chunk$set(warning = FALSE, echo = TRUE)
+
+# データハンドリングで利用する外部パッケージの読み込み
+require(tidyverse)
+# 表示で利用する外部パッケージの読み込み
+require(gridExtra)
+require(DT)
+require(knitr)
+tidyverse::tidyverse_conflicts()
+
+# ローカル定義関数の読み込み
+source("../../common/common.R")
+```
+
+# はじめに
+本資料は『[データ指向のソフトウェア品質マネジメント][6]』(以降、テキストと記載)の2015年度第5回の演習問題を[R][R]で解いた際の解答例を示したものです。また、[R Markdown][RM]を使うメリットを示すための一手段として作成していますので、テキストにおける計算方法とは異なる部分もあります。本資料で使用しているデータの入手に関してはテキストにてご確認下さい。  
+本資料がHTML形式の場合、Rのコードを参照するには右側にある**`[Code]`**ボタンをクリックして下さい。なお、JavaScriptは必ずOnにしてご覧下さい。  
+
+
+# 正規分布編
+## 前提条件と事前処理
+[データ分析勉強会][0]の2015年度第5回の演習データがファイルに保存されているものとします。計算条件は第5回の演習（正規分布編）に準じます。
+```{r, warning=FALSE}
+Dataset <- read.csv("./data/solver.csv", header = TRUE, fileEncoding = "CP932")
+df_print(Dataset)
+
+# 外部流出の有無で層別して平均値と標準偏差を計算する
+LogManHour.mean <- with(Dataset, tapply(LogManHour, Defect, mean, na.rm = TRUE))
+LogManHour.sd <- with(Dataset, tapply(LogManHour, Defect, sd, na.rm = TRUE))
+
+# 層別グラフの描画範囲は演習時の通りとする
+# 　計算で定めるのであれば標準偏差の3.3倍程度の幅にするとよいかと
+LogNumRework.seq <- seq(from = 1.5, to = 5.0, by = 0.05)
+```
+
+## Rでソルバー（1変数のソルバー）
+```{r 正規分布のソルバー, warning=FALSE}
+# 制約条件を計算する関数
+f <- function (x, a, b, c, d) {
+  abs((1 - pnorm(x, mean = a, sd = b)) - pnorm(x, mean = c, sd = d))
+}
+
+# ソルバーの実行（制約条件が最小となる値を計算します）
+xmin <- optimize(f, range(LogNumRework.seq), tol = 1e-6,
+                 a = LogManHour.mean["No"], b = LogManHour.sd["No"],
+                 c = LogManHour.mean["Yes"], d = LogManHour.sd["Yes"])
+
+# グラフの描画(外部流出なし、青)
+plot(LogNumRework.seq,
+     dnorm(LogNumRework.seq, mean = LogManHour.mean["No"], sd = LogManHour.sd["No"]),
+     type = "l", col = "BLUE", ylim = c(0, 1.2), ylab = "", xlab = "")
+
+# グラフの描画（外部流出あり、赤)
+par(new = TRUE)
+plot(LogNumRework.seq,
+     dnorm(LogNumRework.seq, mean = LogManHour.mean["Yes"], sd = LogManHour.sd["Yes"]),
+     type = "l", col = "RED", ylim = c(0, 1.2), ylab = "", xlab = "LogNumRework")
+par(new = FALSE)
+
+# 算出された基準値の描画
+abline(v = xmin$minimum, col = "GRAY", lty = 2)
+```
+
+
+基準値は`r xmin$minimum`となります。この時の制約条件関数の値は`r xmin$objective`です。
+
+
+# ポアソン分布編
+## 前提条件と事前処理
+[データ分析勉強会][0]の2015年度第5回の演習データがデータセットに設定されているものとします。計算条件は第5回の演習（ポアソン分布編）に準じます。
+```{r, warning=FALSE}
+df_print(Dataset)
+
+# 外部流出の有無で層別して平均値を計算する
+NumRework.mean <- with(Dataset, tapply(NumRework, Defect, mean, na.rm = TRUE))
+
+# 層別グラフの描画範囲は演習時の通りとする
+NumRework.seq <- c(0:20)
+```
+
+## Rでソルバー（1変数のソルバー）
+```{r ポアソン分布のソルバー, warning=FALSE}
+# 制約条件を計算する関数
+f <- function (x, a, b) {
+  1 - ppois(x, a) + ppois(x, b)
+}
+
+# ソルバーの実行（制約条件が最小となる値を計算します）
+xmin <- optimize(f, NumRework.seq, tol = 1e-6, maximum = FALSE,
+                 a = NumRework.mean["No"], b = NumRework.mean["Yes"])
+
+# グラフの描画(外部流出なし、青)
+plot(NumRework.seq,
+     dpois(NumRework.seq, NumRework.mean["No"]),
+     type = "S", col = "BLUE", ylim = c(0, 0.3), ylab = "", xlab = "")
+
+# グラフの描画（外部流出あり、赤)
+par(new = TRUE)
+plot(NumRework.seq,
+     dpois(NumRework.seq, NumRework.mean["Yes"]),
+     type = "S", col = "RED", ylim = c(0, 0.3), ylab = "", xlab = "NumRework")
+par(new = FALSE)
+
+# 算出された基準値の描画data
+abline(v = round(xmin$minimum, 0), col = "GRAY", lty = 2)
+```
+
+基準値は`r round(xmin$minimum)`となります。この時の制約条件関数の値は`r xmin$objective`です。
+
+---
+
+<!-- Include Footer -->
+```{r child="../../common/footer.Rmd"}
+```

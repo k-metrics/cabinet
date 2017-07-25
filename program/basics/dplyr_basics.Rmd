@@ -1,0 +1,330 @@
+---
+title: "dplyrのすゝめ"
+author-meta: "k-metrics"
+output: 
+  html_document:  
+    code_folding: show
+    highlight: textmate
+    md_extensions: -ascii_identifiers
+    number_section: yes
+    theme: cerulean
+---
+
+<!-- Common Links -->
+```{r r basics, child="../../common/links.Rmd", include=FALSE}
+```
+
+```{r setup, include=FALSE}
+# 共通chunkオプションの指定
+knitr::opts_chunk$set(warning = FALSE, echo = TRUE)
+
+# データハンドリングで利用する外部パッケージの読み込み
+require(tidyverse)
+# 表示で利用する外部パッケージの読み込み
+require(gridExtra)
+require(DT)
+require(knitr)
+tidyverse::tidyverse_conflicts()
+
+# ローカル定義関数の読み込み
+source("../../common/common.R")
+```
+
+---
+
+# はじめに {.unnumbered}
+データ分析を行ってみたいがデータが思うように揃わないということは多々あります。ところが色々と調べてみると意外にも記録として様々な形で分散してることがあります。ただ、このような記録はそのままでは分析データとして使えないために整理する必要があります。整理するにしても手動では手間がかかり過ぎたり間違いが混入したりと容易に予想できますし、そのようなデータは大抵手順などが属人化し過ぎて再現（復元）が困難です。  
+　  
+
+## データハンドリング {.unnumbered}
+そこで、散らばっている様々な記録を分析データとして扱えるようにする処理がデータハンドリングです。一般的に統計分析処理においてデータ分析に費やす時間は全体の一割程度と言われます。残りの九割は分析データとして扱えるように行う処理、すなわち、データハンドリングに費やされていることになります。逆に言えば、データハンドリングはデータ分析において重要な工程なのです。  
+　  
+
+## 処理の自動化 {.unnumbered}
+データハンドリングはデータ分析には必須ですが、手間がかかる作業は自動化したいものです。特にデータ量が多くなってくると手動でのデータハンドリングには限界があります。分析環境とデータハンドリング環境は別の環境でも構いませんが、全体の作業効率を考えると分析環境でデータハンドリングができるのがベストです。そこで、活用したいのが[R][R]のデータハンドリング用パッケージと言える`tidyverse`パッケージです。本資料では`tidyverse`パッケージの中でも整然データ（Tidy Data）を作るのに必須と言える`dplyr`パッケージと`tidyr`パッケージを中心に解説していきます。  
+　  
+
+# 整然データとは
+整然データ（Tidy Data）とはJournal of Statistical Software Vol.59(2014)に掲載されたHadley Wickhamの論文[Tidy Data](https://www.jstatsoft.org/article/view/v059i10)において提唱されたデータ分析に有用な概念です。簡潔に日本語で整理された情報は[整然データとは何か](http://id.fnshr.info/2017/01/09/tidy-data-intro/)や[整然データってなに？](https://speakerdeck.com/fnshr/zheng-ran-detatutenani)で公開されていますので、まずは、こちらで整然データ（Tidy Data）の概念を把握して下さい。  
+　  
+
+## 雑然データ
+整然データと対をなすのは雑然データ（Messy Data）と言われるものです。雑然データはデータ分析環境にとっては扱いにくいデータなのですが、人間にとっては理解しやすい構造のために多用されています。概ね記録は雑然データとして残されています。  
+　  
+
+## 雑然データと整然データ
+言葉だけでは分かりにくいので具体な比較してみましょう。  
+```{r, echo=FALSE}
+data.frame(日付 = c("2017-5-1", "2017-5-2", "2017-5-3"),
+           項目A = c(1L, 2L, 3L),
+           項目B = c(NA, 3L, NA),
+           項目C = c(NA, NA, 2L)) %>% 
+  knitr::kable(caption = "雑然データ")
+```
+
+```{r, echo=FALSE}
+data.frame(日付 = c("2017-5-1", "2017-5-2", "2017-5-3"),
+           項目A = c(1L, 2L, 3L),
+           項目B = c(NA, 3L, NA),
+           項目C = c(NA, NA, 2L)) %>% 
+  tidyr::gather(key = 項目, value = 値, -日付) %>% 
+  dplyr::arrange(日付) %>% 
+  head(3) %>% 
+  knitr::kable(caption = "整然データ")
+```
+
+このように雑然データはクロス集計されたような形式であり行と列が交差する部分を読み取らないとデータの意味が理解できない形式です。一方、整然データは雑然データに比べて冗長ですが行を読み取るだけで一つのデータの意味が理解できる形式です。
+　  
+
+## 整然データの定義
+上記から分かるように整然データとは以下の満たしたデータ形式のことです。
+
+1. 個々の変数が一つの列になっている
+1. 個々の観測（値）が一つの行になっている
+1. 個々の観測（値）の構成単位の累計が一つの表になっている
+1. 個々の値は一つのセルになっている
+
+[R][R]をはじめとした分析環境はデータ形式が整然データであることを要求しますので、データハンドリングの基本として整然データを作れるようになるのが一番のポイントとなります。
+　  
+
+# データハンドリング基礎
+では、実際に`dplyr`パッケージと`tidyr`パッケージを用いたデータハンドリングの具体例を学んでいきましょう。
+
+## パイプ演算子
+`dplyr`パッケージや`tidyr`パッケージを始めとした`tidyverse`パッケージではパイプ演算子` %>% `を用いて記述されることが殆どですので、まずはパイプ演算子` %>% `を覚える必要があります。
+パイプ演算子は
+
+* 演算子の左側の値を演算子の右側の（関数の）第一引数として渡す
+
+演算子です。最も簡単な事例で見てみましょう。`1 + 2`をパイプ演算子を使って記述すると以下のようになります。
+```{r}
+1 %>% 
+  + 2
+```
+
+関数の場合は`summary(iris)`をパイプ演算子を使って記述すると以下のようになります。
+```{r}
+iris %>% 
+  summary()
+```
+
+パイプ演算子のメリットは、演算子左右のデータ型が一致していれば数珠つなぎのような記述が可能なことです。例えばアヤメの種別毎に平均値を計算し表として整形する場合は以下のようにパイプ演算子でつなげることで処理できます。
+```{r}
+iris %>% 
+  group_by(Species) %>% 
+  dplyr::summarise_if(is.numeric, funs(mean), na.rm = TRUE) %>% 
+  knitr::kable(caption = "種別毎の平均値")
+```
+
+この様にパイプ演算子は中間変数を作成することなく処理の手順を記述できます。コードの可読性が上がるというメリットもあります。   
+
+では、パイプ演算子以外のデータハンドリング処理に必要な関数を見ていきましょう。
+　  
+
+## Data Overview
+利用するデータは`nycflight13`パッケージのデータセットを用います。このデータは2013年のNYC発のフライトデータで以下のようなデータセットで構成されています。
+
+#### flights {.unnumbered}
+`nycflight13`パッケージの中心となるデータフレームです。項目数が多いすが基本となる飛行データで約33万レコードあります。
+```{r, echo=FALSE}
+nycflights13::flights %>% 
+  head(3) %>% 
+  knitr::kable()
+```
+
+#### airlines {.unnumbered}
+航空会社のコードと名称のデータです。
+```{r, echo=FALSE}
+nycflights13::airlines %>% 
+  head(3) %>% 
+  knitr::kable()
+```
+
+#### airports {.unnumbered}
+空港のコード、名称、位置、タイムゾーン等のデータです。
+```{r, echo=FALSE}
+nycflights13::airports %>% 
+  head(3) %>% 
+  knitr::kable()
+```
+
+#### planes {.unnumbered}
+飛行機のコード、製造年、メーカ、モデル等のデータです。
+```{r, echo=FALSE}
+nycflights13::planes %>% 
+  head(3) %>% 
+  knitr::kable()
+```
+
+#### weather {.unnumbered}
+空港の気象に関するデータです。
+```{r, echo=FALSE}
+nycflights13::weather %>% 
+  head(3) %>% 
+  knitr::kable()
+```
+
+## sample
+データをサンプリングする関数はサンプル数を数字で指定する`dplyr::sample_n`と比率で指定する`dplyr::sample_frac`関数があります。
+```{r}
+nycflights13::flights %>% 
+  dplyr::sample_n(100) %>%              # 100個のデータをランダムサンプリング
+  DT::datatable(style = 'bootstrap')    # インタラクティブな表として表示する
+```
+
+比率は1を100%として指定します。
+```{r}
+nycflights13::flights %>% 
+  dplyr::sample_frac(0.001) %>%          # 0.1%のデータをランダムサンプリング
+  DT::datatable(style = 'bootstrap')  　 # インタラクティブな表として表示する
+```
+　  
+
+## filter
+データを行で絞る場合は`dplyr::filter`関数を用います。条件式には比較演算子の他に論理演算子等が使えます。アメリカン航空（AA）のフライトデータを抜き出してみるには以下のように指定します。
+```{r}
+nycflights13::flights %>% 
+  dplyr::sample_n(100) %>%               # 100個のデータをランダムサンプリング
+  dplyr::filter(carrier == "AA") %>%     # 航空会社がAAと一致するデータのみ抽出
+  DT::datatable(style = 'bootstrap')  　 # インタラクティブな表として表示する
+```
+　  
+
+## select
+`nycflights13::flights`は項目数が多いので表示項目を限定してみましょう。項目（列）を選択するには`dplyr::select`関数を用います。
+```{r}
+nycflights13::flights %>% 
+  dplyr::sample_n(100) %>%               # 100個のデータをランダムサンプリング
+  dplyr::filter(carrier == "AA") %>%     # 航空会社がAAと一致するデータのみ抽出
+  dplyr::select(year, month, day, dep_time, carrier, origin, dest) %>% 
+                                         # 7項目に絞ってみる
+  DT::datatable(style = 'bootstrap')  　 # インタラクティブな表として表示する
+```
+　  
+
+## rename
+項目名を日本語に変更してみましょう。項目名（列名）を変更するには`dplyr::rename`関数を用います。
+```{r}
+nycflights13::flights %>% 
+  dplyr::sample_n(100) %>%               # 100個のデータをランダムサンプリング
+  dplyr::filter(carrier == "AA") %>%     # 航空会社がAAと一致するデータのみ抽出
+  dplyr::select(year, month, day, dep_time, carrier, origin, dest) %>% 
+  dplyr::rename('年' = year, '月' = month, '日' = day, '出発時間' = dep_time,
+                '航空会社' = carrier, '出発地' = origin, '目的地' = dest) %>%
+                                         # 項目名（列名）を日本語に変える
+  DT::datatable(style = 'bootstrap')  　 # インタラクティブな表として表示する
+```
+　  
+
+### selectによるrename
+`dplyr::select`関数で項目を指定する際に名前も指定すると選択と同時に名前を変更することが可能です。
+```{r}
+nycflights13::flights %>% 
+  dplyr::sample_n(100) %>%               # 100個のデータをランダムサンプリング
+  dplyr::filter(carrier == "AA") %>%     # 航空会社がAAと一致するデータのみ抽出
+  dplyr::select('年' = year, '月' = month, '日' = day, '出発時間' = dep_time,
+                '航空会社' = carrier, '出発地' = origin, '目的地' = dest) %>% 
+                                         # 選択と共に名前を日本語に変える
+  DT::datatable(style = 'bootstrap')  　 # インタラクティブな表として表示する
+```
+　  
+
+## mutate
+`arr_delay`から`dep_delay`を引いて実遅延時間を計算してみます。行毎に値を求めますのでWindow関数である`dplyr::mutate`関数を用います。`arr_delay`と`dep_delay`に`NA`データが含まれていますので計算結果が`NA`となった場合には`tidyr::drop_na`関数で削除します。
+```{r}
+nycflights13::flights %>% 
+  dplyr::sample_n(100) %>%                # 100個のデータをランダムサンプリング
+  dplyr::mutate(delay = arr_delay - dep_delay) %>%
+                                          # 実遅延時間を計算する
+  tidyr::drop_na(delay) %>%               # 計算結果がNAとなったものを除く
+  dplyr::select(dep_time, arr_time, carrier, origin, dest, delay) %>% 
+                                          # 表示を6項目に絞る
+  DT::datatable(style = 'bootstrap')  　  # インタラクティブな表として表示する
+```
+　  
+
+## summarize
+次にSummarize関数を用いいて目的地毎の平均遅延時間を計算してみます。まず、目的に毎にデータをまとめるには`dplyr::group_by`関数を用います。次に`dplyr::summarize_at`関数を用いて遅延時間の平均値を求めます。
+```{r}
+nycflights13::flights %>% 
+  dplyr::sample_n(100) %>%                # 100個のデータをランダムサンプリング
+  dplyr::mutate(delay = arr_delay - dep_delay) %>%
+                                          # 実遅延時間を計算する
+  tidyr::drop_na(delay) %>%               # 計算結果がNAとなったものを除く
+  group_by(dest) %>%                      # 目的地毎にグループ化
+  dplyr::summarise_at(vars(delay), funs(mean)) %>% 
+                                          # 平均遅延時間を計算
+  DT::datatable(style = 'bootstrap')  　  # インタラクティブな表として表示する
+```
+　  
+
+## group_by
+データをまとめる`dplyr::group_by`関数は複数の項目（列）に対して適用することも可能です。これを用いて目的地と航空会社に対して平均遅延時間をクロス集計をしてみましょう。
+```{r}
+nycflights13::flights %>% 
+  dplyr::sample_n(100) %>%                # 100個のデータをランダムサンプリング
+  dplyr::mutate(delay = arr_delay - dep_delay) %>%
+                                          # 実遅延時間を計算する
+  tidyr::drop_na(delay) %>%               # 計算結果がNAとなったものを除く
+  group_by(dest, carrier) %>%             # 目的地と航空会社でグループ化
+  dplyr::summarise_at(vars(delay), funs(mean)) %>% 
+                                          # 平均遅延時間を計算
+  DT::datatable(style = 'bootstrap')  　  # インタラクティブな表として表示する
+```
+　  
+
+## spread
+整然データのままでは人間が情報を把握するのは困難ですので雑然データの形式に変更してみます。これには`tidyr::spread`関数を用います。
+```{r}
+nycflights13::flights %>% 
+  dplyr::sample_n(100) %>%                # 100個のデータをランダムサンプリング
+  dplyr::mutate(delay = arr_delay - dep_delay) %>%
+                                          # 実遅延時間を計算する
+  tidyr::drop_na(delay) %>%               # 計算結果がNAとなったものを除く
+  group_by(dest, carrier) %>%             # 目的地と航空会社でグループ化
+  dplyr::summarise_at(vars(delay), funs(round(mean(.), 0))) %>% 
+                                          # 平均遅延時間を計算
+  tidyr::spread(key = carrier, value = delay) %>% 
+                                          # 雑然データ形式で表示
+  DT::datatable(style = 'bootstrap')  　  # インタラクティブな表として表示する
+```
+　  
+
+## join
+目的地と航空会社の表示にコードが使われていますので、これらを分かりやすく目的地の空港名と航空会社名にしてみましょう。データセットの項で説明したように航空会社名は`airline`データセットに空港名は`airport`データセットにありますので、これらのデータセットを結合して名前を取り込みます。
+```{r}
+nycflights13::flights %>% 
+  dplyr::sample_n(100) %>%                # 100個のデータをランダムサンプリング
+  dplyr::mutate(delay = arr_delay - dep_delay) %>%
+                                          # 実遅延時間を計算する
+  tidyr::drop_na(delay) %>%               # 計算結果がNAとなったものを除く
+  dplyr::select(dep_time, arr_time, carrier, origin, dest, delay) %>% 
+                                          # 対象項目を減らす
+  dplyr::left_join(nycflights13::airlines) %>% 
+                                          # 航空会社データと結合
+  dplyr::left_join(nycflights13::airports, by = c("dest" = "faa")) %>%
+                                          # 空港データと結合
+  dplyr::select(carrier_name = name.x, dest_name = name.y, delay) %>% 
+                                          # 項目名を変更・選択
+  dplyr::group_by(dest_name, carrier_name) %>% 
+                                          # 目的地名と航空会社名でグループ化
+  dplyr::summarise_at(vars(delay), funs(round(mean(.), 1))) %>% 
+                                          # 平均遅延時間を計算
+  tidyr::spread(key = carrier_name, value = delay) %>% 
+                                          # 雑然データ形式で表示
+  DT::datatable(style = 'bootstrap')  　  # インタラクティブな表として表示する
+```
+
+---
+
+<!-- Footer -->
+
+```{r child="../../common/footer.Rmd"}
+```
+
+
+[PB1]: https://cran.r-project.org/web/packages/available_packages_by_name.html "CRAN Packages List"
+[PB2]: http://www.trifields.jp/statistical-analysis-r-cran-packages-341 "CRANパッケージリスト"
+[PB3]: https://cran.r-project.org/web/views/ "CRAN Task View"
+[PB4]: http://www.trifields.jp/r-cran-task-views-639 "CRAN Task View"
+

@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>第4章 例題解答例</title>
+
+<script src="site_libs/jquery-1.12.4/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cerulean.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<script src="site_libs/htmlwidgets-0.8/htmlwidgets.js"></script>
+<script src="site_libs/datatables-binding-0.2/datatables.js"></script>
+<link href="site_libs/dt-core-bootstrap-1.10.12/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+<link href="site_libs/dt-core-bootstrap-1.10.12/css/dataTables.bootstrap.extra.css" rel="stylesheet" />
+<script src="site_libs/dt-core-bootstrap-1.10.12/js/jquery.dataTables.min.js"></script>
+<script src="site_libs/dt-core-bootstrap-1.10.12/js/dataTables.bootstrap.min.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = false;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">ソフトウェアメトリクス統計分析入門</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    例題
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="./example_1.html">第1章 例題解答例</a>
+    </li>
+    <li>
+      <a href="./example_2.html">第2章 例題解答例</a>
+    </li>
+    <li>
+      <a href="./example_3.html">第3章 例題解答例</a>
+    </li>
+    <li>
+      <a href="./example_4.html">第4章 例題解答例</a>
+    </li>
+    <li>
+      <a href="./example_5.html">第5章 例題解答例</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    演習
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="./exercise_1.html">第1章 演習解答例</a>
+    </li>
+    <li>
+      <a href="./exercise_2.html">第2章 演習解答例</a>
+    </li>
+    <li>
+      <a href="./exercise_3.html">第3章 演習解答例</a>
+    </li>
+    <li>
+      <a href="./exercise_4.html">第4章 演習解答例</a>
+    </li>
+    <li>
+      <a href="./exercise_5.html">第5章 演習解答例</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    その他
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="./about.html">R環境情報</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Model/Infer
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../../index.html">
+        <span class="fa fa-home"></span>
+         
+        Model/Infer Top
+      </a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="../../stats/index.html">
+        <span class="fa fa-bar-chart"></span>
+         
+        統計
+      </a>
+    </li>
+    <li>
+      <a href="../../books/index.html">
+        <span class="fa fa-book"></span>
+         
+        書籍
+      </a>
+    </li>
+    <li>
+      <a href="../../gacco/index.html">
+        <span class="fa fa-graduation-cap"></span>
+         
+        gacco
+      </a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-github"></span>
+     
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../../../">
+        <span class="fa fa-github"></span>
+         
+        Cabinet
+      </a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="../../../import/">　Import</a>
+    </li>
+    <li>
+      <a href="../../../tidy/">　Tidy/Transform</a>
+    </li>
+    <li>
+      <a href="../../index.html">
+        <span class="fa fa-home"></span>
+         
+        Model/Infer
+      </a>
+    </li>
+    <li>
+      <a href="../../visualize/">　Visualize</a>
+    </li>
+    <li>
+      <a href="../../communicate/">　Communicate/Automate</a>
+    </li>
+    <li>
+      <a href="../../program/">　Program</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="https://sites.google.com/site/kantometrics/home">
+        <span class="fa fa-google"></span>
+         
+        データ分析勉強会
+      </a>
+    </li>
+  </ul>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">第4章 例題解答例</h1>
+
+</div>
+
+
+<!-- Include Common Links -->
+<!-- SQiP -->
+<!-- Books -->
+<!-- Creative Commons -->
+<!-- R -->
+<!-- RStudio -->
+<!-- Cabinet Pages -->
+<div id="はじめに" class="section level1 unnumbered">
+<h1>はじめに</h1>
+<p>本資料は『<a href="http://www.juse-p.co.jp/cgi-bin/html.pl5?i=ISBN978-4-8171-9558-6" title="ソフトウェアメトリクス統計分析入門">ソフトウェアメトリクス統計分析入門</a>』(以降、テキストと記載)の第4章の例題を<a href="https://www.r-project.org/" title="The R Project">R</a>で解いた際の解答例を示したものです。また、<a href="http://rmarkdown.rstudio.com/" title="R Markdown form RStudio">R Markdown</a>を使うメリットを示すための一手段として作成していますので、テキストにおける計算方法とは異なる部分もあります。本資料で使用しているデータの入手に関してはテキストにてご確認下さい。<br />
+本資料がHTML形式の場合、Rのコードを参照するには右側にある<strong><code>[Code]</code></strong>ボタンをクリックして下さい。なお、JavaScriptは必ずOnにしてご覧下さい。</p>
+</div>
+<div id="例題-4.1" class="section level1">
+<h1>例題 4.1</h1>
+<blockquote>
+<p>以下にプロジェクトごとに測定された「開発規模（KLOC）」、「レビュー工数」、「モジュールテスト工数」、「システムテストバグ件数」のデータがあります。 システムテスト開始時点で「システムテストバグ件数」を予測する式を作成したいと考えています。 まずは、「システムテストバグ件数」を予測するのに「開発規模」、「レビュー工数」、「モジュールテスト工数」のいずれが最適かを調べてください。 ※部分的に欠損値（未入力データ）があります。</p>
+</blockquote>
+<div id="データの設定" class="section level2">
+<h2>データの設定</h2>
+<p>本例題で利用するデータは予めCSVファイルとして保存されているものとします。</p>
+</div>
+<div id="データ分布の確認" class="section level2">
+<h2>データ分布の確認</h2>
+<p>散布図行列を用いてデータの分布を確認します。散布図行列は<code>psych</code>パッケージにある<code>pairs.panels {psych}</code>関数を使うと相関係数まで同時に確認できるので便利です。</p>
+<pre class="r"><code>x %&gt;% 
+  select(-Project) %&gt;% 
+  psych::pairs.panels(smooth = FALSE, scale = TRUE, lm = TRUE)</code></pre>
+<p><img src="example_4_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<div id="外れ値の除去" class="section level3">
+<h3>外れ値の除去</h3>
+<pre class="r"><code>x.rm &lt;- x %&gt;% 
+  dplyr::filter(`モジュール.テスト工数` &lt;= 950) # %&gt;% 
+  # tidyr::drop_na()
+
+df_print(x.rm)</code></pre>
+<div id="htmlwidget-55c48b2a4d69871f5f12" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-55c48b2a4d69871f5f12">{"x":{"style":"bootstrap","filter":"none","data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21"],["Project01","Project02","Project03","Project04","Project05","Project06","Project08","Project09","Project11","Project12","Project13","Project14","Project15","Project16","Project17","Project18","Project19","Project20","Project21","Project22","Project23"],[19.3,7.6,22.3,18.1,1.7,8.8,3.2,7.7,9.1,12.1,12.2,11.8,12.6,35.8,10.1,5.3,38.6,3,4.5,38.4,3.1],[223,100,230,109,10,70,188,44,151,8,122,65,132,140,88,161,null,140,8,208,35],[554,217,305,404,83,198,83,200,167,367,402,397,417,633,383,217,601,167,302,617,201],[10,4,15,13,0,5,5,5,12,6,8,14,7,17,11,9,25,3,3,18,1]],"container":"<table class=\"table table-striped table-hover table-condensed\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Project<\/th>\n      <th>開発規模<\/th>\n      <th>レビュー.工数<\/th>\n      <th>モジュール.テスト工数<\/th>\n      <th>システムテスト.バグ件数<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[2,3,4,5]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<div id="再確認" class="section level2">
+<h2>再確認</h2>
+<pre class="r"><code>x.rm %&gt;% 
+  select(-Project) %&gt;% 
+  psych::pairs.panels(smooth = FALSE, scale = TRUE, lm = TRUE)</code></pre>
+<p><img src="example_4_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+</div>
+<div id="相関係数の確認" class="section level2">
+<h2>相関係数の確認</h2>
+<p>ここではRcmdrで使っている<code>rcorr.adjust {RcmdrMisc}</code>関数を使っています。</p>
+<pre class="r"><code>x %&gt;% 
+  dplyr::select(-Project) %&gt;% 
+  dplyr::rename(ST.bug = システムテスト.バグ件数,
+                MT.time = モジュール.テスト工数,
+                Review.time = レビュー.工数, KLOC = 開発規模) %&gt;% 
+  RcmdrMisc::rcorr.adjust(type = &quot;pearson&quot;, use = &quot;complete&quot;)</code></pre>
+<pre><code>## 
+##  Pearson correlations:
+##               KLOC Review.time MT.time ST.bug
+## KLOC        1.0000       0.748  0.9195 0.9108
+## Review.time 0.7480       1.000  0.6950 0.8030
+## MT.time     0.9195       0.695  1.0000 0.8515
+## ST.bug      0.9108       0.803  0.8515 1.0000
+## 
+##  Number of observations: 21 
+## 
+##  Pairwise two-sided p-values:
+##             KLOC   Review.time MT.time ST.bug
+## KLOC               &lt;.0001      &lt;.0001  &lt;.0001
+## Review.time &lt;.0001             0.0005  &lt;.0001
+## MT.time     &lt;.0001 0.0005              &lt;.0001
+## ST.bug      &lt;.0001 &lt;.0001      &lt;.0001        
+## 
+##  Adjusted p-values (Holm&#39;s method)
+##             KLOC   Review.time MT.time ST.bug
+## KLOC               0.0002      &lt;.0001  &lt;.0001
+## Review.time 0.0002             0.0005  &lt;.0001
+## MT.time     &lt;.0001 0.0005              &lt;.0001
+## ST.bug      &lt;.0001 &lt;.0001      &lt;.0001</code></pre>
+<p>計算の結果、p値を見ると相関があると言えます。</p>
+</div>
+<div id="偏相関の確認" class="section level2">
+<h2>偏相関の確認</h2>
+<p>次に擬似相関が含まれていないかを偏相関係数で確認してみます。ここでもRcmdrの<code>partial.cor {RcmdrMisc}</code>関数を使っています。</p>
+<pre class="r"><code>x %&gt;% 
+  dplyr::select(-Project, -レビュー.工数) %&gt;% 
+  dplyr::rename(ST.bug = システムテスト.バグ件数,
+                MT.time = モジュール.テスト工数, KLOC = 開発規模) %&gt;% 
+  RcmdrMisc::partial.cor(tests = TRUE, use = &quot;complete&quot;)</code></pre>
+<pre><code>## 
+##  Partial correlations:
+##            KLOC MT.time  ST.bug
+## KLOC    0.00000 0.65796 0.68892
+## MT.time 0.65796 0.00000 0.01043
+## ST.bug  0.68892 0.01043 0.00000
+## 
+##  Number of observations: 22 
+## 
+##  Pairwise two-sided p-values:
+##         KLOC   MT.time ST.bug
+## KLOC           0.0012  0.0006
+## MT.time 0.0012         0.9642
+## ST.bug  0.0006 0.9642        
+## 
+##  Adjusted p-values (Holm&#39;s method)
+##         KLOC   MT.time ST.bug
+## KLOC           0.0024  0.0017
+## MT.time 0.0024         0.9642
+## ST.bug  0.0017 0.9642</code></pre>
+<p>計算の結果、開発規模(KLOC)とシステムバグ件数(ST.bug)の間には相関があると認められます。一方、モジュールテスト工数(MT.time)とシステムバグ件数(ST.bug)の間は修正p値から判断して相関があるとは認められない、すなわち擬似相関であると判断できます。</p>
+<pre class="r"><code>x.cor &lt;- cor.test(x$開発規模, x$システムテスト.バグ件数)$estimate %&gt;% 
+  round(2)
+
+x %&gt;% 
+  dplyr::select(-Project, -レビュー.工数, -モジュール.テスト工数) %&gt;% 
+  dplyr::rename(ST.bug = システムテスト.バグ件数, KLOC = 開発規模) %&gt;% 
+  ggplot(aes(x = KLOC, y = ST.bug)) +
+    geom_point() + 
+    geom_smooth(method = &quot;lm&quot;, se = TRUE) +
+    xlab(&quot;開発規模[KLOC]&quot;) + ylab(&quot;システムテストバグ件数&quot;) +
+    ggtitle(label = &quot;外れ値除去前&quot;, subtitle = paste(&quot;　相関係数:&quot;, x.cor))</code></pre>
+<p><img src="example_4_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<pre class="r"><code>x.rm.cor &lt;- cor.test(x.rm$開発規模, x.rm$システムテスト.バグ件数)$estimate %&gt;% 
+  round(2)
+
+x.rm %&gt;% 
+  dplyr::select(-Project, -レビュー.工数, -モジュール.テスト工数) %&gt;% 
+  dplyr::rename(ST.bug = システムテスト.バグ件数, KLOC = 開発規模) %&gt;% 
+  ggplot(aes(x = KLOC, y = ST.bug)) +
+    geom_point() + 
+    geom_smooth(method = &quot;lm&quot;, se = TRUE) +
+    xlab(&quot;開発規模[KLOC]&quot;) + ylab(&quot;システムテストバグ件数&quot;) +
+    ggtitle(label = &quot;外れ値除去後&quot;, subtitle = paste(&quot;　相関係数:&quot;, x.rm.cor))</code></pre>
+<p><img src="example_4_files/figure-html/unnamed-chunk-7-2.png" width="672" /></p>
+</div>
+</div>
+<div id="例題-4.2" class="section level1">
+<h1>例題 4.2</h1>
+<blockquote>
+<p>システムテスト開始時点の「開発規模」の測定値で、「システムテストバグ件数」を予測したいと考えています。 例題4.1と同じデータを使って、回帰分析を行い、予測式を作成してください。</p>
+</blockquote>
+<div id="データの設定-1" class="section level2">
+<h2>データの設定</h2>
+<p>本例題で利用するデータは例題4.1のデータをそのまま使い、必要な部分だけを取り出します。</p>
+</div>
+<div id="回帰分析" class="section level2">
+<h2>回帰分析</h2>
+<div id="線形回帰モデルの算出" class="section level3">
+<h3>線形回帰モデルの算出</h3>
+<pre class="r"><code>result.lm &lt;- x %&gt;% 
+  lm(ST.bug ~ KLOC, data = .)
+
+summary(result.lm)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = ST.bug ~ KLOC, data = .)
+## 
+## Residuals:
+##    Min     1Q Median     3Q    Max 
+## -3.824 -2.139 -1.021  1.838  5.868 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)   2.0577     0.9573   2.149   0.0434 *  
+## KLOC          0.5147     0.0477  10.791 5.02e-10 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 2.981 on 21 degrees of freedom
+## Multiple R-squared:  0.8472, Adjusted R-squared:  0.8399 
+## F-statistic: 116.4 on 1 and 21 DF,  p-value: 5.025e-10</code></pre>
+</div>
+<div id="予測値のプロット" class="section level3">
+<h3>予測値のプロット</h3>
+<p>回帰分析の結果を確認してみます。</p>
+<pre class="r"><code>x %&gt;% 
+  mutate(fit = fitted(result.lm)) %&gt;% 
+  ggplot(aes(x = ST.bug, y = fit)) +
+    geom_point() +
+    geom_text(aes(x = ST.bug + 0, y = fit + 1, label = row.names(x))) +
+    coord_equal() +
+    xlab(&quot;実測値&quot;) + ylab(&quot;予測値&quot;) +
+    ggtitle(&quot;線形モデルの確認&quot;,
+            subtitle = &quot;ST.bug = 2.06 + 0.51*KLOC, R^2 = 0.847&quot;) +
+    geom_abline(linetype = &quot;dashed&quot;, colour = &quot;red&quot;)</code></pre>
+<p><img src="example_4_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+</div>
+<div id="残差プロット" class="section level3">
+<h3>残差プロット</h3>
+<p>単回帰分析ではここまで確認する必要はないですが参考までに残差QQプロットを確認します。</p>
+<pre class="r"><code># plot(result.lm)
+
+x %&gt;%
+  mutate(res = scale(residuals(result.lm))) %&gt;%
+  ggplot(aes(sample = res)) +
+    geom_abline(col = &quot;red&quot;, linetype = &quot;dashed&quot;) +
+    geom_qq() +
+    coord_equal() +
+    ggtitle(&quot;残差のQQプロット&quot;)</code></pre>
+<p><img src="example_4_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<hr />
+<!-- Include Footer -->
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" title="CC BY-NC-SA 4.0 icon" alt="Sampo Suzuki" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0</a>, Sampo Suzuki [2017-04-22 14:22(JST)]</p>
+</div>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

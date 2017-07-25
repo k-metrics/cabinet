@@ -1,0 +1,25 @@
+---
+title: "GGally"
+output: html_document
+---
+
+```{r}
+require(tidyverse)
+mtcars %>% 
+  GGally::ggpairs(mapping = aes(color = cyl),
+                  upper = list(continuous = "smooth"), lower = list(combo = "facetdensity"),
+                  diag = list(continuous = "barDiag"))
+
+
+n <- 15
+TestData <- data.frame(Group = sample(paste0("Group", 1:5), n, replace = TRUE),
+                       Data1 = rnorm(n),
+                       Data2 = rnorm(n) + rnorm(n) + rnorm(n),
+                       Data3 = sample(0:1, n, replace = TRUE),
+                       Data4 = sample(LETTERS[1:26], n, replace = TRUE))
+GGally::ggpairs(data = TestData, columns = c(1, 5, 2, 3), mapping = aes(color = Group),
+                upper = list(continuous = "smooth"), lower = list(combo = "facetdensity"),
+                diag = list(continuous = "barDiag"))
+```
+
+

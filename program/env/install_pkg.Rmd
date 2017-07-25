@@ -1,0 +1,221 @@
+---
+title: "パッケージのインストール"
+output:
+  html_document:
+    code_folding: show
+    number_sections: no
+---
+
+<!-- Include Common Links -->
+```{r install pkg, child="../../common/links.Rmd", include=FALSE}
+```
+
+[R][R]はパッケージ（ライブラリ）を追加することで様々な分析に対応でき、機能も追加することができます。2017年4月1日の時点で10,000を超えるパッケージが[CRANに登録](https://cran.ism.ac.jp/web/packages/)されています。パッケージのインストールの際にはインターネット接続が必要ですのでプロキシサーバを設定する必要がある環境にいる場合は、Rのコンソールにて以下のコマンドを実行してください。
+
+```
+Sys.setenv("http_proxy"="http://<Proxyサーバ名 or IPアドレス>:<Port番号>")
+```
+
+上記のコマンドを使っても接続できない場合は、以下のサイトを参考にプロキシサーバの設定を行ってください。
+
+* [Rのプロキシ設定](http://noucobi.com/r/rproxy.html)
+* [プロキシ環境でRを使うときのメモ](http://deta.hateblo.jp/entry/2014/04/01/222721)
+
+　  
+
+# ミラーサイトの設定
+[R][R]のパッケージは基本的に[CRAN][CRAN]からダウンロードします。実際にはダウンロードする際にはなるべく近いダウンロードサイト（ミラーサイト）からダウンロードします。ミラーサイトを指定するためにRのメニューから［パッケージ］-［CRANミラーサイトの設定...］を選択します。
+
+![CRANミラーサイトの設定](./fig/Rcmdr_Install_01.jpg)
+
+[CRAN][CRAN]のミラーサイト一覧が別ウィンドウに表示されますので、一番近いと思われる統数研のサーバがある[Japan(Tokyo)][ISM]を選択し、［OK］ボタンをクリックします。
+
+![CRANミラーの選択](./fig/Rcmdr_Install_02.jpg)
+
+## Linuxの場合
+Linux環境でRを利用している場合、Rはターミナル（端末）上のコマンドラインとして実行されるためメニュー表示がありませんので、以下のコマンドを実行してください。
+
+```
+chooseCRANmirror()
+```
+
+### GUIモードで起動する
+Linux環境もでGUIモードでRを起動することができますがWindows版に比べるとメニュー構成が非常に貧弱ですのであまりおすゝめはできません。GUIモードのRを起動するにはターミナルから以下を実行して下さい。
+
+```
+R --gui=Tk
+```
+　
+
+# Rパッケージのインストール
+Rのパッケージをインストールする手順は`Rcmdr`のインストールと同じく起動したRから行う方法、RStudioから行う方法、スクリプトを用いる方法があります。
+　  
+
+## Rからインストールする方法
+インターネットに接続できていることが確認できましたら[R][R]のメニューから［パッケージ］-［パッケージのインストール...］を選択します。
+
+![パッケージのインストール](./fig/Rcmdr_Install_03.jpg)
+
+別ウィンドウにパッケージ一覧が表示されますのでインストールしたいパッケージを選択し［OK］ボタンをクリックします。依存関係があるパッケージがインストールされていない場合には自動的に必要なパッケージもインストールされます。
+　  
+
+### Linuxの場合
+Linux環境でRを利用している場合、Rはターミナル（端末）上のコマンドラインとして実行されるためメニュー表示がありませんので、以下のコマンドを実行してください。
+
+```
+install.packages("Rcmdr")
+```
+　  
+
+#### GUIモードからインストールする
+Linux環のGUIモードでもパッケージの追加インストールは可能です。
+
+![Linux環境のGUIモードでのインストール](./fig/r_gui_pkg_linux.png)
+　  
+
+## RStudioからインストールする方法
+[RStudio][RSD]からパッケージをインストールする場合は［Packages］タブの［Install］ボタンをクリックします。［Install Packages］ダイアログが開きますので［Packages］欄にインストールしたいパッケージ名を入力します。パッケージ名は途中まで入力すると自動的にサジェストしてくれます。
+
+![Install Pkg w/ RStudio](./fig/install_pkg_rstudio.png)
+　  
+
+## スクリプトを用いる方法
+多数のパッケージを一度にインストールするには予めRのスクリプトを記述しておいてからインストールする方法が最も簡単です。[R][R]や[RStudio][RSD]ではメニューからパッケージをインストールしていますが最終的にはスクリプト（関数）呼び出しでパッケージをインストールしています。具体的には以下の手順となります。
+
+手順 | 記述内容                 | 備考
+-----|--------------------------|-----------------------------------------------------
+1    | CRANミラーサイトの設定   | 最も近いサイトを選ぶとダウンロード時間を短くできます
+2    | パッケージリストの作成   | インストールしたいパッケージ名のリストを作成します
+3    | パッケージのインストール | 作成したリストを用いてパッケージをインストールします
+
+上記の手順を実際のスクリプトで記述すると非常に簡単で下記のようになります。パッケージ名の部分（2行目）を変更するだけでインストールしたいパッケージをインストールすることができます。
+
+```
+chooseCRANmirror()
+pkg_lst <- c("tidyverse", "rmarkdown", "knitr", "DT")
+install.packages(pkg_lst, dependencies = TRUE)
+```
+　  
+
+# CRAN以外からのインストール
+試験的なパッケージなどは[CRAN][CRAN]には登録されていないことがあります。このようなパッケージを使いたい場合は`devtool`パッケージを利用します。例えばGitHubからインストーする場合は`devtools::install_github`関数を用います。この関数で注意すべき点はリポジトリの指定方法です。必ずGitHubのユーザアカウントと共に指定して下さい。
+
+```
+install.packages("devtools")        # インストールされていない場合のみ
+git_rep <- c("account/repository")
+devtools::install_github(git_rep)
+```
+
+`devtools`パッケージを用いるとGitHub以外にもBioconductorやbitbucket、SVNのリポジトリ等からもインストールが可能になります。詳しくは`devtools`パッケージのヘルプを参照して下さい。
+　  
+
+# インストールが失敗する場合
+Linux環境やMacOS環境ではパッケージをインストールする際に以下のようなエラーが出てパッケージのインストールが失敗する場合があります。失敗する原因はRをインストールした際に必要なアプリケーションモジュールがインストールされていないためです。
+
+```
+* installing *source* package ‘openssl’ ...
+**  パッケージ ‘openssl’ の解凍および MD5 サムの検証に成功しました 
+Using PKG_CFLAGS=
+Using PKG_LIBS=-lssl -lcrypto
+------------------------- ANTICONF ERROR ---------------------------
+Configuration failed because openssl was not found. Try installing:
+ * deb: libssl-dev (Debian, Ubuntu, etc)
+ * rpm: openssl-devel (Fedora, CentOS, RHEL)
+ * csw: libssl_dev (Solaris)
+ * brew: openssl (Mac OSX)
+If openssl is already installed, check that 'pkg-config' is in your
+PATH and PKG_CONFIG_PATH contains a openssl.pc file. If pkg-config
+is unavailable you can set INCLUDE_DIR and LIB_DIR manually via:
+R CMD INSTALL --configure-vars='INCLUDE_DIR=... LIB_DIR=...'
+--------------------------------------------------------------------
+```
+
+このようなエラーメッセージが表示された場合は、まず、`r-base-dev`というアプリケーションモジュールがインストールされているか確認してください。Ubuntu環境の場合はターミナル（端末）から以下のコマンドを実行することでインストールの有無を確認できます。
+
+Ubuntuの場合
+```
+dpkg -l | grep r-base-dev
+```
+
+出力結果に`r-base-dev`が表示されない場合はインストールされていませんので、`r-base-dev`を[Install R](./install.html)を参考にしてインストールしてください。
+
+## それでもインストールが失敗する場合
+`r-base-dev`がインストールされているにも関わらずインストールが失敗する場合は、エラーメッセージの"ANTICONF ERROR"に注目して不足しているライブラリを手動でインストールします。上記の場合は`libssl-dev`（Ubuntuの場合）がインストールされていませんので、ターミナル（端末）から以下のコマンドを実行してインストールします。
+
+Ubuntuの場合
+```
+sudo apt-get install libssl-dev
+```
+　  
+
+# 参考）インストール用スクリプト
+モダンな[R][R]のプログラミングを行う際に一通り必要と思われるパッケージを一度にインストールできるスクリプトを用意しました。下記のコードを表示してコピペするか[ファイル](./installPackegesAtFirsttime.R)をダウンロードするかしてご利用ください。ご自分の環境初期設定用に必ずインストールするパッケージをリストアップしておきスクリプト化しておくとRのアップデートの際などに便利です。
+```{r, eval=FALSE}
+# データ分析勉強会参加メンバー向け推奨パッケージのインストールスクリプト
+# （フルインストール版）
+
+# Choose nearest CRAN mirror site
+chooseCRANmirror(graphics = TRUE)
+
+# データサイエンスワークフローの各プロセスに基づいて必要と思われるパッケージを
+# インストールするようにしています。追加したい場合は当該のプロセスに追加して
+# ください
+#   https://github.com/rstudio/RStartHere
+pkg_univers <- c("tidyverse")
+
+# `tidyverse v1.1.1` imports follows
+#   broom, dplyr, forcats, ggplot2, haven, httr, hms,
+#   jsonlite, lubridate, magrittr, modelr, purrr, readr, readxl,
+#   stringr, tibble, rvest, tidyr, xml2
+
+pkg_import <- c("DBI")
+pkg_tidy <- c(NULL)
+pkg_tranform <- c("data.table", "dtplyr")
+pkg_model <- c("forecast", "ineq", "multcomp", "ppcor", "psych", "simpleboot",
+               "TTR")
+pkg_visualize <- c("DT", "extrafont", "GGally", "ggThemeAssist", "gridExtra",
+                   "listviewer", "plotly", "RColorBrewer")
+pkg_infer <- c(NULL)
+pkg_communicate <- c("bookdown", "knitr", "learnr", "listviewer", "rmarkdown",
+                     "tufte", "xtable")
+pkg_automate <- c("shiny")
+
+pkg_program <- c("devtools", "packrat", "Rcmdr")
+
+# `dplyr`の学習に最適なデータパッケージ
+pkg_data <- c("nycflights13")
+
+# OS依存のパッケージ
+if (Sys.info()["sysname"] == "Windows") {
+  pkg_osd <- c("installr")
+} else {
+  pkg_osd <- c(NULL)
+}
+
+# パッケージのリスト化
+pkg_lst <- c(pkg_univers, pkg_import, pkg_tidy, pkg_tranform, pkg_model,
+             pkg_visualize, pkg_infer, pkg_communicate, pkg_automate,
+             pkg_program, pkg_data, pkg_osd)
+
+# パッケージのインストール
+install.packages(pkgs = pkg_lst)
+
+# パッケージの更新
+# 新規インストール時には更新の必要なないはずですが心配ならアップデートチェックを
+# update.packages(ask = "graphics")
+
+# CRAN以外からのインストール
+# CRAN以外からインストールして利用しているパッケージがあれば`devtools`等を使って
+# インストールします
+
+# Rcmdrを最初にインストールした時は必ず起動して不足しているパッケージを追加
+# インストールします
+# require(Rcmdr)
+```
+　  
+
+---
+
+<!-- Include Footer -->
+```{r, child="../../common/footer.Rmd", include=FALSE}
+```

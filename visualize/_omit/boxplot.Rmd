@@ -1,0 +1,227 @@
+---
+title: "ML610から"
+author: "Sampo Suzuki"
+date: '`r format(Sys.time(), "%Y/%m/%d")`'
+---
+
+```{r ml610, include=FALSE}
+# Build用情報chunk
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, echo = TRUE)
+
+require(tidyverse)
+require(gridExtra)
+require(DT)
+require(knitr)
+require(Rcmdr)
+
+tidyverse::tidyverse_conflicts()
+
+class <- c("display cell-border compact")
+style <- ifelse(!interactive(), c("bootstrap"), c("default"))
+```
+
+# はじめに
+[データ分析勉強会][0]のメーリングリスト（ML）のNo.610にて質問のありました全体傾向と層別の傾向を箱ひげ図を用いて一つのグラフに描画し比較するための方法を中心に紹介します。
+
+
+# 質問
+> `iris {datasets}`データセットを用いてRcmdrで描ける層別の箱ひげ図をベースとした質問です。
+
+## 質問1
+> Rcmdrで描画した箱ひげ図では、Petal.Lengthの"setosa", "versicolor", "virginica"の3つが描画されていますが、この> グラフ上に4つ目の箱ひげ図として  
+> 　  
+>     「層別していない箱ひげ図」  
+> 　  
+> "setosa"と"versicolor"と"virginica"が全て含まれたデータを合わせて描画することは可能でしょうか？  
+
+## 質問2
+> Rcmdrで描画した箱ひげ図では、Petal.Lengthの"setosa", "versicolor", "virginica"の3つが描画されていますが、一部の因子だけ選択して、箱ひげ図を作成することは可能でしょうか？
+
+
+# Rcmdrを極力利用する方法
+
+## 回答1
+>　データセットに全てが含まれる"all"という属性のデータを追加してRcmdrでグラフを描く方法が考えられます。
+
+### 具体的な方法
+Rcmdrが箱ひげ図を描画する際に呼び出す`Boxplot {car}`関数は内部でR標準の`boxplot {graphics}`関数を呼び出しています。しかし、Rcmdrからのオプションによる上書き処理には対応していません。そこで、層別データとして全体のデータをデータセット自体に追加することで対応します。藤森さんからご紹介のあったコードを元に少し変更しています。
+
+1. オリジナルのデータセットと属性（`Species`）に全てをデータ全体を示す"all"にしたデータセットを作成するために`iris {datasets}`データセットを2つ用意します。
+```{r}
+x <- iris
+y <- iris
+```
+
+2. 一方の属性（`Species`）全てを"all"という属性値に変更します
+```{r}
+y[, "Species"] <- as.factor(c("all"))
+```
+
+3. 2つのデータセットを結合します
+Rcmdrの［データ］-［データセットの結合...］を実行し、先程作成した2つのデータセットを指定して結合します。
+
+![データセットの結合](./img/dataset_merge.png)
+
+```{r}
+MergedDataset <- mergeRows(x, y, common.only=FALSE)
+```
+
+この時、先に表示させたいデータセットを1番目のデータセット側に指定します。
+
+4. 箱ひげ図を描きます
+アクティブデータセットが、先程、作成したマージしたデータセットになっていることを確認し［グラフ］-［箱ひげ図...］を実行します。
+
+```{r}
+Boxplot(Petal.Length~Species, data=MergedDataset, id.method="y")
+```
+
+## 回答2
+>　層別表示したいデータのみを抜き出してRcmdrでグラフを描く方法が考えられます。
+
+［データ］［アクティブデータセット］［アクティブデータセットの部分集合を抽出...］を実行します。
+
+
+# Rcmdrに頼らない方法
+
+## 回答1
+> データセットには手を入れずスクリプトで全て処理する方法が考えられます。
+
+## 回答2
+> データセットには手を入れずスクリプトで全て処理する方法が考えられます。
+
+
+# 具体的な回答例
+
+
+
+
+### 回答1-1）グラフを上書きすることで層別毎に描画する方法
+この例ではデータが変わってもグラフの描画部分が極力変わらないように色々と変数を  
+指定していますので、処理が長めになっています。  
+`boxplot() {graphics}`は高水準作画関数なので上書きするだけで軸合わせが可能なことを  
+利用しています。
+```{r 回答1-1, warning=FALSE}
+# 組み込みデータセット"iris"を読み込む
+data("iris")
+
+# --- ここから事前処理 ----------------------------------------------------------------
+
+# データセットを代入しておくとデータセット名が変わっても処理を変えずに済みます
+x <- iris
+
+# 層別データを抽出する
+type <- unique(x$Species)
+
+# 層別データを描く際の色を設定する
+cols <- RColorBrewer::brewer.pal(length(type), "Accent")
+
+# グラフの描画範囲をデータから求める
+x.range = length(type) + 2  # 横軸の範囲を設定する(全データ用＋層別用＋1)
+y.range = range(x[, -5])    # Speciesを除いたデータから描画範囲を決める
+
+# グラフの軸名を設定する
+x.lab = "Species"
+y.lab = "Petal.Length"
+
+# --- ここまでが事前処理 ---------------------------------------------------------------
+
+# 空の描画を行う(boxplotは高水準描画関数なので空の描画で軸を用意しておく)
+plot(0, 0, type = "n", xlim = range(0:x.range), ylim = y.range,
+     xlab = x.lab, ylab = y.lab, axes = FALSE)
+
+# 最初に全データに対する箱ひげ図を描画する
+with(x, boxplot(Petal.Length, boxwex = 1.5, add = TRUE))
+
+# 次に層別のデータに対する箱ひげ図を描画する
+for (i in 1:length(type)) {
+  with(x, boxplot(Petal.Length[Species == type[i]], boxwex = 1.5,
+                  at = i + 1, col = cols[i], add = TRUE))
+}
+
+# 最後に層別データに対する横軸名を描画する
+axis(1, at = 1:length(type)+1, labels = type, tick = TRUE)
+
+# 全てのオブジェクトを削除する（事後処理）
+rm(list = ls(all = TRUE))
+```
+　  
+
+　  
+
+### 回答2-1）任意の属性データのみを層別に描画する方法
+`boxplot() {graphics}`は複数のデータを指定すると層別的に箱ひげ図を描くことが可能です。  
+これを活かして描きたい層別データを個別に指定することで、任意の組み合わせの箱ひげ図を  
+一つのグラフとして描きます。
+```{r 回答2-1, warning=FALSE}
+# 組み込みデータセット"iris"を読み込む
+data("iris")
+
+x <- iris
+
+# 属性名を抜き出す
+name <- unique(x$Species)
+
+# 個々のデータを指定して描く（全てのデータの場合）
+with(x, boxplot(Petal.Length,
+                Petal.Length[Species == name[1]], 
+                Petal.Length[Species == name[2]],
+                Petal.Length[Species == name[3]],
+                names = c("all", as.character(name))))
+
+# 個々のデータを指定して描く（任意の組み合わせの場合）
+with(x, boxplot(Petal.Length[Species == name[2]],
+                Petal.Length[Species == name[3]],
+                names = name[-1]))
+
+# 全てのオブジェクトを削除する（事後処理）
+rm(list = ls(all = TRUE))
+```
+　  
+
+### 回答2-2）任意の属性データのみを抽出してRcmdrで描画のみする方法
+Rcmdrで呼び出される`Boxplot() {car}`は`~`を使うモデル式（formula）指定でしか層別  
+箱ひげ図を描けません。そこで、描きたい層別データだけを抽出したデータセットを作成  
+することで対応します。  
+※藤森さんからご紹介のあったコードを元に少し変更しています
+```{r 藤森さんの方法, warning=FALSE}
+# 組み込みデータセット"iris"を読み込む
+data("iris")
+
+# 事前に表示したいデータを絞る方法
+x <- iris
+x[, 5] <- as.character(x[, 5])  # 一度、因子型から文字列型に変換するのがミソ
+x <- x[x$Species == "versicolor" | x$Species == "virginica", ]
+                                # 条件に一致する行だけ抽出する
+x[, 5] <- as.factor(x[, 5])     # 再度、因子型に変換する（変換しなくても`Boxplot()`が強制変換する）
+
+car::Boxplot(Petal.Length ~ Species, data = x, id.method = "y")
+
+# 変換をしない場合は、データは無くても因子情報だけが残る
+x <- iris
+x <- x[x$Species == "versicolor" | x$Species == "virginica", ]
+                                # 条件に一致する行だけ抽出する
+car::Boxplot(Petal.Length ~ Species, data = x, id.method = "y")
+
+# 全てのオブジェクトを削除する（事後処理）
+rm(list = ls(all = TRUE))
+```
+　  
+---
+
+[0]: https://sites.google.com/site/kantometrics/ "データ分析勉強会"
+[1]: https://k-metrics.github.io/ "データ分析勉強会アーカイブ"
+[2]: https://www.juse.or.jp/sqip/ "SQiP"
+[3]: http://www.juse-p.co.jp/ "日科技連出版"
+[4]: http://www.juse-p.co.jp/cgi-bin/html.pl5?i=ISBN978-4-8171-9447-3 "データ指向のソフトウェア品質マネジメント"
+[5]: http://www.juse-p.co.jp/cgi-bin/html.pl5?i=ISBN978-4-8171-9558-6 "ソフトウェアメトリクス統計分析入門"
+
+[CC]: http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja "CC BY-NC-SA 4.0"
+[CCI]: https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png "CC BY-NC-SA 4.0 icon"
+
+[R]: https://www.r-project.org/ "The R Project"
+[RS]: https://www.rstudio.com/ "RStudio"
+[RSD]: https://www.rstudio.com/products/RStudio/#Desktop "RStudio Desktop"
+[RM]: http://rmarkdown.rstudio.com/ "R Markdown form RStudio"
