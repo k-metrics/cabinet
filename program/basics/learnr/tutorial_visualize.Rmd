@@ -4,7 +4,6 @@ output:
   learnr::tutorial:
     highlight: textmate
     md_extensions: -ascii_identifiers
-
 runtime: shiny_prerendered
 ---
 
@@ -22,7 +21,11 @@ tidyverse::tidyverse_conflicts()
 
 <!-- 最初に変数fileに使用するデータをフルパスで指定して下さい -->
 ```{r common, include=FALSE}
-file_path <- "/home/sampo/Dropbox/RStudio/cabinet/program/basics/data/odc.csv"
+if (Sys.getenv("OS") == "Windows_NT") {
+  file_path <- "C:\\Users\\suzuki\\Dropbox\\RStudio\\cabinet\\program\\basics\\data\\odc.csv"
+} else {
+  file_path <- "/home/sampo/Dropbox/RStudio/cabinet/program/basics/data/odc.csv"
+}
 odc <- read_csv(file_path, locale = locale(encoding = "CP932"), progress = FALSE)
 ```
 
