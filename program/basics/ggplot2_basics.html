@@ -26,6 +26,8 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
 <link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
 
 <style type="text/css">code{white-space: pre;}</style>
@@ -456,7 +458,7 @@ div.tocify {
 </div>
 <div id="基本的な使い方" class="section level1">
 <h1><span class="header-section-number">1</span> 基本的な使い方</h1>
-<p><code>ggplot2</code>の文法は非常にシンプルです。まず、データと座標を用意し、その上に描きたいコンポーネントを重ねていくイメージです。GIS（地理情報システム）やPhotoshopにおけるレイヤー機能と同じような考え方です。先程の描画の例では</p>
+<p>本資料では<code>ggplot2</code>パアッケージのv2.2.1をベースに記述しています。<code>ggplot2</code>の文法は非常にシンプルです。まず、データと座標を用意し、その上に描きたいコンポーネントを重ねていくイメージです。GIS（地理情報システム）やPhotoshopにおけるレイヤー機能と同じような考え方です。先程の描画の例では</p>
 <pre class="r"><code>iris %&gt;% 
   ggplot2::ggplot(aes(x = Sepal.Width, y = Sepal.Length)) +
     ggplot2::geom_point()</code></pre>
@@ -485,7 +487,7 @@ div.tocify {
 <pre class="r"><code>geom_point(mapping = NULL, data = NULL, stat = &quot;identity&quot;,
            position = &quot;identity&quot;, ..., na.rm = FALSE, show.legend = NA,
            inherit.aes = TRUE)</code></pre>
-<p><code>ggplot2</code>パッケージは関数は<code>+</code>記号を用いて連結していきます。レイヤーを<code>+</code>で重ね合わせるというイメージです。</p>
+<p><code>ggplot2</code>パッケージは関数を<code>+</code>記号を用いて連結していきます。レイヤーを<code>+</code>で重ね合わせるというイメージです。</p>
 <pre class="r"><code>iris %&gt;% 
   ggplot2::ggplot(aes(x = Sepal.Width, y = Sepal.Length)) + 
     ggplot2::geom_point()</code></pre>
@@ -632,115 +634,171 @@ theme_void(base_size = 11, base_family = &quot;&quot;)</code></pre>
     ggplot2::geom_point(aes(size = Petal.Length))</code></pre>
 <p><img src="ggplot2_basics_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
 </div>
+<div id="ヒストグラムを描く" class="section level2">
+<h2><span class="header-section-number">2.3</span> ヒストグラムを描く</h2>
+<pre class="r"><code>geom_histogram(mapping = NULL, data = NULL, stat = &quot;bin&quot;, position = &quot;stack&quot;,
+               ..., binwidth = NULL, bins = NULL, na.rm = FALSE,
+               show.legend = NA, inherit.aes = TRUE)</code></pre>
+<pre class="r"><code>iris %&gt;% 
+  ggplot2::ggplot(aes(x = Sepal.Length)) + 
+    ggplot2::geom_histogram(bins = 20)</code></pre>
+<p><img src="ggplot2_basics_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>
+</div>
 <div id="ヒストグラムを色分けする" class="section level2">
-<h2><span class="header-section-number">2.3</span> ヒストグラムを色分けする</h2>
+<h2><span class="header-section-number">2.4</span> ヒストグラムを色分けする</h2>
 <p><code>geom_histgram</code>関数に対する<code>colour</code>オプション指定は枠線にしか適用されません。</p>
 <pre class="r"><code>iris %&gt;% 
   ggplot2::ggplot(aes(x = Sepal.Length, colour = Species)) + 
-    ggplot2::geom_histogram()</code></pre>
-<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
-<p><img src="ggplot2_basics_files/figure-html/unnamed-chunk-26-1.png" width="672" /></p>
+    ggplot2::geom_histogram(bins = 20)</code></pre>
+<p><img src="ggplot2_basics_files/figure-html/unnamed-chunk-28-1.png" width="672" /></p>
 <p>ヒストグラム全体を塗り分けしたい場合は<code>fill</code>オプションを利用して下さい。</p>
 <pre class="r"><code>iris %&gt;% 
   ggplot2::ggplot(aes(x = Sepal.Length, fill = Species)) + 
-    ggplot2::geom_histogram()</code></pre>
-<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
-<p><img src="ggplot2_basics_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>
+    ggplot2::geom_histogram(bins = 20)</code></pre>
+<p><img src="ggplot2_basics_files/figure-html/unnamed-chunk-29-1.png" width="672" /></p>
 </div>
 <div id="色の透過度を変える" class="section level2">
-<h2><span class="header-section-number">2.4</span> 色の透過度を変える</h2>
+<h2><span class="header-section-number">2.5</span> 色の透過度を変える</h2>
 <p>色の透過度（アルファチャネル）を変更するには<code>alpha</code>オプションを用います。</p>
 <pre class="r"><code>iris %&gt;% 
   ggplot2::ggplot(aes(x = Sepal.Length, fill = Species)) + 
-    ggplot2::geom_histogram(alpha = 0.5)</code></pre>
-<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
-<p><img src="ggplot2_basics_files/figure-html/unnamed-chunk-28-1.png" width="672" /></p>
+    ggplot2::geom_histogram(bins = 20, alpha = 0.5)</code></pre>
+<p><img src="ggplot2_basics_files/figure-html/unnamed-chunk-30-1.png" width="672" /></p>
 </div>
 <div id="ヒストグラムを重ねて描く" class="section level2">
-<h2><span class="header-section-number">2.5</span> ヒストグラムを重ねて描く</h2>
+<h2><span class="header-section-number">2.6</span> ヒストグラムを重ねて描く</h2>
 <p><code>position</code>オプションを用いるとデフォルトの積み上げヒストグラムを層別の独立ヒストグラムとして描くことができます。</p>
 <pre class="r"><code>iris %&gt;% 
   ggplot2::ggplot(aes(x = Sepal.Length, fill = Species)) + 
-    ggplot2::geom_histogram(position = &quot;identity&quot;, alpha = 0.5)</code></pre>
-<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
-<p><img src="ggplot2_basics_files/figure-html/unnamed-chunk-29-1.png" width="672" /></p>
-<p>上図では今ひとつ分かりにくいかも知れませんが、下図の三つのグラフが重ね合わされて描かれており、重なっている部分の色が濃くなっています。</p>
-<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
-<p><img src="ggplot2_basics_files/figure-html/unnamed-chunk-30-1.png" width="672" /></p>
+    ggplot2::geom_histogram(bins = 20, position = &quot;identity&quot;, alpha = 0.5)</code></pre>
+<p><img src="ggplot2_basics_files/figure-html/unnamed-chunk-31-1.png" width="672" /></p>
+<p>上図では今ひとつ分かりにくいかも知れませんが、下図の三つのグラフが重ね合わされて描かれており、重なっている部分の色が濃くなっています。 <img src="ggplot2_basics_files/figure-html/unnamed-chunk-32-1.png" width="672" /></p>
 </div>
 <div id="密度関数を上書きする" class="section level2">
-<h2><span class="header-section-number">2.6</span> 密度関数を上書きする</h2>
+<h2><span class="header-section-number">2.7</span> 密度関数を上書きする</h2>
 <p>密度関数に対する<code>size</code>オプションは線の太さとして適用されます。</p>
+<pre class="r"><code>geom_density(mapping = NULL, data = NULL, stat = &quot;density&quot;,
+             position = &quot;identity&quot;, ..., na.rm = FALSE, show.legend = NA,
+             inherit.aes = TRUE)</code></pre>
 <pre class="r"><code>iris %&gt;% 
   ggplot2::ggplot(aes(x = Sepal.Length, y = ..density.., fill = Species)) + 
-    ggplot2::geom_histogram(position = &quot;identity&quot;, alpha = 0.5) + 
+    ggplot2::geom_histogram(bins = 20, position = &quot;identity&quot;, alpha = 0.5) + 
     ggplot2::geom_density(alpha = 0.25, size = 0.1)</code></pre>
-<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
-<p><img src="ggplot2_basics_files/figure-html/unnamed-chunk-31-1.png" width="672" /></p>
+<p><img src="ggplot2_basics_files/figure-html/unnamed-chunk-34-1.png" width="672" /></p>
 </div>
 <div id="箱ひげ図を描く" class="section level2">
-<h2><span class="header-section-number">2.7</span> 箱ひげ図を描く</h2>
+<h2><span class="header-section-number">2.8</span> 箱ひげ図を描く</h2>
 <p>箱ひげ図を描くには<code>ggplot2::geom_boxplot</code>関数を用います。<code>ggplot2::geom_boxplot</code>を層別で使わない場合はｘ軸に適当な値を指定してください。</p>
+<pre class="r"><code>geom_boxplot(mapping = NULL, data = NULL, stat = &quot;boxplot&quot;,
+             position = &quot;dodge&quot;, ..., outlier.colour = NULL,
+             outlier.color = NULL, outlier.fill = NULL, outlier.shape = 19,
+             outlier.size = 1.5, outlier.stroke = 0.5, outlier.alpha = NULL,
+             notch = FALSE, notchwidth = 0.5, varwidth = FALSE, na.rm = FALSE,
+             show.legend = NA, inherit.aes = TRUE)</code></pre>
 <pre class="r"><code>iris %&gt;% 
   ggplot2::ggplot(aes(x = NA, y = Sepal.Length)) + 
     ggplot2::geom_boxplot()</code></pre>
-<p><img src="ggplot2_basics_files/figure-html/unnamed-chunk-32-1.png" width="672" /></p>
+<p><img src="ggplot2_basics_files/figure-html/unnamed-chunk-36-1.png" width="672" /></p>
 </div>
 <div id="箱ひげ図を層別で描く" class="section level2">
-<h2><span class="header-section-number">2.8</span> 箱ひげ図を層別で描く</h2>
+<h2><span class="header-section-number">2.9</span> 箱ひげ図を層別で描く</h2>
 <pre class="r"><code>iris %&gt;% 
   ggplot2::ggplot(aes(x = Species, y = Sepal.Length, colour = Species)) + 
     ggplot2::geom_boxplot()</code></pre>
-<p><img src="ggplot2_basics_files/figure-html/unnamed-chunk-33-1.png" width="672" /></p>
+<p><img src="ggplot2_basics_files/figure-html/unnamed-chunk-37-1.png" width="672" /></p>
 <pre class="r"><code>iris %&gt;% 
   ggplot2::ggplot(aes(x = Species, y = Sepal.Length, fill = Species)) + 
     ggplot2::geom_boxplot(alpha = 0.5)</code></pre>
-<p><img src="ggplot2_basics_files/figure-html/unnamed-chunk-34-1.png" width="672" /></p>
+<p><img src="ggplot2_basics_files/figure-html/unnamed-chunk-38-1.png" width="672" /></p>
 </div>
-<div id="箱ひげ図にデータ" class="section level2">
-<h2><span class="header-section-number">2.9</span> 箱ひげ図にデータ</h2>
+<div id="箱ひげ図にデータを重ねる" class="section level2">
+<h2><span class="header-section-number">2.10</span> 箱ひげ図にデータを重ねる</h2>
+<p>箱ひげ図だけではデータの分布傾向が分かりませんのでデータを重ねて描画してみます。この場合は<code>ggplot2::geom_jitter</code>関数を用います。</p>
+<pre class="r"><code>geom_jitter(mapping = NULL, data = NULL, stat = &quot;identity&quot;,
+            position = &quot;jitter&quot;, ..., width = NULL, height = NULL,
+            na.rm = FALSE, show.legend = NA, inherit.aes = TRUE)</code></pre>
 <pre class="r"><code>iris %&gt;% 
   ggplot2::ggplot(aes(x = Species, y = Sepal.Length, colour = Species)) + 
     ggplot2::geom_boxplot() + 
     ggplot2::geom_jitter(aes(size = Sepal.Width))</code></pre>
-<p><img src="ggplot2_basics_files/figure-html/unnamed-chunk-35-1.png" width="672" /></p>
+<p><img src="ggplot2_basics_files/figure-html/unnamed-chunk-40-1.png" width="672" /></p>
 </div>
 <div id="バイオリンプロット" class="section level2">
-<h2><span class="header-section-number">2.10</span> バイオリンプロット</h2>
+<h2><span class="header-section-number">2.11</span> バイオリンプロット</h2>
 <p>バイオリンプロットを使うとデータの分布を更に視覚的に把握しやすくなります。</p>
+<pre class="r"><code>geom_violin(mapping = NULL, data = NULL, stat = &quot;ydensity&quot;,
+            position = &quot;dodge&quot;, ..., draw_quantiles = NULL, trim = TRUE,
+            scale = &quot;area&quot;, na.rm = FALSE, show.legend = NA, inherit.aes = TRUE)</code></pre>
 <pre class="r"><code>iris %&gt;% 
   ggplot2::ggplot(aes(x = Species, y = Sepal.Length, colour = Species)) + 
     ggplot2::geom_violin()</code></pre>
-<p><img src="ggplot2_basics_files/figure-html/unnamed-chunk-36-1.png" width="672" /></p>
+<p><img src="ggplot2_basics_files/figure-html/unnamed-chunk-42-1.png" width="672" /></p>
 </div>
 <div id="軸の入れ替え" class="section level2">
-<h2><span class="header-section-number">2.11</span> 軸の入れ替え</h2>
+<h2><span class="header-section-number">2.12</span> 軸の入れ替え</h2>
+<p><code>ggplot2::coord_</code>関数群を用いるとデータを変更することなく軸の操作が可能です。横軸と縦軸を入れ替えるには<code>ggplot2::coord_flip</code>関数を用います。</p>
+<pre class="r"><code>coord_flip(xlim = NULL, ylim = NULL, expand = TRUE)</code></pre>
 <pre class="r"><code>iris %&gt;% 
   ggplot2::ggplot(aes(x = Species, y = Sepal.Length, colour = Species)) + 
     ggplot2::geom_boxplot() + 
     ggplot2::coord_flip()</code></pre>
-<p><img src="ggplot2_basics_files/figure-html/unnamed-chunk-37-1.png" width="672" /></p>
+<p><img src="ggplot2_basics_files/figure-html/unnamed-chunk-44-1.png" width="672" /></p>
 </div>
 <div id="軸の反転" class="section level2">
-<h2><span class="header-section-number">2.12</span> 軸の反転</h2>
+<h2><span class="header-section-number">2.13</span> 軸の反転</h2>
+<p>軸を反転させるには<code>ggplot2::scale_x_reverse</code>、<code>ggplot2::scale_y_reverse</code>関数を用います。</p>
+<pre class="r"><code>scale_x_continuous(name = waiver(), breaks = waiver(), minor_breaks = waiver(),
+                   labels = waiver(), limits = NULL, expand = waiver(),
+                   oob = censor, na.value = NA_real_, trans = &quot;identity&quot;,
+                   position = &quot;bottom&quot;, sec.axis = waiver())
+
+scale_y_continuous(name = waiver(), breaks = waiver(), minor_breaks = waiver(),
+                   labels = waiver(), limits = NULL, expand = waiver(),
+                   oob = censor, na.value = NA_real_, trans = &quot;identity&quot;,
+                   position = &quot;left&quot;, sec.axis = waiver())</code></pre>
 <pre class="r"><code>iris %&gt;% 
   ggplot2::ggplot(aes(x = Sepal.Width, y = Sepal.Length, colour = Species)) + 
     ggplot2::geom_point() + 
     ggplot2::scale_x_reverse()</code></pre>
-<p><img src="ggplot2_basics_files/figure-html/unnamed-chunk-38-1.png" width="672" /></p>
+<p><img src="ggplot2_basics_files/figure-html/unnamed-chunk-46-1.png" width="672" /></p>
+</div>
+<div id="テキストラベルをつける" class="section level2">
+<h2><span class="header-section-number">2.14</span> テキストラベルをつける</h2>
+<p>個々のデータにテキストラベルを付与することも可能ですが、データ数が多かったりデータの値が近接していたりすると逆に見難くなってしまうというデメリットもあります。テキストやラベルを表示するには<code>ggplot2::geom_text</code>関数または<code>ggplot2::geom_label</code>関数を用います。</p>
+<pre class="r"><code>geom_label(mapping = NULL, data = NULL, stat = &quot;identity&quot;,
+           position = &quot;identity&quot;, ..., parse = FALSE, nudge_x = 0, nudge_y = 0,
+           label.padding = unit(0.25, &quot;lines&quot;), label.r = unit(0.15, &quot;lines&quot;),
+           label.size = 0.25, na.rm = FALSE, show.legend = NA,
+           inherit.aes = TRUE)
+
+geom_text(mapping = NULL, data = NULL, stat = &quot;identity&quot;,
+          position = &quot;identity&quot;, ..., parse = FALSE, nudge_x = 0, nudge_y = 0,
+          check_overlap = FALSE, na.rm = FALSE, show.legend = NA,
+          inherit.aes = TRUE)</code></pre>
+<pre class="r"><code>mtcars %&gt;% 
+  ggplot2::ggplot(aes(x = wt, y = mpg)) +
+    ggplot2::geom_point() + 
+    ggplot2::geom_smooth(method = &quot;lm&quot;) +
+    ggplot2::geom_text(aes(label = row.names(.), colour = cyl), 
+                       hjust = &quot;inward&quot;, vjust = &quot;inward&quot;)</code></pre>
+<p><img src="ggplot2_basics_files/figure-html/unnamed-chunk-48-1.png" width="672" /></p>
 </div>
 <div id="統計情報で描く" class="section level2">
-<h2><span class="header-section-number">2.13</span> 統計情報で描く</h2>
-<p>平均値とその標準誤差を計算し、平均値を棒グラフで描き、標準誤差をエラーバーで表示する。</p>
+<h2><span class="header-section-number">2.15</span> 統計情報で描く</h2>
+<p>平均値とその標準誤差を計算し、平均値を棒グラフで描き、標準誤差をエラーバーで表示するということも<code>ggplot2::stat_summary</code>関数を利用することで実現可能です。</p>
+<pre class="r"><code>stat_summary(mapping = NULL, data = NULL, geom = &quot;pointrange&quot;,
+             position = &quot;identity&quot;, ..., fun.data = NULL, fun.y = NULL,
+             fun.ymax = NULL, fun.ymin = NULL, fun.args = list(), na.rm = FALSE,
+             show.legend = NA, inherit.aes = TRUE)</code></pre>
 <pre class="r"><code>iris %&gt;% 
   ggplot2::ggplot(aes(x = Species, y = Petal.Length, fill = Species)) + 
     ggplot2::stat_summary(fun.y = mean, geom = &quot;bar&quot;, alpha = 0.5) +
     ggplot2::stat_summary(fun.data = mean_cl_normal, geom = &quot;errorbar&quot;,
                           width = 0.5)</code></pre>
-<p><img src="ggplot2_basics_files/figure-html/unnamed-chunk-39-1.png" width="672" /></p>
+<p><img src="ggplot2_basics_files/figure-html/unnamed-chunk-50-1.png" width="672" /></p>
 </div>
 <div id="層別に描く" class="section level2">
-<h2><span class="header-section-number">2.14</span> 層別に描く</h2>
+<h2><span class="header-section-number">2.16</span> 層別に描く</h2>
 <p>見やすくするために種別（<code>Species</code>）のデータを用いて層別のグラフにしてみましょう。層別に描くには<code>ggplot2::facet_warp</code>を用います。</p>
 <pre class="r"><code>facet_wrap(facets, nrow = NULL, ncol = NULL, scales = &quot;fixed&quot;, shrink = TRUE,
            labeller = &quot;label_value&quot;, as.table = TRUE, switch = NULL,
@@ -753,11 +811,23 @@ theme_void(base_size = 11, base_family = &quot;&quot;)</code></pre>
     ggplot2::xlab(&quot;がく片の幅&quot;) + ggplot2::ylab(&quot;がく片の長さ&quot;) +
     ggplot2::geom_smooth(method = &quot;lm&quot;, se = TRUE) +
     ggplot2::facet_wrap(~ Species)</code></pre>
-<p><img src="ggplot2_basics_files/figure-html/unnamed-chunk-41-1.png" width="672" /></p>
-<p>なお、二変数で層別にしたい場合は<code>ggplot::facet_grid</code>関数を用います。</p>
+<p><img src="ggplot2_basics_files/figure-html/unnamed-chunk-52-1.png" width="672" /></p>
+</div>
+<div id="二変数で層別に描く" class="section level2">
+<h2><span class="header-section-number">2.17</span> 二変数で層別に描く</h2>
+<p>二変数でマトリクス状に層別にしたい場合は<code>ggplot2::facet_grid</code>関数を用います。<code>mtcars</code>データセットを用いて車重（<code>wt</code>）と燃費（<code>mpg</code>）の関係をシリンダ数（<code>cyl</code>）とギア数（<code>gear</code>）で層別表示してみます。</p>
+<pre class="r"><code>facet_grid(facets, margins = FALSE, scales = &quot;fixed&quot;, space = &quot;fixed&quot;,
+           shrink = TRUE, labeller = &quot;label_value&quot;, as.table = TRUE,
+           switch = NULL, drop = TRUE)</code></pre>
+<pre class="r"><code>mtcars %&gt;% 
+  ggplot2::ggplot(aes(x = wt, y = mpg, colour = cyl)) +
+    ggplot2::geom_point() +
+    ggplot2::geom_smooth(method = &quot;lm&quot;, se = TRUE) +
+    ggplot2::facet_grid(gear  ~ cyl)</code></pre>
+<p><img src="ggplot2_basics_files/figure-html/unnamed-chunk-54-1.png" width="672" /></p>
 <hr />
 <!-- Footer -->
-<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" title="CC BY-NC-SA 4.0 icon" alt="Sampo Suzuki" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0</a>, Sampo Suzuki [2017-07-29 23:02(JST)]</p>
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" title="CC BY-NC-SA 4.0 icon" alt="Sampo Suzuki" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0</a>, Sampo Suzuki [2017-07-30 23:13(JST)]</p>
 </div>
 </div>
 

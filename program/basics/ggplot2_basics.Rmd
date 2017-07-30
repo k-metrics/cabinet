@@ -4,6 +4,7 @@ author-meta: "k-metrics"
 output: 
   html_document:  
     code_folding: none
+    df_print: "paged"
     highlight: textmate
     md_extensions: -ascii_identifiers
     number_section: yes
@@ -62,7 +63,7 @@ iris %>%
 * グラッフィクパッケージなのでグラフ以外も扱える
 
 # 基本的な使い方
-`ggplot2`の文法は非常にシンプルです。まず、データと座標を用意し、その上に描きたいコンポーネントを重ねていくイメージです。GIS（地理情報システム）やPhotoshopにおけるレイヤー機能と同じような考え方です。先程の描画の例では
+本資料では`ggplot2`パアッケージのv2.2.1をベースに記述しています。`ggplot2`の文法は非常にシンプルです。まず、データと座標を用意し、その上に描きたいコンポーネントを重ねていくイメージです。GIS（地理情報システム）やPhotoshopにおけるレイヤー機能と同じような考え方です。先程の描画の例では
 ```{r}
 iris %>% 
   ggplot2::ggplot(aes(x = Sepal.Width, y = Sepal.Length)) +
@@ -102,7 +103,7 @@ geom_point(mapping = NULL, data = NULL, stat = "identity",
            inherit.aes = TRUE)
 ```
 
-`ggplot2`パッケージは関数は`+`記号を用いて連結していきます。レイヤーを`+`で重ね合わせるというイメージです。
+`ggplot2`パッケージは関数を`+`記号を用いて連結していきます。レイヤーを`+`で重ね合わせるというイメージです。
 ```{r}
 iris %>% 
   ggplot2::ggplot(aes(x = Sepal.Width, y = Sepal.Length)) + 
@@ -281,19 +282,32 @@ iris %>%
     ggplot2::geom_point(aes(size = Petal.Length))
 ```
 
+## ヒストグラムを描く
+```{r, eval=FALSE}
+geom_histogram(mapping = NULL, data = NULL, stat = "bin", position = "stack",
+               ..., binwidth = NULL, bins = NULL, na.rm = FALSE,
+               show.legend = NA, inherit.aes = TRUE)
+```
+
+```{r}
+iris %>% 
+  ggplot2::ggplot(aes(x = Sepal.Length)) + 
+    ggplot2::geom_histogram(bins = 20)
+```
+
 ## ヒストグラムを色分けする
 `geom_histgram`関数に対する`colour`オプション指定は枠線にしか適用されません。
 ```{r}
 iris %>% 
   ggplot2::ggplot(aes(x = Sepal.Length, colour = Species)) + 
-    ggplot2::geom_histogram()
+    ggplot2::geom_histogram(bins = 20)
 ```
 
 ヒストグラム全体を塗り分けしたい場合は`fill`オプションを利用して下さい。
 ```{r}
 iris %>% 
   ggplot2::ggplot(aes(x = Sepal.Length, fill = Species)) + 
-    ggplot2::geom_histogram()
+    ggplot2::geom_histogram(bins = 20)
 ```
 
 ## 色の透過度を変える
@@ -301,7 +315,7 @@ iris %>%
 ```{r}
 iris %>% 
   ggplot2::ggplot(aes(x = Sepal.Length, fill = Species)) + 
-    ggplot2::geom_histogram(alpha = 0.5)
+    ggplot2::geom_histogram(bins = 20, alpha = 0.5)
 ```
 
 ## ヒストグラムを重ねて描く
@@ -309,30 +323,44 @@ iris %>%
 ```{r}
 iris %>% 
   ggplot2::ggplot(aes(x = Sepal.Length, fill = Species)) + 
-    ggplot2::geom_histogram(position = "identity", alpha = 0.5)
+    ggplot2::geom_histogram(bins = 20, position = "identity", alpha = 0.5)
 ```
 
 上図では今ひとつ分かりにくいかも知れませんが、下図の三つのグラフが重ね合わされて描かれており、重なっている部分の色が濃くなっています。
 ```{r, echo=FALSE}
 iris %>% 
   ggplot2::ggplot(aes(x = Sepal.Length, fill = Species)) + 
-    ggplot2::geom_histogram(alpha = 0.5) +
+    ggplot2::geom_histogram(bins = 20, alpha = 0.5) +
     ggplot2::facet_wrap(~ Species)
 ```
 
 ## 密度関数を上書きする
 密度関数に対する`size`オプションは線の太さとして適用されます。
+```{r, eval=FALSE}
+geom_density(mapping = NULL, data = NULL, stat = "density",
+             position = "identity", ..., na.rm = FALSE, show.legend = NA,
+             inherit.aes = TRUE)
+```
+
 ```{r}
 iris %>% 
   ggplot2::ggplot(aes(x = Sepal.Length, y = ..density.., fill = Species)) + 
-    ggplot2::geom_histogram(position = "identity", alpha = 0.5) + 
+    ggplot2::geom_histogram(bins = 20, position = "identity", alpha = 0.5) + 
     ggplot2::geom_density(alpha = 0.25, size = 0.1)
-
 ```
 
 
 ## 箱ひげ図を描く
 箱ひげ図を描くには`ggplot2::geom_boxplot`関数を用います。`ggplot2::geom_boxplot`を層別で使わない場合はｘ軸に適当な値を指定してください。
+```{r, eval=FALSE}
+geom_boxplot(mapping = NULL, data = NULL, stat = "boxplot",
+             position = "dodge", ..., outlier.colour = NULL,
+             outlier.color = NULL, outlier.fill = NULL, outlier.shape = 19,
+             outlier.size = 1.5, outlier.stroke = 0.5, outlier.alpha = NULL,
+             notch = FALSE, notchwidth = 0.5, varwidth = FALSE, na.rm = FALSE,
+             show.legend = NA, inherit.aes = TRUE)
+```
+
 ```{r}
 iris %>% 
   ggplot2::ggplot(aes(x = NA, y = Sepal.Length)) + 
@@ -352,7 +380,14 @@ iris %>%
     ggplot2::geom_boxplot(alpha = 0.5)
 ```
 
-## 箱ひげ図にデータ
+## 箱ひげ図にデータを重ねる
+箱ひげ図だけではデータの分布傾向が分かりませんのでデータを重ねて描画してみます。この場合は`ggplot2::geom_jitter`関数を用います。
+```{r, eval=FALSE}
+geom_jitter(mapping = NULL, data = NULL, stat = "identity",
+            position = "jitter", ..., width = NULL, height = NULL,
+            na.rm = FALSE, show.legend = NA, inherit.aes = TRUE)
+```
+
 ```{r}
 iris %>% 
   ggplot2::ggplot(aes(x = Species, y = Sepal.Length, colour = Species)) + 
@@ -362,6 +397,12 @@ iris %>%
 
 ## バイオリンプロット
 バイオリンプロットを使うとデータの分布を更に視覚的に把握しやすくなります。
+```{r, eval=FALSE}
+geom_violin(mapping = NULL, data = NULL, stat = "ydensity",
+            position = "dodge", ..., draw_quantiles = NULL, trim = TRUE,
+            scale = "area", na.rm = FALSE, show.legend = NA, inherit.aes = TRUE)
+```
+
 ```{r}
 iris %>% 
   ggplot2::ggplot(aes(x = Species, y = Sepal.Length, colour = Species)) + 
@@ -369,6 +410,10 @@ iris %>%
 ```
 
 ## 軸の入れ替え
+`ggplot2::coord_`関数群を用いるとデータを変更することなく軸の操作が可能です。横軸と縦軸を入れ替えるには`ggplot2::coord_flip`関数を用います。
+```{r, eval=FALSE}
+coord_flip(xlim = NULL, ylim = NULL, expand = TRUE)
+```
 
 ```{r}
 iris %>% 
@@ -378,6 +423,19 @@ iris %>%
 ```
 
 ## 軸の反転
+軸を反転させるには`ggplot2::scale_x_reverse`、`ggplot2::scale_y_reverse`関数を用います。
+```{r, eval=FALSE}
+scale_x_continuous(name = waiver(), breaks = waiver(), minor_breaks = waiver(),
+                   labels = waiver(), limits = NULL, expand = waiver(),
+                   oob = censor, na.value = NA_real_, trans = "identity",
+                   position = "bottom", sec.axis = waiver())
+
+scale_y_continuous(name = waiver(), breaks = waiver(), minor_breaks = waiver(),
+                   labels = waiver(), limits = NULL, expand = waiver(),
+                   oob = censor, na.value = NA_real_, trans = "identity",
+                   position = "left", sec.axis = waiver())
+```
+
 ```{r}
 iris %>% 
   ggplot2::ggplot(aes(x = Sepal.Width, y = Sepal.Length, colour = Species)) + 
@@ -385,8 +443,40 @@ iris %>%
     ggplot2::scale_x_reverse()
 ```
 
+## テキストラベルをつける
+個々のデータにテキストラベルを付与することも可能ですが、データ数が多かったりデータの値が近接していたりすると逆に見難くなってしまうというデメリットもあります。テキストやラベルを表示するには`ggplot2::geom_text`関数または`ggplot2::geom_label`関数を用います。
+```{r, eval=FALSE}
+geom_label(mapping = NULL, data = NULL, stat = "identity",
+           position = "identity", ..., parse = FALSE, nudge_x = 0, nudge_y = 0,
+           label.padding = unit(0.25, "lines"), label.r = unit(0.15, "lines"),
+           label.size = 0.25, na.rm = FALSE, show.legend = NA,
+           inherit.aes = TRUE)
+
+geom_text(mapping = NULL, data = NULL, stat = "identity",
+          position = "identity", ..., parse = FALSE, nudge_x = 0, nudge_y = 0,
+          check_overlap = FALSE, na.rm = FALSE, show.legend = NA,
+          inherit.aes = TRUE)
+```
+
+```{r}
+mtcars %>% 
+  ggplot2::ggplot(aes(x = wt, y = mpg)) +
+    ggplot2::geom_point() + 
+    ggplot2::geom_smooth(method = "lm") +
+    ggplot2::geom_text(aes(label = row.names(.), colour = cyl), 
+                       hjust = "inward", vjust = "inward")
+```
+
+
 ## 統計情報で描く
-平均値とその標準誤差を計算し、平均値を棒グラフで描き、標準誤差をエラーバーで表示する。
+平均値とその標準誤差を計算し、平均値を棒グラフで描き、標準誤差をエラーバーで表示するということも`ggplot2::stat_summary`関数を利用することで実現可能です。
+```{r, eval=FALSE}
+stat_summary(mapping = NULL, data = NULL, geom = "pointrange",
+             position = "identity", ..., fun.data = NULL, fun.y = NULL,
+             fun.ymax = NULL, fun.ymin = NULL, fun.args = list(), na.rm = FALSE,
+             show.legend = NA, inherit.aes = TRUE)
+```
+
 ```{r}
 iris %>% 
   ggplot2::ggplot(aes(x = Species, y = Petal.Length, fill = Species)) + 
@@ -415,7 +505,22 @@ iris %>%
     ggplot2::facet_wrap(~ Species)
 ```
 
-なお、二変数で層別にしたい場合は`ggplot::facet_grid`関数を用います。
+## 二変数で層別に描く
+二変数でマトリクス状に層別にしたい場合は`ggplot2::facet_grid`関数を用います。`mtcars`データセットを用いて車重（`wt`）と燃費（`mpg`）の関係をシリンダ数（`cyl`）とギア数（`gear`）で層別表示してみます。
+```{r, eval=FALSE}
+facet_grid(facets, margins = FALSE, scales = "fixed", space = "fixed",
+           shrink = TRUE, labeller = "label_value", as.table = TRUE,
+           switch = NULL, drop = TRUE)
+```
+
+```{r}
+mtcars %>% 
+  ggplot2::ggplot(aes(x = wt, y = mpg, colour = cyl)) +
+    ggplot2::geom_point() +
+    ggplot2::geom_smooth(method = "lm", se = TRUE) +
+    ggplot2::facet_grid(gear  ~ cyl)
+```
+
 
 ---
 
