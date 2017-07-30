@@ -3,7 +3,7 @@ title: "ggplot2のすゝめ"
 author-meta: "k-metrics"
 output: 
   html_document:  
-    code_folding: show
+    code_folding: none
     highlight: textmate
     md_extensions: -ascii_identifiers
     number_section: yes
@@ -41,7 +41,7 @@ plot(iris$Sepal.Width, iris$Sepal.Length)
 boxplot(iris$Sepal.Length ~ iris$Species)
 ```
 
-そこで、データハンドリングで処理したデータフレームを統一的な文法でグラフ化できる`ggplot2`パッケージの出番です。`ggplot2`パッケージは`tidyverse`パッケージの一部であり、`dplyr`パッケージや`tidyr`パッケージで整形した整然データ（Tidy Data）をそのまま扱えます。
+そこで、データハンドリングで処理したデータフレームを統一的な文法でグラフ化できる`ggplot2`パッケージの出番です。`ggplot2`パッケージは`tidyverse`パッケージの一部であり、`dplyr`パッケージや`tidyr`パッケージで整形した整然データ（Tidy Data）をそのまま扱います。
 
 ```{r}
 iris %>% 
@@ -75,10 +75,42 @@ iris %>%
 * x軸とy軸の変数を指定して座標を作る
 * 散布図を描く
 
-となっています。
+となっています。以降、順を追って説明します。
+
+## 座標軸を用意する
+まず、グラフを描くためのベースとなる軸を用意します。今回は、ｘ軸に萼片の幅（`Sepal.Width`）、ｙ軸に萼片の長さ（`Sepal.Length`）を指定します。軸は`ggplot2::ggplot`関数内の`mapping`引数に対して`ggplot2::aes`関数を用いて指定します。
+```{r, eval=FALSE}
+ggplot(data = NULL, mapping = aes(), ..., environment = parent.frame())
+```
+
+`ggplot2::aes`関数は`ggplo2`パッケージにおける肝の一つですので、必ず、覚えておいて下さい。
+```{r, eval=FALSE}
+aes(x, y, ...)
+```
+
+では、実際にｘ軸に萼片の幅（`Sepal.Width`）、ｙ軸に萼片の長さ（`Sepal.Length`）を指定してみましょう。
+```{r}
+iris %>% 
+  ggplot2::ggplot(aes(x = Sepal.Width, y = Sepal.Length))
+```
+
+## グラフを描く
+用意した軸の上にグラフを描くには`ggplot2::geom_`関数群を用います。ここでは散布図を描くために`ggplot2::geom_point`関数を用います。
+```{r, eval=FALSE}
+geom_point(mapping = NULL, data = NULL, stat = "identity",
+           position = "identity", ..., na.rm = FALSE, show.legend = NA,
+           inherit.aes = TRUE)
+```
+
+`ggplot2`パッケージは関数は`+`記号を用いて連結していきます。レイヤーを`+`で重ね合わせるというイメージです。
+```{r}
+iris %>% 
+  ggplot2::ggplot(aes(x = Sepal.Width, y = Sepal.Length)) + 
+    ggplot2::geom_point()
+```
 
 ## タイトルをつける
-更にこのグラフにタイトルをつける場合は、`ggplot2::ggtitle`関数を用いて以下のように指定します。
+更にこのグラフにタイトルをつけてみましょう。タイトルをつけるには`ggplot2::ggtitle`関数を用います。
 ```{r}
 iris %>% 
   ggplot2::ggplot(aes(x = Sepal.Width, y = Sepal.Length)) +
@@ -87,7 +119,7 @@ iris %>%
 ```
 
 ## 軸ラベルを変更する
-更に軸のラベルを変更するには`ggplot2::xlab`、`ggplot2::ylab`関数を用いて以下のように指定します。
+軸のラベルは何も指定しないと変数名が使われますので、分かりやすく変更しておきましょう。軸ラベルを変更するに`ggplot2::xlab`、`ggplot2::ylab`両関数を用います。
 ```{r}
 iris %>% 
   ggplot2::ggplot(aes(x = Sepal.Width, y = Sepal.Length)) +
@@ -97,7 +129,7 @@ iris %>%
 ```
 
 ## 層別にプロットする
-種別（`Species`）毎に色分けしたい場合は`ggplot2::geom_point`関数で色分けを指定します。
+種別（`Species`）毎に色分けしてみましょう。色分けは`ggplot2::geom_point`関数内で指定します。
 ```{r}
 iris %>% 
   ggplot2::ggplot(aes(x = Sepal.Width, y = Sepal.Length)) +
@@ -107,7 +139,14 @@ iris %>%
 ```
 
 ## 回帰直線を描く
-ここに回帰直線を加えてみましょう。
+散布図が描けましたので回帰直線を加えてみましょう。回帰直線は別途計算する必要はなく`ggplot2::geom_smooth`関数で描けます。
+```{r, eval=FALSE}
+geom_smooth(mapping = NULL, data = NULL, stat = "smooth", position = "identity",
+            ..., method = "auto", formula = y ~ x, se = TRUE, na.rm = FALSE,
+            show.legend = NA, inherit.aes = TRUE)
+```
+
+`ggplot2::geom_smooth`関数のデフォルト回帰種別は自動選択ですので回帰直線であることを`method`オプションで明示的に指定する必要があります。
 ```{r}
 iris %>% 
   ggplot2::ggplot(aes(x = Sepal.Width, y = Sepal.Length)) +
@@ -118,18 +157,24 @@ iris %>%
 ```
 
 ## 信頼区間を加える
-信頼区間も加えてみると
+回帰線の信頼区間を描くには`ggplot2::smooth`関数で`se = TRUE`オプション指定をするだけです。なお。デフォルトでは９５％信頼区間が描画されます。
+```{r, eval=FALSE}
+geom_smooth(mapping = NULL, data = NULL, stat = "smooth", position = "identity",
+            ..., method = "auto", formula = y ~ x, se = TRUE, na.rm = FALSE,
+            show.legend = NA, inherit.aes = TRUE)
+```
+
 ```{r}
 iris %>% 
   ggplot2::ggplot(aes(x = Sepal.Width, y = Sepal.Length)) +
     ggplot2::geom_point(aes(colour = Species)) +
     ggplot2::ggtitle("みんな大好きiris") +
     ggplot2::xlab("がく片の幅") + ggplot2::ylab("がく片の長さ") +
-    ggplot2::geom_smooth(method = "lm", se = TRUE)
+    ggplot2::geom_smooth(method = "lm", se = TRUE, level = 0.95)
 ```
 
 ## 層別の回帰直線を描く
-折角なので層別に回帰直線と信頼区間を描いてみましょう。
+層別に描くには`colour`オプションの指定を`ggplot2::geom_point`関数ではなく、その一段上のグラフ全体の設定を決める`ggplot2::ggplot`関数内で指定します。
 ```{r}
 iris %>% 
   ggplot2::ggplot(aes(x = Sepal.Width, y = Sepal.Length, colour = Species)) +
@@ -139,8 +184,15 @@ iris %>%
     ggplot2::geom_smooth(method = "lm", se = TRUE)
 ```
 
+このように`ggplot2::aes`関数をどこで指定するかで描画が変わってきます。
+
 ## 軸の比率を変更する
-見やすくx軸とy軸の比散るを同じにするには
+x軸とy軸の比率を任意に設定することでグラフが見やすくなることがあります。このような場合には`ggplot2::coord_fixed`関数を用います。なお、`ggplot2::coord_equal`関数は`ggplot2::coord_fixed`関数のエイリアスです。
+```{r, eval=FALSE}
+coord_fixed(ratio = 1, xlim = NULL, ylim = NULL, expand = TRUE)
+```
+
+ここでは比率を１（デフォルト値）に設定してみます。
 ```{r}
 iris %>% 
   ggplot2::ggplot(aes(x = Sepal.Width, y = Sepal.Length, colour = Species)) +
@@ -148,11 +200,17 @@ iris %>%
     ggplot2::ggtitle("みんな大好きiris") +
     ggplot2::xlab("がく片の幅") + ggplot2::ylab("がく片の長さ") +
     ggplot2::geom_smooth(method = "lm", se = TRUE) +
-    ggplot2::coord_fixed(ratio = 1)
+    ggplot2::coord_fixed()
 ```
 
 ## 対数軸を用いる
-データの範囲が狭いのでちょっと見難いですが対数軸で表示すると補助線の感覚が異なってることが分かります。
+対数軸グラフを描く場合は`ggplot2::cord_trans`関数または`ggplot2::scale_x_log10`、`ggplot2::scale_y_log10`両関数がありますが対数軸以外も描画可能な`ggplot2::cord_trans`関数を使うのがおすゝめです。
+```{r, eval=FALSE}
+coord_trans(x = "identity", y = "identity", limx = NULL, limy = NULL,
+            xtrans, ytrans)
+```
+
+常用対数"log"を指定して対数軸グラフを描いてみます。データの範囲が狭いのでちょっと見難いですが対数軸で表示すると補助線の間隔が異なってることが分かります。
 ```{r}
 iris %>% 
   ggplot2::ggplot(aes(x = Sepal.Width, y = Sepal.Length, colour = Species)) +
@@ -160,11 +218,40 @@ iris %>%
     ggplot2::ggtitle("みんな大好きiris") +
     ggplot2::xlab("がく片の幅") + ggplot2::ylab("がく片の長さ") +
     ggplot2::geom_smooth(method = "lm", se = TRUE) +
-    ggplot2::coord_trans(x = "log10", y = "log10")
+    ggplot2::coord_trans(x = "log", y = "log")
 ```
 
-## 背景を変える
-グラフの背景色をなくして表示をシンプルにするには
+## 背景等を変える
+グラフ全体の色合い等を変える場合はテーマ関数（`ggplot2::theme_`）を用います。デフォルトテーマを含め８種類のテーマ関数が用意されています。
+```{r, eval=FALSE}
+theme_gray(base_size = 11, base_family = "")        # デフォルトテーマ
+theme_bw(base_size = 11, base_family = "")
+theme_linedraw(base_size = 11, base_family = "")
+theme_light(base_size = 11, base_family = "")
+theme_dark(base_size = 11, base_family = "")
+theme_minimal(base_size = 11, base_family = "")
+theme_classic(base_size = 11, base_family = "")
+theme_void(base_size = 11, base_family = "")
+```
+
+```{r, echo=FALSE}
+gg_gray <- iris %>% 
+  ggplot2::ggplot(aes(x = Sepal.Width, y = Sepal.Length, colour = Species)) +
+    ggplot2::geom_point() + ggplot2::xlab("") + ggplot2::ylab("")
+gg_bw <- gg_gray + ggplot2::theme_bw() + ggplot2::ggtitle("theme_bw")
+gg_ld <- gg_gray + ggplot2::theme_linedraw() + ggplot2::ggtitle("theme_linedraw")
+gg_lt <- gg_gray + ggplot2::theme_light() + ggplot2::ggtitle("theme_light")
+gg_dk <- gg_gray + ggplot2::theme_dark() + ggplot2::ggtitle("theme_dark")
+gg_min <- gg_gray + ggplot2::theme_minimal() + ggplot2::ggtitle("theme_minimal")
+gg_cl <- gg_gray + ggplot2::theme_classic() + ggplot2::ggtitle("theme_classic")
+gg_vd <- gg_gray + ggplot2::theme_void() + ggplot2::ggtitle("theme_void")
+
+gridExtra::grid.arrange(gg_gray,
+                        gg_bw, gg_ld, gg_lt, gg_dk, gg_min, gg_cl, gg_vd,
+                        ncol = 2)
+```
+
+`ggplot2::theme_classic`を用いてグラフテーマをクラッシックに設定してみます。
 ```{r}
 iris %>% 
   ggplot2::ggplot(aes(x = Sepal.Width, y = Sepal.Length, colour = Species)) +
@@ -172,10 +259,163 @@ iris %>%
     ggplot2::ggtitle("みんな大好きiris") +
     ggplot2::xlab("がく片の幅") + ggplot2::ylab("がく片の長さ") +
     ggplot2::geom_smooth(method = "lm", se = TRUE) +
-    ggplot2::theme_bw()
+    ggplot2::theme_classic()
 ```
 
-# 理解のポイント
+# 応用的な使い方
+様々なオプションを指定することでグラフ描画のコントロールが可能です
+
+## サイズを変える
+例えば散布図の点の大きさを変えるには`size`オプションを用います。
+```{r}
+iris %>% 
+  ggplot2::ggplot(aes(x = Sepal.Width, y = Sepal.Length, colour = Species)) + 
+    ggplot2::geom_point(size = 5)
+```
+
+## 変数を用いてサイズを変える
+更に花弁の長さ（`Petal.Length`）に応じた点の大きさにしたい場合は`ggplot2::aes`関数の中で`size`オプションを用います。
+```{r}
+iris %>% 
+  ggplot2::ggplot(aes(x = Sepal.Width, y = Sepal.Length, colour = Species)) + 
+    ggplot2::geom_point(aes(size = Petal.Length))
+```
+
+## ヒストグラムを色分けする
+`geom_histgram`関数に対する`colour`オプション指定は枠線にしか適用されません。
+```{r}
+iris %>% 
+  ggplot2::ggplot(aes(x = Sepal.Length, colour = Species)) + 
+    ggplot2::geom_histogram()
+```
+
+ヒストグラム全体を塗り分けしたい場合は`fill`オプションを利用して下さい。
+```{r}
+iris %>% 
+  ggplot2::ggplot(aes(x = Sepal.Length, fill = Species)) + 
+    ggplot2::geom_histogram()
+```
+
+## 色の透過度を変える
+色の透過度（アルファチャネル）を変更するには`alpha`オプションを用います。
+```{r}
+iris %>% 
+  ggplot2::ggplot(aes(x = Sepal.Length, fill = Species)) + 
+    ggplot2::geom_histogram(alpha = 0.5)
+```
+
+## ヒストグラムを重ねて描く
+`position`オプションを用いるとデフォルトの積み上げヒストグラムを層別の独立ヒストグラムとして描くことができます。
+```{r}
+iris %>% 
+  ggplot2::ggplot(aes(x = Sepal.Length, fill = Species)) + 
+    ggplot2::geom_histogram(position = "identity", alpha = 0.5)
+```
+
+上図では今ひとつ分かりにくいかも知れませんが、下図の三つのグラフが重ね合わされて描かれており、重なっている部分の色が濃くなっています。
+```{r, echo=FALSE}
+iris %>% 
+  ggplot2::ggplot(aes(x = Sepal.Length, fill = Species)) + 
+    ggplot2::geom_histogram(alpha = 0.5) +
+    ggplot2::facet_wrap(~ Species)
+```
+
+## 密度関数を上書きする
+密度関数に対する`size`オプションは線の太さとして適用されます。
+```{r}
+iris %>% 
+  ggplot2::ggplot(aes(x = Sepal.Length, y = ..density.., fill = Species)) + 
+    ggplot2::geom_histogram(position = "identity", alpha = 0.5) + 
+    ggplot2::geom_density(alpha = 0.25, size = 0.1)
+
+```
+
+
+## 箱ひげ図を描く
+箱ひげ図を描くには`ggplot2::geom_boxplot`関数を用います。`ggplot2::geom_boxplot`を層別で使わない場合はｘ軸に適当な値を指定してください。
+```{r}
+iris %>% 
+  ggplot2::ggplot(aes(x = NA, y = Sepal.Length)) + 
+    ggplot2::geom_boxplot()
+```
+
+## 箱ひげ図を層別で描く
+```{r}
+iris %>% 
+  ggplot2::ggplot(aes(x = Species, y = Sepal.Length, colour = Species)) + 
+    ggplot2::geom_boxplot()
+```
+
+```{r}
+iris %>% 
+  ggplot2::ggplot(aes(x = Species, y = Sepal.Length, fill = Species)) + 
+    ggplot2::geom_boxplot(alpha = 0.5)
+```
+
+## 箱ひげ図にデータ
+```{r}
+iris %>% 
+  ggplot2::ggplot(aes(x = Species, y = Sepal.Length, colour = Species)) + 
+    ggplot2::geom_boxplot() + 
+    ggplot2::geom_jitter(aes(size = Sepal.Width))
+```
+
+## バイオリンプロット
+バイオリンプロットを使うとデータの分布を更に視覚的に把握しやすくなります。
+```{r}
+iris %>% 
+  ggplot2::ggplot(aes(x = Species, y = Sepal.Length, colour = Species)) + 
+    ggplot2::geom_violin()
+```
+
+## 軸の入れ替え
+
+```{r}
+iris %>% 
+  ggplot2::ggplot(aes(x = Species, y = Sepal.Length, colour = Species)) + 
+    ggplot2::geom_boxplot() + 
+    ggplot2::coord_flip()
+```
+
+## 軸の反転
+```{r}
+iris %>% 
+  ggplot2::ggplot(aes(x = Sepal.Width, y = Sepal.Length, colour = Species)) + 
+    ggplot2::geom_point() + 
+    ggplot2::scale_x_reverse()
+```
+
+## 統計情報で描く
+平均値とその標準誤差を計算し、平均値を棒グラフで描き、標準誤差をエラーバーで表示する。
+```{r}
+iris %>% 
+  ggplot2::ggplot(aes(x = Species, y = Petal.Length, fill = Species)) + 
+    ggplot2::stat_summary(fun.y = mean, geom = "bar", alpha = 0.5) +
+    ggplot2::stat_summary(fun.data = mean_cl_normal, geom = "errorbar",
+                          width = 0.5)
+```
+
+
+## 層別に描く
+見やすくするために種別（`Species`）のデータを用いて層別のグラフにしてみましょう。層別に描くには`ggplot2::facet_warp`を用います。
+```{r, eval=FALSE}
+facet_wrap(facets, nrow = NULL, ncol = NULL, scales = "fixed", shrink = TRUE,
+           labeller = "label_value", as.table = TRUE, switch = NULL,
+           drop = TRUE, dir = "h", strip.position = "top")
+```
+
+引数`facets`は下記のようにformula形式で指定することに注意して下さい。
+```{r}
+iris %>% 
+  ggplot2::ggplot(aes(x = Sepal.Width, y = Sepal.Length, colour = Species)) +
+    ggplot2::geom_point() +
+    ggplot2::ggtitle("みんな大好きiris") +
+    ggplot2::xlab("がく片の幅") + ggplot2::ylab("がく片の長さ") +
+    ggplot2::geom_smooth(method = "lm", se = TRUE) +
+    ggplot2::facet_wrap(~ Species)
+```
+
+なお、二変数で層別にしたい場合は`ggplot::facet_grid`関数を用います。
 
 ---
 
