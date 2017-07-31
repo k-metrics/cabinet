@@ -3,7 +3,8 @@ title: "dplyrのすゝめ"
 author-meta: "k-metrics"
 output: 
   html_document:  
-    code_folding: show
+    code_folding: none
+    df_print: "paged"
     highlight: textmate
     md_extensions: -ascii_identifiers
     number_section: yes
@@ -49,19 +50,19 @@ source("../../common/common.R")
 　  
 
 ## 雑然データ
-整然データと対をなすのは雑然データ（Messy Data）と言われるものです。雑然データはデータ分析環境にとっては扱いにくいデータなのですが、人間にとっては理解しやすい構造のために多用されています。概ね記録は雑然データとして残されています。  
+整然データと対をなすのは雑然データ(Messy Data)と言われるものです。雑然データはデータ分析環境にとっては扱いにくいデータなのですが、人間にとっては理解しやすい構造のために多用されています。概ね記録は雑然データとして残されています。  
 　  
 
 ## 雑然データと整然データ
-言葉だけでは分かりにくいので具体な比較してみましょう。  
+言葉だけでは分かりにくいので具体な比較してみましょう。こちらが雑然データです。  
 ```{r, echo=FALSE}
 data.frame(日付 = c("2017-5-1", "2017-5-2", "2017-5-3"),
            項目A = c(1L, 2L, 3L),
            項目B = c(NA, 3L, NA),
-           項目C = c(NA, NA, 2L)) %>% 
-  knitr::kable(caption = "雑然データ")
+           項目C = c(NA, NA, 2L))
 ```
 
+こちらが整然データです。
 ```{r, echo=FALSE}
 data.frame(日付 = c("2017-5-1", "2017-5-2", "2017-5-3"),
            項目A = c(1L, 2L, 3L),
@@ -69,8 +70,7 @@ data.frame(日付 = c("2017-5-1", "2017-5-2", "2017-5-3"),
            項目C = c(NA, NA, 2L)) %>% 
   tidyr::gather(key = 項目, value = 値, -日付) %>% 
   dplyr::arrange(日付) %>% 
-  head(3) %>% 
-  knitr::kable(caption = "整然データ")
+  head(3)
 ```
 
 このように雑然データはクロス集計されたような形式であり行と列が交差する部分を読み取らないとデータの意味が理解できない形式です。一方、整然データは雑然データに比べて冗長ですが行を読み取るだけで一つのデータの意味が理解できる形式です。
@@ -112,8 +112,7 @@ iris %>%
 ```{r}
 iris %>% 
   group_by(Species) %>% 
-  dplyr::summarise_if(is.numeric, funs(mean), na.rm = TRUE) %>% 
-  knitr::kable(caption = "種別毎の平均値")
+  dplyr::summarise_if(is.numeric, funs(mean), na.rm = TRUE)
 ```
 
 この様にパイプ演算子は中間変数を作成することなく処理の手順を記述できます。コードの可読性が上がるというメリットもあります。   
@@ -128,55 +127,49 @@ iris %>%
 `nycflight13`パッケージの中心となるデータフレームです。項目数が多いすが基本となる飛行データで約33万レコードあります。
 ```{r, echo=FALSE}
 nycflights13::flights %>% 
-  head(3) %>% 
-  knitr::kable()
+  head(3)
 ```
 
 #### airlines {.unnumbered}
 航空会社のコードと名称のデータです。
 ```{r, echo=FALSE}
 nycflights13::airlines %>% 
-  head(3) %>% 
-  knitr::kable()
+  head(3)
 ```
 
 #### airports {.unnumbered}
 空港のコード、名称、位置、タイムゾーン等のデータです。
 ```{r, echo=FALSE}
 nycflights13::airports %>% 
-  head(3) %>% 
-  knitr::kable()
+  head(3)
 ```
 
 #### planes {.unnumbered}
 飛行機のコード、製造年、メーカ、モデル等のデータです。
 ```{r, echo=FALSE}
 nycflights13::planes %>% 
-  head(3) %>% 
-  knitr::kable()
+  head(3)
 ```
 
 #### weather {.unnumbered}
 空港の気象に関するデータです。
 ```{r, echo=FALSE}
 nycflights13::weather %>% 
-  head(3) %>% 
-  knitr::kable()
+  head(3)
 ```
+　  
 
 ## sample
 データをサンプリングする関数はサンプル数を数字で指定する`dplyr::sample_n`と比率で指定する`dplyr::sample_frac`関数があります。
 ```{r}
 nycflights13::flights %>% 
-  dplyr::sample_n(100) %>%              # 100個のデータをランダムサンプリング
-  DT::datatable(style = 'bootstrap')    # インタラクティブな表として表示する
+  dplyr::sample_n(100)                   # 100個のデータをランダムサンプリング
 ```
 
 比率は1を100%として指定します。
 ```{r}
 nycflights13::flights %>% 
-  dplyr::sample_frac(0.001) %>%          # 0.1%のデータをランダムサンプリング
-  DT::datatable(style = 'bootstrap')  　 # インタラクティブな表として表示する
+  dplyr::sample_frac(0.001)              # 0.1%のデータをランダムサンプリング
 ```
 　  
 
@@ -185,8 +178,7 @@ nycflights13::flights %>%
 ```{r}
 nycflights13::flights %>% 
   dplyr::sample_n(100) %>%               # 100個のデータをランダムサンプリング
-  dplyr::filter(carrier == "AA") %>%     # 航空会社がAAと一致するデータのみ抽出
-  DT::datatable(style = 'bootstrap')  　 # インタラクティブな表として表示する
+  dplyr::filter(carrier == "AA")         # 航空会社がAAと一致するデータのみ抽出
 ```
 　  
 
@@ -196,9 +188,7 @@ nycflights13::flights %>%
 nycflights13::flights %>% 
   dplyr::sample_n(100) %>%               # 100個のデータをランダムサンプリング
   dplyr::filter(carrier == "AA") %>%     # 航空会社がAAと一致するデータのみ抽出
-  dplyr::select(year, month, day, dep_time, carrier, origin, dest) %>% 
-                                         # 7項目に絞ってみる
-  DT::datatable(style = 'bootstrap')  　 # インタラクティブな表として表示する
+  dplyr::select(year, month, day, dep_time, carrier, origin, dest)
 ```
 　  
 
@@ -210,9 +200,7 @@ nycflights13::flights %>%
   dplyr::filter(carrier == "AA") %>%     # 航空会社がAAと一致するデータのみ抽出
   dplyr::select(year, month, day, dep_time, carrier, origin, dest) %>% 
   dplyr::rename('年' = year, '月' = month, '日' = day, '出発時間' = dep_time,
-                '航空会社' = carrier, '出発地' = origin, '目的地' = dest) %>%
-                                         # 項目名（列名）を日本語に変える
-  DT::datatable(style = 'bootstrap')  　 # インタラクティブな表として表示する
+                '航空会社' = carrier, '出発地' = origin, '目的地' = dest)
 ```
 　  
 
@@ -223,9 +211,7 @@ nycflights13::flights %>%
   dplyr::sample_n(100) %>%               # 100個のデータをランダムサンプリング
   dplyr::filter(carrier == "AA") %>%     # 航空会社がAAと一致するデータのみ抽出
   dplyr::select('年' = year, '月' = month, '日' = day, '出発時間' = dep_time,
-                '航空会社' = carrier, '出発地' = origin, '目的地' = dest) %>% 
-                                         # 選択と共に名前を日本語に変える
-  DT::datatable(style = 'bootstrap')  　 # インタラクティブな表として表示する
+                '航空会社' = carrier, '出発地' = origin, '目的地' = dest)
 ```
 　  
 
@@ -237,9 +223,7 @@ nycflights13::flights %>%
   dplyr::mutate(delay = arr_delay - dep_delay) %>%
                                           # 実遅延時間を計算する
   tidyr::drop_na(delay) %>%               # 計算結果がNAとなったものを除く
-  dplyr::select(dep_time, arr_time, carrier, origin, dest, delay) %>% 
-                                          # 表示を6項目に絞る
-  DT::datatable(style = 'bootstrap')  　  # インタラクティブな表として表示する
+  dplyr::select(dep_time, arr_time, carrier, origin, dest, delay)
 ```
 　  
 
@@ -252,9 +236,7 @@ nycflights13::flights %>%
                                           # 実遅延時間を計算する
   tidyr::drop_na(delay) %>%               # 計算結果がNAとなったものを除く
   group_by(dest) %>%                      # 目的地毎にグループ化
-  dplyr::summarise_at(vars(delay), funs(mean)) %>% 
-                                          # 平均遅延時間を計算
-  DT::datatable(style = 'bootstrap')  　  # インタラクティブな表として表示する
+  dplyr::summarise_at(vars(delay), funs(mean))
 ```
 　  
 
@@ -267,9 +249,7 @@ nycflights13::flights %>%
                                           # 実遅延時間を計算する
   tidyr::drop_na(delay) %>%               # 計算結果がNAとなったものを除く
   group_by(dest, carrier) %>%             # 目的地と航空会社でグループ化
-  dplyr::summarise_at(vars(delay), funs(mean)) %>% 
-                                          # 平均遅延時間を計算
-  DT::datatable(style = 'bootstrap')  　  # インタラクティブな表として表示する
+  dplyr::summarise_at(vars(delay), funs(mean))
 ```
 　  
 
@@ -284,9 +264,7 @@ nycflights13::flights %>%
   group_by(dest, carrier) %>%             # 目的地と航空会社でグループ化
   dplyr::summarise_at(vars(delay), funs(round(mean(.), 0))) %>% 
                                           # 平均遅延時間を計算
-  tidyr::spread(key = carrier, value = delay) %>% 
-                                          # 雑然データ形式で表示
-  DT::datatable(style = 'bootstrap')  　  # インタラクティブな表として表示する
+  tidyr::spread(key = carrier, value = delay)
 ```
 　  
 
@@ -310,9 +288,7 @@ nycflights13::flights %>%
                                           # 目的地名と航空会社名でグループ化
   dplyr::summarise_at(vars(delay), funs(round(mean(.), 1))) %>% 
                                           # 平均遅延時間を計算
-  tidyr::spread(key = carrier_name, value = delay) %>% 
-                                          # 雑然データ形式で表示
-  DT::datatable(style = 'bootstrap')  　  # インタラクティブな表として表示する
+  tidyr::spread(key = carrier_name, value = delay)
 ```
 
 ---

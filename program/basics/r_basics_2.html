@@ -24,9 +24,10 @@
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
-<script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
 <link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
 
 <style type="text/css">code{white-space: pre;}</style>
@@ -163,14 +164,6 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
-<style type="text/css">
-.code-folding-btn { margin-bottom: 4px; }
-</style>
-<script>
-$(document).ready(function () {
-  window.initializeCodeFolding("show" === "show");
-});
-</script>
 
 
 
@@ -292,10 +285,6 @@ div.tocify {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="./index.html">Top</a>
-    </li>
-    <li class="divider"></li>
-    <li>
       <a href="./coding_style.html">Coding Style</a>
     </li>
     <li>
@@ -309,6 +298,9 @@ div.tocify {
     </li>
     <li>
       <a href="./dplyr_basics.html">dplyrのすゝめ</a>
+    </li>
+    <li>
+      <a href="./ggplot2_basics.html">ggplot2のすゝめ</a>
     </li>
   </ul>
 </li>
@@ -334,22 +326,22 @@ div.tocify {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../index.html">
+      <a href="../">
         <span class="fa fa-home"></span>
          
-        Program Top
+        Program
       </a>
     </li>
     <li class="divider"></li>
     <li>
-      <a href="../env/index.html">
+      <a href="../env/">
         <span class="fa fa-laptop"></span>
          
         分析環境
       </a>
     </li>
     <li>
-      <a href="./index.html">
+      <a href="./">
         <span class="fa fa-info-circle"></span>
          
         環境基礎
@@ -384,10 +376,10 @@ div.tocify {
       <a href="../../import/">　Import</a>
     </li>
     <li>
-      <a href="../tidy/">　Tidy/Transform</a>
+      <a href="../../tidy/">　Tidy/Transform</a>
     </li>
     <li>
-      <a href="../index.html">　Model/Infer</a>
+      <a href="../../model/">　Model/Infer</a>
     </li>
     <li>
       <a href="../../visualize/">　Visualize</a>
@@ -396,7 +388,7 @@ div.tocify {
       <a href="../../communicate/">　Communicate/Automate</a>
     </li>
     <li>
-      <a href="../../program/">
+      <a href="../">
         <span class="fa fa-home"></span>
          
         Program
@@ -418,14 +410,6 @@ div.tocify {
 </div><!--/.navbar -->
 
 <div class="fluid-row" id="header">
-
-<div class="btn-group pull-right">
-<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
-<ul class="dropdown-menu" style="min-width: 50px;">
-<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
-<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
-</ul>
-</div>
 
 
 
@@ -835,14 +819,11 @@ div.tocify {
 例えばモダンなプログラミングで必須ともいえる<code>dplyr</code>パッケージにある<code>filter関数</code>は、基本パッケージ<code>stats</code>にある時系列フィルタリングを行う<code>filter</code>関数をマスクしてしまいますので、<code>stats:filter</code>関数を使う場合は以下のように明示的にパッケージ名を指定して記述します。</p>
 <pre class="r"><code>library(dplyr)
 filter(mtcars, cyl == 6)              # dplyrパッケージのfilter関数が呼び出される</code></pre>
-<pre><code>##    mpg cyl  disp  hp drat    wt  qsec vs am gear carb
-## 1 21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
-## 2 21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
-## 3 21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
-## 4 18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
-## 5 19.2   6 167.6 123 3.92 3.440 18.30  1  0    4    4
-## 6 17.8   6 167.6 123 3.92 3.440 18.90  1  0    4    4
-## 7 19.7   6 145.0 175 3.62 2.770 15.50  0  1    5    6</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["mpg"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["cyl"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["disp"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["hp"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["drat"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["wt"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["qsec"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["vs"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["am"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["gear"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["carb"],"name":[11],"type":["dbl"],"align":["right"]}],"data":[{"1":"21.0","2":"6","3":"160.0","4":"110","5":"3.90","6":"2.620","7":"16.46","8":"0","9":"1","10":"4","11":"4"},{"1":"21.0","2":"6","3":"160.0","4":"110","5":"3.90","6":"2.875","7":"17.02","8":"0","9":"1","10":"4","11":"4"},{"1":"21.4","2":"6","3":"258.0","4":"110","5":"3.08","6":"3.215","7":"19.44","8":"1","9":"0","10":"3","11":"1"},{"1":"18.1","2":"6","3":"225.0","4":"105","5":"2.76","6":"3.460","7":"20.22","8":"1","9":"0","10":"3","11":"1"},{"1":"19.2","2":"6","3":"167.6","4":"123","5":"3.92","6":"3.440","7":"18.30","8":"1","9":"0","10":"4","11":"4"},{"1":"17.8","2":"6","3":"167.6","4":"123","5":"3.92","6":"3.440","7":"18.90","8":"1","9":"0","10":"4","11":"4"},{"1":"19.7","2":"6","3":"145.0","4":"175","5":"3.62","6":"2.770","7":"15.50","8":"0","9":"1","10":"5","11":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
 <pre class="r"><code>stats::filter(c(1:100), rep(1, 3))    # statsパッケージのfilter関数を呼び出している</code></pre>
 <pre><code>## Time Series:
 ## Start = 1 
@@ -865,7 +846,7 @@ filter(mtcars, cyl == 6)              # dplyrパッケージのfilter関数が�
 <pre class="r"><code>update.packages()</code></pre>
 <hr />
 <!-- Footer -->
-<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" title="CC BY-NC-SA 4.0 icon" alt="Sampo Suzuki" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0</a>, Sampo Suzuki [2017-07-25 22:59(JST)]</p>
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" title="CC BY-NC-SA 4.0 icon" alt="Sampo Suzuki" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0</a>, Sampo Suzuki [2017-07-31 22:52(JST)]</p>
 </div>
 </div>
 

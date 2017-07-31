@@ -24,9 +24,10 @@
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
-<script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
 <link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
 
 <style type="text/css">code{white-space: pre;}</style>
@@ -163,14 +164,6 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
-<style type="text/css">
-.code-folding-btn { margin-bottom: 4px; }
-</style>
-<script>
-$(document).ready(function () {
-  window.initializeCodeFolding("show" === "show");
-});
-</script>
 
 
 
@@ -292,10 +285,6 @@ div.tocify {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="./index.html">Top</a>
-    </li>
-    <li class="divider"></li>
-    <li>
       <a href="./coding_style.html">Coding Style</a>
     </li>
     <li>
@@ -309,6 +298,9 @@ div.tocify {
     </li>
     <li>
       <a href="./dplyr_basics.html">dplyrのすゝめ</a>
+    </li>
+    <li>
+      <a href="./ggplot2_basics.html">ggplot2のすゝめ</a>
     </li>
   </ul>
 </li>
@@ -334,22 +326,22 @@ div.tocify {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../index.html">
+      <a href="../">
         <span class="fa fa-home"></span>
          
-        Program Top
+        Program
       </a>
     </li>
     <li class="divider"></li>
     <li>
-      <a href="../env/index.html">
+      <a href="../env/">
         <span class="fa fa-laptop"></span>
          
         分析環境
       </a>
     </li>
     <li>
-      <a href="./index.html">
+      <a href="./">
         <span class="fa fa-info-circle"></span>
          
         環境基礎
@@ -384,10 +376,10 @@ div.tocify {
       <a href="../../import/">　Import</a>
     </li>
     <li>
-      <a href="../tidy/">　Tidy/Transform</a>
+      <a href="../../tidy/">　Tidy/Transform</a>
     </li>
     <li>
-      <a href="../index.html">　Model/Infer</a>
+      <a href="../../model/">　Model/Infer</a>
     </li>
     <li>
       <a href="../../visualize/">　Visualize</a>
@@ -396,7 +388,7 @@ div.tocify {
       <a href="../../communicate/">　Communicate/Automate</a>
     </li>
     <li>
-      <a href="../../program/">
+      <a href="../">
         <span class="fa fa-home"></span>
          
         Program
@@ -418,14 +410,6 @@ div.tocify {
 </div><!--/.navbar -->
 
 <div class="fluid-row" id="header">
-
-<div class="btn-group pull-right">
-<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
-<ul class="dropdown-menu" style="min-width: 50px;">
-<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
-<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
-</ul>
-</div>
 
 
 
@@ -780,10 +764,11 @@ ary_num</code></pre>
 データフレーム型を作成するには<code>base::data.frame</code>関数を用います。デフォルトでは文字型変数は後述の<a href="#Factor">因子型(Factor)</a>として扱われます。</p>
 <pre class="r"><code>dataset &lt;- data.frame(vec_NUM, vec_str, vec_BOOL, vec_cmp)
 dataset</code></pre>
-<pre><code>##   vec_NUM vec_str vec_BOOL vec_cmp
-## 1       1    TRUE     TRUE    1+0i
-## 2       2   FALSE    FALSE    2+3i
-## 3       3    VOID     TRUE    3+5i</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["vec_NUM"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["vec_str"],"name":[2],"type":["fctr"],"align":["left"]},{"label":["vec_BOOL"],"name":[3],"type":["lgl"],"align":["right"]},{"label":["vec_cmp"],"name":[4],"type":["cplx"],"align":["right"]}],"data":[{"1":"1","2":"TRUE","3":"TRUE","4":"1+0i"},{"1":"2","2":"FALSE","3":"FALSE","4":"2+3i"},{"1":"3","2":"VOID","3":"TRUE","4":"3+5i"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
 <p>数の異なるデータからデータフレーム型を作るとどうなるでしょう？実際にご自分のコンソールで実行してみてください。</p>
 <pre class="r"><code>data_set &lt;- data.frame(vec_num, vec_str, vec_bool) </code></pre>
 <p>　</p>
@@ -984,10 +969,11 @@ typeof(vec_test_6)</code></pre>
 <h2>データフレーム型変数</h2>
 <p>データフレーム型変数内のベクトル型変数を参照する場合は<code>$</code>を用います。更に参照したベクトル型変数内のデータを参照する場合には前述の<code>[]</code>を利用します。</p>
 <pre class="r"><code>dataset</code></pre>
-<pre><code>##   vec_NUM vec_str vec_BOOL vec_cmp
-## 1       1    TRUE     TRUE    1+0i
-## 2       2   FALSE    FALSE    2+3i
-## 3       3    VOID     TRUE    3+5i</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["vec_NUM"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["vec_str"],"name":[2],"type":["fctr"],"align":["left"]},{"label":["vec_BOOL"],"name":[3],"type":["lgl"],"align":["right"]},{"label":["vec_cmp"],"name":[4],"type":["cplx"],"align":["right"]}],"data":[{"1":"1","2":"TRUE","3":"TRUE","4":"1+0i"},{"1":"2","2":"FALSE","3":"FALSE","4":"2+3i"},{"1":"3","2":"VOID","3":"TRUE","4":"3+5i"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
 <pre class="r"><code>dataset$vec_NUM</code></pre>
 <pre><code>## [1] 1 2 3</code></pre>
 <pre class="r"><code>dataset$vec_str[3]</code></pre>
@@ -1561,7 +1547,7 @@ y &amp;&amp; z</code></pre>
 <p>ネットコミュニティで質問したい場合は、日本の<a href="https://www.r-project.org/" title="The R Project">R</a>界の著名人が集まっている<a href="http://qiita.com/uri/items/5583e91bb5301ed5a4ba" title="R-wakalang">R-wakalang</a>や <a href="http://www.okadajp.org/RWiki/" title="RjpWiki">Rjp Wiki</a>で、検索には<a href="https://www.r-project.org/" title="The R Project">R</a>に特化した検索エンジンである<a href="http://seekr.jp/" title="seek R">seek R</a>がすゝめです。</p>
 <hr />
 <!-- Footer -->
-<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" title="CC BY-NC-SA 4.0 icon" alt="Sampo Suzuki" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0</a>, Sampo Suzuki [2017-07-25 22:58(JST)]</p>
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" title="CC BY-NC-SA 4.0 icon" alt="Sampo Suzuki" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0</a>, Sampo Suzuki [2017-07-31 22:52(JST)]</p>
 </div>
 
 
