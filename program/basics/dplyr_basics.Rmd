@@ -62,18 +62,17 @@ data.frame(日付 = c("2017-5-1", "2017-5-2", "2017-5-3"),
            項目C = c(NA, NA, 2L))
 ```
 
-こちらが整然データです。
+こちらが上記の雑然データを整理して整然データとしたものです。
 ```{r, echo=FALSE}
 data.frame(日付 = c("2017-5-1", "2017-5-2", "2017-5-3"),
            項目A = c(1L, 2L, 3L),
            項目B = c(NA, 3L, NA),
            項目C = c(NA, NA, 2L)) %>% 
   tidyr::gather(key = 項目, value = 値, -日付) %>% 
-  dplyr::arrange(日付) %>% 
-  head(3)
+  dplyr::arrange(日付)
 ```
 
-このように雑然データはクロス集計されたような形式であり行と列が交差する部分を読み取らないとデータの意味が理解できない形式です。一方、整然データは雑然データに比べて冗長ですが行を読み取るだけで一つのデータの意味が理解できる形式です。
+このように雑然データはクロス集計されたような形式であり行と列が交差する部分を読み取らないとデータの意味が理解できない形式です。一方、整然データは雑然データに比べて冗長ですが行を読み取るだけで一つのデータの意味が理解できる形式になります。
 　  
 
 ## 整然データの定義
@@ -111,48 +110,48 @@ iris %>%
 パイプ演算子のメリットは、演算子左右のデータ型が一致していれば数珠つなぎのような記述が可能なことです。例えばアヤメの種別毎に平均値を計算し表として整形する場合は以下のようにパイプ演算子でつなげることで処理できます。
 ```{r}
 iris %>% 
-  group_by(Species) %>% 
+  dplyr::group_by(Species) %>% 
   dplyr::summarise_if(is.numeric, funs(mean), na.rm = TRUE)
 ```
 
-この様にパイプ演算子は中間変数を作成することなく処理の手順を記述できます。コードの可読性が上がるというメリットもあります。   
+この様にパイプ演算子は中間変数を作成することなく処理の手順通りに記述できます。中間変数がなくなることでコードの可読性も上がります。   
 
 では、パイプ演算子以外のデータハンドリング処理に必要な関数を見ていきましょう。
 　  
 
 ## Data Overview
-利用するデータは`nycflight13`パッケージのデータセットを用います。このデータは2013年のNYC発のフライトデータで以下のようなデータセットで構成されています。
+はじめに利用するデータを説明します。データは`nycflight13`パッケージに含まれるデータセットを用います。このデータは2013年のNYC発のフライトデータで以下のようなデータセットで構成されています。データが巨大ですので各データ共最初の３行のみの表示です。
 
 #### flights {.unnumbered}
-`nycflight13`パッケージの中心となるデータフレームです。項目数が多いすが基本となる飛行データで約33万レコードあります。
+`nycflight13`パッケージの中心となるデータです。項目数が多いですが基本となる飛行データで約33万レコードあります。
 ```{r, echo=FALSE}
 nycflights13::flights %>% 
   head(3)
 ```
 
 #### airlines {.unnumbered}
-航空会社のコードと名称のデータです。
+航空会社のコードと航空会社名のデータです。
 ```{r, echo=FALSE}
 nycflights13::airlines %>% 
   head(3)
 ```
 
 #### airports {.unnumbered}
-空港のコード、名称、位置、タイムゾーン等のデータです。
+空港コード、空港名、位置座標、タイムゾーン等のデータです。
 ```{r, echo=FALSE}
 nycflights13::airports %>% 
   head(3)
 ```
 
 #### planes {.unnumbered}
-飛行機のコード、製造年、メーカ、モデル等のデータです。
+飛行機コード、製造年、製造メーカ、モデル等のデータです。
 ```{r, echo=FALSE}
 nycflights13::planes %>% 
   head(3)
 ```
 
 #### weather {.unnumbered}
-空港の気象に関するデータです。
+フライト日の空港気象に関するデータです。
 ```{r, echo=FALSE}
 nycflights13::weather %>% 
   head(3)
@@ -160,13 +159,21 @@ nycflights13::weather %>%
 　  
 
 ## sample
-データをサンプリングする関数はサンプル数を数字で指定する`dplyr::sample_n`と比率で指定する`dplyr::sample_frac`関数があります。
+データをサンプリングする関数はサンプル数を数字で指定する`dplyr::sample_n`関数と比率で指定する`dplyr::sample_frac`関数があります。
+```{r, eval=FALSE}
+sample_n(tbl, size, replace = FALSE, weight = NULL, .env = NULL)
+sample_frac(tbl, size = 1, replace = FALSE, weight = NULL, .env = NULL)
+```
+
+### sample_n
+対象となるデータから指定行数（この場合は100行）のデータをランダムサンプリングします。
 ```{r}
 nycflights13::flights %>% 
   dplyr::sample_n(100)                   # 100個のデータをランダムサンプリング
 ```
 
-比率は1を100%として指定します。
+### sample_frac
+対象となるデータから指定比率（1を100%とするのでこの場合は0.1%）でデータをランダムサンプリングします。
 ```{r}
 nycflights13::flights %>% 
   dplyr::sample_frac(0.001)              # 0.1%のデータをランダムサンプリング
@@ -174,7 +181,13 @@ nycflights13::flights %>%
 　  
 
 ## filter
-データを行で絞る場合は`dplyr::filter`関数を用います。条件式には比較演算子の他に論理演算子等が使えます。アメリカン航空（AA）のフライトデータを抜き出してみるには以下のように指定します。
+データを任意の条件で行選択する場合は`dplyr::filter`関数を用います。条件式には比較演算子の他に論理演算子等が使えます。
+```{r, eval=FALSE}
+filter(.data, ...)
+```
+
+### filter
+ランダムサンプリングした100行のデータからアメリカン航空（AA）のフライトデータを抜き出すには以下のように指定します。
 ```{r}
 nycflights13::flights %>% 
   dplyr::sample_n(100) %>%               # 100個のデータをランダムサンプリング
@@ -183,7 +196,13 @@ nycflights13::flights %>%
 　  
 
 ## select
-`nycflights13::flights`は項目数が多いので表示項目を限定してみましょう。項目（列）を選択するには`dplyr::select`関数を用います。
+`nycflights13::flights`は項目数が多いので表示項目を限定してみましょう。項目(列)を選択するには`dplyr::select`関数を用います。
+```{r, eval=FALSE}
+select(.data, ...)
+```
+
+### select
+ランダムサンプリングした100行のデータからアメリカン航空（AA）のフライトデータを抜き出し、「year, month, day, dep_time, carrier, origin, dest」のみを表示するには以下のように指定します。
 ```{r}
 nycflights13::flights %>% 
   dplyr::sample_n(100) %>%               # 100個のデータをランダムサンプリング
@@ -191,9 +210,14 @@ nycflights13::flights %>%
   dplyr::select(year, month, day, dep_time, carrier, origin, dest)
 ```
 　  
-
 ## rename
-項目名を日本語に変更してみましょう。項目名（列名）を変更するには`dplyr::rename`関数を用います。
+このままでは分かりにくいので項目名を日本語に変更してみましょう。項目名（列名）を変更するには`dplyr::rename`関数を用います。ただし、日本語項目名（列名）は意図しない動作を引き起こす可能性もありますので、表示する時のみに用いるのが無難です。
+```{r, eval=FALSE}
+rename(.data, ...)
+```
+
+### rename
+「year, month, day, dep_time, carrier, origin, dest」を「年月日、出発時間、航空会社、出発地、目的地」に変更するには以下のように指定します。
 ```{r}
 nycflights13::flights %>% 
   dplyr::sample_n(100) %>%               # 100個のデータをランダムサンプリング
@@ -203,9 +227,8 @@ nycflights13::flights %>%
                 '航空会社' = carrier, '出発地' = origin, '目的地' = dest)
 ```
 　  
-
 ### selectによるrename
-`dplyr::select`関数で項目を指定する際に名前も指定すると選択と同時に名前を変更することが可能です。
+`dplyr::select`関数でも名前を変更すことは可能です。以下のように項目を指定する際に名前も指定することで選択と同時に名前を変更することが可能です。
 ```{r}
 nycflights13::flights %>% 
   dplyr::sample_n(100) %>%               # 100個のデータをランダムサンプリング
@@ -214,68 +237,142 @@ nycflights13::flights %>%
                 '航空会社' = carrier, '出発地' = origin, '目的地' = dest)
 ```
 　  
+### Select Helpers
+`dplyr::select/rename`関数で項目（列）を選択する際には以下のような補助関数群が使えます。詳しくはヘルプなどで確認してください。
+```{r, eval=FALSE}
+# 前方一致
+starts_with(match, ignore.case = TRUE, vars = current_vars())
+# 後方一致
+ends_with(match, ignore.case = TRUE, vars = current_vars())
+# 部分一致
+contains(match, ignore.case = TRUE, vars = current_vars())
+# 正規表現
+matches(match, ignore.case = TRUE, vars = current_vars())
+# 通し番号
+num_range(prefix, range, width = NULL, vars = current_vars())
+# ベクトル指定
+one_of(..., vars = current_vars())
+# （残り）全て
+everything(vars = current_vars())
+```
 
 ## mutate
-`arr_delay`から`dep_delay`を引いて実遅延時間を計算してみます。行毎に値を求めますのでWindow関数である`dplyr::mutate`関数を用います。`arr_delay`と`dep_delay`に`NA`データが含まれていますので計算結果が`NA`となった場合には`tidyr::drop_na`関数で削除します。
+データセット（データフレーム）に新たな項目（列）を`dplyr::mutate`関数を用いて追加することが可能です。
+
+### mutate
+ここでは`arr_delay`（到着遅れ時間）から`dep_delay`（出発遅れ時間）を引いて実遅延時間を`dplyr::mutate`関数を用いて計算し、「dep_time, arr_tiem, carrier, origin, dest, delay」のみを表示させてみます。
 ```{r}
 nycflights13::flights %>% 
   dplyr::sample_n(100) %>%                # 100個のデータをランダムサンプリング
   dplyr::mutate(delay = arr_delay - dep_delay) %>%
                                           # 実遅延時間を計算する
-  tidyr::drop_na(delay) %>%               # 計算結果がNAとなったものを除く
   dplyr::select(dep_time, arr_time, carrier, origin, dest, delay)
 ```
-　  
 
-## summarize
-次にSummarize関数を用いいて目的地毎の平均遅延時間を計算してみます。まず、目的に毎にデータをまとめるには`dplyr::group_by`関数を用います。次に`dplyr::summarize_at`関数を用いて遅延時間の平均値を求めます。
+### Scoped Variants
+`dplyr::mutate`関数にはmutateファミリーとも言える3つの関数があります。
+
+* mutate_all - 全ての項目（列）に対して
+* mutate_at - 指定した項目（列）に対して（補助関数が使えます）
+* mutate_if - 指定した条件を満たす項目に対して
+
+後述の`dplyr::summarize`関数にも同様に以下の3つの関数があります。
+
+* summarize_all
+* summarize_at
+* summarize_if
+
+なお、`dplyr::mutate_each/summarize_each`関数は廃止予定ですので使わない様にしてください。
+　  
+## summarise
+項目（列）毎に要約（集計）するには`dplr:summarise`関数を用います。
+```{r, eval=FALSE}
+summarise(.data, ...)
+summarize(.data, ...)       # summarise関数のエイリアス
+```
+
+### summarise_if
+数値項目（列）に対して平均値と標準偏差を求めてみましょう。対象が数値項目ですので、ここでは`dplyr::summarise_if`関数を用いてみます。
 ```{r}
 nycflights13::flights %>% 
   dplyr::sample_n(100) %>%                # 100個のデータをランダムサンプリング
   dplyr::mutate(delay = arr_delay - dep_delay) %>%
                                           # 実遅延時間を計算する
-  tidyr::drop_na(delay) %>%               # 計算結果がNAとなったものを除く
-  group_by(dest) %>%                      # 目的地毎にグループ化
-  dplyr::summarise_at(vars(delay), funs(mean))
+  dplyr::select(-year, -month, -day) %>%  # 年月日を除く
+  dplyr::summarise_if(is.numeric, funs(mean(., na.rm = TRUE),
+                                       sd(., na.rm = TRUE)))
 ```
 　  
 
 ## group_by
-データをまとめる`dplyr::group_by`関数は複数の項目（列）に対して適用することも可能です。これを用いて目的地と航空会社に対して平均遅延時間をクロス集計をしてみましょう。
+要約（集計）は行の値毎、例えば到着地毎とか航空会社毎とかに行いたい場合があります。この場合には`dplyr::group_by`関数を用いてグループ化します。
+```{r, eval=FALSE}
+group_by(.data, ..., add = FALSE)
+ungroup(x, ...)                     # グループ化を解除する場合に用いる
+```
+
+### summarize_at
+例えば目的地毎の平均遅延時間を計算したいとします。この場合、まず、実遅延時間を計算し、目的に毎にデータをグループ化します。最後に`dplyr::summarize_at`関数を用いて遅延時間の平均値を求めます。
 ```{r}
 nycflights13::flights %>% 
   dplyr::sample_n(100) %>%                # 100個のデータをランダムサンプリング
   dplyr::mutate(delay = arr_delay - dep_delay) %>%
                                           # 実遅延時間を計算する
-  tidyr::drop_na(delay) %>%               # 計算結果がNAとなったものを除く
+  group_by(dest) %>%                      # 目的地毎にグループ化
+  dplyr::summarise_at(vars(delay), funs(mean(., na.rm = TRUE)))
+```
+
+### group_by
+グループ化は複数の項目（列）に対して適用することも可能です。目的地と航空会社の2項目でグループ化し、各グループに対する平均遅延時間を計算してみましょう。このような計算はクロス集計ともいいます。
+```{r}
+nycflights13::flights %>% 
+  dplyr::sample_n(100) %>%                # 100個のデータをランダムサンプリング
+  dplyr::mutate(delay = arr_delay - dep_delay) %>%
+                                          # 実遅延時間を計算する
   group_by(dest, carrier) %>%             # 目的地と航空会社でグループ化
-  dplyr::summarise_at(vars(delay), funs(mean))
+  dplyr::summarise_at(vars(delay), funs(mean(., na.rm = TRUE)))
 ```
 　  
 
 ## spread
 整然データのままでは人間が情報を把握するのは困難ですので雑然データの形式に変更してみます。これには`tidyr::spread`関数を用います。
+```{r, eval=FALSE}
+spread(data, key, value, fill = NA, convert = FALSE, drop = TRUE, sep = NULL)
+```
+
+### spread
+`carrier`（航空会社）をキー（列）にして`dest`（目的地）毎の雑然データ形式にするには以下のように指定します。
 ```{r}
 nycflights13::flights %>% 
   dplyr::sample_n(100) %>%                # 100個のデータをランダムサンプリング
   dplyr::mutate(delay = arr_delay - dep_delay) %>%
                                           # 実遅延時間を計算する
-  tidyr::drop_na(delay) %>%               # 計算結果がNAとなったものを除く
   group_by(dest, carrier) %>%             # 目的地と航空会社でグループ化
-  dplyr::summarise_at(vars(delay), funs(round(mean(.), 0))) %>% 
+  dplyr::summarise_at(vars(delay), funs(round(mean(., na.rm = TRUE), 0))) %>% 
                                           # 平均遅延時間を計算
   tidyr::spread(key = carrier, value = delay)
 ```
 　  
 
 ## join
-目的地と航空会社の表示にコードが使われていますので、これらを分かりやすく目的地の空港名と航空会社名にしてみましょう。データセットの項で説明したように航空会社名は`airline`データセットに空港名は`airport`データセットにありますので、これらのデータセットを結合して名前を取り込みます。
+目的地と航空会社の表示にコードが使われていますので、これらを分かりやすく目的地の空港名と航空会社名にしてみましょう。結合には`tidyr::_join`関数群を用います。処理イメージは[チートシート(PDF)](https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf)を参照してください。
+```{r, eval=FALSE}
+inner_join(x, y, by = NULL, copy = FALSE, suffix = c(".x", ".y"), ...)
+left_join(x, y, by = NULL, copy = FALSE, suffix = c(".x", ".y"), ...)
+right_join(x, y, by = NULL, copy = FALSE, suffix = c(".x", ".y"), ...)
+full_join(x, y, by = NULL, copy = FALSE, suffix = c(".x", ".y"), ...)
+semi_join(x, y, by = NULL, copy = FALSE, ...)
+anti_join(x, y, by = NULL, copy = FALSE, ...)
+```
+
+
+### left_join
+データセットの項で説明したように航空会社名は`airline`データセットに空港名は`airport`データセットにありますので、これらのデータセットを結合して名前を取り込みます。
 ```{r}
 nycflights13::flights %>% 
   dplyr::sample_n(100) %>%                # 100個のデータをランダムサンプリング
   dplyr::mutate(delay = arr_delay - dep_delay) %>%
                                           # 実遅延時間を計算する
-  tidyr::drop_na(delay) %>%               # 計算結果がNAとなったものを除く
   dplyr::select(dep_time, arr_time, carrier, origin, dest, delay) %>% 
                                           # 対象項目を減らす
   dplyr::left_join(nycflights13::airlines) %>% 
@@ -286,7 +383,7 @@ nycflights13::flights %>%
                                           # 項目名を変更・選択
   dplyr::group_by(dest_name, carrier_name) %>% 
                                           # 目的地名と航空会社名でグループ化
-  dplyr::summarise_at(vars(delay), funs(round(mean(.), 1))) %>% 
+  dplyr::summarise_at(vars(delay), funs(round(mean(., na.rm = TRUE), 1))) %>% 
                                           # 平均遅延時間を計算
   tidyr::spread(key = carrier_name, value = delay)
 ```
