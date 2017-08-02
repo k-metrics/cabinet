@@ -88,6 +88,7 @@ data.frame(日付 = c("2017-5-1", "2017-5-2", "2017-5-3"),
 
 # データハンドリング基礎
 では、実際に`dplyr`パッケージと`tidyr`パッケージを用いたデータハンドリングの具体例を学んでいきましょう。
+　  
 
 ## パイプ演算子
 `dplyr`パッケージや`tidyr`パッケージを始めとした`tidyverse`パッケージではパイプ演算子` %>% `を用いて記述されることが殆どですので、まずはパイプ演算子` %>% `を覚える必要があります。
@@ -121,6 +122,7 @@ iris %>%
 
 ## Data Overview
 はじめに利用するデータを説明します。データは`nycflight13`パッケージに含まれるデータセットを用います。このデータは2013年のNYC発のフライトデータで以下のようなデータセットで構成されています。データが巨大ですので各データ共最初の３行のみの表示です。
+　  
 
 #### flights {.unnumbered}
 `nycflight13`パッケージの中心となるデータです。項目数が多いですが基本となる飛行データで約33万レコードあります。
@@ -128,6 +130,7 @@ iris %>%
 nycflights13::flights %>% 
   head(3)
 ```
+　  
 
 #### airlines {.unnumbered}
 航空会社のコードと航空会社名のデータです。
@@ -135,6 +138,7 @@ nycflights13::flights %>%
 nycflights13::airlines %>% 
   head(3)
 ```
+　  
 
 #### airports {.unnumbered}
 空港コード、空港名、位置座標、タイムゾーン等のデータです。
@@ -142,6 +146,7 @@ nycflights13::airlines %>%
 nycflights13::airports %>% 
   head(3)
 ```
+　  
 
 #### planes {.unnumbered}
 飛行機コード、製造年、製造メーカ、モデル等のデータです。
@@ -149,6 +154,7 @@ nycflights13::airports %>%
 nycflights13::planes %>% 
   head(3)
 ```
+　  
 
 #### weather {.unnumbered}
 フライト日の空港気象に関するデータです。
@@ -164,6 +170,7 @@ nycflights13::weather %>%
 sample_n(tbl, size, replace = FALSE, weight = NULL, .env = NULL)
 sample_frac(tbl, size = 1, replace = FALSE, weight = NULL, .env = NULL)
 ```
+　  
 
 ### sample_n
 対象となるデータから指定行数（この場合は100行）のデータをランダムサンプリングします。
@@ -171,6 +178,7 @@ sample_frac(tbl, size = 1, replace = FALSE, weight = NULL, .env = NULL)
 nycflights13::flights %>% 
   dplyr::sample_n(100)                   # 100個のデータをランダムサンプリング
 ```
+　  
 
 ### sample_frac
 対象となるデータから指定比率（1を100%とするのでこの場合は0.1%）でデータをランダムサンプリングします。
@@ -185,6 +193,7 @@ nycflights13::flights %>%
 ```{r, eval=FALSE}
 filter(.data, ...)
 ```
+　  
 
 ### filter
 ランダムサンプリングした100行のデータからアメリカン航空（AA）のフライトデータを抜き出すには以下のように指定します。
@@ -200,6 +209,7 @@ nycflights13::flights %>%
 ```{r, eval=FALSE}
 select(.data, ...)
 ```
+　  
 
 ### select
 ランダムサンプリングした100行のデータからアメリカン航空（AA）のフライトデータを抜き出し、「year, month, day, dep_time, carrier, origin, dest」のみを表示するには以下のように指定します。
@@ -210,11 +220,13 @@ nycflights13::flights %>%
   dplyr::select(year, month, day, dep_time, carrier, origin, dest)
 ```
 　  
+
 ## rename
 このままでは分かりにくいので項目名を日本語に変更してみましょう。項目名（列名）を変更するには`dplyr::rename`関数を用います。ただし、日本語項目名（列名）は意図しない動作を引き起こす可能性もありますので、表示する時のみに用いるのが無難です。
 ```{r, eval=FALSE}
 rename(.data, ...)
 ```
+　  
 
 ### rename
 「year, month, day, dep_time, carrier, origin, dest」を「年月日、出発時間、航空会社、出発地、目的地」に変更するには以下のように指定します。
@@ -227,6 +239,7 @@ nycflights13::flights %>%
                 '航空会社' = carrier, '出発地' = origin, '目的地' = dest)
 ```
 　  
+
 ### selectによるrename
 `dplyr::select`関数でも名前を変更すことは可能です。以下のように項目を指定する際に名前も指定することで選択と同時に名前を変更することが可能です。
 ```{r}
@@ -237,6 +250,7 @@ nycflights13::flights %>%
                 '航空会社' = carrier, '出発地' = origin, '目的地' = dest)
 ```
 　  
+
 ### Select Helpers
 `dplyr::select/rename`関数で項目（列）を選択する際には以下のような補助関数群が使えます。詳しくはヘルプなどで確認してください。
 ```{r, eval=FALSE}
@@ -255,9 +269,11 @@ one_of(..., vars = current_vars())
 # （残り）全て
 everything(vars = current_vars())
 ```
+　  
 
 ## mutate
 データセット（データフレーム）に新たな項目（列）を`dplyr::mutate`関数を用いて追加することが可能です。
+　  
 
 ### mutate
 ここでは`arr_delay`（到着遅れ時間）から`dep_delay`（出発遅れ時間）を引いて実遅延時間を`dplyr::mutate`関数を用いて計算し、「dep_time, arr_tiem, carrier, origin, dest, delay」のみを表示させてみます。
@@ -268,6 +284,7 @@ nycflights13::flights %>%
                                           # 実遅延時間を計算する
   dplyr::select(dep_time, arr_time, carrier, origin, dest, delay)
 ```
+　  
 
 ### Scoped Variants
 `dplyr::mutate`関数にはmutateファミリーとも言える3つの関数があります。
@@ -284,12 +301,14 @@ nycflights13::flights %>%
 
 なお、`dplyr::mutate_each/summarize_each`関数は廃止予定ですので使わない様にしてください。
 　  
+
 ## summarise
 項目（列）毎に要約（集計）するには`dplr:summarise`関数を用います。
 ```{r, eval=FALSE}
 summarise(.data, ...)
 summarize(.data, ...)       # summarise関数のエイリアス
 ```
+　  
 
 ### summarise_if
 数値項目（列）に対して平均値と標準偏差を求めてみましょう。対象が数値項目ですので、ここでは`dplyr::summarise_if`関数を用いてみます。
@@ -310,6 +329,7 @@ nycflights13::flights %>%
 group_by(.data, ..., add = FALSE)
 ungroup(x, ...)                     # グループ化を解除する場合に用いる
 ```
+　  
 
 ### summarize_at
 例えば目的地毎の平均遅延時間を計算したいとします。この場合、まず、実遅延時間を計算し、目的に毎にデータをグループ化します。最後に`dplyr::summarize_at`関数を用いて遅延時間の平均値を求めます。
@@ -321,6 +341,7 @@ nycflights13::flights %>%
   group_by(dest) %>%                      # 目的地毎にグループ化
   dplyr::summarise_at(vars(delay), funs(mean(., na.rm = TRUE)))
 ```
+　  
 
 ### group_by
 グループ化は複数の項目（列）に対して適用することも可能です。目的地と航空会社の2項目でグループ化し、各グループに対する平均遅延時間を計算してみましょう。このような計算はクロス集計ともいいます。
@@ -339,6 +360,7 @@ nycflights13::flights %>%
 ```{r, eval=FALSE}
 spread(data, key, value, fill = NA, convert = FALSE, drop = TRUE, sep = NULL)
 ```
+　  
 
 ### spread
 `carrier`（航空会社）をキー（列）にして`dest`（目的地）毎の雑然データ形式にするには以下のように指定します。
@@ -364,7 +386,7 @@ full_join(x, y, by = NULL, copy = FALSE, suffix = c(".x", ".y"), ...)
 semi_join(x, y, by = NULL, copy = FALSE, ...)
 anti_join(x, y, by = NULL, copy = FALSE, ...)
 ```
-
+　  
 
 ### left_join
 データセットの項で説明したように航空会社名は`airline`データセットに空港名は`airport`データセットにありますので、これらのデータセットを結合して名前を取り込みます。
