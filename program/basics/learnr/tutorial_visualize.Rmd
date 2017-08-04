@@ -2,127 +2,252 @@
 title: "ggplot2のすゝめ"
 output:
   learnr::tutorial:
+    df_print: "paged"
     highlight: textmate
     md_extensions: -ascii_identifiers
 runtime: shiny_prerendered
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, message=FALSE}
 # 共通chunkオプションの指定
-knitr::opts_chunk$set(warning = FALSE, echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 
 require(learnr)
 require(tidyverse)
 require(gridExtra)
-require(DT)
-require(knitr)
 tidyverse::tidyverse_conflicts()
+
+# setupチャンクで作成したオブジェクトはどこからでも参照可能
+file_path <- "/home/sampo/Dropbox/RStudio/cabinet/program/basics/data/odc.csv"
+odc_data <- read_csv(file_path, locale = locale(encoding = "CP932"), progress = FALSE)
+
+file_path <- "/home/sampo/Dropbox/RStudio/cabinet/program/basics/data/issues.csv"
+bugs <- read_csv(file_path, locale = locale(encoding = "UTF-8"), progress = FALSE)
 ```
 
-<!-- 最初に変数fileに使用するデータをフルパスで指定して下さい -->
-```{r common, include=FALSE}
-if (Sys.getenv("OS") == "Windows_NT") {
-  file_path <- "C:\\Users\\suzuki\\Dropbox\\RStudio\\cabinet\\program\\basics\\data\\odc.csv"
-} else {
-  file_path <- "/home/sampo/Dropbox/RStudio/cabinet/program/basics/data/odc.csv"
-}
-odc <- read_csv(file_path, locale = locale(encoding = "CP932"), progress = FALSE)
+```{r common, include=FALSE, message=FALSE}
+# 名前付きチャンクで作成したオブジェクトは`exercise.setup`を使うことで参照可
+
+# file_path <- "/home/sampo/Dropbox/RStudio/cabinet/program/basics/data/odc.csv"
+# odc_data <- read_csv(file_path, locale = locale(encoding = "CP932"), progress = FALSE)
+# file_path <- "/home/sampo/Dropbox/RStudio/cabinet/program/basics/data/issues.csv"
+# bugs <- read_csv(file_path, locale = locale(encoding = "UTF-8"), progress = FALSE)
 ```
 
-## About Tutorial
-「dplyrのすゝめ」ではデータの扱い方を学びましたが、本チュートリアルではODC分析における可視化を例にして[R][R]で可視化処理するために必要な基礎知識を学びます。なお、本チュートリアルを実行するための必要な環境については[こちら](https://k-metrics.github.io/cabinet/program/basics/#チュートリアル資料について)で確認して下さい。
+## About This Tutorial
+「dplyrのすゝめ」ではデータの扱い方、「ggplot2のすゝめ」では可視化の仕方を学びましたが、本チュートリアルでは実務で[R][R]を活用できるようにOBC分析の可視化事例とRedminチケットの可視化事例をチュートリアルを通して学びます。なお、本チュートリアルを実行するための必要な環境については[こちら](https://k-metrics.github.io/cabinet/program/basics/#チュートリアル資料について)で確認して下さい。
 
 ### 対象データ
-ODC
-前述のように具体的な事例としてBTSのデータを用います。BTSのデータは[Redmine.JP](http://redmine.jp/glossary/i/issue/)で公開されている[サンプルDB](http://www.redmine.org/projects/redmine/issues)を用いますので、予めCSV形式でエクスポートしておいて下さい。
-
+ODC分析用のデータとしては2015年度データ分析勉強会第6回で配布されたサンプルデータを用います。Redmineチケット分析用のデータとしては「dplyrのすゝめ」で用いたRedmineチケットデータを用います。
 
 #### 事前設定
-データファイルのフルパスを本ファイルの`common`チャンクにある`file_path`に設定しておいて下さい。
+データファイルのフルパスを本ファイルの`setup`チャンクにある`file_path`に設定して下さい。正しく設定されていない場合はエラーが表示されてチュートリアルが実行できません。
 
-### 整然データ
-整然データ（Tidy Data）とはJournal of Statistical Software Vol.59(2014)に掲載されたHadley Wickhamの論文[Tidy Data](https://www.jstatsoft.org/article/view/v059i10)において提唱されたデータ分析に有用な概念です。簡潔に日本語で整理された情報は[整然データとは何か](http://id.fnshr.info/2017/01/09/tidy-data-intro/)や[整然データってなに？](https://speakerdeck.com/fnshr/zheng-ran-detatutenani)で公開されていますので、まずは、こちらで整然データ（Tidy Data）の概念を把握しておいて下さい。
 
-## Tidy
-
-### データの確認
-```{r, eval=FALSE}
-odc %>% 
-  DT::datatable()
-```
-
-```{r, eval=FALSE}
-odc %>% 
+## ODC
+ODC分析自体に関する説明については省略しますが、ODC分析のポイントはタグに対する集計と可視化だと考えます。例えば「欠陥タイプ」と「欠陥検出工程」をクロス集計すると下表のように比較的単純なタイプの欠陥がシステムテスト工程でも見つかり続けていることがわかります。
+```{r, echo=FALSE}
+odc_data %>% 
   dplyr::select(Status = 'ステータス', Result = '解決状況', Date = '発生日',
                 Rank = '障害ランク', Step = '欠陥検出工程',
-                Trigger = '発生トリガー', Type = '欠陥実装タイプ') %>% 
+                Trigger = '発生トリガー', Type = '欠陥実装タイプ',
+                Dtype = '欠陥タイプ') %>% 
+  dplyr::count(Step, Dtype) %>%
+  tidyr::spread(key = Step, value = n) %>% 
+  dplyr::rename('欠陥タイプ' = Dtype)
+```
+
+このようにタグを用いて効率よくバグの原因や傾向を把握できるODB分析はいかに効率よく集計、可視化できるかポイントのひとつだと思います。集計、可視化を[R Markdown][RM]でこれらの集計、可視化を実装しておけば、定期的なレポートは[R Markdown][RM]をknitするだけで作成できるというメリットがあります。
+
+
+## Basic Bar-chart
+```{r, echo=FALSE}
+odc_data %>% 
+  dplyr::select(Status = 'ステータス', Result = '解決状況', Date = '発生日',
+                Rank = '障害ランク', Step = '欠陥検出工程',
+                Trigger = '発生トリガー', Type = '欠陥実装タイプ',
+                Dtype = '欠陥タイプ') %>%  
+  dplyr::filter(Dtype != "（障害ではない）") %>% 
+  dplyr::count(Rank)
+```
+
+最初に上記の障害ランク別の件数集計を棒グラフにしてみましょう。ODC分析用のデータは`odc_Data`オブジェクトに格納されています。
+```{r rank, exercise=TRUE, exercise.lines=13}
+odc_data %>% 
+  
+```
+
+```{r rank-hint}
+odc_data %>% 
+  dplyr::select(Status = 'ステータス', Result = '解決状況', Date = '発生日',
+                Rank = '障害ランク', Step = '欠陥検出工程',
+                Trigger = '発生トリガー', Type = '欠陥実装タイプ',
+                Dtype = '欠陥タイプ') %>% 
+  dplyr::filter(Dtype != "（障害ではない）") %>% 
+  dplyr::count(Rank) %>% 
+  ggplot2::ggplot(aes(x = Rank, y = n)) +
+    ggplot2::geom_bar(aes(fill = Rank), stat = "identity", alpha = 0.5) +
+    ggplot2::geom_text(aes(y = n - 2, label = n), size = 4, colour = "black") +
+    ggplot2::ggtitle("障害害ランク別件数", 
+                     subtitle = paste(Sys.Date(), "現在", sep=""))
+```
+
+
+## Crosstabs and Bar-chart
+```{r, echo=FALSE}
+odc_data %>%
+  dplyr::select(Status = 'ステータス', Result = '解決状況', Date = '発生日',
+                Rank = '障害ランク', Step = '欠陥検出工程',
+                Trigger = '発生トリガー', Type = '欠陥実装タイプ',
+                Dtype = '欠陥タイプ') %>%
+  dplyr::filter(Dtype != "（障害ではない）") %>%
+  dplyr::count(Step, Dtype) %>%
+  tidyr::spread(key = Dtype, value = n)
+```
+
+欠陥検出工程と欠陥タイプのクロス集計結果を棒グラフにしてみましょう。
+```{r cross, exercise=TRUE, exercise.lines=12}
+odc_data %>% 
+  
+```
+
+```{r cross-hint}
+odc_data %>% 
+  dplyr::select(Status = 'ステータス', Result = '解決状況', Date = '発生日',
+                Rank = '障害ランク', Step = '欠陥検出工程',
+                Trigger = '発生トリガー', Type = '欠陥実装タイプ',
+                Dtype = '欠陥タイプ') %>% 
+  dplyr::filter(Dtype != "（障害ではない）") %>% 
+  dplyr::count(Step, Dtype) %>% 
+  ggplot2::ggplot(aes(x = Step, y = n)) +
+    ggplot2::geom_bar(aes(fill = Dtype), stat = "identity", alpha = 0.5) +
+    ggplot2::ggtitle("検出工程別欠陥タイプ", 
+                     subtitle = paste(Sys.Date(), "現在", sep=""))
+```
+
+## Crosstabs and facet Bar-chart
+```{r, echo=FALSE}
+odc_data %>% 
+  dplyr::select(Status = 'ステータス', Result = '解決状況', Date = '発生日',
+                Rank = '障害ランク', Step = '欠陥検出工程',
+                Trigger = '発生トリガー', Type = '欠陥実装タイプ',
+                Dtype = '欠陥タイプ') %>% 
+  dplyr::filter(Trigger != "（障害ではない）") %>% 
+  dplyr::count(Step, Trigger) %>% 
+  tidyr::spread(key = Trigger, value = n)
+```
+
+欠陥検出工程と発生トリガーのクロス集計結果を層別の棒グラフにしてみましょう。
+```{r cross_2, exercise=TRUE, exercise.lines=8}
+odc_data %>% 
+  
+```
+
+```{r cross_2-hint}
+odc_data %>% 
+  dplyr::select(Status = 'ステータス', Result = '解決状況', Date = '発生日',
+                Rank = '障害ランク', Step = '欠陥検出工程',
+                Trigger = '発生トリガー', Type = '欠陥実装タイプ',
+                Dtype = '欠陥タイプ') %>% 
+  dplyr::filter(Trigger != "（障害ではない）") %>% 
+  dplyr::count(Step, Trigger) %>% 
+  ggplot2::ggplot(aes(x = Step, y = n)) +
+    ggplot2::geom_bar(aes(fill = Trigger), stat = "identity", alpha = 0.5) +
+    ggplot2::facet_grid(~ Trigger)
+```
+
+## Daily crosstabs
+```{r, echo=FALSE}
+odc_data %>% 
+  dplyr::select(Status = 'ステータス', Result = '解決状況', Date = '発生日',
+                Rank = '障害ランク', Step = '欠陥検出工程',
+                Trigger = '発生トリガー', Type = '欠陥実装タイプ',
+                Dtype = '欠陥タイプ') %>% 
+  dplyr::filter(Trigger != "（障害ではない）") %>% 
+  dplyr::count(Date, Trigger) %>% 
+  tidyr::spread(key = Trigger, value = n)
+```
+
+発生日毎の発生トリガーデータを集計して棒グラフ化してみましょう。
+```{r date_trigger, exercise=TRUE, exercise.lines=8}
+odc_data %>% 
+  
+```
+
+```{r, date_trigger-hint}
+odc_data %>% 
+  dplyr::select(Status = 'ステータス', Result = '解決状況', Date = '発生日',
+                Rank = '障害ランク', Step = '欠陥検出工程',
+                Trigger = '発生トリガー', Type = '欠陥実装タイプ',
+                Dtype = '欠陥タイプ') %>% 
+  dplyr::filter(Trigger != "（障害ではない）") %>% 
   dplyr::count(Date, Trigger) %>% 
   ggplot2::ggplot(aes(x = Date, y = n)) + 
-    ggplot2::geom_bar(aes(fill = Trigger), stat = "identity")
+    ggplot2::geom_bar(aes(fill = Trigger), stat = "identity", alpha = 0.5)
 ```
 
-```{r, eval=FALSE}
-odc %>% 
+## Daily crosstabs - cmsum
+単なる発生日毎のデータでは変化の傾向がつかみにくいので累積データを求めてグラフ化してみましょう。
+```{r date_trigger_cusum, exercise=TRUE, exercise.lines=14}
+
+```
+
+```{r date_trigger_cusum-hint}
+odc_data %>% 
   dplyr::select(Status = 'ステータス', Result = '解決状況', Date = '発生日',
                 Rank = '障害ランク', Step = '欠陥検出工程',
-                Trigger = '発生トリガー', Type = '欠陥実装タイプ') %>% 
+                Trigger = '発生トリガー', Type = '欠陥実装タイプ',
+                Dtype = '欠陥タイプ') %>% 
+  dplyr::filter(Trigger != "（障害ではない）") %>% 
   dplyr::count(Date, Trigger) %>% 
   tidyr::spread(key = Trigger, value = n) %>% 
   dplyr::mutate_if(is.numeric, funs(replace(., is.na(.), 0))) %>% 
   dplyr::mutate_if(is.numeric, cumsum) %>%
   tidyr::gather(key = Trigger, value = n, -Date) %>% 
   ggplot2::ggplot(aes(x = Date, y = n)) + 
-    ggplot2::geom_bar(aes(fill = Trigger), stat = "identity")
+    ggplot2::geom_bar(aes(fill = Trigger), stat = "identity", alpha = 0.5)
 ```
 
-```{r, eval=FALSE}
-odc %>% 
+## Daily crosstabs - Rank
+```{r date_rank, exercise=TRUE, exercise.lines=14}
+odc_data %>% 
+  
+```
+
+```{r date_rank-hint}
+odc_data %>% 
   dplyr::select(Status = 'ステータス', Result = '解決状況', Date = '発生日',
                 Rank = '障害ランク', Step = '欠陥検出工程',
                 Trigger = '発生トリガー', Type = '欠陥実装タイプ') %>% 
-  dplyr::filter(Type != "（障害ではない）") %>% 
-  dplyr::count(Date, Trigger) %>% 
-  tidyr::spread(key = Trigger, value = n) %>% 
-  dplyr::mutate_if(is.numeric, funs(replace(., is.na(.), 0))) %>% 
-  dplyr::mutate_if(is.numeric, cumsum) %>%
-  tidyr::gather(key = Trigger, value = n, -Date) %>% 
-  ggplot2::ggplot(aes(x = Date, y = n)) + 
-    ggplot2::geom_bar(aes(fill = Trigger), stat = "identity")
-```
-
-```{r, eval=FALSE}
-odc %>% 
-  dplyr::select(Status = 'ステータス', Result = '解決状況', Date = '発生日',
-                Rank = '障害ランク', Step = '欠陥検出工程',
-                Trigger = '発生トリガー', Type = '欠陥実装タイプ') %>% 
-  dplyr::filter(Type != "（障害ではない）") %>% 
+  dplyr::filter(Trigger != "（障害ではない）") %>% 
   dplyr::count(Date, Rank) %>% 
   tidyr::spread(key = Rank, value = n) %>% 
   dplyr::mutate_if(is.numeric, funs(replace(., is.na(.), 0))) %>% 
   dplyr::mutate_if(is.numeric, cumsum) %>%
   tidyr::gather(key = Rank, value = n, -Date) %>% 
   ggplot2::ggplot(aes(x = Date, y = n)) + 
-    ggplot2::geom_bar(aes(fill = Rank), stat = "identity")
+    ggplot2::geom_bar(aes(fill = Rank), stat = "identity", alpha = 0.5)
 ```
 
+## Daily crosstabs - Test
 ```{r, eval=FALSE}
-odc %>% 
+odc_data %>% 
   dplyr::select(Status = 'ステータス', Result = '解決状況', Date = '発生日',
                 Rank = '障害ランク', Step = '欠陥検出工程',
                 Trigger = '発生トリガー', Type = '欠陥実装タイプ') %>% 
-  dplyr::filter(Type != "（障害ではない）") %>% 
+  dplyr::filter(Trigger != "（障害ではない）") %>% 
   dplyr::count(Date, Step) %>% 
   tidyr::spread(key = Step, value = n) %>% 
   dplyr::mutate_if(is.numeric, funs(replace(., is.na(.), 0))) %>% 
   dplyr::mutate_if(is.numeric, cumsum) %>%
   tidyr::gather(key = Step, value = n, -Date) %>% 
   ggplot2::ggplot(aes(x = Date, y = n)) + 
-    ggplot2::geom_bar(aes(fill = Step), stat = "identity")
+    ggplot2::geom_bar(aes(fill = Step), stat = "identity", alpha = 0.5)
 ```
 
-
+## Daily crosstabs - Type
 ```{r, eval=FALSE}
-odc %>% 
+odc_data %>% 
   dplyr::select(Status = 'ステータス', Result = '解決状況', Date = '発生日',
                 Rank = '障害ランク', Step = '欠陥検出工程',
                 Trigger = '発生トリガー', Type = '欠陥実装タイプ') %>% 
@@ -133,8 +258,190 @@ odc %>%
   dplyr::mutate_if(is.numeric, cumsum) %>%
   tidyr::gather(key = Type, value = n, -Date) %>% 
   ggplot2::ggplot(aes(x = Date, y = n)) + 
-    ggplot2::geom_bar(aes(fill = Type), stat = "identity")
+    ggplot2::geom_bar(aes(fill = Type), stat = "identity", alpha = 0.5)
 ```
+
+## Redmine
+Redmineで管理しているチケットを可視化することで進捗や問題の状況を把握しやすくなります。ここではデフォルトで用意されている項目しか扱いませんがRedmineをカスタマイズしてODC分析用のタグも入力するようにしておくと非常に有用なチケットになります。
+
+さて、今回のチュートリアルの対象となるのは以下のデータです。なお、データ取得タイミングによってデータの内容は異なりますので注意してください。
+```{r, echo=FALSE}
+bugs
+```
+
+## Open-close chart
+はじめにオープンクローズチャートを描いてみましょう。バグチケット(トラッカーが`Defect`のチケット)のみが対象。ステータスが`Closed`を除くチケットは全てオープンチケットし、作成日をオープン日、終了日をクローズ日とします。
+```{r open_close, exercise=TRUE, exercise.lines=26}
+bugs %>% 
+  
+```
+
+```{r open_close-hint}
+# "Closed"チケット以外は全て"Open"チケット扱いとし作成日をオープン日(`Date`)とする
+open <- bugs %>% 
+  dplyr::select(ID = '#', Tracker = 'トラッカー', Status = 'ステータス',
+                OpenDateTime = '作成日', CloseDateTime = '終了日') %>% 
+  dplyr::mutate_at(vars(Status),
+                   funs(replace(., (. != "Closed"), "Open"))) %>% 
+  dplyr::filter(Tracker == "Defect" & Status == "Open") %>% 
+  dplyr::mutate(Date = lubridate::as_date(OpenDateTime))
+
+# "Closed"チケットは終了日をクローズ日(`Date`)とする
+closed <- bugs %>% 
+  dplyr::select(ID = '#', Tracker = 'トラッカー', Status = 'ステータス',
+                OpenDateTime = '作成日', CloseDateTime = '終了日') %>% 
+  dplyr::filter(Tracker == "Defect" & Status == "Closed") %>% 
+  dplyr::mutate(Date = lubridate::as_date(CloseDateTime))
+
+# `Date`を横軸の日付としてステータス毎に累積度数を計算し折れ線グラフで表示する
+open %>% 
+  dplyr::bind_rows(closed) %>% 
+  dplyr::arrange(Date) %>% 
+  dplyr::count(Date, Status) %>% 
+  dplyr::group_by(Status) %>% 
+  dplyr::mutate(Cumsum = cumsum(n)) %>% 
+  ggplot2::ggplot(aes(x = Date)) +
+    ggplot2::geom_line(aes(y = Cumsum, colour = Status))
+```
+
+通常、オープンクローズチャートではオープン線に対してクローズド線が追いついた時点で全てのチケットがクローズしていることになります。オープン線とクローズド線が囲む面積が大きいほどクローズできないチケットが長期間溜まっていることになります。
+
+
+## Area-chart
+```{r open_close_area-hint}
+# "Closed"チケット以外は全て"Open"チケット扱いとし作成日をオープン日(`Date`)とする
+open <- bugs %>% 
+  dplyr::select(ID = '#', Tracker = 'トラッカー', Status = 'ステータス',
+                OpenDateTime = '作成日', CloseDateTime = '終了日') %>% 
+  dplyr::mutate_at(vars(Status),
+                   funs(replace(., (. != "Closed"), "Open"))) %>% 
+  dplyr::filter(Tracker == "Defect" & Status == "Open") %>% 
+  dplyr::mutate(Date = lubridate::as_date(OpenDateTime))
+
+# "Closed"チケットは終了日をクローズ日(`Date`)とする
+closed <- bugs %>% 
+  dplyr::select(ID = '#', Tracker = 'トラッカー', Status = 'ステータス',
+                OpenDateTime = '作成日', CloseDateTime = '終了日') %>% 
+  dplyr::filter(Tracker == "Defect" & Status == "Closed") %>% 
+  dplyr::mutate(Date = lubridate::as_date(CloseDateTime))
+
+open %>% 
+  dplyr::bind_rows(closed) %>% 
+  dplyr::arrange(Date) %>% 
+  dplyr::count(Date, Status) %>% 
+  tidyr::spread(key = Status, value = n) %>% 
+  dplyr::ungroup() %>%
+  dplyr::mutate_at(vars(-Date), funs(replace(., is.na(.), 0))) %>% 
+  dplyr::mutate_if(is.numeric, cumsum) %>% 
+  tidyr::gather(key = Status, value = Count, -Date) %>% 
+  ggplot2::ggplot(aes(x = Date, y = Count)) +
+    ggplot2::geom_area(aes(fill = Status), alpha = 0.5, position = "stack")
+```
+
+オープンクローズドチャートを積み上げ面グラフにするとオープンチケットとクローズドチケットの比率が見えるようになります。
+
+## Open-close chart
+同様にパッチのオープンクローズチャートを描いてみましょう。
+```{r open_close_patch, exercise=TRUE, exercise.lines=26}
+bugs %>% 
+  
+```
+
+```{r open_close_patch-hint}
+# "Closed"チケット以外は全て"Open"チケット扱いとし作成日をオープン日(`Date`)とする
+p_open <- bugs %>% 
+  dplyr::select(ID = '#', Tracker = 'トラッカー', Status = 'ステータス',
+                OpenDateTime = '作成日', CloseDateTime = '終了日') %>% 
+  dplyr::mutate_at(vars(Status),
+                   funs(replace(., (. != "Closed"), "Open"))) %>% 
+  dplyr::filter(Tracker == "Patch" & Status == "Open") %>% 
+  dplyr::mutate(Date = lubridate::as_date(OpenDateTime))
+
+# "Closed"チケットは終了日をクローズ日(`Date`)とする
+p_closed <- bugs %>% 
+  dplyr::select(ID = '#', Tracker = 'トラッカー', Status = 'ステータス',
+                OpenDateTime = '作成日', CloseDateTime = '終了日') %>% 
+  dplyr::filter(Tracker == "Patch" & Status == "Closed") %>% 
+  dplyr::mutate(Date = lubridate::as_date(CloseDateTime))
+
+# `Date`を横軸の日付としてステータス毎に累積度数を計算し折れ線グラフで表示する
+p_open %>% 
+  dplyr::bind_rows(p_closed) %>% 
+  dplyr::arrange(Date) %>% 
+  dplyr::count(Date, Status) %>% 
+  dplyr::group_by(Status) %>% 
+  dplyr::mutate(Cumsum = cumsum(n)) %>% 
+  ggplot2::ggplot(aes(x = Date)) +
+    # ggplot2::geom_bar(aes(y = Cumsum, fill = Status), stat = "identity",
+    #                       position = "dodge") +
+    ggplot2::geom_line(aes(y = Cumsum, colour = Status))
+```
+
+## Open meantime
+オープンチケットのカテゴリ毎の現時点までの平均オープン日数をグラフと集計表で可視化してみましょう。
+```{r}
+bugs %>% 
+  dplyr::select(ID = '#', Tracker = 'トラッカー', Status = 'ステータス',
+                Category = 'カテゴリ', 
+                OpenDateTime = '作成日', CloseDateTime = '終了日') %>% 
+  dplyr::filter(Tracker == "Defect" & Status != "Closed") %>% 
+  dplyr::mutate(TempDateTime = Sys.time()) %>% 
+  dplyr::mutate(OpenDate = as.numeric(TempDateTime - OpenDateTime,
+                                      units = "days")) %>% 
+  dplyr::group_by(Status) %>% 
+  dplyr::summarise_at(vars(OpenDate), mean) %>% 
+  ggplot2::ggplot(aes(x = Status, y = OpenDate)) +
+    ggplot2::geom_bar(aes(fill = Status), stat = "identity", alpha = 0.5)
+
+bugs %>% 
+  dplyr::select(ID = '#', Tracker = 'トラッカー', Status = 'ステータス',
+                Category = 'カテゴリ', 
+                OpenDateTime = '作成日', CloseDateTime = '終了日') %>% 
+  dplyr::filter(Tracker == "Defect" & Status != "Closed") %>% 
+  dplyr::mutate(TempDateTime = Sys.time()) %>% 
+  dplyr::mutate(OpenDate = as.numeric(TempDateTime - OpenDateTime,
+                                      units = "days")) %>% 
+  dplyr::group_by(Status) %>% 
+  dplyr::summarise_at(vars(OpenDate), mean)
+```
+
+同様にクローズドチケットの平均オープン日数をカテゴリ別に可視化してみましょう。
+```{r}
+bugs %>% 
+  dplyr::select(ID = '#', Tracker = 'トラッカー', Status = 'ステータス',
+                Category = 'カテゴリ', 
+                OpenDateTime = '作成日', CloseDateTime = '終了日') %>% 
+  dplyr::filter(Tracker == "Defect" & Status == "Closed") %>% 
+  dplyr::mutate(OpenDate = as.numeric(CloseDateTime - OpenDateTime,
+                                      units="days")) %>% 
+  dplyr::group_by(Category) %>%
+  dplyr::summarise_at(vars(OpenDate), mean) %>% 
+  ggplot2::ggplot(aes(x = Category, y = OpenDate)) +
+    ggplot2::geom_bar(aes(fill = Category), stat = "identity", alpha = 0.5)
+
+bugs %>% 
+  dplyr::select(ID = '#', Tracker = 'トラッカー', Status = 'ステータス',
+                Category = 'カテゴリ', 
+                OpenDateTime = '作成日', CloseDateTime = '終了日') %>% 
+  dplyr::filter(Tracker == "Defect" & Status == "Closed") %>% 
+  dplyr::mutate(OpenDate = as.numeric(CloseDateTime - OpenDateTime,
+                                      units="days")) %>% 
+  dplyr::group_by(Category) %>%
+  dplyr::summarise_at(vars(OpenDate), mean)
+
+
+bugs %>% 
+  dplyr::select(ID = '#', Tracker = 'トラッカー', Status = 'ステータス',
+                Category = 'カテゴリ', 
+                OpenDateTime = '作成日', CloseDateTime = '終了日') %>% 
+  dplyr::filter(Tracker == "Defect" & Status == "Closed") %>% 
+  dplyr::mutate(OpenDate = as.numeric(CloseDateTime - OpenDateTime,
+                                      units="days")) %>% 
+  ggplot2::ggplot(aes(x = Category, y = OpenDate)) +
+    ggplot2::geom_boxplot(aes(fill = Category), alpha = 0.5)
+
+```
+
 
 
 ## Visualize
@@ -144,24 +451,32 @@ ggplot(aes(x, y, ...)) +
   geom_*(aes(x, y, ...), ...)
 ```
 
-### 棒グラフ
-まず、日毎のチケット起票数を棒グラフで描いてみましょう。棒グラフを描くには`ggplot2::geom_bar`関数を用います。
-```{r geom_bar, exercise=TRUE, exercise.setup="common", exercise.lines=11, message=FALSE}
+## Bar-plot
+日毎のチケット起票数を棒グラフで描いてみましょう。
+```{r geom_bar, exercise=TRUE, exercise.lines=11}
+
+```
+
+```{r geom_bar-hint}
 bugs %>% 
   dplyr::select('#', 'トラッカー', 'ステータス', '作成日') %>% 
   dplyr::rename(ID = '#', Tracker = 'トラッカー', Status = 'ステータス',
                 DateTime = '作成日') %>% 
   dplyr::mutate(Date = lubridate::as_date(DateTime)) %>% 
   dplyr::count(Date) %>% 
-  dplyr::mutate(Cum = cumsum(n)) %>% 
+  # dplyr::mutate(Cum = cumsum(n)) %>% 
   ggplot2::ggplot(ggplot2::aes(x = Date)) + 
     ggplot2::geom_bar(aes(y = n), stat = "identity") + 
     ggplot2::ylab("Num of Tickets")
 ```
 
-### 折れ線グラフ
-続いてチケット累計度数を折れ線グラフで描いて見ましょう。折れ線グラフを描くには`ggplot::geom_line`関数を用います。
-```{r geom_line, exercise=TRUE, exercise.setup="common", exercise.lines=11, message=FALSE}
+## Line-plot
+続いてチケット累計度数を折れ線グラフで描いて見ましょう。
+```{r geom_line, exercise=TRUE, exercise.lines=11}
+
+```
+
+```{r geom_line-hint}
 bugs %>% 
   dplyr::select('#', 'トラッカー', 'ステータス', '作成日') %>% 
   dplyr::rename(ID = '#', Tracker = 'トラッカー', Status = 'ステータス',
@@ -174,9 +489,13 @@ bugs %>%
     ggplot2::ylab("Num of Tickets")
 ```
 
-### 重ね合わせ
+## Layered-plot
 前述の棒グラフと折れ線グラフを重ねてみましょう。`ggplot2`パッケージでは基本的に重ねて描きたいグラフは追記していくだけで描くことができます。
-```{r ggplot, exercise=TRUE, exercise.setup="common", exercise.lines=12, message=FALSE}
+```{r ggplot, exercise=TRUE, exercise.lines=12}
+
+```
+
+```{r ggplot-hint}
 bugs %>% 
   dplyr::select('#', 'トラッカー', 'ステータス', '作成日') %>% 
   dplyr::rename(ID = '#', Tracker = 'トラッカー', Status = 'ステータス',
@@ -190,6 +509,7 @@ bugs %>%
     ggplot2::ylab("Num of Tickets")
 ```
 
+## 
 ```{r, eval=FALSE, include=FALSE}
 bugs %>% 
   dplyr::select('#', 'トラッカー', 'ステータス', '作成日') %>% 
