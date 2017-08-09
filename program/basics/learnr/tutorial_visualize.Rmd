@@ -102,7 +102,7 @@ odc_data %>%
                 Dtype = '欠陥タイプ') %>%
   dplyr::filter(Dtype != "（障害ではない）") %>%
   dplyr::count(Step, Dtype) %>%
-  tidyr::spread(key = Dtype, value = n)
+  tidyr::spread(key = Step, value = n)
 ```
 
 欠陥検出工程と欠陥タイプのクロス集計結果を棒グラフにしてみましょう。
@@ -134,7 +134,7 @@ odc_data %>%
                 Dtype = '欠陥タイプ') %>% 
   dplyr::filter(Trigger != "（障害ではない）") %>% 
   dplyr::count(Step, Trigger) %>% 
-  tidyr::spread(key = Trigger, value = n)
+  tidyr::spread(key = Step, value = n)
 ```
 
 欠陥検出工程と発生トリガーのクロス集計結果を層別の棒グラフにしてみましょう。
@@ -269,7 +269,7 @@ Redmineで管理しているチケットを可視化することで進捗や問�
 bugs
 ```
 
-## Tickets - n and cumsum
+## Tickets Open - line and bar chart
 Redmineのチケットデータは当然ですがチケットを起票した日のデータしかありません。累計データを作成するにはチケット起票ゼロの日もデータとしてカウントする必要があります。バグ('Defect')チケットの日毎の発行数と発行累計をグラフ化してみましょう。
 
 1. "Defect"チケットのみを抽出する
@@ -309,7 +309,7 @@ bugs %>%
     ggplot2::ylab("Num of Ticket - Open")
 ```
 
-## Open-close chart
+## Tickets open-close - line chart
 はじめにオープンクローズチャートを描いてみましょう。バグチケット(トラッカーが`Defect`のチケット)のみが対象。ステータスが`Closed`を除くチケットは全てオープンチケットし、作成日をオープン日、終了日をクローズ日とします。
 ```{r open_close, exercise=TRUE, exercise.lines=26}
 bugs %>% 
@@ -376,7 +376,8 @@ open %>%
 通常、オープンクローズチャートではオープン線に対してクローズド線が追いついた時点で全てのチケットがクローズしていることになります。オープン線とクローズド線が囲む面積が大きいほどクローズできないチケットが長期間溜まっていることになります。
 
 
-## Area-chart
+## Tickets open-close - line chart
+
 ```{r open_close_area-hint}
 # チケット発行の無い日はStatus毎に度数n = 0のデータを作成する必要あり
 tickets <- bugs %>% 
@@ -436,44 +437,7 @@ open %>%
 
 オープンクローズドチャートを積み上げ面グラフにするとオープンチケットとクローズドチケットの比率が見えるようになります。
 
-## Open-close chart
-同様にパッチのオープンクローズチャートを描いてみましょう。
-```{r open_close_patch, exercise=TRUE, exercise.lines=26}
-bugs %>% 
-  
-```
-
-```{r open_close_patch-hint}
-# "Closed"チケット以外は全て"Open"チケット扱いとし作成日をオープン日(`Date`)とする
-p_open <- bugs %>% 
-  dplyr::select(ID = '#', Tracker = 'トラッカー', Status = 'ステータス',
-                OpenDateTime = '作成日', CloseDateTime = '終了日') %>% 
-  dplyr::mutate_at(vars(Status),
-                   funs(replace(., (. != "Closed"), "Open"))) %>% 
-  dplyr::filter(Tracker == "Patch" & Status == "Open") %>% 
-  dplyr::mutate(Date = lubridate::as_date(OpenDateTime))
-
-# "Closed"チケットは終了日をクローズ日(`Date`)とする
-p_closed <- bugs %>% 
-  dplyr::select(ID = '#', Tracker = 'トラッカー', Status = 'ステータス',
-                OpenDateTime = '作成日', CloseDateTime = '終了日') %>% 
-  dplyr::filter(Tracker == "Patch" & Status == "Closed") %>% 
-  dplyr::mutate(Date = lubridate::as_date(CloseDateTime))
-
-# `Date`を横軸の日付としてステータス毎に累積度数を計算し折れ線グラフで表示する
-p_open %>% 
-  dplyr::bind_rows(p_closed) %>% 
-  dplyr::arrange(Date) %>% 
-  dplyr::count(Date, Status) %>% 
-  dplyr::group_by(Status) %>% 
-  dplyr::mutate(Cumsum = cumsum(n)) %>% 
-  ggplot2::ggplot(aes(x = Date)) +
-    # ggplot2::geom_bar(aes(y = Cumsum, fill = Status), stat = "identity",
-    #                       position = "dodge") +
-    ggplot2::geom_line(aes(y = Cumsum, colour = Status))
-```
-
-## Open meantime
+## Open meantime - bar chart and crosstabs
 オープンチケットのカテゴリ毎の現時点までの平均オープン日数をグラフと集計表で可視化してみましょう。
 ```{r}
 bugs %>% 
@@ -501,6 +465,7 @@ bugs %>%
   dplyr::summarise_at(vars(OpenDate), mean)
 ```
 
+## Open meantime - bar chart and boxplot
 同様にクローズドチケットの平均オープン日数をカテゴリ別に可視化してみましょう。
 ```{r}
 bugs %>% 
@@ -584,86 +549,134 @@ bugs %>%
 ```
 
 ## Line-plot
-続いてチケット累計度数を折れ線グラフで描いて見ましょう。
+続いてチケット累計度数を折れ線グラフでチケット日毎のチケットオープン数を棒グラフで描いて見ましょう。
 ```{r geom_line, exercise=TRUE, exercise.lines=11}
 
 ```
 
 ```{r geom_line-hint}
+# これが正しいチケット起票累計
+tickets <- bugs %>% 
+  dplyr::select(ID = '#', Tracker = 'トラッカー', Status = 'ステータス',
+                OpenDateTime = '作成日', CloseDateTime = '終了日') %>% 
+  dplyr::mutate(Date = lubridate::as_date(OpenDateTime)) %>% 
+  dplyr::select(Date) %>% 
+  dplyr::summarise(min = min(Date), max = max(Date))
+
+df_date <- seq(from = tickets$min, to = tickets$max, by = 1) %>%
+  as.data.frame()
+names(df_date) <- c("Date")
+
 bugs %>% 
-  dplyr::select('#', 'トラッカー', 'ステータス', '作成日') %>% 
-  dplyr::rename(ID = '#', Tracker = 'トラッカー', Status = 'ステータス',
-                DateTime = '作成日') %>% 
-  dplyr::mutate(Date = lubridate::as_date(DateTime)) %>% 
+  dplyr::select(ID = '#', Tracker = 'トラッカー', Status = 'ステータス',
+                OpenDateTime = '作成日', CloseDateTime = '終了日') %>% 
+  dplyr::mutate(Date = lubridate::as_date(OpenDateTime)) %>% 
   dplyr::count(Date) %>% 
-  dplyr::mutate(Cum = cumsum(n)) %>% 
-  ggplot2::ggplot(ggplot2::aes(x = Date)) + 
-    ggplot2::geom_line(aes(y = Cum)) + 
-    ggplot2::ylab("Num of Tickets")
+  dplyr::right_join(df_date) %>% 
+  dplyr::mutate_at(vars(-Date), funs(replace(., is.na(.), 0))) %>% 
+  dplyr::mutate(cum = cumsum(n)) %>% 
+  ggplot2::ggplot(aes(x = Date)) +
+    ggplot2::geom_line(aes(y = cum)) +
+    ggplot2::geom_bar(aes(y = n), stat = "identity") +
+    ggplot2::ylab("Num of Ticket - Open")
 ```
 
 ## Layered-plot
-前述の棒グラフと折れ線グラフを重ねてみましょう。`ggplot2`パッケージでは基本的に重ねて描きたいグラフは追記していくだけで描くことができます。
-```{r ggplot, exercise=TRUE, exercise.lines=12}
-
-```
-
-```{r ggplot-hint}
-bugs %>% 
-  dplyr::select('#', 'トラッカー', 'ステータス', '作成日') %>% 
-  dplyr::rename(ID = '#', Tracker = 'トラッカー', Status = 'ステータス',
-                DateTime = '作成日') %>% 
-  dplyr::mutate(Date = lubridate::as_date(DateTime)) %>% 
-  dplyr::count(Date) %>% 
-  dplyr::mutate(Cum = cumsum(n)) %>% 
-  ggplot2::ggplot(ggplot2::aes(x = Date)) + 
-    ggplot2::geom_bar(aes(y = n), stat = "identity", na.rm = TRUE) + 
-    ggplot2::geom_line(aes(y = Cum), na.rm = TRUE) + 
-    ggplot2::ylab("Num of Tickets")
-
-bugs %>% 
-  dplyr::select('#', 'トラッカー', 'ステータス', '作成日') %>% 
-  dplyr::rename(ID = '#', Tracker = 'トラッカー', Status = 'ステータス',
-                DateTime = '作成日') %>% 
-  dplyr::mutate(Date = lubridate::as_date(DateTime)) %>% 
-  dplyr::count(Date, Status) %>% 
-  tidyr::spread(key = Status, value = n) %>% 
-  dplyr::ungroup() %>%
-  dplyr::mutate_at(vars(-Date), funs(replace(., is.na(.), 0))) %>% 
-  dplyr::mutate_if(is.numeric, cumsum) %>% 
-  tidyr::gather(key = Status, value = Count, -Date) %>% 
-  ggplot2::ggplot(aes(x = Date, y = Count)) +
-    ggplot2::geom_area(aes(fill = Status), stat = "identity", na.rm = TRUE)
-
-```
-
+先程のグラフの内、棒グラフをステータス毎に色分け表示してみましょう。ただし、ステータスが"Closed"のチケットは作成日(起票日)ではなく終了日で集計してください。
 ```{r}
-# 積み上げ棒グラフ
+# 積み上げ棒グラフ（"Closed"チケットはクローズ日で集計、それ以外はオープン日で集計）
 dat_bar <- bugs %>% 
-  dplyr::select('#', 'トラッカー', 'ステータス', '作成日') %>% 
-  dplyr::rename(ID = '#', Tracker = 'トラッカー', Status = 'ステータス',
-                DateTime = '作成日') %>% 
-  dplyr::mutate(Date = lubridate::as_date(DateTime)) %>% 
+  dplyr::select(ID = '#', Tracker = 'トラッカー', Status = 'ステータス',
+                OpenDateTime = '作成日', CloseDateTime = '終了日') %>% 
+  dplyr::mutate(Date = dplyr::if_else(Status == "Closed", 
+                                      lubridate::as_date(CloseDateTime),
+                                      lubridate::as_date(OpenDateTime))) %>% 
   dplyr::count(Date, Status)
 
-# 折れ線グラフ
+# 折れ線グラフ(チケットオープン日で集計)
+tickets <- bugs %>% 
+  dplyr::select(ID = '#', Tracker = 'トラッカー', Status = 'ステータス',
+                OpenDateTime = '作成日', CloseDateTime = '終了日') %>% 
+  dplyr::mutate(Date = lubridate::as_date(OpenDateTime)) %>% 
+  dplyr::select(Date) %>% 
+  dplyr::summarise(min = min(Date), max = max(Date))
+
+# 累計用の日付のみのデータ作成
+df_date <- seq(from = tickets$min, to = tickets$max, by = 1) %>%
+  as.data.frame()
+names(df_date) <- c("Date")
+
 dat_line <- bugs %>% 
-  dplyr::select('#', 'トラッカー', 'ステータス', '作成日') %>% 
-  dplyr::rename(ID = '#', Tracker = 'トラッカー', Status = 'ステータス',
-                DateTime = '作成日') %>% 
-  dplyr::mutate(Date = lubridate::as_date(DateTime)) %>% 
+  dplyr::select(ID = '#', Tracker = 'トラッカー', Status = 'ステータス',
+                OpenDateTime = '作成日', CloseDateTime = '終了日') %>% 
+  dplyr::mutate(Date = lubridate::as_date(OpenDateTime)) %>% 
   dplyr::count(Date) %>% 
+  dplyr::right_join(df_date, by = "Date") %>% 
+  dplyr::mutate_at(vars(-Date), funs(replace(., is.na(.), 0))) %>% 
   dplyr::mutate(Cum = cumsum(n))
 
-# Layered (厳密にはクローズの日付が異なる)
+# Layered
 dat_bar
 dat_line
+
 ggplot() +
   ggplot2::layer(data = dat_bar, mapping = aes(x = Date, y = n, fill = Status), 
                  geom = "bar", stat = "identity", position = "stack") + 
   ggplot2::layer(data = dat_line, mapping = aes(x = Date, y = Cum), 
                  geom = "line", stat = "identity", position = "identity") +
   ggplot2::ylab("Num of Tickets")
+```
+
+## Weekdays
+曜日データを作成しチケット修正のない土日のみ削除する
+```{r}
+wd_bugs <- bugs %>% 
+  dplyr::select(ID = '#', Tracker = 'トラッカー', Status = 'ステータス',
+                OpenDateTime = '作成日', CloseDateTime = '終了日') %>% 
+  dplyr::mutate(Date = dplyr::if_else(Status == "Closed", 
+                                      lubridate::as_date(CloseDateTime),
+                                      lubridate::as_date(OpenDateTime))) %>% 
+  dplyr::mutate(Weekday = weekdays(Date)) %>% 
+  dplyr::count(Date)
+
+df_date %>% 
+  dplyr::mutate(Weekday = weekdays(Date)) %>% 
+  dplyr::left_join(wd_bugs, by = "Date") %>% 
+  dplyr::filter(!((Weekday == "土曜日" | Weekday == "日曜日") & is.na(n))) %>% 
+  dplyr::mutate_at(vars(n), funs(replace(., is.na(.), 0))) %>% 
+  dplyr::mutate(cum = cumsum(n)) %>% 
+  ggplot2::ggplot(aes(x = Date)) +
+    ggplot2::geom_line(aes(y = cum)) +
+    ggplot2::geom_bar(aes(y = n), stat = "identity") +
+    ggplot2::ylab("Num of Ticket - Open")
+
+# 参考
+df_date %>% 
+  dplyr::mutate(Weekday = weekdays(Date)) %>% 
+  dplyr::left_join(wd_bugs, by = "Date") %>% 
+  dplyr::filter(((Weekday == "土曜日" | Weekday == "日曜日") & !is.na(n))) %>% 
+  dplyr::mutate_at(vars(n), funs(replace(., is.na(.), 0))) %>% 
+  dplyr::mutate(cum = cumsum(n)) %>% 
+  ggplot2::ggplot(aes(x = Date)) +
+    ggplot2::geom_line(aes(y = cum)) +
+    ggplot2::geom_bar(aes(y = n), stat = "identity") +
+    ggplot2::ylab("Num of Ticket - Open")
+
+# 曜日毎に集計する（並べるには一工夫必要）
+bugs %>% 
+  dplyr::select(ID = '#', Tracker = 'トラッカー', Status = 'ステータス',
+                OpenDateTime = '作成日', CloseDateTime = '終了日') %>% 
+  dplyr::mutate(Date = dplyr::if_else(Status == "Closed", 
+                                      lubridate::as_date(CloseDateTime),
+                                      lubridate::as_date(OpenDateTime))) %>% 
+  dplyr::mutate(Weekday = factor(weekdays(Date),
+                                 levels = c("月曜日", "火曜日", "水曜日",
+                                            "木曜日", "金曜日", "土曜日",
+                                            "日曜日"))) %>% 
+  dplyr::count(Weekday) %>% 
+  ggplot2::ggplot(aes(x = Weekday, y = n)) +
+    ggplot2::geom_bar(aes(fill = Weekday), stat = "identity", alpha = 0.5) +
+    ggplot2::ylab("Num of Tickets")
 ```
 
 ## 
