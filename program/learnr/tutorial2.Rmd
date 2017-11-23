@@ -1,0 +1,750 @@
+---
+title: "R Basics part2"
+output:
+  learnr::tutorial:
+    df_print: "paged"
+    highlight: "textmate"
+    md_extensions: -ascii_identifiers
+runtime: shiny_prerendered
+---
+
+<!-- 必要なパッケージ
+本チュートリアルファイルを実行するためには以下のパッケージが必要です。必ず
+インストールされていることを確認して下さい。
+
+car, DT, formatR, knitr, learnr, rmarkdown, shiny, tidyverse
+
+インストールされていない場合、以下のページを参考にパッケージをインストール
+してください。
+
+https://k-metrics.github.io/cabinet/program/env/install_chk.html
+-->
+
+```{r setup, include=FALSE}
+# 共通chunkオプションの指定
+knitr::opts_chunk$set(warning = FALSE, echo = TRUE)
+
+require(learnr)
+require(tidyverse)
+tidyverse::tidyverse_conflicts()
+```
+
+## Introduction
+本ファイルは[データ分析勉強会][0]で使用した『RStudioのすゝめ』の講義資料を再整理し`learnr`パッケージを用いて編集しなおした初学者向けのチュートリアルです。実際にRのコードを入力して実行することが可能ですが`shiny`サーバが必要となりますので[RStudio][RS]にて実行してください。  
+
+### 実行方法
+本ファイルを[RStudio][RS]で開くと上段に**[Run Document]**というボタンが表示されますので、これをクリックしてください。コンパイル後にローカルホスト(127.0.0.1)上に`shiny`サーバが起動し**[Viewer]**ウィンドウに実行可能なファイルが表示されます。ファイルが表示されたら**[Code]**と左上に書いてある欄に実行コードを記述し右側の**[Run Code]**ボタンを押せば記述されている（記述した)
+コードが実行されます。当然、間違っている場合はエラーがでます。コードを追加・記入したい場合は最終行の行末にカーソルを持っていき改行することで追加ができます。 学習結果は記録されますがリセットしたい場合はTOCの一番下にある**[Start Over]** をクリックしてください。  
+
+なお、`learnr`パッケージの多国語対応が不十分なためメニューを英語表記にしていますが各Chapterは以下のようになっています。
+
+Chapter    | 日本語項目名                  | Chapter    | 日本語項目名
+-----------|-------------------------------|------------|-----------------------
+Chapter  1 | 統計量 - 要約                 | Chapter 11 | グラフ - 散布図行列
+Chapter  2 | 統計量 - 平均値と中央値       | Chapter 12 | グラフ - QQプロット
+Chapter  3 | 統計量 - 最大値と最小値       | Chapter 13 | モデル - 線形回帰
+Chapter  4 | 統計量 - 四分位数と五数要約   | Chapter 14 | モデル - 基本診断プロット
+Chapter  5 | 統計量 - 層別統計量           | Chapter 15 | 検定 - 平均
+Chapter  6 | 統計量 - 度数                 | Chapter 16 | 検定 - 分散比
+Chapter  7 | 統計量 - 相関係数と共分散     | Chapter 17 | 検定 - 分散分析
+Chapter  8 | グラフ - ヒストグラム         | Chapter 18 | 検定 - 比率
+Chapter  9 | グラフ - 箱ひげ図             | Chapter 19 | 分布 - 正規分布
+Chapter 10 | グラフ - 散布図               | Appendix   | 付録
+
+それではインタラクティブな学習を始めてみましょう。
+
+## Chapter 1 - summary
+### 要約
+はじめに`iris`データセットの要約を`summary`関数を用いて表示してみましょう。
+```{r, eval=FALSE}
+summary(object, ...)
+```
+
+```{r summary, exercise=TRUE, exercise.lines=3}
+
+```
+
+```{r summary-hint}
+summary(iris)
+```
+
+このように`summary`関数は数値データに対しては最小値、第一四分位数、中央値（第二四分位数）、平均値、第三四分位数、最大値を表示し、非数値データに対しては度数を表示します。
+
+## Chapter 2 - mean, median
+### 平均値
+次に`iris`データセットにおける四つの数値データに対する平均値を`mean`関数で求めてみましょう。
+```{r, eval=FALSE}
+mean(x, trim = 0, na.rm = FALSE, ...)
+```
+
+```{r mean, exercise=TRUE, exercise.lines=5}
+
+```
+
+```{r mean-hint}
+mean(iris$Sepal.Length)
+mean(iris$Sepal.Width)
+mean(iris$Petal.Length)
+mean(iris$Petal.Width)
+```
+
+### 中央値
+次に`iris`データセットにおける四つの数値データに対する中央値を`median`関数で求めてみましょう。
+```{r, eval=FALSE}
+median(x, na.rm = FALSE, ...)
+```
+
+```{r median, exercise=TRUE, exercise.lines=5}
+
+```
+
+```{r median-solution}
+# 一度に計算したい場合は`apply`ファリミーを用います
+sapply(iris[, -5], median)
+```
+
+## Chapter 3 - max, min, range
+### 最大値と最小値
+`iris`データセットにおける四つの数値データに対する最大値と最小値を求めてみましょう。
+```{r, eval=FALSE}
+max(..., na.rm = FALSE)
+min(..., na.rm = FALSE)
+```
+
+```{r max_min, exercise=TRUE, exercise.lines=9}
+
+```
+
+```{r max_min-solution}
+# 一度に計算したい場合は`apply`ファリミーを用います
+sapply(iris[, -5], max)
+sapply(iris[, -5], min)
+```
+
+### 範囲
+最大値と最小値を同時に計算するには`range`関数を用います。
+```{r, eval=FALSE}
+range(..., na.rm = FALSE)
+```
+
+```{r range, exercise=TRUE, exercise.lines=9}
+
+```
+
+```{r range-solution}
+sapply(iris[, -5], range)
+```
+
+## Chapter 4 - quantile, fivenum
+### 四分位数
+`iris`データセットにおける四つの数値データに対する四分位数を`quantile`関数を用いて求めてみましょう。
+```{r, eval=FALSE}
+quantile(x, probs = seq(0, 1, 0.25), na.rm = FALSE, names = TRUE,
+         type = 7, ...)
+```
+
+```{r quantile, exercise=TRUE, exercise.lines=5}
+
+```
+
+```{r quantile-solution}
+# 一度に計算したい場合は`apply`ファリミーを用います
+sapply(iris[, -5], quantile)
+```
+
+### 五数要約
+次に`iris`データセットにおける四つの数値データに対する五数要約を`fivenum`関数を用いて求めてみましょう。
+```{r, eval=FALSE}
+fivenum(x, na.rm = TRUE)
+```
+
+```{r fivenum, exercise=TRUE, exercise.lines=5}
+
+```
+
+```{r fivenum-solution}
+# 一度に計算したい場合は`apply`ファリミーを用います
+sapply(iris[, -5], fivenum)
+```
+
+### 四分位数と五数要約の比較
+計算した四分位数と五数要約の値を比較してみましょう。
+```{r}
+sapply(iris[, -5], quantile) - sapply(iris[, -5], fivenum)
+```
+
+## Chapter 5 - tapply, aggregate
+### 層別統計量
+`iris`データセットの四つの数値データに対して種別（`Species`）毎の統計量を計算してみましょう。`apply`ファミリーの`tapply`関数を用いて求めてみましょう。
+```{r, eval=FALSE}
+tapply(X, INDEX, FUN = NULL, ..., default = NA, simplify = TRUE)
+```
+
+```{r tapply, exercise=TRUE, exercise.lines=5}
+
+```
+
+```{r tapply-hint}
+tapply(iris$Sepal.Length, INDEX = list(iris$Species), FUN = mean)
+tapply(iris$Sepal.Width, INDEX = list(iris$Species), FUN = mean)
+tapply(iris$Petal.Length, INDEX = list(iris$Species), FUN = mean)
+tapply(iris$Petal.Width, INDEX = list(iris$Species), FUN = mean)
+```
+
+`tapply`関数は返り値が`array`型になる点に留意してください。
+
+### 層別統計量
+返り値を`data.frame`型で得たい場合は`aggregate`関数を用います。`aggregate`関数の基本的な使い方は`formula`形式で引数を指定する方法です。
+```{r, eval=FALSE}
+aggregate(formula, data, FUN, ..., subset, na.action = na.omit)
+```
+
+```{r aggregate, exercise=TRUE, exercise.lines=5}
+
+```
+
+```{r aggregate-hint}
+aggregate(Sepal.Length ~ Species, data = iris, FUN = mean)
+aggregate(Sepal.Width ~ Species, data = iris, FUN = mean)
+aggregate(Petal.Length ~ Species, data = iris, FUN = mean)
+aggregate(Petal.Width ~ Species, data = iris, FUN = mean)
+```
+
+#### 一度に求める方法
+`aggregate`関数はデータフレーム全体を計算対象にして一度に層別統計量を求めることも可能です。ヘルプで引数の指定方法を確認して事項してみましょう。
+```{r, eval=FALSE}
+aggregate(x, by, FUN, ..., simplify = TRUE, drop = TRUE)
+```
+
+```{r aggregate_2, exercise=TRUE, exercise.lines=5}
+
+```
+
+```{r aggregate_2-hint}
+aggregate(iris[, -5], by = list(iris$Species), FUN = mean)
+```
+
+## Chapter 6 - nclass, pretty, cut, table
+### 度数
+度数はデータの分布を確認するために使う度数分布表やヒストグラムを作る上で必要となる統計量の一つです。度数を求めるためには度数を求めるための区間である階級（幅）を定める必要があります。  
+階級はデータに合わせて任意に決めることができますが、なんらかの基準を用いて階級を決める場合にはスタージェスの公式やスコットの選択、フリードマン＝ダイアコニスの選択を用いて階級数を求めてから階級を求めます。  
+
+### 階級数を求める
+スタージェスの公式（`nclass.Sturges`関数）を用いて`iris`データセットの四つの数値データに対する階級数を求めて見ましょう。
+```{r, eval=FALSE}
+nclass.Sturges(x)
+nclass.scott(x)
+nclass.FD(x)
+```
+
+```{r nclass, exercise=TRUE, exercise.lines=3}
+
+```
+
+```{r nclass-hint}
+sapply(iris[, -5], FUN = nclass.Sturges)
+```
+
+### 階級(幅)を求める
+階級数が求められましたので、これを元に階級(幅)を求めてみましょう。度数分布表やヒストグラムを作るのが最終目標ですから単純にデータの範囲を階級数で分割してしまうと都合が悪くなりますので、ここでは階級境界値(Breakpoints)を計算する`pretty`関数を用いて`iris`データセットの四つの数値データに対する階級境界値を求めて見ましょう。
+```{r, eval=FALSE}
+pretty(x, n = 5, min.n = n %/% 3,  shrink.sml = 0.75,
+       high.u.bias = 1.5, u5.bias = .5 + 1.5*high.u.bias,
+       eps.correct = 0, ...)
+```
+
+```{r pretty, exercise=TRUE, exercise.lines=5}
+
+```
+
+```{r pretty-hint}
+pretty(range(iris$Sepal.Length), n = nclass.Sturges(iris$Sepal.Length))
+pretty(range(iris$Sepal.Width), n = nclass.Sturges(iris$Sepal.Width))
+pretty(range(iris$Petal.Length), n = nclass.Sturges(iris$Petal.Length))
+pretty(range(iris$Petal.Width), n = nclass.Sturges(iris$Petal.Width))
+```
+
+### 階級を知る
+度数を求める前に`iris`データセットの四つの個々の数値データがどの階級に含まれるのかを知る必要がありますが、この処理には`cut`関数を用います。
+```{r, eval=FALSE}
+cut(x, breaks, labels = NULL,
+    include.lowest = FALSE, right = TRUE, dig.lab = 3,
+    ordered_result = FALSE, ...)
+```
+
+```{r cut, exercise=TRUE, exercise.lines=9}
+
+```
+
+```{r cut-hint}
+cut(iris$Sepal.Length, breaks = pretty(range(iris$Sepal.Length),
+    n = nclass.Sturges(iris$Sepal.Length)))
+cut(iris$Sepal.Length, breaks = pretty(range(iris$Sepal.Length),
+    n = nclass.Sturges(iris$Sepal.Length)))
+cut(iris$Sepal.Length, breaks = pretty(range(iris$Sepal.Length),
+    n = nclass.Sturges(iris$Sepal.Length)))
+cut(iris$Sepal.Length, breaks = pretty(range(iris$Sepal.Length),
+    n = nclass.Sturges(iris$Sepal.Length)))
+```
+
+### 度数集計
+これにより`iris`データセットの四つの個々の数値データに対する階級が求められましたので、このデータを元に`table`関数を用いて度数(分布表)を求めます。
+```{r, eval=FALSE}
+table(...,
+      exclude = if (useNA == "no") c(NA, NaN),
+      useNA = c("no", "ifany", "always"),
+      dnn = list.names(...), deparse.level = 1)
+```
+
+```{r table, exercise=TRUE, exercise.lines=13}
+
+```
+
+```{r table-hint}
+table(cut(iris$Sepal.Length,
+          breaks = pretty(range(iris$Sepal.Length),
+                          n = nclass.Sturges(iris$Sepal.Length))))
+table(cut(iris$Sepal.Length,
+          breaks = pretty(range(iris$Sepal.Length),
+                          n = nclass.Sturges(iris$Sepal.Length))))
+table(cut(iris$Sepal.Length,
+          breaks = pretty(range(iris$Sepal.Length),
+                          n = nclass.Sturges(iris$Sepal.Length))))
+table(cut(iris$Sepal.Length,
+          breaks = pretty(range(iris$Sepal.Length),
+                          n = nclass.Sturges(iris$Sepal.Length))))
+```
+
+## Chapter 7 - cor, cov
+### 相関
+`iris`データセットの四つの数値データの組み合わせに対する相関係数を`cor`関数を用いて求めてみましょう。
+```{r, eval=FALSE}
+cor(x, y = NULL, use = "everything",
+    method = c("pearson", "kendall", "spearman"))
+```
+
+```{r cor, exercise=TRUE, exercise.lines=7}
+
+```
+
+```{r cor-hint}
+cor(iris[, -5])
+```
+
+### 共分散
+同様に共分散を`cov`関数を用いて求めてみましょう。
+```{r, eval=FALSE}
+cov(x, y = NULL, use = "everything",
+    method = c("pearson", "kendall", "spearman"))
+```
+
+```{r cov, exercise=TRUE, exercise.lines=7}
+
+```
+
+```{r cov-hint}
+cov(iris[, -5])
+```
+
+## Chapter 8 - hist
+### ヒストグラム
+ヒストグラムは度数分布表を元に描かれますが[R][R]では関数一つで描くことが可能です。`iris`データセットの四つの数値データに対するヒストグラムを`hist`関数を用いて描いてみましょう。
+```{r, eval=FALSE}
+hist(x, breaks = "Sturges",
+     freq = NULL, probability = !freq, include.lowest = TRUE, right = TRUE,
+     density = NULL, angle = 45, col = NULL, border = NULL,
+     main = paste("Histogram of" , xname), xlim = range(breaks), ylim = NULL,
+     xlab = xname, ylab, axes = TRUE, plot = TRUE, labels = FALSE,
+     nclass = NULL, warn.unused = TRUE, ...)
+```
+
+```{r hist, exercise=TRUE, exercise.lines=5}
+
+```
+
+```{r hist-hint}
+lapply(iris[, -5], hist)
+```
+
+## Chapter 9 - boxplot
+### 箱ひげ図
+`iris`データセットの四つの数値データに対する箱ひげ図を`boxplot`関数を用いて描いてみましょう。
+```{r, eval=FALSE}
+boxplot(x, ..., range = 1.5, width = NULL, varwidth = FALSE,
+        notch = FALSE, outline = TRUE, names, plot = TRUE,
+        border = par("fg"), col = NULL, log = "",
+        pars = list(boxwex = 0.8, staplewex = 0.5, outwex = 0.5),
+        horizontal = FALSE, add = FALSE, at = NULL)
+```
+
+```{r boxplot, exercise=TRUE, exercise.lines=5}
+
+```
+
+```{r boxplot-hint}
+boxplot(iris[, -5])
+```
+
+### 層別箱ひげ図
+フォーミュラを用いると層別した箱ひげ図を描くこもと可能です。種別（`Species`）で層別した箱ひげ図を描いてみましょう。
+```{r, eval=FALSE}
+boxplot(formula, data = NULL, ..., subset, na.action = NULL,
+        drop = FALSE, sep = ".", lex.order = FALSE)
+```
+
+```{r l_boxplot, exercise=TRUE, exercise.lines=5}
+
+```
+
+```{r l_boxplot-hint}
+boxplot(Sepal.Length ~ Species, data = iris)
+```
+
+## Chapter 10 - plot
+### 散布図
+`iris`データセットの四つの数値データに対する個々の散布図を`plot`関数を用いて描いてみましょう。
+```{r, eval=FALSE}
+plot(x, y, ...)
+```
+
+```{r plot, exercise=TRUE, exercise.lines=7}
+
+```
+
+```{r plot-hint}
+plot(iris$Sepal.Length, iris$Sepal.Width)
+plot(iris$Sepal.Length, iris$Petal.Length)
+plot(iris$Sepal.Length, iris$Petal.Width)
+plot(iris$Sepal.Width, iris$Petal.Length)
+plot(iris$Sepal.Width, iris$Petal.Width)
+plot(iris$Petal.Length, iris$Petal.Width)
+```
+
+
+### 散布図行列
+個々に散布図を描く手間を省くのが散布図行列です。`iris`データセットの四つの数値データに対する散布図行列を`plot`関数を用いて描いてみましょう。
+```{r, eval=FALSE}
+plot(x, y, ...)
+```
+
+```{r plot_matrix, exercise=TRUE, exercise.lines=3}
+
+```
+
+```{r plot_matrix-hint}
+plot(iris[, -5])
+```
+
+## Chapter 11 - scatterplot
+R Commanderの散布図は`car`パッケージにて定義されている`car::catterplot`関数を使っています。`scatterplot`関数は散布図の外周に箱ひげ図を描いてくれるので何かと便利です。
+
+### 散布図
+`iris`データセットの四つの数値データに対する個々の散布図を`car::scatterplot`関数を用いて描いてみましょう。
+```{r, eval=FALSE}
+scatterplot(x, y, smoother=loessLine, smoother.args=list(), smooth, span,
+            spread=!by.groups, reg.line=lm, boxplots=if (by.groups) "" else "xy",
+            xlab=deparse(substitute(x)), ylab=deparse(substitute(y)),
+            las=par("las"), lwd=1, lty=1, labels, id.method = "mahal", 
+            id.n = if(id.method[1]=="identify") length(x) else 0, 
+            id.cex = 1, id.col = palette()[1], id.location="lr",
+            log="", jitter=list(), xlim=NULL, ylim=NULL,
+            cex=par("cex"), cex.axis=par("cex.axis"), cex.lab=par("cex.lab"), 
+            cex.main=par("cex.main"), cex.sub=par("cex.sub"),
+            groups, by.groups=!missing(groups), 
+            legend.title=deparse(substitute(groups)), legend.coords,
+            legend.columns, ellipse=FALSE, levels=c(.5, .95), robust=TRUE,
+            col=if (n.groups == 1) palette()[3:1]
+                else rep(palette(), length=n.groups),
+            pch=1:n.groups, legend.plot=!missing(groups), reset.par=TRUE,
+            grid=TRUE, ...)
+
+scatterplot(formula, data, subset, xlab, ylab, legend.title, legend.coords,
+            labels, ...)
+```
+
+```{r scatterplot, exercise=TRUE, exercise.lines=7}
+
+```
+
+```{r scatterplot-hint}
+car::scatterplot(Sepal.Length ~ Sepal.Width, data = iris, smooth = FALSE)
+car::scatterplot(Sepal.Length ~ Petal.Length, data = iris, smooth = FALSE)
+car::scatterplot(Sepal.Length ~ Petal.Width, data = iris, smooth = FALSE)
+car::scatterplot(Sepal.Width ~ Petal.Length, data = iris, smooth = FALSE)
+car::scatterplot(Sepal.Width ~ Petal.Width, data = iris, smooth = FALSE)
+car::scatterplot(Petal.Length ~ Petal.Width, data = iris, smooth = FALSE)
+```
+
+### 散布図行列
+`iris`データセットの四つの数値データに対する散布図行列を`scatterplotMatrix`関数を用いて描いてみましょう。
+```{r, eval=FALSE}
+scatterplotMatrix(x, var.labels=colnames(x), 
+                  diagonal=c("density", "boxplot", "histogram", "oned",
+                             "qqplot", "none"), 
+                  adjust=1, nclass, plot.points=TRUE, smoother=loessLine,
+                  smoother.args=list(), smooth, span, spread = !by.groups,
+                  reg.line=lm, transform=FALSE, family=c("bcPower", "yjPower"),
+                  ellipse=FALSE, levels=c(.5, .95), robust=TRUE, groups=NULL,
+                  by.groups=FALSE, 
+                  use=c("complete.obs", "pairwise.complete.obs"), labels,
+                  id.method="mahal", id.n=0, id.cex=1, id.col=palette()[1],
+                  id.location="lr",
+                  col=if (n.groups == 1) palette()[3:1]
+                     else rep(palette(), length=n.groups),
+                  pch=1:n.groups, lwd=1, lty=1, cex=par("cex"),
+                  cex.axis=par("cex.axis"), cex.labels=NULL, 
+                  cex.main=par("cex.main"), 
+                  legend.plot=length(levels(groups)) > 1, legend.pos=NULL,
+                  row1attop=TRUE, ...)
+```
+
+```{r scatterplotMatrix, exercise=TRUE, exercise.lines=3}
+
+```
+
+```{r scatterplotMatrix-hint}
+car::scatterplotMatrix(iris[, -5], smooth = FALSE)
+```
+
+### 層別散布図行列
+`iris`データセットの四つの数値データに対して種別（`Species`）で層別した散布図行列を`car::scatterplotMatrix`関数を用いて描いてみましょう。
+```{r, eval=FALSE}
+scatterplotMatrix(formula, data=NULL, subset, labels, ...)
+```
+
+```{r l_scatterplotMatrix, exercise=TRUE, exercise.lines=5}
+
+```
+
+```{r l_scatterplotMatrix-hint}
+car::scatterplotMatrix(~ Petal.Length + Petal.Width +
+                         Sepal.Length + Sepal.Width | Species,
+                       data = iris, smooth = FALSE)
+```
+
+## Chapter 12 - qqPlot
+### QQプロット
+QQプロットは`car`パッケージにある`car::qqPlot`関数が見やすいので、これを使うのがおすゝめです。`iris`データセットの四つの数値データに対してQQプロットを`car::qqPlot`関数を用いて描いてみましょう。
+```{r, eval=FALSE}
+qqPlot(x, distribution="norm", ...,
+       ylab=deparse(substitute(x)), xlab=paste(distribution, "quantiles"), 
+       main=NULL, las=par("las"),	envelope=.95, col=palette()[1],
+       col.lines=palette()[2], lwd=2, pch=1, cex=par("cex"), 
+       line=c("quartiles", "robust", "none"),  
+       labels = if(!is.null(names(x))) names(x) else seq(along=x),
+       id.method = "y", id.n =if(id.method[1]=="identify") Inf else 0,
+       id.cex=1, id.col=palette()[1], id.location="lr", grid=TRUE)
+```
+
+```{r qqPlot, exercise=TRUE, exercise.lines=5}
+
+```
+
+```{r qqPlot-hint}
+car::qqPlot(iris$Sepal.Length)
+car::qqPlot(iris$Sepal.Width)
+car::qqPlot(iris$Petal.Length)
+car::qqPlot(iris$Petal.Width)
+```
+
+## Chapter 13 - lm
+### 線形回帰
+`iris`データセットの`Sepal`と`Petal`の長さと幅に対する線形回帰モデルを`lm`関数を用いて計算してみましょう。
+```{r, eval=FALSE}
+lm(formula, data, subset, weights, na.action, method = "qr", model = TRUE,
+   x = FALSE, y = FALSE, qr = TRUE, singular.ok = TRUE, contrasts = NULL,
+   offset, ...)
+```
+
+```{r lm, exercise=TRUE, exercise.lines=5}
+
+```
+
+```{r lm-hint}
+lm(Sepal.Length ~ Sepal.Width, data = iris)
+lm(Petal.Length ~ Petal.Width, data = iris)
+```
+
+### 回帰分析
+線形回帰モデルの評価には`summary`関数を使います。
+```{r}
+summary(lm(Sepal.Length ~ Sepal.Width, data = iris))
+summary(lm(Petal.Length ~ Petal.Width, data = iris))
+```
+
+## Chapter 14 - plot
+### 基本診断プロット
+通常単回帰では回帰診断は必須ではありませんが、残差を確認して妙な傾向が出ていないか確認する癖はつけておいた方がいいかも知れません。基本診断プロットは線形回帰モデルの計算結果を`plot`関数に渡すだけです。
+```{r lm_plot, exercise=TRUE, exercise.lines=3}
+
+```
+
+```{r lm_plot-hint}
+plot(lm(Sepal.Length ~ Sepal.Width, data = iris))
+plot(lm(Sepal.Width ~ Sepal.Length, data = iris))
+```
+
+## Chapter 15 - t.test
+### 検定 - 平均
+平均値の検定には一般的にt検定を用います。t検定は`t.test`関数を用います。`t.test`関数は様々な使い方ができます。
+
+標本     | 関係       | 分散     | 指定方法
+-------- | ---------- | -------- | --------------------------------
+1標本の  | N/A        | N/A      | t.test(x, mu = $\mu$)           
+2群間の  | 対応のない | 等分散   | t.test(x, y, var.equal = TRUE)  
+2群間の  | 対応のない | 不等分散 | t.test(x, y, var.equal = FALSE) 
+2群間の  | 対応のある | N/A      | t.test(x, y, paired = TRUE)     
+
+標本     | 関係       | 分散     | 指定方法（formula形式の場合）
+-------- | ---------- | -------- | --------------------------------
+2群間の  | 対応のない | 等分散   | t.test(value ~ factor, data = x, var.equal = TRUE)
+2群間の  | 対応のない | 不等分散 | t.test(value ~ factor, data = x, var.equal = FALSE)
+2群間の  | 対応のある | N/A      | t.test(value ~ factor, data = x, paired = TRUE)
+
+
+```{r, eval=FALSE}
+t.test(x, y = NULL,
+       alternative = c("two.sided", "less", "greater"),
+       mu = 0, paired = FALSE, var.equal = FALSE,
+       conf.level = 0.95, ...)
+
+t.test(formula, data, subset, na.action, ...)
+```
+
+`mtcars`データセットを用いて、変速機種別(`am`)による燃費（`mpg`）の平均値の差を検定してみましょう。
+```{r t_test, exercise=TRUE, exercise.lines=3}
+
+```
+
+```{r t_test-hint}
+t.test(mpg ~ am, data = mtcars)
+stripchart(mpg ~ am, data = mtcars)     # 分布を可視化して確認
+```
+
+
+## Chapter 16 - var.test
+### 検定 - 分散比
+```{r, eval=FALSE}
+var.test(x, y, ratio = 1,
+         alternative = c("two.sided", "less", "greater"),
+         conf.level = 0.95, ...)
+
+var.test(formula, data, subset, na.action, ...)
+```
+
+`mtcars`データセットを用いて、変速機種別(`am`)による燃費（`mpg`）の分散比の検定してみましょう。
+```{r var_test, exercise=TRUE, exercise.lines=3}
+
+```
+
+```{r var_test-hint}
+var.test(mpg ~ am, data = mtcars)
+boxplot(mpg ~ am, data = mtcars)     # 分布を可視化して確認
+```
+
+## Chapter 17 - oneway.test
+### 検定 - 分散分析
+三群以上で平均値の差を検定する分散分析を行うには`oneway.test`関数を用いるのが便利です。
+```{r, eval=FALSE}
+oneway.test(formula, data, subset, na.action, var.equal = FALSE)
+```
+
+`iris`データセットを用いて、種別（`Species`）毎の花弁（`Petal`）の平均値の差を検定してみましょう。
+```{r oneway, exercise=TRUE, exercise.lines=5}
+
+```
+
+```{r oneway-hint}
+oneway.test(Petal.Length ~ Species, data = iris)
+boxplot(Petal.Length ~ Species, data = iris)    # 分布を可視化して確認
+oneway.test(Petal.Width ~ Species, data = iris)
+boxplot(Petal.Width ~ Species, data = iris)     # 分布を可視化して確認
+```
+
+## Chapter 18 - prop.test
+### 検定 - 比率
+比率の検定には一標本の比率の検定と二標本の比率の検定があります。一標本の場合は比率の指定を省略した場合は`p = 0.5`すなわち標本内の層別データの比率に対する検定となります。一方、二標本の場合は標本間の比率に対する検定となります。
+```{r, eval=FALSE}
+prop.test(x, n, p = NULL,
+          alternative = c("two.sided", "less", "greater"),
+          conf.level = 0.95, correct = TRUE)
+```
+
+#### 一標本の比率の検定
+`titanic`データセットを用いて、生存者（`Survived`）に対する1標本の比率の検定を行ってみましょう。`Titanic`データセットは`iris`データセットや`mtcars`データセットと異なり、table形式なのでベクトル形式への変換結果を利用して下さい。
+```{r prop_test, exercise=TRUE, exercise.lines=3}
+x <- rbind(xtabs(Freq ~ Survived, data = as.data.frame(Titanic)))
+
+```
+
+```{r prop_test-hint}
+x <- rbind(xtabs(Freq ~ Survived, data = as.data.frame(Titanic)))
+prop.test(x)
+barplot(x)      # 分布を可視化して確認
+```
+
+#### 二標本の比率の検定
+`titanic`データセットを用いて、生存者（`Survived`）と年齢（`age`）に対する2標本の比率の検定を行ってみましょう。`Titanic`データセットは`iris`データセットや`mtcars`データセットと異なり、table形式なのでベクトル形式への変換結果を利用して下さい。
+```{r prop_test_2, exercise=TRUE, exercise.lines=3}
+x <- rbind(xtabs(Freq ~ Survived + Age, data = as.data.frame(Titanic)))
+
+```
+
+```{r prop_test_2-hint}
+x <- rbind(xtabs(Freq ~ Survived + Age, data = as.data.frame(Titanic)))
+prop.test(x)
+barplot(x)      # 分布を可視化して確認
+```
+
+## Chapter 19 - dnorm
+### 分布 - 正規分布
+Rでは様々な密度関数が用意されています。正規分布の場合は`dnorm`関数です。
+```{r, eval=FALSE}
+dnorm(x, mean = 0, sd = 1, log = FALSE)
+```
+
+また、任意の関数（数式）に対する任意の入力範囲に対する出力を描く関数も用意されています。なお`expr`に対する引数は`x`で渡します。その他、詳細はRのヘルプで確認してください。
+```{r, eval=FALSE}
+curve(expr, from = NULL, to = NULL, n = 101, add = FALSE,
+      type = "l", xname = "x", xlab = xname, ylab = NULL,
+      log = NULL, xlim = NULL, ...)
+```
+
+平均値50、標準偏差10の正規分布の確率密度分布を描いてみましょう。描く範囲は任意としますが、なるべく分布の形が分かるような範囲として下さい。
+```{r dnorm, exercise=TRUE, exercise.lines=3}
+curve(, from = , to = ) 
+```
+
+```{r dnorm-hint}
+curve(dnorm(x, mean = 50, sd = 10), from = 20, to = 80) 
+```
+
+## Appendix
+更に詳しくRを学ぶには以下の図書やコミュニティを活用してください。
+
+統計の基礎とRで処理方法を学びたい場合は[改定版 統計学基礎][B1]や[Rで楽しむ統計][B2]。
+Rの基礎から学びたい場合は[みんなのR][B3]や[パーフェクトR][B4]。  
+
+ネットコミュニティで質問したい場合は、日本のR界の著名人が集まっている[R-wakalang][C1]や
+[Rjp Wiki][C2]で、検索にはRに特化した検索エンジンである[seek R][C3]がおすゝめです。
+
+---
+
+![Sampo Suzuki][CCI]
+[CC BY-NC-SA 4.0][CC], Sampo Suzuki [`r format(Sys.time(), format = '%F %H:%M(%Z)')`]
+
+[0]: https://sites.google.com/site/kantometrics/ "データ分析勉強会"
+[CC]: http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja "CC BY-NC-SA 4.0"
+[CCI]: https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png "CC BY-NC-SA 4.0 icon"
+[RS]: https://www.rstudio.com/ "RStudio"
+
+<!-- Books -->
+[B1]: http://www.tokyo-tosho.co.jp/books/978-4-489-02227-2/ "統計学基礎"
+[B2]: http://www.kyoritsu-pub.co.jp/bookdetail/9784320112414 "Rで楽しむ統計"
+[B3]: https://book.mynavi.jp/ec/products/detail/id=39763 "みんなのR"
+[B4]: http://gihyo.jp/book/2017/978-4-7741-8812-6 "パーフェクトR"
+
+<!-- Net Community -->
+[C1]: http://qiita.com/uri/items/5583e91bb5301ed5a4ba "R-wakalang"
+[C2]: http://www.okadajp.org/RWiki/ "RjpWiki"
+[C3]: http://seekr.jp/ "seek R"

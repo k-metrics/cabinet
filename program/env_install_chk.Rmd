@@ -1,0 +1,78 @@
+---
+title: "環境作成と動作確認"
+output:
+  html_document:
+    code_folding: show
+    number_sections: no
+---
+
+<!-- Include Common Links -->
+```{r install pkg, child="../common/links.Rmd", include=FALSE}
+```
+
+本ページはデータ分析勉強会で行うチュートリアルファイルを動かすために必要なパッケージのインストールとインストール後の動作確認方法について記述しています。  
+　  
+
+# パッケージのインストール
+チュートリアルではRStudioと以下のパッケージが必要となりますので事前に[RStudioのインストール](./install_dtp.html)ならびに以下を参考に[DT][DT], [formatR][formatR], [knitr][knitr], [learnr][learnr], [rmarkdown][rmarkdown], [shiny][shiny], [tidyverse][tidyverse]パッケージをインストールして下さい。なお、バージョン情報等については[こちら](../basics/index.html)で確認して下さい。  
+　  
+
+## R GUIからのインストール
+R（R GUI）のメニューからインストールする場合は[パッケージのインストール](./install_pkg.html)を参照して個々のパッケージを順に指定してインストールして下さい。  
+　  
+
+## RStudioからのインストール
+RStudioからインストールする場合は［Packages］パネルにある［Install］ボタンをクリックして表示されるダイアログの［Packages］欄に以下のように入力して［Install］ボタンをクリックします。  
+![Install Packages RStudio](./fig/install_pkg_rstudio_02.png)
+
+　  
+
+## R Consoleからのインストール
+R GUI, R Commander, RStudioのコンソールからスクリプトを用いて直接インストールする場合は以下のコマンドを実行して下さい。  
+```{r, eval=FALSE}
+chooseCRANmirror()
+pkg_lst <- c("DT", "formatR", "knitr", "learnr", "rmarkdown", "shiny", "tidyverse")
+install.packages(pkg_lst, dependencies = TRUE)
+```
+　  
+
+# RStudioの動作確認
+チュートリアルに必要なパッケージをインストールしましたら以下の手順でRStudioを用いて動作確認を行います。  
+　  
+
+## 新規ファイルの作成
+RStudioの左上のアイコンから［R Markdown...］をクリックするか麺ヒューから［File］-［New File］-［R Markdown...］を選択します。  
+![New File](./fig/opchk_rstudio_01.png)
+　  
+
+## テンプレートの選択
+テンプレート選択画面が開きますので左側のリストから［From Template］を選択し右側に表示されたテンプレート一覧から［Interactive Tutorial］を選択し［OK］ボタンをクリックします。  
+![Template](./fig/opchk_rstudio_02.png)
+　  
+
+## ドキュメントのレンダリング
+テンプレートが開きましたら［Run Document］ボタンをクリックして下さい。R Markdownファイルのレンダリングが実行されます。  
+![Run Document](./fig/opchk_rstudio_03.png)
+　  
+
+## ドキュメントの実行
+レンダリングが終了し［Viewer］パネルに下図のような表示が出れば動作確認終了です。  
+![Tutorial](./fig/opchk_rstudio_04.png)
+　  
+
+# 困った場合は
+［Console］パネルまたは［R Markdown］パネルにエラーメッセージが表示されていますので、それらを参考に不足しているパッケージをインストールして下さい。特にWindows環境ではUACが原因でパッケージのインストールができない場合もありますので、管理者権限でアプリケーションを立ち上げから実行してください。  
+
+---
+
+[DT]: https://cran.r-project.org/web/packages/DT/index.html "DT"
+[formatR]: https://cran.r-project.org/web/packages/formatR/index.html "formatR"
+[knitr]: https://cran.r-project.org/web/packages/knitr/index.html "knitr"
+[learnr]: https://cran.r-project.org/web/packages/learnr/index.html "learnr"
+[rmarkdown]: https://cran.r-project.org/web/packages/rmarkdown/index.html "rmarkdown"
+[shiny]: https://cran.r-project.org/web/packages/shiny/index.html "shiny"
+[tidyverse]: https://cran.r-project.org/web/packages/tidyverse/index.html "tidyverse"
+
+<!-- Include Footer -->
+```{r, child="../common/footer.Rmd", include=FALSE}
+```
