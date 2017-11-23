@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>第1章 例題解答例</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = false;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Model/Infer</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-book"></span>
+     
+    書籍
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li class="dropdown-header">データ指向のソフトウェア品質マネジメント</li>
+    <li class="divider"></li>
+    <li class="dropdown-header">ソフトウェアメトリクス統計分析入門</li>
+    <li>
+      <a href="./smsa_1.html">　第１章 例題・演習回答例</a>
+    </li>
+    <li class="dropdown-header">　第２章 例題・演習回答例</li>
+    <li class="dropdown-header">　第３章 例題・演習回答例</li>
+    <li class="dropdown-header">　第４章 例題・演習回答例</li>
+    <li class="dropdown-header">　第５章 例題・演習回答例</li>
+    <li class="divider"></li>
+    <li class="dropdown-header">統計学基礎</li>
+    <li class="dropdown-header">　第１章 演習回答例</li>
+    <li class="dropdown-header">　第１章 演習回答例</li>
+    <li class="dropdown-header">　第２章 演習回答例</li>
+    <li class="dropdown-header">　第３章 演習回答例</li>
+    <li class="dropdown-header">　第４章 演習回答例</li>
+    <li class="dropdown-header">　第５章 演習回答例</li>
+    <li class="dropdown-header">　第６章 演習回答例</li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-graduation-cap"></span>
+     
+    gacco
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li class="dropdown-header">社会人のためのデータサイエンス入門</li>
+    <li class="dropdown-header">社会人のためのデータサイエンス演習</li>
+    <li class="dropdown-header">誰でも使える統計オープンデータ</li>
+    <li class="divider"></li>
+    <li class="dropdown-header">統計学I</li>
+    <li class="dropdown-header">統計学II</li>
+    <li class="dropdown-header">統計学III</li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-bar-chart"></span>
+     
+    分析手法
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li class="dropdown-header">ソルバー</li>
+    <li class="dropdown-header">分散分析</li>
+    <li class="dropdown-header">回帰分析</li>
+  </ul>
+</li>
+<li>
+  <a href="./about.html">About</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-github"></span>
+     
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../">Cabinet</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="../import/index.html">Import</a>
+    </li>
+    <li>
+      <a href="../tidy/index.html">Tidy/Transform</a>
+    </li>
+    <li>
+      <a href="./index.html">
+        <span class="fa fa-home"></span>
+         
+        Model/Infer
+      </a>
+    </li>
+    <li>
+      <a href="../visualize/index.html">Visualize</a>
+    </li>
+    <li>
+      <a href="../communicate/index.html">Communicate/Automate</a>
+    </li>
+    <li>
+      <a href="../program/index.html">Program</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="https://sites.google.com/site/kantometrics/home">
+        <span class="fa fa-google"></span>
+         
+        データ分析勉強会
+      </a>
+    </li>
+  </ul>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">第1章 例題解答例</h1>
+
+</div>
+
+
+<!-- SQiP and others -->
+<!-- Books -->
+<!-- Net Community -->
+<!-- Style Guide -->
+<!-- Creative Commons -->
+<!-- R -->
+<!-- R Packages -->
+<!-- RStudio -->
+<!-- Docker -->
+<!-- Cabinet Pages -->
+<div id="はじめに" class="section level1">
+<h1>はじめに</h1>
+<p>本資料は『<a href="http://www.juse-p.co.jp/cgi-bin/html.pl5?i=ISBN978-4-8171-9558-6" title="ソフトウェアメトリクス統計分析入門">ソフトウェアメトリクス統計分析入門</a>』(以降、テキストと記載)の第1章の例題と演習問題を<a href="https://www.r-project.org/" title="The R Project">R</a>で解いた際の解答例を示したものです。また、<a href="http://rmarkdown.rstudio.com/" title="R Markdown form RStudio">R Markdown</a>を使うメリットを示すための一手段として作成していますので、テキストにおける計算方法とは異なる部分もあります。本資料で使用しているデータの入手に関してはテキストにてご確認下さい。<br />
+本資料がHTML形式の場合、Rのコードを参照するには右側にある<strong><code>[Code]</code></strong>ボタンをクリックして下さい。なお、JavaScriptは必ずOnにしてご覧下さい。<br />
+　</p>
+</div>
+<div id="例題" class="section level1">
+<h1>例題</h1>
+<p>　</p>
+<div id="例題1.1" class="section level2">
+<h2>例題1.1</h2>
+<blockquote>
+<p>生産性の測定を開始し、あるプロジェクトの生産性が0.09FP/人時となりました。まだデータをとり始めたばかりなので、この0.09という値の良否が判断できません。 そこで、『ソフトウェア開発データ白書』をベンチマークとして、業界内において、どの程度の位置づけとなるのかを調べることにしました。<br />
+『ソフトウェア開発データ白書2012-2013』のp.288に業種別FP生産性データが掲載されています。それを図1.1に示します。この組織の業種は、「K. 金融・保険業」に該当します。さて、このプロジェクトの生産性をどのように評価すればよいでしょうか。<br />
+出典：ソフトウェアメトリクス統計分析入門 P12</p>
+</blockquote>
+<p>　</p>
+<div id="データの設定" class="section level3">
+<h3>データの設定</h3>
+<p>本例題で利用するデータの数は多くないので、直接、Rのコードで変数として設定します。</p>
+<pre class="r"><code>x.prod &lt;- 0.090   # 評価対象となる生産性(productivity)
+x.mean &lt;- 0.051   # 同業種での生産性の平均値
+x.sd &lt;- 0.029     # 同業種での生産性の標準偏差(不偏標準偏差)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th>項目</th>
+<th>値</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>評価対象となる生産性</td>
+<td><span class="math inline">\(0.09\)</span></td>
+</tr>
+<tr class="even">
+<td>同業種での生産性の平均値</td>
+<td><span class="math inline">\(0.051\)</span></td>
+</tr>
+<tr class="odd">
+<td>同業種での生産性の標準偏差</td>
+<td><span class="math inline">\(0.029\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>　</p>
+</div>
+<div id="zスコアの計算" class="section level3">
+<h3>Zスコアの計算</h3>
+<p>テキストではZスコアを計算してから標準正規分布を用いて上位確率を計算していますが、本資料では平均値<span class="math inline">\(0.051\)</span>、標準偏差<span class="math inline">\(0.029\)</span>の正規分布から直接上位確率を求めています。</p>
+<pre class="r"><code># Zスコアを計算しないでも確率は計算できる(上位からの確率)
+prob &lt;- pnorm(x.prod, mean = x.mean, sd = x.sd, lower.tail = FALSE)
+# 偏差値(standard score)を出す場合は平均値50、標準偏差10の正規分布の確率から
+# 逆算すればよい
+ss &lt;- qnorm(prob, mean = 50, sd = 10, lower.tail = FALSE)</code></pre>
+<p>計算の結果、対象プロジェクトは上位<span class="math inline">\(9\%\)</span>に位置し、その偏差値は<span class="math inline">\(63\)</span>となることがわかります。</p>
+<p>　</p>
+</div>
+</div>
+<div id="例題1.2" class="section level2">
+<h2>例題1.2</h2>
+<blockquote>
+<p>以下に、ある組織でプロジェクトごとに測定された最終システムテストの欠陥検出率のデータが76 個あります。<br />
+欠陥検出率が高いほど製品の信頼性が低く、良くないプロジェクトと考えます。 これらのデータを活用して欠陥検出率上限の基準値を設定し、それを超える場合はプロジェクト終了後に次期プロジェクトに向けて何らかの改善施策を実施してもらう などの管理をしたいと考えています。 管理レベルとして、全体の10％ぐらいが改善対象になるように基準値を設定してください。 出典：ソフトウェアメトリクス統計分析入門 P22</p>
+</blockquote>
+<p>本例題で利用するデータは、予めCSVファイルとして保存されているものとします。<br />
+データ名は日本語のままでも構いませんが、RStudioでコーディングする場合は、色々と不都合なので、読み込んだ後で変更しておきます。</p>
+<p>　</p>
+<div id="データ分布の確認" class="section level3 tabset">
+<h3>データ分布の確認</h3>
+<p>例題1.1では、対象となるデータが正規分布にしたがっているものと仮定していましたが、本例題では、最初にデータが正規分布に従っていることを確認します。<br />
+テキストではヒストグラムのみを確認して、詳細は補足1.3に記載されていますが、ここではヒストグラム、箱ひげ図、QQプロット、シャピロ・ウィルクの正規性の検定の四つの手段で確認を行います。</p>
+<p>　</p>
+<div id="ヒストグラム" class="section level4 unnumbered">
+<h4>ヒストグラム</h4>
+<pre class="r"><code>hist(dataset$productivity)</code></pre>
+<p><img src="smsa_1_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>若干、左に偏っている(右に歪んだ)形をしていますが、概ね正規分布と言っても差し障りない分布のように見えます。</p>
+<p>　</p>
+</div>
+<div id="箱ひげ図" class="section level4 unnumbered">
+<h4>箱ひげ図</h4>
+<pre class="r"><code>boxplot(dataset$productivity)</code></pre>
+<p><img src="smsa_1_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>外れ値が一つ示されていますが、中央値も上下ヒンジのほぼ中央にあり、こちらからも正規分布と言っても差し障りのない分布のように見えます。</p>
+<p>　</p>
+</div>
+<div id="qqプロット" class="section level4 unnumbered">
+<h4>QQプロット</h4>
+<pre class="r"><code># 分布の正規性を確認
+car::qqPlot(dataset$productivity, dist = &quot;norm&quot;, id.method = &quot;y&quot;, id.n = 2,
+            labels = rownames(dataset))</code></pre>
+<p><img src="smsa_1_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<pre><code>## 31 15 
+## 76 75</code></pre>
+<p>データは全て点線の内側に収まっており、正規分布と見えます。</p>
+<p>　</p>
+</div>
+<div id="正規性の検定" class="section level4 unnumbered">
+<h4>正規性の検定</h4>
+<pre class="r"><code>shapiro.test(dataset$productivity)</code></pre>
+<pre><code>## 
+##  Shapiro-Wilk normality test
+## 
+## data:  dataset$productivity
+## W = 0.98179, p-value = 0.3463</code></pre>
+<p>検定の結果、<span class="math inline">\(p = 0.3463\)</span>となり帰無仮説が棄却されませんでしたので、正規分布にしたがっていないとは言えません。</p>
+<p>　</p>
+</div>
+</div>
+<div id="外れ値の確認" class="section level3">
+<h3>外れ値の確認</h3>
+<p>データ分布の確認において、対象のデータ分布は正規分布とみなせるという結論になりましたが、<span class="math inline">\(0.12\)</span>というデータが外れ値で ある可能性があります。念の為にドットチャートを使って確認します。</p>
+<pre class="r"><code># ドットチャートによるデータの確認
+stripchart(productivity ~ pj.no, vertical = TRUE, method = &quot;stack&quot;,
+           ylab = &quot;欠陥検出率&quot;, data = dataset)</code></pre>
+<p><img src="smsa_1_files/figure-html/unnamed-chunk-8-1.png" width="672" /> ドットチャートをみると<span class="math inline">\(0.12\)</span>という値は突出しているようにも見えますが、近くの<span class="math inline">\(0.106\)</span>と比べると 然程、突出しているようにも思えません。そこで、</p>
+<ol style="list-style-type: decimal">
+<li><span class="math inline">\(0.12\)</span>を外れ値としない</li>
+<li><span class="math inline">\(0.12\)</span>を外れ値とする</li>
+</ol>
+<p>という2つのパターンで算出し、その結果を比較してみることにします。</p>
+<p>　</p>
+</div>
+<div id="平均値と標準偏差の算出" class="section level3">
+<h3>平均値と標準偏差の算出</h3>
+<p>では、上記の2パターンで平均値と標準偏差を算出してみます。</p>
+<p>　</p>
+<div id="外れ値としない場合" class="section level4">
+<h4>外れ値としない場合</h4>
+<pre class="r"><code># 平均値と標準偏差
+dataset.mean &lt;- mean(dataset$productivity)
+dataset.sd &lt;- sd(dataset$productivity)</code></pre>
+<p>当該データを外れ値とみなさない場合の平均値<span class="math inline">\((mean)\)</span>と標準偏差<span class="math inline">\((sd)\)</span>は以下の通り</p>
+<p><span class="math display">\[\mbox{平均値} = 0.0501\]</span> <span class="math display">\[\mbox{標準偏差} = 0.0254\]</span></p>
+<p>　</p>
+</div>
+<div id="外れ値とした場合" class="section level4">
+<h4>外れ値とした場合</h4>
+<pre class="r"><code># 外れ値の行数を得る
+row.num &lt;- which(dataset$productivity &gt;= 
+                   min(boxplot.stats(dataset$productivity)$out))
+# 平均値と標準偏差(外れ値を外した場合)
+dataset.mean.removed &lt;- mean(dataset$productivity[-row.num])
+dataset.sd.removed &lt;- sd(dataset$productivity[-row.num])</code></pre>
+<p>当該データを外れ値とみなした場合の平均値<span class="math inline">\((mean)\)</span>と標準偏差<span class="math inline">\((sd)\)</span>は以下の通り</p>
+<p><span class="math display">\[\mbox{平均値} = 0.0491\]</span> <span class="math display">\[\mbox{標準偏差} = 0.0242\]</span></p>
+<p>　</p>
+</div>
+<div id="両者の差の確認" class="section level4">
+<h4>両者の差の確認</h4>
+<pre class="r"><code># 外さない場合と外した場合の差(平均値と標準偏差)
+diff.mean &lt;- dataset.mean - dataset.mean.removed
+diff.sd &lt;- dataset.sd - dataset.sd.removed
+
+per.mean &lt;- (dataset.mean - dataset.mean.removed) / dataset.mean * 100
+per.sd &lt;- (dataset.sd - dataset.sd.removed) / dataset.sd * 100</code></pre>
+<p>平均値の差は<span class="math inline">\(9\times 10^{-4}\)</span>、標準偏差の差は<span class="math inline">\(0.0012\)</span>と共に約0.001ですが、率<span class="math inline">\([\%]\)</span>で見ると<span class="math inline">\(1.9\%\)</span>と<span class="math inline">\(4.6\%\)</span>なため基準値も2パターンで出してみます。</p>
+<p>　</p>
+</div>
+</div>
+<div id="基準値の算出" class="section level3">
+<h3>基準値の算出</h3>
+<p>テキストではZスコアを計算してから標準正規分布を用いて計算していますが、本資料では例題1.1でやったように各々の正規分布から直接基準値を算出します。</p>
+<pre class="r"><code># 基準値の算出
+std.value &lt;- qnorm(0.1, mean = dataset.mean, sd = dataset.sd,
+                   lower.tail = FALSE)
+std.value.removed &lt;- qnorm(0.1, mean = dataset.mean.removed,
+                           sd = dataset.sd.removed,
+                           lower.tail = FALSE)</code></pre>
+<p>外れ値としない場合の基準値は<span class="math display">\[0.083\]</span> 外れ値とした場合の基準値は、<span class="math display">\[0.08\]</span></p>
+<p>となります。念のためにこの基準値を用いた場合、基準値外となる要改善数を確認します。</p>
+<p>　</p>
+</div>
+<div id="基準値の確認" class="section level3">
+<h3>基準値の確認</h3>
+<pre class="r"><code># 条件を満たすデータの数を数える
+num &lt;- sum(dataset$productivity &gt; std.value)
+num.removed &lt;- sum(dataset$productivity &gt; std.value.removed)
+# 比率を算出する
+per.num &lt;- round(num / length(dataset$productivity) * 100)
+per.num.removed &lt;- round(num.removed / length(dataset$productivity) * 100)</code></pre>
+<p>外れ値としない場合の要改善数は<span class="math display">\[9(12\%)\]</span> 外れ値とした場合の要改善数は<span class="math display">\[10(13\%)\]</span> となり、当初目標であった<span class="math inline">\(\underline{10\%\mbox{程度}}\)</span>を概ね満たしていると言える。 　</p>
+</div>
+</div>
+</div>
+<div id="演習" class="section level1">
+<h1>演習</h1>
+<blockquote>
+<p>第1章は全ての問題で「第1章_例題演習データ」ファイルの「1章演習データ」シートにあるデータを使用します。このシートにはある架空の組織のプロジェクトごとの生産性(行/人月)と工数予実割合(実績総工数/見積総工数)のデータが55プロジェクト分あります。</p>
+<ul>
+<li><span class="math inline">\(\mbox{プロジェクト名}(prj)\)</span></li>
+<li><span class="math inline">\(\mbox{生産性}(prod) = \frac{\mbox{新規開発行数(行)}}{\mbox{総開発工数(人月)}}\)</span></li>
+<li><span class="math inline">\(\mbox{工数予実割合}(rate) = \frac{\mbox{実績総工数(人月)}}{\mbox{見積総工数(人月)}}\)</span></li>
+</ul>
+</blockquote>
+<p>演習データは予めRで読み込めるCSVファイルに加工してあるものとし、これを読み込み、読み込んだ中身を確認します。</p>
+<p>　</p>
+<div id="演習1.1" class="section level2">
+<h2>演習1.1</h2>
+<blockquote>
+<p>例題1.2 の考え方を適用して、「第1章演習データ」の生産性の上限、下限の基準値を設定してください。設定のための条件は以下のとおりとします。</p>
+<ul>
+<li>基準の下限を外れたプロジェクトは、なぜそのように低くなってしまったかの原因究明を行い、次のプロジェクトで改善をする目的で下限の基準値を活用します。</li>
+<li>下位10％ぐらいが対象となるように下限の基準値を設定します。</li>
+<li>基準の上限を外れたプロジェクトは、ベストプラクティスとして理由を探り、他のプロジェクトへの水平展開を行う目的で上限の基準値を活用します。</li>
+<li>上位5％ぐらいが対象となるように上限の基準値を設定します。</li>
+<li>各基準値を決める前にデータ分布の確認を行い、そこで外れ値とみなされたデータは除去します。</li>
+</ul>
+</blockquote>
+<p>　</p>
+<div id="データ分布の確認-1" class="section level3 tabset">
+<h3>データ分布の確認</h3>
+<p>　</p>
+<div id="histgram" class="section level4 unnumbered">
+<h4>histgram</h4>
+<pre class="r"><code>hist(x$prod, main = &quot;&quot;, xlab = &quot;生産性&quot;)</code></pre>
+<div class="figure">
+<img src="smsa_1_files/figure-html/unnamed-chunk-15-1.png" alt="生産性のヒストグラム" width="672" />
+<p class="caption">
+生産性のヒストグラム
+</p>
+</div>
+<p>生産性データのヒストグラムを描いて見ると左側の大きな山と右側の小さな丘に分かれていることが分かります。このことから右側の小さな丘のデータは外れ値の可能性があるので、箱ひげ図にて確認します。</p>
+<hr />
+<p>　</p>
+</div>
+<div id="boxplot" class="section level4 unnumbered">
+<h4>boxplot</h4>
+<pre class="r"><code>boxplot(x$prod)</code></pre>
+<div class="figure">
+<img src="smsa_1_files/figure-html/unnamed-chunk-16-1.png" alt="生産性の箱ひげ図" width="672" />
+<p class="caption">
+生産性の箱ひげ図
+</p>
+</div>
+<p>箱ひげ図を描いて見るとヒストグラムで右側にあったデータ(2640, 2369)は外れ値と判断できますので、分析対象データとしてこれらを削除してから分析を行うことにします。</p>
+<hr />
+<p>　</p>
+</div>
+<div id="外れ値の削除" class="section level4 unnumbered">
+<h4>外れ値の削除</h4>
+<p>箱ひげ図のヒンジ(ひげ)を超える値を外れ値とします。なお、箱ひげ図のヒンジは五数要約にて算出可能です。</p>
+<pre class="r"><code># ヒンジ内のデータを抜き出す
+x.removed &lt;- subset(x, (prod &gt;= boxplot.stats(x$prod)$stats[1]) &amp; 
+                       (prod &lt;= boxplot.stats(x$prod)$stats[5]))
+x.removed</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["prj"],"name":[1],"type":["fctr"],"align":["left"]},{"label":["prod"],"name":[2],"type":["int"],"align":["right"]},{"label":["rate"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"Project01","2":"658","3":"1.35"},{"1":"Project02","2":"455","3":"1.22"},{"1":"Project03","2":"973","3":"1.31"},{"1":"Project04","2":"828","3":"1.14"},{"1":"Project05","2":"685","3":"1.43"},{"1":"Project06","2":"1116","3":"1.40"},{"1":"Project07","2":"832","3":"1.29"},{"1":"Project08","2":"249","3":"1.29"},{"1":"Project09","2":"583","3":"1.39"},{"1":"Project10","2":"915","3":"1.27"},{"1":"Project11","2":"184","3":"1.16"},{"1":"Project12","2":"342","3":"1.52"},{"1":"Project13","2":"236","3":"2.94"},{"1":"Project14","2":"601","3":"0.98"},{"1":"Project15","2":"323","3":"1.40"},{"1":"Project16","2":"1037","3":"NA"},{"1":"Project17","2":"383","3":"1.61"},{"1":"Project18","2":"180","3":"1.53"},{"1":"Project19","2":"267","3":"1.57"},{"1":"Project20","2":"36","3":"1.13"},{"1":"Project21","2":"598","3":"1.43"},{"1":"Project22","2":"741","3":"1.75"},{"1":"Project23","2":"524","3":"2.00"},{"1":"Project24","2":"567","3":"1.25"},{"1":"Project25","2":"463","3":"1.96"},{"1":"Project26","2":"277","3":"0.65"},{"1":"Project27","2":"114","3":"1.93"},{"1":"Project28","2":"773","3":"2.39"},{"1":"Project29","2":"230","3":"1.48"},{"1":"Project30","2":"1039","3":"2.67"},{"1":"Project31","2":"770","3":"1.03"},{"1":"Project32","2":"435","3":"1.05"},{"1":"Project33","2":"494","3":"1.20"},{"1":"Project34","2":"866","3":"1.56"},{"1":"Project35","2":"354","3":"NA"},{"1":"Project36","2":"954","3":"1.45"},{"1":"Project37","2":"550","3":"1.57"},{"1":"Project38","2":"254","3":"0.81"},{"1":"Project39","2":"535","3":"1.43"},{"1":"Project40","2":"393","3":"1.06"},{"1":"Project41","2":"523","3":"1.93"},{"1":"Project42","2":"248","3":"2.14"},{"1":"Project43","2":"664","3":"2.18"},{"1":"Project44","2":"632","3":"1.99"},{"1":"Project45","2":"271","3":"1.22"},{"1":"Project46","2":"915","3":"2.25"},{"1":"Project47","2":"726","3":"1.46"},{"1":"Project48","2":"1038","3":"0.21"},{"1":"Project49","2":"283","3":"1.98"},{"1":"Project50","2":"656","3":"2.74"},{"1":"Project52","2":"793","3":"1.56"},{"1":"Project53","2":"190","3":"NA"},{"1":"Project54","2":"795","3":"1.49"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<hr />
+<p>　</p>
+</div>
+</div>
+<div id="データ分布の再確認" class="section level3 tabset">
+<h3>データ分布の再確認</h3>
+<p>以下のタブは<code>.tabset-fade</code>と<code>.tabset-pills</code>を指定指定しています。</p>
+<p>　</p>
+<div id="histrgam" class="section level4 unnumbered">
+<h4>histrgam</h4>
+<pre class="r"><code>hist(x.removed$prod, main = &quot;&quot;, xlab = &quot;生産性&quot;)</code></pre>
+<div class="figure">
+<img src="smsa_1_files/figure-html/unnamed-chunk-18-1.png" alt="外れ値を除いた生産性のヒストグラム" width="672" />
+<p class="caption">
+外れ値を除いた生産性のヒストグラム
+</p>
+</div>
+<hr />
+<p>　</p>
+</div>
+<div id="boxplot-1" class="section level4 unnumbered">
+<h4>boxplot</h4>
+<pre class="r"><code>boxplot(x.removed$prod)</code></pre>
+<div class="figure">
+<img src="smsa_1_files/figure-html/unnamed-chunk-19-1.png" alt="外れ値を除いた生産性の箱ひげ図" width="672" />
+<p class="caption">
+外れ値を除いた生産性の箱ひげ図
+</p>
+</div>
+<p>外れ値を削除した後の生産性データのヒストグラムならびに箱ひげ図を見ると概ね正規分布に近い分布をなしているように見えます。念のためにQQプロットと正規性の検定により正規分布と言えるかどうかを確認しておきます。</p>
+<hr />
+<p>　</p>
+</div>
+<div id="正規性の確認" class="section level4 unnumbered">
+<h4>正規性の確認</h4>
+<pre class="r"><code># QQプロット(RcmdrのQQプロットを使うのが簡単)
+with(x.removed, car::qqPlot(prod, dist = &quot;norm&quot;, id.method = &quot;y&quot;, id.n = 2,
+                            labels = rownames(x.removed)))</code></pre>
+<p><img src="smsa_1_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
+<pre><code>##  6 20 
+## 53  1</code></pre>
+<pre class="r"><code># 正規性の検定(帰無仮説H0は「分布が正規分布に從う」である)
+shapiro.test(x.removed$prod)</code></pre>
+<pre><code>## 
+##  Shapiro-Wilk normality test
+## 
+## data:  x.removed$prod
+## W = 0.96643, p-value = 0.141</code></pre>
+<p>QQプロットのグラフ形状を見ると左下で若干、直線から外れ気味のデータがあるものの概ね正規分布にしたがっていると見ることができます。一方、正規性の検定の結果を見ると<strong>p = 0.141044</strong>であり帰無仮説は棄却されませんでしたので、正規分布にしたがっていないとは言い切れません。</p>
+<hr />
+<p>　</p>
+</div>
+</div>
+<div id="標準値の算出" class="section level3">
+<h3>標準値の算出</h3>
+<p>外れ値を除いたデータは前述の通り概ね正規分布にしたがっているといえますのでこれを用いて平均値と標準偏差から基準値を求めます。上限、下限は設問にあるとおり5%ならびに10%とします。</p>
+<pre class="r"><code># 平均値と標準偏差の算出
+x.removed.mean &lt;- mean(x.removed$prod, na.rm = TRUE)
+x.removed.sd &lt;- sd(x.removed$prod, na.rm = TRUE)
+# 上限基準値の算出
+upper &lt;- qnorm(0.05, mean = x.removed.mean, sd = x.removed.sd,
+               lower.tail = FALSE)
+# 下限基準値の算出
+lower &lt;- qnorm(0.1, mean = x.removed.mean, sd = x.removed.sd,
+               lower.tail = TRUE)</code></pre>
+<p>計算の結果、基準値の上限値は<span class="math inline">\(1019\)</span>で下限値は<span class="math inline">\(198\)</span>と なりました。</p>
+<p>　</p>
+</div>
+</div>
+<div id="演習1.2" class="section level2">
+<h2>演習1.2</h2>
+<blockquote>
+<p>演習1.1 で外れ値を除去した生産性データを使って、この組織で生産性が300(行/人月)のプロジェクトは下位何％に相当するかを算出してください。<br />
+併せて偏差値も算出してください。</p>
+</blockquote>
+<p>　</p>
+<div id="計算" class="section level3">
+<h3>計算</h3>
+<p>演習1.1において生産性データは概ね正規分布にしたがっていると判断していますので、生産性が300(行/人)の確率は正規分布の確率密度関数を用いて算出します。</p>
+<pre class="r"><code># 下位側から確率の計算
+result.300 &lt;- pnorm(300, mean = x.removed.mean, sd = x.removed.sd,
+                    lower.tail = TRUE)</code></pre>
+<p>一方、偏差値は上記にて確率を算出していますので平均値50、標準偏差10の正規分布から求めることが可能です。</p>
+<pre class="r"><code># 偏差値(standard score)を出す場合は平均値50、標準偏差10の正規分布の確率から
+# 逆算すればよい
+ss &lt;- qnorm(result.300, mean = 50, sd = 10, lower.tail = TRUE)</code></pre>
+<p>計算の結果、生産性が300行/人月のプロジェクトは下位<span class="math inline">\(18\%\)</span>に相当し、その偏差値は<span class="math inline">\(41\)</span>です。</p>
+<p>　</p>
+</div>
+</div>
+<div id="演習1.3" class="section level2">
+<h2>演習1.3</h2>
+<blockquote>
+<p>演習1.1 の生産性の上限、下限の基準値を以下で解説するパーセンタイルを用いた方法で算出してください。条件は演習1.1と同じとします。</p>
+<p>パーセンタイルとは、本文中の表1.1で説明しているP25やP75のようにデータ全体のうちデータを昇順に並べて、指定したパーセンテージの位置にあるデータを示します。 本文中にも書いたとおり、P25は25パーセンタイルといいます。</p>
+</blockquote>
+<!-- Excel 関数はPERCENTILEです。使い方は、以下のとおりです．
+PERCENTILE（データ範囲, 指定するパーセンテージ） -->
+<p>　</p>
+<div id="計算-1" class="section level3">
+<h3>計算</h3>
+<p>Rにおけるパーセンタイル計算には<code>quantile {stats}</code>を利用します。</p>
+<pre class="r"><code>round(quantile(x.removed$prod, probs = c(0.1, 0.95), na.rm = TRUE))</code></pre>
+<pre><code>##  10%  95% 
+##  231 1037</code></pre>
+<p>引数<code>probs</code>で計算したいパーセンタイル点を指定することで任意のパーセンタイルが計算できます。<code>probs</code>の指定を省略した場合はデフォルト値として四分位値(0%, 25%, 50%, 75%, 100%)が計算されます。</p>
+<p>　</p>
+</div>
+</div>
+<div id="演習1.4" class="section level2">
+<h2>演習1.4</h2>
+<blockquote>
+<p>生産性に加えて、工数予実割合も加味してプロジェクトの評価をしようと考えています。以下の条件、方法に従い、各プロジェクトをA～Eの5段階で評価してください。</p>
+<ul>
+<li>生産性は高いほど良い、工数予実割合は低いほど良いとします。</li>
+<li>手順は以下のとおりとします。</li>
+</ul>
+<ol style="list-style-type: decimal">
+<li>生産性のデータ分布確認は省略し、平均と標準偏差も演習1.1の結果のとおりとする。</li>
+<li>工数予実割合はデータ分布の確認を行い、必要ならば外れ値とみなされたデータを除去する。</li>
+<li>工数予実割合の平均と標準偏差を算出する。</li>
+<li>各プロジェクトの生産性のZスコアを算出する。</li>
+<li>各プロジェクトの工数予実割合のZスコアを算出する<br />
+（ただし、工数予実割合は低いほど良いので符号を逆転させる）。</li>
+<li>各プロジェクトの生産性、工数予実割合のZスコアの平均を算出する。 欠損値がある場合は、片方のZスコアの値とする。</li>
+<li>上記で求めたZ スコア平均を以下のとおりA～Eの評価に換算する。
+<ul>
+<li>Zスコアが、-0.5～0.5は中間の評価でC。</li>
+<li>Zスコアが、0.5～1.5はB、-1.5～-0.5 はD。<br />
+</li>
+<li>Zスコアが、1.5超えるものはA、-1.5を下回るものはE。</li>
+</ul></li>
+</ol>
+</blockquote>
+<p>　</p>
+<div id="データ分布の確認-2" class="section level3 tabset">
+<h3>データ分布の確認</h3>
+<p>　</p>
+<div id="histogram" class="section level4 unnumbered">
+<h4>histogram</h4>
+<pre class="r"><code>hist(x.removed$rate, main = &quot;&quot;, xlab = &quot;工数予実割合&quot;)</code></pre>
+<p><img src="smsa_1_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
+<hr />
+<p>　</p>
+</div>
+<div id="boxplot-2" class="section level4 unnumbered">
+<h4>boxplot</h4>
+<pre class="r"><code>boxplot(x.removed$rate)</code></pre>
+<p><img src="smsa_1_files/figure-html/unnamed-chunk-26-1.png" width="672" /></p>
+<hr />
+<p>　</p>
+</div>
+<div id="qqplot" class="section level4 unnumbered tabset">
+<h4>qqplot</h4>
+<pre class="r"><code># QQプロット
+with(x.removed, car::qqPlot(rate, dist = &quot;norm&quot;, id.method = &quot;y&quot;, id.n = 2,
+                            labels = rownames(x.removed)))</code></pre>
+<p><img src="smsa_1_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>
+<pre><code>## 13 48 
+## 50  1</code></pre>
+<p>　</p>
+<div id="正規性の検定-1" class="section level5 unnumbered">
+<h5>正規性の検定</h5>
+<pre class="r"><code># 正規性の検定(帰無仮説H0は「分布が正規分布に從う」である)
+shapiro.test(x.removed$rate)</code></pre>
+<pre><code>## 
+##  Shapiro-Wilk normality test
+## 
+## data:  x.removed$rate
+## W = 0.95118, p-value = 0.03817</code></pre>
+<hr />
+<p>　</p>
+</div>
+<div id="確認の結果" class="section level5 unnumbered">
+<h5>確認の結果</h5>
+<p>ヒストグラムならびに箱ひげ図を見ると若干、左に歪んだ分布ですが概ね正規分布にしたがっているように見えます。<br />
+QQプロットのグラフ形状では、中心付近のデータがやや外れ気味位見えますが、概ね正規分布にしたがっているように見えます。<br />
+一方、正規性の検定の結果を見ると<span class="math inline">\(p = 0.0381687\)</span>であり帰無仮説が棄却されていますが、今回は正規分布にしたがうと見なすことにします。</p>
+<hr />
+<p>　</p>
+</div>
+</div>
+</div>
+<div id="zスコアと結果の計算と表示" class="section level3">
+<h3>Zスコアと結果の計算と表示</h3>
+<pre class="r"><code># データ全体を計算する方法
+# 生産性のみ演習1.1で計算した外れ値を除いた平均値と標準偏差で計算する
+x$z.prod &lt;- round(scale(x$prod, center = x.removed.mean, scale = x.removed.sd),
+                  digits = 2)
+x$z.rate &lt;- round(-scale(x$rate), digits = 2)
+
+# Zスコア平均値の算出
+x$z &lt;- round(apply(x[c(&quot;z.prod&quot;, &quot;z.rate&quot;)], MARGIN = 1, FUN = mean,
+                   na.rm = TRUE), digits = 2)
+# 判定結果の作成
+z &lt;- x$z
+x$eval &lt;- ifelse(z &gt; 1.5, &quot;A&quot;,
+                 ifelse(z &gt; 0.5, &quot;B&quot;,
+                        ifelse(z &gt; -0.5, &quot;C&quot;,
+                               ifelse(z &gt; -1.5, &quot;D&quot;, &quot;E&quot;))))
+# 偏差値の算出
+x$ss &lt;- round(x$z * 10 +50)
+# 結果の表示
+colnames(x) &lt;- c(&quot;プロジェクト名&quot;, &quot;生産性&quot;, &quot;工数予実割合&quot;, &quot;Z値(生産性)&quot;,
+                 &quot;Z値(工数予実割合)&quot;, &quot;Z値&quot;, &quot;評価&quot;, &quot;偏差値&quot;)
+x</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["プロジェクト名"],"name":[1],"type":["fctr"],"align":["left"]},{"label":["生産性"],"name":[2],"type":["int"],"align":["right"]},{"label":["工数予実割合"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["Z値(生産性)"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["Z値(工数予実割合)"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["Z値"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["評価"],"name":[7],"type":["chr"],"align":["left"]},{"label":["偏差値"],"name":[8],"type":["dbl"],"align":["right"]}],"data":[{"1":"Project01","2":"658","3":"1.35","4":"0.36","5":"0.36","6":"0.36","7":"C","8":"54"},{"1":"Project02","2":"455","3":"1.22","4":"-0.37","5":"0.61","6":"0.12","7":"C","8":"51"},{"1":"Project03","2":"973","3":"1.31","4":"1.48","5":"0.44","6":"0.96","7":"B","8":"60"},{"1":"Project04","2":"828","3":"1.14","4":"0.96","5":"0.77","6":"0.86","7":"B","8":"59"},{"1":"Project05","2":"685","3":"1.43","4":"0.45","5":"0.20","6":"0.32","7":"C","8":"53"},{"1":"Project06","2":"1116","3":"1.40","4":"1.99","5":"0.26","6":"1.12","7":"B","8":"61"},{"1":"Project07","2":"832","3":"1.29","4":"0.98","5":"0.48","6":"0.73","7":"B","8":"57"},{"1":"Project08","2":"249","3":"1.29","4":"-1.10","5":"0.48","6":"-0.31","7":"C","8":"47"},{"1":"Project09","2":"583","3":"1.39","4":"0.09","5":"0.28","6":"0.18","7":"C","8":"52"},{"1":"Project10","2":"915","3":"1.27","4":"1.27","5":"0.51","6":"0.89","7":"B","8":"59"},{"1":"Project11","2":"184","3":"1.16","4":"-1.33","5":"0.73","6":"-0.30","7":"C","8":"47"},{"1":"Project12","2":"342","3":"1.52","4":"-0.77","5":"0.03","6":"-0.37","7":"C","8":"46"},{"1":"Project13","2":"236","3":"2.94","4":"-1.15","5":"-2.75","6":"-1.95","7":"E","8":"30"},{"1":"Project14","2":"601","3":"0.98","4":"0.15","5":"1.08","6":"0.62","7":"B","8":"56"},{"1":"Project15","2":"323","3":"1.40","4":"-0.84","5":"0.26","6":"-0.29","7":"C","8":"47"},{"1":"Project16","2":"1037","3":"NA","4":"1.71","5":"NA","6":"1.71","7":"A","8":"67"},{"1":"Project17","2":"383","3":"1.61","4":"-0.62","5":"-0.15","6":"-0.38","7":"C","8":"46"},{"1":"Project18","2":"180","3":"1.53","4":"-1.34","5":"0.01","6":"-0.66","7":"D","8":"43"},{"1":"Project19","2":"267","3":"1.57","4":"-1.03","5":"-0.07","6":"-0.55","7":"D","8":"44"},{"1":"Project20","2":"36","3":"1.13","4":"-1.86","5":"0.79","6":"-0.54","7":"D","8":"45"},{"1":"Project21","2":"598","3":"1.43","4":"0.14","5":"0.20","6":"0.17","7":"C","8":"52"},{"1":"Project22","2":"741","3":"1.75","4":"0.65","5":"-0.42","6":"0.12","7":"C","8":"51"},{"1":"Project23","2":"524","3":"2.00","4":"-0.12","5":"-0.91","6":"-0.52","7":"D","8":"45"},{"1":"Project24","2":"567","3":"1.25","4":"0.03","5":"0.55","6":"0.29","7":"C","8":"53"},{"1":"Project25","2":"463","3":"1.96","4":"-0.34","5":"-0.83","6":"-0.58","7":"D","8":"44"},{"1":"Project26","2":"277","3":"0.65","4":"-1.00","5":"1.73","6":"0.36","7":"C","8":"54"},{"1":"Project27","2":"114","3":"1.93","4":"-1.58","5":"-0.77","6":"-1.18","7":"D","8":"38"},{"1":"Project28","2":"773","3":"2.39","4":"0.77","5":"-1.67","6":"-0.45","7":"C","8":"46"},{"1":"Project29","2":"230","3":"1.48","4":"-1.17","5":"0.10","6":"-0.53","7":"D","8":"45"},{"1":"Project30","2":"1039","3":"2.67","4":"1.72","5":"-2.22","6":"-0.25","7":"C","8":"48"},{"1":"Project31","2":"770","3":"1.03","4":"0.76","5":"0.98","6":"0.87","7":"B","8":"59"},{"1":"Project32","2":"435","3":"1.05","4":"-0.44","5":"0.94","6":"0.25","7":"C","8":"52"},{"1":"Project33","2":"494","3":"1.20","4":"-0.23","5":"0.65","6":"0.21","7":"C","8":"52"},{"1":"Project34","2":"866","3":"1.56","4":"1.10","5":"-0.05","6":"0.52","7":"B","8":"55"},{"1":"Project35","2":"354","3":"NA","4":"-0.72","5":"NA","6":"-0.72","7":"D","8":"43"},{"1":"Project36","2":"954","3":"1.45","4":"1.41","5":"0.16","6":"0.78","7":"B","8":"58"},{"1":"Project37","2":"550","3":"1.57","4":"-0.03","5":"-0.07","6":"-0.05","7":"C","8":"50"},{"1":"Project38","2":"254","3":"0.81","4":"-1.08","5":"1.41","6":"0.16","7":"C","8":"52"},{"1":"Project39","2":"535","3":"1.43","4":"-0.08","5":"0.20","6":"0.06","7":"C","8":"51"},{"1":"Project40","2":"393","3":"1.06","4":"-0.59","5":"0.92","6":"0.17","7":"C","8":"52"},{"1":"Project41","2":"523","3":"1.93","4":"-0.12","5":"-0.77","6":"-0.44","7":"C","8":"46"},{"1":"Project42","2":"248","3":"2.14","4":"-1.10","5":"-1.18","6":"-1.14","7":"D","8":"39"},{"1":"Project43","2":"664","3":"2.18","4":"0.38","5":"-1.26","6":"-0.44","7":"C","8":"46"},{"1":"Project44","2":"632","3":"1.99","4":"0.27","5":"-0.89","6":"-0.31","7":"C","8":"47"},{"1":"Project45","2":"271","3":"1.22","4":"-1.02","5":"0.61","6":"-0.20","7":"C","8":"48"},{"1":"Project46","2":"915","3":"2.25","4":"1.27","5":"-1.40","6":"-0.06","7":"C","8":"49"},{"1":"Project47","2":"726","3":"1.46","4":"0.60","5":"0.14","6":"0.37","7":"C","8":"54"},{"1":"Project48","2":"1038","3":"0.21","4":"1.71","5":"2.58","6":"2.15","7":"A","8":"72"},{"1":"Project49","2":"283","3":"1.98","4":"-0.98","5":"-0.87","6":"-0.92","7":"D","8":"41"},{"1":"Project50","2":"656","3":"2.74","4":"0.35","5":"-2.36","6":"-1.00","7":"D","8":"40"},{"1":"Project51","2":"2640","3":"1.23","4":"7.42","5":"0.59","6":"4.00","7":"A","8":"90"},{"1":"Project52","2":"793","3":"1.56","4":"0.84","5":"-0.05","6":"0.39","7":"C","8":"54"},{"1":"Project53","2":"190","3":"NA","4":"-1.31","5":"NA","6":"-1.31","7":"D","8":"37"},{"1":"Project54","2":"795","3":"1.49","4":"0.85","5":"0.09","6":"0.47","7":"C","8":"55"},{"1":"Project55","2":"2369","3":"1.77","4":"6.45","5":"-0.46","6":"3.00","7":"A","8":"80"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<pre class="r"><code>colnames(x) &lt;- c(&quot;prj&quot;, &quot;prod&quot;, &quot;rate&quot;, &quot;z.prod&quot;, &quot;z.rate&quot;, &quot;z&quot;, &quot;eval&quot;, &quot;ss&quot;)</code></pre>
+<!-- ## `formattable`パッケージによるカラフルな表現 -->
+<!-- `formattable`パッケージは残念ながら日本語が文字化けし、HTML以外では装飾が再現され -->
+<!-- ませんので、結果が出力されるのはHTMLドキュメントのみになるように設定しています。 -->
+<!-- また、NAが含まれているとエラーになります。 -->
+<!-- ```{r formmatable package, message=FALSE} -->
+<!-- require(formattable) -->
+<!-- # df <- x.removed -->
+<!-- df <- x -->
+<!-- colnames(df) <- c("project", "perf", "pp.ratio", "z.perf", "z.pp.ratio", -->
+<!--                   "z.score", "rank", "score") -->
+<!-- formattable(df, list( -->
+<!--   z.score = color_bar("pink", 0.2), -->
+<!--   rank = formatter("span", -->
+<!--                    style = x ~ ifelse(x == "A", style(color = "red", -->
+<!--                                                       font.weight = "bold"), -->
+<!--                                       ifelse(x == "B", style(color = "red"), -->
+<!--                                              ifelse(x == "E", -->
+<!--                                                     style(color = "lightgreen"), -->
+<!--                                                     NA)))), -->
+<!--   score = color_tile("white", "orange") -->
+<!-- )) -->
+<!-- ``` -->
+<p>　</p>
+</div>
+</div>
+<div id="演習1.4別解" class="section level2">
+<h2>演習1.4別解</h2>
+<p>ランク分けが簡単にできる<code>cut {base}</code>を利用した解答例です。</p>
+<pre class="r"><code># RでZスコアを計算するには`scale {base}`を使うと簡単
+# 生産性は外れ値を除いて計算した平均値と標準偏差でZスコアを計算
+x$z.prod &lt;- round(scale(x$prod, center = x.removed.mean, scale = x.removed.sd),
+                  digits = 2)
+# 工数予実割合は外れ値を除かないで計算した平均値と標準偏差でZスコアを計算
+x$z.rate &lt;- round(-scale(x$rate), digits = 2)
+
+# 念の為にZスコアを計算する際に使用された平均値と標準偏差を確認しておく
+# 生産性
+print(paste(&quot;生産性 平均値:&quot;, round(attributes(x$z.prod)$`scaled:center`),
+            &quot; 標準偏差:&quot;, round(attributes(x$z.prod)$`scaled:scale`)))</code></pre>
+<pre><code>## [1] &quot;生産性 平均値: 558  標準偏差: 281&quot;</code></pre>
+<pre class="r"><code># 工数予実割合
+print(paste(&quot;工数予実割合 平均値:&quot;, round(attributes(x$z.rate)$`scaled:center`,
+                                          digits = 2),
+            &quot; 標準偏差:&quot;, round(attributes(x$z.rate)$`scaled:scale`,
+                                digits = 2)))</code></pre>
+<pre><code>## [1] &quot;工数予実割合 平均値: 1.53  標準偏差: 0.51&quot;</code></pre>
+<pre class="r"><code># Zスコア平均値の算出
+x$z &lt;- round(apply(x[c(&quot;z.prod&quot;, &quot;z.rate&quot;)], MARGIN = 1, FUN = mean,
+                   na.rm = TRUE), digits = 2)
+
+# 判定結果の作成
+# 区分が変わることを考えるとはcut {base}を利用して区間分割&amp;因子変換するの方が
+# 管理しやすいのでおぼえておくと便利
+breaks &lt;- c(-Inf, -1.5, -0.5, 0.5, 1.5, Inf)
+levels &lt;- c(&quot;E&quot;, &quot;D&quot;, &quot;C&quot;, &quot;B&quot;, &quot;A&quot;)        # 因子の順番に注意
+x$eval &lt;- cut(x$z, breaks = breaks, labels = levels)
+# 偏差値の算出
+x$ss &lt;- round(x$z * 10 + 50)
+# 結果の表示
+x.colname &lt;- colnames(x)
+colnames(x) &lt;- c(&quot;プロジェクト名&quot;, &quot;生産性&quot;, &quot;工数予実割合&quot;, &quot;Z値(生産性)&quot;,
+                &quot;Z値(工数予実割合)&quot;, &quot;Z値&quot;, &quot;評価&quot;, &quot;偏差値&quot;)
+x</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["プロジェクト名"],"name":[1],"type":["fctr"],"align":["left"]},{"label":["生産性"],"name":[2],"type":["int"],"align":["right"]},{"label":["工数予実割合"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["Z値(生産性)"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["Z値(工数予実割合)"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["Z値"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["評価"],"name":[7],"type":["fctr"],"align":["left"]},{"label":["偏差値"],"name":[8],"type":["dbl"],"align":["right"]}],"data":[{"1":"Project01","2":"658","3":"1.35","4":"0.36","5":"0.36","6":"0.36","7":"C","8":"54"},{"1":"Project02","2":"455","3":"1.22","4":"-0.37","5":"0.61","6":"0.12","7":"C","8":"51"},{"1":"Project03","2":"973","3":"1.31","4":"1.48","5":"0.44","6":"0.96","7":"B","8":"60"},{"1":"Project04","2":"828","3":"1.14","4":"0.96","5":"0.77","6":"0.86","7":"B","8":"59"},{"1":"Project05","2":"685","3":"1.43","4":"0.45","5":"0.20","6":"0.32","7":"C","8":"53"},{"1":"Project06","2":"1116","3":"1.40","4":"1.99","5":"0.26","6":"1.12","7":"B","8":"61"},{"1":"Project07","2":"832","3":"1.29","4":"0.98","5":"0.48","6":"0.73","7":"B","8":"57"},{"1":"Project08","2":"249","3":"1.29","4":"-1.10","5":"0.48","6":"-0.31","7":"C","8":"47"},{"1":"Project09","2":"583","3":"1.39","4":"0.09","5":"0.28","6":"0.18","7":"C","8":"52"},{"1":"Project10","2":"915","3":"1.27","4":"1.27","5":"0.51","6":"0.89","7":"B","8":"59"},{"1":"Project11","2":"184","3":"1.16","4":"-1.33","5":"0.73","6":"-0.30","7":"C","8":"47"},{"1":"Project12","2":"342","3":"1.52","4":"-0.77","5":"0.03","6":"-0.37","7":"C","8":"46"},{"1":"Project13","2":"236","3":"2.94","4":"-1.15","5":"-2.75","6":"-1.95","7":"E","8":"30"},{"1":"Project14","2":"601","3":"0.98","4":"0.15","5":"1.08","6":"0.62","7":"B","8":"56"},{"1":"Project15","2":"323","3":"1.40","4":"-0.84","5":"0.26","6":"-0.29","7":"C","8":"47"},{"1":"Project16","2":"1037","3":"NA","4":"1.71","5":"NA","6":"1.71","7":"A","8":"67"},{"1":"Project17","2":"383","3":"1.61","4":"-0.62","5":"-0.15","6":"-0.38","7":"C","8":"46"},{"1":"Project18","2":"180","3":"1.53","4":"-1.34","5":"0.01","6":"-0.66","7":"D","8":"43"},{"1":"Project19","2":"267","3":"1.57","4":"-1.03","5":"-0.07","6":"-0.55","7":"D","8":"44"},{"1":"Project20","2":"36","3":"1.13","4":"-1.86","5":"0.79","6":"-0.54","7":"D","8":"45"},{"1":"Project21","2":"598","3":"1.43","4":"0.14","5":"0.20","6":"0.17","7":"C","8":"52"},{"1":"Project22","2":"741","3":"1.75","4":"0.65","5":"-0.42","6":"0.12","7":"C","8":"51"},{"1":"Project23","2":"524","3":"2.00","4":"-0.12","5":"-0.91","6":"-0.52","7":"D","8":"45"},{"1":"Project24","2":"567","3":"1.25","4":"0.03","5":"0.55","6":"0.29","7":"C","8":"53"},{"1":"Project25","2":"463","3":"1.96","4":"-0.34","5":"-0.83","6":"-0.58","7":"D","8":"44"},{"1":"Project26","2":"277","3":"0.65","4":"-1.00","5":"1.73","6":"0.36","7":"C","8":"54"},{"1":"Project27","2":"114","3":"1.93","4":"-1.58","5":"-0.77","6":"-1.18","7":"D","8":"38"},{"1":"Project28","2":"773","3":"2.39","4":"0.77","5":"-1.67","6":"-0.45","7":"C","8":"46"},{"1":"Project29","2":"230","3":"1.48","4":"-1.17","5":"0.10","6":"-0.53","7":"D","8":"45"},{"1":"Project30","2":"1039","3":"2.67","4":"1.72","5":"-2.22","6":"-0.25","7":"C","8":"48"},{"1":"Project31","2":"770","3":"1.03","4":"0.76","5":"0.98","6":"0.87","7":"B","8":"59"},{"1":"Project32","2":"435","3":"1.05","4":"-0.44","5":"0.94","6":"0.25","7":"C","8":"52"},{"1":"Project33","2":"494","3":"1.20","4":"-0.23","5":"0.65","6":"0.21","7":"C","8":"52"},{"1":"Project34","2":"866","3":"1.56","4":"1.10","5":"-0.05","6":"0.52","7":"B","8":"55"},{"1":"Project35","2":"354","3":"NA","4":"-0.72","5":"NA","6":"-0.72","7":"D","8":"43"},{"1":"Project36","2":"954","3":"1.45","4":"1.41","5":"0.16","6":"0.78","7":"B","8":"58"},{"1":"Project37","2":"550","3":"1.57","4":"-0.03","5":"-0.07","6":"-0.05","7":"C","8":"50"},{"1":"Project38","2":"254","3":"0.81","4":"-1.08","5":"1.41","6":"0.16","7":"C","8":"52"},{"1":"Project39","2":"535","3":"1.43","4":"-0.08","5":"0.20","6":"0.06","7":"C","8":"51"},{"1":"Project40","2":"393","3":"1.06","4":"-0.59","5":"0.92","6":"0.17","7":"C","8":"52"},{"1":"Project41","2":"523","3":"1.93","4":"-0.12","5":"-0.77","6":"-0.44","7":"C","8":"46"},{"1":"Project42","2":"248","3":"2.14","4":"-1.10","5":"-1.18","6":"-1.14","7":"D","8":"39"},{"1":"Project43","2":"664","3":"2.18","4":"0.38","5":"-1.26","6":"-0.44","7":"C","8":"46"},{"1":"Project44","2":"632","3":"1.99","4":"0.27","5":"-0.89","6":"-0.31","7":"C","8":"47"},{"1":"Project45","2":"271","3":"1.22","4":"-1.02","5":"0.61","6":"-0.20","7":"C","8":"48"},{"1":"Project46","2":"915","3":"2.25","4":"1.27","5":"-1.40","6":"-0.06","7":"C","8":"49"},{"1":"Project47","2":"726","3":"1.46","4":"0.60","5":"0.14","6":"0.37","7":"C","8":"54"},{"1":"Project48","2":"1038","3":"0.21","4":"1.71","5":"2.58","6":"2.15","7":"A","8":"72"},{"1":"Project49","2":"283","3":"1.98","4":"-0.98","5":"-0.87","6":"-0.92","7":"D","8":"41"},{"1":"Project50","2":"656","3":"2.74","4":"0.35","5":"-2.36","6":"-1.00","7":"D","8":"40"},{"1":"Project51","2":"2640","3":"1.23","4":"7.42","5":"0.59","6":"4.00","7":"A","8":"90"},{"1":"Project52","2":"793","3":"1.56","4":"0.84","5":"-0.05","6":"0.39","7":"C","8":"54"},{"1":"Project53","2":"190","3":"NA","4":"-1.31","5":"NA","6":"-1.31","7":"D","8":"37"},{"1":"Project54","2":"795","3":"1.49","4":"0.85","5":"0.09","6":"0.47","7":"C","8":"55"},{"1":"Project55","2":"2369","3":"1.77","4":"6.45","5":"-0.46","6":"3.00","7":"A","8":"80"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<pre class="r"><code>colnames(x) &lt;- x.colname</code></pre>
+<p>　</p>
+<div id="おまけの可視化" class="section level3">
+<h3>おまけの可視化</h3>
+<p>層別による生産性と工数予実割合の関係を可視化してみただけなので、予測に使えるとかいう意味や意図は全くないですが、グラフを見て分かるように評価の良いプロジェクトは値が良い方に外れており、評価の悪いプロジェクトは値の悪い方に外れていることからが図からも分かります。</p>
+<pre class="r"><code># 層別で散布図を描く
+car::scatterplot(rate ~ prod | eval, reg.line = lm, smooth = FALSE,
+                 spread = FALSE, id.method = &#39;mahal&#39;, id.n = 2, boxplots = &#39;xy&#39;,
+                 span = 0.5, by.groups = TRUE, data = x)</code></pre>
+<p><img src="smsa_1_files/figure-html/unnamed-chunk-31-1.png" width="672" /></p>
+<pre><code>## 13 48 51 27 14 34 50 28 30 
+##  1  1  2  6  6  8 10 14 15</code></pre>
+<pre class="r"><code># 評価毎の相関係数を求める(無相関検定の帰無仮説は「相関係数が零である」)
+for (i in sort(levels(x$eval))) {
+  if (with(x, length(na.omit(rate[eval==i]))) &gt; 1) {
+    result &lt;- with(na.omit(x), cor.test(rate[eval==i], prod[eval==i],
+                                        alternative = &quot;two.sided&quot;,
+                                        method = &quot;pearson&quot;))
+    if (result$p.value &lt; 0.05){
+      print(paste(&quot;評価:&quot;, i, &quot; 相関係数:&quot;, round(result$estimate, digits = 2),
+                  &quot; p値:&quot;, result$p.value, sep = &quot;&quot;))
+    } else {
+      print(paste(&quot;評価:&quot;, i, &quot; 帰無仮説が棄却されませんでした p値:&quot;,
+                  round(result$p.value, digits = 2), sep = &quot;&quot;))
+    }
+  } else {
+    print(paste(&quot;評価:&quot;, i, &quot; データ不足で相関係数が計算できませんでした&quot;,
+                sep = &quot;&quot;))
+  }
+}</code></pre>
+<pre><code>## [1] &quot;評価:A 帰無仮説が棄却されませんでした p値:0.32&quot;
+## [1] &quot;評価:B 相関係数:0.71 p値:0.0320326803607503&quot;
+## [1] &quot;評価:C 相関係数:0.74 p値:4.48155504789796e-06&quot;
+## [1] &quot;評価:D 相関係数:0.78 p値:0.00733810041839775&quot;
+## [1] &quot;評価:E データ不足で相関係数が計算できませんでした&quot;</code></pre>
+<hr />
+<!-- Include Footer -->
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" title="CC BY-NC-SA 4.0 icon" alt="Sampo Suzuki" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0</a>, Sampo Suzuki [2017-11-23 22:56(JST)]</p>
+</div>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
