@@ -9,10 +9,9 @@
 <meta name="generator" content="pandoc" />
 
 
-<meta name="author" content="k-metrics" />
 
 
-<title>Program</title>
+<title>環境基礎</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -439,12 +438,12 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Program</h1>
+<h1 class="title toc-ignore">環境基礎</h1>
 
 </div>
 
 
-<!-- Common Links -->
+<!-- Include Common Links -->
 <!-- SQiP and others -->
 <!-- Books -->
 <!-- Net Community -->
@@ -455,102 +454,257 @@ div.tocify {
 <!-- RStudio -->
 <!-- Docker -->
 <!-- Cabinet Pages -->
-<p><strong>Program</strong>は<a href="https://github.com/rstudio/RStartHere" title="R Start Here">Data Science Workflow, RStudio Inc.</a>において全ての分析プロセスで利用する道具・環境を意味していますす。</p>
-<p><img src="https://raw.githubusercontent.com/rstudio/RStartHere/master/data-science.png" title="Data Science Workflow, RStudio Inc." alt="fig. Data Science Workflow by RStudio" /><br />
-　<br />
-データ分析における基本的で共通な処理はプログラミングで処理することにより分析自体を容易にするだけでなく分析による問題解決に集中できる時間を与えてくれると共に分析の再現性を確保します。 なお、分析の再現性（Reproducible Research）を実現するためのツールについては<a href="../communication/index.html">Communication</a>で扱う予定です。 　</p>
-<div id="分析の基本" class="section level1">
-<h1>分析の基本</h1>
-<p>データ分析の基本については<a href="../model/index.html">Model/Infer</a>で扱う予定です。 　</p>
-</div>
-<div id="分析ツール" class="section level1">
-<h1>分析ツール</h1>
-<p>分析に利用するツールとして<a href="https://www.r-project.org/" title="The R Project">R</a>、<a href="http://www.rcommander.com/">R Commander</a>ならびに<a href="https://www.rstudio.com/products/RStudio/#Desktop" title="RStudio Desktop">RStudio Desktop</a>を前提としています。分析環境の導入方法やツール、ライブラリ類に関する情報、環境の基礎を提供する予定です。各ページへは最上段のメニューからアクセスしてください。なお、<a href="https://www.r-project.org/" title="The R Project">R</a>の個々のパッケージの使い方については<a href="../tidy/index.html">Tidy/Transform</a>や<a href="../model/index.html">Model/Infer</a>などのData Science Workflowの各プロセスのページにて扱います。 　</p>
-</div>
-<div id="参考書籍" class="section level1">
-<h1>参考書籍</h1>
-<p>分析ツールとして<a href="https://www.r-project.org/" title="The R Project">R</a>を学ぶための様々な書籍が出ています。学び方のアプローチ別に見て以下の書籍が比較的おすゝめです。</p>
+<p><a href="https://sites.google.com/site/kantometrics/" title="データ分析勉強会">データ分析勉強会</a>で分析演習を行う際には主にR Commander(Rcmdr)パッケージを利用してきました。R Commanderはコードを書かなくても分析ができるので敷居が低く便利ではありますが、R Commadnerにできることは残念ながら限られています。本来<a href="https://www.r-project.org/" title="The R Project">R</a>でできる様々な分析を行うにはR Commanderから離れ<a href="https://www.r-project.org/" title="The R Project">R</a>のスクリプトの世界に足を踏み入れる必要があります。<br />
+　</p>
+<div id="rstudioを使おう" class="section level1">
+<h1>RStudioを使おう</h1>
+<p>R Commanderではできない分析を行うにはマルチプラットフォーム対応の<a href="https://www.rstudio.com/products/RStudio/#Desktop" title="RStudio Desktop">RStudio Desktop</a>から<a href="https://www.r-project.org/" title="The R Project">R</a>を直接使うのが最も便利だと思います。<a href="https://www.r-project.org/" title="The R Project">R</a>/<a href="https://www.rstudio.com/products/RStudio/#Desktop" title="RStudio Desktop">RStudio</a>で出来ることは</p>
+<ul>
+<li>R Comannderで出来ること全て</li>
+<li>R Comannderに出来ないこと全て</li>
+</ul>
+<p>です。当然といえば当然なんですが、R Commanderでは出来ないが<a href="https://www.r-project.org/" title="The R Project">R</a>/<a href="https://www.rstudio.com/products/RStudio/#Desktop" title="RStudio Desktop">RStudio</a>で出来ることを具体的に2017年度の<a href="https://sites.google.com/site/kantometrics/" title="データ分析勉強会">データ分析勉強会</a>のテキストである<a href="http://www.tokyo-tosho.co.jp/books/978-4-489-02227-2/" title="統計学基礎">統計学基礎</a>の第1章の中から例に上げてみましょう。</p>
 <table>
 <thead>
 <tr class="header">
-<th>アプローチ</th>
-<th>書籍</th>
+<th>R/RStudioで出来ることの例</th>
+<th>利用パッケージ例</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>言語としての<a href="https://www.r-project.org/" title="The R Project">R</a>を基本から学びたい</td>
-<td><a href="https://book.mynavi.jp/ec/products/detail/id=39763">みんなのR</a>（マイナビブックス）</td>
+<td>度数分布表の作成と表示</td>
+<td>dplyr, knitr, DT</td>
 </tr>
 <tr class="even">
-<td>統計手法を<a href="https://www.r-project.org/" title="The R Project">R</a>で解く方法を学びたい</td>
-<td><a href="http://www.kyoritsu-pub.co.jp/bookdetail/9784320112414">Rで楽しむ統計</a>（共立出版）</td>
+<td>ローレンツ曲線の描画とジニ係数の計算</td>
+<td>ineq</td>
 </tr>
 <tr class="odd">
-<td>本格的な<a href="https://www.r-project.org/" title="The R Project">R</a>プログラミングを学びたい</td>
-<td><a href="http://www.kyoritsu-pub.co.jp/bookdetail/9784320124264">Rプログラミング本格入門</a>（共立出版）</td>
+<td>カラフルで分かりやすいグラフ</td>
+<td>ggplot2</td>
 </tr>
 <tr class="even">
-<td><a href="https://www.r-project.org/" title="The R Project">R</a>のアーキテクチャも学びたい</td>
-<td><a href="http://www.kyoritsu-pub.co.jp/bookdetail/9784320123939">R言語徹底解説</a>（共立出版）</td>
+<td>クロス集計表の作成と表示</td>
+<td>dplyr, knitr, DT</td>
 </tr>
 <tr class="odd">
-<td>データ分析の側面から<a href="https://www.r-project.org/" title="The R Project">R</a>を学びたい</td>
-<td><a href="https://www.oreilly.co.jp/books/9784873118147/">Rではじめるデータサイエンス</a>（O’Reilly）</td>
+<td>時系列分析</td>
+<td>TTR</td>
 </tr>
 </tbody>
 </table>
-<p>上記以外にも基本を押えるための書籍はO’ReillyやR関連の書籍に力を入れている共立出版から以下の書籍が出版されています。</p>
+<p>その他、<a href="https://www.rstudio.com/products/RStudio/#Desktop" title="RStudio Desktop">RStudio</a>を使うことで<a href="https://www.r-project.org/" title="The R Project">R</a>の機能をフルに活用できるようになり以下のようなこともできるようになります。</p>
 <table>
 <thead>
 <tr class="header">
-<th>出版社</th>
-<th>書籍名またはシリーズ名</th>
+<th>R/RStudioで出来ることの例</th>
+<th>利用パッケージ例</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>O’Reilly</td>
-<td><a href="https://www.oreilly.co.jp/books/9784873117157/">RStudioではじめるRプログラミング入門</a></td>
+<td>高度なデータハンドリング</td>
+<td>tidyverse</td>
 </tr>
 <tr class="even">
-<td>O’Reilly</td>
-<td><a href="https://www.oreilly.co.jp/books/9784873116518/">Rクイックリファレンス</a></td>
+<td>インタラクティブなレポート</td>
+<td>rmarkdown</td>
 </tr>
 <tr class="odd">
-<td>O’Reilly</td>
-<td><a href="https://www.oreilly.co.jp/books/9784873115795/">アート・オブ・Rプログラミング</a></td>
+<td>Webページの作成</td>
+<td>rmarkdown</td>
 </tr>
 <tr class="even">
-<td>O’Reilly</td>
-<td><a href="https://www.oreilly.co.jp/books/9784873115337/">Rクックブック</a></td>
+<td>電子ブックの作成</td>
+<td>bookdown</td>
 </tr>
 <tr class="odd">
-<td>O’Reilly</td>
-<td><a href="https://www.oreilly.co.jp/books/9784873116532/">Rグラフィックスクックブック</a></td>
+<td>データスクレイピング</td>
+<td>tidyverse</td>
 </tr>
 <tr class="even">
-<td>共立出版</td>
-<td><a href="http://www.kyoritsu-pub.co.jp/series/23/">Rで学ぶデータサイエンス　全20巻</a></td>
+<td>自然言語処理</td>
+<td>RMeCab</td>
 </tr>
 <tr class="odd">
-<td>共立出版</td>
-<td><a href="http://www.kyoritsu-pub.co.jp/series/185/">シリーズ Useful R　全10巻</a></td>
+<td>ベイズ統計</td>
+<td>rstan, mcmc</td>
 </tr>
 <tr class="even">
-<td>共立出版</td>
-<td><a href="http://www.kyoritsu-pub.co.jp/series/205/">Wonderful R　全10巻</a></td>
+<td>機械学習</td>
+<td>randomForest</td>
 </tr>
 <tr class="odd">
-<td>共立出版</td>
-<td><a href="http://www.kyoritsu-pub.co.jp/series/204/">統計学One Point</a></td>
+<td>深層学習（ディープラーニング）</td>
+<td>h2o</td>
 </tr>
 </tbody>
 </table>
-<p>様々な方が推薦している書籍がありますので「R 書籍」などで検索してみてください。</p>
+<p>なお、<a href="https://www.r-project.org/" title="The R Project">R</a>における各分野の開発については<a href="https://cran.r-project.org/web/views/">CRAN Task View</a>で公開されています。<br />
+　</p>
+<div id="千里の道も一歩から" class="section level2">
+<h2>千里の道も一歩から</h2>
+<p>ただし、これらのことを行うためには<a href="https://www.r-project.org/" title="The R Project">R</a>のスクリプトが書けるようになる必要があります。そこで、本セクションでは<a href="https://www.r-project.org/" title="The R Project">R</a>と<a href="https://www.rstudio.com/products/RStudio/#Desktop" title="RStudio Desktop">RStudio</a>の基礎知識を中心としてご紹介していきます。</p>
+<table>
+<thead>
+<tr class="header">
+<th>メニュー名</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="./coding_style.html" title="Coding Style">Coding Style</a></td>
+<td><a href="https://www.r-project.org/" title="The R Project">R</a>のコードを記述する際のコーディングスタイルについて</td>
+</tr>
+<tr class="even">
+<td><a href="./r_basics.html" title="R Basics">R Basics</a></td>
+<td><a href="https://www.r-project.org/" title="The R Project">R</a>の基本文法について（R入門）</td>
+</tr>
+<tr class="odd">
+<td><a href="./r_basics.html" title="R Basics">R Basics part2</a></td>
+<td><a href="https://www.r-project.org/" title="The R Project">R</a>の基本的な関数あれこれ（R入門）</td>
+</tr>
+<tr class="even">
+<td><a href="./rstudio_basics.html" title="RStudio Basics">RStudio Basics</a></td>
+<td><a href="https://www.rstudio.com/products/RStudio/#Desktop" title="RStudio Desktop">RStudio</a>の概要</td>
+</tr>
+<tr class="odd">
+<td><a href="./dplyr_basics.html" title="dplyr Basics">dplyrのすゝめ</a></td>
+<td>データハンドリングの基本</td>
+</tr>
+<tr class="even">
+<td><a href="./ggplot2_basics.html" title="ggplot2 Basics">ggplot2のすゝめ</a></td>
+<td>Tidy Dataと相性の良いエレガントな描画ライブラリの基本</td>
+</tr>
+</tbody>
+</table>
+<p>　</p>
+</div>
+</div>
+<div id="チュートリアル資料について" class="section level1">
+<h1>チュートリアル資料について</h1>
+<p>チュートリアル資料は<a href="https://sites.google.com/site/kantometrics/" title="データ分析勉強会">データ分析勉強会</a>で使用した『RStudioのすゝめ』の講義資料を再整理し<code>learnr</code>パッケージを用いて編集しなおした初学者向けのチュートリアルです。実際にRのコードを入力して実行することが可能ですが実行環境は以下の条件を満たす必要があります。</p>
+<table>
+<thead>
+<tr class="header">
+<th>Program</th>
+<th>Version</th>
+<th>Repository</th>
+<th>設定等</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="https://www.r-project.org/" title="The R Project">R</a></td>
+<td>v3.4 or later</td>
+<td><a href="https://cran.r-project.org/" title="CRAN">CRAN</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="https://www.rstudio.com/products/RStudio/#Desktop" title="RStudio Desktop">RStudio</a></td>
+<td>v1.0.143 or later</td>
+<td><a href="https://www.rstudio.com/" title="RStudio">RStudio</a></td>
+<td><a href="./rstudio_basics.html" title="RStudio Basics">RStudio Basics</a></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr class="header">
+<th>Package</th>
+<th>Version</th>
+<th>Repository</th>
+<th>備考</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="https://rstudio.github.io/DT/" title="An R interface to the DataTables library">DT</a></td>
+<td>v0.2 or later</td>
+<td><a href="https://cran.r-project.org/" title="CRAN">CRAN</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="https://yihui.name/formatr/" title="Format R code automatically">formatR</a></td>
+<td>v1.5 or later</td>
+<td><a href="https://cran.r-project.org/" title="CRAN">CRAN</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="https://yihui.name/knitr/" title="Elegant, flexible and fast dynamic report generation with R">knitr</a></td>
+<td>v1.16 or later</td>
+<td><a href="https://cran.r-project.org/" title="CRAN">CRAN</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="https://rstudio.github.io/learnr/" title="Interactive Tutorials for R">learnr</a></td>
+<td>v0.9 or later</td>
+<td><a href="https://cran.r-project.org/" title="CRAN">CRAN</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="http://rmarkdown.rstudio.com/" title="R Markdown form RStudio">rmarkdown</a></td>
+<td>v1.6 or later</td>
+<td><a href="https://cran.r-project.org/" title="CRAN">CRAN</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="https://shiny.rstudio.com/" title="Shiny by RStudio">shiny</a></td>
+<td>v1.0.3 or later</td>
+<td><a href="https://cran.r-project.org/" title="CRAN">CRAN</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="http://tidyverse.org/" title="The tidyverse">tidyverse</a></td>
+<td>v1.1.1 or later</td>
+<td><a href="https://cran.r-project.org/" title="CRAN">CRAN</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>その他、チュートリアルファイルに応じたパッケージが必要となりますので、詳細はチュートリアルファイルをダウンロードの上で確認して下さい。</p>
+<table>
+<thead>
+<tr class="header">
+<th>チュートリアル</th>
+<th>内容</th>
+<th>ダウンロード</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>R Basics</td>
+<td>「RStudioのすゝめ」の「R入門」パート相当</td>
+<td><a href="./learnr/tutorial.Rmd" title="R Basics Tutorial">R Basics</a></td>
+</tr>
+<tr class="even">
+<td>R Basics 2</td>
+<td>R Basicsの続編</td>
+<td><a href="./learnr/tutorial2.Rmd" title="R Basics part2 Tutorial">R Basics part2</a></td>
+</tr>
+<tr class="odd">
+<td>dplyrのすゝめ</td>
+<td>モダンなRのコーディング</td>
+<td>準備中</td>
+</tr>
+<tr class="even">
+<td>ggplot2のすゝめ</td>
+<td>より分かりやすくより扱いやすいグラフィクス</td>
+<td>準備中</td>
+</tr>
+<tr class="odd">
+<td>Rのすゝめ</td>
+<td>チケットサマリを作成する総合チュートリアル</td>
+<td>準備中</td>
+</tr>
+</tbody>
+</table>
 <hr />
-<!-- Footer -->
-<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" title="CC BY-NC-SA 4.0 icon" alt="Sampo Suzuki" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0</a>, Sampo Suzuki [2017-11-23 15:53(JST)]</p>
+<!-- データ分析勉強会サイト -->
+<!-- Include Footer -->
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" title="CC BY-NC-SA 4.0 icon" alt="Sampo Suzuki" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0</a>, Sampo Suzuki [2017-11-22 22:51(JST)]</p>
 </div>
 
 

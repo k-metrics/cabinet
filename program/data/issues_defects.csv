@@ -1,0 +1,1066 @@
+#,プロジェクト,トラッカー,親チケット,ステータス,優先度,題名,作成者,担当者,更新日,カテゴリ,対象バージョン,開始日,期日,予定工数,進捗率,作成日,終了日,関連するチケット,Resolution,Affected version,説明
+26259,Redmine,Defect,"",Closed,Normal,The name of the attachment is not uniform,zhao Wang,"",2017-06-26 08:18,"","","","","",0,2017-06-26 07:44,2017-06-26 08:18,"",Invalid,"","The pictures pasted with the redmine_image_clipboard_paste plugin are uploaded as attachments, and the names are not uniform
+!?片20170626134042.png!
+!?片20170626134304.png!"
+26247,Redmine,Defect,"",Closed,Normal,Missing translation for email reminder when user sets language to 'auto',Micha? Siudyka,"",2017-06-24 11:51,Email notifications,"","","","",0,2017-06-23 15:23,2017-06-24 11:51,"",Cant reproduce,3.2.6,There is missing translation when user sets language option to 'auto' for email reminder.
+26243,Redmine,Defect,"",Closed,Normal,redmine 3.3 issue description textarea problem - shifted to the right side,Konstantin Ladutenko,"",2017-06-26 17:13,"","","","","",0,2017-06-23 10:52,2017-06-25 13:23,"",Invalid,3.3.3,"Environment:
+  Redmine version                3.3.3.stable.16680
+  Ruby version                   2.2.6-p396 (2016-11-15) [x86_64-linux]
+  Rails version                  4.2.7.1
+  Environment                    production
+  Database adapter               Mysql2
+
+Problem screenshot is attached.
+A local solution:
+
+nano public/stylesheets/application.css
+
+and add
+
+#issue_description_and_toolbar .textoverlay-wrapper {width: 95%;}
+#issue_description_and_toolbar .textoverlay {width: 95%;}
+
+
+"
+26238,Redmine,Defect,"",Closed,Normal, Subtask changes the parent task situation,Paula medina Tavares,"",2017-06-22 17:25,Projects,"","","","",0,2017-06-22 16:58,2017-06-22 17:25,"",Invalid,"","Subtask changes situation of parent task in some projects.
+
+Example 1: 
+
+http://chamados.publicacoesonline.com.br/issues/34737 - This task in that father project was not changed by the child task.
+
+Example 2: 
+
+http://chamados.publicacoesonline.com.br/issues/34746 - This task in that father project was changed by the child task.
+
+Does project has configuration about this problem?
+My company has a workfkow and it disrupts our routine.
+
+Thanks!
+
+
+"
+26221,Redmine,Defect,"",Closed,Normal,Update* Segmentation fault at migrate:db,Konstantin Nifanin,"",2017-06-21 17:01,Ruby support,"","","","",0,2017-06-21 16:42,2017-06-21 17:01,"",Invalid,3.3.3,"Hello, again!
+
+I need update my redmine 3.0.3 to 3.3.3.
+
+I find instruction RedmineUpgrade, update ruby, backuping database and redmine directory.
+But on command *bundle exec rake db:migrate RAILS_ENV=production* I get follow error:
+
+<pre>
+
+...
+/usr/local/rvm/gems/ruby-2.4.0/gems/bundler-1.15.1/lib/bundler/cli/exec.rb:74:in `kernel_load'
+/usr/local/rvm/gems/ruby-2.4.0/gems/bundler-1.15.1/lib/bundler/cli/exec.rb:27:in `run'
+/usr/local/rvm/gems/ruby-2.4.0/gems/bundler-1.15.1/lib/bundler/cli.rb:360:in `exec'
+/usr/local/rvm/gems/ruby-2.4.0/gems/bundler-1.15.1/lib/bundler/vendor/thor/lib/thor/command.rb:27:in `run'
+/usr/local/rvm/gems/ruby-2.4.0/gems/bundler-1.15.1/lib/bundler/vendor/thor/lib/thor/invocation.rb:126:in `invoke_command'
+/usr/local/rvm/gems/ruby-2.4.0/gems/bundler-1.15.1/lib/bundler/vendor/thor/lib/thor.rb:369:in `dispatch'
+/usr/local/rvm/gems/ruby-2.4.0/gems/bundler-1.15.1/lib/bundler/cli.rb:20:in `dispatch'
+/usr/local/rvm/gems/ruby-2.4.0/gems/bundler-1.15.1/lib/bundler/vendor/thor/lib/thor/base.rb:444:in `start'
+/usr/local/rvm/gems/ruby-2.4.0/gems/bundler-1.15.1/lib/bundler/cli.rb:10:in `start'
+/usr/local/rvm/gems/ruby-2.4.0/gems/bundler-1.15.1/exe/bundle:35:in `block in <top (required)>'
+/usr/local/rvm/gems/ruby-2.4.0/gems/bundler-1.15.1/lib/bundler/friendly_errors.rb:121:in `with_friendly_errors'
+/usr/local/rvm/gems/ruby-2.4.0/gems/bundler-1.15.1/exe/bundle:27:in `<top (required)>'
+/usr/local/rvm/gems/ruby-2.4.0/bin/bundle:23:in `load'
+/usr/local/rvm/gems/ruby-2.4.0/bin/bundle:23:in `<main>'
+/usr/local/rvm/gems/ruby-2.4.0/bin/ruby_executable_hooks:15:in `eval'
+/usr/local/rvm/gems/ruby-2.4.0/bin/ruby_executable_hooks:15:in `<main>'
+Tasks: TOP => db:migrate => environment
+(See full trace by running task with --trace)
+Segmentation fault
+
+</pre>
+
+Segmentation fault - this is program problem. Or maybe... I'm doing something wrong?
+
+
+My last Update-command:
+<pre>
+
+ 1060  rvm --default use 2.4.0
+ 1061  gem install bundler
+ 1062  bundle install --without development test
+ 1063  less /usr/local/rvm/gems/ruby-2.4.0/extensions/x86_64-linux/2.4.0/pg-0.18.4/mkmf.log
+ 1064  yum help
+ 1065  yum provides *libpq-fe.h
+ 1066  yum install postgresql93-devel
+ 1067  bundle install --without development test
+ 1068  yum install libpq-dev
+ 1069  su - postgres
+ 1070  find . -name ""pg_config""
+ 1071  find / -name ""pg_config""
+ 1072  gem install pg -- --with-pg-config=/usr/pgsql-9.3/bin/pg_config
+ 1073  bundle install --without development test
+ 1074  bundle install --without development test --with-pg-config=/usr/pgsql-9.3/bin/pg_config
+ 1075  yum install postgresql-devel
+ 1076  bundle install --without development test 
+ 1077  ls
+ 1078  bundle exec rake generate_secret_token
+ 1079  du -sh /usr/local/rvm/gems/*
+ 1080  bundle exec rake db:migrate RAILS_ENV=production
+ 1081  export LANG=en_EN.utf8
+ 1082  bundle exec rake db:migrate RAILS_ENV=production
+ 1083  vi config/database.yml
+ 1084  bundle exec rake db:migrate RAILS_ENV=production
+ 1085  chkconfig redmine off
+ 1086  less /var/log/messages
+ 1087  history
+</pre> 
+
+My System:
+
+<pre>
+[root@support redmine]# ruby -v
+ruby 2.4.0p0 (2016-12-24 revision 57164) [x86_64-linux]
+[root@support redmine]# cat /etc/redhat-release 
+CentOS release 6.6 (Final)
+[root@support redmine]# rpm -qa| grep postgre
+postgresql-devel-8.4.20-7.el6.x86_64
+postgresql93-devel-9.3.17-1PGDG.rhel6.x86_64
+postgresql93-libs-9.3.17-1PGDG.rhel6.x86_64
+postgresql-libs-8.4.20-7.el6.x86_64
+postgresql93-9.3.17-1PGDG.rhel6.x86_64
+postgresql-8.4.20-7.el6.x86_64
+postgresql93-server-9.3.17-1PGDG.rhel6.x86_64
+</pre>
+
+
+
+
+"
+26219,Redmine,Defect,"",Closed,Normal,At start: multipart.rb warning: already initialized constant ,Konstantin Nifanin,"",2017-06-21 15:31,"","","","","",0,2017-06-21 14:16,2017-06-21 15:31,"",Invalid,"","Hello!
+
+3 year my Redmine work, but now I get this messages at start redmine-deamon:
+
+<pre>
+[root@support ~]# /etc/init.d/redmine start
+/etc/init.d/redmine: line 33: kill: (2395) - No such process
+/usr/local/rvm/gems/ruby-1.8.7-head/gems/rack-1.6.4/lib/rack/multipart.rb:10: warning: already initialized constant EOL
+/usr/local/rvm/gems/ruby-1.8.7-head/gems/rack-1.6.4/lib/rack/multipart.rb:11: warning: already initialized constant MULTIPART_BOUNDARY
+/usr/local/rvm/gems/ruby-1.8.7-head/gems/rack-1.6.4/lib/rack/multipart.rb:12: warning: already initialized constant MULTIPART
+/usr/local/rvm/gems/ruby-1.8.7-head/gems/rack-1.6.4/lib/rack/multipart.rb:13: warning: already initialized constant TOKEN
+/usr/local/rvm/gems/ruby-1.8.7-head/gems/rack-1.6.4/lib/rack/multipart.rb:14: warning: already initialized constant CONDISP
+/usr/local/rvm/gems/ruby-1.8.7-head/gems/rack-1.6.4/lib/rack/multipart.rb:15: warning: already initialized constant DISPPARM
+/usr/local/rvm/gems/ruby-1.8.7-head/gems/rack-1.6.4/lib/rack/multipart.rb:16: warning: already initialized constant RFC2183
+/usr/local/rvm/gems/ruby-1.8.7-head/gems/rack-1.6.4/lib/rack/multipart.rb:17: warning: already initialized constant BROKEN_QUOTED
+/usr/local/rvm/gems/ruby-1.8.7-head/gems/rack-1.6.4/lib/rack/multipart.rb:18: warning: already initialized constant BROKEN_UNQUOTED
+/usr/local/rvm/gems/ruby-1.8.7-head/gems/rack-1.6.4/lib/rack/multipart.rb:19: warning: already initialized constant MULTIPART_CONTENT_TYPE
+/usr/local/rvm/gems/ruby-1.8.7-head/gems/rack-1.6.4/lib/rack/multipart.rb:20: warning: already initialized constant MULTIPART_CONTENT_DISPOSITION
+/usr/local/rvm/gems/ruby-1.8.7-head/gems/rack-1.6.4/lib/rack/multipart.rb:21: warning: already initialized constant MULTIPART_CONTENT_ID
+master failed to start, check stderr log for details
+</pre>
+
+I not update my programs and this Redmine installed other man. 
+
+My Rudy is
+<pre>
+[root@support redmine]# ruby -v
+ruby 1.8.7 (2014-01-28 patchlevel 376) [x86_64-linux]
+[root@support redmine]# type ruby 
+ruby is hashed (/usr/local/rvm/rubies/ruby-1.8.7-head/bin/ruby)
+</pre>
+
+But other versions I can't get: 
+
+<pre>
+[root@support redmine]# ruby bin/about
+/var/www/redmine/config/boot.rb:4:in `require': no such file to load -- bundler/setup (LoadError)
+	from /var/www/redmine/config/boot.rb:4
+	from /var/www/redmine/config/application.rb:1:in `require'
+	from /var/www/redmine/config/application.rb:1
+	from /var/www/redmine/config/environment.rb:2:in `require'
+	from /var/www/redmine/config/environment.rb:2
+	from bin/about:4:in `require'
+	from bin/about:4
+
+</pre>
+
+OS CentOS 6.6
+PostgreSQL 9.3
+
+What to hipping with this Redmine? How to fixed this ""already initialized constant""
+
+
+"
+26216,Redmine,Defect,"",Closed,Normal, translation missing: en.label_x_open_issues_abbr_on_total ,Uro? Malen?ek,"",2017-06-20 18:52,"","","","","",0,2017-06-20 18:22,2017-06-20 18:52,"",Invalid,3.3.3,"On the Project overview page there is an 'Issue tracking' block that should display total count of the issues.
+
+Expected (gues) info is:
+  bugs: 4 open / 123
+Actual:
+  bugs: translation missing: en.label_x_open_issues_abbr_on_total
+
+I am not sure if this is Redmine core or some plugin related.
+
+It could be raleted with this commit:
+http://source.dussan.org/commit/?r=mirrors/redmine.git&h=5812a373826dbabdf4bbb2160f3af1c7c4ad27dd"
+26214,Redmine,Defect,"",Closed,Normal,How to Stop empty value records into custom_values table,suryan suryan,"",2017-06-21 13:10,"","","","","",0,2017-06-20 10:02,2017-06-21 13:10,"",Invalid,"",""
+26184,Redmine,Defect,"",New,Urgent,how can i add my wiki page option in dropdown list of personalize this page as my page on redmine 3 ,sachin banugariya,"",2017-06-17 13:12,Wiki,"","","","",0,2017-06-17 13:12,"","","",3.1.0,"hello,
+i want to add my specific project wiki page as my redmine home page with dropdown option with that wiki name.
+
+or if not possible in dropdown list then also ok i directly get on my home/my page of redmine with other redmine home page block.
+
+thanks."
+26183,Redmine,Defect,"",Closed,Normal,Use Nokogiri 1.7.2,Go MAEDA,Jean-Philippe Lang,2017-06-25 10:37,Security,3.2.7,"","","",0,2017-06-17 11:45,2017-06-25 10:37,関連している #25538,Fixed,3.2.6,"Redmine 3.3-stable / 3.2-stable uses Nokogiri 1.6.8 but version from 1.6.8 from 1.7.1 has some security issues (see https://github.com/sparklemotion/nokogiri/blob/master/CHANGELOG.md for details).
+
+Fixed in 1.7.2:
+
+* CVE-2017-5029
+* CVE-2016-4738
+
+Fixed in 1.7.1:
+
+* CVE-2016-4658
+* CVE-2016-5131
+
+We should use Nokogiri >= 1.7.2 but unfortunately it requires Ruby >= 2.1.0 (see r16167). The attached patch uses Nokogiri ~> 1.7.2 if RUBY_VERSION >= 2.1.0.
+
+I received this report from ""Sho Hashimoto"":/users/284508."
+26156,Redmine,Defect,"",Closed,Normal,Spent time not working correctly with user's zone different from system's time zone,Martin Jungowski,"",2017-06-13 18:51,Time tracking,"","","","",0,2017-06-13 18:19,2017-06-13 18:51,次のチケットと重複 #16482,Duplicate,3.3.3,"I've found a weird bug after updating from Redmine 3.1.1 to 3.3.3: time tracking is broken and somehow dependent on individual time zone and language preference.
+
+Our Redmine server is located in central Europe (CEST, or GMT+1), I am located in Texas (CT, or GMT-6). When I set my personal timezone accordingly in ""My account"", time entries under ""spent time"" are not showing up properly anymore. Instead, to see today's time entries I have to select ""yesterday"" from the dropdown menu, and to see this week's time entries I have to select ""last week"". And to make matters worse it somehow also depends on my personal language preference configured under ""My account"" as well:
+
+# time zone GMT+1, language German
+** all good; see attached screenshots 1_de_cest_today & 2_de_cest_thisweek. This is what I expect to see regardless of time zone and language.
+# time zone GMT-6, language German
+** today = yesterday; see 3_de_ct_today & 4_de_ct_yesterday,
+** this week = broken, monday is missing and can be found in last week's view; see 5_de_ct_thisweek & 6_de_ct_lastweek
+# time zone GMT-6, language English
+** today = yesterday, same behavior as in 2
+** this week = working, monday showing up as expected, see 7_en_ct_thisweek & 8_en_ct_lastweek
+
+This has only started after the update from Redmine 3.1.1 to 3.3.3 yesterday, it was all working perfectly fine until just yesterday. I also have to add that this happens independent of time and date. The time and date, when those screenshots were taken:
+
+CEST in Europe: 6/13/2017, 6:00pm
+CT in Texas: 6/13/2017, 11:00am
+
+I've tried this yesterday as well when it was around 10pm in Europe and 3pm in Texas, and later also when it was 6pm in Texas but already 1am the next day in Europe. Results were the same.
+
+System info:
+
+<pre>
+sh: 1: svn: not found
+sh: 1: darcs: not found
+sh: 1: hg: not found
+sh: 1: cvs: not found
+sh: 1: bzr: not found
+Environment:
+  Redmine version                3.3.3.stable
+  Ruby version                   2.3.1-p112 (2016-04-26) [x86_64-linux-gnu]
+  Rails version                  4.2.7.1
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Git                            2.7.4
+  Filesystem                     
+Redmine plugins:
+  localizable                    0.4.0
+  projects_table                 0.0.4
+  redmine_agile                  1.4.3
+  redmine_base_deface            0.0.1
+  redmine_base_select2           0.0.1
+  redmine_contacts               4.0.2
+  redmine_contacts_helpdesk      3.0.7
+  redmine_multiprojects_issue    3.3.0
+  redmine_theme_changer          0.2.0
+  sidebar_hide                   0.0.8
+</pre>
+
+I've tested it with all plugins disabled and all themes removed, and it behaved the same. Something seems to be broken somewhere somehow."
+26145,Redmine,Defect,"",Closed,Normal,Don't redirect anonymous users to the login form for disabled modules,Adam Clark,Jean-Philippe Lang,2017-06-26 23:09,Permissions and roles,3.5.0,"","","",0,2017-06-12 23:41,2017-06-26 23:09,"",Fixed,2.5.2,"The use case is that a project enables a module (the Files module is the one we encountered) but later turns it off. If there are stray links to that URL, these generate a 403 error, which for anonymous users redirects to the login/registration page.
+
+In our case, we had projects that served files publicly, then moved these to another location and turned off the Files module. The result is we now get a lot of spurious registration requests from users who are trying to download these files, because to the user it looks like the site is asking them to register before they can access the files.
+
+I was able to address our immediate problem by patching ApplicationController.authorize to check whether the request is associated with a disabled project module, and redirect to the main project page in that case. I'm not sure how correct this code is (I don't know the Redmine internals all that well) and I know that this doesn't work for some modules (eg. Issues) which apparently operate through some other method. So this code is just for illustration, I guess.
+
+<pre><code>
+    def authorize_with_custom(ctrl = params[:controller], action = params[:action], global = false)
+      allowed = User.current.allowed_to?({:controller => ctrl, :action => action}, @project || @projects, :global => global)
+      if allowed
+        true
+      else
+        if @project
+          logger.debug 'Handling auth error for ' + ctrl + '/' + action
+
+          # Figure out whether the permission for this path is handled by a module
+          project_module = Redmine::AccessControl.permissions.select {|p| p.actions.include?(ctrl + '/' + action)}.first.try(:project_module)
+          logger.debug 'Permission module is ' + project_module.to_s
+
+          # If it is a module, and the module isn't enabled in this project, try to redirect to the main project page
+          if project_module && !@project.module_enabled?(project_module)
+            can_view_project = User.current.allowed_to?({:controller => :projects, :action => :show}, @project)
+            logger.debug 'Can the user view the main project page? ' + can_view_project.to_s
+            if can_view_project
+              redirect_to project_path(@project)
+              return false
+            end
+          end
+        end
+        if @project && @project.archived?
+          render_403 :message => :notice_not_authorized_archived_project
+        else
+          deny_access
+        end
+      end
+    end
+</code></pre>"
+26132,Redmine,Defect,"",Closed,Normal,Redmine site cannot be displayed in an iframe,CM Gui,"",2017-06-10 07:16,Administration,"","","","",0,2017-06-09 20:52,2017-06-10 07:04,"",Invalid,3.3.0,"We used to be able to display our Redmine site in an iframe.    But after upgrading to 3.3.0 last September, we are unable to display our site in an iframe.   We get this error from the browser: ""To help protect the security of information you enter into this website, the publisher of this content does not allow it to be displayed in a frame.""
+Is there any way we can make our Redmine site display in an iframe again?
+Thank you very much.
+"
+26129,Redmine,Defect,"",Closed,Normal,"Email notification function problem,",James Lai,"",2017-06-09 14:44,Email notifications,"","","","",0,2017-06-09 12:26,2017-06-09 14:43,"",Duplicate,"","We came across  a problem during the using of Redmine : mail notification can't be triggered in two Issues of one Project, but we got mail notification before, and there is no similiar situation in other Issues. We want to know, is this a bug in Redmine? BTW, the fuction went normal after we copy the Issues into a new one, but the original Issues still got this problem. Please help to check it,thanks!
+
+Environment:
+  Redmine version                3.3.2.stable
+  Ruby version                   2.3.2-p217 (2016-11-15) [x86_64-linux]
+  Rails version                  4.2.7.1
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.7.14
+  Git                            1.8.3.1
+  Filesystem                     
+Redmine plugins:
+  _query                         0.0.2
+  clipboard_image_paste          1.10
+  easy_wbs                       2016-0.0
+  redmine_agile                  1.4.2
+  redmine_ckeditor               1.1.4
+  redmine_contacts               4.0.6
+  redmine_custom_workflows       0.1.6
+  redmine_dashboard              2.7.1
+  redmine_dmsf                   1.5.8
+  redmine_favorite_projects      2.0.3
+  redmine_knowledgebase          3.2.1"
+26124,Redmine,Defect,"",Closed,Normal,Error 404 when trying to download issue-attached file with url-encoded link,Andrey Iskousnykh,"",2017-06-08 19:10,"","","","","",0,2017-06-08 17:53,2017-06-08 19:10,"",Invalid,3.3.0,"Issue appears when I try to download file, that is attached to issue and which name contains non-latin chars (russian letters). Somehow file name become corrupted during get request.
+Here log parts:
+Upload request (OK)
+<pre>
+Started POST ""/redmine/uploads.js?attachment_id=1&filename=Scan10001%20%E2%80%94%20%D0%BA%D0%BE%D0%BF%D0%B8%D1%8F.jpg&content_type=image%2Fjpeg"" for 127.0.0.1 at 2017-06-07 18:02:43 +0300
+Processing by AttachmentsController#upload as JS
+  Parameters: {""attachment_id""=>""1"", ""filename""=>""Scan10001 ? копия.jpg"", ""content_type""=>""image/jpeg""}
+  Current user: NK (id=3)
+Saving attachment 'C:/BitNami/redmine-3.3.0-1/apps/redmine/htdocs/files/2017/06/170607180244_6da4361f84cca44f87c91e3fe3171a32.jpg' (966578 bytes)
+  Rendered attachments/upload.js.erb (0.0ms)
+Completed 200 OK in 129ms (Views: 0.0ms | ActiveRecord: 80.0ms)
+</pre>
+File and db-record are both fine.
+Failed download request:
+<pre>
+Started GET ""/redmine/attachments/download/1452/Scan10001%20‥94%20копия.jpg"" for 127.0.0.1 at 2017-06-07 18:02:51 +0300
+Processing by AttachmentsController#download as HTML
+  Parameters: {""id""=>""1452"", ""filename""=>""Scan10001 \xE2\x80\x94 \xD0\xBA\xD0\xBE\xD0\xBF\xD0\xB8\xD1\x8F.jpg""}
+  Current user: NK (id=3)
+  Rendered common/error.html.erb within layouts/base (0.0ms)
+Filter chain halted as :find_attachment rendered or redirected
+Completed 404 Not Found in 47ms (Views: 15.6ms | ActiveRecord: 15.6ms)
+</pre>
+Even log record is corrupted, printscreen of notepad++ attached (unprintable chars present):
+!prntscr1.PNG!
+
+HTML-anchor in issue looks fine.
+
+My environment:
+Redmine is installed using @Bitnami Redmine Stack@.
+<pre>
+Environment:
+  Redmine version                3.3.0.stable
+  Ruby version                   2.1.8-p440 (2015-12-16) [i386-mingw32]
+  Rails version                  4.2.6
+  Environment                    production
+  Database adapter               Mysql2
+</pre>"
+26098,Redmine,Defect,"",Closed,Low,Can not save with vietnamese character,Ky Nguyen,"",2017-06-06 07:20,Issues,"","","","",0,2017-06-06 06:36,2017-06-06 07:20,"",Invalid,"","- I can not save issues, project, comment... with vietnamese character"
+26090,Redmine,Defect,"",New,Normal,Some small issues found during review of r16029 for #24407.,Mischa The Evil,Mischa The Evil,2017-06-25 11:09,Translations,3.4.1,"","","",0,2017-06-02 15:31,"",関連している #24407,"","","I started a review of r16029 for ? great ? issue #24407 some time ago and found some small issues, which I noted (using old-style pencil and paper). I wasn't able to complete this review and post my findings properly though.
+
+I will complete the review and post my findings (have to look-up that piece of paper) before version#119 gets released (the version which will include the changes from r16029). Meanwhile I post this issue as a placeholder and personal reminder."
+26089,Redmine,Defect,"",Closed,Normal,Plugin Issue ,Kashif Mukhtar,"",2017-06-02 13:48,"","","","","",0,2017-06-02 13:20,2017-06-02 13:48,"",Invalid,"","I have installed redmine_timesheet_plugins for managing issues time of users.I have getting internal server error 500 while downloading csv.I am downloading all previous month csv's but getting error on downloading last month May CSV.When i download csv its redirect me internal server 500 error.Can you suggest me the solution.Its bit urgent.
+
+"
+26087,Redmine,Defect,"",New,Normal,<pre></pre> with included URL is displayed wrongly,Bernhard Donaubauer,"",2017-06-02 08:09,"","","","","",0,2017-06-02 07:59,"","","",3.3.1,"
+If I enter this textile line 
+
+<pre>svn co https://intra.bayerwald-fenster.de/svn/intra/yucatan_conturex_anbindung/trunk conturex</pre>
+
+in the wiki it is displayed as
+
+svn co <a class=""external"" href=""https://intra.bayerwald-fenster.de/svn/intra/yucatan_conturex_anbindung/trunk"">https://intra.bayerwald-fenster.de/svn/intra/yucatan_conturex_anbindung/trunk</a> conturex
+
+on the resulting page.
+
+BTW: If i enter a space before the <pre> tag it is displayed as intended."
+26085,Redmine,Defect,"",Needs feedback,Normal,Subtasks are not assigning to correct parent,Mark Wintch,"",2017-06-01 21:45,Issues,"","","","",0,2017-06-01 17:28,"","","",3.3.0,"To replicate the issue one needs to:
+* 1. Create a level 1 issue.  This will be the parent of all other issues.  Let's call it Issue #100
+* 2. Then create any number greater than 1 subtasks of that parent.  We will create five and say they are issue ID's 110, 120, 130, 140, and 150.
+* 3. Now under issue ID create a subtask with issue ID 111.  That will work fine.
+* Here comes the problem:
+* 4. Move 111 to 150 and it will be abandoned.
+* 5. Move 111 to 140 and it will say 140 is the parent, but it will actually be placed under 150.
+
+Looking at the issues table in SQL the problem seems to be that the lft and rgt fields do not increment when adding the new subtask to a new parent that did not have tasks previously.  So, the new task fails over to the next available range of lft rgt bounds.  If there is no parent to that range then the issue is orphaned, otherwise it assigns the issue to the next range available, but not the one that the user desires even though the application will say the tasks is a child of the correct parent.
+
+---
+
+Our current workaround is as follows using the example from above:
+Edit issue 140 or 150 whichever you are working with as follows.  Remove the parent of 100 and set it to blank and save. Then edit issue 111 so that it has no parent and save it.  Go back to issue 140 or 150 and set the parent to 100 and save it.  Then go to issue 111 and assign to either 140 or 150 and it will now work. 
+
+<pre>
+Environment:
+  Redmine version                3.3.0.stable
+  Ruby version                   2.1.8-p440 (2015-12-16) [x64-mingw32]
+  Rails version                  4.2.6
+  Environment                    production
+  Database adapter               SQLServer
+SCM:
+  Filesystem
+Redmine plugins:
+  redmine_agile                  1.4.1
+</pre>
+"
+26084,Redmine,Defect,"",Needs feedback,Normal,In my Overview coloumn did n't show bugs count.,manikishore goli,"",2017-06-15 09:58,"","","","","",0,2017-06-01 14:58,"","","","","
+In my redmine setup when i allocate a project to specific person then overview column shows all zeros(check first attachment). Please consider this  request is high priority."
+26079,Redmine,Defect,"",Needs feedback,Normal,Impossible to add member to a project,Fabrice ROBIN,"",2017-06-13 16:16,Project settings,"","","","",0,2017-05-31 17:02,"","","",3.3.3,"
+no way to add members to 1 specific project.
+
+Go to https://redmine.xxx.xxx/projects/advertising_as/settings/members
+click on link https://redmine.xxx.xxx/projects/advertising_as/memberships/new to add members.
+
+The popup is not displayed on Firefox (53.0.2).
+It is displayed on Chrome.
+
+This works on other projects. 
+It seems to be due to the underscore in the identifier. 
+It is the same with dashes in the project identifier.
+"
+26078,Redmine,Defect,"",Closed,Normal,List of issues per assignee doesn't match in profile,Juan Carlos Massanet,"",2017-06-02 07:54,Issues filter,"","","","",0,2017-05-31 16:37,2017-06-02 07:54,"関連している #3398, 関連している #13758, 次のチケットと重複 #25212",Duplicate,3.2.0,"Hello,
+
+Regarding this feature: #8153
+The amount of issues assigned to the user that can be found in his profile shows a different number than when we click the ""Assigned issues"" link. 
+After some tests I figured out that the counter in the user profile is taking into account issues assigned to any group the user belongs to. However when we click in to the link ""Assigned issues"" we only see the issues that are assigned to the user.
+
+Is there any whay to make this match?
+
+Is there any way to see the list of issues to assigned to a particular user and the group his belogns to?
+
+"
+26075,Redmine,Defect,"",Closed,Normal,Redmine 3.3.3 - stable - scrollbar missing in Chrome,Bintintan Andrei,"",2017-05-31 14:55,UI,"","","","",0,2017-05-31 13:04,2017-05-31 14:55,"",Invalid,"","Hi, 
+
+I've just upgraded to 3.3.3 and I have a very strange side-effect. 
+The scrollbar is missin on some pages (wiki, issues) etc... it happens only in google chrome. In FF it looks right.
+I use a different theme but with the original one is the same issue. 
+
+Any ideas? See screenshots. 
+<pre>
+Environment:
+  Redmine version                3.3.3.stable.16584
+  Ruby version                   2.2.3-p173 (2015-08-18) [x86_64-li
+  Rails version                  4.2.7.1
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.9.3
+  Git                            2.7.4
+  Filesystem
+Redmine plugins:
+  redmine_agile                  1.4.3
+  redmine_ckeditor               1.1.2
+  redmine_impersonate            0.10.0
+  redmine_lightbox2              0.3.2
+  redmine_per_project_formatting 0.0.3
+  wiki_issue_fields              0.5.1
+
+</pre>
+
+"
+26072,Redmine,Defect,"",Closed,Normal,Set default assignee before validation,Felix Sch?fer,Jean-Philippe Lang,2017-06-07 21:34,Issues,3.2.7,"","","",0,2017-05-30 17:52,2017-06-07 21:34,関連している #482,Fixed,3.3.3,"Currently the default assignee is set only after validations. This means that when the field is required the default assignee does not work.
+
+The following patch changes setting the default assignee to before the validation:
+
+<pre><code class=""diff"">
+diff --git a/app/models/issue.rb b/app/models/issue.rb
+index 7d411fc94..a5ebfbffa 100644
+--- a/app/models/issue.rb
++++ b/app/models/issue.rb
+@@ -105,8 +105,8 @@ class Issue < ActiveRecord::Base
+     end
+   }
+ 
++  before_validation :default_assign, on: :create
+   before_validation :clear_disabled_fields
+-  before_create :default_assign
+   before_save :close_duplicates, :update_done_ratio_from_issue_status,
+               :force_updated_on_change, :update_closed_on, :set_assigned_to_was
+   after_save {|issue| issue.send :after_project_change if !issue.id_changed? && issue.project_id_changed?}
+</code></pre>"
+26067,Redmine,Defect,"",Closed,Normal,Redmine service running but unable to access it on browser ,Ashay Maheshwari,"",2017-05-30 07:17,"","","","","",0,2017-05-30 06:35,2017-05-30 07:17,"",Invalid,"","Hello. I installed redmine on ubuntu 14.04 following the instructions given [[https://gist.github.com/wenzhixin/4650802f442d020cd332]].
+
+I have a redmine service running - 
+<pre>
+someoe@machine:~$ sudo start -v redmine
+redmine start/running, process 19402
+</pre>
+
+I am willing to run redmine behind nginx and I copied the contents in /usr/share/nginx/html here it is -
+<pre>
+someone@machine:~$ ls /usr/share/nginx/html/
+50x.html  index.html  redmine  www
+</pre>
+
+Still I am not able to see redmine home page or management console.
+
+
+"
+26066,Redmine,Defect,"",New,Normal,Selenium::WebDriver doesn't work with current version of Firefox,Pavel Rosick?,"",2017-05-29 16:48,Gems support,"","","","",0,2017-05-29 16:48,"","","","","selenium-webdriver version was locked in order to support outdated Ruby 1.9.3 #24092
+could you allow selenium-webdriver 3.4.0 if Ruby 2.0+ is used? I'm getting this error because of it:
+
+Selenium::WebDriver::Error::WebDriverError:
+  unable to obtain stable firefox connection in 60 seconds (127.0.0.1:7055)
+
+Firefox 53.0.3
+(selenium-webdriver 3.4.0 solves the problem)
+
+thanks
+
+"
+26063,Redmine,Defect,"",Closed,High,"Users can assign a user/group which is not a member of current project, or even a user that doesn't exist",Vincent C.,"",2017-05-29 15:42,Issues,"","","","",0,2017-05-29 14:55,2017-05-29 15:42,関連している #23921,Fixed,3.2.0,"Hello !
+
+<pre>
+Tested on Redmine 3.2.0
+</pre>
+
+_(I consider it as a bug, but it may be standard behaviour, which would be a really strange design decision)_
+
+I discovered this after receiving a report that the group which was assigned on an issue couldn't see it. This was normal, because the group was not a member of the related project. But I don't know how the issue could have been assigned to this group since only project members are assignable (even after investigating, I still don't know how it could have happened).
+
+So I uninstalled all plugins on my integration environment, to avoid any plugin-related strange behaviour which could cause that. Then tried to replace the currently assigned user/group ID directly in HTML page (with Chrome ""Inspect Element""), just to see if it was a client or server side problem. This led me to this bug report :
+
+- When replacing with the ID of *another user/group from same project*, the issue is saved normally, and the issue is assigned to given group _(this is standard behaviour)_
+- When replacing by the ID of *a user/group which is NOT a member of the project*, +it also works+ _(*this should not work*. Even though assigned user/group can't see the issue, it shouln't even be assignable in the first place)_
+- When replacing by the ID of *a group which is un-assignable globally* _(= has only an un-assignable role)_, +it also works+
+- When replacing by the ID of *a non-existing user/group*, +it also works+ _(when the issue is saved, the current assignee is just set to """" in web page, and the given ID is set in database)_
+
+!https://redmine.org/attachments/download/18421/!
+
+This doesn't seem to be the proper way it should be working.
+It also allows user/group listing across the entire Redmine instance, which could be considered as a security threat.
+
+
+PS : I can't test on a more recent version than 3.2.0 ATM, sorry for that. _(it takes 10 sec to reproduce, just inspect element with Chrome, set ID to ""9999999"" for currently selected option, and save issue)_"
+26058,Redmine,Defect,"",Closed,Normal,Cannot create Plugin Tables in Development Environment,Bitaseme M,"",2017-05-29 19:40,"","","","","",0,2017-05-29 13:13,2017-05-29 15:44,"",Invalid,"","Following the plugin tutorial [[Plugin_Tutorial]]
+
+I tried creating a plugin and when I get to the step that creates the database table, all the console says is migrating. When I go look at the development database I do not see the plugin table.
+
+I hope this can be fixed as it seems unusual that I cannot test my full redmine environment in development mode. I like development due to all the detailed logging I get in the console on every action."
+26057,Redmine,Defect,"",Closed,Normal,Cannot add related issue in IE11,Marc de Kleijn,"",2017-05-31 21:30,Issues,"","","","",0,2017-05-29 11:24,2017-05-31 21:30,"",Invalid,"",I can't add a related issue to an existing issue in Internet Explorer 11. In Chrome it works fine. See enclosed screen print.
+26056,Redmine,Defect,"",Closed,Normal,"Existing closed bug , can't re-open from Redmine!!",Pradeep Garg,"",2017-06-19 13:42,Issues,"","","","",0,2017-05-29 08:37,2017-06-19 13:42,"",Invalid,3.1.3,"I found an issue in my project during testing , and it was fixed then verified/closed by me.
+But same issue again observed in next build. So, want to re-open existing bug, but there were no option for re-open that issue.
+And that status field was mandatory, without fill anything there, i will be able to update an issue.
+
+Attached snapshot for detailed Information!! "
+26055,Redmine,Defect,"",Closed,Normal,Three issues with Redmine::SyntaxHighlighting::CodeRay.language_supported?,Mischa The Evil,Jean-Philippe Lang,2017-06-09 06:53,Code cleanup/refactoring,3.2.7,"","","",0,2017-05-28 15:40,2017-06-07 21:35,関連している #25634,Fixed,"","h2. Issues
+
+While reviewing/researching #25634 (and in its extend, r16501 & r16502 for #25503), I noticed three issues with the implementation - both pre and post r16568:
+# @Redmine::SyntaxHighlighting::CodeRay.language_supported?@ includes internal CodeRay scanners (@default@, @debug@, @raydebug@ & @scanner@)
+# @Redmine::SyntaxHighlighting::CodeRay.language_supported?@ has multiple responsibilities:
+## retrieval of the array of supported languages symbols from CodeRay library
+### storing of a reference to the resulting array in a local variable
+## checking if the passed @language@ argument is included in the array referenced by the local variable and return the result
+# the array containing supported languages symbols is rebuild for every invocation of @Redmine::SyntaxHighlighting::CodeRay.language_supported?@, ie. for each and every pre-formatted, syntax-highlighted code block (this seems a uselessly CPU-intensive approach since the array's values won't change unless Redmine is restarted)
+
+h2. Fixes/changes
+
+I've applied the following four changes to solve each of the three issues:
+
+* _change 1 (0001-Remove-internal-CodeRay-scanners.patch)_: remove the four internal CodeRay scanners by subtracting a hard-coded array containing the symbols of these scanners
+** It does not seem to be possible to do this in a more dynamical way.
+* _change 2 (0002-Pull-up-retrieve_supported_languages-private-class-m.patch)_: pull-up a new @Redmine::SyntaxHighlighting::CodeRay.retrieve_supported_languages@ private class method (that doesn't store the result)
+* _change 3 (0003-Use-stored-ref.-to-array-holding-supported-languages.patch)_: use a stored reference to the resulting array ? retrieved by @Redmine::SyntaxHighlighting::CodeRay.retrieve_supported_languages@, holding the supported languages symbols ? via a constant[1]
+** I think there are two ways of solving this: storing a reference to the resulting array 1) in a _memoized instance variable_ or 2) in a _constant_. After some benchmarking[1] I decided to go with the constant-storage approach as it seems a tiny bit faster than the memoized instance variable storage approach. Though, both approaches are ~360-400 times faster than the approaches where the array is rebuild on every invocation of @Redmine::SyntaxHighlighting::CodeRay.language_supported?@.
+* _change 4 (0004-Tests-for-Redmine-SyntaxHighlighting-CodeRay.retriev.patch)_: add test-coverage for @Redmine::SyntaxHighlighting::CodeRay.retrieve_supported_languages@ and remove obsolete @ApplicationHelperTest#test_syntax_highlight_by_coderay_alias@ (there's no need to test through @textilizable@)
+
+This patch serial, against current source:/trunk@16580, is produced using @git format-patch@, which makes the individual patches apply-able using ""@patch -p1 < 0001-...@"".
+
+h2. Environment
+
+<pre>
+Environment:
+  Redmine version                3.3.3.devel@r16580
+  Ruby version                   2.3.3-p222 (2016-11-21) [x86_64-linux]
+  Rails version                  4.2.8
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.8.8
+  Git                            1.9.1
+  Filesystem                     
+Redmine plugins:
+  no plugin installed
+</pre>
+
+h2. Footnotes
+
+fn1. I passed the following benchmark script to @rails runner -e production@: <pre><code class=""ruby"">
+puts ""####################""
+puts ""Using benchmark:""
+puts ""####################""
+
+puts
+
+require 'benchmark'
+
+Benchmark.bmbm do |x|
+x.report("".language_supported_core_pre_25634?"")  { 100.times do Redmine::SyntaxHighlighting::CodeRay.language_supported_core_pre_25634?('ruby') end }
+x.report("".language_supported_core?"")            { 100.times do Redmine::SyntaxHighlighting::CodeRay.language_supported_core?('ruby') end }
+x.report("".language_supported_core_ext?"")        { 100.times do Redmine::SyntaxHighlighting::CodeRay.language_supported_core_ext?('ruby') end }
+x.report("".language_supported_core_ext_split?"")  { 100.times do Redmine::SyntaxHighlighting::CodeRay.language_supported_core_ext_split?('ruby') end }
+x.report("".language_supported_ivar_ext_split?"")  { 100.times do Redmine::SyntaxHighlighting::CodeRay.language_supported_ivar_ext_split?('ruby') end }
+x.report("".language_supported_const_ext_split?"") { 100.times do Redmine::SyntaxHighlighting::CodeRay.language_supported_const_ext_split?('ruby') end }
+end
+
+puts
+
+puts ""####################""
+puts ""Using benchmark/ips:""
+puts ""####################""
+
+puts
+
+require 'benchmark/ips'
+
+Benchmark.ips do |x|
+  # Configure the number of seconds used during
+  # the warmup phase (default 2) and calculation phase (default 5)
+  x.config(:time => 5, :warmup => 2)
+
+  x.report("".language_supported_core_pre_25634?"")  { 100.times do Redmine::SyntaxHighlighting::CodeRay.language_supported_core_pre_25634?('ruby') end }
+  x.report("".language_supported_core?"")            { 100.times do Redmine::SyntaxHighlighting::CodeRay.language_supported_core?('ruby') end }
+  x.report("".language_supported_core_ext?"")        { 100.times do Redmine::SyntaxHighlighting::CodeRay.language_supported_core_ext?('ruby') end }
+  x.report("".language_supported_core_ext_split?"")  { 100.times do Redmine::SyntaxHighlighting::CodeRay.language_supported_core_ext_split?('ruby') end }
+  x.report("".language_supported_ivar_ext_split?"")  { 100.times do Redmine::SyntaxHighlighting::CodeRay.language_supported_ivar_ext_split?('ruby') end }
+  x.report("".language_supported_const_ext_split?"") { 100.times do Redmine::SyntaxHighlighting::CodeRay.language_supported_const_ext_split?('ruby') end }
+
+
+  # Compare the iterations per second of the various reports
+  x.compare!
+end
+
+</code></pre> on a modified ./lib/redmine/syntax_highlighting.rb file[2], which gave me the following results: <pre>
+####################
+Using benchmark:
+####################
+
+Rehearsal ------------------------------------------------------------------------
+.language_supported_core_pre_25634?    0.010000   0.010000   0.020000 (  0.017590)
+.language_supported_core?              0.010000   0.000000   0.010000 (  0.018621)
+.language_supported_core_ext?          0.020000   0.010000   0.030000 (  0.018680)
+.language_supported_core_ext_split?    0.010000   0.000000   0.010000 (  0.018822)
+.language_supported_ivar_ext_split?    0.000000   0.000000   0.000000 (  0.000302)
+.language_supported_const_ext_split?   0.000000   0.000000   0.000000 (  0.000069)
+--------------------------------------------------------------- total: 0.070000sec
+
+                                           user     system      total        real
+.language_supported_core_pre_25634?    0.030000   0.000000   0.030000 (  0.025548)
+.language_supported_core?              0.010000   0.000000   0.010000 (  0.018236)
+.language_supported_core_ext?          0.020000   0.000000   0.020000 (  0.018472)
+.language_supported_core_ext_split?    0.020000   0.000000   0.020000 (  0.018835)
+.language_supported_ivar_ext_split?    0.000000   0.000000   0.000000 (  0.000068)
+.language_supported_const_ext_split?   0.000000   0.000000   0.000000 (  0.000049)
+
+####################
+Using benchmark/ips:
+####################
+
+Warming up --------------------------------------
+.language_supported_core_pre_25634?
+                         5.000  i/100ms
+.language_supported_core?
+                         5.000  i/100ms
+.language_supported_core_ext?
+                         4.000  i/100ms
+.language_supported_core_ext_split?
+                         4.000  i/100ms
+.language_supported_ivar_ext_split?
+                         1.763k i/100ms
+.language_supported_const_ext_split?
+                         2.084k i/100ms
+Calculating -------------------------------------
+.language_supported_core_pre_25634?
+                         53.819  (± 5.6%) i/s -    270.000  in   5.035559s
+.language_supported_core?
+                         53.027  (± 5.7%) i/s -    265.000  in   5.015003s
+.language_supported_core_ext?
+                         50.711  (± 5.9%) i/s -    256.000  in   5.071990s
+.language_supported_core_ext_split?
+                         49.493  (± 8.1%) i/s -    248.000  in   5.055206s
+.language_supported_ivar_ext_split?
+                         17.443k (±10.2%) i/s -     86.387k in   5.011711s
+.language_supported_const_ext_split?
+                         19.710k (±11.7%) i/s -     97.948k in   5.045098s
+
+Comparison:
+.language_supported_const_ext_split?:  19710.5 i/s
+.language_supported_ivar_ext_split?:   17443.3 i/s - same-ish: difference falls within error
+.language_supported_core_pre_25634?:      53.8 i/s - 366.23x  slower
+.language_supported_core?:                53.0 i/s - 371.71x  slower
+.language_supported_core_ext?:            50.7 i/s - 388.68x  slower
+.language_supported_core_ext_split?:      49.5 i/s - 398.24x  slower
+
+</pre>
+
+fn2. including six different implementations looking like:
+|_. Nr. |_. Method                                                                    |_. Description                                                                                  |_. Abbreviated implementation code |
+| 1.    | @Redmine::SyntaxHighlighting::CodeRay.language_supported_core_pre_25634?@   | state of trunk, pre #25634                                                                     | {{collapse(View abbreviated implementation...)
+<pre><code class=""ruby"">
+      class << self
+        ...
+
+        def language_supported_core_pre_25634?(language)
+          ::CodeRay::Scanners.list.include?(language.to_s.downcase.to_sym)
+        rescue
+          false
+        end
+      end
+</code></pre>
+}} |
+| 2.    | @Redmine::SyntaxHighlighting::CodeRay.language_supported_core?@             | current state of trunk, post #25634                                                            | {{collapse(View abbreviated implementation...)
+<pre><code class=""ruby"">
+      class << self
+        ...
+
+        def language_supported_core?(language)
+          supported_languages =
+            ::CodeRay::Scanners.list +
+            ::CodeRay::Scanners.plugin_hash.keys.map(&:to_sym)
+          supported_languages.include?(language.to_s.downcase.to_sym)
+        rescue
+          false
+        end
+      end
+</code></pre>
+}} |
+| 3.    | @Redmine::SyntaxHighlighting::CodeRay.language_supported_core_ext?@         | current state of trunk, post #25634, with _change 1_ applied                                   | {{collapse(View abbreviated implementation...)
+<pre><code class=""ruby"">
+      class << self
+        ...
+
+        def language_supported_core_ext?(language)
+          supported_languages =
+            ::CodeRay::Scanners.list +
+            ::CodeRay::Scanners.plugin_hash.keys.map(&:to_sym) -
+            %w(debug default raydebug scanner).map(&:to_sym)
+          supported_languages.include?(language.to_s.downcase.to_sym)
+        rescue
+          false
+        end
+      end
+</code></pre>
+}} |
+| 4.    | @Redmine::SyntaxHighlighting::CodeRay.language_supported_core_ext_split?@   | current state of trunk, post #25634, with _change 1 and 2_ applied                             | {{collapse(View abbreviated implementation...)
+<pre><code class=""ruby"">
+      def self.retrieve_supported_languages
+        ::CodeRay::Scanners.list +
+        # Add CodeRay scanner aliases
+        ::CodeRay::Scanners.plugin_hash.keys.map(&:to_sym) -
+        # Remove internal CodeRay scanners
+        %w(debug default raydebug scanner).map(&:to_sym)
+      end
+      private_class_method :retrieve_supported_languages
+
+      class << self
+        ...
+
+        def language_supported_core_ext_split?(language)
+          supported_languages = retrieve_supported_languages
+          supported_languages.include?(language.to_s.downcase.to_sym)
+        rescue
+          false
+        end
+      end
+</code></pre>
+}} |
+| 5.    | @Redmine::SyntaxHighlighting::CodeRay.language_supported_ivar_ext_split?@   | current state of trunk, post #25634, with _change 1, 2 and 3 (memoized ivar variant)_ applied  | {{collapse(View abbreviated implementation...)
+<pre><code class=""ruby"">
+      def self.retrieve_supported_languages
+        ::CodeRay::Scanners.list +
+        # Add CodeRay scanner aliases
+        ::CodeRay::Scanners.plugin_hash.keys.map(&:to_sym) -
+        # Remove internal CodeRay scanners
+        %w(debug default raydebug scanner).map(&:to_sym)
+      end
+      private_class_method :retrieve_supported_languages
+
+      class << self
+        ...
+
+        def language_supported_ivar_ext_split?(language)
+          @supported_languages ||= retrieve_supported_languages
+          @supported_languages.include?(language.to_s.downcase.to_sym)
+        rescue
+          false
+        end
+</code></pre>
+}} |
+| 6.    | @Redmine::SyntaxHighlighting::CodeRay.language_supported_const_ext_split?@  | current state of trunk, post #25634, with _change 1, 2 and 3 (constant variant)_ applied       | {{collapse(View abbreviated implementation...)
+<pre><code class=""ruby"">
+      def self.retrieve_supported_languages
+        ::CodeRay::Scanners.list +
+        # Add CodeRay scanner aliases
+        ::CodeRay::Scanners.plugin_hash.keys.map(&:to_sym) -
+        # Remove internal CodeRay scanners
+        %w(debug default raydebug scanner).map(&:to_sym)
+      end
+      private_class_method :retrieve_supported_languages
+
+      SUPPORTED_LANGUAGES = retrieve_supported_languages
+
+      class << self
+        ...
+
+        def language_supported_const_ext_split?(language)
+          SUPPORTED_LANGUAGES.include?(language.to_s.downcase.to_sym)
+        rescue
+          false
+        end
+</code></pre>
+}} |
+"
+26051,Redmine,Defect,"",Closed,High,Please correct the vulnerability of imagemagick(CVE-2017-9098),Sahya Norn,"",2017-06-06 02:29,"","","","","",0,2017-05-27 08:45,2017-06-06 02:29,"",Wont fix,"","Please correct the vulnerability of imagemagick(CVE-2017-9098)
+
+https://access.redhat.com/security/cve/cve-2017-9098"
+26034,Redmine,Defect,"",New,High,Wiki PDF generated files displayed but not printable on Mac,glc glc,"",2017-05-24 17:55,PDF export,"","","","",0,2017-05-24 17:51,"","","",3.3.3,"For any wiki page (even with only a small text content), when clicking on the PDF link in the footer of the current page, the PDF downloads and displays properly, but when sending to the printer, the print job hangs after a few seconds, contrary to any other PDF saved from the browser through other sites, which print properly.
+
+It is sent to the printer but not printed, no error message.
+
+Probably some wrong meta-data in the generated PDFs
+
+Issue found in the official Redmine Docker image, with :
+
+Redmine version                3.3.3.stable
+Ruby version                   2.2.7-p470 (2017-03-28) [x86_64-linux]
+Rails version                  4.2.7.1
+
+Client side (error occurs in) :
+
+MacOS Sierra 10.12.5
+Google Chrome 58.0.3029.110 (64-bit)
+Firefox 53.0.3 (64-bit)
+Preview 9.0 (909.18)
+Adobe Acrobat Pro 10.1.1.33
+
+Printer : HP LaserJet Pro 400 M451dn 
+No other printers available for further tests, but it seems to be related to the OS side rather than to the printer side
+
+Printing the PDF generated pages *works however in Windows 7* (on the same Mac through VirtualBox with the same printer)."
+26029,Redmine,Defect,"",Closed,Normal,Recovery Deleted Issue,mujhahid karim,"",2017-05-24 16:59,Administration,"","","","",0,2017-05-24 09:55,2017-05-24 16:59,"",Invalid,2.5.2,"I have one issue that desappear from my database, I need to know who deleted this issue, can I know using some querys on the database?
+"
+26023,Redmine,Defect,"",New,Normal,Category filter only shows categories of current project,Felix Sch?fer,"",2017-06-03 10:18,Issues filter,Candidate for next major release,"","","",0,2017-05-23 13:13,"","関連している #8192, 関連している #17761, 関連している #23198","","","The category filter currently only shows the categories of the current project, this means the global query can not use categories, and projects with subprojects can not use the categories from the subproject as filters.
+
+I will provide a patch shortly to solve this issue."
+26016,Redmine,Defect,"",New,High,Redmine is slow to some users,Ren? Barbosa,"",2017-05-22 18:25,Performance,"","","","",0,2017-05-22 18:08,"",関連している #19102,"",3.3.0,"We updated our Redmine environment to the version 3.3.0 and some users are complaining about slowness in their activities. 
+
+We found that just some users (the ones with 1000+ projects) are with this problem. Users with ~600- projects are not affected. 
+
+I've attached 2 files at this issue, they're a Redmine debug log of an user with several projects (slow.log) and an user with few projects (slow.log). The difference is really notable."
+26012,Redmine,Defect,"",Closed,Normal,Integrating Redmine with Zimbra Mail Server,mujhahid karim,"",2017-05-22 16:06,Email notifications,"","","","",0,2017-05-22 08:48,2017-05-22 14:40,"",Invalid,2.5.2,"Hi recently the department of IT, change de Zimbra configuration to not accept the connection with no have any level of authentication.
+
+So my enviroument of Redmine not accept now to connect with the Zimbra Mail Server, the error is: An error occurred while sending mail (wrong argument (TrueClass)! (Expected kind of OpenSSL::SSL::SSLContext))
+
+The configuration file is:
+
+<pre><code class=""yaml"">
+# default configuration options for all environments
+default:
+  # Outgoing emails configuration (see examples above)
+  email_delivery:
+    delivery_method: :smtp
+    smtp_settings:
+      address: webmail.mydomain
+      port: 465
+      domain: isutc.transcom.co.mz
+      authentication: :plain
+      enable_starttls_auto: false
+      openssl_verify_mode: true
+      ssl: true
+      user_name: redmine@mydomain.mydomain
+      password: mypassword
+</code></pre>
+"
+26011,Redmine,Defect,"",Closed,Normal,html content,Cedric Gavage,"",2017-05-22 14:40,Email receiving,"","","","",0,2017-05-22 08:14,2017-05-22 14:40,"",Invalid,3.3.1,"For incoming emails (receiving email), is it possible to disable the html stripping function ?"
+26010,Redmine,Defect,"",Needs feedback,Normal,can't create Thread,Jone Jone,"",2017-05-22 07:02,Issues,"","","","",0,2017-05-22 05:04,"","","",3.2.6,"there is the issue's log，if log is not enough,please let me method to debug it,thank you
+
+ThreadError (can't create Thread: Resource temporarily unavailable):
+  app/models/mailer.rb:458:in `deliver_mail'
+  config/initializers/10-patches.rb:154:in `deliver'
+  app/models/mailer.rb:98:in `block (2 levels) in deliver_issue_edit'
+  app/models/issue.rb:952:in `each_notification'
+  app/models/mailer.rb:97:in `block in deliver_issue_edit'
+  app/models/journal.rb:90:in `block in each_notification'
+  app/models/journal.rb:88:in `each'
+  app/models/journal.rb:88:in `each_notification'
+  app/models/mailer.rb:96:in `deliver_issue_edit'
+  app/models/journal.rb:302:in `send_notification'
+  app/models/journal.rb:67:in `save'
+  app/models/issue.rb:1681:in `create_journal'
+  app/models/issue.rb:182:in `create_or_update'
+  app/controllers/issues_controller.rb:499:in `block in save_issue_with_child_records'
+  app/controllers/issues_controller.rb:487:in `save_issue_with_child_records'
+  app/controllers/issues_controller.rb:185:in `update'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'"
+26004,Redmine,Defect,"",Needs feedback,Normal,Settings / Issue tracking: Can't move issue column between available and visible,Roderick Gadellaa,"",2017-06-12 18:44,Issues list,"","","","",0,2017-05-20 09:23,"","","",3.3.3,"Under Settings / Issue tracking / Default columns displayed on the issue list (screenshot attached), I try to move a issue column from available to visible but it doesn't work.
+
+When I open the dev console I see a javascript error:
+
+<pre>
+/redmine/settings:446 Uncaught ReferenceError: moveOptions is not defined
+    at HTMLInputElement.onclick (/redmine/settings:446)
+</pre>
+
+Information:
+
+<pre>
+Environment:
+  Redmine version                3.3.3.stable
+  Ruby version                   2.1.5-p273 (2014-11-13) [arm-linux-gnueabihf]
+  Rails version                  4.2.7.1
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.8.10
+  Git                            2.1.4
+  Filesystem                     
+Redmine plugins:
+  periodictask                   3.2.1
+  redmine_checklists             3.1.5
+  redmine_issue_badge            0.0.6
+  redmine_issue_completion       0.0.2
+  redmine_issue_templates        0.1.5
+</pre>"
+26002,Redmine,Defect,"",Confirmed,Normal,Issues can be assigned to this role  - didnt work correctly,Maxim Kru?ina,"",2017-06-21 18:30,Issues,"","","","",0,2017-05-19 18:17,"","","",3.3.1,"We have an API user and special role for this user.
+This role have ""Issues can be assigned to this role"" box unchecked.
+But when ticket is created by this API user, he's still listed in Assignee field of the ticket and the ticket can be aasigned to this user.
+When ticket is created by someone else, it works OK."
+25996,Redmine,Defect,"",Needs feedback,Normal, ActiveRecord::StatementInvalid,Jone Jone,"",2017-05-18 09:01,Database,"","","","",0,2017-05-18 08:40,"","","",3.2.6,"I use nginx server.
+log:
+Completed 500 Internal Server Error in 51113ms (ActiveRecord: 51068.8ms)
+
+ActiveRecord::StatementInvalid (Mysql2::Error: Lock wait timeout exceeded; try restarting transaction: UPDATE `issues` SET `issues`.`status_id` = 3, `issues`.`updated_on` = '2017-05-18 11:02:23', `issues`.`lock_version` = 2 WHERE `issues`.`id` = 21991 AND `issues`.`lock_version` = 1):
+  app/models/issue.rb:182:in `create_or_update'
+  app/controllers/issues_controller.rb:499:in `block in save_issue_with_child_records'
+  app/controllers/issues_controller.rb:487:in `save_issue_with_child_records'
+  app/controllers/issues_controller.rb:185:in `update'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'"
+25989,Redmine,Defect,"",Closed,Normal,Ticket #25959 reproduced,Vasili Korol,"",2017-05-17 18:14,"","","","","",0,2017-05-17 18:01,2017-05-17 18:14,"",Invalid,"","I am unable to re-open the ticket #25959, so I am creating a new one to draw your attention to the fact that i was able to reproduce the problem described there. Previously it was closed as ""non-reproducible"". My version of Redmine is older than the ticket author's, but he claims that the problem is still actual in 3.3.1, if I understand correctly."
+25959,Redmine,Defect,"",Closed,Normal,"""Smile of the death"" problem",Maxim Kru?ina,"",2017-05-17 18:11,"","","","","",0,2017-05-17 13:17,2017-05-17 14:33,"",Invalid,3.3.1,"Hi, just pasted this string into Ticket description (or comment) and it will crash Redmine:
+A druh? v?c, mo?n? bych ten pruh dole, sv?tle modrou, vym?nil za na?? tmav? modrou "
+25868,Redmine,Defect,"",Needs feedback,Normal,Can't upload over 2GB file,allen chen,"",2017-05-17 16:04,Attachments,"","","","",0,2017-05-17 02:24,"","","","","I use bitnami-redmine-3.3.3-0-windows-installer.exe to install Redmine.
+My OS is win7 64 bit.
+I set the upload file limit to 4GB.
+But when I upload the large file that over 2 GB file it will show Internal Server error.
+
+The Productions.log show below.
+
+Processing by AttachmentsController#upload as JS
+  Parameters: {""attachment_id""=>""1"", ""filename""=>""release1.tgz"", ""content_type""=>""application/gzip""}
+  Current user: admin (id=1)
+Completed 500 Internal Server Error in 140ms (ActiveRecord: 78.0ms)
+
+RangeError (bignum too big to convert into `long'):
+  app/controllers/attachments_controller.rb:92:in `upload'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+"
+25867,Redmine,Defect,"",New,Normal,Assignable users should respect database collation,Pavel Rosick?,"",2017-05-18 21:58,Database,"","","","",0,2017-05-16 22:10,"","","","","mysql collation: utf8_general_ci
+['a','u','?'] should be sorted as ['a','?','u'] but because of ruby sort it's reordered back as ['a','u','?']
+
+<pre>
+  def assignable_users
+    users = project.assignable_users(tracker).to_a
+    users << author if author && author.active?
+    if assigned_to_id_was.present? && assignee = Principal.find_by_id(assigned_to_id_was)
+      users << assignee
+    end
+    
+    users.uniq.sort
+  end
+</pre>
+
+I can provide a patch, are you interested or is it desired behaviour?
+
+<pre>
+Environment (not important, all redmine versions and databases are affected):
+  Redmine version                3.3.3.devel.16557
+  Ruby version                   2.1.5-p273 (2014-11-13) [x64-mingw32]
+  Rails version                  4.2.8
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.9.5
+  Git                            2.11.0
+  Filesystem
+Redmine plugins:
+  no plugin installed
+</pre>"
+25858,Redmine,Defect,"",Closed,Normal,Easy Gantt crashes my browser Firefox,Niti Panchal,"",2017-05-16 12:06,"","","","","",0,2017-05-16 08:26,2017-05-16 12:06,"",Invalid,"",So every time I use Project Gantt my browser crashes. But when i use Easy Gantt for a specific project it work. i reinstalled the browser it is stillt he same problem. We are group of people using this tool but for some poeple it works for some it does not
+25846,Redmine,Defect,"",Needs feedback,Normal,Repository directory listing: ActionView::Template::Error (incompatible character encodings: ASCII-8BIT and UTF-8),Marc Vollmer,"",2017-05-15 13:57,SCM,"","","","",0,2017-05-15 10:42,"","","",3.3.3,"Hello,
+
+we have added 4 repositories (Git Remote) as projectarchvies to redmine.
+When we open those repositories in the projectarchive view 3 of them work, one gives the following error:
+
+<pre>
+Started GET ""/projects/XXX/repository/XXX"" for XXX.XXX.XXX.XXX at 2017-05-15 10:10:00 +0200
+Processing by RepositoriesController#show as HTML
+  Parameters: {""id""=>""XXX"", ""repository_id""=>""XXX""}
+  Current user: XXX (id=135)
+  Rendered repositories/_navigation.html.erb (38.5ms)
+  Rendered repositories/_breadcrumbs.html.erb (0.9ms)
+  Rendered repositories/_dir_list_content.html.erb (10.4ms)
+  Rendered repositories/_dir_list.html.erb (10.9ms)
+  Rendered repositories/show.html.erb within layouts/base (53.8ms)
+Completed 500 Internal Server Error in 168ms (ActiveRecord: 3.5ms)
+
+ActionView::Template::Error (incompatible character encodings: ASCII-8BIT and UTF-8):
+     8:                :locals => { :path => @path, :kind => 'dir', :revision => @rev } %></h2>
+     9:
+    10: <% if !@entries.nil? && authorize_for('repositories', 'browse') %>
+    11:   <%= render :partial => 'dir_list' %>
+    12: <% end %>
+    13:
+    14: <%= render_properties(@properties) %>
+  app/views/repositories/show.html.erb:11:in `_app_views_repositories_show_html_erb__1302325350339252382_70155590060320'
+  app/controllers/repositories_controller.rb:125:in `show'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+</pre>
+
+My first guess was that theres a directory of file in the repository that has an invalid char as a name, so I wrote a little script to check all filenames against a regex and we just found a file containing a ~ in the name.
+
+We had this repository working before, so the file must be added in the last 1 to 2 month but the file containing the ~ was added 2 years ago.
+
+I already tried to re add the repository with no success and other repositories I added as a test also work.
+
+Thanks for your help in advance!"
+25829,Redmine,Defect,"",Closed,Normal,mysql2 0.3 gem doesn't properly close connections,Pavel Rosick?,Jean-Philippe Lang,2017-05-27 09:33,Gems support,3.2.7,"","","",0,2017-05-13 00:27,2017-05-27 09:33,"",Fixed,2.0.0,"Hi,
+I found that mysql2 (0.3.21) doesn't properly closing connections.
+
+Our mysql's error logs are full of these warnings
+<pre>
+11797 [Warning] Aborted connection 12561 to db: 'test' user: 'test' host: '127.0.0.1' (Got an error reading communication packets)
+11798 [Warning] Aborted connection 12561 to db: 'test' user: 'test' host: '127.0.0.1' (Got an error reading communication packets)
+11799 [Warning] Aborted connection 12561 to db: 'test' user: 'test' host: '127.0.0.1' (Got an error reading communication packets)
+...
+</pre>
+
+it is already fixed, but the change wasn't backported to the 0.3.x branch
+https://github.com/brianmario/mysql2/issues/606
+
+I can confirm the issue is gone after upgrading to the current version 0.4.6.
+
+This version is still compatible with Ruby 1.9+ and it passes redmine tests. I also run our specs and it looks like everything is ok.
+
+Notable changes:
+<pre>
+* mysql 8 support
+* prepared statements support
+* connection.close/shutdown fix
+* many bugfixes
+</pre>
+
+Full changelog:
+https://github.com/brianmario/mysql2/releases"

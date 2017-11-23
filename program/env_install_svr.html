@@ -9,10 +9,9 @@
 <meta name="generator" content="pandoc" />
 
 
-<meta name="author" content="k-metrics" />
 
 
-<title>Program</title>
+<title>RStudio Serverのインストール</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -439,12 +438,12 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Program</h1>
+<h1 class="title toc-ignore">RStudio Serverのインストール</h1>
 
 </div>
 
 
-<!-- Common Links -->
+<!-- Include Common Links -->
 <!-- SQiP and others -->
 <!-- Books -->
 <!-- Net Community -->
@@ -455,102 +454,116 @@ div.tocify {
 <!-- RStudio -->
 <!-- Docker -->
 <!-- Cabinet Pages -->
-<p><strong>Program</strong>は<a href="https://github.com/rstudio/RStartHere" title="R Start Here">Data Science Workflow, RStudio Inc.</a>において全ての分析プロセスで利用する道具・環境を意味していますす。</p>
-<p><img src="https://raw.githubusercontent.com/rstudio/RStartHere/master/data-science.png" title="Data Science Workflow, RStudio Inc." alt="fig. Data Science Workflow by RStudio" /><br />
-　<br />
-データ分析における基本的で共通な処理はプログラミングで処理することにより分析自体を容易にするだけでなく分析による問題解決に集中できる時間を与えてくれると共に分析の再現性を確保します。 なお、分析の再現性（Reproducible Research）を実現するためのツールについては<a href="../communication/index.html">Communication</a>で扱う予定です。 　</p>
-<div id="分析の基本" class="section level1">
-<h1>分析の基本</h1>
-<p>データ分析の基本については<a href="../model/index.html">Model/Infer</a>で扱う予定です。 　</p>
+<p>RStudio ServerはWebブラウザをクライアントとして利用するサーバ向けのRStudioです。見た目は殆どデスクトップ版と同じです。チームでの開発で開発環境を共有したい場合やプラットフォームに依存しない環境を構築したい場合には便利です。<a href="https://www.r-project.org/" title="The R Project">R</a>や<a href="https://www.rstudio.com/" title="RStudio">RStudio</a>はクロスプラットフォームだと言われますが、意外と厄介なのが文字コードや日本語入力関係です。仮想環境上でRStudio Serverを動かすことによりプラットフォームに依存しない環境が構築可能になります。 　</p>
+<div id="仮想環境" class="section level1">
+<h1>仮想環境</h1>
+<p>最近のOSは仮想環境を標準で用意していたりもしますがリソースをあまり要求しないシンプルで軽量な仮想環境としてはDockerコンテナがお薦めです。仮想環境の利点はクロスプラットフォーム対応だけでなく常にクリーンな環境を確保しておき必要に応じて短時間でクリーンな環境に戻せる点にもあります。 　</p>
+<div id="docker" class="section level2">
+<h2>Docker</h2>
+<p>Dockerは乱暴な言い方をするとOS不要の仮想環境です。OS不要といっても一般的な仮想環境で必要とされるゲストOSが不要（OSレベルで仮想化している）という話で、当然、ホストOSは必要です。コンテナで扱えるアプリケーションはlinux系に限定されますが動作が他の仮想環境と比べると軽快なのが大きな特徴です。また、Docker Hubと呼ばれる公式リポジトリには仮想環境用のファイル（Dockerイメージ）が多数公開されておりDoker導入後にすぐに仮想環境で様々なアプリケーションを動作させることが可能な点も特徴の一つです。公式リポジトリ以外にもGit Hub等に非公式なDockerイメージが多数公開されておりベータ版的なアプリケーション等を仮想環境で試すことが可能です。Dockerの特徴や他の仮想マシンとの違いなどはこちらの<a href="http://paiza.hatenablog.com/entry/docker_intro">参考資料</a>をご覧ください。 　</p>
 </div>
-<div id="分析ツール" class="section level1">
-<h1>分析ツール</h1>
-<p>分析に利用するツールとして<a href="https://www.r-project.org/" title="The R Project">R</a>、<a href="http://www.rcommander.com/">R Commander</a>ならびに<a href="https://www.rstudio.com/products/RStudio/#Desktop" title="RStudio Desktop">RStudio Desktop</a>を前提としています。分析環境の導入方法やツール、ライブラリ類に関する情報、環境の基礎を提供する予定です。各ページへは最上段のメニューからアクセスしてください。なお、<a href="https://www.r-project.org/" title="The R Project">R</a>の個々のパッケージの使い方については<a href="../tidy/index.html">Tidy/Transform</a>や<a href="../model/index.html">Model/Infer</a>などのData Science Workflowの各プロセスのページにて扱います。 　</p>
-</div>
-<div id="参考書籍" class="section level1">
-<h1>参考書籍</h1>
-<p>分析ツールとして<a href="https://www.r-project.org/" title="The R Project">R</a>を学ぶための様々な書籍が出ています。学び方のアプローチ別に見て以下の書籍が比較的おすゝめです。</p>
+<div id="rocker" class="section level2">
+<h2>Rocker</h2>
+<p><a href="https://www.r-project.org/" title="The R Project">R</a>の公式なDockerイメージは<a href="https://hub.docker.com/u/rocker/" title="Rocker Project">Rocker</a>というプロジェクトで公開されています。<a href="https://hub.docker.com/u/rocker/" title="Rocker Project">Rocker</a>では構成の違いによるいくつかのイメージが提供されています。メトリクス分析の利用者側の視点からみた場合は、以下のいずれかを選択すれば良いと思います（とりあえず<code>tidyverse</code>を選んでおけば1GB近くありますが無難ではあります）。</p>
 <table>
 <thead>
 <tr class="header">
-<th>アプローチ</th>
-<th>書籍</th>
+<th>image</th>
+<th>r-base</th>
+<th>rstudio</th>
+<th>tidyverse</th>
+<th>LaTeX</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>言語としての<a href="https://www.r-project.org/" title="The R Project">R</a>を基本から学びたい</td>
-<td><a href="https://book.mynavi.jp/ec/products/detail/id=39763">みんなのR</a>（マイナビブックス）</td>
+<td>r-base</td>
+<td>o</td>
+<td>x</td>
+<td>x</td>
+<td>x</td>
 </tr>
 <tr class="even">
-<td>統計手法を<a href="https://www.r-project.org/" title="The R Project">R</a>で解く方法を学びたい</td>
-<td><a href="http://www.kyoritsu-pub.co.jp/bookdetail/9784320112414">Rで楽しむ統計</a>（共立出版）</td>
+<td>rstudio</td>
+<td>o</td>
+<td>o</td>
+<td>x</td>
+<td>x</td>
 </tr>
 <tr class="odd">
-<td>本格的な<a href="https://www.r-project.org/" title="The R Project">R</a>プログラミングを学びたい</td>
-<td><a href="http://www.kyoritsu-pub.co.jp/bookdetail/9784320124264">Rプログラミング本格入門</a>（共立出版）</td>
-</tr>
-<tr class="even">
-<td><a href="https://www.r-project.org/" title="The R Project">R</a>のアーキテクチャも学びたい</td>
-<td><a href="http://www.kyoritsu-pub.co.jp/bookdetail/9784320123939">R言語徹底解説</a>（共立出版）</td>
-</tr>
-<tr class="odd">
-<td>データ分析の側面から<a href="https://www.r-project.org/" title="The R Project">R</a>を学びたい</td>
-<td><a href="https://www.oreilly.co.jp/books/9784873118147/">Rではじめるデータサイエンス</a>（O’Reilly）</td>
+<td>tidyverse</td>
+<td>o</td>
+<td>o</td>
+<td>o</td>
+<td>o</td>
 </tr>
 </tbody>
 </table>
-<p>上記以外にも基本を押えるための書籍はO’ReillyやR関連の書籍に力を入れている共立出版から以下の書籍が出版されています。</p>
-<table>
-<thead>
-<tr class="header">
-<th>出版社</th>
-<th>書籍名またはシリーズ名</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>O’Reilly</td>
-<td><a href="https://www.oreilly.co.jp/books/9784873117157/">RStudioではじめるRプログラミング入門</a></td>
-</tr>
-<tr class="even">
-<td>O’Reilly</td>
-<td><a href="https://www.oreilly.co.jp/books/9784873116518/">Rクイックリファレンス</a></td>
-</tr>
-<tr class="odd">
-<td>O’Reilly</td>
-<td><a href="https://www.oreilly.co.jp/books/9784873115795/">アート・オブ・Rプログラミング</a></td>
-</tr>
-<tr class="even">
-<td>O’Reilly</td>
-<td><a href="https://www.oreilly.co.jp/books/9784873115337/">Rクックブック</a></td>
-</tr>
-<tr class="odd">
-<td>O’Reilly</td>
-<td><a href="https://www.oreilly.co.jp/books/9784873116532/">Rグラフィックスクックブック</a></td>
-</tr>
-<tr class="even">
-<td>共立出版</td>
-<td><a href="http://www.kyoritsu-pub.co.jp/series/23/">Rで学ぶデータサイエンス　全20巻</a></td>
-</tr>
-<tr class="odd">
-<td>共立出版</td>
-<td><a href="http://www.kyoritsu-pub.co.jp/series/185/">シリーズ Useful R　全10巻</a></td>
-</tr>
-<tr class="even">
-<td>共立出版</td>
-<td><a href="http://www.kyoritsu-pub.co.jp/series/205/">Wonderful R　全10巻</a></td>
-</tr>
-<tr class="odd">
-<td>共立出版</td>
-<td><a href="http://www.kyoritsu-pub.co.jp/series/204/">統計学One Point</a></td>
-</tr>
-</tbody>
-</table>
-<p>様々な方が推薦している書籍がありますので「R 書籍」などで検索してみてください。</p>
+<p>　</p>
+</div>
+</div>
+<div id="install" class="section level1">
+<h1>Install</h1>
+<p>Dockerのインストールの全体概要については<a href="https://docs.docker.com/engine/installation/">こちら</a>をご覧ください。以降は、Ubuntuにインストールする場合です。 　</p>
+<div id="docker-1" class="section level2">
+<h2>Docker</h2>
+<p>旧バージョンがある場合はアンインストールしておきます。</p>
+<pre><code>sudo apt-get remove docker docker-engine</code></pre>
+<p>　</p>
+<div id="recommended-extra-packages-for-trusty-14.04" class="section level3">
+<h3>Recommended extra packages for Trusty 14.04</h3>
+<pre><code>sudo apt-get update
+sudo apt-get install \
+    linux-image-extra-$(uname -r) \
+    linux-image-extra-virtual</code></pre>
+<p>　</p>
+</div>
+<div id="install-using-the-repository" class="section level3">
+<h3>Install using the repository</h3>
+<pre><code>sudo apt-get install \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    software-properties-common
+
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo apt-key fingerprint 0EBFCD88
+
+sudo add-apt-repository \
+   &quot;deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+   $(lsb_release -cs) \
+   stable&quot;</code></pre>
+</div>
+<div id="install-docker" class="section level3">
+<h3>Install Docker</h3>
+<pre><code>sudo apt-get update
+sudo apt-get install docker-ce</code></pre>
+<p>　</p>
+</div>
+</div>
+<div id="boot-rocker-image" class="section level2">
+<h2>Boot Rocker Image</h2>
+<pre><code>docker pull rocker/tidyverse
+docker run -p 8787:8787 rocker/tidyverse</code></pre>
+<p>　</p>
+</div>
+</div>
+<div id="rcokerの課題点" class="section level1">
+<h1>Rcokerの課題点</h1>
+<p>上記のように簡単な手順で予め用意された仮想環境が使えるのですが、下記のような課題も残っています。</p>
+<ul>
+<li>仮想環境が日本語化されていない（Dockerの仕様？イメージ作成時の仕様？）</li>
+<li>日本語入力時に豆腐文字が表示される</li>
+<li>描画系の豆腐文字問題が解決されていない（イメージ作成時の仕様）</li>
+</ul>
+<p>基本的に日本語の言語環境は考慮されていないのですが最低限の日本語表示は可能です。ただ、フォントの嗜好や豆腐文字が許容できない場合は、自身でDockerイメージを変更するしかありません。 Rockerをベースに日本語対応したDockerイメージは<a href="http://y-mattu.hatenablog.com/entry/2017/03/28/002200">RStudio Server + tidyverse + RMeCab で日本語もOKなDockerイメージを作りました</a>で公開されていますが日本語入力時の豆腐文字は残念ながら解決されていませんでした。ただし、RMeCabが標準で利用可能になっていますのでコンテナ環境で日本語解析を行いたい場合には便利です。</p>
+<div class="figure">
+<img src="fig/tofu.png" alt="fig. 豆腐文字" />
+<p class="caption">fig. 豆腐文字</p>
+</div>
 <hr />
-<!-- Footer -->
-<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" title="CC BY-NC-SA 4.0 icon" alt="Sampo Suzuki" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0</a>, Sampo Suzuki [2017-11-23 15:53(JST)]</p>
+<!-- Include Footer -->
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" title="CC BY-NC-SA 4.0 icon" alt="Sampo Suzuki" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0</a>, Sampo Suzuki [2017-11-22 22:51(JST)]</p>
 </div>
 
 
