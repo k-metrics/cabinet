@@ -1,11 +1,18 @@
-# データフレームの表示方法を行数と出力先で変える関数
-df_print <- function(x, ...){
-  if (nrow(x) <= 10) {
-    knitr::kable(x, ...)
-  } else {
-    DT::datatable(x, class = c("display compact"),
-                  style = ifelse(interactive(), c("default"), c("bootstrap")),
-                  ...)
+# データフレームの表示方法を出力に応じて自動的に選択する関数
+df_print <- function(x, caption = NULL, n = NULL, scroller = FASEL,
+                     scrollY = 250, ...){
+  out_format <- knitr::opts_knit$get("rmarkdown.pandoc.to") 
+  if (!is.null(out_format)) {
+    if (out_format %in% c("html", "revealjs")) {  # ioslids, reveal.js, shower
+      DT::datatable(extensions = c('Scroller', 'FixedColumns'),
+                    options = list(deferRender = TRUE, dom = 't',
+                                   scroller = scroller, scrollY = scrollY, 
+                                   fixedColumns = TRUE, scrollX = TRUE))
+    } else {
+      print(x)    # slidy
+    }
+  } else {        # console
+    print(x)      
   }
 }
 
@@ -28,4 +35,15 @@ s_var <- function(x, r = 2){
 # 標本の標準偏差を求める関数
 s_sd <- function(x, r = 2){
   round(sqrt(s_var(x)), r)
+}
+
+# ページサムネイルを表示する関数(http://rmarkdown.rstudio.com/rmarkdown_websites.html#html_generation)
+require(htmltools)
+thumbnail <- function(title, img, href, caption = TRUE) {
+  div(class = "col-sm-4",
+      a(class = "thumbnail", title = title, href = href, img(src = img),
+        div(class = ifelse(caption, "caption", ""), ifelse (caption, title, "")
+        )
+      )
+  )
 }
