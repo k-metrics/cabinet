@@ -1,10 +1,10 @@
 # データフレームの表示方法を出力に応じて自動的に選択する関数
-df_print <- function(x, caption = NULL, n = NULL, scroller = FASEL,
+df_print <- function(x, caption = NULL, n = NULL, scroller = FALSE,
                      scrollY = 250, ...){
   out_format <- knitr::opts_knit$get("rmarkdown.pandoc.to") 
   if (!is.null(out_format)) {
     if (out_format %in% c("html", "revealjs")) {  # ioslids, reveal.js, shower
-      DT::datatable(extensions = c('Scroller', 'FixedColumns'),
+      DT::datatable(x, extensions = c('Scroller', 'FixedColumns'),
                     options = list(deferRender = TRUE, dom = 't',
                                    scroller = scroller, scrollY = scrollY, 
                                    fixedColumns = TRUE, scrollX = TRUE))
