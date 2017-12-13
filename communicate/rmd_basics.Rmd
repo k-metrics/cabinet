@@ -1,0 +1,508 @@
+---
+title: "R Markdown Basics"
+output: 
+  html_document:
+    number_section: yes
+    code_folding: none
+    toc_float:
+      collapsed: yes
+---
+
+<!-- Include Common Links -->
+```{r child="../common/links.Rmd"}
+```
+
+```{r setup, echo = FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, comment = "#>")
+```
+
+# はじめに
+[R Commander（以降、Rcmdr）][Rcmdr]を用いたデータ分析はGUI操作が中心なので比較的簡単ですが、分析過程の記録を残しにくいという欠点があります。具体的には  
+　  
+
+* 操作が自体が記録に残らない（実行された関数は残せる）
+* データセットやモデルの切り替えが出力されない（記録に残らない）
+* 操作と出力がセットで出力されない（なので一致させるのに一苦労）
+* 計算結果（出力）の整形に手間がかかる
+* グラフィック出力は個別に保存する必要がある
+
+　  
+つまり、分析結果を報告書にまとめるためには計算結果のテキストとグラフィックの出力を個別にコピペを繰り返す必要がありますので、計算結果とグラフィック出力の組み合わせが正しいかどうか分からなくなる、いわゆるコピペ汚染を引き起こす可能性が高くなります。  
+
+これらを解決する一番確実な方法は、分析と報告書作成が同時にできる[R Markdown][RMD]を利用することです。  
+　  
+
+# R Markdownとは
+[R Markdown][RMD]は文字通り軽量マークアップ言語である
+[Markdown][MD]による記述を用います。[R Markdown][RMD]を用いることで報告（書）と分析結果（およびコード）を共にレポートすることが可能になります。分析に求められるデータの透明性だけでなく分析過程の透明性を確保し、更に分析の再現性まで確保することが可能になります。  
+　  
+
+## なぜR Markdownなのか
+多くのプログラミング言語では計算結果やグラフなどを直接、最終成果物となる報告書やプレゼン資料などのドキュメントに出力することは困難であり、ドキュメントに結果を切り貼りするために多くの労力が必要になります。表計算ソフトは計算結果やグラフを切り貼りする必要はありませんが、ドキュメントの体裁を整えるのに多くの労力が必要です。特に章節構成を要求された場合は、表計算ソフト単体ではかなり困難で、文書作成ソフトに結果を切り貼りするケースがほとんどです。また、表計算ソフトは分析式が個々のセルに記載されていることが多く作成者以外、手がつけられないケースも多く見受けられます。  
+　  
+[R Makrdown][RMD]を利用するとドキュメントを生成するたびに[R][R]のコードが実行されグラフや計算結果、表などが自動的にドキュメントに埋め込まれます。これによりグラフや計算結果、表などをドキュメント修正のたびに切り貼りする必要もなく[Markdown][MD]による章構成も可能で、常に指定したデータから同じ手順で同じ結果を得ることが可能になります。つまり、[R Markdown][RMD]を用いることで
+
+* 分析再現性の確保（[Reproducible Research][CRAN_TV_RR]）
+* 分析過程の可読性確保
+* ドキュメント生産性の向上
+
+が実現できるようになります。更に[R Markdown][RMD]では、同一ソースから複数のフォーマットのドキュメントを作成することも可能ですので、提出先に応じた形式のドキュメントが作成もできます。  
+　  
+
+## 使うための準備
+[R Markdown][RMD]を使うには必要なソフトウェアが同梱されている[RStudio][RS]環境で使うのが現状ではベストです。[RStudio][RS]のインストールは[こちら](../program/env_index.html)を参照してください。[RStudio][RS]  
+[**`rmarkdown`**パッケージ](https://cran.r-project.org/web/packages/rmarkdown/index.html)が必須ですので、以下のコマンドまたは[RStudio][RS]のGUIなどからインストールしてください。  
+
+```
+install.packages("rmarkdown")
+```
+
+　  
+
+# R Markdownの基本
+[R Markdown][RMD]は[Pandoc](https://pandoc.org/)の[Markdown][MD]をベースとした記述を用いますので、ファイル形式はシンプルなテキスト形式になります。なお、日本語を利用する場合には言語コードとしてBOMなしの**UTF-8N**を利用することを推奨します。  
+
+下記は[RStudio][RS]のデフォルトテンプレート（HTML Document）です。  
+
+![](./fig/rmd_default_html_template.png)
+　  
+
+このテンプレートからドキュメントを生成するとこのようなドキュメントになります。  
+![R Markdown Documents](./fig/rmd_default_template.png)
+　  
+このように[R Markdown][RMD]の記述には見慣れない記号などがありますが、記述としては大きく以下の３つパートから構成されますので、この構成さえ覚えれば[R Markdown][RMD]を記述するのは簡単です。
+
+* 出力フォーマットや訂正を記述する[YAML](#YAML)部
+* [R][R]のコードを記述する[(Code) Chunk](#Chunk)部
+* 文書を記述する[Markdown](#Markdown)部
+
+　  
+
+## YAML {#YAML}
+[YAML][YAML]とはデータ表現形式の一種で[R Markdown][RMD]では下記のように**`---`**から**`---`**までに囲まれたブロックで表現します。  
+[YAML][YAML]には[R Markdown][RMD]の出力フォーマットや体裁を定義し、下記の例ではHTML形式のドキュメントがデフォルト体裁で出力されるようになります。  
+
+    ---
+    output: html_document
+    ---
+
+出力フォーマットごとに指定できるオプションが異なりますので、詳細は「[フォーマット定義](#format)」の項を参照してください。  
+
+　  
+
+### フォーマット定義 {#format}
+[R Markdown][RMD]で利用できる出力フォーマットはドキュメント系のフォーマットとプレゼンテーション系のフォーマットに大別できます。デフォルトでも様々なフォーマットをサポートしていますが、パッケージを追加することで更に多様なフォーマットを利用できるようになります。  
+　  
+
+#### ドキュメント系フォーマット
+ドキュメント系フォーマットはHTMLやPDFを始めとして以下のようなフォーマットをサポートしています。標準でサポートされていないフォーマットのドキュメントを作成する場合には追加でパッケージをインストールしてください。  
+　  
+
+フォーマット            | 標準サポート  | output指定      | 備考
+------------------------|---------------|-----------------|-----
+[HTML][HTML]            | yes           | `html_document` | 
+[PDF][PDF]              | yes           | `pdf_document`  | 
+[Microsoft Word][DOCX]  | yes           | `word_document` | DOCX
+[RTF][RTF]              | yes           | `rtf_document`  | 
+[Markdown][MDS]         | yes           | `md_document`   | GitHub, etc
+[R package vignette][Vignette] | yes    | `html_vignette` | 
+[Tufte Handout][Tufte]  | no, [**`tufte`**][Pkg_tufte] | `tufte::tufte_handout` | PDF 
+　                      | 　            | `tufte::tufte_html` | 
+　                      | 　            | `tufte::tufte_book` | PDF
+[rmdformat][rmdformats] | no, [**`rmdformats`**][Pkg_rmdformats] | `rmdformat::material` | HTML
+　                      | 　            | `rmdformats::readthedown` | HTML
+　                      | 　            | `rmdformats::html_clean`  | 
+　                      | 　            | `rmdformats::html_docco`  | 
+
+　  
+
+#### プレゼンテーション系フォーマット
+プレゼンテーション系フォーマットはドキュメント系フォーマットと同様にHTMLやPDFを始めとして以下のようなフォーマットをサポートしています。標準でサポートされていないフォーマットのドキュメントを作成する場合には追加でパッケージをインストールしてください。  
+各フォーマットともスライド切り替えをサポートしていますが、HTML系フォーマットは[HTML widget](http://www.htmlwidgets.org/)との相性が悪いフォーマットが多いので注意してください。  
+　  
+
+フォーマット         | 標準サポート　　 | output指定 | 備考
+---------------------|------------------|------------|------
+[Beamer][Beamer]     | yes              | `beamer_presentation` | PDF 
+[ioslides][ioslides] | yes              | `ioslides_presentation` | Google ioslides
+[Slidy][Slidy]       | yes              | `slidy_presentation`  | W3C Slidy
+[revealjs][revealjs] | no, [**`revealjs`**][Pkg_revealjs] | `revealjs::revealjs_presentation` | HTML with reveal.js
+[xaringan（写輪眼）][xaringan] | no, [**`xaringan`**][Pkg_xaringan] | `xaringan::moon_reader` | HTML with remark.js
+[Shower][Shower]     | no, [**`rmdshower`**][Shower] | `rmdshower::shower_presentation` | HTML
+
+　  
+
+### YAML Option
+YAMLでは出力フォーマット以外にドキュメントタイトルや作者名、作成日などの指定ができます。記述順は問いませんのでご自分で分かりやすい順で記述してください。特に出力フォーマットのオプションは多様ですのでアルファベット順にするのが分かりやすいと思います。  
+　  
+
+    ---
+    title: "メインタイトル"
+    subtitle: "タイトル下に表示されるサブタイトル"
+    author: "作者名"
+    date: "作成日、後述のinline chunkも利用可"
+    output:
+        # ここに出力フォーマットを指定します
+        # これ以降は出力フォーマットのオプションを指定します
+    ---
+
+　  
+**`output`**オプションは出力フォーマットごとに異なります。代表的なオプションは以降を参照してください。  
+　  
+
+#### HTML系出力オプション
+HTML系フォーマットは概ね同じオプションが使えます。まずは下記のオプションを指定してみて必要に応じて調整してみてください。  
+
+    ---
+    output:
+      html_document:
+        code_folding: hide
+        df_print: paged
+        highlight: "default"
+        md_extensions: -ascii_identifiers
+        number_section: yes
+        theme: "default"
+        toc: yes
+        toc_depth: 3
+        toc_float:
+          collapsed: yes
+          smooth_scroll: no
+    ---
+
+　  
+各オプションが取る値は以下のようになっています。その他のオプションは[公式ドキュメント][HTML]または[ぞうさんによる日本語での解説](https://qiita.com/kazutan/items/726e03dfcef1615ae999)を参照してください。  
+　  
+
+option          | default   | others               | memo
+----------------|-----------|----------------------|-----
+code_folding    | show      | hide, none           | Rコードの表示方法
+df_print        | default   | kable, tibble, paged | data.frameの表示方法
+highlight       | "default" | "tango", "pygments", "kate", "monochrome", "espresso", "zenburn", "haddock", "textmate" | コードハイライティング
+md_extensions   | NULL      |                      | ^1)^
+number_sections | false     | true, (yes, no)  | 見出し番号
+theme           | "default" | "cerulean", "journal", "flatly", "readable", "spacelab", "united", "cosmo", "lumen", "paper", "sandstone", "simplex", "yeti" | Bootswatchテーマ
+toc             | false     | true, (yes, no)      | 目次
+toc_depth       | 3         | 1, 2, 4, 5, 6        | 目次の改装
+toc_float       | false     | true, (yes, no)      | ^2)^
+  collapsed     | true      | false, (yes, no)     | 目次の自動折りたたみ
+  smooth_scroll | true      | false, (yes, no)     | 目次のスクロール方法
+
+
+^1)^ 日本語見出しを使う場合は**`-ascii_identifiers`**を指定する  
+^2)^ 目次を固定表示するか否かで、**`collapsed`**, **`smooth_scroll`**を指定する場合は何も指定しない  
+
+　  
+
+#### PDF系出力オプション
+PDF系フォーマットの出力オプションは今後整理する予定です。  
+　  
+
+## (Code) Chunk {#Chunk}
+(コード)チャンクは文字通りプログラムコードを記述する部分です。記述したコードはドキュメントまたはプレゼンテーションを作成する際に実行されてコードと実行結果が埋め込まれます。[R][R]のコードはもちろんですが、その他の言語（Python, SQL, Stanなど）のコードを記述して実行することも可能です。  
+
+三連のバッククォート（$```$）で囲まれたブロックがチャンクです。$\{r\}$の部分でチャンクのオプションを指定します。  
+　  
+
+![](./fig/rmd_code_chunk.png)
+
+　  
+
+### チャンク・オプション
+中括弧（**`{`**）の次にある**`r`**はチャンク内に記述されたコードが[R][R]言語であることを意味しています。次の**`ChunkName`**はチャンクの名前でファイル内でユニークに設定する必要があります。その次の**`echo`**や**`message`**は[R][R]のコードの実行結果に対するオプションです。  
+知っておくと便利な基本的なオプションを下表に示しておきます。なお、詳細や他のオプションについては[R Markdown Reference Guid (PDF)](https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf)を参照してください。  
+　  
+
+Type       | Option  | Default | Description
+-----------|---------|:-------:|------------
+コード評価 | eval    | TRUE    | コードを実行するかしないか
+実行結果   | echo    | TRUE    | コードを出力に含めるか含めないか
+　         | message | TRUE    | コードが出力するメッセージを含めるか含めないか
+　         | warning | TRUE    | コードが出力する警告を含めるか含めないか
+　         | error   | TRUE    | コードが出力するエラーメッセージを含めるか含めないか
+コード表示 | comment | '##'    | コードの先頭に不可される文字列の指定
+グラフ描画 | fig.cap | NULL    | グラフと共に表示するキャプションの指定
+
+　  
+
+### インライン・チャンク
+ドキュメント中で[R][R]のコード実行したい場合にはインライン・チャンクを用います。インライン・チャンクはバッククォートで囲んだ（$`r `$）中にコードを記述します。例えば、チャンクの中で円の面積を求めた以下のようなコードがある場合  
+　  
+
+```{r}
+r <- 5.0                    # 半径5cm
+area_of_circle <- pi * r^2  # 面積を求める
+area_of_circle
+```
+
+　  
+その計算結果をインラインで小数点第1位までを参照する場合には、バッククォートで囲んだ中で  
+```{r eval=FALSE}
+r round(area_of_circle, 1)
+```
+というコードを記述します。これを実際に実行すると以下のよう円の面積を文書中で参照することができます。  
+　  
+
+> 円の面積は`r round(area_of_circle, 1)`平方センチとなります。
+
+　  
+
+### セットアップ・チャンク
+チャンク名が**`setup`**であるチャンクは、セットアップ・チャンクと呼ばれる[RStudio][RS]環境において特殊な動作をするチャンクです。[RStudio][RS]のエディタはチャンク単位での実行をサポートしており、任意のチャンクが実行されると自動的に**`setup`**チャンクを呼び出し初期処理を実行してからチャンクを実行します。この動作が行われるのは[RStudio][RS]エディタで[R Markdown][RMD]文書を開き最初に任意のチャンクを実行させたときのみです。なので、セットアップ・チャンクには後述の共通チャンク・オプションの設定や分析に必要なパッケージの読み込み、ローカル定義関数などを記述しておくようにしてください。  
+　  
+![](./fig/rmd_setup_chunk.png)
+
+　  
+
+### 共通チャンク・オプション
+チャンク・オプションはチャンクごとに指定しますが、全てのチャンクに対して同様の設定を繰り返すのは面倒です。それを回避するにはセットアップ・チャンクで**`knitr::opt_chenk$set`**関数を用いて共通のオプションを指定します。  
+```{r eval=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, comment = "#>")
+```
+これにより各チャンクではチャンク・オプションを省略することが可能になります。また、共通のオプションと異なる指定をしたい場合は個別に設定することで、チャンク側のオプション設定が優先されます。  
+　  
+
+## Markdown {#Markdown}
+[R Markdown][RMD]で使える[Markdown][MD]は前述のように[Pandoc](https://pandoc.org/)の[Markdown][MD]です。
+
+### 見出し
+文書の章節項に当たる見出しは最大6階層まで指定可能ですが、出力を考慮すると多くても4階層以内に止めておくのが無難です。できれば、3階層以内に抑えておくことをおすゝめします。  
+　  
+
+表記     | レベル  | HTMLタグ | 備考
+---------|---------|----------|------
+`#`      | 見出し1 | H1       | 「章」相当
+`##`     | 見出し2 | H2       | 「節」相当
+`###`    | 見出し3 | H3       | 「項」相当
+`####`   | 見出し4 | H4       | 
+`#####`  | 見出し5 | H5       | 
+`######` | 見出し6 | H6       | 
+
+なお、見出しは必ずしも「見出し1」から使う必要はありません。また、「見出し2」の次が「見出し4」になっていても構いませんが、目次や見出し番号を使う場合には注意してください。  
+　  
+
+### 箇条書き
+箇条書きは番号なしと番号付きの二種類の箇条書きがあります。どちらもネスト可能です。  
+　  
+
+#### 順序なし箇条書き
+順序なし箇条書きは`* `(半角アスタリスク＋半角空白)で始めます。ネストする場合は、箇条書きの頭に半角空白4文字を必ず入れて下さい。ネストレベルを区別するために`+ `や`- `で箇条書きを始めることが可能で、同一レベルに`+ `や`- `が混在しても区別されません。  
+　  
+
+```
+* List 1
+* List 2
+    * sub-item 1
+    + sub-item 2
+        * sub-sub-item 1
+        + sub-sub-item 2
+        - sub-sub-item 3
+    - sub-item 3
+* List 3
++ List 4
+- List 5
+```
+
+　  
+
+上記の記述は下記のように出力されます。  
+
+* List 1
+* List 2
+    * sub-item 1
+    + sub-item 2
+        * sub-sub-item 1
+        + sub-sub-item 2
+        - sub-sub-item 2
+    - sub-item 3
+* List 3
++ List 4
+- List 5
+
+　  
+
+#### 順序付き箇条書き
+順序付きの箇条書きは下表のように複数の種類があり、ネストの位置に関わらず指定が可能です。
+
+順序の種類           | 表記  | 備考
+---------------------|-------|---
+数字                 | `1. ` | 
+ローマ数字（小文字） | `i) ` | ローマ数字の場合は`)`になります
+ローマ数字（大文字） | `I) ` | 同上
+アルファベット       | `a. ` | 大文字のアルファベットは使えません
+リナンバー           | `(@)` | 1から振り直す場合（数字のみに有効）
+
+リスト名の前に半角空白文字1文字を入れる必要があるのは順序なし箇条書きと同じで、ネストがあっても順序は維持されます。  
+　  
+
+```
+1. Ordered List 1
+1. Ordered List 2
+    i) sub-item 1
+    i) sub-item 2
+        a. sub-sub-item 1
+        a. sub-sub-item 2
+        a. sub-sub-item 2
+    i) sub-item 3
+1. Ordered List 3
+(@) Renumber List 4
+(@) Renumber List 5
+```
+
+　  
+
+上記の記述は下記のように出力されます。  
+
+1. Ordered List 1
+1. Ordered List 2
+    i) sub-item 1
+    i) sub-item 2
+        a. sub-sub-item 1
+        a. sub-sub-item 2
+        a. sub-sub-item 2
+    i) sub-item 3
+1. Ordered List 3
+(@) Renumber List 4
+(@) Renumber List 5
+
+　  
+
+### 表
+テキストベースの表を表として出力することが可能です。これ以外にチャンクから`data.frame`などを表として出力することも可能ですが本項ではテキストベースの表のみ説明します。  
+テキストベースの表は以下のように記述します。表の幅は文字数により出力フォーマットの幅に収まるように調整されます。また、文字の配置は右寄せ（`:---`）、中央揃え（`:---:`）、左寄せ（`---:`）を指定することも可能です。  
+　  
+
+![](./fig/rmd_table.png)  
+
+　  
+上記の記述は実際に出力されると以下の表になります。なお、`theme`などのオプションにより表の体裁は若干変わります。  
+　  
+
+列名   | 列名     | 列名   | 列名
+:------|:--------:|-------:|---------
+右寄せ | 中央揃え | 左寄せ | おまかせ
+
+
+
+### 文字装飾
+
+文字種 | 指定方法            | 備考
+-------|---------------------|----------
+太字   | `**Bold**`          | フォントによっては**太字**にならない場合があります
+斜体   | `*Italic*`          | フォントによっては*斜体*にならない場合があります
+上付き | `^Superscript^`     | リンクと組み合わせるとジャンプ可能です^[1]^
+下付き | `~Subscript~`       | 同上~[2]~
+取消線 | `~~Strikethrough~~` | フォントによっては~~取消線~~がつかない場合があります
+
+上付き、下付きでリンクと組み合わせる場合は後述のハイパーリンクの項を参照してください。  
+　  
+
+### ハイパーリンク
+文書中にハイパーリンクを指定する場合は以下のように記述します。  
+
+種別             | 指定方法             | 備考
+-----------------|----------------------|----------
+インライン指定   | `[Link Text](URL)`   | 
+インデックス指定 | `[Link Text][Index]` | 別途、インデックス記述要
+インデックス指定 | `^[Index]^` or `~[Index]~` | 上付き、下付き文字で使う場合
+
+インデックス指定の場合はインデックス（`[Index]: URL "Alt Text"`）を最後に記述しておく必要があります。なお、インデックス自体は出力ドキュメントには含まれません。  
+　  
+
+### 画像
+文書中に画像（PNG, JPEGなど）ファイルを挿入する場合はリンクと似たよう以下の記述をします。  
+
+種別             | 指定方法             | 備考
+-----------------|----------------------|----------
+インライン指定   | `![Caption](file path)`   | 
+インデックス指定 | `![Caption][Index]`       | 別途、インデックス記述要
+
+インデックス指定の場合はインデックス（`[Index]: file_path "alt Text"`）を最後に記述しておく必要があります。なお、インデックス自体は出力ドキュメントには含まれません。  
+　  
+
+### 数式
+数式は$\LaTeX$の数式モードを利用することで表示可能です。数式モードで扱えるのはインライン数式モードとディスプレイ数式モードのみで、番号付きのディスプレイ数式モードは扱えません。また、数式モードの中でもインライン・チャンクが使えます。なお、$\LaTeX$自体のレンダリングは外部のレンダリング・エンジンに依存します。  
+
+種別             | 指定方法             | 備考
+-----------------|----------------------|----------
+インライン数式   | `$LaTex Equation$`   | 文書と同一行中に表示する場合 
+ディスプレイ数式 | `$$LaTex Equation$$` | 文書とは別段落として表示する場合
+
+$\LaTeX$の数式モードで扱える表現は[$LaTeX$コマンド集](http://www.latex-cmd.com)が参考になります。  
+　  
+
+### 特殊な見出し
+出力がHTML系のフォーマットの場合、見出しを利用して「タブ」表示を行うことが可能です。以下のように記述すると見出し1の一つ下のレベルの見出し2がタブとして扱われます。タブとして扱う場合は`{.unnumbered}`を明示的に指定して見出し番号が付かないようにしておくことをおすゝめします。  
+なお、タブを指定した見出しと同一レベルの見出しが出てきた時点でタブ表示は自動的に終了となります。  
+　  
+
+```
+# Tabset Chapter {.tabset .unnumbered}
+## Tab 1 {.unnumbered}
+## Tab 2 {.unnumbered}
+
+# Non Tabset Chapter
+## Non Tab 1
+## Non Tab 2
+```
+
+　  
+
+#### Tabset {.tabset .unnumbered}
+見出し4のレベルでタブを指定すると見出し5のレベルが全てタブとして扱われるようになります。  
+　  
+
+##### Tab 1 {.unnumbered}
+これはタブ1の内容です。  
+　  
+
+##### Tab 2 {.unnumbered}
+これはタブ2の内容です。  
+　  
+
+##### Tab 3 {.unnumbered}
+これはタブ3の内容です。  
+　  
+
+### 区切り線
+区切り線（プレゼンテーション系ドキュメントの場合はスライド区切り）は三つ以上の連続した半角アスタリスク`***`またはハイフン`---`を記述します。  
+　  
+
+---
+
+<!-- Include Footer -->
+```{r child="../common/footer.Rmd"}
+```
+
+<!-- Default Support Formats -->
+<!-- Document -->
+[HTML]: http://rmarkdown.rstudio.com/html_document_format.html "HTML Document"
+[PDF]: http://rmarkdown.rstudio.com/pdf_document_format.html "PDF Document"
+[DOCX]: http://rmarkdown.rstudio.com/word_document_format.html "Microsoft Word Document"
+[ODT]: http://rmarkdown.rstudio.com/odt_document_format.html "OpenDocument Text Document"
+[RTF]: http://rmarkdown.rstudio.com/rtf_document_format.html "Rich Text Format Document"
+[MDS]: http://rmarkdown.rstudio.com/markdown_document_format.html "Markdown document (various flavors)"
+[Vignette]: http://rmarkdown.rstudio.com/package_vignette_format.html "R package vignette (HTML)"
+[GitHub]: http://rmarkdown.rstudio.com/github_document_format.html "GitHub Flavored Markdown"
+
+<!-- Presentation -->
+[Beamer]: http://rmarkdown.rstudio.com/beamer_presentation_format.html "PDF presentation with LaTeX Beamer"
+[ioslides]: http://rmarkdown.rstudio.com/ioslides_presentation_format.html "HTML presentation with Google ioslides"
+[Slidy]: http://rmarkdown.rstudio.com/slidy_presentation_format.html "HTML presentation with W3C Slidy"
+
+<!-- Package Support Formats -->
+[revealjs]: http://rmarkdown.rstudio.com/revealjs_presentation_format.html "HTML presentation with reveal.js"
+[Tufte]: http://rmarkdown.rstudio.com/tufte_handout_format.html "Handouts in the style of Edward Tufte"
+[rmdformats]: https://github.com/juba/rmdformats "clean HTML documents"
+[Shower]: https://github.com/mangothecat/rmdshower "Template for the Shower Presentation Engine"
+[xaringan]: https://github.com/yihui/xaringan "slideshows with remark.js through R Markdown"
+
+[bookdown]: https://bookdown.org/ "Build eBook"
+[RmdWebsites]: http://rmarkdown.rstudio.com/rmarkdown_websites.html "Build Website with bootswatch theme"
+
+<!-- CRAN -->
+[Pkg_Tufte]: https://cran.r-project.org/web/packages/tufte/index.html "CRAN Package tufte"
+[Pkg_rmdformats]: https://cran.r-project.org/web/packages/rmdformats/index.html "CRAN Package rmdformats"
+[Pkg_revealjs]: https://cran.r-project.org/web/packages/revealjs/index.html "CRAN Package revealjs"
+[Pkg_xaringan]: https://cran.r-project.org/web/packages/xaringan/index.html "CRAN Package xaringan"
+
+[CRAN_TV_RR]: https://cran.r-project.org/web/views/ReproducibleResearch.html "CRAN Task View: Reproducible Research"

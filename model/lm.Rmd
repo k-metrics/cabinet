@@ -1,0 +1,105 @@
+---
+title: "回帰分析の評価方法"
+output: 
+  html_document:  
+    number_section: no
+---
+
+<!-- Include Common Links -->
+```{r example_4, child="../common/links.Rmd"}
+```
+
+```{r setup, include=FALSE}
+# 共通chunkオプションの指定
+knitr::opts_chunk$set(warning = FALSE, echo = TRUE)
+
+# データハンドリングで利用するパッケージの読み込み
+require(tidyverse)
+
+# 表示で利用する外部パッケージの読み込み
+require(gridExtra)
+require(DT)
+require(knitr)
+require(extrafont)
+
+# モデリングで利用するパッケージの読み込み
+require(psych)
+
+# コンフリクトの解消
+tidyverse::tidyverse_conflicts()
+
+# 共通ローカル関数の読み込み
+source("../common/common.R")
+```
+
+
+## 重回帰分析
+```{r}
+# 演習のデータを変形せずに読み込み、分析用データフレームに変換する
+file <- "./data/ex4_4.csv"
+x <- read.csv(file, header = TRUE, sep = ",", fileEncoding = "CP932")
+
+result.lm <- x %>% 
+  lm(bugs ~ kloc + m.hour, data = .)
+
+summary(result.lm)
+```
+
+## 基本的診断プロット
+ネット上の回帰分析の解説ではあまり触れられることがないのですが、回帰モデルをより詳しく確認(診断)するには`plot {graphics}`関数で`lm {stats}`関数の計算結果に対する基本的診断プロットを行います。
+```{r}
+oldpar <- par()
+par(mfrow = c(2, 2))
+plot(result.lm)
+par(oldpar)
+```
+
+### Rcmdrの場合
+Rcmdrを使う場合は［モデル］-［グラフ］-［基本的診断プロット］を実行して下さい。
+
+![基本的診断プロット](./fig/Rcmdr_RegModel_plot_menu.jpg)
+
+## 基本的診断プロットの見かた
+基本的診断プロットは回帰診断に使う予測値や残差等をプロットしたグラフの集合で回帰分析の結果(残差)を視覚的に確認できます。各グラフの解説は[Rで線形単回帰分析][L1]や[里洋平氏のブログ][L2]、[里洋平氏のブログ][L3]を参考にしています。
+
+[L1]: http://d.hatena.ne.jp/matsuou1/20110418/1303144024 "得られた回帰式の妥当性の検証"
+[L2]: http://d.hatena.ne.jp/yokkuns/20110301/1298938050 "回帰分析 - 線形単回帰分析"
+[L3]: http://d.hatena.ne.jp/yokkuns/20110302/1299021671 "回帰分析 - 線形重回帰分析"
+
+
+```{r}
+oldpar <- par()
+par(mfrow = c(2, 2))
+plot(result.lm)
+par(oldpar)
+```
+
+### Residuals vs Fitted
+左上にあるこのグラフは残差の全体像を確認するためのグラフです。横軸が予測値(Fitted valuse)、縦軸が残差(Residuals)になっています。
+
+### Normal Q-Q
+右上にあるこのグラフは残差が正規分布に従っているかを確認するためのグラフです。黒点線の直線に沿っていれば概ね正規分布に従っていると言えます。
+
+回帰分析においては残差が(標準)正規分布に従うと過程しているため残差が直線的に並ぶ程、モデルとしては良いと判断できます。今回のケースでは残差は概ね正規分布に従っていると判断できます。
+
+### Scale-Location
+左下にあるこのグラフは残差の変動状況を考察するためのグラフです。横軸が予測値(Fitted valuse)、縦軸が標準化した残差(Standardized residuals)の平方根になっています。
+
+### Residual vs Leverage
+右下にあるこのグラフは各データがモデルの当てはまり具合にどの程度影響があるかを測るためのグラフです。横軸はてこ値(Leverage)、縦軸が標準化した残差(Standardized residuals)になっています。
+
+てこ値(Leverage)が大きい程、モデルの当てはまりがよく、赤点線で示されているクックの距離(Cook's distance)が0.5を超えると影響力があり、1を超えると特異的な影響力があると見なされます。今回のケースではModule10のデータが回帰モデルに大きな影響を与えていると判断できます。
+
+
+# おまけ
+以下は調査中です。
+
+## スチューデント化残差
+## 梃子値(梃子比)
+## クックの距離
+
+---
+
+<!-- Include Footer -->
+```{r child="../common/footer.Rmd"}
+```
