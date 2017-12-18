@@ -1,0 +1,76 @@
+---
+title: "DT Tables"
+output: 
+  html_document:
+    df_print: kable
+    code_folding: hide
+    toc_float: no
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE,
+                      comment = "##")
+```
+
+　  
+
+## デフォルト表示
+```{r}
+DT::datatable(mtcars)
+```
+
+　  
+
+## 表示のアレンジ例
+
+### 縦罫線を追加してコンパクトに
+```{r}
+DT::datatable(mtcars, class = "cell-border stripe compact")
+```
+　  
+
+### キャプションを追加
+```{r}
+DT::datatable(mtcars, class = "cell-border stripe compact",
+              caption = "Table: Motor Trend Car Road Tests Data")
+```
+　  
+
+### 表示行数を変更
+```{r}
+DT::datatable(mtcars, class = "cell-border stripe compact",
+              caption = "Table: Motor Trend Car Road Tests Data",
+              options = list(pageLength = 6))
+```
+　  
+
+### フィルタを追加
+```{r}
+DT::datatable(mtcars, class = "cell-border stripe compact",
+              caption = "Table: Motor Trend Car Road Tests Data",
+              options = list(pageLength = 6), filter = "top")
+```
+　  
+
+## 高度なアレンジ例
+```{r}
+sketch = htmltools::withTags(table(
+  class = 'display',
+  thead(
+    tr(
+      th(rowspan = 2, 'Species'),
+      th(colspan = 2, 'Sepal'),
+      th(colspan = 2, 'Petal')
+    ),
+    tr(
+      lapply(rep(c('Length', 'Width'), 2), th)
+    )
+  )
+))
+DT::datatable(iris[1:20, c(5, 1:4)], container = sketch, rownames = FALSE,
+              class = "stripe compact")
+```
+
+　  
+
+[戻る](../rmd_table.html#DT)
