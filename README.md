@@ -2,21 +2,21 @@
 [データ分析勉強会][0]のサイトにあるCabinetならびにTipsの保管庫（Cabinet）です。今までのCabinetやTipsと異なり分類を”Data Science Workflow”を参考に再分類しています。なお、[データ分析勉強会][1]で使われた講義資料に関しては[アーカイブ][1]をご覧下さい。
 
 # Cabinet
-Cabinetは以下の分類毎に整理しています。
+CabinetはData Science Workflowのプロセス分類に準拠して以下のように整理しています。
 
 ## Import
 データ取り込みに関する事項を扱います。
 
 ## Tidy/Transform
-Tidy, Transformといったデータハンドリングに関する事項を扱います。
-
-## Visualize
-データの可視化（主にグラフ描画）に関する事項を扱います。
+データハンドリングに関する事項を扱います。
 
 ## [Model/Infer][M]
 分析手法や例題・演習問題の解答例に関する事項を扱います。
 
-## Communicate/Automate
+## Visualize
+データの可視化（主にグラフ描画）に関する事項を扱います。
+
+## [Communicate/Automate][C]
 分析の文書化（主にR Markdown）に関する事項を扱います。
 
 ## [Program][P]
