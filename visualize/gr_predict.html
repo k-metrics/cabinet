@@ -9,7 +9,6 @@
 <meta name="generator" content="pandoc" />
 
 
-<meta name="author" content="Sampo Suzuki" />
 
 
 <title>信頼区間と予測区間</title>
@@ -312,6 +311,9 @@ div.tocify {
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../program/basics_ggplot2.html">ggplot2 basics</a>
+    </li>
     <li class="dropdown-header">ヒストグラム</li>
     <li class="dropdown-header">散布図</li>
     <li class="dropdown-header">箱ひげ図</li>
@@ -407,26 +409,37 @@ div.tocify {
 
 
 <h1 class="title toc-ignore">信頼区間と予測区間</h1>
-<h4 class="author"><em>Sampo Suzuki</em></h4>
 
 </div>
 
 
-<pre class="r"><code>require(car)</code></pre>
-<pre><code>## Loading required package: car</code></pre>
-<pre><code>## 
-## Attaching package: &#39;car&#39;</code></pre>
-<pre><code>## The following object is masked from &#39;package:dplyr&#39;:
-## 
-##     recode</code></pre>
-<pre><code>## The following object is masked from &#39;package:purrr&#39;:
-## 
-##     some</code></pre>
+<!-- Include Common Links -->
+<!-- SQiP and others -->
+<!-- Books -->
+<!-- 共立出版 -->
+<!-- 日科技連出版 -->
+<!-- O'Reilly Japan -->
+<!-- 東京図書 -->
+<!-- Docker -->
+<!-- eBooks -->
+<!-- Net Community -->
+<!-- Style Guide -->
+<!-- Creative Commons -->
+<!-- Others -->
+<!-- R -->
+<!-- R Packages -->
+<!-- RStudio -->
+<!-- Docker -->
+<!-- Cabinet Pages -->
+<p>線形単回帰分析におけるモデルの可視化手法です。モデルを予測に利用するにはモデル単体だけではなく信頼区間や予測区間も考慮する必要があります。ExcelやR Commanderでは信頼区間や予測区間を可視化することは計算も含めて比較的手間がかかりますが、<a href="https://www.r-project.org/" title="The R Project">R</a>のスクリプトを用いることで比較的簡単に描画できます。</p>
+<p><a href="https://www.r-project.org/" title="The R Project">R</a>で信頼区間や予測区間を描画する方法は利用するパッケージによりいくつか方法がありますので、基本的な方法をいくつか紹介します。<br />
+　</p>
+<div id="標準パッケージを用いる方法" class="section level1">
+<h1>標準パッケージを用いる方法</h1>
+<div id="高水準作画関数による描画" class="section level2">
+<h2>高水準作画関数による描画</h2>
 <pre class="r"><code># 組込データセット&quot;mtcars&quot;を読み込む
 data(mtcars, package = &quot;datasets&quot;)
-
-# シリンダー数を層別因子にする
-mtcars$f.cyl &lt;- as.factor(mtcars$cyl)
 
 # 線形回帰を計算する
 res.lm &lt;- lm(mpg ~ hp, data = mtcars)
@@ -501,14 +514,12 @@ leglabels &lt;- c(&quot;回帰直線&quot;, &quot;予測区間&quot;, &quot;信�
 leglty &lt;- c(1, 2, 3)
 legcol &lt;- c(&quot;black&quot;, &quot;red&quot;, &quot;blue&quot;)
 legend(&quot;topright&quot;, legend = leglabels, lty = leglty, col = legcol, lwd = 1)</code></pre>
-<p><img src="gr_predict_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
-<pre class="r"><code>require(car)
-
-# 組込データセット&quot;mtcars&quot;を読み込む
+<p><img src="gr_predict_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+</div>
+<div id="低水準作画関数による描画" class="section level2">
+<h2>低水準作画関数による描画</h2>
+<pre class="r"><code># 組込データセット&quot;mtcars&quot;を読み込む
 data(mtcars, package = &quot;datasets&quot;)
-
-# シリンダー数を層別因子にする
-mtcars$f.cyl &lt;- as.factor(mtcars$cyl)
 
 # Rcmdrで散布図を作画する（周辺箱ひげ図は描画しない）
 scatterplot(mpg ~ hp, reg.line = lm, smooth = FALSE, spread = FALSE,
@@ -549,8 +560,74 @@ leglabels &lt;- c(&quot;回帰直線&quot;, &quot;予測区間&quot;, &quot;信�
 leglty &lt;- c(1, 2, 3)
 legcol &lt;- c(&quot;green&quot;, &quot;red&quot;, &quot;blue&quot;)
 legend(&quot;topright&quot;, legend = leglabels, lty = leglty, col = legcol, lwd = 1)</code></pre>
-<p><img src="gr_predict_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p><img src="gr_predict_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+</div>
+</div>
+<div id="拡張パッケージを用いる方法" class="section level1">
+<h1>拡張パッケージを用いる方法</h1>
+<p><strong><code>dplyr</code></strong>パッケージと<strong><code>ggplot2</code></strong>パッケージを用いる方法です。すべての処理をパイプでつなげて処理します。<br />
+　</p>
+<div id="予測区間のみを上書きする" class="section level2">
+<h2>予測区間のみを上書きする</h2>
+<p><strong><code>ggplot2::geom_smooth</code></strong>関数は信頼区間を描画する機能がありますので予測区間のみを計算して上書き描画します。<br />
+　</p>
+<pre class="r"><code>data(mtcars, package = &quot;datasets&quot;)
+
+mtcars %&gt;% 
+  lm(mpg ~ hp, data = .) %&gt;% 
+  predict(interval = &quot;prediction&quot;) %&gt;% 
+  broom::tidy() %&gt;% 
+  dplyr::bind_cols(mtcars, .) %&gt;% 
+  ggplot2::ggplot(ggplot2::aes(x = hp)) + 
+    ggplot2::geom_point(aes(y = mpg)) +
+    ggplot2::geom_smooth(aes(y = mpg), method = &quot;lm&quot;, se = TRUE) +
+    ggplot2::geom_line(aes(y = lwr), linetype = 2, colour = 2) +
+    ggplot2::geom_line(aes(y = upr), linetype = 2, colour = 2) +
+    ggplot2::xlab(&quot;エンジン出力&quot;) + ggplot2::ylab(&quot;燃費[mpg]&quot;) + 
+    ggplot2::ggtitle(&quot;回帰直線と信頼区間、予測区間&quot;) +
+    ggplot2::theme_minimal()</code></pre>
+<p><img src="gr_predict_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+</div>
+<div id="予測区間と信頼区間を上書きする" class="section level2">
+<h2>予測区間と信頼区間を上書きする</h2>
+<p>信頼区間も計算して上書き描画します。<br />
+　</p>
+<pre class="r"><code>data(mtcars, package = &quot;datasets&quot;)
+
+# 予測区間を計算しTidy Data化する
+pred_mtcars &lt;- mtcars %&gt;% 
+  lm(mpg ~ hp, data = .) %&gt;% 
+  predict(interval = &quot;prediction&quot;) %&gt;% 
+  broom::tidy() %&gt;% 
+  dplyr::select(pred_lwr = lwr, pred_upr = upr)
+
+# 信頼区間を計算しTidy Data化する
+conf_mtcars &lt;- mtcars %&gt;% 
+  lm(mpg ~ hp, data = .) %&gt;% 
+  predict(interval = &quot;confidence&quot;) %&gt;% 
+  broom::tidy() %&gt;% 
+  dplyr::select(conf_lwr = lwr, conf_upr = upr)
+
+# 予測区間と信頼区間を結合し
+mtcars %&gt;% 
+  dplyr::bind_cols(pred_mtcars) %&gt;%     # 予測区間を結合する
+  dplyr::bind_cols(conf_mtcars) %&gt;%     # 信頼区間を結合する
+  ggplot2::ggplot(ggplot2::aes(x = hp)) + 
+    ggplot2::geom_point(aes(y = mpg)) +
+    ggplot2::geom_smooth(aes(y = mpg), method = &quot;lm&quot;, se = TRUE) +
+    ggplot2::geom_line(aes(y = pred_lwr), linetype = 2, colour = 2) +
+    ggplot2::geom_line(aes(y = pred_upr), linetype = 2, colour = 2) +
+    ggplot2::geom_line(aes(y = conf_lwr), linetype = 3, colour = 4) +
+    ggplot2::geom_line(aes(y = conf_upr), linetype = 3, colour = 4) +
+    ggplot2::xlab(&quot;エンジン出力&quot;) + ggplot2::ylab(&quot;燃費[mpg]&quot;) + 
+    ggplot2::ggtitle(&quot;回帰直線と信頼区間、予測区間&quot;) +
+    ggplot2::theme_minimal()</code></pre>
+<p><img src="gr_predict_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 <hr />
+<!-- Include Footer -->
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" title="CC BY-NC-SA 4.0 icon" alt="Sampo Suzuki" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0</a>, Sampo Suzuki [2018-01-14 11:55(JST)]</p>
+</div>
+</div>
 
 
 

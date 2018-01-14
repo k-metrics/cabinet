@@ -1,20 +1,31 @@
 ---
 title: "信頼区間と予測区間"
-author: "Sampo Suzuki"
+output: 
+  html_document:  
+    number_section: no
+    toc: yes
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+<!-- Include Common Links -->
+```{r child="../common/links.Rmd"}
 ```
 
-```{r}
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
 require(car)
+require(tidyverse)
+```
 
+線形単回帰分析におけるモデルの可視化手法です。モデルを予測に利用するにはモデル単体だけではなく信頼区間や予測区間も考慮する必要があります。ExcelやR Commanderでは信頼区間や予測区間を可視化することは計算も含めて比較的手間がかかりますが、[R][R]のスクリプトを用いることで比較的簡単に描画できます。  
+
+[R][R]で信頼区間や予測区間を描画する方法は利用するパッケージによりいくつか方法がありますので、基本的な方法をいくつか紹介します。  
+　  
+
+# 標準パッケージを用いる方法
+## 高水準作画関数による描画
+```{r}
 # 組込データセット"mtcars"を読み込む
 data(mtcars, package = "datasets")
-
-# シリンダー数を層別因子にする
-mtcars$f.cyl <- as.factor(mtcars$cyl)
 
 # 線形回帰を計算する
 res.lm <- lm(mpg ~ hp, data = mtcars)
@@ -91,14 +102,10 @@ legcol <- c("black", "red", "blue")
 legend("topright", legend = leglabels, lty = leglty, col = legcol, lwd = 1)
 ```
 
+## 低水準作画関数による描画
 ```{r}
-require(car)
-
 # 組込データセット"mtcars"を読み込む
 data(mtcars, package = "datasets")
-
-# シリンダー数を層別因子にする
-mtcars$f.cyl <- as.factor(mtcars$cyl)
 
 # Rcmdrで散布図を作画する（周辺箱ひげ図は描画しない）
 scatterplot(mpg ~ hp, reg.line = lm, smooth = FALSE, spread = FALSE,
@@ -141,4 +148,70 @@ legend("topright", legend = leglabels, lty = leglty, col = legcol, lwd = 1)
 
 ```
 
+# 拡張パッケージを用いる方法
+**`dplyr`**パッケージと**`ggplot2`**パッケージを用いる方法です。すべての処理をパイプでつなげて処理します。  
+　  
+
+## 予測区間のみを上書きする
+**`ggplot2::geom_smooth`**関数は信頼区間を描画する機能がありますので予測区間のみを計算して上書き描画します。  
+　  
+```{r}
+data(mtcars, package = "datasets")
+
+mtcars %>% 
+  lm(mpg ~ hp, data = .) %>% 
+  predict(interval = "prediction") %>% 
+  broom::tidy() %>% 
+  dplyr::bind_cols(mtcars, .) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = hp)) + 
+    ggplot2::geom_point(aes(y = mpg)) +
+    ggplot2::geom_smooth(aes(y = mpg), method = "lm", se = TRUE) +
+    ggplot2::geom_line(aes(y = lwr), linetype = 2, colour = 2) +
+    ggplot2::geom_line(aes(y = upr), linetype = 2, colour = 2) +
+    ggplot2::xlab("エンジン出力") + ggplot2::ylab("燃費[mpg]") + 
+    ggplot2::ggtitle("回帰直線と信頼区間、予測区間") +
+    ggplot2::theme_minimal()
+```
+
+## 予測区間と信頼区間を上書きする
+信頼区間も計算して上書き描画します。  
+　  
+```{r}
+data(mtcars, package = "datasets")
+
+# 予測区間を計算しTidy Data化する
+pred_mtcars <- mtcars %>% 
+  lm(mpg ~ hp, data = .) %>% 
+  predict(interval = "prediction") %>% 
+  broom::tidy() %>% 
+  dplyr::select(pred_lwr = lwr, pred_upr = upr)
+
+# 信頼区間を計算しTidy Data化する
+conf_mtcars <- mtcars %>% 
+  lm(mpg ~ hp, data = .) %>% 
+  predict(interval = "confidence") %>% 
+  broom::tidy() %>% 
+  dplyr::select(conf_lwr = lwr, conf_upr = upr)
+
+# 予測区間と信頼区間を結合し
+mtcars %>% 
+  dplyr::bind_cols(pred_mtcars) %>%     # 予測区間を結合する
+  dplyr::bind_cols(conf_mtcars) %>%     # 信頼区間を結合する
+  ggplot2::ggplot(ggplot2::aes(x = hp)) + 
+    ggplot2::geom_point(aes(y = mpg)) +
+    ggplot2::geom_smooth(aes(y = mpg), method = "lm", se = TRUE) +
+    ggplot2::geom_line(aes(y = pred_lwr), linetype = 2, colour = 2) +
+    ggplot2::geom_line(aes(y = pred_upr), linetype = 2, colour = 2) +
+    ggplot2::geom_line(aes(y = conf_lwr), linetype = 3, colour = 4) +
+    ggplot2::geom_line(aes(y = conf_upr), linetype = 3, colour = 4) +
+    ggplot2::xlab("エンジン出力") + ggplot2::ylab("燃費[mpg]") + 
+    ggplot2::ggtitle("回帰直線と信頼区間、予測区間") +
+    ggplot2::theme_minimal()
+```
+
+
 ---
+
+<!-- Include Footer -->
+```{r child="../common/footer.Rmd"}
+```
