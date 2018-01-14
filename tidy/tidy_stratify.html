@@ -9,10 +9,9 @@
 <meta name="generator" content="pandoc" />
 
 
-<meta name="author" content="k-metrics" />
 
 
-<title>Tidy/Transform</title>
+<title>層別で計算する</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -172,7 +171,7 @@ $(document).ready(function () {
 </style>
 <script>
 $(document).ready(function () {
-  window.initializeCodeFolding("hide" === "show");
+  window.initializeCodeFolding("show" === "show");
 });
 </script>
 
@@ -377,7 +376,7 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Tidy/Transform</h1>
+<h1 class="title toc-ignore">層別で計算する</h1>
 
 </div>
 
@@ -400,19 +399,101 @@ div.tocify {
 <!-- RStudio -->
 <!-- Docker -->
 <!-- Cabinet Pages -->
-<p><strong>Tidy/Transform</strong>は<a href="https://github.com/rstudio/RStartHere" title="R Start Here">Data Science Workflow, RStudio Inc.</a>において分析対象とたなるデータを分析に適した形式に加工するプロセスです。<br />
+<p>因子ごとに層別して統計量を計算したい時があります。<br />
 　</p>
-<p><img src="https://raw.githubusercontent.com/rstudio/RStartHere/master/data-science.png" title="Data Science Workflow, RStudio Inc." alt="fig. Data Science Workflow by RStudio" /><br />
+<div id="標準パッケージを用いる方法" class="section level1">
+<h1>標準パッケージを用いる方法</h1>
+<p>標準パッケージで層別統計量を計算するには<strong><code>apply</code></strong>関数群の<strong><code>tapply</code></strong>関数を用います。<br />
 　</p>
-<div id="tidy" class="section level1">
-<h1>Tidy</h1>
-<p>（準備中）<br />
+<div id="平均値を計算する" class="section level2">
+<h2>平均値を計算する</h2>
+<p>以下のコードは<strong><code>iris</code></strong>データパッケージの<strong><code>Species</code></strong>（品種）因子を用いて、各データの平均値を求める方法です。<br />
 　</p>
+<pre class="r"><code>iris %&gt;% 
+  with(tapply(Sepal.Length, Species, mean, na.rm = TRUE)) %&gt;% 
+  broom::tidy()                     # 見やすいようにTidy Data化</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["names"],"name":[1],"type":["chr"],"align":["left"]},{"label":["x"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"setosa","2":"5.006"},{"1":"versicolor","2":"5.936"},{"1":"virginica","2":"6.588"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
 </div>
-<div id="transform" class="section level1">
-<h1>Transform</h1>
-<p>（準備中）<br />
+<p>　</p>
+</div>
+<div id="五数要約を計算する" class="section level2">
+<h2>五数要約を計算する</h2>
+<pre class="r"><code>iris %&gt;% 
+  with(tapply(Sepal.Length, Species, fivenum, na.rm = TRUE)) %&gt;% 
+  do.call(rbind, .) %&gt;%   # 五数要約の返り値をリスト形式からマトリクス形式に
+  broom::tidy()           # Tidy Data化</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[".rownames"],"name":[1],"type":["chr"],"align":["left"]},{"label":["X1"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["X2"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["X3"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["X4"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["X5"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"setosa","2":"4.3","3":"4.8","4":"5.0","5":"5.2","6":"5.8"},{"1":"versicolor","2":"4.9","3":"5.6","4":"5.9","5":"6.3","6":"7.0"},{"1":"virginica","2":"4.9","3":"6.2","4":"6.5","5":"6.9","6":"7.9"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>　</p>
+</div>
+</div>
+<div id="追加パッケージを用いる方法" class="section level1">
+<h1>追加パッケージを用いる方法</h1>
+<p><strong><code>dplyr</code></strong>パッケージを用いることでパイプ（ %&gt;% ）処理による計算が可能になります。<br />
 　</p>
+<div id="平均値を計算する-1" class="section level2">
+<h2>平均値を計算する</h2>
+<p>以下のコードは<strong><code>iris</code></strong>データパッケージの<strong><code>Species</code></strong>（品種）因子を用いて、各データの平均値を求める方法です。<br />
+　</p>
+<pre class="r"><code>iris %&gt;% 
+  dplyr::group_by(Species) %&gt;% 
+  dplyr::summarise_if(is.numeric, mean, na.rm = TRUE)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Species"],"name":[1],"type":["fctr"],"align":["left"]},{"label":["Sepal.Length"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["Sepal.Width"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["Petal.Length"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["Petal.Width"],"name":[5],"type":["dbl"],"align":["right"]}],"data":[{"1":"setosa","2":"5.006","3":"3.428","4":"1.462","5":"0.246"},{"1":"versicolor","2":"5.936","3":"2.770","4":"4.260","5":"1.326"},{"1":"virginica","2":"6.588","3":"2.974","4":"5.552","5":"2.026"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>　</p>
+</div>
+<div id="五数要約を計算する-1" class="section level2">
+<h2>五数要約を計算する</h2>
+<p><strong><code>dplyr::summarise</code></strong>関数では「返り値の長さが１」である関数のみしか使えませんので返り値の長さが5つある五数要約（<strong><code>quantile</code></strong>関数）をそのまま計算することはできません。<br />
+　</p>
+<div id="方法" class="section level3">
+<h3>方法１</h3>
+<p><strong><code>quantile</code></strong>関数の返り値をリスト化して<strong><code>dplyr::summarise</code></strong>関数に渡し<strong><code>cbind</code></strong>関数で展開する。<br />
+　</p>
+<pre class="r"><code>iris %&gt;% 
+  dplyr::group_by(Species) %&gt;% 
+  dplyr::summarize(qt = list(quantile(Sepal.Length))) %&gt;%
+  cbind(do.call(rbind, .$qt)) %&gt;%
+  select(-qt)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Species"],"name":[1],"type":["fctr"],"align":["left"]},{"label":["0%"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["25%"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["50%"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["75%"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["100%"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"setosa","2":"4.3","3":"4.800","4":"5.0","5":"5.2","6":"5.8"},{"1":"versicolor","2":"4.9","3":"5.600","4":"5.9","5":"6.3","6":"7.0"},{"1":"virginica","2":"4.9","3":"6.225","4":"6.5","5":"6.9","6":"7.9"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>　</p>
+</div>
+<div id="方法-1" class="section level3">
+<h3>方法２</h3>
+<p><strong><code>dplyr::do</code></strong>を用いてリスト化し<strong><code>cbind</code></strong>関数で展開する。<br />
+　</p>
+<pre class="r"><code>iris %&gt;%
+  dplyr::group_by(Species) %&gt;% 
+  dplyr::do(qt = quantile(.$Sepal.Length)) %&gt;%
+  cbind(do.call(rbind, .$qt)) %&gt;%
+  dplyr::select(-qt)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Species"],"name":[1],"type":["fctr"],"align":["left"]},{"label":["0%"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["25%"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["50%"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["75%"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["100%"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"setosa","2":"4.3","3":"4.800","4":"5.0","5":"5.2","6":"5.8","_rn_":"1"},{"1":"versicolor","2":"4.9","3":"5.600","4":"5.9","5":"6.3","6":"7.0","_rn_":"2"},{"1":"virginica","2":"4.9","3":"6.225","4":"6.5","5":"6.9","6":"7.9","_rn_":"3"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>　</p>
+</div>
+</div>
+</div>
+<div id="参考資料" class="section level1">
+<h1>参考資料</h1>
+<ul>
+<li><a href="https://qiita.com/hoxo_m/items/9d2f91008335b03bf082">dplyr でグループごとに複数カラムを追加したい</a></li>
+</ul>
 <hr />
 <!-- Footer -->
 <p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" title="CC BY-NC-SA 4.0 icon" alt="Sampo Suzuki" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0</a>, Sampo Suzuki [2018-01-14 22:07(JST)]</p>
