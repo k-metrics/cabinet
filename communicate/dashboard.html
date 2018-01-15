@@ -9,10 +9,9 @@
 <meta name="generator" content="pandoc" />
 
 
-<meta name="author" content="k-metrics" />
 
 
-<title>Communicate/Automate</title>
+<title>Dashboards</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -24,7 +23,6 @@
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
-<script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 <link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
@@ -167,14 +165,6 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
-<style type="text/css">
-.code-folding-btn { margin-bottom: 4px; }
-</style>
-<script>
-$(document).ready(function () {
-  window.initializeCodeFolding("hide" === "show");
-});
-</script>
 
 
 
@@ -372,22 +362,14 @@ div.tocify {
 
 <div class="fluid-row" id="header">
 
-<div class="btn-group pull-right">
-<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
-<ul class="dropdown-menu" style="min-width: 50px;">
-<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
-<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
-</ul>
-</div>
 
 
-
-<h1 class="title toc-ignore">Communicate/Automate</h1>
+<h1 class="title toc-ignore">Dashboards</h1>
 
 </div>
 
 
-<!-- Common Links -->
+<!-- Include Common Links -->
 <!-- SQiP and others -->
 <!-- Books -->
 <!-- 共立出版 -->
@@ -405,34 +387,62 @@ div.tocify {
 <!-- RStudio -->
 <!-- Docker -->
 <!-- Cabinet Pages -->
-<p><strong>Communicate/Automate</strong>は<a href="https://github.com/rstudio/RStartHere" title="R Start Here">Data Science Workflow, RStudio Inc.</a>において分析結果の報告や公開を担うプロセスです。</p>
-<p><img src="https://raw.githubusercontent.com/rstudio/RStartHere/master/data-science.png" title="Data Science Workflow, RStudio Inc." alt="fig. Data Science Workflow by RStudio" /><br />
-　<br />
-データ分析には一般的に</p>
+<div id="はじめに" class="section level1">
+<h1><span class="header-section-number">1</span> はじめに</h1>
+<p>ダッシュボードとはBIツールやERPなどにおいて様々なデータを統合して分かりやすく表示する画面やツールの総称です。判断に必要な様々な情報を整理して見せることから自動車や飛行機の計器類が並んでいるダッシュボードと同じ呼び名になっているようです。区別するためにデジタルダッシュボードと呼ぶこともあります。Excelを用いてダッシュボードを作成することもあるようです。 　</p>
+<div id="特徴" class="section level2">
+<h2><span class="header-section-number">1.1</span> 特徴</h2>
+<p>ダッシュボードには大きく二つの特徴があります。</p>
 <ul>
-<li>データの透明性</li>
-<li>分析の透明性</li>
+<li>様々なデータをデータに適した形で表示する</li>
+<li>表示されているデータに対する検索や表示変更の機能を有している</li>
 </ul>
-<p>が求められます。更に最近では</p>
-<ul>
-<li>分析の再現性（Reproducible Research）</li>
-</ul>
-<p>も求められています。事業系であれば、それらに加えて</p>
-<ul>
-<li>分析の生産性</li>
-</ul>
-<p>も求められる訳です。しかしながら、分析結果の報告はデータの前処理と並んで手間のかかる仕事です。分析結果を成果としてまとめるためには、当然、分析過程ので記録が必要になります。つまり、常に分析と並行して記録を残す必要があります。ところが、分析に集中すると記録がおろそかになったり、記録に集中すると分析が中途半端になったりと間違いを誘発することは容易に想像ができます。<br />
-<a href="https://www.r-project.org/" title="The R Project">R</a>ではこれらの問題を解決して生産性が高く、分析再現性が確保できるコミュニケーション・ツールが提供されています。 　</p>
-<div id="communicate" class="section level2">
-<h2>Communicate</h2>
-<p><a href="https://www.r-project.org/" title="The R Project">R</a>の最も有用なコミュニケーション・ツールである<a href="http://rmarkdown.rstudio.com/" title="R Markdown form RStudio">R Markdown</a>について取り上げます。 　</p>
+<p>これらの特徴によりデータを様々な観点から俯瞰することが可能になっています。<br />
+　</p>
 </div>
-<div id="auctomate" class="section level2">
-<h2>Auctomate</h2>
-<p>分析結果をインタラクティブに表示できる<a href="https://shiny.rstudio.com/" title="Shiny by RStudio">Shiny</a>や[flexdashboard][]について取り上げる予定です。 　</p>
+</div>
+<div id="rのダッシュボード" class="section level1">
+<h1><span class="header-section-number">2</span> Rのダッシュボード</h1>
+<p><a href="https://www.r-project.org/" title="The R Project">R</a>では二種類のダッシュボードが作成可能です。どちらもWebアプリケーションとして動作しますが記述言語や動作環境などが異なります。<br />
+　</p>
+<table>
+<thead>
+<tr class="header">
+<th>ダッシュボード</th>
+<th>記述言語など</th>
+<th>動作環境</th>
+<th>必要なパッケージなど</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>flexdashboard</td>
+<td><a href="http://rmarkdown.rstudio.com/" title="R Markdown form RStudio">RMarkdown</a></td>
+<td>httpサーバ</td>
+<td>flexdashboard, rmarkdown</td>
+</tr>
+<tr class="even">
+<td>shinydashboard</td>
+<td><a href="https://www.r-project.org/" title="The R Project">R</a></td>
+<td>shinyサーバ</td>
+<td>shinydashboard, shiny</td>
+</tr>
+</tbody>
+</table>
+<p>　</p>
+<div id="flexdashboard" class="section level2">
+<h2><span class="header-section-number">2.1</span> flexdashboard</h2>
+<p><a href="http://rmarkdown.rstudio.com/flexdashboard/index.html" title="flexdashboard for R"><strong><code>flexdashboard</code></strong></a>は<a href="http://rmarkdown.rstudio.com/" title="R Markdown form RStudio">RMarkdown</a>で記述するダッシュボードです。<a href="http://www.htmlwidgets.org/" title="htmlwidgets for R"><strong><code>htmlwidgets</code></strong></a>のコンポーネント群をサポートしていますのでインタラクティブなダッシュボードが作成できます。また、<a href="https://shiny.rstudio.com/" title="Shiny by RStudio">Shiny</a>コンポーネントを利用することも可能です。<br />
+　</p>
+</div>
+<div id="shinydashboard" class="section level2">
+<h2><span class="header-section-number">2.2</span> shinydashboard</h2>
+<p><a href="http://rstudio.github.io/shinydashboard/index.html" title="Shiny Dashboard"><strong><code>shinydashboard</code></strong></a>は文字通り<a href="https://shiny.rstudio.com/" title="Shiny by RStudio">Shiny</a>を用いて作成するダッシュボードです。<a href="http://rmarkdown.rstudio.com/flexdashboard/index.html" title="flexdashboard for R"><strong><code>flexdashboard</code></strong></a>と最も異なる点は<a href="https://shiny.rstudio.com/" title="Shiny by RStudio">Shiny</a>サーバが必要な点です。<br />
+　</p>
 <hr />
-<!-- Footer -->
+<!-- Include Footer -->
 <p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" title="CC BY-NC-SA 4.0 icon" alt="Sampo Suzuki" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0</a>, Sampo Suzuki [2018-01-15 21:20(JST)]</p>
+</div>
 </div>
 
 

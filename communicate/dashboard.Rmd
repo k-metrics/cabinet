@@ -1,0 +1,58 @@
+---
+title: "Dashboards"
+output: 
+  html_document:
+    number_section: yes
+    code_folding: none
+    toc_float:
+      collapsed: yes
+---
+
+<!-- Include Common Links -->
+```{r rmd_basics, child="../common/links.Rmd"}
+```
+
+```{r setup, echo = FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, comment = "##")
+```
+
+# はじめに
+ダッシュボードとはBIツールやERPなどにおいて様々なデータを統合して分かりやすく表示する画面やツールの総称です。判断に必要な様々な情報を整理して見せることから自動車や飛行機の計器類が並んでいるダッシュボードと同じ呼び名になっているようです。区別するためにデジタルダッシュボードと呼ぶこともあります。Excelを用いてダッシュボードを作成することもあるようです。
+　  
+
+## 特徴
+ダッシュボードには大きく二つの特徴があります。  
+
+* 様々なデータをデータに適した形で表示する
+* 表示されているデータに対する検索や表示変更の機能を有している
+
+これらの特徴によりデータを様々な観点から俯瞰することが可能になっています。  
+　  
+
+# Rのダッシュボード
+[R][R]では二種類のダッシュボードが作成可能です。どちらもWebアプリケーションとして動作しますが記述言語や動作環境などが異なります。  
+　  
+
+ダッシュボード | 記述言語など     | 動作環境    | 必要なパッケージなど
+---------------|------------------|-------------|--------------------------
+flexdashboard  | [RMarkdown][RMD] | httpサーバ  | flexdashboard, rmarkdown
+shinydashboard | [R][R]           | shinyサーバ | shinydashboard, shiny
+
+　  
+
+## flexdashboard
+[**`flexdashboard`**][flexdb]は[RMarkdown][Rmd]で記述するダッシュボードです。[**`htmlwidgets`**][htmlwidgets]のコンポーネント群をサポートしていますのでインタラクティブなダッシュボードが作成できます。また、[Shiny][shiny]コンポーネントを利用することも可能です。  
+　  
+
+## shinydashboard
+[**`shinydashboard`**][shinydb]は文字通り[Shiny][shiny]を用いて作成するダッシュボードです。[**`flexdashboard`**][flexdb]と最も異なる点は[Shiny][shiny]サーバが必要な点です。  
+　  
+
+---
+
+<!-- Include Footer -->
+```{r child="../common/footer.Rmd"}
+```
+
+
+[Ref01]: https://data.wingarc.com/bi-dashboard-5881 "なぜ分析ツールのUIを「ダッシュボード」と呼ぶのか？"
