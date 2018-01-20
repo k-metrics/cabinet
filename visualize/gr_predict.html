@@ -287,11 +287,17 @@ div.tocify {
       <ul class="nav navbar-nav">
         <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    base
+    base/ggplot2
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
+    <li class="dropdown-header">base basics</li>
+    <li>
+      <a href="../program/basics_ggplot2.html">ggplot2 basics</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">ヒストグラム</li>
     <li>
       <a href="gr_boxplot.html">箱ひげ図</a>
     </li>
@@ -300,24 +306,11 @@ div.tocify {
     </li>
     <li class="dropdown-header">散布図行列</li>
     <li>
+      <a href="gr_QQplot.html">QQプロット</a>
+    </li>
+    <li>
       <a href="gr_predict.html">信頼区間と予測区間</a>
     </li>
-  </ul>
-</li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    ggplot2
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../program/basics_ggplot2.html">ggplot2 basics</a>
-    </li>
-    <li class="dropdown-header">ヒストグラム</li>
-    <li class="dropdown-header">散布図</li>
-    <li class="dropdown-header">箱ひげ図</li>
-    <li class="dropdown-header">QQプロット</li>
   </ul>
 </li>
 <li class="dropdown">
@@ -349,7 +342,7 @@ div.tocify {
       <ul class="nav navbar-nav navbar-right">
         <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    <span class="fa fa-github-square"></span>
+    <span class="fa fa-github"></span>
      
      
     <span class="caret"></span>
@@ -571,7 +564,8 @@ legend(&quot;topright&quot;, legend = leglabels, lty = leglty, col = legcol, lwd
 <h2>予測区間のみを上書きする</h2>
 <p><strong><code>ggplot2::geom_smooth</code></strong>関数は信頼区間を描画する機能がありますので予測区間のみを計算して上書き描画します。<br />
 　</p>
-<pre class="r"><code>data(mtcars, package = &quot;datasets&quot;)
+<pre class="r"><code>require(tidyverse)
+data(mtcars, package = &quot;datasets&quot;)
 
 mtcars %&gt;% 
   lm(mpg ~ hp, data = .) %&gt;% 
@@ -592,7 +586,8 @@ mtcars %&gt;%
 <h2>予測区間と信頼区間を上書きする</h2>
 <p>信頼区間も計算して上書き描画します。<br />
 　</p>
-<pre class="r"><code>data(mtcars, package = &quot;datasets&quot;)
+<pre class="r"><code>require(tidyverse)
+data(mtcars, package = &quot;datasets&quot;)
 
 # 予測区間を計算しTidy Data化する
 pred_mtcars &lt;- mtcars %&gt;% 
@@ -625,7 +620,7 @@ mtcars %&gt;%
 <p><img src="gr_predict_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 <hr />
 <!-- Include Footer -->
-<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" title="CC BY-NC-SA 4.0 icon" alt="Sampo Suzuki" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0</a>, Sampo Suzuki [2018-01-14 12:32(JST)]</p>
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" title="CC BY-NC-SA 4.0 icon" alt="Sampo Suzuki" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0</a>, Sampo Suzuki [2018-01-20 15:46(JST)]</p>
 </div>
 </div>
 
