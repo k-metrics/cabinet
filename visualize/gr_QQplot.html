@@ -424,15 +424,40 @@ div.tocify {
 <!-- RStudio -->
 <!-- Docker -->
 <!-- Cabinet Pages -->
-<p>QQプロットは二つの確率変数の分布を比較する際に使われるグラフで、横軸に観測値の期待値、縦軸に観測値を取る確率プロットです。縦軸と横軸が逆の場合もあります。<br />
-一般的に正規分布ににしたがっているかを確認するために使われるので正規QQプロットと呼ばれることもありますが、期待値自体は任意の確率分布を適用できますので、正規分布以外の分布にそくしているかを見ることもできます。<br />
+<p>QQプロットは二つの確率変数の分布を比較する際に使われるグラフで、横軸に観測値の期待値、縦軸に観測値を取る確率プロットです。<br />
+一般的に正規分布にしたがっているかを確認するために使われるので正規QQプロットと呼ばれることもありますが、期待値自体は任意の確率分布を適用できますので、正規分布以外の分布にしたがっているかを見ることもできます。<br />
 　</p>
+<div id="必要なパッケージ" class="section level1">
+<h1>必要なパッケージ</h1>
+<p>本ページのコードを実行するには標準パッケージ以外に以下の追加パッケージを読み込んでおく必要があります。</p>
+<table>
+<thead>
+<tr class="header">
+<th>Package</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>gridExtra</td>
+<td>Miscellaneous Functions for “Grid” Graphics</td>
+</tr>
+<tr class="even">
+<td>tidyverse</td>
+<td>Easily Install and Load the ‘Tidyverse’</td>
+</tr>
+<tr class="odd">
+<td>qqplotr</td>
+<td>Quantile-Quantile Plot Extensions for ‘ggplot2’</td>
+</tr>
+</tbody>
+</table>
+<p>　</p>
+</div>
 <div id="対象データ" class="section level1">
 <h1>対象データ</h1>
 <p>組み込みデータセットである<strong><code>iris</code></strong>の<strong><code>Sepal.Width</code></strong>（萼片幅）の分布が正規分布と言えるかどうかをQQプロットを用いて確認してみます。</p>
-<pre class="r"><code>require(tidyverse)
-
-iris %&gt;% 
+<pre class="r"><code>iris %&gt;% 
   tidyr::drop_na(Sepal.Width) %&gt;%
   ggplot2::ggplot(ggplot2::aes(x = Sepal.Width)) +
     ggplot2::geom_histogram(bins = 20) +
@@ -453,9 +478,7 @@ qqline(iris$Sepal.Width)</code></pre>
 <div id="追加パッケージを用いる方法" class="section level1">
 <h1>追加パッケージを用いる方法</h1>
 <p><strong><code>ggplot2</code></strong>パッケージに含まれる<strong><code>ggplot2::geom_qq</code></strong>関数は残念ながら目安となる直線や信頼区間を描画してくれませんので、判断に用いるには難しい面があります。</p>
-<pre class="r"><code>require(tidyverse)
-
-iris %&gt;% 
+<pre class="r"><code>iris %&gt;% 
   tidyr::drop_na(Sepal.Width) %&gt;%
   ggplot2::ggplot(ggplot2::aes(sample = Sepal.Width)) +
     ggplot2::geom_qq() +
@@ -466,10 +489,7 @@ iris %&gt;%
 <div id="qqplotr" class="section level2">
 <h2>qqplotr</h2>
 <p>そこで、便利なのが<strong><code>ggplot2</code></strong>パッケージの拡張パッケージである<strong><code>qqplotr</code></strong>パッケージです。<strong><code>ggplot2::geom_qq</code></strong>関数に比べるとコード記述の手間が若干増えますが判断の目安となる直線や信頼区間を簡単に描くことが可能です。</p>
-<pre class="r"><code>require(tidyverse)
-require(qqplotr)
-
-iris %&gt;% 
+<pre class="r"><code>iris %&gt;% 
   tidyr::drop_na(Sepal.Width) %&gt;%
   ggplot2::ggplot(ggplot2::aes(sample = Sepal.Width)) +
     qqplotr::stat_qq_band(distribution = &quot;norm&quot;,
@@ -486,10 +506,7 @@ iris %&gt;%
 <div id="層別で描く" class="section level2">
 <h2>層別で描く</h2>
 <p><strong><code>qqplotr</code></strong>は<strong><code>ggplot2</code></strong>パッケージの拡張パッケージですので<strong><code>ggplot2</code></strong>の機能が使えます。</p>
-<pre class="r"><code>require(tidyverse)
-require(qqplotr)
-
-gg_qq &lt;- iris %&gt;% 
+<pre class="r"><code>gg_qq &lt;- iris %&gt;% 
   tidyr::drop_na(Sepal.Width) %&gt;%
   ggplot2::ggplot(ggplot2::aes(sample = Sepal.Width)) +
     qqplotr::stat_qq_band() + 
@@ -513,9 +530,7 @@ gridExtra::grid.arrange(gg_qq, gg_hist)</code></pre>
 <p><img src="gr_QQplot_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 <p>　<br />
 ## 正規分布以外との比較例 正規分布以外の確率分布ととのQQプロットを描いてみます。対象データは組み込みデータセット<strong><code>airquality</code></strong>にあるオゾン濃度を使います。</p>
-<pre class="r"><code>require(tidyverse)
-
-airquality %&gt;% 
+<pre class="r"><code>airquality %&gt;% 
   tidyr::drop_na(Ozone) %&gt;% 
   ggplot2::ggplot(ggplot2::aes(x = Ozone)) + 
     ggplot2::geom_histogram(bins = 20) +
@@ -523,10 +538,7 @@ airquality %&gt;%
     ggplot2::labs(x = &quot;オゾン濃度&quot;, y = &quot;度数&quot;)</code></pre>
 <p><img src="gr_QQplot_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <p>データは右に歪んだ分布になっていますので正規分布と言うには無理があります。指数分布に近いように見えますので、指数分布を用いたQQプロットを描いてみます。</p>
-<pre class="r"><code>require(tidyverse)
-require(qqplotr)
-
-airquality %&gt;% 
+<pre class="r"><code>airquality %&gt;% 
   tidyr::drop_na(Ozone) %&gt;% 
   ggplot2::ggplot(ggplot2::aes(sample = Ozone)) +
     qqplotr::stat_qq_band(distribution = &quot;exp&quot;, dparams = list(rate = 2)) +
@@ -541,10 +553,7 @@ airquality %&gt;%
 <div id="ppプロット" class="section level1">
 <h1>PPプロット</h1>
 <p>PPプロットは累積確率を用いた確率プロットです。横軸に累積確率の期待値、縦軸に観測値の順位に基づく累積確率をとります。QQプロットと同様にプロットが一直線に並べば、観測値は期待値の分布（任意の確率分布）にしたがっていると言えます。</p>
-<pre class="r"><code>require(tidyverse)
-require(qqplotr)
-
-iris %&gt;% 
+<pre class="r"><code>iris %&gt;% 
   tidyr::drop_na(Sepal.Width) %&gt;%
   ggplot2::ggplot(ggplot2::aes(sample = Sepal.Width)) +
     qqplotr::stat_pp_band() +
@@ -558,14 +567,14 @@ iris %&gt;%
 <div id="参考資料" class="section level1">
 <h1>参考資料</h1>
 <ul>
-<li><a href="https://bellcurve.jp/statistics/glossary/2061.html">正規確率プロット, 統計WEB</a></li>
-<li><a href="http://www.cookbook-r.com/Graphs/Q-Q_plot/">Q-Q plot, Cook for R</a></li>
-<li><a href="https://www.rdocumentation.org/packages/qqplotr/versions/0.0.2">qqplotr, RDocumentation</a></li>
+<li><a href="https://bellcurve.jp/statistics/glossary/2061.html">正規確率プロット</a>, 統計WEB</li>
+<li><a href="http://www.cookbook-r.com/Graphs/Q-Q_plot/">Q-Q plot</a>, Cook for R</li>
+<li><a href="https://www.rdocumentation.org/packages/qqplotr/versions/0.0.2">qqplotr</a>, RDocumentation</li>
 </ul>
 <p>　</p>
 <hr />
 <!-- Footer -->
-<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" title="CC BY-NC-SA 4.0 icon" alt="Sampo Suzuki" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0</a>, Sampo Suzuki [2018-01-20 15:46(JST)]</p>
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" title="CC BY-NC-SA 4.0 icon" alt="Sampo Suzuki" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0</a>, Sampo Suzuki [2018-01-20 17:56(JST)]</p>
 </div>
 
 

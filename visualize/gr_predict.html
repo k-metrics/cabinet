@@ -427,6 +427,25 @@ div.tocify {
 <p>線形単回帰分析におけるモデルの可視化手法です。モデルを予測に利用するにはモデル単体だけではなく信頼区間や予測区間も考慮する必要があります。ExcelやR Commanderでは信頼区間や予測区間を可視化することは計算も含めて比較的手間がかかりますが、<a href="https://www.r-project.org/" title="The R Project">R</a>のスクリプトを用いることで比較的簡単に描画できます。</p>
 <p><a href="https://www.r-project.org/" title="The R Project">R</a>で信頼区間や予測区間を描画する方法は利用するパッケージによりいくつか方法がありますので、基本的な方法をいくつか紹介します。<br />
 　</p>
+<div id="必要なパッケージ" class="section level1">
+<h1>必要なパッケージ</h1>
+<p>本ページのコードを実行するには標準パッケージ以外に以下の追加パッケージを読み込んでおく必要があります。</p>
+<table>
+<thead>
+<tr class="header">
+<th>Package</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>tidyversse</td>
+<td>Easily Install and Load the ‘Tidyverse’</td>
+</tr>
+</tbody>
+</table>
+<p>　</p>
+</div>
 <div id="標準パッケージを用いる方法" class="section level1">
 <h1>標準パッケージを用いる方法</h1>
 <div id="高水準作画関数による描画" class="section level2">
@@ -564,8 +583,7 @@ legend(&quot;topright&quot;, legend = leglabels, lty = leglty, col = legcol, lwd
 <h2>予測区間のみを上書きする</h2>
 <p><strong><code>ggplot2::geom_smooth</code></strong>関数は信頼区間を描画する機能がありますので予測区間のみを計算して上書き描画します。<br />
 　</p>
-<pre class="r"><code>require(tidyverse)
-data(mtcars, package = &quot;datasets&quot;)
+<pre class="r"><code>data(mtcars, package = &quot;datasets&quot;)
 
 mtcars %&gt;% 
   lm(mpg ~ hp, data = .) %&gt;% 
@@ -586,8 +604,7 @@ mtcars %&gt;%
 <h2>予測区間と信頼区間を上書きする</h2>
 <p>信頼区間も計算して上書き描画します。<br />
 　</p>
-<pre class="r"><code>require(tidyverse)
-data(mtcars, package = &quot;datasets&quot;)
+<pre class="r"><code>data(mtcars, package = &quot;datasets&quot;)
 
 # 予測区間を計算しTidy Data化する
 pred_mtcars &lt;- mtcars %&gt;% 
@@ -620,7 +637,7 @@ mtcars %&gt;%
 <p><img src="gr_predict_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 <hr />
 <!-- Include Footer -->
-<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" title="CC BY-NC-SA 4.0 icon" alt="Sampo Suzuki" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0</a>, Sampo Suzuki [2018-01-20 15:46(JST)]</p>
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" title="CC BY-NC-SA 4.0 icon" alt="Sampo Suzuki" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0</a>, Sampo Suzuki [2018-01-20 17:43(JST)]</p>
 </div>
 </div>
 

@@ -13,20 +13,30 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
 
-require(tidyverse)
-require(qqplotr)
+library(gridExtra)
+library(tidyverse)
+library(qqplotr)
 tidyverse::tidyverse_conflicts()
 ```
 
-QQプロットは二つの確率変数の分布を比較する際に使われるグラフで、横軸に観測値の期待値、縦軸に観測値を取る確率プロットです。縦軸と横軸が逆の場合もあります。  
-一般的に正規分布ににしたがっているかを確認するために使われるので正規QQプロットと呼ばれることもありますが、期待値自体は任意の確率分布を適用できますので、正規分布以外の分布にそくしているかを見ることもできます。  
+QQプロットは二つの確率変数の分布を比較する際に使われるグラフで、横軸に観測値の期待値、縦軸に観測値を取る確率プロットです。  
+一般的に正規分布にしたがっているかを確認するために使われるので正規QQプロットと呼ばれることもありますが、期待値自体は任意の確率分布を適用できますので、正規分布以外の分布にしたがっているかを見ることもできます。  
+　  
+
+# 必要なパッケージ
+本ページのコードを実行するには標準パッケージ以外に以下の追加パッケージを読み込んでおく必要があります。
+
+Package   | Description
+----------|------------
+gridExtra | Miscellaneous Functions for "Grid" Graphics
+tidyverse | Easily Install and Load the ‘Tidyverse’
+qqplotr   | Quantile-Quantile Plot Extensions for ‘ggplot2’
+
 　  
 
 # 対象データ
 組み込みデータセットである**`iris`**の**`Sepal.Width`**（萼片幅）の分布が正規分布と言えるかどうかをQQプロットを用いて確認してみます。  
 ```{r}
-require(tidyverse)
-
 iris %>% 
   tidyr::drop_na(Sepal.Width) %>%
   ggplot2::ggplot(ggplot2::aes(x = Sepal.Width)) +
@@ -51,8 +61,6 @@ qqline(iris$Sepal.Width)
 # 追加パッケージを用いる方法
 **`ggplot2`**パッケージに含まれる**`ggplot2::geom_qq`**関数は残念ながら目安となる直線や信頼区間を描画してくれませんので、判断に用いるには難しい面があります。  
 ```{r}
-require(tidyverse)
-
 iris %>% 
   tidyr::drop_na(Sepal.Width) %>%
   ggplot2::ggplot(ggplot2::aes(sample = Sepal.Width)) +
@@ -66,9 +74,6 @@ iris %>%
 ## qqplotr 
 そこで、便利なのが**`ggplot2`**パッケージの拡張パッケージである**`qqplotr`**パッケージです。**`ggplot2::geom_qq`**関数に比べるとコード記述の手間が若干増えますが判断の目安となる直線や信頼区間を簡単に描くことが可能です。  
 ```{r}
-require(tidyverse)
-require(qqplotr)
-
 iris %>% 
   tidyr::drop_na(Sepal.Width) %>%
   ggplot2::ggplot(ggplot2::aes(sample = Sepal.Width)) +
@@ -87,9 +92,6 @@ iris %>%
 ## 層別で描く
 **`qqplotr`**は**`ggplot2`**パッケージの拡張パッケージですので**`ggplot2`**の機能が使えます。  
 ```{r, fig.height=7}
-require(tidyverse)
-require(qqplotr)
-
 gg_qq <- iris %>% 
   tidyr::drop_na(Sepal.Width) %>%
   ggplot2::ggplot(ggplot2::aes(sample = Sepal.Width)) +
@@ -118,8 +120,6 @@ gridExtra::grid.arrange(gg_qq, gg_hist)
 ## 正規分布以外との比較例
 正規分布以外の確率分布ととのQQプロットを描いてみます。対象データは組み込みデータセット**`airquality`**にあるオゾン濃度を使います。  
 ```{r}
-require(tidyverse)
-
 airquality %>% 
   tidyr::drop_na(Ozone) %>% 
   ggplot2::ggplot(ggplot2::aes(x = Ozone)) + 
@@ -130,9 +130,6 @@ airquality %>%
 
 データは右に歪んだ分布になっていますので正規分布と言うには無理があります。指数分布に近いように見えますので、指数分布を用いたQQプロットを描いてみます。  
 ```{r}
-require(tidyverse)
-require(qqplotr)
-
 airquality %>% 
   tidyr::drop_na(Ozone) %>% 
   ggplot2::ggplot(ggplot2::aes(sample = Ozone)) +
@@ -148,9 +145,6 @@ airquality %>%
 # PPプロット
 PPプロットは累積確率を用いた確率プロットです。横軸に累積確率の期待値、縦軸に観測値の順位に基づく累積確率をとります。QQプロットと同様にプロットが一直線に並べば、観測値は期待値の分布（任意の確率分布）にしたがっていると言えます。
 ```{r}
-require(tidyverse)
-require(qqplotr)
-
 iris %>% 
   tidyr::drop_na(Sepal.Width) %>%
   ggplot2::ggplot(ggplot2::aes(sample = Sepal.Width)) +
@@ -165,9 +159,9 @@ iris %>%
 
 # 参考資料
 
-* [正規確率プロット, 統計WEB](https://bellcurve.jp/statistics/glossary/2061.html)
-* [Q-Q plot, Cook for R](http://www.cookbook-r.com/Graphs/Q-Q_plot/)
-* [qqplotr, RDocumentation](https://www.rdocumentation.org/packages/qqplotr/versions/0.0.2)  
+* [正規確率プロット](https://bellcurve.jp/statistics/glossary/2061.html), 統計WEB
+* [Q-Q plot](http://www.cookbook-r.com/Graphs/Q-Q_plot/), Cook for R
+* [qqplotr](https://www.rdocumentation.org/packages/qqplotr/versions/0.0.2), RDocumentation  
 
 　  
 
