@@ -525,15 +525,15 @@ div.tocify {
 <tbody>
 <tr class="odd">
 <td>スタージェスの公式（Sturges’ formula）</td>
-<td>nclass.Sturges</td>
+<td><strong><code>nclass.Sturges</code></strong></td>
 </tr>
 <tr class="even">
 <td>スコットの選択（Scott’s choice）</td>
-<td>nclass.scott</td>
+<td><strong><code>nclass.scott</code></strong></td>
 </tr>
 <tr class="odd">
 <td>フリードマン-ダイアコニスの選択（Freedman–Diaconis’ choice）</td>
-<td>nclass.FD</td>
+<td><strong><code>nclass.FD</code></strong></td>
 </tr>
 </tbody>
 </table>
@@ -569,12 +569,58 @@ iris %&gt;%
     ggplot2::theme_minimal() +
     ggplot2::labs(x = &quot;Theoretical Quantiles&quot;, y = &quot;Sample Quantiles&quot;)</code></pre>
 <p><img src="norm_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
-<p>なお、QQプロットの描画自体については<a href="../visualize/gr_QQplot.html">こちら</a>を参照してください。<br />
+<p>　</p>
+<div id="正規確率プロットの考え方" class="section level2">
+<h2>正規確率プロットの考え方</h2>
+<p>正規確率プロット（正規QQプロット）は名前の通り横軸を正規分布の分位数、縦軸を対象データの分位数を座標としてプロットします。</p>
+<ol style="list-style-type: decimal">
+<li>対象データを昇順に並べかえる</li>
+<li>順位を割り当て％順位を計算する</li>
+<li>％順位からZスコアを計算する</li>
+<li>（標準）Zスコアを横軸に対象データを縦軸にプロットする</li>
+<li>対象データに合わせたZスコアを計算する</li>
+</ol>
+<pre class="r"><code>iris %&gt;% 
+  tidyr::drop_na(Sepal.Width) %&gt;%
+  dplyr::arrange(Sepal.Width) %&gt;%           # 昇順に並べる
+  tibble::rownames_to_column(&quot;rank&quot;) %&gt;%    # 順位を割り当てる
+  dplyr::mutate(prank = as.numeric(rank)/n()) %&gt;%
+                                            # ％順位を計算する 
+  dplyr::mutate(sz = qnorm(prank, mean = 0, sd = 1)) %&gt;% 
+                                            # 標準Zスコアを計算する
+  ggplot2::ggplot(ggplot2::aes(x = sz)) +
+    ggplot2::geom_point(ggplot2::aes(y = Sepal.Width)) +
+    ggplot2::labs(x = &quot;Z Score(Theoretical Quantiles)&quot;,
+                  y = &quot;Sepal.Width(Sample Quantiles)&quot;)</code></pre>
+<p><img src="norm_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>　<br />
+なお、QQプロットの描画自体については<a href="../visualize/gr_QQplot.html">こちら</a>を参照してください。<br />
 　</p>
+</div>
 </div>
 <div id="歪度と尖度" class="section level1">
 <h1>歪度と尖度</h1>
-<p>歪度とは分布の非対象性を示す指標で尖度とは分布の尖り具合を示す指標です。正規分布の場合、一般的に歪度と尖度は下表のようになり、二種類の定義が存在していることに注意して下さい。<a href="https://www.r-project.org/" title="The R Project">R</a>やExcelでは「尖度<span class="math inline">\(= 0\)</span>」の定義を用いています。<br />
+<p>歪度とは分布の非対象性を示す指標で尖度とは分布の尖り具合を示す指標です。</p>
+<table>
+<thead>
+<tr class="header">
+<th>　</th>
+<th>Rでの関数</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>歪度</td>
+<td><strong><code>e1071::skewness</code></strong>, <strong><code>moments::skewness</code></strong> など</td>
+</tr>
+<tr class="even">
+<td>尖度</td>
+<td><strong><code>e1071::kurtosis</code></strong>, <strong><code>moments::kurtosis</code></strong> など</td>
+</tr>
+</tbody>
+</table>
+<p>　<br />
+正規分布の場合、一般的に歪度と尖度は下表のようになり、二種類の定義が存在していることに注意して下さい。<a href="https://www.r-project.org/" title="The R Project">R</a>やExcelでは「尖度<span class="math inline">\(= 0\)</span>」の定義を用いています。<br />
 　</p>
 <table>
 <thead>
@@ -610,32 +656,39 @@ iris %&gt;%
 <thead>
 <tr class="header">
 <th>検定</th>
+<th>Rでの関数</th>
 <th>備考</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td>Shapiro-Wilk</td>
-<td>代表的な検定</td>
+<td><strong><code>shapiro.test</code></strong></td>
+<td>代表的な正規性の検定</td>
 </tr>
 <tr class="even">
 <td>Kolmogorov-Smirnov (Lillefors)</td>
+<td><strong><code>nortest::lillie.test</code></strong></td>
 <td>標本データ数が大きな場合</td>
 </tr>
 <tr class="odd">
 <td>Kolmogorov-Smirnov</td>
+<td><strong><code>ks.test</code></strong></td>
 <td></td>
 </tr>
 <tr class="even">
 <td>Anderson–Darling</td>
-<td>テールを厳密に見たい場合</td>
+<td><strong><code>nortest::ad.test</code></strong></td>
+<td>分布の裾を厳密に見たい場合</td>
 </tr>
 <tr class="odd">
 <td>尖度と歪度によるオムニバス検定</td>
+<td></td>
 <td>本検定は扱いません</td>
 </tr>
 <tr class="even">
 <td>D’Agostino</td>
+<td></td>
 <td>同上（歪度、尖度を用いた検定）</td>
 </tr>
 </tbody>
@@ -708,7 +761,7 @@ iris %&gt;%
 <p>　</p>
 <hr />
 <!-- Include Footer -->
-<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" title="CC BY-NC-SA 4.0 icon" alt="Sampo Suzuki" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0</a>, Sampo Suzuki [2018-01-20 15:33(JST)]</p>
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" title="CC BY-NC-SA 4.0 icon" alt="Sampo Suzuki" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0</a>, Sampo Suzuki [2018-01-20 22:26(JST)]</p>
 </div>
 
 

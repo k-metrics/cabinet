@@ -65,9 +65,9 @@ qqplotr   | Quantile-Quantile Plot Extensions for 'ggplot2'
 
 方法                                                         | Rでの関数
 -------------------------------------------------------------|----------------
-スタージェスの公式（Sturges' formula）                       | nclass.Sturges
-スコットの選択（Scott's choice）                             | nclass.scott
-フリードマン-ダイアコニスの選択（Freedman–Diaconis' choice） | nclass.FD
+スタージェスの公式（Sturges' formula）                       | **`nclass.Sturges`**
+スコットの選択（Scott's choice）                             | **`nclass.scott`**
+フリードマン-ダイアコニスの選択（Freedman–Diaconis' choice） | **`nclass.FD`**
 
 上記以外にも平方根選択、$L^2$危険関数推定の最小化に基づく選択などがあります。また、標本データが金額のような場合には百円単位、千円単位というように分かりやすい階級幅が使われることもあります。  
 　  
@@ -102,11 +102,46 @@ iris %>%
     ggplot2::labs(x = "Theoretical Quantiles", y = "Sample Quantiles")
 ```
 
+　  
+
+## 正規確率プロットの考え方
+正規確率プロット（正規QQプロット）は名前の通り横軸を正規分布の分位数、縦軸を対象データの分位数を座標としてプロットします。  
+
+1. 対象データを昇順に並べかえる
+1. 順位を割り当て％順位を計算する
+1. ％順位からZスコアを計算する
+1. （標準）Zスコアを横軸に対象データを縦軸にプロットする
+1. 対象データに合わせたZスコアを計算する
+
+```{r}
+iris %>% 
+  tidyr::drop_na(Sepal.Width) %>%
+  dplyr::arrange(Sepal.Width) %>%           # 昇順に並べる
+  tibble::rownames_to_column("rank") %>%    # 順位を割り当てる
+  dplyr::mutate(prank = as.numeric(rank)/n()) %>%
+                                            # ％順位を計算する 
+  dplyr::mutate(sz = qnorm(prank, mean = 0, sd = 1)) %>% 
+                                            # 標準Zスコアを計算する
+  ggplot2::ggplot(ggplot2::aes(x = sz)) +
+    ggplot2::geom_point(ggplot2::aes(y = Sepal.Width)) +
+    ggplot2::labs(x = "Z Score(Theoretical Quantiles)",
+                  y = "Sepal.Width(Sample Quantiles)")
+```
+
+　  
 なお、QQプロットの描画自体については[こちら](../visualize/gr_QQplot.html)を参照してください。  
 　  
 
 # 歪度と尖度
-歪度とは分布の非対象性を示す指標で尖度とは分布の尖り具合を示す指標です。正規分布の場合、一般的に歪度と尖度は下表のようになり、二種類の定義が存在していることに注意して下さい。[R][R]やExcelでは「尖度$= 0$」の定義を用いています。  
+歪度とは分布の非対象性を示す指標で尖度とは分布の尖り具合を示す指標です。  
+
+　   | Rでの関数
+-----|----------------------
+歪度 | **`e1071::skewness`**, **`moments::skewness`** など
+尖度 | **`e1071::kurtosis`**, **`moments::kurtosis`** など
+
+　  
+正規分布の場合、一般的に歪度と尖度は下表のようになり、二種類の定義が存在していることに注意して下さい。[R][R]やExcelでは「尖度$= 0$」の定義を用いています。  
 　  
 
 　   | 定義 #1 | **定義 #2** | Sepal.Width
@@ -121,14 +156,14 @@ iris %>%
 # 正規性の検定
 正規性の検定には以下のように様々な手法があります。
 
-検定                           | 備考
--------------------------------|---
-Shapiro-Wilk                   | 代表的な検定
-Kolmogorov-Smirnov (Lillefors) | 標本データ数が大きな場合
-Kolmogorov-Smirnov             | 
-Anderson–Darling               | テールを厳密に見たい場合
-尖度と歪度によるオムニバス検定 | 本検定は扱いません
-D'Agostino                     | 同上（歪度、尖度を用いた検定）
+検定                           | Rでの関数                  | 備考
+-------------------------------|----------------------------|------
+Shapiro-Wilk                   | **`shapiro.test`**         | 代表的な正規性の検定
+Kolmogorov-Smirnov (Lillefors) | **`nortest::lillie.test`** | 標本データ数が大きな場合
+Kolmogorov-Smirnov             | **`ks.test`**              | 
+Anderson–Darling               | **`nortest::ad.test`**     | 分布の裾を厳密に見たい場合
+尖度と歪度によるオムニバス検定 |                            | 本検定は扱いません
+D'Agostino                     |                            | 同上（歪度、尖度を用いた検定）
 　  
 
 ## シャピロ-ウィルク検定
