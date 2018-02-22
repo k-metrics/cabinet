@@ -1,29 +1,7 @@
 # はじめに
-[データ分析勉強会][0]のサイトにあるCabinetならびにTipsの保管庫（Cabinet）です。今までのCabinetやTipsと異なり分類を”Data Science Workflow”を参考に再分類しています。なお、[データ分析勉強会][1]で使われた講義資料に関しては[アーカイブ][1]をご覧下さい。
+[データ分析勉強会][0]のサイトにあるCabinetならびにTipsの保管庫（Cabinet）です。今までのCabinetやTipsと異なり分類を”Data Science Workflow”を参考に再分類しています。なお、[データ分析勉強会][1]で使われた講義資料に関しては[アーカイブ][1]をご覧下さい。  
 
-# Cabinet
-CabinetはData Science Workflowのプロセス分類に準拠して以下のように整理しています。
-
-## Import
-データ取り込みに関する事項を扱います。
-
-## Tidy/Transform
-データハンドリングに関する事項を扱います。
-
-## [Model/Infer][M]
-分析手法や例題・演習問題の解答例に関する事項を扱います。
-
-## Visualize
-データの可視化（主にグラフ描画）に関する事項を扱います。
-
-## [Communicate/Automate][C]
-分析の文書化（主にR Markdown）に関する事項を扱います。
-
-## [Program][P]
-データ分析に関わるプログラミング、プログラミング環境、ツール類に関する事項を扱います。
-
-# Data Science Workflow
-"Data Science Workflow"は、[RStudio社][RS]がGitHubで公開している[RStartHere][2]に出てくるデータ分析のプロセスを概念的にまとめたワークフロー図です。[RStartHere][2]は各プロセスで有用な[R][R]のパッケージのみを紹介していますので、各プロセスについて詳しく知りたい場合はHadley Wickhamの書いた[R for Data Science][3]をご覧下さい。
+[Cabinet Top Page][Top]
 
 ---
 
@@ -51,6 +29,7 @@ CabinetはData Science Workflowのプロセス分類に準拠して以下のよ�
 [RSD]: https://www.rstudio.com/products/RStudio/#Desktop "RStudio Desktop"
 [RM]: http://rmarkdown.rstudio.com/ "R Markdown form RStudio"
 
+[Top]: https://k-metrics.github.io/cabinet/top.html
 [I]: https://k-metrics.github.io/cabinet/program/ "Import"
 [T]: https://k-metrics.github.io/cabinet/transform/ "Tidy/Transform"
 [V]: https://k-metrics.github.io/cabinet/visualize/ "Visualize"
