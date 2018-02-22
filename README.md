@@ -29,7 +29,7 @@
 [RSD]: https://www.rstudio.com/products/RStudio/#Desktop "RStudio Desktop"
 [RM]: http://rmarkdown.rstudio.com/ "R Markdown form RStudio"
 
-[Top]: https://k-metrics.github.io/cabinet/top.html
+[Top]: https://k-metrics.github.io/cabinet/index.html
 [I]: https://k-metrics.github.io/cabinet/program/ "Import"
 [T]: https://k-metrics.github.io/cabinet/transform/ "Tidy/Transform"
 [V]: https://k-metrics.github.io/cabinet/visualize/ "Visualize"
