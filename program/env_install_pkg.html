@@ -75,6 +75,7 @@ h6 {
 }
 </style>
 
+<link rel="stylesheet" href="../shared/style.css" type="text/css" />
 
 </head>
 
@@ -389,7 +390,7 @@ div.tocify {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../">Cabinet</a>
+      <a href="../index.html">Cabinet</a>
     </li>
     <li class="divider"></li>
     <li>
@@ -446,13 +447,14 @@ div.tocify {
 </div>
 
 
-<!-- Include Common Links -->
+<!-- Include shared Links -->
 <!-- SQiP and others -->
 <!-- Books -->
 <!-- 共立出版 -->
 <!-- 日科技連出版 -->
 <!-- O'Reilly Japan -->
 <!-- 東京図書 -->
+<!-- Docker -->
 <!-- eBooks -->
 <!-- Net Community -->
 <!-- Style Guide -->
@@ -497,7 +499,7 @@ div.tocify {
 </div>
 <div id="rパッケージのインストール" class="section level1">
 <h1>Rパッケージのインストール</h1>
-<p>Rのパッケージをインストールする手順は<code>Rcmdr</code>のインストールと同じく起動したRから行う方法、RStudioから行う方法、スクリプトを用いる方法があります。 　</p>
+<p>Rのパッケージをインストールする手順は<strong><code>Rcmdr</code></strong>のインストールと同じく起動したRから行う方法、RStudioから行う方法、スクリプトを用いる方法があります。 　</p>
 <div id="rからインストールする方法" class="section level2">
 <h2>Rからインストールする方法</h2>
 <p>インターネットに接続できていることが確認できましたら<a href="https://www.r-project.org/" title="The R Project">R</a>のメニューから［パッケージ］-［パッケージのインストール…］を選択します。</p>
@@ -561,11 +563,11 @@ install.packages(pkg_lst, dependencies = TRUE)</code></pre>
 </div>
 <div id="cran以外からのインストール" class="section level1">
 <h1>CRAN以外からのインストール</h1>
-<p>試験的なパッケージなどは<a href="https://cran.r-project.org/" title="CRAN">CRAN</a>には登録されていないことがあります。このようなパッケージを使いたい場合は<code>devtool</code>パッケージを利用します。例えばGitHubからインストーする場合は<code>devtools::install_github</code>関数を用います。この関数で注意すべき点はリポジトリの指定方法です。必ずGitHubのユーザアカウントと共に指定して下さい。</p>
+<p>試験的なパッケージなどは<a href="https://cran.r-project.org/" title="CRAN">CRAN</a>には登録されていないことがあります。このようなパッケージを使いたい場合は<strong><code>devtool</code></strong>パッケージを利用します。例えばGitHubからインストーする場合は<strong><code>devtools::install_github</code></strong>関数を用います。この関数で注意すべき点はリポジトリの指定方法です。必ずGitHubのユーザアカウントと共に指定して下さい。</p>
 <pre><code>install.packages(&quot;devtools&quot;)        # インストールされていない場合のみ
 git_rep &lt;- c(&quot;account/repository&quot;)
 devtools::install_github(git_rep)</code></pre>
-<p><code>devtools</code>パッケージを用いるとGitHub以外にもBioconductorやbitbucket、SVNのリポジトリ等からもインストールが可能になります。詳しくは<code>devtools</code>パッケージのヘルプを参照して下さい。 　</p>
+<p><strong><code>devtools</code></strong>パッケージを用いるとGitHub以外にもBioconductorやbitbucket、SVNのリポジトリ等からもインストールが可能になります。詳しくは<strong><code>devtools</code></strong>パッケージのヘルプを参照して下さい。 　</p>
 </div>
 <div id="インストールが失敗する場合" class="section level1">
 <h1>インストールが失敗する場合</h1>
@@ -585,13 +587,13 @@ PATH and PKG_CONFIG_PATH contains a openssl.pc file. If pkg-config
 is unavailable you can set INCLUDE_DIR and LIB_DIR manually via:
 R CMD INSTALL --configure-vars=&#39;INCLUDE_DIR=... LIB_DIR=...&#39;
 --------------------------------------------------------------------</code></pre>
-<p>このようなエラーメッセージが表示された場合は、まず、<code>r-base-dev</code>というアプリケーションモジュールがインストールされているか確認してください。Ubuntu環境の場合はターミナル（端末）から以下のコマンドを実行することでインストールの有無を確認できます。</p>
+<p>このようなエラーメッセージが表示された場合は、まず、<strong><code>r-base-dev</code></strong>というアプリケーションモジュールがインストールされているか確認してください。Ubuntu環境の場合はターミナル（端末）から以下のコマンドを実行することでインストールの有無を確認できます。</p>
 <p>Ubuntuの場合</p>
 <pre><code>dpkg -l | grep r-base-dev</code></pre>
-<p>出力結果に<code>r-base-dev</code>が表示されない場合はインストールされていませんので、<code>r-base-dev</code>を<a href="./install.html">Install R</a>を参考にしてインストールしてください。</p>
+<p>出力結果に<strong><code>r-base-dev</code></strong>が表示されない場合はインストールされていませんので、<strong><code>r-base-dev</code></strong>を<a href="./install.html">Install R</a>を参考にしてインストールしてください。</p>
 <div id="それでもインストールが失敗する場合" class="section level2">
 <h2>それでもインストールが失敗する場合</h2>
-<p><code>r-base-dev</code>がインストールされているにも関わらずインストールが失敗する場合は、エラーメッセージの“ANTICONF ERROR”に注目して不足しているライブラリを手動でインストールします。上記の場合は<code>libssl-dev</code>（Ubuntuの場合）がインストールされていませんので、ターミナル（端末）から以下のコマンドを実行してインストールします。</p>
+<p><strong><code>r-base-dev</code></strong>がインストールされているにも関わらずインストールが失敗する場合は、エラーメッセージの<strong>“ANTICONF ERROR”</strong>に注目して不足しているライブラリを手動でインストールします。上記の場合は<strong><code>libssl-dev</code></strong>（Ubuntuの場合）がインストールされていませんので、ターミナル（端末）から以下のコマンドを実行してインストールします。</p>
 <p>Ubuntuの場合</p>
 <pre><code>sudo apt-get install libssl-dev</code></pre>
 <p>　</p>
@@ -663,7 +665,7 @@ install.packages(pkgs = pkg_lst)
 <p>　</p>
 <hr />
 <!-- Include Footer -->
-<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" title="CC BY-NC-SA 4.0 icon" alt="Sampo Suzuki" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0</a>, Sampo Suzuki [2017-12-19 13:13(JST)]</p>
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" title="CC BY-NC-SA 4.0 icon" alt="Sampo Suzuki" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0</a>, Sampo Suzuki [2018-03-05 22:50(JST)]</p>
 </div>
 
 

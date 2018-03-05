@@ -1,51 +1,62 @@
 ---
-title: "Ubuntu"
+title: "Ubuntu環境の構築"
 output: 
   html_document:  
     number_section: no
 ---
 
-<!-- Include Common Links -->
-```{r ubuntu, child="../common/links.Rmd", include=FALSE}
+<!-- Include shared Links -->
+```{r ubuntu, child="../shared/links.Rmd", include=FALSE}
 ```
 
-分析環境としてのR/RStudioはWindows環境よりもLinux環境の方が動作が軽快であり分析効率が高くなります（特にPDFを作成するために必要なTeX環境は圧倒的にLinux環境の方が高速に生成できます）。そこで、本ページではLinuxに詳しくない人でもLinuxで[R][R]/[RStudio Desktop][RSD]を使える環境を整えるための情報を整理してあります。
-
-
-# Install Linux
-Linuxには様々なディストーションと呼ばれる配布形態がありますが、[R][R]/[RStudio Desktop][RSD]を利用する場合は、
+分析環境としてのR/RStudioはWindows環境よりもLinux環境の方が動作が軽快であり分析効率が高くなります（特にPDFを作成するために必要なTeX環境は圧倒的にLinux環境の方が高速に生成できます）。そこで、本ページではLinuxに詳しくない人でもLinuxで[R][R]/[RStudio Desktop][RSD]を使える環境を整えるための情報を整理してあります。  
+　  
+Linuxには様々なディストリビューションと呼ばれる配布形態がありますが、[R][R]/[RStudio Desktop][RSD]を利用する場合は、
 
 * Ubuntu/Debian系
 * Fedora/RedHat/openSUSE系
 
-の二つの選択肢があります。情報の豊富さを考えるとDesktop系として広く普及しているUbuntu/Debian系を選択するのがベターだと思いますので、以降は[Ubuntu Desktop][UJT]を前提に説明します。なお、サーバ系に関しては本資料では説明しません。
+の二つの選択肢がありますが、後述の日本語入力パッチや情報の豊富さを考えるとDesktop系として広く普及しているUbuntu/Debian系を選択するのがベターだと思いますので、以降は[Ubuntu Desktop][UJT]を前提に説明します。なお、サーバ系に関しては本資料では説明しません。  
+　  
 
+# Ubuntu
 ## Ubuntuの入手
-日本語環境に必要なパッケージ全てが含まれている、[Ubuntu Desktop Japanese Remix][UDJR]を入手するのが簡単です。複数のバージョンが提供されていますが、サポート期限の長いLTS(Long Term Support)版のISOイメージを入手するのがベターです。
+日本語環境に必要なパッケージ全てが含まれている[Ubuntu Desktop Japanese Remix][UDJR]を入手するのが最も簡単です。複数のバージョンが提供されていますがサポート期限の長いLTS(Long Term Support)版のISOイメージを入手するのがベストです。
+
+**注意**
+
+* 後述のRStudioの日本語入力パッチを使用する場合は必ず**_16.04LTS_**をインストールしてください。それ以外のバージョンでは日本語入力パッチが正しく動きません。
+* BIOS（含む互換モード）でインストールする場合は必ずISOイメージを焼いたDVD媒体を利用してください。USBメモリでインストール媒体を作成するとUEFIモードでインストールされてしまいます。  
+　  
 
 ### 補足
 UbuntuはWindowsに比べると軽快に動作するように感じますが、以前と異なり最新版LTSでは相応のハードウェアリソースを要求します。特にDesktopはSeverと異なりGUI関連でリソースが必要になります。Ubuntu公式での[公式推奨環境](https://www.ubuntu.com/download/desktop)は以下の通りです。参考までにR/RStudio + TeX/LaTeXを使うのであれば表の右側程度の環境を準備した方がベターです。
 
-項目  | 公式推奨環境               | 非公式推奨環境
+項目  | 公式推奨環境               | 参考（おすゝめ環境）
 ----- | -------------------------- | ----------------------------
 CPU   | 2GHz dual core or better   | 4 core (dual core 2 thread)
 RAM   | 2GB                        | 8GB以上
 Disk  | 25GB of free space or more | 64GB以上
 Media | DVD drive or USB port      | 公式推奨環境に同じ
 
-また、GUIであるUnityの評判はあまり良くないようです（個人的には、そんなに使いにくさを感じませんが）。このあたりは好みですので使い勝手が良くないと感じる場合はUbuntuの公式バリエーションである[Ubuntu flavors](https://www.ubuntu.com/download/ubuntu-flavours)から選択するのも手です。
+また、GUIであるUnityの評判はあまり良くないようです（個人的には、そんなに使いにくさを感じませんが）。このあたりは好みですので使い勝手が良くないと感じる場合はUbuntuの公式バリエーションである[Ubuntu flavors](https://www.ubuntu.com/download/ubuntu-flavours)から選択するのも手です。  
+　  
 
 ## Ubuntuのインストール
-[Ubuntu Desktop Japanese Remix][UDJR]のISOイメージを入手しましたらDVDに焼き、DVDからブートしてインストールを実行します。基本的にはガイダンスにしたがってインストールするだけですので詳細は割愛します。最新のチップセットや特殊なハードウェアでない限り問題なくインストールできるはずです。なお、マルチブートを用いてWindowsと共存させたい場合は、Google等でその方法を検索して下さい。インストールが完了して[Ubuntu Desktop Japanese Remix][UDJR]に無事ログインできたら日本語が使えるか確認しておきます。
+[Ubuntu Desktop Japanese Remix][UDJR]のISOイメージを入手しましたらDVDに焼きDVDからブートしてインストールを実行します。基本的にはガイダンスにしたがってインストールするだけですので詳細は割愛します。最新のチップセットや特殊なハードウェアでない限り問題なくインストールできるはずです。なお、マルチブートを用いてWindowsと共存させたい場合は、Google等でその方法を検索して下さい。インストールが完了して[Ubuntu Desktop Japanese Remix][UDJR]に無事ログインできたら日本語が使えるか確認しておきます。  
+　  
 
 ### 暗号化時の注意
-インストール時にディスク暗号化オプションを選択した場合、パスワードに記号を使う場合は注意が必要です。これはインストール時にJISキーボードで記号を入力しても初回のUbuntu起動時（コールドスタート時）等にはASCIIキーボードとして認識されるためです。この誤認識により記号のキー位置がJISではなくASCIIとして認識されてしまうことがあります。
+インストール時にディスク暗号化オプションを選択した場合、パスワードに記号を使う場合は注意が必要です。これはインストール時にJISキーボードで記号を入力しても初回のUbuntu起動時（コールドスタート時）等にはASCIIキーボードとして認識されるためです。この誤認識により記号のキー位置がJISではなくASCIIとして認識されてしまうことがあります。  
+　  
 
 ### 追加パッケージの利用方法
-日本語環境の含まれない[Ubuntu][U]のオリジナル版DVDでインストールしてしまったり、日本語環境が使えない場合は、[追加パッケージの利用方法][UAP]にしたがってパッケージリポジトリを追加してアップデートを行って下さい。
+日本語環境の含まれない[Ubuntu][U]のオリジナル版DVDでインストールしてしまったり、日本語環境が使えない場合は、[追加パッケージの利用方法][UAP]にしたがってパッケージリポジトリを追加してアップデートを行って下さい。  
+　  
 
 ### アップグレードの確認
-[Ubuntu Desktop][UJT]をアップグレードした場合等は[追加パッケージの利用方法][UAP]にしたがって、日本語環境もアップグレードしておきます。まず、［Ctrl+Alt+t］を押下して起動させたターミナル（端末）を起動し以下のコマンドを実行しGPG鍵とレポジトリを追加します。
+[Ubuntu Desktop][UJT]をアップグレードした場合等は[追加パッケージの利用方法][UAP]にしたがって、日本語環境もアップグレードしておきます。まず、［Ctrl+Alt+t］を押下して起動させたターミナル（端末）を起動し以下のコマンドを実行しGPG鍵とレポジトリを追加します。  
+
 ```
 wget -q https://www.ubuntulinux.jp/ubuntu-ja-archive-keyring.gpg -O- | sudo apt-key add -
 wget -q https://www.ubuntulinux.jp/ubuntu-jp-ppa-keyring.gpg -O- | sudo apt-key add -
@@ -58,23 +69,29 @@ sudo apt-get update
 sudo apt-get upgrade
 ```
 
-以上で[Ubuntu Desktop][UJT]のインストールは終了です。GUI環境であるUnityの操作性がWindowsとは、かなり異なるため慣れるまでは戸惑うことも多いと思いますがWindowsとは異なった快適性もありますので、色々と操作してお楽しみ下さい。
+以上で[Ubuntu Desktop][UJT]のインストールは終了です。GUI環境であるUnityの操作性がWindowsとは、かなり異なるため慣れるまでは戸惑うことも多いと思いますがWindowsとは異なった快適性もありますので、色々と操作してお楽しみ下さい。  
+　  
 
 ## その他
 ### 無線LAN
-無線LANで接続を行う場合、アクセスポイントのSSIDが秘匿（ステルスモードに設定）されていると無線LANの接続ができない場合があります。この場合は、アクセスポイントの設定を変更してください。
+無線LANで接続を行う場合、アクセスポイントのSSIDが秘匿（ステルスモードに設定）されていると無線LANの接続ができない場合があります。この場合はアクセスポイントの設定を変更してください。  
+　  
 
 ### Bluetooth
-一度、Bluetooth機器を接続した後にシャットダウン、起動を行うとBluetooth機器を認識しなくなる場合があります。調べてみるとPC側のBluetoothのTx(送信)側がエラーを起こしているのが原因のようで、Atheros(Qualcomm Atheros)のチップを使った機種で発生しやすいようです。ただ、試してみた限り根本的な解決策はないようですので、Bluetoothドングルを使うことで回避した方が早そうです。
+一度、Bluetooth機器を接続した後にシャットダウン、起動を行うとBluetooth機器を認識しなくなる場合があります。調べてみるとPC側のBluetoothのTx(送信)側がエラーを起こしているのが原因のようで、Atheros(Qualcomm Atheros)のチップを使った機種で発生しやすいようです。ただ、試してみた限り根本的な解決策はないようですので、Bluetoothドングルを使うことで回避した方が早そうです。  
+　  
 
 #### 回避方法
-ネットで言われている回避方法は、標準でインストールされている`bluez`を`blueman`に入れ替える方法です。ただ、不安定な状況が発生する時は発生しますし、Ubuntuに標準で入っているコントロールセンターが削除されてしまう弊害もあります。
+ネットで言われている回避方法は、標準でインストールされている`bluez`を`blueman`に入れ替える方法です。ただ、不安定な状況が発生する時は発生しますし、Ubuntuに標準で入っているコントロールセンターが削除されてしまう弊害もあります。  
+　  
 
 #### 参考
-[Ask ubuntu](http://askubuntu.com/questions/787023/bluetooth-not-working-on-ubuntu-16-04-lts)
+[Ask ubuntu](http://askubuntu.com/questions/787023/bluetooth-not-working-on-ubuntu-16-04-lts)  
+　  
 
 ### 最初の設定
-[R][R]や[RStudio Desktop][RSD]等をインストールする前にUbuntuの基本的な設定を行っておくことをおすゝめします。具体的な設定方法は[こちら](http://sicklylife.at-ninja.jp/memo/ubuntu1604/settings.html#mozc_ppa)を参考にしてください。
+[R][R]や[RStudio Desktop][RSD]等をインストールする前にUbuntuの基本的な設定を行っておくことをおすゝめします。具体的な設定方法は[こちら](http://sicklylife.at-ninja.jp/memo/ubuntu1604/settings.html#mozc_ppa)を参考にしてください。  
+　  
 
 #### 最低限の設定
 紹介したサイトでの設定は多岐に渡りますので、最低限、設定しておくべき項目を上げておきます。
@@ -85,99 +102,127 @@ sudo apt-get upgrade
 * [日本語入力ソフト(Mozc)のアップデート](http://sicklylife.at-ninja.jp/memo/ubuntu1604/settings.html#mozc_ppa)
 * [HDDのロード/アンロード抑制](http://sicklylife.at-ninja.jp/memo/ubuntu1604/settings.html#load_unload)
 
+　  
 
-# Install R
-[Ubuntu Desktop][UJT]の準備ができましたら、まず、[R][R]本体をインストールします。[UbuntuにRをインストール](http://qiita.com/wonder_zone/items/c0cb4033c2a599b3d662)に記載されているように単純に`sudo apt-get install r-base`を実行してしまうと古いバージョンが登録されてしまうようなので以下の手順にしたがってインストールします。なお、インストールの公式手順は[CRANのREADME](https://cran.ism.ac.jp/bin/linux/ubuntu/README.html)にて開示されています。
+# R (Base R)
+[Ubuntu Desktop][UJT]の準備ができましたら、まず、[R][R]本体をインストールします。[UbuntuにRをインストール](http://qiita.com/wonder_zone/items/c0cb4033c2a599b3d662)に記載されているように単純に`sudo apt-get install r-base`を実行してしまうと古いバージョンが登録されてしまうようなので以下の手順にしたがってインストールします。なお、インストールの公式手順は[CRANのREADME](https://cran.ism.ac.jp/bin/linux/ubuntu/README.html)にて開示されています。  
+　  
 
 ## ミラーサイトの登録
 インストールを行う前にCRANまたはCRANのミラーサイトをRepositoryとして登録しておきます。日本であれば統計数理研究所がベターだと思いますが、環境に応じて[CRAN Mirrors](https://cran.ism.ac.jp/mirrors.html)から選択して下さい。
-ターミナル（端末）から以下を実行すれば登録できます。
+ターミナル（端末）から以下を実行すれば登録できます。  
 
 ```
 sudo add-apt-repository 'deb https://cran.ism.ac.jp/bin/linux/ubuntu xenial/'
 ```
 
-### ツールの場合
-GUIツールを用いて登録するには［システム設定］-［ソフトウェアのアップデート］-［他のソフトウェア］で以下のサイトを追加します。
-  
-![ミラーサイトの登録](./fig/add_mirror.png)
+　  
 
-```
-deb https://cran.ism.ac.jp/bin/linux/ubuntu xenial/
-```
+<!-- ### ツールの場合 -->
+<!-- GUIツールを用いて登録するには［システム設定］-［ソフトウェアのアップデート］-［他のソフトウェア］で以下のサイトを追加します。 -->
 
-### エディタの場合
-システム管理者（root）権限でエディタを起動し、
-```
-sudo gedit /etc/apt/sources.list  
-```
+<!-- ![ミラーサイトの登録](./fig/add_mirror.png) -->
 
-以下の一行を追加（Ubuntu 16.04 LTSの場合）して保存します。
-```
-deb https://cran.ism.ac.jp/bin/linux/ubuntu xenial/
-```
+<!-- ``` -->
+<!-- deb https://cran.ism.ac.jp/bin/linux/ubuntu xenial/ -->
+<!-- ``` -->
 
-Ubuntuのバージョン（コードネーム）が分からない場合は、ターミナル（端末）で以下のコマンドを実行します。`DISTRIB_CODENAME`の項がバージョン（コードネーム）ですので、コピーしておきます。
-```
-cat /etc/lsb-release
-```
+<!-- ### エディタの場合 -->
+<!-- システム管理者（root）権限でエディタを起動し、 -->
+<!-- ``` -->
+<!-- sudo gedit /etc/apt/sources.list   -->
+<!-- ``` -->
+
+<!-- 以下の一行を追加（Ubuntu 16.04 LTSの場合）して保存します。 -->
+<!-- ``` -->
+<!-- deb https://cran.ism.ac.jp/bin/linux/ubuntu xenial/ -->
+<!-- ``` -->
+
+<!-- Ubuntuのバージョン（コードネーム）が分からない場合は、ターミナル（端末）で以下のコマンドを実行します。`DISTRIB_CODENAME`の項がバージョン（コードネーム）ですので、コピーしておきます。 -->
+<!-- ``` -->
+<!-- cat /etc/lsb-release -->
+<!-- ``` -->
 
 ## 公開鍵の登録
-次にターミナル（端末）から以下のコマンドを実行して公開鍵を入手してインストールします。公開鍵を入手するために必要な`Key ID`は現時点では`E084DAB9`ですが、変わる可能性もありますので、上手くいかない場合は、[CRANのREADME](https://cran.ism.ac.jp/bin/linux/ubuntu/README.html)で確認して下さい。
+次にターミナル（端末）から以下のコマンドを実行して公開鍵を入手してインストールします。公開鍵を入手するために必要な`Key ID`は現時点では`E084DAB9`ですが、変わる可能性もありますので、上手くいかない場合は、[CRANのREADME](https://cran.ism.ac.jp/bin/linux/ubuntu/README.html)で確認して下さい。  
+
 ```
 gpg --keyserver keyserver.ubuntu.com --recv-key E084DAB9
 gpg -a --export E084DAB9 | sudo apt-key add -
 ```
 
+　  
+
 ### Rのインストール
-最後にターミナル（端末）から以下のコマンドを実行してRをインストールします。これで、必要となるソフトウェアは一通りインストールされます。
+最後にターミナル（端末）から以下のコマンドを実行してRをインストールします。これで、必要となるソフトウェアは一通りインストールされます。  
+
 ```
 sudo apt-get update
 sudo apt-get install r-base
 ```
 
-なお、`r-cran-*`という名称のRのパッケージもリポジトリからインストール可能ですが、パッケージのバージョンがCRANよりが古い場合がありますので、Rのパッケージを追加する場合はCRANからインストールすることをおすゝめします。
+なお、`r-cran-*`という名称のRのパッケージもリポジトリからインストール可能ですが、パッケージのバージョンがCRANよりが古い場合がありますので、Rのパッケージを追加する場合はCRANからインストールすることをおすゝめします。  
 
-CRANからRのパッケージをインストールする際には、`r-base-dev`に含まれているソフトウェアを利用してコンパイルが行われます。`r-base-dev`がインストールされてコンパイルエラーになりパッケージがインストールされませんので注意して下さい。必要なソフトウェアがインストールされていることの確認は以下のコマンドをターミナル（端末）から実行して下さい。`r-base-dev`が表示されればインストールされています。
+CRANからRのパッケージをインストールする際には、`r-base-dev`に含まれているソフトウェアを利用してコンパイルが行われます。`r-base-dev`がインストールされてコンパイルエラーになりパッケージがインストールされませんので注意して下さい。必要なソフトウェアがインストールされていることの確認は以下のコマンドをターミナル（端末）から実行して下さい。`r-base-dev`が表示されればインストールされています。  
+
 ```
 dpkg -l | grep r-base
 ```
 
-#### Lixun Mintの場合
-Linux Mintの場合は基本的にソフトウェアマネージャからインストールを行いますが、Ubuntuと異なり`r-base`をインストールしただけでは必要なソフトウェアがインストールされませんので、別途、インストールが必要になります。別途、インストールが必要なソフトウェアはCRANからRのパッケージをインストールする際に必要なソフトウェアですので、必ずインストールして下さい。
+　  
 
-```
-# 実際にはソフトウェアマネージャから実行する
-sudo apt-get update
-sudo apt-get install r-base
-sudo apt-get install r-base-core
-sudo apt-get install r-base-dev
-```
+<!-- #### Lixun Mintの場合 -->
+<!-- Linux Mintの場合は基本的にソフトウェアマネージャからインストールを行いますが、Ubuntuと異なり`r-base`をインストールしただけでは必要なソフトウェアがインストールされませんので、別途、インストールが必要になります。別途、インストールが必要なソフトウェアはCRANからRのパッケージをインストールする際に必要なソフトウェアですので、必ずインストールして下さい。   -->
 
-# Install R Studio Desktop
+<!-- ``` -->
+<!-- # 実際にはソフトウェアマネージャから実行する -->
+<!-- sudo apt-get update -->
+<!-- sudo apt-get install r-base -->
+<!-- sudo apt-get install r-base-core -->
+<!-- sudo apt-get install r-base-dev -->
+<!-- ``` -->
+
+# RStudio Desktop
 ## RStudioの入手
-まず、[RStudio Desktop](https://www.rstudio.com/products/rstudio/download/)からUbuntu用のインストーラをダウンロードします。
+まず、[RStudio Desktop](https://www.rstudio.com/products/rstudio/download/)からUbuntu用のインストーラをダウンロードします。  
+　  
 
-##　RStudioのインストール
-ダウンロードしたRStudioのインストーラを右クリックして［ソフトウェアのインストールで開く］を選択します。
+## libjpeg62のインストール
+RStudioをインストールするには`libjpeg62`が必要となります。`libjpeg62`がインストールされていない場合もありますので以下のコマンドでインストールされているかを確認してください。  
+
+```
+dpkg -l | grep libjpeg62
+```
+
+インストールされていない場合は、以下のコマンドでインストールしておきます。  
+
+```
+sudo apt-get update
+sudo apt-get install libjpeg62
+```
+
+　  
+
+## RStudioのインストール
+ダウンロードしたRStudioのインストーラを右クリックして［ソフトウェアのインストールで開く］を選択します。  
 
 ![RStudioのインストール](./fig/install_rstudio.png)
 
-Ubuntu Softwareのウィンドウが開いてインストールするかどうか確認してきますので、［インストール］ボタンをクリックしてインストールを行います。
+Ubuntu Softwareのウィンドウが開いてインストールするかどうか確認してきますので、［インストール］ボタンをクリックしてインストールを行います。  
+
 ![Ubuntu Software](./fig/installer.png)
 
-## 日本語入力のための処理
+　  
+
+## 日本語入力のためのパッチ
 RStudioのインストールが完了しましたら、RStudioで日本語入力ができるように[Ubuntu 16.04 + Fcitx + RStudio 1.0で日本語を入力する方法](http://blog.goo.ne.jp/ikunya/e/8508d21055503d0560efc245aa787831)で公開されているパッケージをインストールします。
-［Ctrl+Alt+t］を押下して起動させたターミナル（端末）から以下のコマンドを実行します。
+［Ctrl+Alt+t］を押下して起動させたターミナル（端末）から当該ページに記載されているコマンドを実行します。  
 
-```
-wget http://ikuya.info/tmp/fcitx-qt5-rstudio.tar.gz
-tar xf fcitx-qt5-rstudio.tar.gz
-cd fcitx-qt5-rstudio
-sudo apt install ./fcitx-frontend-qt5-rstudio_1.0.5-1_amd64.deb ./libfcitx-qt5-1-rstudio_1.0.5-1_amd64.deb
-```
+**注意**
+RStudio **1.0.153以降**の場合は「[Ubuntu 16.04 + Fcitx + RStudio 1.0.153以降で日本語を入力する方法](http://blog.goo.ne.jp/ikunya/e/48b3e547dd2b8c7cfbe2a8dadc0b962a)」を参照してください。  
 
-なお、ダウンロードしたファイルが不安な方はハッシュ値SHA256`84375fba843257d2f91af646e5196bba9f6dcfb79170c543646d7c9840c9a94f`を確認してからインストールして下さい。また、ソースからビルドしたい方は同ページを参照してビルドして下さい。SHA256の確認方法は以下の以下の通りで詳細は`man sha256sum`
+なお、ダウンロードしたファイルが不安な方はハッシュ値（SHA256）を確認してからインストールして下さい。また、ソースからビルドしたい方は同ページを参照してビルドして下さい。SHA256の確認方法は以下の以下の通りで詳細は`man sha256sum`  
+
 ```
 sha256sum fcitx-qt5-rstudio.tar.gz
 ```
@@ -187,13 +232,16 @@ sha256sum fcitx-qt5-rstudio.tar.gz
 man sha256sum
 ````
 
-# Rコマンダーのインストール
-Rcmdr(R Commander)は、CRANからインストールします。
+　  
+
+# R Commander
+Rcmdr(R Commander)は必要に応じてCRANからインストールします。  
+　  
 
 ## エラーが出る場合
-Rcmdrのインストール中に以下のようなエラーが表示されてインストール出来ない場合は、`r-base-dev`がインストールされていない可能性がありますので前述の方法で再確認してください。
+Rcmdrのインストール中に以下のようなエラーが表示されてインストール出来ない場合は、`r-base-dev`がインストールされていない可能性がありますので前述の方法で再確認してください。  
 
-なお、`r-base-dev`がインストールされているにもかかわらず下記のようなエラーが出た場合は、エラーメッセージにあるソフトウェア、この場合は`libssl-dev`を個別にインストールして下さい。
+なお、`r-base-dev`がインストールされているにもかかわらず下記のようなエラーが出た場合は、エラーメッセージにあるソフトウェア、この場合は`libssl-dev`を個別にインストールして下さい。  
 
 ```
 * installing *source* package ‘openssl’ ...
@@ -213,16 +261,17 @@ R CMD INSTALL --configure-vars='INCLUDE_DIR=... LIB_DIR=...'
 --------------------------------------------------------------------
 ```
 
-`libssl-dev`はターミナル（端末）で以下のコマンドを実行してインストールします。
+`libssl-dev`はターミナル（端末）で以下のコマンドを実行してインストールします。  
 
 ```
 sudo apt-get install libssl-dev
 ```
 
-なお、`r-base-dev`がインストールされていない場合、`libxml2-dev`や`libcurl4-openssl-dev`などのソフトウェアも見つからない旨のエラーメッセージが出ることがあります。
+なお、`r-base-dev`がインストールされていない場合、`libxml2-dev`や`libcurl4-openssl-dev`などのソフトウェアも見つからない旨のエラーメッセージが出ることがあります。  
+　  
 
 ### エラーの確認方法
-Rcmdrのインストール中にエラーがでた場合、エラーメッセージ中の"ANTICONF ERROR"に着目します。Ubuntu環境では2行目にある`deb:`以降のメッセージが該当します。。この場合、`libxml2-dev`ライブラリがインストールされていませんので、コンソール（端末）からライブラリをインストールします。
+Rcmdrのインストール中にエラーがでた場合、エラーメッセージ中の"ANTICONF ERROR"に着目します。Ubuntu環境では2行目にある`deb:`以降のメッセージが該当します。。この場合、`libxml2-dev`ライブラリがインストールされていませんので、コンソール（端末）からライブラリをインストールします。  
 
 ```
 ------------------------- ANTICONF ERROR ---------------------------
@@ -237,44 +286,50 @@ R CMD INSTALL --configure-vars='INCLUDE_DIR=... LIB_DIR=...'
 --------------------------------------------------------------------
 ```
 
+　  
 
-# Install Git
-RStudioではVCS(Version Control System)としてGitまたはSVCが利用できます。VCSを用いるとソースの版管理ができますので、VCSの利用をおすゝめします。VCSとしはローカル管理だけでなくリモート管理が可能になるGitHubやGitHub Pagesの利用を考慮して現在の主流とも言えるGitを選択するのがベターです。
+# Git
+RStudioではVCS(Version Control System)としてGitまたはSVCが利用できます。VCSを用いるとソースの版管理ができますので、VCSの利用をおすゝめします。VCSとしはローカル管理だけでなくリモート管理が可能になるGitHubやGitHub Pagesの利用を考慮して現在の主流とも言えるGitを選択するのがベターです。  
 
-## Gitのインストール
-［Ctrl+Alt+t］を押下して起動させたターミナル（端末）から以下のコマンドを実行してGitをインストールします。
+［Ctrl+Alt+t］を押下して起動させたターミナル（端末）から以下のコマンドを実行してGitをインストールします。  
 
 ```
 sudo apt-get update
 sudo apt-get install git
 ```
 
-##　Gitの初期設定
-インストールが完了したら続いて初期設定でユーザ名とメールアドレスを登録します。この設定はこの後にでてくるGit GUIクライアント側で設定しても構いません。
+　  
+
+## Gitの初期設定
+インストールが完了したら続いて初期設定でユーザ名とメールアドレスを登録します。この設定はこの後にでてくるGit GUIクライアント側で設定しても構いません。  
 
 ```
 git config --global user.name "User Name"
 git config --global user.email "hoge@hoge.com"
 ```
+
 * "User Name"と"hoge@hoge.com"は、任意のユーザ名とメールアドレスに置き換えて下さい
 
-なお、Gitではファイル名に日本語を利用する場合には文字化け対策が必要ですが、RStudioを使う場合は日本語ファイル名はご法度ですので日本語ファイル名の文字化け対策は必須ではありませんので、ここでは省略します。
+なお、Gitではファイル名に日本語を利用する場合には文字化け対策が必要ですが、RStudioを使う場合は日本語ファイル名はご法度ですので日本語ファイル名の文字化け対策は必須ではありませんので、ここでは省略します。  
+　  
 
-# Install Git Client
+## Git Client
 Gitはコマンドライン操作になりますので、GUI操作できるクライアントソフトウェアをインストールすることをおすゝめします。RStudioはGit GUIクライアントとして使えますが、細かいところまで操作が可能なGit GUIクライアントも準備しておくほうが良いでしょう。Ubuntu環境では
 
 * GitKraken
 * SmartGit
 
-のどちらかが良いかと思います。GitKrakenはフリーのGit GUIクライアントで比較的シンプルなインターフェースが特徴です。基本的な操作に絞られており履歴を追いかけやすいです。一方、SmartGitは非商用利用に限りフリーですが、一通りの操作ができるようになっており、ソースの比較もしたい場合は、こちらの方がおすゝめです。
+のどちらかが良いかと思います。GitKrakenはフリーのGit GUIクライアントで比較的シンプルなインターフェースが特徴です。基本的な操作に絞られており履歴を追いかけやすいです。一方、SmartGitは非商用利用に限りフリーですが、一通りの操作ができるようになっており、ソースの比較もしたい場合は、こちらの方がおすゝめです。  
+　  
 
-### Install GitKraken
-GitKrakenは開発元の[ダウンロードページ](https://www.gitkraken.com/download)からDebianパッケージ（Linux(.dev)）をダウンロードして、Ubuntu Softwareからインストールします。
+### GitKraken
+GitKrakenは開発元の[ダウンロードページ](https://www.gitkraken.com/download)からDebianパッケージ（Linux(.dev)）をダウンロードして、Ubuntu Softwareからインストールします。  
+　  
 
-### Install SmartGit
-SmartGitはJavaベースのソフトウェアですので、後述のJava環境（JREまたはJDK）を別途インストールする必要があります。
+### SmartGit
+SmartGitはJavaベースのソフトウェアですので、後述のJava環境（JREまたはJDK）を別途インストールする必要があります。  
 
-開発元の[ダウンロードページ](http://www.syntevo.com/smartgit/download)からDebianパッケージ(deb)をダウンロードして、Ubuntu Softwareからインストールするか以下のコマンドを実行してPPA(Personal Package Archives、非公式リポジトリ)からインストールします。
+開発元の[ダウンロードページ](http://www.syntevo.com/smartgit/download)からDebianパッケージ(deb)をダウンロードして、Ubuntu Softwareからインストールするか以下のコマンドを実行してPPA(Personal Package Archives、非公式リポジトリ)からインストールします。  
 
 ```
 sudo add-apt-repository ppa:eugenesan/ppa
@@ -283,20 +338,24 @@ sudo apt-get update
 sudo apt-get install smartgit
 ```
 
-## Install Java
-SmartGitを利用する場合はJava環境が必要ですので、以下の手順にしたがってインストールします。
+## Java Runtime
+SmartGitを利用する場合はJava環境が必要ですので、以下の手順にしたがってインストールします。  
+　  
 
 ### JRE
-JRE(Java Runtime Enveironment)は、文字通りJavaの実行環境のみを提供します。デフォルトのJREは、Open Javaで以下の手順でインストールします。
+JRE(Java Runtime Enveironment)は、文字通りJavaの実行環境のみを提供します。デフォルトのJREは、Open Javaで以下の手順でインストールします。  
+
 ```
 sudo apt-get update
 sudo apt-get install default-jre
 ```
 
-なお、JREをインストールしてもSmartGitが起動しない場合は、JDKをインストールしてみてください。
+なお、JREをインストールしてもSmartGitが起動しない場合は、JDKをインストールしてみてください。  
+　  
 
 ### JDK
-JDK(Java Development Kit)はJREと異なりJavaでプログラム開発する場合に用いる環境です。現在は、Oracle Javaとなっており、以下の手順でインストールします。
+JDK(Java Development Kit)はJREと異なりJavaでプログラム開発する場合に用いる環境です。現在は、Oracle Javaとなっており、以下の手順でインストールします。  
+　  
 
 #### Java 8
 Java 8は以下の手順でインストールします。
@@ -307,72 +366,100 @@ sudo apt-get update
 sudo apt-get install oracle-java8-installer
 ```
 
-#### Java 9
-最新版のJava 9は以下の手順でインストールします。
-```
-sudo add-apt-repository ppa:
-sudo apt-get update
+<!-- #### Java 9 -->
+<!-- 最新版のJava 9は以下の手順でインストールします。 -->
+<!-- ``` -->
+<!-- sudo add-apt-repository ppa: -->
+<!-- sudo apt-get update -->
 
-sudo apt-get install oracle-java9-installer
-```
+<!-- sudo apt-get install oracle-java9-installer -->
+<!-- ``` -->
 
 (https://www.digitalocean.com/community/tutorials/how-to-install-java-with-apt-get-on-ubuntu-16-04)
 
+　  
 
-# Install TeX Live
-R Markdownを使ってPDFを作成する場合にはTeX/LaTeX環境が必要です。WindowsでもMac OSでも使えるTeX Liveをインストールしておくのがおすゝめです。TeX Liveには様々なTeX/LaTeXが含まれていますが、ディスク容量を必要とするもののFullインストールしておくのが何かと便利です。
+# TeX Live
+R Markdownを使ってPDFを作成する場合にはTeX/LaTeX環境が必要です。WindowsでもMac OSでも使えるTeX Liveをインストールしておくのがおすゝめです。TeX Liveには様々なTeX/LaTeXが含まれていますが、ディスク容量を必要とするもののFullインストールしておくのが何かと便利です。  
+　  
 
 ## Ubuntuリポジトリを使う場合
-一番簡単な方法ですが、最新版とは限りませんのでインストール後にアップデートが必要になる場合があります。
+一番簡単な方法ですが最新版とは限りませんのでインストール後にアップデートが必要になる場合があります。  
+
 ```
 sudo apt-get update
 sudo apt-get install texlive-full
 ```
 
+　  
+
 ## ネットワークインストーラを使う場合
-［Ctrl+Alt+t］を押下して起動させたターミナル（端末）から以下のコマンドを実行してネットワークインストーラを入手し展開します。
+［Ctrl+Alt+t］を押下して起動させたターミナル（端末）から以下のコマンドを実行してネットワークインストーラを入手し展開します。  
 
 ```
 wget http://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz
 tar xvf install-tl-unx.tar.gz
 ```
 
+　  
+
 ###　インストール
-[インストールガイド](https://texwiki.texjp.org/?Linux#texlive)にしたがって展開したインストーラのディレクトリに移動しインストーラを起動します。起動後、コマンド入力が促されますので`I`を入力してインストールを行います。インストール完了までにはかなりの時間（ネットワーク環境等にもよりますが〜３時間程度）を要します。
+[インストールガイド](https://texwiki.texjp.org/?Linux#texlive)にしたがって展開したインストーラのディレクトリに移動しインストーラを起動します。起動後、コマンド入力が促されますので`I`を入力してインストールを行います。インストール完了までにはかなりの時間（ネットワーク環境等にもよりますが〜３時間程度）を要します。  
 
 ```
 cd install-tl*
 sudo ./install-tl --repository http://mirror.ctan.org/systems/texlive/tlnet/
 ```
 
-上記はCTANのオリジナルサーバにアクセスしますので、実際には[ミラーサイト](https://texwiki.texjp.org/?TeX%20Live)からリポジトリを選択してください。
+上記はCTANのオリジナルサーバにアクセスしますので、実際には[ミラーサイト](https://texwiki.texjp.org/?TeX%20Live)からリポジトリを選択してください。  
+　  
 
 ###　インストールできない場合
-3GB近いファイルをネットワークからインストールしますので、環境によってはうまくインストールできない場合があります。その場合は[ISOイメージをダウンロード](https://texwiki.texjp.org/?TeX%20Live#iso)して媒体からインストールしてみて下さい。
+3GB近いファイルをネットワークからインストールしますので、環境によってはうまくインストールできない場合があります。その場合は[ISOイメージをダウンロード](https://texwiki.texjp.org/?TeX%20Live#iso)して媒体からインストールしてみて下さい。  
+　  
 
 #### ISOイメージからのインストール方法
-ターミナル（端末）を起動してマウントしたISOイメージまたはDVDドライブに移動し以下のコマンドを実行します。
+ターミナル（端末）を起動してマウントしたISOイメージまたはDVDドライブに移動し以下のコマンドを実行します。  
+
 ```
 sudo ./install-tl
 ```
 
+　  
+
 ## 初期設定等
-インストールが完了したらTeX Live脆弱性が確認されていますので念の為に以下のコマンドでアップデートを行っておきます。
+インストールが完了したらTeX Live脆弱性が確認されていますので念の為に以下のコマンドでアップデートを行っておきます。  
 
 ```
 sudo tlmgr update --self --all
 ```
 
-`tlmgr`が実行されない場合は、[インストールガイド](https://texwiki.texjp.org/?Linux#texlive)を参照してパスを追加してください。
+`tlmgr`が実行されない場合は、[インストールガイド](https://texwiki.texjp.org/?Linux#texlive)を参照してパスを追加してください。  
+　  
 
-
-# Install Dropbox
-DropboxはUbuntu Softwareからインストールします。Ubuntu Softwareを起動したら検索ボックスに`Dropbox`と入力して検索結果に表示される`Dropbox`をインストールするか[Dropboxからダウンロード](https://www.dropbox.com/ja/install)してインストールして下さい。インストール方法はRStudioと同様です。
-
-# Install Fonts
+# Fonts
 Ubuntuに標準でインストールされている日本語フォントはあまり豊富でないので[フォントのインストール](https://wiki.ubuntulinux.jp/UbuntuTips/Desktop/InstallFont)から好みのフォントをインストールしておくことをおすすめします。使えるフォントはTrueTypeフォントまたはOpenTypeフォントです。
-特にR Markdownを使ってPDFファイルを作成するのであれば`IPAフォント`は追加でインストールしておきましょう。
+特にR Markdownを使ってPDFファイルを作成するのであれば`IPAフォント`や`Notoフォント`を必要に応じてインストールしておくことをおすゝめします。  
+　  
 
+# Utilities
+R/RStudioを使う上で必須ではありませんがインストールしておくと便利なユーティリティを紹介しておきます。
+
+## Dropbox
+Dropboxのインストールは任意ですがUbuntuで利用できる数少ないクラウドストレージのクライアントですのでインストールしておくことをおすゝめします。インストールする場合はUbuntu Softwareから行います。Ubuntu Softwareを起動したら検索ボックスに`Dropbox`と入力して検索結果に表示される`Dropbox`をインストールするか[Dropboxからダウンロード](https://www.dropbox.com/ja/install)してインストールして下さい。インストール方法はRStudioと同様です。  
+　  
+
+## wine
+（準備中）  
+　  
+
+## PDF Mod
+（準備中）  
+　  
+
+## Redshift
+（準備中）  
+　  
 
 <!-- # Install 1Password -->
 <!-- ## wineの導入 -->
@@ -390,25 +477,36 @@ Ubuntuに標準でインストールされている日本語フォントはあ�
 
 # Appendix
 ## Ubuntu
-[Ubuntu Desktop 日本語 Remix](https://www.ubuntulinux.jp/download/ja-remix)  
-[追加パッケージの利用方法](https://www.ubuntulinux.jp/japanese)  
+
+* [Ubuntu Desktop 日本語 Remix](https://www.ubuntulinux.jp/download/ja-remix)  
+* [追加パッケージの利用方法](https://www.ubuntulinux.jp/japanese)  
+
+　  
 
 ## R/RStudio
-[UbuntuにRをインストールするための手順](http://www.trifields.jp/install-r-in-ubuntu-1000)  
-[UbuntuにRStudioをインストールするための手順](http://www.trifields.jp/install-rstudio-in-ubuntu-1006)  
-[RStudio Desktop](https://www.rstudio.com/products/rstudio/download/)  
-[Ubuntu 16.04 + Fcitx + RStudio 1.0で日本語を入力する方法](http://blog.goo.ne.jp/ikunya/e/8508d21055503d0560efc245aa787831)  
+
+* [UbuntuにRをインストールするための手順](http://www.trifields.jp/install-r-in-ubuntu-1000)  
+* [UbuntuにRStudioをインストールするための手順](http://www.trifields.jp/install-rstudio-in-ubuntu-1006)  
+* [RStudio Desktop](https://www.rstudio.com/products/rstudio/download/)  
+* [Ubuntu 16.04 + Fcitx + RStudio 1.0で日本語を入力する方法](http://blog.goo.ne.jp/ikunya/e/8508d21055503d0560efc245aa787831)  
+* [Ubuntu 16.04 + Fcitx + RStudio 1.0.153以降で日本語を入力する方法](https://blog.goo.ne.jp/ikunya/e/48b3e547dd2b8c7cfbe2a8dadc0b962a)
+
+　  
 
 ## TeX Live
-[インストールガイド](https://texwiki.texjp.org/?Linux#texlive)  
-[ISOイメージをダウンロード](https://texwiki.texjp.org/?TeX%20Live#iso)  
-[インストールガイド](https://texwiki.texjp.org/?Linux#texlive)  
+
+* [インストールガイド](https://texwiki.texjp.org/?Linux#texlive)  
+* [ISOイメージをダウンロード](https://texwiki.texjp.org/?TeX%20Live#iso)  
+* [インストールガイド](https://texwiki.texjp.org/?Linux#texlive)  
+
+　  
 
 ## Fonts
-[フォントのインストール](https://wiki.ubuntulinux.jp/UbuntuTips/Desktop/InstallFont)  
+
+* [フォントのインストール](https://wiki.ubuntulinux.jp/UbuntuTips/Desktop/InstallFont)  
 
 ---
 
 <!-- Include Footer -->
-```{r, child="../common/footer.Rmd", include=FALSE}
+```{r, child="../shared/footer.Rmd", include=FALSE}
 ```

@@ -75,6 +75,7 @@ h6 {
 }
 </style>
 
+<link rel="stylesheet" href="../shared/style.css" type="text/css" />
 
 </head>
 
@@ -389,7 +390,7 @@ div.tocify {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../">Cabinet</a>
+      <a href="../index.html">Cabinet</a>
     </li>
     <li class="divider"></li>
     <li>
@@ -446,13 +447,14 @@ div.tocify {
 </div>
 
 
-<!-- Include Common Links -->
+<!-- Include shared Links -->
 <!-- SQiP and others -->
 <!-- Books -->
 <!-- 共立出版 -->
 <!-- 日科技連出版 -->
 <!-- O'Reilly Japan -->
 <!-- 東京図書 -->
+<!-- Docker -->
 <!-- eBooks -->
 <!-- Net Community -->
 <!-- Style Guide -->
@@ -463,10 +465,11 @@ div.tocify {
 <!-- RStudio -->
 <!-- Docker -->
 <!-- Cabinet Pages -->
-<p><strong>R Setup</strong>では<a href="https://www.r-project.org/" title="The R Project">R</a>分析環境の導入構築方法やツール、ライブラリ類に関する情報を整理しています。</p>
+<p><strong>R Setup</strong>では<a href="https://www.r-project.org/" title="The R Project">R</a>分析環境の導入構築方法やツール、パッケージ類に関する情報を整理しています。<br />
+　</p>
 <div id="r-desktop環境" class="section level1">
 <h1>R Desktop環境</h1>
-<p><a href="https://www.r-project.org/" title="The R Project">R</a>のデスクトップ環境の大まかな導入構築手順は以下の通りです。詳細は各ページでご確認下さい。</p>
+<p><a href="https://www.r-project.org/" title="The R Project">R</a>を実行する方法はいくつかありますが、まずは<a href="https://www.rstudio.com/products/RStudio/#Desktop" title="RStudio Desktop">RStudio</a>デスクトップを用いた環境を利用するのがベストです。<a href="https://www.r-project.org/" title="The R Project">R</a>のデスクトップ環境の大まかな導入構築手順は以下の通りです。詳細は各ページでご確認下さい。</p>
 <table>
 <thead>
 <tr class="header">
@@ -479,7 +482,7 @@ div.tocify {
 <tr class="odd">
 <td>1</td>
 <td><a href="./env_install.html" title="Install R">Rのインストール</a></td>
-<td></td>
+<td>R本体のインストール（必須）</td>
 </tr>
 <tr class="even">
 <td>2</td>
@@ -488,23 +491,23 @@ div.tocify {
 </tr>
 <tr class="odd">
 <td>3</td>
-<td><a href="./env_install_pkg.html" title="Install Rcmdr">Rcmdrのインストール</a></td>
-<td>データ分析勉強会参加者のみ</td>
+<td><a href="./env_install_rcmdr.html" title="Install Rcmdr">Rcmdrのインストール</a></td>
+<td>データ分析勉強会参加者のみ（オプション）</td>
 </tr>
 <tr class="even">
 <td>4</td>
 <td><a href="./env_install_dtp.html" title="Install RStudio">RStudioのインストール</a></td>
-<td>Desktop Version</td>
+<td>Desktop版（必須）</td>
 </tr>
 <tr class="odd">
 <td>5</td>
 <td><a href="./env_install_pkg.html" title="Install Packages">パッケージのインストール</a></td>
-<td>必要に応じて</td>
+<td>必要に応じて（オプション）</td>
 </tr>
 <tr class="even">
 <td>6</td>
 <td><a href="./env_update_r.html" title="Update R">Rのアップデート</a></td>
-<td>R本体を更新する場合</td>
+<td>R本体を更新する場合（オプション）</td>
 </tr>
 <tr class="odd">
 <td>7</td>
@@ -513,8 +516,13 @@ div.tocify {
 </tr>
 <tr class="even">
 <td>8</td>
-<td>Git/SVNのインストール</td>
+<td>Gitのインストール</td>
 <td>バージョン管理システムを利用する場合</td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td>Gitクライアントのインストール</td>
+<td>同上</td>
 </tr>
 </tbody>
 </table>
@@ -532,13 +540,64 @@ div.tocify {
 </thead>
 <tbody>
 <tr class="odd">
-<td>8</td>
-<td><a href="./env_install_git.html" title="Install Git/SVN">チュートリアル環境</a></td>
+<td>1</td>
+<td><a href="./env_install_chk.html" title="Install Check">チュートリアル環境</a></td>
 <td>データ分析勉強会向けの環境作成確認方法</td>
 </tr>
 </tbody>
 </table>
 <p>　</p>
+</div>
+<div id="パッケージ" class="section level2">
+<h2>パッケージ</h2>
+<p><a href="https://www.r-project.org/" title="The R Project">R</a>では関数（機能）を提供するのにパッケージという形態を取っています。任意のパッケージを追加することで様々な処理ができるようになります。パッケージは大きく以下のように分類できます。</p>
+<table>
+<thead>
+<tr class="header">
+<th>名称</th>
+<th>説明</th>
+<th>備考</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>標準パッケージ</td>
+<td><a href="https://www.r-project.org/" title="The R Project">R</a>の標準パッケージ群</td>
+<td>Base/Base R</td>
+</tr>
+<tr class="even">
+<td>推奨パッケージ</td>
+<td>標準パッケージが必要とするパッケージ群</td>
+<td>Recommended</td>
+</tr>
+<tr class="odd">
+<td>追加パッケージ</td>
+<td>利用者が明示的にインストールするパッケージ群</td>
+<td>Contributed</td>
+</tr>
+</tbody>
+</table>
+<p>　</p>
+<div id="標準パッケージ" class="section level3">
+<h3>標準パッケージ</h3>
+<p>標準パッケージは、BaseとかBase Rとも呼ばれる<a href="https://www.r-project.org/" title="The R Project">R</a>の標準機能（関数）を提供するパッケージです。<a href="https://www.r-project.org/" title="The R Project">R</a>を起動した時点で利用可能になっていますので、パッケージとして意識する必要はありませんが知識として憶えておいてください。<br />
+　</p>
+</div>
+<div id="推奨パッケージ" class="section level3">
+<h3>推奨パッケージ</h3>
+<p>推奨パッケージ（Recommended Packages）は標準パッケージが必要とするパッケージ群で<a href="https://www.r-project.org/" title="The R Project">R</a>をインストールする際に自動的にインストールされます。標準パッケージと異なり利用する際には明示的にパッケージを呼び出す必要があります。<br />
+　</p>
+</div>
+<div id="追加パッケージ" class="section level3">
+<h3>追加パッケージ</h3>
+<p>追加パッケージ（Contributed Packages）は利用者が必要に応じてインストールし、明示的に呼び出して利用するパッケージ群です。<a href="https://cran.r-project.org/" title="CRAN">CRAN</a>と呼ばれるリポジトリで管理されている、いわゆる公式パッケージだけでなくGitHubなどで公開されて非公式なパッケージ群も多数あります。最初は<a href="https://cran.r-project.org/" title="CRAN">CRAN</a>に登録されているパッケージ群を利用するのが良いと思います。<br />
+　</p>
+<div id="tidyverseパッケージ" class="section level4">
+<h4>tidyverseパッケージ</h4>
+<p><code>tidyverse</code>パッケージは推奨パッケージと言っても過言でない便利なパッケージ群をインストールしてくれるパッケージです。<a href="https://www.r-project.org/" title="The R Project">R</a>のコードを書く際にはインストールしておきましょう。<br />
+　</p>
+</div>
+</div>
 </div>
 </div>
 <div id="rstudio-server環境" class="section level1">
@@ -550,7 +609,7 @@ div.tocify {
 <p><a href="https://www.rstudio.com/products/RStudio/" title="RStudio">RStudio</a>サーバ環境を最も手軽に使う方法が<a href="https://www.docker.com/">Docker</a>の利用です。<a href="https://github.com/rocker-org/rocker">Rockder</a>というDockerイメージが公開されていますのでこれを利用するのが最も簡単です。詳しくは<a href="./env_install_svr.html" title="Install RStudio Server">こちら</a>のページを参照して下さい。</p>
 <hr />
 <!-- Include Footer -->
-<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" title="CC BY-NC-SA 4.0 icon" alt="Sampo Suzuki" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0</a>, Sampo Suzuki [2017-12-19 13:13(JST)]</p>
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" title="CC BY-NC-SA 4.0 icon" alt="Sampo Suzuki" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0</a>, Sampo Suzuki [2018-03-05 22:50(JST)]</p>
 <!-- Local Pages -->
 </div>
 </div>

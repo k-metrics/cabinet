@@ -7,8 +7,8 @@ output:
     number_section: no
 ---
 
-<!-- Common Links -->
-```{r r basics, child="../common/links.Rmd", include=FALSE}
+<!-- shared Links -->
+```{r r basics, child="../shared/links.Rmd", include=FALSE}
 ```
 
 ```{r setup, include=FALSE}
@@ -24,7 +24,7 @@ require(knitr)
 tidyverse::tidyverse_conflicts()
 
 # ローカル定義関数の読み込み
-source("../common/common.R")
+source("../shared/common.R")
 ```
 
 ---
@@ -172,6 +172,20 @@ library(tidyverse)
 ```{r, eval=FALSE}
 require(tidyverse)
 ```
+
+#### `library`と`require`の違い
+`library`と`require`は厳密には以下のような違いがあります。
+
+http://justdoit.hatenablog.jp/entry/2015/01/11/231208
+https://mumu.jpn.ph/forest/computer/2016/05/04/3895/
+
+```{r}
+if (!require('openxlsx')){
+  install.packages('openxlsx')
+}
+library('openxlsx')
+```
+
 　  
 
 ### パッケージ名を明示的に指定して関数を呼び出す
@@ -203,5 +217,5 @@ update.packages()
 
 <!-- Footer -->
 
-```{r child="../common/footer.Rmd"}
+```{r child="../shared/footer.Rmd"}
 ```
