@@ -85,6 +85,7 @@ h6 {
 }
 </style>
 
+<link rel="stylesheet" href="..\shared\style.css" type="text/css" />
 
 </head>
 
@@ -328,6 +329,9 @@ div.tocify {
     <li class="dropdown-header">learnr</li>
   </ul>
 </li>
+<li>
+  <a href="about.html">About</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li class="dropdown">
@@ -339,7 +343,7 @@ div.tocify {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../">Cabinet</a>
+      <a href="../index.html">Cabinet</a>
     </li>
     <li class="divider"></li>
     <li>
@@ -400,7 +404,7 @@ div.tocify {
 </div>
 
 
-<!-- Include Common Links -->
+<!-- Include shared Links -->
 <!-- SQiP and others -->
 <!-- Books -->
 <!-- 共立出版 -->
@@ -425,14 +429,14 @@ div.tocify {
 <!-- * [ascii](http://eusebe.github.io/ascii/) -->
 <p>　</p>
 <div id="はじめに" class="section level1">
-<h1><span class="header-section-number">1</span> はじめに</h1>
+<h1>はじめに</h1>
 <p><a href="http://rmarkdown.rstudio.com/" title="R Markdown form RStudio">R Markdown</a>では(Pandoc) Markdownによるテキストを用いた表の作成が可能すが、chunkからの出力を表形式にすることも可能です。本ページでは分析レポートで比較的利用することが多いテーブル（表）の作成方法を説明します。<br />
 　</p>
 </div>
 <div id="html系フォーマット" class="section level1">
-<h1><span class="header-section-number">2</span> HTML系フォーマット</h1>
+<h1>HTML系フォーマット</h1>
 <div id="標準機能" class="section level2">
-<h2><span class="header-section-number">2.1</span> 標準機能</h2>
+<h2>標準機能</h2>
 <p><a href="http://rmarkdown.rstudio.com/" title="R Markdown form RStudio">R Markdown</a>のHTML系フォーマットには<strong><code>df_print</code></strong>といオプションがあります。<strong><code>df_print</code></strong>オプションは“Data Frame Print”の略であり文字通り<strong><code>dara.frame</code></strong>型のデータを表示する方法を指定するためのオプションです。</p>
 <pre><code>---
 output: 
@@ -468,7 +472,7 @@ output:
 </table>
 <p>　</p>
 <div id="default" class="section level3">
-<h3><span class="header-section-number">2.1.1</span> default</h3>
+<h3>default</h3>
 <p><strong><code>df_print</code></strong>に<strong><code>default</code></strong>を指定した場合は、<a href="https://www.r-project.org/" title="The R Project">R</a>のコンソールで<strong><code>data.frame</code></strong>を表示させた場合と同じテキスト表形式で表示されます。注意すべき点は表示対象となるデータが大きい（多数の列がある）場合でも全てのデータを表示しますので、ドキュメントの体裁に合わせて<strong><code>head</code></strong>関数や<strong><code>tail</code></strong>関数などで適宜、表示行数を調整してください。</p>
 <p><img src="fig/rmd_table_default.png" /><br />
 　</p>
@@ -476,7 +480,7 @@ output:
 　</p>
 </div>
 <div id="kable" class="section level3">
-<h3><span class="header-section-number">2.1.2</span> kable</h3>
+<h3>kable</h3>
 <p><strong><code>df_print</code></strong>に<strong><code>kable</code></strong>を指定した場合は、<strong><code>knitr::kabele</code></strong>関数を用いたシンプルな表形式で表示されます。注意すべき点は<strong><code>default</code></strong>を指定した場合と同じく表示対象となるデータが大きい（多数の列がある）場合でも全てのデータを表示しますので、ドキュメントの体裁に合わせて<strong><code>head</code></strong>関数や<strong><code>tail</code></strong>関数などで適宜、表示行数を調整してください。</p>
 <p><img src="fig/rmd_table_kable.png" /><br />
 　</p>
@@ -484,7 +488,7 @@ output:
 　</p>
 </div>
 <div id="paged" class="section level3">
-<h3><span class="header-section-number">2.1.3</span> paged</h3>
+<h3>paged</h3>
 <p><strong><code>df_print</code></strong>に<strong><code>paged</code></strong>を指定した場合は、<strong><code>default</code></strong>や<strong><code>kable</code></strong>と異なり10行単位でページ区切りされた表形式で表示されます。ページ遷移のリンクボタンが自動的に生成され、各列に変数型が表示され、列数が多いと自動的にスクロール表示になります。注意すべき点はプレゼンテーション系のフォーマットとは相性が悪いこともある点です。</p>
 <p><img src="fig/rmd_table_paged.png" /><br />
 　</p>
@@ -492,7 +496,7 @@ output:
 　</p>
 </div>
 <div id="tibble" class="section level3">
-<h3><span class="header-section-number">2.1.4</span> tibble</h3>
+<h3>tibble</h3>
 <p><strong><code>df_print</code></strong>に<strong><code>tibble</code></strong>を指定した場合は<a href="https://www.r-project.org/" title="The R Project">R</a>のコンソールで<strong><code>tibble</code></strong>クラスのオブジェクトを表示させた場合と同じテキスト表形式で表示されます。注意すべき点は表示対象となるデータが大きい（多数の列がある）場合でも自動的に10行に省略されて表示しますので、全てのデータを見たい場合は<strong><code>paged</code></strong>や追加パッケージによる表示を行って下さい。</p>
 <p><img src="fig/rmd_table_tibble.png" /><br />
 　</p>
@@ -501,11 +505,11 @@ output:
 </div>
 </div>
 <div id="追加パッケージ" class="section level2">
-<h2><span class="header-section-number">2.2</span> 追加パッケージ</h2>
+<h2>追加パッケージ</h2>
 <p>表を作成するために様々なパッケージがリリースされています。これらのパッケージを用いることで標準では表現できない表や様々な機能を持った表をつくることができるようになります。<br />
 　</p>
 <div id="DT" class="section level3">
-<h3><span class="header-section-number">2.2.1</span> Package DT</h3>
+<h3>Package DT</h3>
 <p><strong><code>DT</code></strong>パッケージは<a href="https://www.rstudio.com/products/RStudio/" title="RStudio">RStudio</a>社製のインタラクティブな表を作成するためのパッケージです。<strong><code>df_print</code></strong>の<a href="#paged"><strong><code>paged</code></strong>オプション</a>のようにページ単位で表示するだけでなく、データのソートや検索といったことも可能です。使い方の詳細については<a href="http://rstudio.github.io/DT/">DT: An R interface to the DataTables library</a>でご確認ください。</p>
 <p><img src="fig/rmd_table_DT.png" /><br />
 　</p>
@@ -513,7 +517,7 @@ output:
 　</p>
 </div>
 <div id="formattable" class="section level3">
-<h3><span class="header-section-number">2.2.2</span> Package formattable</h3>
+<h3>Package formattable</h3>
 <p><strong><code>formattable</code></strong>パッケージは<a href="http://www.kyoritsu-pub.co.jp/bookdetail/9784320124264">Rプログラミング本格入門</a>の著者であるKun Renが開発しているパッケージで表現力のある表を作成できます。<strong><code>df_print</code></strong>の<strong><code>kable</code></strong>オプションで出力される表をベースに装飾されますので、データ数が多い場合は注意してください。様々な装飾ができる反面、記述するコードが他の表に比べて複雑です。詳細は<a href="https://renkun-ken.github.io/formattable/">作者のGitHub</a>でご確認ください。<a href="https://github.com/renkun-ken/formattable/blob/master/README.ja.md">ホクソエムメンバーによる日本語版</a>もあります。<br />
 　</p>
 <p><img src="https://github.com/renkun-ken/formattable/blob/master/formattable.png?raw=true" alt="https://renkun-ken.github.io/formattable/" /><br />
@@ -524,11 +528,11 @@ output:
 </div>
 </div>
 <div id="プレゼンテーション系フォーマット" class="section level1">
-<h1><span class="header-section-number">3</span> プレゼンテーション系フォーマット</h1>
+<h1>プレゼンテーション系フォーマット</h1>
 <p>プレゼンテーション系フォーマットではフォーマットによりテーブルとの相性があるものがあります。代表的なフォーマットでどのように表示されるかのサンプルを作成しましたので参考にしてください。<br />
 　</p>
 <div id="ioslides" class="section level2">
-<h2><span class="header-section-number">3.1</span> Google ioslieds</h2>
+<h2>Google ioslieds</h2>
 <p>ioslidesフォーマットは各種テーブルとの相性はまずまずですが、表によっては表示できる行数が少なくなるものがあります。見栄えを優先するなら<strong><code>df_print</code></strong>オプションで<strong><code>knitr</code></strong>を指定し、多くのデータを見せたいときは行数少な目にした<strong><code>DT::datatable</code></strong>を使うことをおすゝめします。なお、<strong><code>widescreen</code></strong>オプションは<strong><code>true</code></strong>に設定してください。<br />
 　<br />
 <img src="fig/rmd_table_ioslides.png" /><br />
@@ -537,7 +541,7 @@ output:
 <p>　</p>
 </div>
 <div id="slidy" class="section level2">
-<h2><span class="header-section-number">3.2</span> W3C slidy</h2>
+<h2>W3C slidy</h2>
 <p>slidyフォーマットは各種テーブルとの相性はまずますですが、テキスト表形式は左詰めになるようです。また、縦方向のスクロールが出来ますので列数がさほど多くなければ<strong><code>df_print</code></strong>オプションで<strong><code>paged</code></strong>を指定することをおすゝめします。<br />
 　<br />
 <img src="fig/rmd_table_slidy.png" /><br />
@@ -546,7 +550,7 @@ output:
 　</p>
 </div>
 <div id="revealjs" class="section level2">
-<h2><span class="header-section-number">3.3</span> HTML presentation with reveal.js</h2>
+<h2>HTML presentation with reveal.js</h2>
 <p>revealjsフォーマットは各種テーブルとの相性があまりよくありません。また、表示できる行数が他のフォーマットに比べ少ないので<strong><code>df_print</code></strong>オプションで<strong><code>knitr</code></strong>を指定し、表示する内容は<strong><code>head</code></strong>関数などで抑制することをおすゝめします。<br />
 　<br />
 <img src="fig/rmd_table_revealjs.png" /><br />
@@ -556,12 +560,12 @@ output:
 </div>
 </div>
 <div id="pdf系フォーマット" class="section level1">
-<h1><span class="header-section-number">4</span> PDF系フォーマット</h1>
+<h1>PDF系フォーマット</h1>
 <p>準備中です。<br />
 　</p>
 <hr />
 <!-- Include Footer -->
-<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" title="CC BY-NC-SA 4.0 icon" alt="Sampo Suzuki" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0</a>, Sampo Suzuki [2018-01-15 21:20(JST)]</p>
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" title="CC BY-NC-SA 4.0 icon" alt="Sampo Suzuki" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0</a>, Sampo Suzuki [2018-03-02 19:21(JST)]</p>
 </div>
 
 

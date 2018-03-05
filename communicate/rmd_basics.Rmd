@@ -2,21 +2,20 @@
 title: "R Markdown Basics"
 output: 
   html_document:
-    number_section: yes
+    number_section: no
     code_folding: none
     toc_float:
       collapsed: yes
 ---
 
-<!-- Include Common Links -->
-```{r rmd_basics, child="../common/links.Rmd"}
+<!-- Include shared Links -->
+```{r rmd_basics, child="../shared/links.Rmd"}
 ```
 
 ```{r setup, echo = FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, comment = "##")
 ```
 
-# はじめに
 [R][R]や[R Commander（以降、Rcmdr）][Rcmdr]に限ったことではありませんが、一般的に分析過程の記録というのは残しにくいものです。[データ分析勉強会][1]で主に用いた[Rcmdr][Rcmdr]やExcelのようなGUI操作のものは、操作自体は簡単ですが、それらを使った分析過程を記録するには大変な手間がかかります。例えば[Rcmdr][Rcmdr]を例に挙げると  
 　  
 
@@ -32,7 +31,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, comment = "##")
 
 # R Markdownとは
 [R Markdown][RMD]は文字通り（軽量）マークアップ言語である
-[Markdown][MD]による記述を用いた記録方法です。[R Markdown][RMD]を用いると報告書中にデータやコード、分析結果を埋め込むことが可能になります。  
+[Markdown][MD]による記述を用いた記録方法で、[R][R]におけるドキュメント作成フレームワークです。[R Markdown][RMD]を用いるとドキュメントの中にデータやコード、分析結果を埋め込むことが可能になります。  
 　  
 
 ## なぜR Markdownなのか
@@ -70,7 +69,7 @@ install.packages("rmarkdown")
 　  
 このように[R Markdown][RMD]の記述には見慣れない記号などがありますが、記述としては大きく以下の３つパートから構成されますので、この構成さえ覚えれば[R Markdown][RMD]を記述するのは簡単です。
 
-* 出力フォーマットや訂正を記述する[YAML](#YAML)部
+* 出力フォーマットや体裁を記述する[YAML](#YAML)部
 * [R][R]のコードを記述する[(Code) Chunk](#Chunk)部
 * 文書を記述する[Markdown](#Markdown)部
 
@@ -179,15 +178,15 @@ highlight       | "default" | "tango", "pygments", "kate", "monochrome", "espres
 md_extensions   | NULL      |                      | ^1)^
 number_sections | false     | true, (yes, no)  | 見出し番号
 theme           | "default" | "cerulean", "journal", "flatly", "readable", "spacelab", "united", "cosmo", "lumen", "paper", "sandstone", "simplex", "yeti" | Bootswatchテーマ
-toc             | false     | true, (yes, no)      | 目次
-toc_depth       | 3         | 1, 2, 4, 5, 6        | 目次の改装
+toc             | false     | true, (yes, no)      | 目次の有無
+toc_depth       | 3         | 1, 2, 4, 5, 6        | 目次に表示するの階層レベル
 toc_float       | false     | true, (yes, no)      | ^2)^
   collapsed     | true      | false, (yes, no)     | 目次の自動折りたたみ
   smooth_scroll | true      | false, (yes, no)     | 目次のスクロール方法
 
 
 ^1)^ 日本語見出しを使う場合は**`-ascii_identifiers`**を指定する  
-^2)^ 目次を固定表示するか否かで、**`collapsed`**, **`smooth_scroll`**を指定する場合は何も指定しない  
+^2)^ **`collapsed`**, **`smooth_scroll`**を指定する場合は何も指定しない  
 
 　  
 
@@ -476,7 +475,7 @@ $\LaTeX$の数式モードで扱える表現は[$\LaTeX$コマンド集](http://
 ---
 
 <!-- Include Footer -->
-```{r child="../common/footer.Rmd"}
+```{r child="../shared/footer.Rmd"}
 ```
 
 <!-- Default Support Formats -->
