@@ -6,8 +6,8 @@ output:
     number_section: no
 ---
 
-<!-- Include Common Links -->
-```{r t_test, child="../common/links.Rmd"}
+<!-- Include shared Links -->
+```{r t_test, child="../shared/links.Rmd"}
 ```
 
 ```{r setup, include=FALSE}
@@ -23,9 +23,6 @@ tidyverse::tidyverse_conflicts()
 ```
 
 様々な検定や推定において対象となる標本データの正規性を仮定している場合が多数あります。このような前提条件を無視して検定や推定を行った場合、結果の妥当性が疑問視される可能性が高いです。そこで、対象となる標本データに正規性があるかどうかを確認する必要があります。  
-　  
-
-# 代表的な方法
 標本データの正規性を確認する方法には以下のように主観的なものから検定のような客観的なものまで様々な方法があります。  
 
 * 分布形状の確認
@@ -47,11 +44,19 @@ iris
 
 Package   | Description
 ----------|-------------
-e1071     | Misc Functions of the Department of Statistics (Formerly: E1071)
+e1071     | Misc Functions of the Department of Statistics
 moments   | Moments, cumulants, skewness, kurtosis and related tests
 nortest   | Test for Normality
 tidyverse | Easily Install and Load the 'Tidyverse'
 qqplotr   | Quantile-Quantile Plot Extensions for 'ggplot2'
+
+Package   | Description                                              | Link
+----------|----------------------------------------------------------|---
+e1071     | Misc Functions of the Department of Statistics           | [CRAN][e1071]
+moments   | Moments, cumulants, skewness, kurtosis and related tests | [CRAN][moments]
+nortest   | Test for Normality                                       | [CRAN][nortest]
+tidyverse | Easily Install and Load the 'Tidyverse'                  | [CRAN][tidyverse]
+qqplotr   | Quantile-Quantile Plot Extensions for 'ggplot2'          | [CRAN][qqplotr]
 
 　  
 
@@ -108,8 +113,8 @@ iris %>%
 正規確率プロット（正規QQプロット）は名前の通り横軸を正規分布の分位数、縦軸を対象データの分位数を座標としてプロットします。  
 
 1. 対象データを昇順に並べかえる
-1. 順位を割り当て％順位を計算する
-1. ％順位からZスコアを計算する
+1. 順位を割り当て分位数（％順位）を計算する
+1. 分位数（％順位）から（標準）Zスコアを計算する
 1. （標準）Zスコアを横軸に対象データを縦軸にプロットする
 
 ```{r}
@@ -148,7 +153,7 @@ iris %>%
 歪度 | 0       | 0       | `r e1071::skewness(iris$Sepal.Width)`
 尖度 | 3       | 0       | `r e1071::kurtosis(iris$Sepal.Width)`
 
-歪度と尖度を用いた検定もありますが、ここでは省略します。検定の関数は**`moments`**パッケージなどに実装されています。  
+歪度と尖度を用いた検定もありますが、ここでは省略します。検定の関数は[**`moments`**パッケージ][moments]などに実装されています。  
 
 　  
 
@@ -219,5 +224,11 @@ nortest::ad.test(iris$Sepal.Width) %>%
 ---
 
 <!-- Include Footer -->
-```{r child="../common/footer.Rmd"}
+```{r child="../shared/footer.Rmd"}
 ```
+
+[e1071]: https://cran.r-project.org/web/packages/e1071/ "CRAN"
+[moments]: https://cran.r-project.org/web/packages/moments/ "CRAN"
+[nortest]: https://cran.r-project.org/web/packages/nortest/ "CRAN"
+[tidyverse]: https://cran.r-project.org/web/packages/tidyverse/ "CRAN"
+[qqplotr]: https://cran.r-project.org/web/packages/qqplotr/ "CRAN"

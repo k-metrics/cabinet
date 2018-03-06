@@ -1,12 +1,12 @@
 ---
-title: "t検定"
+# title: "基礎知識"
 output: 
   html_document:  
     number_section: no
 ---
 
-<!-- Include Common Links -->
-```{r t_test, child="../common/links.Rmd"}
+<!-- Include shared Links -->
+```{r t_test, child="../shared/links.Rmd"}
 ```
 
 ```{r setup, include=FALSE}
@@ -16,254 +16,219 @@ knitr::opts_chunk$set(warning = FALSE, echo = TRUE)
 # データハンドリングで利用するパッケージの読み込み
 require(tidyverse)
 
-# 表示で利用する外部パッケージの読み込み
-require(gridExtra)
-require(DT)
-require(knitr)
-require(extrafont)
-
-# モデリングで利用するパッケージの読み込み
-require(psych)
-
 # コンフリクトの解消
 tidyverse::tidyverse_conflicts()
-
-# 共通ローカル関数の読み込み
-source("../common/common.R")
 ```
 
-```{r, include=FALSE}
-x <- read.csv("./data/ex_2.1.csv", header = TRUE, sep = ",",
-              fileEncoding = "CP932")
-colnames(x) <- c("before", "after")
+　  
 
-x.stacked <- stack(x)
-colnames(x.stacked) <- c("values", "group")
-x.stacked
+# 平均値の差の検定
+平均値の差の検定（母平均の差の検定）は**一つの因子**による効果に差があるか否かを検証する場合に使う手法です。比較する標本数（水準数、群数）により検定方法が異なります。  
+
+　  
+
+標本数     | 検定方法 
+-----------|---------
+２標本以下 | t検定
+３標本以上 | 一元配置分散分析
+
+　  
+
+t検定については本ページで組み込みデータセット**`sleep`**を用いた説明を行います。一元配置分散分析については準備中です。  
+　  
+
+## **`sleep`**データセット
+**`sleep`**データセットは10人の患者に対して二種類の睡眠薬を投与した際の睡眠時間の増減データです。ですから本来は対応のあるデータとして扱う必要がありますが、ここでは便宜上、対応のないデータとしても扱っている点に注意してください。  
+```{r}
+sleep
 ```
 
-# おまけ
-## t.test {stats}
-Rcmdrでのt検定は少しややこしい感じがあるので、実際にt検定を行う関数`t.test {stats}`を整理してみました。
+　  
+すなわち対応の「あり」、「なし」に応じて項目を以下のように読み替えています。あくまでも説明を行う上での便宜上の扱いですので、実際の分析では決してこのような扱いをしないでください。  
+　  
 
-### t検定の種類
-`t.test {stats}`は一つの関数で複数のt検定に対応しており、R Commanderにおけるt検定との関係は以下のようになります。    
+　    | 「対応の`ある`」として扱う場合 | 「対応の`ない`」として扱う場合
+------|--------------------------------|----------------------------
+extra | 睡眠時間の増減 [H]             | 睡眠時間の増減 [H]
+group | 睡眠薬の種類（2種類）          | 被験者グループ識別番号（2グループ）
+ID    | 被験者の識別番号               | グループ内での被験者の識別番号
 
-R Commander       | 標本データ      | R script 
+　  
+
+## 必要なパッケージ
+本ページのコードを実行するには以下の追加パッケージを読み込んでおく必要があります。  
+
+Package   | Description
+----------|-------------
+tidyverse | Easily Install and Load the‘Tidyverse’
+
+　  
+
+# t検定
+t検定は前提条件により検定手法が異なりますので条件に応じて適切な検定方法を選択してください。  
+　  
+
+標本数 | 対応 | 等分散性 | 検定方法
+-------|------|----------|----------------------
+１     | N/A  | N/A      | １標本のt検定
+２     | なし | あり     | スチューデントのt検定 ^1^ 
+２     | なし | なし     | ウェルチのt検定 ^1^
+２     | あり | N/A      | 対応のあるt検定
+
+^1^ スチューデントのt検定とウェルチのt検定をまとめて独立標本t検定と呼ぶこともあります。  
+　  
+
+### 帰無仮説
+各検定における帰無仮説（$H_0$）は下記の通りです。  
+　  
+
+検定方法              | 帰無仮説（$H_0$）
+----------------------|-------------------------------------------
+１標本のt検定         | 標本の母平均は平均値$\mu_0$に等しい
+スチューデントのt検定 | 標本間の母平均に差はない（母平均は等しい）
+ウェルチのt検定       | 同上
+対応のあるt検定       | 同上
+
+　  
+
+# １標本のt検定
+１標本のt検定はひとつの標本データの平均値（$\mu$）が基準値（$\mu_0$）と異なるかどうかを調べるための検定です。**`sleep`**データのグループ1の平均値が0（zero）と等しいかどうか検定してみます。
+```{r}
+(t.test_result <- sleep %>% 
+  dplyr::filter(group == 1) %>% 
+  dplyr::select(extra) %>% 
+  t.test(mu = 0)) %>% 
+  broom::tidy()
+```
+
+　  
+有意水準（$\alpha$）を5％とした両側検定の結果、p値は`r t.test_result$p.value`で帰無仮説（$H_0$）は棄却されず平均値が0でないとは言えません。当該グループの睡眠時間の増減の平均値は`r t.test_result$estimate`[H]となり、その95％信頼区間は[`r t.test_result$conf.int[1]`, `r t.test_result$conf.int[2]`]です。  
+　  
+参考までにグループ2では異なった検定結果となります。  
+```{r}
+(t.test_result <- sleep %>% 
+  dplyr::filter(group == 2) %>% 
+  dplyr::select(extra) %>% 
+  t.test(mu = 0) %>% 
+  broom::tidy())
+```
+
+　  
+
+# 独立標本t検定
+## スチューデントのt検定
+スチューデントのt検定は標本間で等分散性があることを前提条件としています。等分散性の検定については別資料で扱いますので、ここでは等分散性があると仮定してスチューデントのt検定を行います。  
+```{r}
+(t.test_result <- sleep %>% 
+  t.test(extra ~ group, data = ., var.equal = TRUE, paired = FALSE)) %>% 
+  broom::tidy()
+```
+
+　  
+有意水準（$\alpha$）を5％とした両側検定の結果、p値は`r t.test_result$p.value`で帰無仮説（$H_0$）は棄却されず、平均値に差があるとは言えません。平均値の差の95％信頼区間は[`r t.test_result$conf.int[1]`, `r t.test_result$conf.int[2]`]です。  
+　  
+
+## ウェルチのt検定
+ウェルチのt検定は標本間で等分散性がないことを前提条件としています。ここでは等分散性がないと仮定してウェルチのt検定を行います。  
+```{r}
+(t.test_result <- sleep %>% 
+  t.test(extra ~ group, data = ., var.equal = FALSE, paired = FALSE)) %>% 
+  broom::tidy()
+```
+
+　  
+有意水準（$\alpha$）を5％とした両側検定の結果、p値は`r t.test_result$p.value`で帰無仮説（$H_0$）は棄却されず、平均値に差があるとは言えません。平均値の差の95％信頼区間は[`r t.test_result$conf.int[1]`, `r t.test_result$conf.int[2]`]です。  
+　  
+
+# 対応のあるt検定
+対応のあるt検定は「関連のあるt検定」や「従属なt検定」と呼ばれる事もある対応関係のある２群間の平均値の差の検定を行うものです。**`sleep`**データセットは「対応のある」データですので、本来であればこの検定方法を用いる必要があります。  
+```{r}
+(t.test_result <- sleep %>% 
+  t.test(extra ~ group, data = ., paired = TRUE)) %>% 
+  broom::tidy()
+```
+
+　  
+有意水準（$\alpha$）を5％とした両側検定の結果、p値は`r t.test_result$p.value`で帰無仮説（$H_0$）は棄却され対立仮説（$H_1$）が採択されましたので、平均値に差がないとは言えません。平均値の差の95％信頼区間は[`r t.test_result$conf.int[1]`, `r t.test_result$conf.int[2]`]です。  
+　  
+
+# Rでのt検定
+[R][R]における前述のt検定は全て**`t.test`**関数で計算できます。実施したい検定により引数の指定方法が変わり、前述のように検定結果も異なってきますので検定の際には注意してください。  
+　  
+
+検定方法              | 引数の指定方法
+----------------------|-------------------------------------------
+１標本のt検定         | **`t.test(value, mu = mu0)`**
+スチューデントのt検定 | **`t.test(value ~ group, data = df, var.equal = TRUE)`**
+ウェルチのt検定       | **`t.test(value ~ group, data = df, var.equal = FALSE)`**
+対応のあるt検定       | **`t.test(value ~ group, data = df, paired = TRUE)`**
+
+　  
+
+## 仮説の指定方法
+**`t.test`**関数では三通りの仮説が指定できますが、帰無仮説（$H_0$）ではなく対立仮説（$H_1$）で指定する点に注意してください。  
+　  
+
+### １標本のt検定
+１標本のt検定における対立仮説は平均$\mu$と基準値(比較値)$\mu_0$に対して下表のようになります。  
+
+対立仮説 $($帰無仮説$)$            | 指定方法                        | 備考
+-----------------------------------|---------------------------------|---
+$\mu \neq \mu_0$ $(\mu = \mu_0)$   | **`alternative = "two.sided"`** | default
+$\mu \lt \mu_0$ $(\mu \geq \mu_0)$ | **`alternative = "less"`**      |
+$\mu \gt \mu_0$ $(\mu \leq \mu_0)$ | **`alternative = "greater"`**   |
+
+　  
+
+### 独立標本t検定
+独立標本t検定（対応のないt検定）における対立仮説は、平均値$\mu_x$,  $\mu_y$に対して考える場合は下表のようになります。  
+対立仮説を平均の差（$\delta = \mu_x - \mu_y$）で考える場合は対応のあるt検定の項を参照してください。  
+
+対立仮説 （帰無仮説）                    | 指定方法                        | 備考
+-----------------------------------------|---------------------------------|---
+$\mu_x \neq \mu_y$ （$\mu_x = \mu_y$）   | **`alternative = "two.sided"`** | default 
+$\mu_x \lt \mu_y$ （$\mu_x \geq \mu_y$） | **`alternative = "less"`**      | 
+$\mu_x \gt \mu_y$ （$\mu_x \leq \mu_y$） | **`alternative = "greater"`**   | 
+
+　  
+
+### 対応のあるt検定
+対応のあるt検定における対立仮説は２標本の平均の差$(\delta = \mu_x - \mu_y)$に対して下表のようになります。  
+
+対立仮説 （帰無仮説）              | 指定方法                        | 備考
+-----------------------------------|---------------------------------|---
+$\delta \neq 0$ （$\delta = 0$）   | **`alternative = "two.sided"`** | default
+$\delta \lt 0$ （$\delta \geq 0$） | **`alternative = "less"`**      | 
+$\delta \gt 0$ （$\delta \leq 0$） | **`alternative = "greater"`**   | 
+
+　  
+
+# R Commanderでのt検定
+R Commanderでのt検定は少しややこしい感じがあります。R Commanderではtidy data形式ではなく人間が分かりやすいmessy data形式でデータを指定する必要があるためです。これはどちらが良い悪いという話ではなくR Commanderの設計思想がそのようになっているためです。  
+　  
+
+R Commander       | 指定するデータ  | 関数の呼び出し形式
 ----------------- | --------------- | --------------------------------
 1標本t検定        | 1標本と基準値   | t.test(x, mu = mu0)
 独立サンプルt検定 | 対応のない2標本 | t.test(x, y)
 対応のあるt検定   | 対応のある2標本 | t.test(x, y, paired = TRUE)   
 
-#### 1標本t検定
-R Commanderにおける1標本t検定は、標本の母集団の平均値$(\mu)$と基準値のような任意の値$(\mu_0)$の差の検定を行います。
+　  
 
-#### 独立サンプルt検定（対応のないt検定）
-R Commanderにおける独立サンプルt検定は、一般的には「対応のないt検定」または「独立したt検定」と呼ばれ対応関係のない2群間の平均値の差の検定を行います。  
-
-対応のないt検定は比較対象となる標本が等分散か否かによって計算方法が異なり、等分散を仮定できる場合はStudentのt検定、等分散が仮定できない場合はWelchのt検定を用います。計算式は[こちら](http://oku.edu.mie-u.ac.jp/~okumura/stat/ttest.html)。
-
-標本     | 関係       | 分散     | 指定方法 
--------- | ---------- | -------- | --------------------------------
-2群間の  | 対応のない | 等分散   | t.test(x, y, var.equal = TRUE)
-2群間の  | 対応のない | 不等分散 | t.test(x, y, var.equal = FALSE)
-
-今までは2群の分散が等しいかどうか不明のときは等分散性の検定（F検定）を行ってからStudentのt検定を用いるかWelchのt検定を用いるか決めるという方法が勧められていましたが、最近では等分散性の検定（F検定）は行なわずにWelchのt検定を用いるのがベストプラクティスと言われています。
-
-##### 等分散性の検定の必要性
-等分散性の検定（F検定）の後にt検定を行う2段階検定は[不適切との指摘](http://note.chiebukuro.yahoo.co.jp/detail/n13859)があるように等分散性の検定（F検定）は行なわずに単にWelchのt検定だけで構わないとするのが現在の主流です。  
-同様の指摘は三重大学の奥村先生も[t検定 - 分散が等しいかどうか不明の場合](http://oku.edu.mie-u.ac.jp/~okumura/stat/ttest.html)で行っており、要点を引用すると以下の通りです。  
-
-> 等分散の検定で p 値が十分小さければ「等分散でない」というのはいいのですが，p 値が十分小さくなければ「等分散である」というのは間違いで，「等分散かどうかかわからない」というのが統計的検定の基本です。「等分散かどうかかわからない」ときに「等分散である」を仮定した t 検定を行えば，正しい結果は得られません。
-
-この指摘の内容は第3回の勉強会の資料P26-28で説明があったように「p値が十分に小さくない = 帰無仮説を棄却されない = 検定は失敗」であり「帰無仮説が正しい」とは断言できないと同じ指摘内容です。詳細はリンク先を参照して下さい。  
-
-今回の例題2.1では従来通り、等分散性の検定（F検定）結果にしたがいt検定の手法を決めましたが、最近の方法を用いるた場合、以下となり、得られた結論は同じとなりました。
+したがって、R Commanderでt検定を行う場合は上表のような形式で関数が呼び出されますので、以下のようなデータ形式（データフレーム型）でデータを用意してください。  
+　  
 
 ```{r}
-# `var.equal = FALSE`の設定は省略可能
-t.test(values ~ group, alternative = "less", var.eqaul = FALSE, data = x.stacked)
+sleep %>% 
+  tidyr::spread(key = group, value = extra) %>% 
+  dplyr::rename(Group1 = `1`, Group2 = `2`) %>% 
+  dplyr::select(-ID)
 ```
-
-ちなみにRでのt検定はデフォルトでWelchのt検定が行われるようになっています。  
-
-なお、等分散性の検定（F検定）を行い、その結果により検定方を選択したい場合は多重検定となるためBonferroni法等を用いてp値を修正すべきと言われています。Rでは`pariwise.t.test {stats}`を使うとこの計算が可能ですが、ここまでするならWelchのt検定で十分ではないかと。ご参考まで。
-
-#### 対応のあるt検定
-R Commanderにおける対応のあるt検定は、「関連のあるt検定」、「従属なt検定」と呼ばれる事もある対応関係のある2群間の平均値の差の検定を行います。  
-
-### 仮説の指定
-`t.test {stats}`における仮説は、対立仮説（証明したい仮説）を指定します。検定自体は帰無仮説により行なわれますので注意して下さい。対立仮説の指定は`alternative`という引数で指定します。以下に個々のt検定においてどのように引数を指定するかを示します。
-
-#### 1標本t検定
-1標本t検定における対立仮説は下表のようになります。
-
-対立仮説 $($帰無仮説$)$           | 指定方法 
---------------------------------- | --------------------------
-$\mu \neq \mu_0$ $(\mu = \mu_0)$  | alternative = "two.sided"
-$\mu < \mu_0$ $(\mu \geq \mu_0)$  | alternative = "less"
-$\mu > \mu_0$ $(\mu \leq \mu_0)$  | alternative = "greater"
-
-R Commanderでは対立仮説をラジオボタンで選択する形になります。
-<!-- ![](image/1標本.jpg)   -->
-1標本t検定 
-
-スクリプトで記述する際は以下のように引数を指定すると分かりやすくなります。
-```
-t.test(x, alternative = "two.sided", mu = mu0)    # xの平均値 != 比較値mu0
-t.test(x, alternative = "less", mu = mu0)         # xの平均値 < 比較値mu0
-t.test(x, alternative = "greater", mu = mu0)      # xの平均値 > 比較値mu0
-```
-
-#### 独立サンプルt検定（対応のないt検定）
-独立サンプルt検定（対応のないt検定）における対立仮説は、平均値$\mu_x$,  $\mu_y$に対して考える場合は下表のようになります。
-平均の差（$\delta = \mu_x - \mu_y$）で考える場合は上表のように
-
-対立仮説 （帰無仮説）                   | 指定方法 
---------------------------------------- | --------------------------
-$\mu_x \neq \mu_y$ （$\mu_x = \mu_y$）  | alternative = "two.sided"
-$\mu_x < \mu_y$ （$\mu_x \geq \mu_y$）  | alternative = "less"
-$\mu_x > \mu_y$ （$\mu_x \leq \mu_y$）  | alternative = "greater"
-
-R Commanderでは1標本t検定と同様に対立仮説をラジオボタンで選択する形になります。差の計算式が表記されているので、これを参考に対立仮説を指定して下さい。  
-<!-- ![](image/2標本_対応のない.jpg)   -->
-独立サンプルt検定  
-
-スクリプトで記述する際は以下のように引数を指定すると分かりやすくなります。
-```
-t.test(x, alternative = "two.sided", y = y)    # xの平均値 - yの平均値 != 0
-t.test(x, alternative = "less", y = y)         # xの平均値 - yの平均値 < 0
-t.test(x, alternative = "greater", y = y)      # xの平均値 - yの平均値 > 0
-```
-
-#### 対応のあるt検定
-対応のあるt検定における対立仮説は2標本の平均の差$(\delta = \mu_x - \mu_y)$に対して下表のようになります。
-
-対立仮説 （帰無仮説）             | 指定方法 
---------------------------------- | --------------------------
-$\delta \neq 0$ （$\delta = 0$）  | alternative = "two.sided"
-$\delta < 0$ （$\delta \geq 0$）  | alternative = "less"
-$\delta > 0$ （$\delta \leq 0$）  | alternative = "greater"
-
-R Commanderでは独立サンプルt検定と同様に対立仮説をラジオボタンで選択する形になりますが、差の計算式が表記されないので注意して下さい。  
-<!-- ![](image/2標本_対応のある.jpg)   -->
-対応のあるt検定  
-
-スクリプトで記述する際は以下のように引数を指定すると分かりやすくなります。
-```
-t.test(x, alternative = "two.sided", y = y, paired = TRUE)    # xの平均値 - yの平均値 != 0
-t.test(x, alternative = "less", y = y, paired = TRUE)         # xの平均値 - yの平均値 < 0
-t.test(x, alternative = "greater", y = y, paired = TRUE)      # xの平均値 - yの平均値 > 0
-```
-
-### t.test {stats}でのt検定
-`t.test {stats}`関数は、引数の指定により様々なt検定を行えます。そこで、t検定の種類と`t.test {stats}`での計算方法を整理しておきます。
-
-標本     | 関係       | 分散     | 指定方法 
--------- | ---------- | -------- | --------------------------------
-1標本の  | N/A        | N/A      | t.test(x, mu = a)
-2群間の  | 対応のない | 等分散   | t.test(x, y, var.equal = TRUE)
-2群間の  | 対応のない | 不等分散 | t.test(x, y, var.equal = FALSE)
-2群間の  | 対応のある | N/A      | t.test(x, y, paired = TRUE)        
-
-なお、`mu`の既定値は`0`。`var.equal`、`paired`の既定値は共に`FALSE`です。
-
-2群間の検定については、`formula`形式を用いた指定も可能で、データフレーム`x`において数値`value`、層別変数`factor`にデータが格納されているとした場合、以下のように指定します。  
-
-    # 2群間の対応のない（等分散） - 独立サンプルt検定はこの計算式@Rcmdr
-    t.test(value ~ factor, data = x, var.equal = TURE)
-    
-    # 2群間の対応のない（不等分散） - 独立サンプルt検定はこの計算式@Rcmdr
-    t.test(value ~ factor, data = x, var.equal = FALSE)
-    
-    # 2群間の対応のある - 対応のあるt検定はこの計算式を使わない@Rcmdr
-    t.test(value ~ factor, data = x, paired = TURE)
-
-`factor`は因子名でソートされた順で評価されますので、順番に注意して下さい。
-
-<!--
- TeXで「~」を表記する場合は、\verb|~|とする。その他の特殊文字は以下を参照
- \textasciitildeや\textasciicircumは使えない
- http://www.rsch.tuis.ac.jp/~mizutani/online/latex/specialchar.html
- http://www.latex-cmd.com/struct/verb.html
--->
-
-### t.test {stats}での対立仮説指定方法
-#### １標本の場合
-対立仮説`alternative hypothesis`の指定（引数`alternative`）は1標本の場合、
-
-    t.test(x, mu = mu0, alternative = "option")
-
-と指定し、平均$\mu$と基準値(比較値)$\mu_0$に対して下表のようになります。
-
-対立仮説 （帰無仮説）               | 指定方法 
------------------------------------ | --------------------------
-$\mu \neq \mu_0$ （$\mu = \mu_0$）  | alternative = "two.sided"
-$\mu < \mu_0$ （$\mu \geq \mu_0$）  | alternative = "less"
-$\mu > \mu_0$ （$\mu \leq \mu_0$）  | alternative = "greater"
-
-<!-- ![](image/1標本.jpg)   -->
-1標本t検定  
-
-#### ２群間の場合
-対応のある2群間の場合は、以下のように指定し
-
-    t.test(x, y, alternative = "option", ...)
-
-対立仮説の指定(引数`alternative`)は平均の差（$\delta = \mu_x - \mu_y$）に対して下表のようになります。
-
-対立仮説 （帰無仮説）             | 指定方法 
---------------------------------- | --------------------------
-$\delta \neq 0$ （$\delta = 0$）  | alternative = "two.sided"
-$\delta < 0$ （$\delta \geq 0$）  | alternative = "less"
-$\delta > 0$ （$\delta \leq 0$）  | alternative = "greater"
-
-<!-- ![](image/2標本_対応のある.jpg)   -->
-対応のあるt検定  
 
 　  
-対応のない2群間の場合は同様の指定で、平均の差（$\delta = \mu_x - \mu_y$）で考える場合は上表のように平均値$\mu_x$,  $\mu_y$に対して考える場合は下表のようになります。
-
-対立仮説 （帰無仮説）                   | 指定方法 
---------------------------------------- | --------------------------
-$\mu_x \neq \mu_y$ （$\mu_x = \mu_y$）  | alternative = "two.sided"
-$\mu_x < \mu_y$ （$\mu_x \geq \mu_y$）  | alternative = "less"
-$\mu_x > \mu_y$ （$\mu_x \leq \mu_y$）  | alternative = "greater"
-
-<!-- ![](image/2標本_対応のない.jpg)   -->
-独立サンプルt検定  
-　  
-`formula`形式で指定した場合は、因子順にx, yと読み替えて下さい。また、他のオプションについてはヘルプで確認して下さい。
-
-
-<!-- ## t.test {stats}を使わない方法 -->
-<!-- Excel使った場合と同じ方法（テキストの方法）で1標本t検定を解いてみます。 -->
-<!-- ```{r} -->
-<!-- x.omit <- droplevels(na.omit(x[1:2])) -->
-<!-- # データ数 -->
-<!-- n <- tapply(x.omit$data, INDEX = x.omit$group, FUN = length) -->
-<!-- # 自由度 = データ数 - 1 -->
-<!-- f <- n - 1 -->
-<!-- # 平均値 -->
-<!-- m <- tapply(x.omit$data, INDEX = x.omit$group, FUN = mean) -->
-<!-- # 標準偏差 -->
-<!-- s <- tapply(x.omit$data, INDEX = x.omit$group, FUN = sd) -->
-<!-- # t分布の標準偏差 -->
-<!-- # t値 -->
-<!-- # p値 -->
-
-<!-- x.omit <- droplevels(na.omit(x[3:4])) -->
-<!-- n <- tapply(x.omit$data, INDEX = x.omit$group, FUN = length) -->
-
-<!-- x.omit <- droplevels(na.omit(x[5:6])) -->
-<!-- n <- tapply(x.omit$data, INDEX = x.omit$group, FUN = length) -->
-
-<!-- x.omit <- droplevels(na.omit(x[7:8])) -->
-<!-- n <- tapply(x.omit$data, INDEX = x.omit$group, FUN = length) -->
-<!-- ``` -->
 
 ---
 
 <!-- Include Footer -->
-```{r child="../common/footer.Rmd"}
+```{r child="../shared/footer.Rmd"}
 ```

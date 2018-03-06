@@ -28,15 +28,18 @@
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 <link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
 <script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
-<script src="site_libs/htmlwidgets-0.9/htmlwidgets.js"></script>
-<script src="site_libs/datatables-binding-0.2/datatables.js"></script>
-<link href="site_libs/dt-core-1.10.12/css/jquery.dataTables.min.css" rel="stylesheet" />
-<link href="site_libs/dt-core-1.10.12/css/jquery.dataTables.extra.css" rel="stylesheet" />
-<script src="site_libs/dt-core-1.10.12/js/jquery.dataTables.min.js"></script>
-<link href="site_libs/dt-ext-scroller-1.10.12/css/scroller.dataTables.min.css" rel="stylesheet" />
-<script src="site_libs/dt-ext-scroller-1.10.12/js/dataTables.scroller.min.js"></script>
-<link href="site_libs/dt-ext-fixedcolumns-1.10.12/css/fixedColumns.dataTables.min.css" rel="stylesheet" />
-<script src="site_libs/dt-ext-fixedcolumns-1.10.12/js/dataTables.fixedColumns.min.js"></script>
+<script src="site_libs/htmlwidgets-1.0/htmlwidgets.js"></script>
+<link href="site_libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="site_libs/datatables-binding-0.4/datatables.js"></script>
+<link href="site_libs/dt-core-1.10.16/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="site_libs/dt-core-1.10.16/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="site_libs/dt-core-1.10.16/js/jquery.dataTables.min.js"></script>
+<link href="site_libs/dt-ext-scroller-1.10.16/css/scroller.dataTables.min.css" rel="stylesheet" />
+<script src="site_libs/dt-ext-scroller-1.10.16/js/dataTables.scroller.min.js"></script>
+<link href="site_libs/dt-ext-fixedcolumns-1.10.16/css/fixedColumns.dataTables.min.css" rel="stylesheet" />
+<script src="site_libs/dt-ext-fixedcolumns-1.10.16/js/dataTables.fixedColumns.min.js"></script>
+<link href="site_libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
+<script src="site_libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
 <link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
 
 <style type="text/css">code{white-space: pre;}</style>
@@ -84,6 +87,7 @@ h6 {
 }
 </style>
 
+<link rel="stylesheet" href="../shared/style.css" type="text/css" />
 
 </head>
 
@@ -309,7 +313,9 @@ div.tocify {
       <a href="norm.html">正規性の確認</a>
     </li>
     <li class="dropdown-header">等分散性の確認</li>
-    <li class="dropdown-header">平均値の差の検定</li>
+    <li>
+      <a href="t_test.html">平均値の差の検定</a>
+    </li>
     <li class="dropdown-header">ソルバー</li>
     <li class="dropdown-header">分散分析</li>
     <li class="dropdown-header">回帰分析</li>
@@ -385,7 +391,7 @@ div.tocify {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../">Cabinet</a>
+      <a href="../index.html">Cabinet</a>
     </li>
     <li class="divider"></li>
     <li>
@@ -442,7 +448,7 @@ div.tocify {
 </div>
 
 
-<!-- Include Common Links -->
+<!-- Include shared Links -->
 <!-- SQiP and others -->
 <!-- Books -->
 <!-- 共立出版 -->
@@ -460,28 +466,25 @@ div.tocify {
 <!-- RStudio -->
 <!-- Docker -->
 <!-- Cabinet Pages -->
-<div id="はじめに" class="section level1 unnumbered">
-<h1>はじめに</h1>
 <p>本資料は『<a href="http://www.juse-p.co.jp/cgi-bin/html.pl5?i=ISBN978-4-8171-9558-6" title="ソフトウェアメトリクス統計分析入門">ソフトウェアメトリクス統計分析入門</a>』(以降、テキストと記載)の第3章の例題を<a href="https://www.r-project.org/" title="The R Project">R</a>で解いた際の解答例を示したものです。また、<a href="http://rmarkdown.rstudio.com/" title="R Markdown form RStudio">R Markdown</a>を使うメリットを示すための一手段として作成していますので、テキストにおける計算方法とは異なる部分もあります。本資料で使用しているデータの入手に関してはテキストにてご確認下さい。<br />
 本資料がHTML形式の場合、<a href="https://www.r-project.org/" title="The R Project">R</a>のコードを参照するには右側にある<strong><code>[Code]</code></strong>ボタンをクリックして下さい。なお、JavaScriptは必ずOnにしてご覧下さい。<br />
 　</p>
-</div>
 <div id="例題-3.1" class="section level1">
-<h1><span class="header-section-number">1</span> 例題 3.1</h1>
+<h1>例題 3.1</h1>
 <blockquote>
 <p>表3.4にレビュー指摘による欠陥密度データが11 個あります。 データをそれぞれ適用したレビュー技法ごとに分類しています。 レビュー対象の品質を考慮して技法を使い分けすることは特にしていない前提とします。 レビュー技法の違いは、欠陥密度に対して影響を与えているといえるでしょうか。 　</p>
 </blockquote>
 <div id="データの設定" class="section level2">
-<h2><span class="header-section-number">1.1</span> データの設定</h2>
+<h2>データの設定</h2>
 <p>本例題で利用するデータは予めCSVファイルとして保存されているものとします。表3.4で示めされているようにデータはワイドフォーマット（アンスタック形式）で「対応なし・各群の標本数が異なる」データとなっています。Rで処理するためには基本的にロングフォーマット（スタック形式）に変換する必要がありますので、予めロングフォーマットに変換しておくか、読み込んでからロングフォーマットに変換します。</p>
 <p>　</p>
 <div id="フォーマット変換" class="section level3">
-<h3><span class="header-section-number">1.1.1</span> フォーマット変換</h3>
+<h3>フォーマット変換</h3>
 <p>データはすぐに分析できる形で保存されていることは稀です。これは、データ分析に慣れていない人が整理していたり、説明がしやすい形に整理されていることに起因します。しかし、これらのデータを手動で変換していると変換間違いが混入する可能性が高いので、できる限り自動化して間違いを防ぎたいものです。また、データ量が多い場合には工数削減に直結するので変換処理の自動化は覚えておいて損はありません。</p>
 <p>Rにおいてフォーマット変換を行う方法はいくつかありますが、ここでは<strong><code>tidyr</code></strong>パッケージを用いた方法を紹介します。なお、<strong><code>tidyr</code></strong>パッケージは<strong><code>dplyr</code></strong>パッケージと共に使うことを前提に設計されています。<br />
 　</p>
 <div id="データの準備" class="section level4">
-<h4><span class="header-section-number">1.1.1.1</span> データの準備</h4>
+<h4>データの準備</h4>
 <p>今回用いる表3.4は、見出し行を除いたデータだけのCSV形式として保存しておきます</p>
 <table>
 <thead>
@@ -524,7 +527,7 @@ div.tocify {
 <p>　</p>
 </div>
 <div id="データの読み込みと変換" class="section level4">
-<h4><span class="header-section-number">1.1.1.2</span> データの読み込みと変換</h4>
+<h4>データの読み込みと変換</h4>
 <p>次に以下の手順でファイルを読み込み変換処理を行います。</p>
 <ol style="list-style-type: decimal">
 <li>1列目のレビュー技法（分類）は行名として読み込みます（列名は自動付与）</li>
@@ -557,7 +560,7 @@ x %&gt;%
 </div>
 </div>
 <div id="逆フォーマット変換" class="section level3">
-<h3><span class="header-section-number">1.1.2</span> 逆フォーマット変換</h3>
+<h3>逆フォーマット変換</h3>
 <p>ロングフォーマットをワイドフォーマットに再変換したい場合は、再変換時に行識別ができるように以下のような行識別情報を持ったデータフレームを保持しておきます。</p>
 <pre class="r"><code>file &lt;- &quot;./data/ex_3.1_w.csv&quot;   # ワイドフォーマットで読み込む
 
@@ -586,19 +589,19 @@ x.l</code></pre>
 x.w</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["A"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["I"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["W"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"2.2","2":"4.6","3":"3.0","_rn_":"1"},{"1":"3.4","2":"4.2","3":"4.4","_rn_":"2"},{"1":"2.8","2":"4.0","3":"5.8","_rn_":"3"},{"1":"1.2","2":"4.8","3":"NA","_rn_":"4"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["A"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["I"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["W"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"2.2","2":"4.6","3":"3.0"},{"1":"3.4","2":"4.2","3":"4.4"},{"1":"2.8","2":"4.0","3":"5.8"},{"1":"1.2","2":"4.8","3":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <pre class="r"><code>t(x.w) %&gt;% as.data.frame()</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["1"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["2"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["3"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["4"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"2.2","2":"3.4","3":"2.8","4":"1.2","_rn_":"A"},{"1":"4.6","2":"4.2","3":"4.0","4":"4.8","_rn_":"I"},{"1":"3.0","2":"4.4","3":"5.8","4":"NA","_rn_":"W"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["V1"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["V2"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["V3"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["V4"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"2.2","2":"3.4","3":"2.8","4":"1.2","_rn_":"A"},{"1":"4.6","2":"4.2","3":"4.0","4":"4.8","_rn_":"I"},{"1":"3.0","2":"4.4","3":"5.8","4":"NA","_rn_":"W"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 </div>
 </div>
 <div id="データ分布の確認" class="section level2">
-<h2><span class="header-section-number">1.2</span> データ分布の確認</h2>
+<h2>データ分布の確認</h2>
 <p>技法の違いが欠陥密度に与える影響を見るには分散分析<code>aov{stats}</code>を用いるのが適当であると考えられますが、分散分析は母集団の分布を以下のように仮定しています。</p>
 <ul>
 <li>正規分布にしたがう</li>
@@ -606,7 +609,7 @@ x.w</code></pre>
 </ul>
 <p>今回は各群（水準）のデータ数が3～4個と少ないため、正規性についてはデータ数が増えれば正規分布になるという仮定の元、検定を省略します。等分散性については等分散が認められなければWelch検定を用いることにします。</p>
 <div id="等分散性の検定" class="section level3">
-<h3><span class="header-section-number">1.2.1</span> 等分散性の検定</h3>
+<h3>等分散性の検定</h3>
 <p>今回は各群（水準）のデータ数が3～4個と少ないですが念のために等分散性の検定を行います。各群（水準）のデータ数は前述のように異なり、また、各値の対応はありませんので、3水準以上に対応できるバートレットの検定<code>bartlett.test{stats}</code>にて等分散性を確認します。</p>
 <pre class="r"><code>bartlett.test(defect.density ~ review.method, data = x)</code></pre>
 <pre><code>## 
@@ -617,7 +620,7 @@ x.w</code></pre>
 </div>
 </div>
 <div id="一元配置分散分析" class="section level2">
-<h2><span class="header-section-number">1.3</span> 一元配置分散分析</h2>
+<h2>一元配置分散分析</h2>
 <p>帰無仮説は棄却されませんでしたので、対象のデータは等分散性がないとは言えないため一元配置分散分析<code>aov{stats}</code>を用いて各群（水準）間の平均値の有意差の有無を確認します。</p>
 <pre class="r"><code>result.aov &lt;- aov(defect.density ~ review.method, data = x)
 summary(result.aov)</code></pre>
@@ -628,7 +631,7 @@ summary(result.aov)</code></pre>
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 </div>
 <div id="多重比較" class="section level2">
-<h2><span class="header-section-number">1.4</span> 多重比較</h2>
+<h2>多重比較</h2>
 <p>一元配置分散分析の結果、<span class="math inline">\(5\%\)</span>有意で帰無仮説は棄却されましたので、どの各群（水準）間に有意差があるかを多重比較により確認します。対象は前述の通り対応がなく各群（水準）のデータ数が異なりますので、多重比較としていくつかの検定方法がありますが、ここでは、Rcmdrで使われているテューキー・クレーマー法による多重比較を行います。</p>
 <pre class="r"><code># Rcmdr
 result.pairs &lt;- multcomp::glht(result.aov,
@@ -644,8 +647,8 @@ summary(result.pairs)</code></pre>
 ## 
 ## Linear Hypotheses:
 ##            Estimate Std. Error t value Pr(&gt;|t|)  
-## I - A == 0   2.0000     0.6595   3.032   0.0384 *
-## W - A == 0   2.0000     0.7124   2.807   0.0539 .
+## I - A == 0   2.0000     0.6595   3.032   0.0388 *
+## W - A == 0   2.0000     0.7124   2.807   0.0540 .
 ## W - I == 0   0.0000     0.7124   0.000   1.0000  
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
@@ -666,7 +669,7 @@ result.tukey</code></pre>
 <p>多重比較の結果、I(インスペクション)とA(アドホック)において有意差が認められます。</p>
 </div>
 <div id="結果の可視化" class="section level2">
-<h2><span class="header-section-number">1.5</span> 結果の可視化</h2>
+<h2>結果の可視化</h2>
 <p>因子間の平均の差の95%信頼区間は以下の通りとなります。</p>
 <pre class="r"><code># Rcmdrにおける多重比較を行った場合
 x.result &lt;- as.data.frame(confint(result.pairs)$confint) %&gt;% 
@@ -689,7 +692,7 @@ ggplot(x.result, aes(x = factor, y = mu)) +
 <p><img src="smsa_3_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 </div>
 <div id="各群の平均値の95信頼区間" class="section level2">
-<h2><span class="header-section-number">1.6</span> 各群の平均値の95%信頼区間</h2>
+<h2>各群の平均値の95%信頼区間</h2>
 <pre class="r"><code>n &lt;- 2
 x.result &lt;- x %&gt;%
   group_by(review.method) %&gt;%
@@ -708,12 +711,12 @@ ggplot(x.result, aes(x = review.method, y = mu)) +
 </div>
 </div>
 <div id="例題-3.2" class="section level1">
-<h1><span class="header-section-number">2</span> 例題 3.2</h1>
+<h1>例題 3.2</h1>
 <blockquote>
 <p>システム構成の違いがシステムのパフォーマンスにどの程度の影響を与えるのかを調べるために以下のようなデータを収集し、一元配置分散分析を行いました。 システム構成の違いがパフォーマンスに与える影響力は誤差範囲ではないといえるでしょうか。</p>
 </blockquote>
 <div id="データの設定-1" class="section level2">
-<h2><span class="header-section-number">2.1</span> データの設定</h2>
+<h2>データの設定</h2>
 <p>本例題で利用するデータは予めCSVファイルとして保存されているものとします。なお、例題3.1で示したように例題3.2でもフォーマット変換により分析対象となるデータフレームを作成しています。</p>
 <pre class="r"><code># 例題のデータを変形せずに読み込み、分析用データフレームに変換する
 file &lt;- &quot;./data/ex_3.2.csv&quot;
@@ -727,14 +730,14 @@ x &lt;- read.csv(file, header = FALSE, row.names = 1, sep = &quot;,&quot;,
   # mcp{multcomp}では因子型である必要があるため文字列型から変換
 
 df_print(x)</code></pre>
-<div id="htmlwidget-7955071e84f8e1fc26f7" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-7955071e84f8e1fc26f7">{"x":{"filter":"none","extensions":["Scroller","FixedColumns"],"data":[["1","2","3","4","5","6","7","8","9","10","11","12"],["A","A","A","B","B","B","C","C","C","D","D","D"],[200,220,210,240,280,260,220,240,260,200,170,200]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>sys.config<\/th>\n      <th>r.time<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"deferRender":true,"dom":"t","scroller":false,"scrollY":250,"fixedColumns":true,"scrollX":true,"columnDefs":[{"className":"dt-right","targets":2},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-5cca50534195149f703c" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-5cca50534195149f703c">{"x":{"filter":"none","extensions":["Scroller","FixedColumns"],"data":[["1","2","3","4","5","6","7","8","9","10","11","12"],["A","A","A","B","B","B","C","C","C","D","D","D"],[200,220,210,240,280,260,220,240,260,200,170,200]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>sys.config<\/th>\n      <th>r.time<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"deferRender":true,"dom":"t","scroller":false,"scrollY":250,"fixedColumns":true,"scrollX":true,"columnDefs":[{"className":"dt-right","targets":2},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="データ分布の確認-1" class="section level2">
-<h2><span class="header-section-number">2.2</span> データ分布の確認</h2>
+<h2>データ分布の確認</h2>
 <p>例題3.1と同じで分散分析<code>aov{stats}</code>を用いるのが適当だと考えますが、念のためにデータ分布の確認を行います。正規性の検定については例題3.1と同じ理由から省略します。</p>
 <div id="等分散性の確認" class="section level3">
-<h3><span class="header-section-number">2.2.1</span> 等分散性の確認</h3>
+<h3>等分散性の確認</h3>
 <pre class="r"><code>bartlett.test(r.time ~ sys.config, data = x)</code></pre>
 <pre><code>## 
 ##  Bartlett test of homogeneity of variances
@@ -744,7 +747,7 @@ df_print(x)</code></pre>
 </div>
 </div>
 <div id="一元配置分散分析-1" class="section level2">
-<h2><span class="header-section-number">2.3</span> 一元配置分散分析</h2>
+<h2>一元配置分散分析</h2>
 <p>帰無仮説は棄却されませんでしたので、対象データは等分散性がないとはいえないために一元配置分散分析<code>aov{stats}</code>を用いて各群（水準）間の平均値の有意差の有無を確認します。</p>
 <pre class="r"><code>result.aov &lt;- aov(r.time ~ sys.config, data = x)
 summary(result.aov)</code></pre>
@@ -755,7 +758,7 @@ summary(result.aov)</code></pre>
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 </div>
 <div id="多重比較-1" class="section level2">
-<h2><span class="header-section-number">2.4</span> 多重比較</h2>
+<h2>多重比較</h2>
 <p>一元配置分散分析の結果、<span class="math inline">\(5\%\)</span>有意で帰無仮説は棄却されましたので、多重比較により各群（水準）間に有意差があるのかを確認します。ここでもRcmdrで使われているティキュー・クレーマー法を用います。</p>
 <pre class="r"><code># Rcmdr
 result.pairs &lt;- multcomp::glht(result.aov,
@@ -771,12 +774,12 @@ summary(result.pairs)</code></pre>
 ## 
 ## Linear Hypotheses:
 ##            Estimate Std. Error t value Pr(&gt;|t|)   
-## B - A == 0    50.00      14.14   3.536  0.03129 * 
-## C - A == 0    30.00      14.14   2.121  0.22539   
-## D - A == 0   -20.00      14.14  -1.414  0.52531   
-## C - B == 0   -20.00      14.14  -1.414  0.52529   
-## D - B == 0   -70.00      14.14  -4.950  0.00486 **
-## D - C == 0   -50.00      14.14  -3.536  0.03132 * 
+## B - A == 0    50.00      14.14   3.536  0.03141 * 
+## C - A == 0    30.00      14.14   2.121  0.22547   
+## D - A == 0   -20.00      14.14  -1.414  0.52515   
+## C - B == 0   -20.00      14.14  -1.414  0.52517   
+## D - B == 0   -70.00      14.14  -4.950  0.00498 **
+## D - C == 0   -50.00      14.14  -3.536  0.03155 * 
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## (Adjusted p values reported -- single-step method)</code></pre>
@@ -799,7 +802,7 @@ result.tukey</code></pre>
 <p>多重比較の結果、システム構成A-B間、システム構成B-D間、システム構成C-D間に有意差が認められます。</p>
 </div>
 <div id="結果の可視化-1" class="section level2">
-<h2><span class="header-section-number">2.5</span> 結果の可視化</h2>
+<h2>結果の可視化</h2>
 <p>因子間の平均の差の95%信頼区間は以下の通りとなります。</p>
 <pre class="r"><code>x.result &lt;- as.data.frame(confint(result.pairs)$confint) %&gt;% 
   mutate(sys.config = as.factor(row.names(.))) %&gt;% 
@@ -823,7 +826,7 @@ ggplot(x.result, aes(x = factor, y = mu)) +
 <p>となります。単純にレスポンスタイムの平均値だけで決めるのであればシステム構成Dを選択すればよいことになります。しかし、システム構成AとDの平均値の差の95%信頼区間を確認すると必ずもシステム構成Dのレスポンスタイムが短いとは言い切れません。</p>
 </div>
 <div id="各群の平均値の95信頼区間-1" class="section level2">
-<h2><span class="header-section-number">2.6</span> 各群の平均値の95%信頼区間</h2>
+<h2>各群の平均値の95%信頼区間</h2>
 <p>そこで、各システム構成の平均値の95%信頼区間を確認してみます。</p>
 <pre class="r"><code>n &lt;- 2
 x.result &lt;- x %&gt;%
@@ -850,16 +853,16 @@ ggplot(x.result, aes(x = sys.config, y = mu)) +
 </div>
 </div>
 <div id="演習-3.1" class="section level1">
-<h1><span class="header-section-number">3</span> 演習 3.1</h1>
+<h1>演習 3.1</h1>
 <blockquote>
 <p>完了したプロジェクトを上流でのレビュー実施度合いが、多い、中ぐらい、少ない、の3 段階に分類しました． そして、それらのプロジェクトの最終システムテスト工程での欠陥密度のデータは以下のとおりです。 上流でしっかりとレビューを実施すれば、システムテストでの欠陥密度は低下することが期待できます。 果たして、その期待どおり上流でのレビューは、下流での品質向上に効果があるといえるでしょうか。</p>
 </blockquote>
 <div id="データの設定-2" class="section level2">
-<h2><span class="header-section-number">3.1</span> データの設定</h2>
+<h2>データの設定</h2>
 <p>本演習で利用するデータは予めCSVファイルとして保存されているものとします。</p>
 </div>
 <div id="可視化" class="section level2">
-<h2><span class="header-section-number">3.2</span> 可視化</h2>
+<h2>可視化</h2>
 <p>分析前に対象データを可視化してみます。</p>
 <pre class="r"><code>x %&gt;% 
   ggplot(aes(x = review.freq, y = defect.density)) + 
@@ -869,7 +872,7 @@ ggplot(x.result, aes(x = sys.config, y = mu)) +
 <p><img src="smsa_3_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
 </div>
 <div id="一元配置分散分析-2" class="section level2">
-<h2><span class="header-section-number">3.3</span> 一元配置分散分析</h2>
+<h2>一元配置分散分析</h2>
 <p>読み込んだデータは上記のように1変数と因子のですので、そのまま分析を行います。</p>
 <pre class="r"><code>result.aov &lt;- aov(defect.density ~ review.freq, data = x)
 summary(result.aov)</code></pre>
@@ -880,7 +883,7 @@ summary(result.aov)</code></pre>
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 </div>
 <div id="多重比較-2" class="section level2">
-<h2><span class="header-section-number">3.4</span> 多重比較</h2>
+<h2>多重比較</h2>
 <p>一元配置分散分析の結果、<span class="math inline">\(5\%\)</span>有意で帰無仮説は棄却されませんでしたが、多重比較により因子間に差を確認してみます。</p>
 <pre class="r"><code>result.pairs &lt;- multcomp::glht(result.aov,
                                linfct = multcomp::mcp(review.freq = &quot;Tukey&quot;))
@@ -896,7 +899,7 @@ summary(result.pairs)</code></pre>
 ## Linear Hypotheses:
 ##              Estimate Std. Error t value Pr(&gt;|t|)  
 ## 多 - 少 == 0  -0.7000     0.2415  -2.898   0.0422 *
-## 中 - 少 == 0  -0.4333     0.2750  -1.576   0.3033  
+## 中 - 少 == 0  -0.4333     0.2750  -1.576   0.3035  
 ## 中 - 多 == 0   0.2667     0.2629   1.014   0.5862  
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
@@ -904,7 +907,7 @@ summary(result.pairs)</code></pre>
 <p>多重比較の結果、一元配置分散分析では有意差は認められなかったもののレビュー頻度’多-小’において有意差が認められます。</p>
 </div>
 <div id="結果の可視化-2" class="section level2">
-<h2><span class="header-section-number">3.5</span> 結果の可視化</h2>
+<h2>結果の可視化</h2>
 <p>因子間の平均の差の95%信頼区間は以下の通りとなります。</p>
 <pre class="r"><code>x.result &lt;- as.data.frame(confint(result.pairs)$confint) %&gt;% 
   mutate(review.freq = as.factor(row.names(.))) %&gt;% 
@@ -920,14 +923,14 @@ ggplot(x.result, aes(x = factor, y = mu)) +
 <p><img src="smsa_3_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
 </div>
 <div id="結果の解釈" class="section level2">
-<h2><span class="header-section-number">3.6</span> 結果の解釈</h2>
+<h2>結果の解釈</h2>
 <p>一元配置分散分析において有意差は認められなかったものの多重比較を行うと有意差が認めれられています。これは、以下のような解釈(定性分析)により有意差は認められないと結論できのではないでしょうか？</p>
 <div id="定性分析" class="section level3">
-<h3><span class="header-section-number">3.6.1</span> 定性分析</h3>
+<h3>定性分析</h3>
 </div>
 </div>
 <div id="参考因子毎の平均値の95信頼区間" class="section level2">
-<h2><span class="header-section-number">3.7</span> 参考)因子毎の平均値の95%信頼区間</h2>
+<h2>参考)因子毎の平均値の95%信頼区間</h2>
 <pre class="r"><code>n &lt;- 2
 x.result &lt;- x %&gt;%
   group_by(review.freq) %&gt;%
@@ -946,12 +949,12 @@ ggplot(x.result, aes(x = review.freq, y = mu)) +
 </div>
 </div>
 <div id="演習-3.2" class="section level1">
-<h1><span class="header-section-number">4</span> 演習 3.2</h1>
+<h1>演習 3.2</h1>
 <blockquote>
 <p>システムの機能を改良することになりました。GUI プロトタイプの変更案をA、B、C の3 つ作成しました。 現行も加えて4 つのGUI にて5 段階でユーザビリティ評価を行った結果が以下です。 GUI デザインの違いがユーザビリティに影響を与えているといえるでしょうか？また、どのGUI デザインを採用すべきでしょうか？</p>
 </blockquote>
 <div id="データの設定-3" class="section level2">
-<h2><span class="header-section-number">4.1</span> データの設定</h2>
+<h2>データの設定</h2>
 <p>本演習で利用するデータは予めCSVファイルとして保存されているものとします。</p>
 <pre class="r"><code># 演習のデータを変形せずに読み込み、分析用データフレームに変換する
 file &lt;- &quot;./data/ex3_2.csv&quot;
@@ -964,11 +967,11 @@ x &lt;- read.csv(file, header = FALSE, row.names = 1, sep = &quot;,&quot;,
   mutate(model = as.factor(model))
   # mcp{multcomp}では因子型である必要があるため文字列型から変換
 df_print(x)</code></pre>
-<div id="htmlwidget-cda6e3b29129ee30d5d5" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-cda6e3b29129ee30d5d5">{"x":{"filter":"none","extensions":["Scroller","FixedColumns"],"data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40"],["現行","現行","現行","現行","現行","現行","現行","現行","現行","現行","A案","A案","A案","A案","A案","A案","A案","A案","A案","A案","B案","B案","B案","B案","B案","B案","B案","B案","B案","B案","C案","C案","C案","C案","C案","C案","C案","C案","C案","C案"],[1,2,2,3,3,3,4,3,3,2,3,4,2,3,3,3,5,3,4,3,3,5,4,5,3,3,4,4,4,4,5,3,4,1,3,4,5,5,4,5]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>model<\/th>\n      <th>eval<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"deferRender":true,"dom":"t","scroller":false,"scrollY":250,"fixedColumns":true,"scrollX":true,"columnDefs":[{"className":"dt-right","targets":2},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-c4609dab32221e23db3f" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-c4609dab32221e23db3f">{"x":{"filter":"none","extensions":["Scroller","FixedColumns"],"data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40"],["現行","現行","現行","現行","現行","現行","現行","現行","現行","現行","A案","A案","A案","A案","A案","A案","A案","A案","A案","A案","B案","B案","B案","B案","B案","B案","B案","B案","B案","B案","C案","C案","C案","C案","C案","C案","C案","C案","C案","C案"],[1,2,2,3,3,3,4,3,3,2,3,4,2,3,3,3,5,3,4,3,3,5,4,5,3,3,4,4,4,4,5,3,4,1,3,4,5,5,4,5]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>model<\/th>\n      <th>eval<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"deferRender":true,"dom":"t","scroller":false,"scrollY":250,"fixedColumns":true,"scrollX":true,"columnDefs":[{"className":"dt-right","targets":2},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="可視化-1" class="section level2">
-<h2><span class="header-section-number">4.2</span> 可視化</h2>
+<h2>可視化</h2>
 <p>分析前に対象データを可視化してみます。</p>
 <pre class="r"><code>x %&gt;% 
   ggplot(aes(x = model, y = eval)) + 
@@ -992,7 +995,7 @@ df_print(x)</code></pre>
 <p>現行案に対して、A, B, Cの各案とも評価結果が良くなっていることの見当はつきますが、どの案がベストなのか、本当に良くなっているかは、グラフだけでは断言できません。</p>
 </div>
 <div id="一元配置分散分析-3" class="section level2">
-<h2><span class="header-section-number">4.3</span> 一元配置分散分析</h2>
+<h2>一元配置分散分析</h2>
 <p>そこで、一元配置分散分析を行うことで、各案の評価に有意な差があるか確認します。</p>
 <pre class="r"><code>result.aov &lt;- aov(eval ~ model, data = x)
 summary(result.aov)</code></pre>
@@ -1004,7 +1007,7 @@ summary(result.aov)</code></pre>
 <p>一元配置分散分析の結果、<span class="math inline">\(5\%\)</span>有意で帰無仮説は棄却されましたので、因子間に有意な差があることが分かります。</p>
 </div>
 <div id="多重比較-3" class="section level2">
-<h2><span class="header-section-number">4.4</span> 多重比較</h2>
+<h2>多重比較</h2>
 <p>そこで、多重比較によりどの因子間に有意差があるのかを確認します。</p>
 <pre class="r"><code>result.pairs &lt;- multcomp::glht(result.aov,
                                linfct = multcomp::mcp(model = &quot;Tukey&quot;))
@@ -1019,19 +1022,19 @@ summary(result.pairs)</code></pre>
 ## 
 ## Linear Hypotheses:
 ##                   Estimate Std. Error t value Pr(&gt;|t|)  
-## B案 - A案 == 0   6.000e-01  4.236e-01   1.416   0.4977  
+## B案 - A案 == 0   6.000e-01  4.236e-01   1.416   0.4976  
 ## C案 - A案 == 0   6.000e-01  4.236e-01   1.416   0.4976  
 ## 現行 - A案 == 0 -7.000e-01  4.236e-01  -1.652   0.3632  
 ## C案 - B案 == 0  -1.221e-15  4.236e-01   0.000   1.0000  
-## 現行 - B案 == 0 -1.300e+00  4.236e-01  -3.069   0.0204 *
-## 現行 - C案 == 0 -1.300e+00  4.236e-01  -3.069   0.0202 *
+## 現行 - B案 == 0 -1.300e+00  4.236e-01  -3.069   0.0202 *
+## 現行 - C案 == 0 -1.300e+00  4.236e-01  -3.069   0.0200 *
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## (Adjusted p values reported -- single-step method)</code></pre>
 <p>多重比較の結果、現行のGUIとB案、C案との間で有意な差が認められます。</p>
 </div>
 <div id="結果の可視化-3" class="section level2">
-<h2><span class="header-section-number">4.5</span> 結果の可視化</h2>
+<h2>結果の可視化</h2>
 <p>多重比較の結果である因子間の平均の差の95%信頼区間は以下の通りになります。</p>
 <pre class="r"><code>x.result &lt;- as.data.frame(confint(result.pairs)$confint) %&gt;% 
   mutate(model = as.factor(row.names(.))) %&gt;% 
@@ -1048,7 +1051,7 @@ ggplot(x.result, aes(x = factor, y = mu)) +
 <p>ただ、これだけでは、B案とC案のどちらを選べば良いか、数値だけでは判断がつきません。</p>
 </div>
 <div id="因子毎の平均値の95信頼区間" class="section level2">
-<h2><span class="header-section-number">4.6</span> 因子毎の平均値の95%信頼区間</h2>
+<h2>因子毎の平均値の95%信頼区間</h2>
 <p>そこで、始めに戻り各因子(GUIデザイン)の評価結果の平均値と95%信頼区間を見てみます。</p>
 <pre class="r"><code>n &lt;- 2
 x.result &lt;- x %&gt;%
@@ -1069,16 +1072,16 @@ ggplot(x.result, aes(x = model, y = mu)) +
 </div>
 </div>
 <div id="演習-3.3" class="section level1">
-<h1><span class="header-section-number">5</span> 演習 3.3</h1>
+<h1>演習 3.3</h1>
 <blockquote>
 <p>システム構成の違いとソフトウェア設定のどちらがシステムのパフォーマンスに影響を与えるのかを調べるためにそれぞれ4水準と3水準を用意して全組合せでパフォーマンステストを行い、以下のようなデータを収集しました。 システム構成の違いとソフトウェア設定のどちらがパフォーマンスに与えるといえるでしょうか？ 二元配置分散分析を行ってください。</p>
 </blockquote>
 <div id="データの設定-4" class="section level2">
-<h2><span class="header-section-number">5.1</span> データの設定</h2>
+<h2>データの設定</h2>
 <p>本演習で利用するデータは予めCSVファイルとして保存されているものとします。</p>
 </div>
 <div id="可視化-2" class="section level2">
-<h2><span class="header-section-number">5.2</span> 可視化</h2>
+<h2>可視化</h2>
 <p>分析前に対象データを可視化してみます。</p>
 <pre class="r"><code>x %&gt;% 
   ggplot(aes(x = system, y = r.time)) + 
@@ -1096,7 +1099,7 @@ ggplot(x.result, aes(x = model, y = mu)) +
 <p>一方、ソフトウェア設定に着目すると設定Xが他の設定に比べると優れているように見えますが、どちらのシステム構成との組み合わせが良いのかはグラフからは判断できません。</p>
 </div>
 <div id="二元配置分散分析" class="section level2">
-<h2><span class="header-section-number">5.3</span> 二元配置分散分析</h2>
+<h2>二元配置分散分析</h2>
 <p>そこで、二元配置の分散分析を行ってみます。</p>
 <pre class="r"><code>result.aov &lt;- aov(r.time ~ system + software, data = x)
 summary(result.aov)</code></pre>
@@ -1109,7 +1112,7 @@ summary(result.aov)</code></pre>
 <p>二元配置分散分析の結果、システム構成に対しては<span class="math inline">\(5\%\)</span>有意で帰無仮説が棄却されていますが、ソフトウェア設定に対しては帰無仮説が棄却されていないことが分かります。</p>
 </div>
 <div id="多重比較-4" class="section level2">
-<h2><span class="header-section-number">5.4</span> 多重比較</h2>
+<h2>多重比較</h2>
 <p>そこで、二元配置分散分析の結果、システム構成に対する多重比較を行いどの因子間に有意差があるのかを確認します。</p>
 <pre class="r"><code>result.pairs &lt;- multcomp::glht(result.aov,
                                linfct = multcomp::mcp(system = &quot;Tukey&quot;))
@@ -1124,18 +1127,18 @@ summary(result.pairs)</code></pre>
 ## 
 ## Linear Hypotheses:
 ##            Estimate Std. Error t value Pr(&gt;|t|)   
-## B - A == 0    50.00      13.94   3.586  0.04352 * 
-## C - A == 0    30.00      13.94   2.151  0.23892   
-## D - A == 0   -20.00      13.94  -1.434  0.52490   
-## C - B == 0   -20.00      13.94  -1.434  0.52486   
-## D - B == 0   -70.00      13.94  -5.020  0.00961 **
-## D - C == 0   -50.00      13.94  -3.586  0.04354 * 
+## B - A == 0    50.00      13.94   3.586  0.04370 * 
+## C - A == 0    30.00      13.94   2.151  0.23859   
+## D - A == 0   -20.00      13.94  -1.434  0.52474   
+## C - B == 0   -20.00      13.94  -1.434  0.52465   
+## D - B == 0   -70.00      13.94  -5.020  0.00944 **
+## D - C == 0   -50.00      13.94  -3.586  0.04368 * 
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## (Adjusted p values reported -- single-step method)</code></pre>
 </div>
 <div id="結果の可視化-4" class="section level2">
-<h2><span class="header-section-number">5.5</span> 結果の可視化</h2>
+<h2>結果の可視化</h2>
 <p>因子間の平均の差の95%信頼区間は以下の通りとなります。</p>
 <pre class="r"><code>x.result &lt;- as.data.frame(confint(result.pairs)$confint) %&gt;% 
   mutate(system = as.factor(row.names(.))) %&gt;% 
@@ -1158,7 +1161,7 @@ ggplot(x.result, aes(x = factor, y = mu)) +
 <p>となります。単純にレスポンスタイムの平均値だけで決めるのであればシステム構成Dを選択すればよいことになります。しかし、システム構成AとDの平均値の差の95%信頼区間を確認すると必ずもシステム構成Dのレスポンスタイムが短いとは言い切れません。</p>
 </div>
 <div id="因子毎の平均値の95信頼区間-1" class="section level2">
-<h2><span class="header-section-number">5.6</span> 因子毎の平均値の95%信頼区間</h2>
+<h2>因子毎の平均値の95%信頼区間</h2>
 <p>そこで、各システム構成の平均値の95%信頼区間を確認してみます。</p>
 <pre class="r"><code>n &lt;- 2
 x.result &lt;- x %&gt;%
@@ -1183,7 +1186,7 @@ ggplot(x.result, aes(x = system, y = mu)) +
 <p>という選択ができると考えます。</p>
 </div>
 <div id="参考多重比較" class="section level2">
-<h2><span class="header-section-number">5.7</span> 参考)多重比較</h2>
+<h2>参考)多重比較</h2>
 <p>二元配置分散分析の結果、ソフトウェアに対しては<span class="math inline">\(5\%\)</span>有意で帰無仮説は棄却されなかったが、多重比較により因子間の差を確認してみます。</p>
 <pre class="r"><code>result.pairs &lt;- multcomp::glht(result.aov,
                                linfct = multcomp::mcp(software = &quot;Tukey&quot;))
@@ -1217,17 +1220,17 @@ ggplot(x.result, aes(x = factor, y = mu)) +
 </div>
 </div>
 <div id="演習-3.4" class="section level1">
-<h1><span class="header-section-number">6</span> 演習 3.4</h1>
+<h1>演習 3.4</h1>
 <blockquote>
 <p>以下に前著『データ指向のソフトウェア品質マネジメント』の3.2節で取り扱っているリリース後の品質問題が「なし」と「あり」の2つの群に分けた各プロジェクトのシステムテストでの欠陥密度のデータを掲載しています。 品質問題の「なし」のほうが「あり」よりも明らかに欠陥密度が小さいことを見出せれば、このメトリクスでリリース後の品質をある程度予見できることになります。 そうすれば、システムテストでの欠陥密度がリリース判定材料の一つとして活用できます。</p>
 <p>このデータを使って、まずは分散比のF検定を行って、2つの群の分散が等しいとみなせるかの確認を行い、その結果にもとづいて、2群の母平均の差のt検定を適切なオプション指定で実施してください。</p>
 </blockquote>
 <div id="データの設定-5" class="section level2">
-<h2><span class="header-section-number">6.1</span> データの設定</h2>
+<h2>データの設定</h2>
 <p>本演習で利用するデータは予めCSVファイルとして保存されているものとします。</p>
 </div>
 <div id="可視化-3" class="section level2">
-<h2><span class="header-section-number">6.2</span> 可視化</h2>
+<h2>可視化</h2>
 <p>分析前に対象データを可視化してみます。</p>
 <pre class="r"><code>x %&gt;% 
   tidyr::gather(value = defect.density) %&gt;%
@@ -1247,7 +1250,7 @@ ggplot(x.result, aes(x = factor, y = mu)) +
 <p><img src="smsa_3_files/figure-html/unnamed-chunk-35-2.png" width="672" /></p>
 </div>
 <div id="検定" class="section level2">
-<h2><span class="header-section-number">6.3</span> 検定</h2>
+<h2>検定</h2>
 <pre class="r"><code>result.var.test &lt;- var.test(x$no, x$yes)
 result.var.test</code></pre>
 <pre><code>## 
@@ -1283,7 +1286,7 @@ result.var.test</code></pre>
 ## 0.4404167 0.5266667</code></pre>
 </div>
 <div id="一元配置分散分析-4" class="section level2">
-<h2><span class="header-section-number">6.4</span> 一元配置分散分析</h2>
+<h2>一元配置分散分析</h2>
 <p>一元配置の分散分析でも行ってみます。</p>
 <pre class="r"><code>result.aov &lt;- x %&gt;% 
   tidyr::gather(value = defect.density) %&gt;%
@@ -1324,17 +1327,17 @@ ggplot(x.result, aes(x = factor, y = mu)) +
 </div>
 </div>
 <div id="演習-3.5" class="section level1">
-<h1><span class="header-section-number">7</span> 演習 3.5</h1>
+<h1>演習 3.5</h1>
 <blockquote>
 <p>31プロジェクトの数値データ、カテゴリデータがあります。このデータを使って、カテゴリデータのいずれが、欠陥密度（Defects/KLOC）に強い影響を与えているかを調べてください。 そして、分析結果から欠陥密度を下げるには、どのような改善策が考えられるかを考察してください。</p>
 <p>データ説明 各行が１プロジェクトごとのデータとなります。31プロジェクト分のデータが有ります。ただし、全ての項目が入力されている訳ではなく、所々に欠損値が有ります。</p>
 </blockquote>
 <div id="データの設定-6" class="section level2">
-<h2><span class="header-section-number">7.1</span> データの設定</h2>
+<h2>データの設定</h2>
 <p>本演習で利用するデータは予めCSVファイルとして保存されているものとします。</p>
 </div>
 <div id="一元配置分散分析-5" class="section level2">
-<h2><span class="header-section-number">7.2</span> 一元配置分散分析</h2>
+<h2>一元配置分散分析</h2>
 <p>一元配置の分散分析により各因子の有意差を確認します。</p>
 <pre class="r"><code>factor &lt;- colnames(x)[5:31]
 result.aov &lt;- NULL
@@ -1367,7 +1370,7 @@ result</code></pre>
 </div>
 </div>
 <div id="可視化-4" class="section level2">
-<h2><span class="header-section-number">7.3</span> 可視化</h2>
+<h2>可視化</h2>
 <p>p値が0.05未満のデータを可視化してみます。</p>
 <pre class="r"><code>for(i in result$factor){
   graph &lt;- x %&gt;%
@@ -1380,7 +1383,7 @@ result</code></pre>
 <p><img src="smsa_3_files/figure-html/unnamed-chunk-40-1.png" width="672" /><img src="smsa_3_files/figure-html/unnamed-chunk-40-2.png" width="672" /><img src="smsa_3_files/figure-html/unnamed-chunk-40-3.png" width="672" /></p>
 </div>
 <div id="参考生産性の場合" class="section level2">
-<h2><span class="header-section-number">7.4</span> 参考)生産性の場合</h2>
+<h2>参考)生産性の場合</h2>
 <pre class="r"><code>factor &lt;- colnames(x)[5:31]
 result.aov &lt;- NULL
 
@@ -1410,7 +1413,7 @@ result.aov</code></pre>
 </div>
 <hr />
 <!-- Include Footer -->
-<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" title="CC BY-NC-SA 4.0 icon" alt="Sampo Suzuki" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0</a>, Sampo Suzuki [2018-01-20 14:46(JST)]</p>
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" title="CC BY-NC-SA 4.0 icon" alt="Sampo Suzuki" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0</a>, Sampo Suzuki [2018-03-06 22:26(JST)]</p>
 </div>
 </div>
 

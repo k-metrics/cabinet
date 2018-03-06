@@ -75,6 +75,7 @@ h6 {
 }
 </style>
 
+<link rel="stylesheet" href="../shared/style.css" type="text/css" />
 
 </head>
 
@@ -300,7 +301,9 @@ div.tocify {
       <a href="norm.html">正規性の確認</a>
     </li>
     <li class="dropdown-header">等分散性の確認</li>
-    <li class="dropdown-header">平均値の差の検定</li>
+    <li>
+      <a href="t_test.html">平均値の差の検定</a>
+    </li>
     <li class="dropdown-header">ソルバー</li>
     <li class="dropdown-header">分散分析</li>
     <li class="dropdown-header">回帰分析</li>
@@ -376,7 +379,7 @@ div.tocify {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../">Cabinet</a>
+      <a href="../index.html">Cabinet</a>
     </li>
     <li class="divider"></li>
     <li>
@@ -433,7 +436,7 @@ div.tocify {
 </div>
 
 
-<!-- Include Common Links -->
+<!-- Include shared Links -->
 <!-- SQiP and others -->
 <!-- Books -->
 <!-- 共立出版 -->
@@ -452,10 +455,7 @@ div.tocify {
 <!-- Docker -->
 <!-- Cabinet Pages -->
 <p>様々な検定や推定において対象となる標本データの正規性を仮定している場合が多数あります。このような前提条件を無視して検定や推定を行った場合、結果の妥当性が疑問視される可能性が高いです。そこで、対象となる標本データに正規性があるかどうかを確認する必要があります。<br />
-　</p>
-<div id="代表的な方法" class="section level1">
-<h1>代表的な方法</h1>
-<p>標本データの正規性を確認する方法には以下のように主観的なものから検定のような客観的なものまで様々な方法があります。</p>
+標本データの正規性を確認する方法には以下のように主観的なものから検定のような客観的なものまで様々な方法があります。</p>
 <ul>
 <li>分布形状の確認</li>
 <li>正規確率プロット（正規QQプロット）</li>
@@ -471,7 +471,6 @@ div.tocify {
   </script>
 </div>
 <p>　</p>
-</div>
 <div id="必要なパッケージ" class="section level1">
 <h1>必要なパッケージ</h1>
 <p>本ページのコードを実行するには標準パッケージ以外に以下の追加パッケージを読み込んでおく必要があります。</p>
@@ -485,7 +484,7 @@ div.tocify {
 <tbody>
 <tr class="odd">
 <td>e1071</td>
-<td>Misc Functions of the Department of Statistics (Formerly: E1071)</td>
+<td>Misc Functions of the Department of Statistics</td>
 </tr>
 <tr class="even">
 <td>moments</td>
@@ -502,6 +501,47 @@ div.tocify {
 <tr class="odd">
 <td>qqplotr</td>
 <td>Quantile-Quantile Plot Extensions for ‘ggplot2’</td>
+</tr>
+</tbody>
+</table>
+<table>
+<colgroup>
+<col width="14%" />
+<col width="79%" />
+<col width="5%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Package</th>
+<th>Description</th>
+<th>Link</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>e1071</td>
+<td>Misc Functions of the Department of Statistics</td>
+<td><a href="https://cran.r-project.org/web/packages/e1071/" title="CRAN">CRAN</a></td>
+</tr>
+<tr class="even">
+<td>moments</td>
+<td>Moments, cumulants, skewness, kurtosis and related tests</td>
+<td><a href="https://cran.r-project.org/web/packages/moments/" title="CRAN">CRAN</a></td>
+</tr>
+<tr class="odd">
+<td>nortest</td>
+<td>Test for Normality</td>
+<td><a href="https://cran.r-project.org/web/packages/nortest/" title="CRAN">CRAN</a></td>
+</tr>
+<tr class="even">
+<td>tidyverse</td>
+<td>Easily Install and Load the ‘Tidyverse’</td>
+<td><a href="https://cran.r-project.org/web/packages/tidyverse/" title="CRAN">CRAN</a></td>
+</tr>
+<tr class="odd">
+<td>qqplotr</td>
+<td>Quantile-Quantile Plot Extensions for ‘ggplot2’</td>
+<td><a href="https://cran.r-project.org/web/packages/qqplotr/" title="CRAN">CRAN</a></td>
 </tr>
 </tbody>
 </table>
@@ -575,8 +615,8 @@ iris %&gt;%
 <p>正規確率プロット（正規QQプロット）は名前の通り横軸を正規分布の分位数、縦軸を対象データの分位数を座標としてプロットします。</p>
 <ol style="list-style-type: decimal">
 <li>対象データを昇順に並べかえる</li>
-<li>順位を割り当て％順位を計算する</li>
-<li>％順位からZスコアを計算する</li>
+<li>順位を割り当て分位数（％順位）を計算する</li>
+<li>分位数（％順位）から（標準）Zスコアを計算する</li>
 <li>（標準）Zスコアを横軸に対象データを縦軸にプロットする</li>
 </ol>
 <pre class="r"><code>iris %&gt;% 
@@ -645,7 +685,7 @@ iris %&gt;%
 </tr>
 </tbody>
 </table>
-<p>歪度と尖度を用いた検定もありますが、ここでは省略します。検定の関数は<strong><code>moments</code></strong>パッケージなどに実装されています。</p>
+<p>歪度と尖度を用いた検定もありますが、ここでは省略します。検定の関数は<a href="https://cran.r-project.org/web/packages/moments/" title="CRAN"><strong><code>moments</code></strong>パッケージ</a>などに実装されています。</p>
 <p>　</p>
 </div>
 <div id="正規性の検定" class="section level1">
@@ -760,7 +800,7 @@ iris %&gt;%
 <p>　</p>
 <hr />
 <!-- Include Footer -->
-<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" title="CC BY-NC-SA 4.0 icon" alt="Sampo Suzuki" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0</a>, Sampo Suzuki [2018-01-20 22:39(JST)]</p>
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" title="CC BY-NC-SA 4.0 icon" alt="Sampo Suzuki" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0</a>, Sampo Suzuki [2018-03-06 22:26(JST)]</p>
 </div>
 
 
