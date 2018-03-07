@@ -36,7 +36,8 @@ require(tidyverse)
 * 分析手順はテンプレートに記載してあります
     * **欠損値があるレコード（プロジェクト）は外して**ください
 * 分からない点は周りのメンバーと協力してチャレンジしてみてください
-    * [データファイル](./data.csv)の読み込みは[こちら](../../import/index.html)にヒントがあります
+    * データの読み込みは[こちら](../../import/index.html)にヒントがあります
+    * [データファイル(CP932)](./data.csv), [データファイル(UTF8)](./data_utf8.csv)はこちらからダウンロード
 
 ## ヒント
 やりたいこと       | 利用する関数例              | 備考
@@ -58,7 +59,7 @@ NAを取り除きたい   | **`tidyr::drop_na()`**      |
 require(tidyverse)
 
 # データの読み込み
-x <- "./data.csv" %>% 
+x <- "./data_utf8.csv" %>% 
   read.csv() %>% 
   dplyr::rename(pj = 'プロジェクト名', prod = '生産性', rate = '工数予実割合') %>% 
   tidyr::drop_na()
