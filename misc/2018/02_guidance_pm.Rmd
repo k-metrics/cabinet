@@ -1,0 +1,93 @@
+---
+title: "第２回データ分析勉強会"
+author: "【午後の部】データハンドリング入門 [鈴木さんぽう, CC BY-NC-SA 4.0]"
+date: "`r format(Sys.Date(), format = '%Y年%m月%d日')`"
+output:
+  ioslides_presentation:
+    df_print: paged
+    smaller: false
+    widescreen: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE)
+
+require(tidyverse)
+```
+
+
+## 本日の内容
+1. 分析環境の構築と確認（必要に応じて）
+    * R/Rtools/R Commanderのインストールと動作確認
+    * RStudioのインストールと動作確認
+1. データハンドリング入門（午前・午後）
+    * 整然データ（tidy data）とは？
+    * tidyverseを使ってみる
+1. データハンドリング入門（午後）
+    * tidyverseを使ってみる
+
+# データハンドリング入門
+
+## tidyverseを使ってみる
+### **メトリクス統計分析入門 演習1.4**
+生産性に加えて、工数予実割合も加味してプロジェクトの評価をしようと考えています。以下の条件、方法に従い、各プロジェクトをA～Eの5段階で評価してください。
+
+* 生産性は高いほど良い、工数予実割合は低いほど良いとします
+* データ分布の確認は省略してください
+* 手順は[こちら](../../model/smsa_1.html#演習1.4)を参照してください
+    * ただし、**欠測値があるレコード（プロジェクト）は外して**ください
+* 分からない点は周りのメンバーと協力してチャレンジしてみてください
+    * [データファイル](./data.csv)の読み込みは[こちら](../../import/index.html)にヒントがあります
+
+## ヒント
+やりたいこと       | 利用する関数例              | 備考
+-------------------|-----------------------------|---
+平均値を求めたい   | **`mean()`**                | 
+標準偏差を求めたい | **`sd()`**                  | 
+Zスコアを求めたい  | **`scale()`**               | 符号に注意
+ランク分けしたい   | **`cut()`**                 | 無限大は`-Inf`, `Inf`
+数値を丸めたい     | **`round()`**               |
+NAを取り除きたい   | **`tidyr::drop_na()`**      | 
+変数を要約したい   | **`dplyr::summarise_if()`** | 条件付きの変数要約
+変数を追加したい   | **`dplyr::mutate()`**       | 
+
+
+# 解答例
+
+## 演習1.4 解答例
+```{r echo=FALSE}
+require(tidyverse)
+
+# データの読み込み
+x <- "./data.csv" %>% 
+  read.csv() %>% 
+  dplyr::rename(pj = 'プロジェクト名', prod = '生産性', rate = '工数予実割合') %>% 
+  tidyr::drop_na()
+
+# 平均値と標準偏差の計算
+y <- x %>% 
+  dplyr::summarise_if(is.numeric, c("mean", "sd"), na.rm = TRUE)
+
+# 評価換算のための基礎数値
+breaks <- c(-Inf, -1.5, -0.5, 0.5, 1.5, Inf)
+levels <- c("E", "D", "C", "B", "A")            # 因子の順番に注意
+
+# Zスコアと偏差値、ランクの計算
+x %>% 
+  dplyr::mutate(prod_z = as.vector(scale(prod, y$prod_mean, y$prod_sd)),
+                rate_z = as.vector(-scale(rate, y$rate_mean, y$rate_sd)),
+                z = (prod_z + rate_z)/2,
+                ss = z*10 + 50,
+                rank = cut(z, breaks = breaks, labels = levels)) %>% 
+  dplyr::mutate(prod_z = round(prod_z, 2), rate_z = round(rate_z, 2),
+                z = round(z, 2), ss = round(ss)) %>% 
+  dplyr::rename(`プロジェクト` = pj, `生産性` = prod, `工数予実割合` = rate,
+                `生産性Z値` = prod_z, `工数予実割合Z値` = rate_z,
+                `Zスコア` = z, `偏差値` = ss, `評価` = rank) %>%
+  head(7) %>% knitr::kable()
+```
+
+
+---
+
+CC BY-NC-SA 4.0, Sampo Suzuki
