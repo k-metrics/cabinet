@@ -1,0 +1,101 @@
+---
+title: "Untitled"
+author: "Your Name"
+date: "`r format(Sys.Date(), format = '%Y年%m月%d日')`"
+output:
+  html_document:
+    code_folding: show
+    df_print: "paged"
+    highlight: default
+    md_extensions: -ascii_identifiers
+    number_sections: no
+    theme: cerulean
+    toc: yes
+    toc_depth: 3
+    toc_float:
+      collapsed: yes
+      smooth_scroll: no
+  ioslides_presentation:
+    df_print: paged
+    smaller: false
+    widescreen: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE)
+
+require(tidyverse)
+```
+
+# 章レベル
+ここに文書を書きます。Rのコードは以下のようにチャンク内に記述します。プレゼン出力にする場合は見出しのみにとどめます。  
+
+```{r}
+summary(iris)
+```
+
+## 節レベル
+見出しが深くなっても同様です。「df_print: "paged"」の設定をしておくとデータフレームがちょっとカッコよく表示されます。  
+
+```{r}
+iris %>% 
+  dplyr::group_by(Species) %>% 
+  dplyr::summarise_if(is.numeric, funs(mean), na.rm = TRUE)
+```
+
+## 節レベル
+グラフも特に意識する必要はありません。  
+```{r}
+plot(iris)
+```
+
+### 項レベル
+表を作りたい場合は、以下のように記述します。リンクも任意の位置に埋め込めます。  
+
+データ名       | 内容                       | 備考
+---------------|----------------------------|-----
+asncombe       | アンスコムの数値例         | R 組込みデータセット
+Titanic        | タイタニック号の生存データ | 同上
+nycflight13    | 飛行機の離発着情報         | R 追加パッケージ
+Redmine        | Redmine自体のチケット      |  [公開データ](http://www.redmine.org/projects/redmine/issues)
+政府統計       | 日本の政府統計             | [e-Stat](https://www.e-stat.go.jp/)
+サイトカタログ | 政府によるオープンデータのカタログサイト | [データカタログサイト](http://www.data.go.jp/)
+
+# 色々な表現
+
+## 箇条書き
+
+* List 1
+* List 2
+    * sub-item 1
+    + sub-item 2
+        * sub-sub-item 1
+        + sub-sub-item 2
+        - sub-sub-item 3
+    - sub-item 3
+* List 3
++ List 4
+- List 5
+
+## 順序付き箇条書き
+
+1. Ordered List 1
+1. Ordered List 2
+    i) sub-item 1
+    i) sub-item 2
+        a. sub-sub-item 1
+        a. sub-sub-item 2
+        a. sub-sub-item 2
+    i) sub-item 3
+1. Ordered List 3
+(@) Renumber List 4
+(@) Renumber List 5
+
+## 数式
+$\LaTeX$の数式モードが使えます。
+
+$$y = \beta_{0} x_{i} + \beta_{i}$$
+
+---
+
+your signiture and licence
