@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Visual Studio Code</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cerulean.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="..\shared\style.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = false;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Program</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-laptop"></span>
+     
+    R Setup
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="./env_index.html">Overall</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="./env_install.html">Install R</a>
+    </li>
+    <li>
+      <a href="./env_install_tls.html">Install Rtools</a>
+    </li>
+    <li>
+      <a href="./env_install_rcmdr.html">Install Rcmdr Package</a>
+    </li>
+    <li>
+      <a href="./env_install_dtp.html">Install RStudio Desktop</a>
+    </li>
+    <li>
+      <a href="./env_install_pkg.html">Install R Packages</a>
+    </li>
+    <li>
+      <a href="./env_update_r.html">Update R</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="./env_install_svr.html">Install RStudio Server</a>
+    </li>
+    <li>
+      <a href="./env_install_vscode.html">Install Visual Studio Code</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Install TeX</li>
+    <li class="dropdown-header">Install Git/SVN</li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-info-circle"></span>
+     
+    R Basics
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="./basics_index.html">Overall</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="./basics_coding_style.html">Coding Style</a>
+    </li>
+    <li>
+      <a href="./basics_r.html">R Basics</a>
+    </li>
+    <li>
+      <a href="./basics_r_2.html">R Basics part2</a>
+    </li>
+    <li>
+      <a href="./basics_rstudio.html">RStudio Basics</a>
+    </li>
+    <li>
+      <a href="./basics_dplyr.html">dplyr Basics</a>
+    </li>
+    <li>
+      <a href="./basics_ggplot2.html">ggplot2 Basics</a>
+    </li>
+    <li class="dropdown-header">Collaboration</li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-commenting"></span>
+     
+    Others
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="./env_install_ubuntu_os.html">Install Ubuntu</a>
+    </li>
+    <li>
+      <a href="./about.html">About</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-github"></span>
+     
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../index.html">Cabinet</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="../import/index.html">Import</a>
+    </li>
+    <li>
+      <a href="../tidy/index.html">Tidy/Transform</a>
+    </li>
+    <li>
+      <a href="../model/index.html">Model/Infer</a>
+    </li>
+    <li>
+      <a href="../visualize/index.html">Visualize</a>
+    </li>
+    <li>
+      <a href="../communicate/index.html">Communicate/Automate</a>
+    </li>
+    <li>
+      <a href="./index.html">
+        <span class="fa fa-home"></span>
+         
+        Program
+      </a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="https://github.com/k-metrics/cabinet">
+        <span class="fa fa-github"></span>
+         
+        GitHub Repository
+      </a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="https://sites.google.com/site/kantometrics/home">
+        <span class="fa fa-google"></span>
+         
+        データ分析勉強会
+      </a>
+    </li>
+  </ul>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Visual Studio Code</h1>
+
+</div>
+
+
+<!-- Include shared Links -->
+<!-- SQiP and others -->
+<!-- Books -->
+<!-- 共立出版 -->
+<!-- 日科技連出版 -->
+<!-- O'Reilly Japan -->
+<!-- 東京図書 -->
+<!-- Docker -->
+<!-- eBooks -->
+<!-- Net Community -->
+<!-- Style Guide -->
+<!-- Creative Commons -->
+<!-- Others -->
+<!-- R -->
+<!-- R Packages -->
+<!-- RStudio -->
+<!-- Docker -->
+<!-- Cabinet Pages -->
+<p>Microsoftの<a href="https://www.microsoft.com/ja-jp/dev/products/code-vs.aspx">Visual Studio Code</a>（以降、VSCode）は、WindowsだけでなくMac OS X、Linuxでも動作する軽量・高機能なタブ型エディターです。拡張機能を追加することで様々な言語の開発環境に対応することが可能です。軽量なので特に<a href="https://www.rstudio.com/products/RStudio/#Desktop" title="RStudio Desktop">RStudio</a>の動作が今一つなWindows環境で簡単な処理確認などを行うのには向いていると思います。<br />
+　<br />
+<img src="fig/vscode_ui_overview.png" alt="Microsoft Visual Studio Code" /></p>
+<p>　</p>
+<div id="vscodeのインストール" class="section level1">
+<h1>VSCodeのインストール</h1>
+<p><a href="https://code.visualstudio.com/download">VSCodeのダウンロードサイト</a>からプラットフォーム用のインストーラをダウンロードして、インストールしてください。インストール自体は対話的に進めれば問題なくインストールできるはずです。<br />
+　</p>
+</div>
+<div id="拡張機能のインストールと設定" class="section level1">
+<h1>拡張機能のインストールと設定</h1>
+<p>VSCodeから<a href="https://www.r-project.org/" title="The R Project">R</a>を利用するには<a href="https://www.r-project.org/" title="The R Project">R</a>の拡張機能（Extention）をインストールして設定する必要があります。<br />
+　</p>
+<div id="r拡張機能のインストール" class="section level2">
+<h2>R拡張機能のインストール</h2>
+<p>R拡張機能は利用しているプラットフォームに関わらず以下の手順でインストールします。なお、<a href="https://marketplace.visualstudio.com/items?itemName=Ikuyadeu.r">Visual Studio Marketplace</a>からでもインストール可能です。</p>
+<ol style="list-style-type: decimal">
+<li>VSCodeを起動します</li>
+<li>［Ctrl+Shift+X］を押下するかウィンドウ左端にある［拡張機能］ボタンをクリックします</li>
+<li>拡張機能が表示されたら検索ボックスに<strong><code>R</code></strong>と入力します
+<ul>
+<li><strong><code>@sort:installs</code></strong>と入力されている場合がありますが無視して上書きします</li>
+</ul></li>
+<li>検索結果が検索ボックスの下に表示されますので、<strong><code>R</code></strong>と表示された拡張機能を選択します</li>
+<li>R拡張機能の説明などが表示されます
+<ul>
+<li>“Yuki Ueda”氏による“Support for R languaage”とある拡張機能であることを確認します</li>
+</ul></li>
+<li>［インストール］ボタンをクリックします
+<ul>
+<li>依存関係にある拡張機能もインストールされます</li>
+</ul></li>
+<li>インストールが完了したらVSCodeを再起動します</li>
+</ol>
+<p>以上でR拡張機能のインストールは終了です。<br />
+　</p>
+</div>
+<div id="r拡張機能の設定" class="section level2">
+<h2>R拡張機能の設定</h2>
+<p>VSCodeを再起動したらR拡張機能のために<a href="https://www.r-project.org/" title="The R Project">R</a>の実行ファイルがあるパスの設定を行います。</p>
+<ol style="list-style-type: decimal">
+<li>メニューから［ファイル］-［基本設定］-［設定］を選択します
+<ul>
+<li>もしくは［Ctrl+Comma］を押下します</li>
+</ul></li>
+<li>［ユーザ設定］タブが表示されますので検索ボックスに<strong><code>r.rterm</code></strong>と入力します</li>
+<li>利用しているプラットフォームに応じた<strong><code>r.rterm</code></strong>を確認します</li>
+<li>修正が必要な場合は右側に表示されている“ユーザ設定”に変更内容を記述します
+<ul>
+<li>記述はJSONのobject形式なので<strong><code>{}</code></strong>内に<strong><code>string:value</code></strong>形式です記述します</li>
+<li>複数記述する場合は<strong><code>,</code></strong>で区切ります</li>
+</ul></li>
+<li>［ユーザ設定］を閉じます
+<ul>
+<li>変更したら必ず保存してください</li>
+</ul></li>
+</ol>
+<p>以上でR拡張機能の基本的な設定は終了です。<br />
+　</p>
+</div>
+<div id="フォルダーを開く" class="section level2">
+<h2>フォルダーを開く</h2>
+<p>R拡張機能を使うためには「フォルダ」を以下の手順で開いておく必要があります。この「フォルダ」は<a href="https://www.rstudio.com/products/RStudio/#Desktop" title="RStudio Desktop">RStudio</a>のプロジェクトホームと同様で、開いているフォルダがcurrent working directory（<strong><code>getwd()</code></strong>で得られるパス）になります。<a href="https://www.rstudio.com/products/RStudio/#Desktop" title="RStudio Desktop">RStudio</a>を使っている場合は<a href="https://www.rstudio.com/products/RStudio/#Desktop" title="RStudio Desktop">RStudio</a>のデフォルトフォルダを初期フォルダとしておくのがいいかと思います。</p>
+<ol style="list-style-type: decimal">
+<li>メニューから［ファイル］-［フォルダーを開く…］
+<ul>
+<li>もしくは［Ctrl+K Ctrl+O］を押下します</li>
+</ul></li>
+<li>フォルダー選択ダイアログが表示されますので任意のフォルダーを選択します</li>
+</ol>
+<p>以上でフォルダーの設定は終了です。<br />
+　</p>
+</div>
+</div>
+<div id="動作の確認" class="section level1">
+<h1>動作の確認</h1>
+<p>R拡張機能のインストールと設定が確認したら以下の手順で動作確認を行います。</p>
+<ol style="list-style-type: decimal">
+<li>メニューから［ファイル］-［新規ファイル］選択します
+<ul>
+<li>もしくは［Ctrl+N］を押下します</li>
+</ul></li>
+<li>ウィンドウ右下にある［プレーンテキスト］の部分をクリックします</li>
+<li>言語モードリストが表示されますので、検索ボックスに<strong><code>R</code></strong>と入力します</li>
+<li>検索結果が表示されますので<strong><code>R (r)</code></strong>を選択します</li>
+<li>［プレーンテキスト］が［R］に変わっていることを確認します</li>
+<li>新規ファイルに<strong><code>plot(iris)</code></strong>と入力します</li>
+<li>［F1］キーを押下してコマンドウィンドウが表示されたら<strong><code>R:</code></strong>と入力します</li>
+<li><strong><code>R: Run Selection/Line</code></strong>を選択して入力したコードを実行します
+<ul>
+<li>一番最初の実行ではRが起動するだけでコードは実行されません</li>
+<li>自動的にターミナルが開かれますので、コードを選択して、再度、実行してみてください</li>
+</ul></li>
+<li><strong><code>iris</code></strong>データセットの散布図行列が別ウィンドウで描画されます</li>
+</ol>
+<p>以上で動作確認は終了ですが、動作しない場合は、以下を再確認してください。</p>
+<ul>
+<li><strong><code>r.rterm.*</code></strong>にRの実行ファイルに対するパスが設定されている</li>
+<li>フォルダが開かれている</li>
+</ul>
+<p>　</p>
+<div class="figure">
+<img src="fig/vscode_exec_code_second.png" />
+
+</div>
+<p>　</p>
+</div>
+<div id="メリットデメリット" class="section level1">
+<h1>メリット・デメリット</h1>
+<p>VSCodeは比較的軽量かつ多機能ですが<a href="https://www.r-project.org/" title="The R Project">R</a>でのコーディングに限定した場合、<a href="https://www.rstudio.com/products/RStudio/#Desktop" title="RStudio Desktop">RStudio</a>と比べて以下のメリット・デメリットがあります。</p>
+<table>
+<thead>
+<tr class="header">
+<th>項目</th>
+<th>VSCode + R Ext.</th>
+<th>RStudio</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>マルチプラットフォーム</td>
+<td>Linux, Mac, Win</td>
+<td>Linux, Mac, Win<sup>1</sup></td>
+</tr>
+<tr class="even">
+<td>マルチ言語対応</td>
+<td>Yes</td>
+<td>Python, Stan等限定的</td>
+</tr>
+<tr class="odd">
+<td>シンタックスハイライト</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr class="even">
+<td>コード補完機能</td>
+<td>Snipet only</td>
+<td>Yes<sup>2</sup></td>
+</tr>
+<tr class="odd">
+<td>パッケージ管理</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+<tr class="even">
+<td>ソースファイル管理</td>
+<td>Built-in Git</td>
+<td>Git/SVNで選択可</td>
+</tr>
+<tr class="odd">
+<td>デバッガー</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr class="even">
+<td>機能拡張</td>
+<td>Yes</td>
+<td>Yes<sup>3</sup></td>
+</tr>
+<tr class="odd">
+<td>日本語公式サポート</td>
+<td>Yes<sup>4</sup></td>
+<td>No<sup>5</sup></td>
+</tr>
+</tbody>
+</table>
+<p><sup>1</sup> 2018/3時点では32bit版のみです<br />
+<sup>2</sup> Rに関しては作成したobjectに対しても補完可能です<br />
+<sup>3</sup> Addinsとしてパッケージに同梱されているものあります<br />
+<sup>4</sup> R拡張機能は日本人の作成なので日本語でのやりとり可です<br />
+<sup>5</sup> r-wakalangなどの日本語コミュニティはあります</p>
+<hr />
+<!-- Include Footer -->
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" title="CC BY-NC-SA 4.0 icon" alt="Sampo Suzuki" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0</a>, Sampo Suzuki [2018-03-08 16:20(JST)]</p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
