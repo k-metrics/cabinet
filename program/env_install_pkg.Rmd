@@ -32,6 +32,8 @@ Sys.setenv("http_proxy"="http://<Proxyサーバ名 or IPアドレス>:<Port番�
 
 ![CRANミラーの選択](./fig/Rcmdr_Install_02.jpg)
 
+　  
+
 ## Linuxの場合
 Linux環境でRを利用している場合、Rはターミナル（端末）上のコマンドラインとして実行されるためメニュー表示がありませんので、以下のコマンドを実行してください。
 
@@ -48,7 +50,7 @@ R --gui=Tk
 　
 
 # Rパッケージのインストール
-Rのパッケージをインストールする手順は**`Rcmdr`**のインストールと同じく起動したRから行う方法、RStudioから行う方法、スクリプトを用いる方法があります。
+Rのパッケージをインストールする手順は**`Rcmdr`**のインストールと同じく起動したRから行う方法、RStudioから行う方法、スクリプトを用いる方法があります。  
 　  
 
 ## Rからインストールする方法
@@ -56,7 +58,7 @@ Rのパッケージをインストールする手順は**`Rcmdr`**のインス�
 
 ![パッケージのインストール](./fig/Rcmdr_Install_03.jpg)
 
-別ウィンドウにパッケージ一覧が表示されますのでインストールしたいパッケージを選択し［OK］ボタンをクリックします。依存関係があるパッケージがインストールされていない場合には自動的に必要なパッケージもインストールされます。
+別ウィンドウにパッケージ一覧が表示されますのでインストールしたいパッケージを選択し［OK］ボタンをクリックします。依存関係があるパッケージがインストールされていない場合には自動的に必要なパッケージもインストールされます。  
 　  
 
 ### Linuxの場合
@@ -71,12 +73,14 @@ install.packages("Rcmdr")
 Linux環のGUIモードでもパッケージの追加インストールは可能です。
 
 ![Linux環境のGUIモードでのインストール](./fig/r_gui_pkg_linux.png)
+
 　  
 
 ## RStudioからインストールする方法
 [RStudio][RSD]からパッケージをインストールする場合は［Packages］タブの［Install］ボタンをクリックします。［Install Packages］ダイアログが開きますので［Packages］欄にインストールしたいパッケージ名を入力します。パッケージ名は途中まで入力すると自動的にサジェストしてくれます。
 
 ![Install Pkg w/ RStudio](./fig/install_pkg_rstudio.png)
+
 　  
 
 ## スクリプトを用いる方法
@@ -106,11 +110,11 @@ git_rep <- c("account/repository")
 devtools::install_github(git_rep)
 ```
 
-**`devtools`**パッケージを用いるとGitHub以外にもBioconductorやbitbucket、SVNのリポジトリ等からもインストールが可能になります。詳しくは**`devtools`**パッケージのヘルプを参照して下さい。
+**`devtools`**パッケージを用いるとGitHub以外にもBioconductorやbitbucket、SVNのリポジトリ等からもインストールが可能になります。詳しくは**`devtools`**パッケージのヘルプを参照して下さい。  
 　  
 
 # インストールが失敗する場合
-Linux環境やMacOS環境ではパッケージをインストールする際に以下のようなエラーが出てパッケージのインストールが失敗する場合があります。失敗する原因はRをインストールした際に必要なアプリケーションモジュールがインストールされていないためです。
+Linux環境やMacOS環境ではパッケージをインストールする際に以下のようなエラーが出てパッケージのインストールが失敗する場合があります。失敗する原因はRをインストールした際に必要なアプリケーションモジュール（ライブラリ）がインストールされていないためです。
 
 ```
 * installing *source* package ‘openssl’ ...
@@ -137,7 +141,8 @@ Ubuntuの場合
 dpkg -l | grep r-base-dev
 ```
 
-出力結果に**`r-base-dev`**が表示されない場合はインストールされていませんので、**`r-base-dev`**を[Install R](./install.html)を参考にしてインストールしてください。
+出力結果に**`r-base-dev`**が表示されない場合はインストールされていませんので、**`r-base-dev`**を[Install R](./install.html)を参考にしてインストールしてください。  
+　  
 
 ## それでもインストールが失敗する場合
 **`r-base-dev`**がインストールされているにも関わらずインストールが失敗する場合は、エラーメッセージの**"ANTICONF ERROR"**に注目して不足しているライブラリを手動でインストールします。上記の場合は**`libssl-dev`**（Ubuntuの場合）がインストールされていませんので、ターミナル（端末）から以下のコマンドを実行してインストールします。
@@ -149,68 +154,70 @@ sudo apt-get install libssl-dev
 　  
 
 # 参考）インストール用スクリプト
-モダンな[R][R]のプログラミングを行う際に一通り必要と思われるパッケージを一度にインストールできるスクリプトを用意しました。下記のコードを表示してコピペするか[ファイル](./installPackegesAtFirsttime.R)をダウンロードするかしてご利用ください。ご自分の環境初期設定用に必ずインストールするパッケージをリストアップしておきスクリプト化しておくとRのアップデートの際などに便利です。
+モダンな[R][R]のプログラミングを行う際に一通り必要と思われるパッケージを一度にインストールできるスクリプトを用意しました。ご自分の環境初期設定用に必ずインストールするパッケージをリストアップしておきスクリプト化しておくとRのアップデートの際などに便利です。  
+　  
+
+## パッケージリストファイル
+インストールしたいパッケージをCSV形式でリストアップしておきます。CSVファイルは以下の形式で作成するのが前提です。将来拡張を見越した項目の構成となっていますがスクリプトが未対応の為記述しても機能しないものもあります。  
+
+項目名   | 内容                                                   | 備考
+---------|--------------------------------------------------------|------------
+package  | インストールしたいパッケージ名                         | 
+category | パッケージのカテゴリ                                   | 現状未使用なので項目ごと省略可
+omit     | リストには残したいがインストールしたくない場合のフラグ | `y`でインストールしない
+rep      | パッケージのあるリポジトリ                             | CRANは記述省略可、他は未対応
+memo     | 備考用                                                 | 省略可
+
+　  
+
+### パッケージリストファイルの例（一部）
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+require(tidyverse)
+"../../packages.csv" %>% 
+  read.csv(fileEncoding = "UTF-8") %>% 
+  dplyr::sample_n(5) %>% 
+  dplyr::arrange(package)
+```
+
+　  
+
+## スクリプト
+スクリプトはBase Rだけで動くように作成しています。  
+　  
 ```{r, eval=FALSE}
 # データ分析勉強会参加メンバー向け推奨パッケージのインストールスクリプト
 # （フルインストール版）
+# 処理概要
+#     1. パッケージをダウンロードするCRANのミラーサイトを選ぶ
+#     2. インストールしたいパッケージを記述したCSVファイルを読み込む
+#     3. インストール済のパッケージを取得する
+#     4. インストールすべきパッケージの一覧を作成する
+#     5. パッケージをインストールする（CRAN以外は未対応）
+#     6. パッケージを更新する
 
-# Choose nearest CRAN mirror site
+# Choose nearest CRAN mirror site（最も物理的に近いサイトを選択します）
 chooseCRANmirror(graphics = TRUE)
 
-# データサイエンスワークフローの各プロセスに基づいて必要と思われるパッケージを
-# インストールするようにしています。追加したい場合は当該のプロセスに追加して
-# ください
-#   https://github.com/rstudio/RStartHere
-pkg_univers <- c("tidyverse")
+# インストールしたいパッケージ・リストをファイルから取得します
+pkg_lst <- read.csv("./packages.csv", fileEncoding = "UTF-8")
 
-# `tidyverse v1.1.1` imports follows
-#   broom, dplyr, forcats, ggplot2, haven, httr, hms,
-#   jsonlite, lubridate, magrittr, modelr, purrr, readr, readxl,
-#   stringr, tibble, rvest, tidyr, xml2
+# インストール済のパッケージ一覧を取得
+installed_list <- as.data.frame(installed.packages())$Package
 
-pkg_import <- c("DBI")
-pkg_tidy <- c(NULL)
-pkg_tranform <- c("data.table", "dtplyr")
-pkg_model <- c("forecast", "ineq", "multcomp", "ppcor", "psych", "simpleboot",
-               "TTR")
-pkg_visualize <- c("DT", "extrafont", "GGally", "ggThemeAssist", "gridExtra",
-                   "listviewer", "plotly", "RColorBrewer")
-pkg_infer <- c(NULL)
-pkg_communicate <- c("bookdown", "knitr", "learnr", "listviewer", "rmarkdown",
-                     "tufte", "xtable")
-pkg_automate <- c("shiny")
-
-pkg_program <- c("devtools", "packrat", "Rcmdr")
-
-# `dplyr`の学習に最適なデータパッケージ
-pkg_data <- c("nycflights13")
-
-# OS依存のパッケージ
-if (Sys.info()["sysname"] == "Windows") {
-  pkg_osd <- c("installr")
-} else {
-  pkg_osd <- c(NULL)
-}
-
-# パッケージのリスト化
-pkg_lst <- c(pkg_univers, pkg_import, pkg_tidy, pkg_tranform, pkg_model,
-             pkg_visualize, pkg_infer, pkg_communicate, pkg_automate,
-             pkg_program, pkg_data, pkg_osd)
+# インストールするパッケージ一覧を作成
+install_list <- !(pkg_lst$package %in% installed_list)
+install_pkg <- pkg_lst$package[pkg_lst$omit != "y" & pkg_lst$rep != "github" &
+                                 install_list]
 
 # パッケージのインストール
-install.packages(pkgs = pkg_lst)
+install.packages(pkgs = as.character(install_pkg))
 
 # パッケージの更新
 # 新規インストール時には更新の必要なないはずですが心配ならアップデートチェックを
-# update.packages(ask = "graphics")
+update.packages(ask = "graphics")
 
-# CRAN以外からのインストール
-# CRAN以外からインストールして利用しているパッケージがあれば`devtools`等を使って
-# インストールします
-
-# Rcmdrを最初にインストールした時は必ず起動して不足しているパッケージを追加
-# インストールします
-# require(Rcmdr)
+# 作成したオブジェクトを掃除
+rm(pkg_lst, installed_list, install_list, install_pkg)
 ```
 　  
 
