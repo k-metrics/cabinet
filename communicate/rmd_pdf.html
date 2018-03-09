@@ -75,7 +75,7 @@ h6 {
 }
 </style>
 
-<link rel="stylesheet" href="..\shared\style.css" type="text/css" />
+<link rel="stylesheet" href="../shared/style.css" type="text/css" />
 
 </head>
 
@@ -411,7 +411,7 @@ div.tocify {
 <!-- RStudio -->
 <!-- Docker -->
 <!-- Cabinet Pages -->
-<p>R Markdownを利用するとPDFファイルの作成も可能です。ただし、PDFの作成には<a href="https://www.r-project.org/" title="The R Project">R</a>以外に<span class="math inline">\(\TeX/\LaTeX\)</span>環境が必要となります。RStudioが推奨する<span class="math inline">\(\TeX/\LaTeX\)</span>は以下の通りです。<br />
+<p>R MarkdownはPDFファイルの作成も可能です。ただし、PDFの作成には外部プログラムとして<span class="math inline">\(\TeX/\LaTeX\)</span>環境が必要となります。RStudioが推奨する<span class="math inline">\(\TeX/\LaTeX\)</span>は以下の通りです。<br />
 　</p>
 <table>
 <thead>
@@ -440,17 +440,17 @@ div.tocify {
 </tbody>
 </table>
 <p>　<br />
-日本語Windows環境ではMiKTeXはあまり推奨できませんので、Linux環境と同様にTeX Liveがおすゝめですが、TeX Liveは<span class="math inline">\(\TeX/\LaTeX\)</span>の集大成ともいえる巨大なパッケージの集合ですので、数千ものパッケージの中から必要なパッケージのみをインストールのは<span class="math inline">\(\TeX/\LaTeX\)</span>に精通していない限り難しものがあります。取り合えず“scheme-full”をインストールすることになるのですが、4GB超のサイズがあり通信環境によっては一晩かかってもインストールできない場合があります。そこでおすゝめするのが<a href="https://cran.r-project.org/web/packages/tinytex/index.html" title="tinytex package">TinyTeX</a>です。<br />
+日本語Windows環境ではMiKTeXはあまり推奨できませんので、Linux環境と同様にTeX Liveが無難です。ただし、TeX Liveは<span class="math inline">\(\TeX/\LaTeX\)</span>の集大成ともいえる巨大なパッケージの集合で、数千ものパッケージの中から必要なパッケージのみをインストールには<span class="math inline">\(\TeX/\LaTeX\)</span>に精通している必要があります。ですから通常は“scheme-full”というフルパッケージをインストールしますが、フルパッケージは4GB超のサイズがあり通信環境やPC性能によっては一晩かかってもインストールできない場合があります。そこで、おすゝめするなのが<a href="https://yihui.name/tinytex/" title="A lightweight, cross-platform, portable, and easy-to-maintain LaTeX distribution based on TeX Live">TinyTeX</a>です。<br />
 　</p>
-<div id="tinytex" class="section level1">
-<h1>TinyTeX</h1>
-<p><a href="https://cran.r-project.org/web/packages/tinytex/index.html" title="tinytex package">TinyTeX</a>は<a href="https://www.rstudio.com/">RStudio社</a>で<a href="http://rmarkdown.rstudio.com/" title="R Markdown form RStudio">R Markdown</a>などの開発を担当しているYihui Xie氏によるTeX Liveをベースとした軽量ディストリビューションです。実際、日本語関連のパッケージを入れても300MB程度と非常にコンパクトです。<br />
-同名の<a href="https://cran.r-project.org/web/packages/tinytex/index.html" title="tinytex package"><strong><code>tinytex</code></strong></a>パッケージを用いることで<a href="https://www.r-project.org/" title="The R Project">R</a>からインストールやメンテナンスができるようになりますので、<span class="math inline">\(\TeX/\LaTeX\)</span>を使うのは<a href="http://rmarkdown.rstudio.com/" title="R Markdown form RStudio">R Markdown</a>だけという場合に向いています。<br />
+<div id="tinytexとは" class="section level1">
+<h1>TinyTeXとは</h1>
+<p><a href="https://yihui.name/tinytex/" title="A lightweight, cross-platform, portable, and easy-to-maintain LaTeX distribution based on TeX Live">TinyTeX</a>は<a href="https://www.rstudio.com/">RStudio社</a>で<a href="http://rmarkdown.rstudio.com/" title="R Markdown form RStudio">R Markdown</a>などの開発を担当しているYihui Xie氏によるTeX Liveをベースとした軽量ディストリビューションです。実際、日本語関連のパッケージを入れても300MB程度と非常にコンパクトです。<br />
+同名の<a href="https://cran.r-project.org/web/packages/tinytex/index.html" title="tinytex package"><strong><code>tinytex</code></strong></a>パッケージを用いることで<a href="https://www.r-project.org/" title="The R Project">R</a>からインストールやメンテナンスができるようになります。特に<span class="math inline">\(\TeX/\LaTeX\)</span>を利用するのは<a href="http://rmarkdown.rstudio.com/" title="R Markdown form RStudio">R Markdown</a>だけという場合には最適です。<br />
 　</p>
 </div>
 <div id="インストール" class="section level1">
 <h1>インストール</h1>
-<p><a href="https://cran.r-project.org/web/packages/tinytex/index.html" title="tinytex package">TinyTeX</a>をインストールするには、最初に<a href="https://cran.r-project.org/web/packages/tinytex/index.html" title="tinytex package"><strong><code>tinytex</code></strong></a>パッケージを<a href="https://www.r-project.org/" title="The R Project">R</a>にインストールします。<strong><code>rmarkdown</code></strong>パッケージと<strong><code>knitr</code></strong>が必要になりますので、インストールされていな場合は、同時にインストールしてください。</p>
+<p><a href="https://yihui.name/tinytex/" title="A lightweight, cross-platform, portable, and easy-to-maintain LaTeX distribution based on TeX Live">TinyTeX</a>をインストールするには前述のように<a href="https://cran.r-project.org/web/packages/tinytex/index.html" title="tinytex package"><strong><code>tinytex</code></strong></a>パッケージが必要です。</p>
 <table>
 <thead>
 <tr class="header">
@@ -465,13 +465,21 @@ div.tocify {
 </tr>
 </tbody>
 </table>
+<p>　<br />
+インストール手順は以下のようになります。</p>
+<ol style="list-style-type: decimal">
+<li><strong><code>tinytex</code></strong>パッケージのインストール</li>
+<li>TinyTeXのインストール</li>
+<li>RStudioの再起動（<strong><code>tinytex</code></strong>パッケージの仕様上必要）</li>
+<li>IPAフォントのインストール（必要に応じて）</li>
+<li>テストビルド（動作確認）</li>
+</ol>
+<p>　</p>
 <div id="tinytexパッケージのインストール" class="section level2">
 <h2><strong><code>tinytex</code></strong>パッケージのインストール</h2>
 <p><a href="https://www.r-project.org/" title="The R Project">R</a>のターミナルから以下のコマンド（関数）を実行するか、RStudioのパッケージマネージャから<strong><code>tinytex</code></strong>パッケージをインストールします。<br />
 　</p>
-<pre class="r"><code># install.packages(&quot;tinytex&quot;, &quot;rmarkdown&quot;, &quot;knitr&quot;)   # 同時にインストールする場合
-
-install.packages(&quot;tinytex&quot;)</code></pre>
+<pre class="r"><code>install.packages(&quot;tinytex&quot;)</code></pre>
 <p>　</p>
 </div>
 <div id="tinytexのインストール" class="section level2">
@@ -480,24 +488,29 @@ install.packages(&quot;tinytex&quot;)</code></pre>
 　</p>
 <pre class="r"><code>tinytex::install_tinytex()</code></pre>
 <p>　</p>
-<p>途中で以下のようなメッセージが表示されますが文字通り気にしないで下さい。<br />
+<p>途中で以下のようなメッセージが表示されます。文字通り<a href="https://yihui.name/tinytex/" title="A lightweight, cross-platform, portable, and easy-to-maintain LaTeX distribution based on TeX Live">TinyTeX</a>をインストール中にワーニングメッセージが表示されるのですが、これらが表示されもて<a href="https://yihui.name/tinytex/" title="A lightweight, cross-platform, portable, and easy-to-maintain LaTeX distribution based on TeX Live">TinyTeX</a>のインストールには影響はありませんので気にしないで下さい。<br />
 　</p>
 <div class="figure">
 <img src="fig/tinytex_error.png" />
 
 </div>
 <p>　<br />
-その後、延々とメッセージが表示され途中止まったようになりりますが気長に待ってください。回線にもよりますが10分程度でインストールは終わります。<br />
+その後、延々とメッセージが表示され途中止まったようになりますが気長に待ってください。回線にもよりますが10分程度でインストールは終わります。<br />
 　</p>
 </div>
 <div id="rstudioの再起動" class="section level2">
 <h2>RStudioの再起動</h2>
-<p><strong><code>TinyTeX</code></strong>のインストールが完了したら<a href="https://www.rstudio.com/products/RStudio/#Desktop" title="RStudio Desktop">RStudio</a>を再起動してください。<br />
+<p><a href="https://yihui.name/tinytex/" title="A lightweight, cross-platform, portable, and easy-to-maintain LaTeX distribution based on TeX Live">TinyTeX</a>のインストールが完了したら<a href="https://www.rstudio.com/products/RStudio/#Desktop" title="RStudio Desktop">RStudio</a>を再起動してください。これは現在の<strong><code>tinytex</code></strong>パッケージ(v0.4)での制限事項のようです。<br />
+　</p>
+</div>
+<div id="ipaフォントのインストール" class="section level2">
+<h2>IPAフォントのインストール</h2>
+<p><a href="https://yihui.name/tinytex/" title="A lightweight, cross-platform, portable, and easy-to-maintain LaTeX distribution based on TeX Live">TinyTeX</a>で日本語を扱う場合、標準でIPAフォントとIPAexフォントが使用されます。これらのフォントがインストールされていませんとkint中でエラーが発生してPDFファイルが作成できませんのでインストールされていな場合は<a href="https://ipafont.ipa.go.jp/">こちら</a>からダウンロードして必ずインストールしておいてください。<br />
 　</p>
 </div>
 <div id="テストビルド" class="section level2">
 <h2>テストビルド</h2>
-<p><a href="https://www.rstudio.com/products/RStudio/#Desktop" title="RStudio Desktop">RStudio</a>を再起動したらYAMLを下記のように記述した日本語を含む<a href="http://rmarkdown.rstudio.com/" title="R Markdown form RStudio">R Mardkown</a>ファイルを用意してknitしてみて下さい。特に問題なくPDFファイルがビルドされるハズです。<br />
+<p><a href="https://www.rstudio.com/products/RStudio/#Desktop" title="RStudio Desktop">RStudio</a>を再起動したら利用する<span class="math inline">\(\LaTeX\)</span>エンジンに応じたYAMLを記述した日本語を含む<a href="http://rmarkdown.rstudio.com/" title="R Markdown form RStudio">R Mardkown</a>ファイルを用意してknitしてみて下さい。特に問題なくPDFファイルがビルドされるハズです。<br />
 パッケージが不足している場合はknit中に自動的にインストールしてくれます。<br />
 　</p>
 <div class="figure">
@@ -530,7 +543,7 @@ documentclass: ltjsarticle
 <p>　</p>
 <hr />
 <!-- Include Footer -->
-<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" title="CC BY-NC-SA 4.0 icon" alt="Sampo Suzuki" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0</a>, Sampo Suzuki [2018-03-09 16:38(JST)]</p>
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" title="CC BY-NC-SA 4.0 icon" alt="Sampo Suzuki" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0</a>, Sampo Suzuki [2018-03-10 00:46(JST)]</p>
 </div>
 </div>
 </div>
