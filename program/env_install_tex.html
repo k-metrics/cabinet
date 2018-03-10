@@ -11,7 +11,7 @@
 
 
 
-<title>エラーが出たら</title>
+<title>Install TeX</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -172,7 +172,7 @@ $(document).ready(function () {
 </style>
 <script>
 $(document).ready(function () {
-  window.initializeCodeFolding("hide" === "show");
+  window.initializeCodeFolding("show" === "show");
 });
 </script>
 
@@ -323,8 +323,13 @@ div.tocify {
     <li>
       <a href="./env_install_svr.html">Install RStudio Server</a>
     </li>
+    <li>
+      <a href="./env_install_vscode.html">Install Visual Studio Code</a>
+    </li>
     <li class="divider"></li>
-    <li class="dropdown-header">Install TeX</li>
+    <li>
+      <a href="./env_install_tex.html">Install TeX</a>
+    </li>
     <li class="dropdown-header">Install Git/SVN</li>
   </ul>
 </li>
@@ -374,10 +379,10 @@ div.tocify {
     <li>
       <a href="./env_install_ubuntu_os.html">Install Ubuntu</a>
     </li>
+    <li>
+      <a href="./about.html">About</a>
+    </li>
   </ul>
-</li>
-<li>
-  <a href="./about.html">About</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -417,6 +422,14 @@ div.tocify {
     </li>
     <li class="divider"></li>
     <li>
+      <a href="https://github.com/k-metrics/cabinet">
+        <span class="fa fa-github"></span>
+         
+        GitHub Repository
+      </a>
+    </li>
+    <li class="divider"></li>
+    <li>
       <a href="https://sites.google.com/site/kantometrics/home">
         <span class="fa fa-google"></span>
          
@@ -442,11 +455,12 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">エラーが出たら</h1>
+<h1 class="title toc-ignore">Install TeX</h1>
 
 </div>
 
 
+<!-- Include shared Links -->
 <!-- SQiP and others -->
 <!-- Books -->
 <!-- 共立出版 -->
@@ -464,142 +478,133 @@ div.tocify {
 <!-- RStudio -->
 <!-- Docker -->
 <!-- Cabinet Pages -->
-<div id="section" class="section level1">
-<h1><span class="header-section-number">1</span> </h1>
-<p>Linux環境やMacOS環境ではパッケージをインストールする際に以下のようなエラーが出てパッケージのインストールが失敗する場合があります。失敗する原因はRをインストールした際に必要なアプリケーションモジュールがインストールされていないためです。</p>
-<pre><code>* installing *source* package ‘openssl’ ...
-**  パッケージ ‘openssl’ の解凍および MD5 サムの検証に成功しました 
-Using PKG_CFLAGS=
-Using PKG_LIBS=-lssl -lcrypto
-------------------------- ANTICONF ERROR ---------------------------
-Configuration failed because openssl was not found. Try installing:
- * deb: libssl-dev (Debian, Ubuntu, etc)
- * rpm: openssl-devel (Fedora, CentOS, RHEL)
- * csw: libssl_dev (Solaris)
- * brew: openssl (Mac OSX)
-If openssl is already installed, check that &#39;pkg-config&#39; is in your
-PATH and PKG_CONFIG_PATH contains a openssl.pc file. If pkg-config
-is unavailable you can set INCLUDE_DIR and LIB_DIR manually via:
-R CMD INSTALL --configure-vars=&#39;INCLUDE_DIR=... LIB_DIR=...&#39;
---------------------------------------------------------------------</code></pre>
-<p>このようなエラーメッセージが表示された場合は、まず、<code>r-base-dev</code>というアプリケーションモジュールがインストールされているか確認してください。Ubuntu環境の場合はターミナル（端末）から以下のコマンドを実行することでインストールの有無を確認できます。</p>
-<p>Ubuntuの場合</p>
-<pre><code>dpkg -l | grep r-base-dev</code></pre>
-<p>出力結果に<code>r-base-dev</code>が表示されない場合はインストールされていませんので、<code>r-base-dev</code>を<a href="./install.html">Install R</a>を参考にしてインストールしてください。</p>
-<div id="それでもインストールが失敗する場合" class="section level2">
-<h2><span class="header-section-number">1.1</span> それでもインストールが失敗する場合</h2>
-<p><code>r-base-dev</code>がインストールされているにも関わらずインストールが失敗する場合は、エラーメッセージの“ANTICONF ERROR”に注目して不足しているライブラリを手動でインストールします。上記の場合は<code>libssl-dev</code>（Ubuntuの場合）がインストールされていませんので、ターミナル（端末）から以下のコマンドを実行してインストールします。</p>
-<p>Ubuntuの場合</p>
-<pre><code>sudo apt-get install libssl-dev</code></pre>
-</div>
-</div>
-<div id="udunits2-package" class="section level1">
-<h1><span class="header-section-number">2</span> <strong><code>udunits2</code></strong> package</h1>
-<p>Ubuntu ## Error Message 以下のメッセージが表示されてパッケージがインストールできない場合は</p>
-<pre><code>* installing *source* package ‘udunits2’ ...
-**  パッケージ ‘udunits2’ の解凍および MD5 サムの検証に成功しました 
-checking for gcc... gcc -std=gnu99
-checking whether the C compiler works... yes
-checking for C compiler default output file name... a.out
-checking for suffix of executables... 
-checking whether we are cross compiling... no
-checking for suffix of object files... o
-checking whether we are using the GNU C compiler... yes
-checking whether gcc -std=gnu99 accepts -g... yes
-checking for gcc -std=gnu99 option to accept ISO C89... none needed
-checking for XML_ParserCreate in -lexpat... no
-checking how to run the C preprocessor... gcc -std=gnu99 -E
-checking for grep that handles long lines and -e... /bin/grep
-checking for egrep... /bin/grep -E
-checking for ANSI C header files... yes
-checking for sys/types.h... yes
-checking for sys/stat.h... yes
-checking for stdlib.h... yes
-checking for string.h... yes
-checking for memory.h... yes
-checking for strings.h... yes
-checking for inttypes.h... yes
-checking for stdint.h... yes
-checking for unistd.h... yes
-checking udunits2.h usability... no
-checking udunits2.h presence... no
-checking for udunits2.h... no
-checking for ut_read_xml in -ludunits2... no
------Error: libudunits2.a not found-----
-     If the udunits2 library is installed in a non-standard location,
-     use --configure-args=&#39;--with-udunits2-lib=/usr/local/lib&#39; for example,
-     or --configure-args=&#39;--with-udunits2-include=/usr/include/udunits2&#39;
-     replacing paths with appropriate values for your installation.
-     You can alternatively use the UDUNITS2_INCLUDE and UDUNITS2_LIB
-     environment variables.
-     If udunits2 is not installed, please install it.
-     It is required for this package.
-ERROR: configuration failed for package ‘udunits2’
-* removing ‘/home/sampo/R/x86_64-pc-linux-gnu-library/3.4/udunits2’</code></pre>
-<div id="reason" class="section level2">
-<h2><span class="header-section-number">2.1</span> Reason</h2>
-</div>
-<div id="action" class="section level2">
-<h2><span class="header-section-number">2.2</span> Action</h2>
-<p><strong><code>libudunits2-dev</code></strong>ライブラリをインストールしてください。</p>
-<pre><code>sudo apt-get install libudunits2-dev</code></pre>
+<p>R MarkdownやSweaveを利用することではPDFファイルの作成が可能ですが、PDFの出力には外部プログラムとして<span class="math inline">\(\TeX/\LaTeX\)</span>環境が必要です。<span class="math inline">\(\TeX/\LaTeX\)</span>は様々なディストラクションがありますが、<a href="https://www.rstudio.com/products/RStudio/#Desktop" title="RStudio Desktop">RStudio</a>の利用を前提とした場合、軽量でクロスプラットフォーム対応の<a href="https://yihui.name/tinytex/" title="A lightweight, cross-platform, portable, and easy-to-maintain LaTeX distribution based on TeX Live">TinyTeX</a>がおすゝめです。<a href="https://yihui.name/tinytex/" title="A lightweight, cross-platform, portable, and easy-to-maintain LaTeX distribution based on TeX Live">TinyTeX</a>は<a href="https://www.rstudio.com/">RStudio社</a>で<a href="http://rmarkdown.rstudio.com/" title="R Markdown form RStudio">R Markdown</a>などの開発を担当しているYihui Xie氏によるTeX Liveをベースとした軽量ディストリビューションで、日本語関連のパッケージを入れても名前通りインストールサイズが300MB程度と非常にコンパクトなのが特徴です。<br />
+　<br />
+同名の<a href="https://cran.r-project.org/web/packages/tinytex/index.html" title="tinytex package"><strong><code>tinytex</code></strong></a>パッケージを用いることで<a href="https://www.r-project.org/" title="The R Project">R</a>からインストールやメンテナンスができるようになります。特に<span class="math inline">\(\TeX/\LaTeX\)</span>を利用するのは<a href="http://rmarkdown.rstudio.com/" title="R Markdown form RStudio">R Markdown</a>だけという場合には最適です。<br />
+　</p>
+<div id="インストール手順概略" class="section level1">
+<h1>インストール手順概略</h1>
+<p><a href="https://yihui.name/tinytex/" title="A lightweight, cross-platform, portable, and easy-to-maintain LaTeX distribution based on TeX Live">TinyTeX</a>をインストールするには前述のように<a href="https://cran.r-project.org/web/packages/tinytex/index.html" title="tinytex package"><strong><code>tinytex</code></strong></a>パッケージを用います。</p>
+<table>
+<thead>
+<tr class="header">
+<th>Package</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>tinytex</td>
+<td>Helper Functions to Install and Maintain ‘TeX Live’</td>
+</tr>
+</tbody>
+</table>
+<p>　<br />
+インストール手順は以下のようになります。</p>
+<ol style="list-style-type: decimal">
+<li><strong><code>tinytex</code></strong>パッケージのインストール</li>
+<li>TinyTeXのインストール</li>
+<li>RStudioの再起動（<strong><code>tinytex</code></strong>パッケージの仕様上必要な手順です）</li>
+<li>IPAフォントのインストール（インストールされてない場合のみです）</li>
+<li>テストビルド（動作確認です）</li>
+</ol>
 <p>　</p>
 </div>
+<div id="tinytexパッケージのインストール" class="section level1">
+<h1><strong><code>tinytex</code></strong>パッケージのインストール</h1>
+<p><a href="https://www.r-project.org/" title="The R Project">R</a>や<a href="https://www.rstudio.com/products/RStudio/#Desktop" title="RStudio Desktop">RStudio</a>のターミナルから以下のコマンド（関数）を実行するか、<a href="https://www.rstudio.com/products/RStudio/#Desktop" title="RStudio Desktop">RStudio</a>のパッケージマネージャから<strong><code>tinytex</code></strong>パッケージをインストールします。<br />
+　</p>
+<pre class="r"><code>install.packages(&quot;tinytex&quot;)</code></pre>
+<p>　</p>
 </div>
-<div id="reprexreprex" class="section level1">
-<h1><span class="header-section-number">3</span> reprex::reprex()</h1>
-<p>Ubuntu</p>
-<div id="error-message" class="section level2">
-<h2><span class="header-section-number">3.1</span> Error Message</h2>
-<p>以下のエラーが出る場合はUbuntu側に必要なライブラリが不足していますので、追加でインストールしてください。</p>
-<pre><code>&gt; reprex::reprex()
-No input provided and clipboard is not available.
-Unable to put result on the clipboard. How to get it:
-  * Capture what reprex() returns.
-  * Use `outfile = &quot;foo&quot;` to request output in specific file.
-  * See the temp file:
-    - /tmp/RtmpXnGVCp/file2414ae930e0_reprex.md
- ```
- 
-## Reason
-**`reprex::reprex`**関数は**`clipr`**パッケージで定義されている関数を用いてUbuntuのクリップボードと**`xclip`**ライブラリを介してやり取りします。なので**`xclip`**ライブラリがインストールされていませんと上記のエラーが表示されます。  
+<div id="tinytexのインストール" class="section level1">
+<h1>TinyTeXのインストール</h1>
+<p><strong><code>tinytex</code></strong>パッケージがインストールされたら、<a href="https://www.r-project.org/" title="The R Project">R</a>や<a href="https://www.rstudio.com/products/RStudio/#Desktop" title="RStudio Desktop">RStudio</a>のターミナルから以下のコマンド（関数）を実行します。<br />
+　</p>
+<pre class="r"><code>tinytex::install_tinytex()</code></pre>
+<p>　</p>
+<p>途中で以下のようなメッセージが表示されます。文字通り<a href="https://yihui.name/tinytex/" title="A lightweight, cross-platform, portable, and easy-to-maintain LaTeX distribution based on TeX Live">TinyTeX</a>をインストール中にワーニングメッセージが表示されるのですが、これらが表示されもて<a href="https://yihui.name/tinytex/" title="A lightweight, cross-platform, portable, and easy-to-maintain LaTeX distribution based on TeX Live">TinyTeX</a>のインストールには影響はありませんので気にしないで下さい。<br />
+　</p>
+<div class="figure">
+<img src="fig/tinytex_error.png" />
 
-[**``replex`**](https://github.com/tidyverse/reprex)
-
-
-&lt;!-- クリップボードの有無をチェックするために**`clipr::clipr_available`**関数を呼び出します。**`clipr::clipr_available`**では**`clipr::read_clip`**と**`clipr::write_clip`** --&gt;
-
-&lt;!-- &gt; clipr::read_clip() --&gt;
-&lt;!--  エラー: Clipboard on X11 requires &#39;xclip&#39; (recommended) or &#39;xsel&#39;. --&gt;
- 
- 
-## Action
-**`xclip`**ライブラリをインストールしてください。  
-
- ```
- sudo apt-get install xclip
- ```
- 
- ``` r
-clipr::read_clip()
-NULL
- 警告メッセージ: 
- clipr::read_clip() で: 
-  System clipboard contained no readable text. Returning NULL.
-#&gt; Error: &lt;text&gt;:4:21:  想定外のシンボルです 
-#&gt; 3:  警告メッセージ: 
-#&gt; 4:  clipr::read_clip() で
-#&gt;                        ^</code></pre>
-<pre class="r"><code>reprex:::reprex_addin()
- エラー: Install these packages in order to use the reprex addin:
-shinyjs
-#&gt; Error: &lt;text&gt;:2:21:  想定外のシンボルです 
-#&gt; 1: reprex:::reprex_addin()
-#&gt; 2:  エラー: Install these
-#&gt;                        ^</code></pre>
+</div>
+<p>　<br />
+その後、メッセージが止まるような時がありますが焦らずに気長に待ってください。回線にもよりますが10分程度でインストールは終わります。<br />
+　</p>
+</div>
+<div id="rstudioの再起動" class="section level1">
+<h1>RStudioの再起動</h1>
+<p><a href="https://yihui.name/tinytex/" title="A lightweight, cross-platform, portable, and easy-to-maintain LaTeX distribution based on TeX Live">TinyTeX</a>のインストールが完了したら<a href="https://www.rstudio.com/products/RStudio/#Desktop" title="RStudio Desktop">RStudio</a>を再起動してください。これは現在の<strong><code>tinytex</code></strong>パッケージ(v0.4)での制限事項です。<br />
+　</p>
+</div>
+<div id="ipaフォントのインストール" class="section level1">
+<h1>IPAフォントのインストール</h1>
+<p>PDFファイルの日本語には標準設定でIPAフォント（IPAexフォント）が適用されます。これらのフォントがインストールされていない場合、エラーとなりPDFファイルが作成されていませんので必ずインストールしてください。IPAフォントは<a href="https://ipafont.ipa.go.jp/">こちら</a>からダウンロードできます。IPAフォントがインストールされていない場合は、IPAフォントならびにIPAexフォントのすべての書体を必ずインストールしてください。<br />
+　</p>
+</div>
+<div id="テストビルド" class="section level1">
+<h1>テストビルド</h1>
+<p><a href="https://www.rstudio.com/products/RStudio/#Desktop" title="RStudio Desktop">RStudio</a>を再起動したら使用したい<span class="math inline">\(\LaTeX\)</span>エンジンに応じたYAMLを記述した日本語を含む<a href="http://rmarkdown.rstudio.com/" title="R Markdown form RStudio">R Mardkown</a>ファイルをknitして下さい。特に問題なくPDFファイルがビルドされるハズです。なお、<a href="https://yihui.name/tinytex/" title="A lightweight, cross-platform, portable, and easy-to-maintain LaTeX distribution based on TeX Live">TinyTeX</a>でパッケージが不足している場合にはknit中に自動的にインストールしてくれます。<br />
+　</p>
+<div id="xelatexを使う場合のyaml設定例" class="section level2">
+<h2><strong><code>xelatex</code></strong>を使う場合のYAML設定例</h2>
+<pre><code>---
+output: 
+  pdf_document:
+    latex_engine: xelatex
+    pandoc_args: --top-level-division=chapter
+documentclass: bxjsbook
+classoption: xelatex, ja=standard
+geometry: no
+---</code></pre>
+<p>　</p>
+</div>
+<div id="lualatexを使う場合のyaml設定" class="section level2">
+<h2><strong><code>lualatex</code></strong>を使う場合のYAML設定</h2>
+<pre><code>---
+output: 
+  pdf_document: 
+    latex_engine: lualatex 
+    pandoc_args: --top-level-division=chapter
+documentclass: ltjsarticle 
+---</code></pre>
+<p>　</p>
+</div>
+<div id="latexエンジン" class="section level2">
+<h2><span class="math inline">\(\LaTeX\)</span>エンジン</h2>
+<p>日本語を扱う場合、<span class="math inline">\(\LaTeX\)</span>エンジンは前出の<strong><code>xelatex</code></strong>か<strong><code>lualatex</code></strong>の二択になります。残念ながら日本語組版に広く対応している<strong><code>upLaTeX</code></strong>はYAMLで指定しても<a href="https://www.rstudio.com/products/RStudio/#Desktop" title="RStudio Desktop">RStudio</a>からは直接利用できません。<strong><code>xelatex</code></strong>を選択するのが現状ではベストです。<br />
+　</p>
+<div id="参考日本語対応のlatex" class="section level3">
+<h3>参考）日本語対応の<span class="math inline">\(\LaTeX\)</span></h3>
+<p>　</p>
+<table>
+<thead>
+<tr class="header">
+<th>LaTeX</th>
+<th>概要</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>LuaLaTeX</td>
+<td>海外で広く使われているpdfLaTeXを拡張したLaTeX</td>
+</tr>
+<tr class="even">
+<td>XeLaTeX</td>
+<td>Unicodeが使えるLaTeX、日本語組版にも対応しているらしい</td>
+</tr>
+<tr class="odd">
+<td>upLaTeX</td>
+<td>Unicodeに対応した日本語組版対応のLaTeX</td>
+</tr>
+</tbody>
+</table>
+<p>　</p>
 <hr />
 <!-- Include Footer -->
-<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" title="CC BY-NC-SA 4.0 icon" alt="Sampo Suzuki" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0</a>, Sampo Suzuki [2018-03-05 22:50(JST)]</p>
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" title="CC BY-NC-SA 4.0 icon" alt="Sampo Suzuki" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0</a>, Sampo Suzuki [2018-03-10 22:31(JST)]</p>
+</div>
 </div>
 </div>
 

@@ -1,0 +1,128 @@
+---
+title: "Install TeX"
+output: 
+  html_document:  
+    code_folding: show
+    number_section: no
+---
+
+<!-- Include shared Links -->
+```{r install tex, child="../shared/links.Rmd"}
+```
+
+R MarkdownやSweaveを利用することではPDFファイルの作成が可能ですが、PDFの出力には外部プログラムとして$\TeX/\LaTeX$環境が必要です。$\TeX/\LaTeX$は様々なディストラクションがありますが、[RStudio][RSD]の利用を前提とした場合、軽量でクロスプラットフォーム対応の[TinyTeX][TT]がおすゝめです。[TinyTeX][TT]は[RStudio社](https://www.rstudio.com/)で[R Markdown][RMD]などの開発を担当しているYihui Xie氏によるTeX Liveをベースとした軽量ディストリビューションで、日本語関連のパッケージを入れても名前通りインストールサイズが300MB程度と非常にコンパクトなのが特徴です。  
+　  
+同名の[**`tinytex`**][tinytex]パッケージを用いることで[R][R]からインストールやメンテナンスができるようになります。特に$\TeX/\LaTeX$を利用するのは[R Markdown][RMD]だけという場合には最適です。  
+　  
+
+# インストール手順概略
+[TinyTeX][TT]をインストールするには前述のように[**`tinytex`**][tinytex]パッケージを用います。  
+
+Package | Description
+--------|-------------
+tinytex | Helper Functions to Install and Maintain 'TeX Live'
+
+　  
+インストール手順は以下のようになります。  
+
+1. **`tinytex`**パッケージのインストール
+1. TinyTeXのインストール
+1. RStudioの再起動（**`tinytex`**パッケージの仕様上必要な手順です）
+1. IPAフォントのインストール（インストールされてない場合のみです）
+1. テストビルド（動作確認です）
+
+　  
+
+# **`tinytex`**パッケージのインストール
+[R][R]や[RStudio][RSD]のターミナルから以下のコマンド（関数）を実行するか、[RStudio][RSD]のパッケージマネージャから**`tinytex`**パッケージをインストールします。  
+　  
+
+```{r, eval=FALSE}
+install.packages("tinytex")
+```
+
+　  
+
+# TinyTeXのインストール
+**`tinytex`**パッケージがインストールされたら、[R][R]や[RStudio][RSD]のターミナルから以下のコマンド（関数）を実行します。  
+　  
+
+```{r, eval=FALSE}
+tinytex::install_tinytex()
+```
+
+　  
+
+途中で以下のようなメッセージが表示されます。文字通り[TinyTeX][TT]をインストール中にワーニングメッセージが表示されるのですが、これらが表示されもて[TinyTeX][TT]のインストールには影響はありませんので気にしないで下さい。  
+　  
+
+![](./fig/tinytex_error.png)
+
+　  
+その後、メッセージが止まるような時がありますが焦らずに気長に待ってください。回線にもよりますが10分程度でインストールは終わります。  
+　  
+
+# RStudioの再起動
+[TinyTeX][TT]のインストールが完了したら[RStudio][RSD]を再起動してください。これは現在の**`tinytex`**パッケージ(v0.4)での制限事項です。  
+　  
+
+# IPAフォントのインストール
+PDFファイルの日本語には標準設定でIPAフォント（IPAexフォント）が適用されます。これらのフォントがインストールされていない場合、エラーとなりPDFファイルが作成されていませんので必ずインストールしてください。IPAフォントは[こちら](https://ipafont.ipa.go.jp/)からダウンロードできます。IPAフォントがインストールされていない場合は、IPAフォントならびにIPAexフォントのすべての書体を必ずインストールしてください。  
+　  
+
+# テストビルド
+[RStudio][RSD]を再起動したら使用したい$\LaTeX$エンジンに応じたYAMLを記述した日本語を含む[R Mardkown][RMD]ファイルをknitして下さい。特に問題なくPDFファイルがビルドされるハズです。なお、[TinyTeX][TT]でパッケージが不足している場合にはknit中に自動的にインストールしてくれます。  
+　  
+
+## **`xelatex`**を使う場合のYAML設定例
+```
+---
+output: 
+  pdf_document:
+    latex_engine: xelatex
+    pandoc_args: --top-level-division=chapter
+documentclass: bxjsbook
+classoption: xelatex, ja=standard
+geometry: no
+---
+```
+
+　  
+
+## **`lualatex`**を使う場合のYAML設定
+```
+---
+output: 
+  pdf_document: 
+    latex_engine: lualatex 
+    pandoc_args: --top-level-division=chapter
+documentclass: ltjsarticle 
+---
+```
+
+　  
+
+## $\LaTeX$エンジン
+日本語を扱う場合、$\LaTeX$エンジンは前出の**`xelatex`**か**`lualatex`**の二択になります。残念ながら日本語組版に広く対応している**`upLaTeX`**はYAMLで指定しても[RStudio][RSD]からは直接利用できません。**`xelatex`**を選択するのが現状ではベストです。  
+　  
+
+### 参考）日本語対応の$\LaTeX$
+
+　  
+
+LaTeX     | 概要
+----------|------------------------------------------------------
+LuaLaTeX  | 海外で広く使われているpdfLaTeXを拡張したLaTeX
+XeLaTeX   | Unicodeが使えるLaTeX、日本語組版にも対応しているらしい
+upLaTeX   | Unicodeに対応した日本語組版対応のLaTeX
+
+　  
+
+---
+
+<!-- Include Footer -->
+```{r child="../shared/footer.Rmd"}
+```
+
+[TT]: https://yihui.name/tinytex/ "A lightweight, cross-platform, portable, and easy-to-maintain LaTeX distribution based on TeX Live"
+[tinytex]: https://cran.r-project.org/web/packages/tinytex/index.html "tinytex package"

@@ -1,0 +1,237 @@
+---
+title: "利用事例"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+<!-- Include Common Links -->
+```{r child="../../common/links.Rmd"}
+```
+
+```{r setup, include=FALSE}
+# 共通chunkオプションの指定
+knitr::opts_chunk$set(warning = FALSE, echo = TRUE)
+
+require(learnr)
+require(tidyverse)
+require(gridExtra)
+require(DT)
+require(knitr)
+tidyverse::tidyverse_conflicts()
+```
+
+<!-- 最初に変数fileに使用するデータをフルパスで指定して下さい -->
+```{r dataload, include=FALSE}
+file <- "/home/sampo/Dropbox/RStudio/cabinet/program/basics/data/bugs.csv"
+bugs <- read.csv(file, encoding = "UTF8")
+```
+
+## 進捗レポートを作成する
+[R][R]/[RStudio][RSD]を用いるメリットの一つとして[R Markdown][RM]を用いたレポート作成が上げられます。この[R Markdown][RM]による"Reproducible Research"すなわち再現性のある分析は、データが刻々と変わるような進捗報告に適しています。
+
+### BTSデータの報告
+具体的な事例としてBTS(Bug Tracking System)のデータを集計しグラフ化するレポートを題材としてみましょう。BTSには通常、様々なデータが登録されていますが、ここでは簡略化してBTSのデータは下表の様な形式のものとします。
+
+項目名 | 内容
+-------|-----------------------------------
+ID     | ユニークなチケット番号
+date   | YYYY/MM/DD形式のチケット起票日
+rank   | チケットの重大さ(AからEの5段階)
+name   | チケットの表題
+
+### モダンなコーディング
+本チュートリアルでは、`dplyr`ならびに`tidyr`を用いたモダンなコーディングを用います。モダンなコーディングにおける一番の特徴は` %>% `演算子(パイプ演算子)です。この演算子は演算子の左側の値（主にデータフレーム型）を右側の第一引数として渡す演算子です。例えば、ファイルパスにあるファイルを読み込んで表示するような場合、以下のように記述できます。
+```{r, eval=FALSE}
+file_path %>%                       # ファイル
+  read.csv(encoding = "UTF8") %>%   # UTF8として読み込む
+  DT::datatable()                   # 読み込み結果を表示
+```
+
+このように` %>% `演算子は中間変数を作成することなく処理の手順毎に記述できますのでコードの可読性も上がというメリットがあります。
+
+## Import (part I)
+まず、BTSデータをインポートします。BTSの場合ですと以下の方法が考えられますが、ここでは環境構築の手順を考慮してファイルからインポートする方法を用います。
+
+1. BTSのDBからSQLを用いインポート
+1. BTSからCSV形式などで出力したファイルをインポート
+
+実際の環境でSQLによるアクセスを使える場合には、分析自動化の観点からもSQLによるインポートを実装しておくことをおすゝめします。  
+
+ファイルからデータ（ここではCSV形式）をインポートするには`util::read.csv`を使うのがもっとも簡単です。`util::read.csv`関数の引数は以下のようになっています。詳細はヘルプファイルで確認して下さい。
+
+```{r, eval=FALSE}
+read.csv(file, header = TRUE, sep = ",", quote = "\"",
+         dec = ".", fill = TRUE, comment.char = "", 
+         encoding = "unknown",　na.strings = "NA", ...)
+```
+
+注意すべきは以下のような点です。
+
+* ファイル先頭行に列名（ヘッダ）が含まれているか否か
+* 文字列を因子型として扱うか否か
+* 欠損値の扱い方
+* ファイルのエンコーディング
+
+特に複数のプラットフォームが混在している場合は、ファイルのエンコーディングに注意して下さい。
+
+## Import (part II)
+### ファイルの読み込み
+では、実際にファイルを読み込むコードを書いて実行して見ましょう。ファイル名は既に変数`file`に格納してあるものとします。
+```{r import-csv, exercise=TRUE, exercise.setup="dataload"}
+bugs <- 
+```
+
+```{r import-csv-hint}
+read.csv(file, encoding = "UTF8")
+```
+
+### 読み込んだ結果の確認
+次に読み込んだデータを確認してみます。
+```{r print-csv, exercise=TRUE, exercise.setup="dataload"}
+
+```
+
+```{r print-csv-hint}
+bugs
+```
+
+## Tidy/Transform (part I)
+次に取り込んだデータをクロス集計します。[R][R]ではクロス集計に`base::table`関数を使うことが多いですが、ここではモダンなコーディング処理で集計を行ってみます。
+
+### 単純集計
+クロス集計の前に単純集計を行ってみましょう。データフレーム内のデータ個数を数えるには`dplyr::count`関数を用います。まずは日付(`date`)毎の単純集計を行ってみましょう。
+```{r date, exercise=TRUE, exercise.setup="dataload"}
+bugs %>%
+  dplyr::
+```
+
+```{r date-hint}
+bugs %>%
+  dplyr::count(date)
+```
+
+同様にランクでも集計してみましょう。
+```{r rank, exercise=TRUE, exercise.setup="dataload"}
+bugs %>%
+  dplyr::
+```
+
+```{r rank-hint}
+bugs %>%
+  dplyr::count(rank)
+```
+
+## Tidy/Transform (part II)
+クロス集計する
+
+### Cross Tabulation
+次に日付(`date`)とランク(`rank`)でクロス集計を行ってみましょう。クロス集計するためには`dplyr::group_by`関数を用います。
+```{r cross, exercise=TRUE, exercise.setup="dataload"}
+bugs %>%
+  dplyr:: %>%
+  dplyr::
+```
+
+
+### 表示変形
+集計結果を見やすいようにクロス集計表に変形してみましょう。縦長形式であるデータフレームを横長形式に変形するには`tidyr::spread`関数を用います。
+```{r tidy, exercise=TRUE, exercise.setup="dataload"}
+bugs %>%
+  dplyr:: %>%
+  dplyr:: %>% 
+  tidyr::spread()
+```
+
+```{r tidy-hint}
+bugs %>%
+  dplyr::group_by(date, rank) %>%
+  dplyr::count(date) %>% 
+  tidyr::spread(key = rank, value = n)
+```
+
+## Tidy/Transform
+### Join
+### Mutate
+
+## Tidy/Transform
+### Cross Table
+クロス集計結果に度数欄と累積度数を追加してみましょう。
+```{r pivot, exercise=TRUE, exercise.setup="dataload"}
+sum_date <- bugs %>%
+  dplyr::group_by(date) %>%
+  dplyr::count(date)
+
+bugs_tbl <- bugs %>%
+  dplyr::group_by(date, rank) %>%
+  dplyr::count(date) %>% 
+  tidyr::spread(key = rank, value = n)
+
+bugs_tbl %>%
+  dplyr::inner_join(sum_date) %>%
+  dplyr::ungroup() %>%
+  dplyr::mutate(Cum = cumsum(n)) %>% 
+  dplyr::rename(Sum = n)
+```
+
+```{r pivot-hint}
+sum_date <- bugs %>%
+  dplyr::group_by(date) %>%
+  dplyr::count(date)
+
+bugs_tbl <- bugs %>%
+  dplyr::group_by(date, rank) %>%
+  dplyr::count(date) %>% 
+  tidyr::spread(key = rank, value = n)
+
+bugs_tbl %>%
+  dplyr::inner_join(sum_date) %>%
+  dplyr::ungroup() %>%
+  dplyr::mutate(Cum = cumsum(n)) %>% 
+  dplyr::rename(Sum = n)
+```
+
+### 列集計
+
+## dplyr
+http://dplyr.tidyverse.org/
+
+<!-- bugs_sum %>%  -->
+<!--   ungroup() %>%  -->
+<!--   dplyr::summarise_at(vars(-date, -Cum), funs(sum(., na.rm = TRUE))) %>%  -->
+<!--   tibble::add_column(date = "ColSum", .before = 1) %>%  -->
+<!--   tibble::add_column(Cum = NA) %>%  -->
+<!--   dplyr::bind_rows(bugs_sum, .) %>%  -->
+<!--   dplyr::rename(RowSum = n) -->
+<!--   # knitr::kable(caption = "日付毎のクロス集計") -->
+
+<!-- ``` -->
+
+<!-- ```{r} -->
+<!-- bugs_sum %>%  -->
+<!--   ggplot2::ggplot(aes(x = date, y = n)) + -->
+<!--     ggplot2::geom_bar(stat = "identity") -->
+<!-- ``` -->
+
+<!-- ```{r} -->
+<!-- bugs %>%  -->
+<!--   ggplot2::ggplot(aes(x = date)) + -->
+<!--     ggplot2::geom_bar(aes(fill = rank), alpha = 0.5) -->
+<!-- ``` -->
+
+<!-- ```{r} -->
+<!-- bugs_sum %>%  -->
+<!--   tibble::rownames_to_column(var = "rowid") %>%  -->
+<!--   ggplot2::ggplot(aes(x = as.integer(rowid), y = Cum)) + -->
+<!--     ggplot2::geom_line() -->
+
+<!-- # + -->
+<!--     # ggplot2::scale_x_continuous(breaks = as.integer(bugs_sum$rowid), -->
+<!--     #                             labels = bugs_sum$date) -->
+<!-- ``` -->
+
+---
+
+
+<!-- Include Footer -->
+```{r child="../../common/footer.Rmd"}
+```
