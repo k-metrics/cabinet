@@ -406,6 +406,14 @@ div.tocify {
     </li>
     <li class="divider"></li>
     <li>
+      <a href="https://github.com/k-metrics/cabinet">
+        <span class="fa fa-github"></span>
+         
+        GitHub Repository
+      </a>
+    </li>
+    <li class="divider"></li>
+    <li>
       <a href="https://sites.google.com/site/kantometrics/home">
         <span class="fa fa-google"></span>
          
@@ -454,9 +462,9 @@ div.tocify {
 <!-- RStudio -->
 <!-- Docker -->
 <!-- Cabinet Pages -->
-<p>本資料は『<a href="http://www.juse-p.co.jp/cgi-bin/html.pl5?i=ISBN978-4-8171-9558-6" title="ソフトウェアメトリクス統計分析入門">ソフトウェアメトリクス統計分析入門</a>』(以降、テキストと記載)の第2章の例題を<a href="https://www.r-project.org/" title="The R Project">R</a>で解いた際の解答例を示したものです。また、<a href="http://rmarkdown.rstudio.com/" title="R Markdown form RStudio">R Markdown</a>を使うメリットを示すための一手段として作成していますので、テキストにおける計算方法とは異なる部分もあります。本資料で使用しているデータの入手に関してはテキストにてご確認下さい。<br />
-本資料がHTML形式の場合、<a href="https://www.r-project.org/" title="The R Project">R</a>のコードを参照するには右側にある<strong><code>[Code]</code></strong>ボタンをクリックして下さい。なお、JavaScriptは必ずOnにしてご覧下さい。<br />
-なお、<a href="https://www.r-project.org/" title="The R Project">R</a>のコーディングはいわゆるモダンなコーディングにはなっていません。<br />
+<p>本資料は『<a href="http://www.juse-p.co.jp/cgi-bin/html.pl5?i=ISBN978-4-8171-9558-6" target="_blank" title="ソフトウェアメトリクス統計分析入門">ソフトウェアメトリクス統計分析入門 <i class="fa fa-external-link"></i></a>』(以降、テキストと記載)の第2章の例題を<a href="https://www.r-project.org/" target="_blank" title="The R Project">R <i class="fa fa-external-link"></i></a>で解いた際の解答例を示したものです。また、<a href="http://rmarkdown.rstudio.com/" target="_blank" title="R Markdown from RStudio Inc">R Markdown <i class="fa fa-external-link"></i></a>を使うメリットを示すための一手段として作成していますので、テキストにおける計算方法とは異なる部分もあります。本資料で使用しているデータの入手に関してはテキストにてご確認下さい。<br />
+本資料がHTML形式の場合、<a href="https://www.r-project.org/" target="_blank" title="The R Project">R <i class="fa fa-external-link"></i></a>のコードを参照するには右側にある<strong><code>[Code]</code></strong>ボタンをクリックして下さい。なお、JavaScriptは必ずOnにしてご覧下さい。<br />
+なお、<a href="https://www.r-project.org/" target="_blank" title="The R Project">R <i class="fa fa-external-link"></i></a>のコーディングはいわゆるモダンなコーディングにはなっていません。<br />
 　</p>
 <div id="例題-2.1" class="section level1">
 <h1>例題 2.1</h1>
@@ -520,7 +528,7 @@ x.stacked</code></pre>
 ## mean in group before  mean in group after 
 ##                  2.8                  2.5</code></pre>
 <p>Studentのt検定の結果、帰無仮説（<span class="math inline">\(H_0\)</span>：平均値の差はない）は棄却されなかったので改善前後のデータに有意差があるとは言えません。</p>
-<p>最近では等分散性の検定（F検定）を行わず<a href="http://laboratoryofbiology.blogspot.jp/2013/12/welchtanovastatwing.html">ウェルチのt検定を行う方が妥当</a>だと言われています。</p>
+<p>最近では等分散性の検定（F検定）を行わず<a href="http://laboratoryofbiology.blogspot.jp/2013/12/welchtanovastatwing.html" target="_blank" title="生物科学研究所 井口研究室ブログ">ウェルチのt検定を行う方が妥当 <i class="fa fa-external-link"></i></a>だと言われています。</p>
 <pre class="r"><code>t.test(values ~ group, alternative = &quot;less&quot;, var.equal = FALSE, data = x.stacked)</code></pre>
 <pre><code>## 
 ##  Welch Two Sample t-test
@@ -533,7 +541,7 @@ x.stacked</code></pre>
 ## sample estimates:
 ## mean in group before  mean in group after 
 ##                  2.8                  2.5</code></pre>
-<p>等分散性に加えて正規性も仮定しない場合には<a href="http://d.hatena.ne.jp/hoxo_m/20150217/p1">ブルンナー=ムンツェル検定（Brunner-Munzel Test）を使うのが妥当</a>だとされています。<a href="https://www.r-project.org/" title="The R Project">R</a>でブルンナー=ムンツェル検定（Brunner-Munzel Test）を行うには<strong><code>lawstat</code></strong>パッケージをインストールしてください。</p>
+<p>等分散性に加えて正規性も仮定しない場合には<a href="http://d.hatena.ne.jp/hoxo_m/20150217/p1" target="_blank" title="ほくそ笑む">ブルンナー=ムンツェル検定（Brunner-Munzel Test）を使うのが妥当 <i class="fa fa-external-link"></i></a>だとされています。<a href="https://www.r-project.org/" target="_blank" title="The R Project">R <i class="fa fa-external-link"></i></a>でブルンナー=ムンツェル検定（Brunner-Munzel Test）を行うには<strong><code>lawstat</code></strong>パッケージをインストールしてください。</p>
 <pre class="r"><code>lawstat::brunner.munzel.test(x$before, x$after)</code></pre>
 <pre><code>## 
 ##  Brunner-Munzel Test
@@ -936,7 +944,7 @@ stripchart(data ~ group, xlim = c(0, 2), data = droplevels(na.omit(x[1:2])),
 <p>　</p>
 <hr />
 <!-- Include Footer -->
-<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" title="CC BY-NC-SA 4.0 icon" alt="Sampo Suzuki" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0</a>, Sampo Suzuki [2018-03-06 22:26(JST)]</p>
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-03-13 15:39(JST)]</p>
 </div>
 </div>
 

@@ -16,7 +16,7 @@ output:
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, comment = "##")
 ```
 
-[R][R]や[R Commander（以降、Rcmdr）][Rcmdr]に限ったことではありませんが、一般的に分析過程の記録というのは残しにくいものです。[データ分析勉強会][1]で主に用いた[Rcmdr][Rcmdr]やExcelのようなGUI操作のものは、操作自体は簡単ですが、それらを使った分析過程を記録するには大変な手間がかかります。例えば[Rcmdr][Rcmdr]を例に挙げると  
+[R <i class="fa fa-external-link"></i>][R]や[R Commander（以降、Rcmdr） <i class="fa fa-external-link"></i>][Rcmdr]に限ったことではありませんが、一般的に分析過程の記録というのは残しにくいものです。[データ分析勉強会 <i class="fa fa-external-link"></i>][1]で主に用いた[Rcmdr <i class="fa fa-external-link"></i>][Rcmdr]やExcelのようなGUI操作のものは、操作自体は簡単ですが、それらを使った分析過程を記録するには大変な手間がかかります。例えば[Rcmdr <i class="fa fa-external-link"></i>][Rcmdr]を例に挙げると  
 　  
 
 * 操作が自体が記録に残らない（実行された結果は残せる）
@@ -26,29 +26,29 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, comment = "##")
 * グラフィック出力は個別に保存する必要がある
 
 　  
-つまり、分析結果を報告書にまとめるためには分析と並行して常に手順や結果を記録しておく必要があります。このような作業は間違いを誘発することが容易に想像できます。これを防止して間違いのない分析・報告書作成を行う確実な方法は、分析と報告書作成が同時にできる[R Markdown][RMD]を利用することです。  
+つまり、分析結果を報告書にまとめるためには分析と並行して常に手順や結果を記録しておく必要があります。このような作業は間違いを誘発することが容易に想像できます。これを防止して間違いのない分析・報告書作成を行う確実な方法は、分析と報告書作成が同時にできる[R Markdown <i class="fa fa-external-link"></i>][RMD]を利用することです。  
 　  
 
 # R Markdownとは
-[R Markdown][RMD]は文字通り（軽量）マークアップ言語である
-[Markdown][MD]による記述を用いた記録方法で、[R][R]におけるドキュメント作成フレームワークです。[R Markdown][RMD]を用いるとドキュメントの中にデータやコード、分析結果を埋め込むことが可能になります。  
+[R Markdown <i class="fa fa-external-link"></i>][RMD]は文字通り（軽量）マークアップ言語である
+[Markdown <i class="fa fa-external-link"></i>][MD]による記述を用いた記録方法で、[R <i class="fa fa-external-link"></i>][R]におけるドキュメント作成フレームワークです。[R Markdown <i class="fa fa-external-link"></i>][RMD]を用いるとドキュメントの中にデータやコード、分析結果を埋め込むことが可能になります。  
 　  
 
 ## なぜR Markdownなのか
 分析にはデータの透明性だけでなく分析過程の透明性も求められる時代になっています。多くのプログラミング言語では計算結果やグラフなどを直接、最終成果物となる報告書やプレゼン資料などのドキュメントに出力することは困難であり、ドキュメントに結果を切り貼りするために多くの労力が必要になります。表計算ソフトは計算結果やグラフを切り貼りする必要はありませんが、ドキュメントの体裁を整えるのに多くの労力が必要です。特に章節構成を要求された場合は、表計算ソフト単体ではかなり困難で、文書作成ソフトに結果を切り貼りするケースがほとんどです。また、表計算ソフトは分析式が個々のセルに記載されていることが多く作成者以外、手がつけられないケースも多く見受けられます。  
 　  
-[R Makrdown][RMD]を利用するとドキュメントを生成するたびにデータが読み込まれ、[R][R]のコードが実行され、グラフや計算結果、表などが出力され、自動的にドキュメントに埋め込まれます。これによりグラフや計算結果、表などをドキュメント修正のたびに切り貼りし直す必要もなく[Markdown][MD]による章構成も可能で、常に指定したデータから同じ手順で同じ結果を得ることが可能になります。つまり、[R Markdown][RMD]を用いることで
+[R Makrdown <i class="fa fa-external-link"></i>][RMD]を利用するとドキュメントを生成するたびにデータが読み込まれ、[R <i class="fa fa-external-link"></i>][R]のコードが実行され、グラフや計算結果、表などが出力され、自動的にドキュメントに埋め込まれます。これによりグラフや計算結果、表などをドキュメント修正のたびに切り貼りし直す必要もなく[Markdown <i class="fa fa-external-link"></i>][MD]による章構成も可能で、常に指定したデータから同じ手順で同じ結果を得ることが可能になります。つまり、[R Markdown <i class="fa fa-external-link"></i>][RMD]を用いることで
 
 * ドキュメント生産性の向上（コピペ汚染からの解放、簡単作成）
 * 分析過程の可読性確保
-* 分析再現性の確保（[Reproducible Research][CRAN_TV_RR]）
+* 分析再現性の確保（[Reproducible Research <i class="fa fa-external-link"></i>][CRAN_TV_RR]）
 
-が実現できるようになります。更に[R Markdown][RMD]では、同一ソースから複数のフォーマットのドキュメントを作成することも可能ですので、提出先に応じた形式のドキュメント作成も簡単です。  
+が実現できるようになります。更に[R Markdown <i class="fa fa-external-link"></i>][RMD]では、同一ソースから複数のフォーマットのドキュメントを作成することも可能ですので、提出先に応じた形式のドキュメント作成も簡単です。  
 　  
 
 ## 使うためのには
-[R Markdown][RMD]を使うには必要なソフトウェアが同梱されている[RStudio][RS]環境で使うのが現状ではベストです。[RStudio][RS]のインストールは[こちら](../program/env_index.html)を参照してください。[RStudio][RS]  
-[**`rmarkdown`**パッケージ](https://cran.r-project.org/web/packages/rmarkdown/index.html)が必須ですので、以下のコマンドまたは[RStudio][RS]のGUIなどからインストールしてください。  
+[R Markdown <i class="fa fa-external-link"></i>][RMD]を使うには必要なソフトウェアが同梱されている[RStudio <i class="fa fa-external-link"></i>][RS]環境で使うのが現状ではベストです。[RStudio <i class="fa fa-external-link"></i>][RS]のインストールは[こちら](../program/env_index.html)を参照してください。[RStudio <i class="fa fa-external-link"></i>][RS]  
+[**`rmarkdown`**パッケージ <i class="fa fa-external-link"></i>](https://cran.r-project.org/web/packages/rmarkdown/index.html){target="_blank" title="Dynamic Documents for R"}が必須ですので、以下のコマンドまたは[RStudio <i class="fa fa-external-link"></i>][RS]のGUIなどからインストールしてください。  
 
 ```
 install.packages("rmarkdown")
@@ -57,27 +57,27 @@ install.packages("rmarkdown")
 　  
 
 # R Markdownの基本
-[R Markdown][RMD]は[Pandoc](https://pandoc.org/)の[Markdown][MD]をベースとした記述を用いますので、ファイル形式はシンプルなテキスト形式になります。なお、日本語を利用する場合には言語コードとしてBOMなしの**UTF-8**を利用することを推奨します。  
+[R Markdown <i class="fa fa-external-link"></i>][RMD]は[Pandoc <i class="fa fa-external-link"></i>](https://pandoc.org/){target="_blank" title="a universal document converter"}の[Markdown <i class="fa fa-external-link"></i>][MD]をベースとした記述を用いますので、ファイル形式はシンプルなテキスト形式になります。なお、日本語を利用する場合には言語コードとしてBOMなしの**UTF-8**を利用することを推奨します。  
 
-下記は[RStudio][RS]のデフォルトテンプレート（HTML Document）です。  
+下記は[RStudio <i class="fa fa-external-link"></i>][RS]のデフォルトテンプレート（HTML Document）です。  
 
 ![](./fig/rmd_default_html_template.png)
 　  
 
 このテンプレートからドキュメントを生成するとこのページを作成してい環境ではこのようなドキュメントになります。  
-![R Markdown Documents](./fig/rmd_default_template.png)
+![R Markdown Documents <i class="fa fa-external-link"></i>](./fig/rmd_default_template.png)
 　  
-このように[R Markdown][RMD]の記述には見慣れない記号などがありますが、記述としては大きく以下の３つパートから構成されますので、この構成さえ覚えれば[R Markdown][RMD]を記述するのは簡単です。
+このように[R Markdown <i class="fa fa-external-link"></i>][RMD]の記述には見慣れない記号などがありますが、記述としては大きく以下の３つパートから構成されますので、この構成さえ覚えれば[R Markdown <i class="fa fa-external-link"></i>][RMD]を記述するのは簡単です。
 
 * 出力フォーマットや体裁を記述する[YAML](#YAML)部
 * [R][R]のコードを記述する[(Code) Chunk](#Chunk)部
-* 文書を記述する[Markdown](#Markdown)部
+* 文書を記述する[Markdown <i class="fa fa-external-link"></i>](#Markdown)部
 
 　  
 
 ## YAML {#YAML}
-[YAML][YAML]とはデータ表現形式の一種で[R Markdown][RMD]では下記のように**`---`**から**`---`**までに囲まれたブロックで表現します。  
-[YAML][YAML]には[R Markdown][RMD]の出力フォーマットや体裁を定義し、下記の例ではHTML形式のドキュメントがデフォルト体裁で出力されるようになります。  
+[YAML <i class="fa fa-external-link"></i>][YAML]とはデータ表現形式の一種で[R Markdown <i class="fa fa-external-link"></i>][RMD]では下記のように**`---`**から**`---`**までに囲まれたブロックで表現します。  
+[YAML <i class="fa fa-external-link"></i>][YAML]には[R Markdown <i class="fa fa-external-link"></i>][RMD]の出力フォーマットや体裁を定義し、下記の例ではHTML形式のドキュメントがデフォルト体裁で出力されるようになります。  
 
     ---
     output: html_document
@@ -88,7 +88,7 @@ install.packages("rmarkdown")
 　  
 
 ### フォーマット定義 {#format}
-[R Markdown][RMD]で利用できる出力フォーマットはドキュメント系のフォーマットとプレゼンテーション系のフォーマットに大別できます。デフォルトでも様々なフォーマットをサポートしていますが、パッケージを追加することで更に多様なフォーマットを利用できるようになります。  
+[R Markdown <i class="fa fa-external-link"></i>][RMD]で利用できる出力フォーマットはドキュメント系のフォーマットとプレゼンテーション系のフォーマットに大別できます。デフォルトでも様々なフォーマットをサポートしていますが、パッケージを追加することで更に多様なフォーマットを利用できるようになります。  
 　  
 
 #### ドキュメント系フォーマット
@@ -97,16 +97,16 @@ install.packages("rmarkdown")
 
 フォーマット            | 標準サポート  | output指定      | 備考
 ------------------------|---------------|-----------------|-----
-[HTML][HTML]            | yes           | `html_document` | 
-[PDF][PDF]              | yes           | `pdf_document`  | 
-[Microsoft Word][DOCX]  | yes           | `word_document` | DOCX
-[RTF][RTF]              | yes           | `rtf_document`  | 
-[Markdown][MDS]         | yes           | `md_document`   | GitHub, etc
-[R package vignette][Vignette] | yes    | `html_vignette` | 
-[Tufte Handout][Tufte]  | no, [**`tufte`**][Pkg_tufte] | `tufte::tufte_handout` | PDF 
+[HTML <i class="fa fa-external-link"></i>][HTML]            | yes           | `html_document` | 
+[PDF <i class="fa fa-external-link"></i>][PDF]              | yes           | `pdf_document`  | 
+[Microsoft Word <i class="fa fa-external-link"></i>][DOCX]  | yes           | `word_document` | DOCX
+[RTF <i class="fa fa-external-link"></i>][RTF]              | yes           | `rtf_document`  | 
+[Markdown <i class="fa fa-external-link"></i>][MDS]         | yes           | `md_document`   | GitHub, etc
+[R package vignette <i class="fa fa-external-link"></i>][Vignette] | yes    | `html_vignette` | 
+[Tufte Handout <i class="fa fa-external-link"></i>][Tufte]  | no, [**`tufte`** <i class="fa fa-external-link"></i>][Pkg_tufte] | `tufte::tufte_handout` | PDF 
 　                      | 　            | `tufte::tufte_html` | 
 　                      | 　            | `tufte::tufte_book` | PDF
-[rmdformat][rmdformats] | no, [**`rmdformats`**][Pkg_rmdformats] | `rmdformat::material` | HTML
+[rmdformat <i class="fa fa-external-link"></i>][rmdformats] | no, [**`rmdformats`** <i class="fa fa-external-link"></i>][Pkg_rmdformats] | `rmdformat::material` | HTML
 　                      | 　            | `rmdformats::readthedown` | HTML
 　                      | 　            | `rmdformats::html_clean`  | 
 　                      | 　            | `rmdformats::html_docco`  | 
@@ -120,12 +120,12 @@ install.packages("rmarkdown")
 
 フォーマット         | 標準サポート　　 | output指定 | 備考
 ---------------------|------------------|------------|------
-[Beamer][Beamer]     | yes              | `beamer_presentation` | PDF 
-[ioslides][ioslides] | yes              | `ioslides_presentation` | Google ioslides
-[Slidy][Slidy]       | yes              | `slidy_presentation`  | W3C Slidy
-[revealjs][revealjs] | no, [**`revealjs`**][Pkg_revealjs] | `revealjs::revealjs_presentation` | HTML with reveal.js
-[xaringan（写輪眼）][xaringan] | no, [**`xaringan`**][Pkg_xaringan] | `xaringan::moon_reader` | HTML with remark.js
-[Shower][Shower]     | no, [**`rmdshower`**][Shower] | `rmdshower::shower_presentation` | HTML
+[Beamer <i class="fa fa-external-link"></i>][Beamer]     | yes              | `beamer_presentation` | PDF 
+[ioslides <i class="fa fa-external-link"></i>][ioslides] | yes              | `ioslides_presentation` | Google ioslides
+[Slidy <i class="fa fa-external-link"></i>][Slidy]       | yes              | `slidy_presentation`  | W3C Slidy
+[revealjs <i class="fa fa-external-link"></i>][revealjs] | no, [**`revealjs`** <i class="fa fa-external-link"></i>][Pkg_revealjs] | `revealjs::revealjs_presentation` | HTML with reveal.js
+[xaringan（写輪眼） <i class="fa fa-external-link"></i>][xaringan] | no, [**`xaringan`** <i class="fa fa-external-link"></i>][Pkg_xaringan] | `xaringan::moon_reader` | HTML with remark.js
+[Shower <i class="fa fa-external-link"></i>][Shower]     | no, [**`rmdshower`** <i class="fa fa-external-link"></i>][Shower] | `rmdshower::shower_presentation` | HTML
 
 　  
 
@@ -167,7 +167,7 @@ HTML系フォーマットは概ね同じオプションが使えます。まず�
     ---
 
 　  
-各オプションが取る値は以下のようになっています。その他のオプションは[公式ドキュメント][HTML]または[ぞうさんによる日本語での解説](https://qiita.com/kazutan/items/726e03dfcef1615ae999)を参照してください。  
+各オプションが取る値は以下のようになっています。その他のオプションは[公式ドキュメント <i class="fa fa-external-link"></i>][HTML]または[ぞうさんによる日本語での解説 <i class="fa fa-external-link"></i>](https://qiita.com/kazutan/items/726e03dfcef1615ae999){target="_blank" title="Kazutan"}を参照してください。  
 　  
 
 option          | default   | others               | memo
@@ -195,7 +195,7 @@ PDF系フォーマットの出力オプションは今後整理する予定で�
 　  
 
 ## (Code) Chunk {#Chunk}
-(コード)チャンクは文字通りプログラムコードを記述する部分です。記述したコードはドキュメントまたはプレゼンテーションを作成する際に実行されてコードと実行結果が埋め込まれます。[R][R]のコードはもちろんですが、その他の言語（Python, SQL, Stanなど）のコードを記述して実行することも可能です。  
+(コード)チャンクは文字通りプログラムコードを記述する部分です。記述したコードはドキュメントまたはプレゼンテーションを作成する際に実行されてコードと実行結果が埋め込まれます。[R <i class="fa fa-external-link"></i>][R]のコードはもちろんですが、その他の言語（Python, SQL, Stanなど）のコードを記述して実行することも可能です。  
 
 三連のバッククォート（$```$）で囲まれたブロックがチャンクです。$\{r\}$の部分でチャンクのオプションを指定します。  
 　  
@@ -205,8 +205,8 @@ PDF系フォーマットの出力オプションは今後整理する予定で�
 　  
 
 ### チャンク・オプション
-中括弧（**`{`**）の次にある**`r`**はチャンク内に記述されたコードが[R][R]言語であることを意味しています。次の**`ChunkName`**はチャンクの名前でファイル内でユニークに設定する必要があります。その次の**`echo`**や**`message`**は[R][R]のコードの実行結果に対するオプションです。  
-知っておくと便利な基本的なオプションを下表に示しておきます。なお、詳細や他のオプションについては[R Markdown Reference Guid (PDF)](https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf)を参照してください。  
+中括弧（**`{`**）の次にある**`r`**はチャンク内に記述されたコードが[R <i class="fa fa-external-link"></i>][R]言語であることを意味しています。次の**`ChunkName`**はチャンクの名前でファイル内でユニークに設定する必要があります。その次の**`echo`**や**`message`**は[R <i class="fa fa-external-link"></i>][R]のコードの実行結果に対するオプションです。  
+知っておくと便利な基本的なオプションを下表に示しておきます。なお、詳細や他のオプションについては[R Markdown Reference Guid (PDF) <i class="fa fa-external-link"></i>](https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf){target="_blank" title="RStudio"}を参照してください。  
 　  
 
 Type       | Option  | Default | Description
@@ -222,7 +222,7 @@ Type       | Option  | Default | Description
 　  
 
 ### インライン・チャンク
-ドキュメント中で[R][R]のコード実行したい場合にはインライン・チャンクを用います。インライン・チャンクはバッククォートで囲んだ（$`r `$）中にコードを記述します。例えば、チャンクの中で円の面積を求めた以下のようなコードがある場合  
+ドキュメント中で[R <i class="fa fa-external-link"></i>][R]のコード実行したい場合にはインライン・チャンクを用います。インライン・チャンクはバッククォートで囲んだ（$`r `$）中にコードを記述します。例えば、チャンクの中で円の面積を求めた以下のようなコードがある場合  
 　  
 
 ```{r}
@@ -245,7 +245,7 @@ r round(area_of_circle, 1)
 　  
 
 ### セットアップ・チャンク
-チャンク名が**`setup`**であるチャンクは、セットアップ・チャンクと呼ばれる[RStudio][RS]環境において特殊な動作をするチャンクです。[RStudio][RS]のエディタはチャンク単位での実行をサポートしており、任意のチャンクが実行されると自動的に**`setup`**チャンクを呼び出し初期処理を実行してからチャンクを実行します。この動作が行われるのは[RStudio][RS]エディタで[R Markdown][RMD]文書を開き最初に任意のチャンクを実行させたときのみです。なので、セットアップ・チャンクには後述の共通チャンク・オプションの設定や分析に必要なパッケージの読み込み、ローカル定義関数などを記述しておくようにしてください。  
+チャンク名が**`setup`**であるチャンクは、セットアップ・チャンクと呼ばれる[RStudio <i class="fa fa-external-link"></i>][RS]環境において特殊な動作をするチャンクです。[RStudio <i class="fa fa-external-link"></i>][RS]のエディタはチャンク単位での実行をサポートしており、任意のチャンクが実行されると自動的に**`setup`**チャンクを呼び出し初期処理を実行してからチャンクを実行します。この動作が行われるのは[RStudio <i class="fa fa-external-link"></i>][RS]エディタで[R Markdown <i class="fa fa-external-link"></i>][RMD]文書を開き最初に任意のチャンクを実行させたときのみです。なので、セットアップ・チャンクには後述の共通チャンク・オプションの設定や分析に必要なパッケージの読み込み、ローカル定義関数などを記述しておくようにしてください。  
 　  
 ![](./fig/rmd_setup_chunk.png)
 
@@ -260,7 +260,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, comment = "#>")
 　  
 
 ## Markdown {#Markdown}
-[R Markdown][RMD]で使える[Markdown][MD]は前述のように[Pandoc](https://pandoc.org/)の[Markdown][MD]です。[R Markdown][RMD]の記述ルールは多岐に渡りますので、代表的なルールを以下に紹介します。  
+[R Markdown <i class="fa fa-external-link"></i>][RMD]で使える[Markdown <i class="fa fa-external-link"></i>][MD]は前述のように[Pandoc <i class="fa fa-external-link"></i>](https://pandoc.org/){target="_blank" title="a universal document converter"}の[Markdown <i class="fa fa-external-link"></i>][MD]です。[R Markdown <i class="fa fa-external-link"></i>][RMD]の記述ルールは多岐に渡りますので、代表的なルールを以下に紹介します。  
 
 ### 見出し
 文書の章節項に当たる見出しは最大6階層まで指定可能ですが、出力を考慮すると多くても4階層以内に止めておくのが無難です。できれば、3階層以内に抑えておくことをおすゝめします。  
@@ -425,7 +425,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, comment = "#>")
 インライン数式   | `$LaTex Equation$`   | 文書と同一行中に表示する場合 
 ディスプレイ数式 | `$$LaTex Equation$$` | 文書とは別段落として表示する場合
 
-$\LaTeX$の数式モードで扱える表現は[$\LaTeX$コマンド集](http://www.latex-cmd.com)が参考になります。  
+$\LaTeX$の数式モードで扱える表現は[$\LaTeX$コマンド集 <i class="fa fa-external-link"></i>](http://www.latex-cmd.com){target="_blank" title="LaTeXコマンド集"}が参考になります。  
 　  
 
 ### 特殊な見出し
@@ -467,8 +467,8 @@ $\LaTeX$の数式モードで扱える表現は[$\LaTeX$コマンド集](http://
 
 # 参考資料
 
-* [R Markdownで楽々レポートづくり](http://gihyo.jp/admin/serial/01/r-markdown)
-* [R Markdown入門](https://kazutan.github.io/kazutanR/Rmd_intro.html)
+* [R Markdownで楽々レポートづくり <i class="fa fa-external-link"></i>](http://gihyo.jp/admin/serial/01/r-markdown){target="_blank" title="技術評論社"}
+* [R Markdown入門 <i class="fa fa-external-link"></i>](https://kazutan.github.io/kazutanR/Rmd_intro.html){target="_blank" title="ぞうさんのページ"}
 
 　  
 
@@ -480,34 +480,34 @@ $\LaTeX$の数式モードで扱える表現は[$\LaTeX$コマンド集](http://
 
 <!-- Default Support Formats -->
 <!-- Document -->
-[HTML]: http://rmarkdown.rstudio.com/html_document_format.html "HTML Document"
-[PDF]: http://rmarkdown.rstudio.com/pdf_document_format.html "PDF Document"
-[DOCX]: http://rmarkdown.rstudio.com/word_document_format.html "Microsoft Word Document"
-[ODT]: http://rmarkdown.rstudio.com/odt_document_format.html "OpenDocument Text Document"
-[RTF]: http://rmarkdown.rstudio.com/rtf_document_format.html "Rich Text Format Document"
-[MDS]: http://rmarkdown.rstudio.com/markdown_document_format.html "Markdown document (various flavors)"
-[Vignette]: http://rmarkdown.rstudio.com/package_vignette_format.html "R package vignette (HTML)"
-[GitHub]: http://rmarkdown.rstudio.com/github_document_format.html "GitHub Flavored Markdown"
+[HTML]: http://rmarkdown.rstudio.com/html_document_format.html {target="_blank" title="HTML Document"}
+[PDF]: http://rmarkdown.rstudio.com/pdf_document_format.html {target="_blank" title="PDF Document"}
+[DOCX]: http://rmarkdown.rstudio.com/word_document_format.html {target="_blank" title="Microsoft Word Document"}
+[ODT]: http://rmarkdown.rstudio.com/odt_document_format.html {target="_blank" title="OpenDocument Text Document"}
+[RTF]: http://rmarkdown.rstudio.com/rtf_document_format.html {target="_blank" title="Rich Text Format Document"}
+[MDS]: http://rmarkdown.rstudio.com/markdown_document_format.html {target="_blank" title="Markdown document (various flavors)"}
+[Vignette]: http://rmarkdown.rstudio.com/package_vignette_format.html {target="_blank" title="R package vignette (HTML)"}
+[GitHub]: http://rmarkdown.rstudio.com/github_document_format.html {target="_blank" title="GitHub Flavored Markdown"}
 
 <!-- Presentation -->
-[Beamer]: http://rmarkdown.rstudio.com/beamer_presentation_format.html "PDF presentation with LaTeX Beamer"
-[ioslides]: http://rmarkdown.rstudio.com/ioslides_presentation_format.html "HTML presentation with Google ioslides"
-[Slidy]: http://rmarkdown.rstudio.com/slidy_presentation_format.html "HTML presentation with W3C Slidy"
+[Beamer]: http://rmarkdown.rstudio.com/beamer_presentation_format.html {target="_blank" title="PDF presentation with LaTeX Beamer"}
+[ioslides]: http://rmarkdown.rstudio.com/ioslides_presentation_format.html {target="_blank" title="HTML presentation with Google ioslides"}
+[Slidy]: http://rmarkdown.rstudio.com/slidy_presentation_format.html {target="_blank" title="HTML presentation with W3C Slidy"}
 
 <!-- Package Support Formats -->
-[revealjs]: http://rmarkdown.rstudio.com/revealjs_presentation_format.html "HTML presentation with reveal.js"
-[Tufte]: http://rmarkdown.rstudio.com/tufte_handout_format.html "Handouts in the style of Edward Tufte"
-[rmdformats]: https://github.com/juba/rmdformats "clean HTML documents"
-[Shower]: https://github.com/mangothecat/rmdshower "Template for the Shower Presentation Engine"
-[xaringan]: https://github.com/yihui/xaringan "slideshows with remark.js through R Markdown"
+[revealjs]: http://rmarkdown.rstudio.com/revealjs_presentation_format.html {target="_blank" title="HTML presentation with reveal.js"}
+[Tufte]: http://rmarkdown.rstudio.com/tufte_handout_format.html {target="_blank" title="Handouts in the style of Edward Tufte"}
+[rmdformats]: https://github.com/juba/rmdformats {target="_blank" title="clean HTML documents"}
+[Shower]: https://github.com/mangothecat/rmdshower {target="_blank" title="Template for the Shower Presentation Engine"}
+[xaringan]: https://github.com/yihui/xaringan {target="_blank" title="slideshows with remark.js through R Markdown"}
 
-[bookdown]: https://bookdown.org/ "Build eBook"
-[RmdWebsites]: http://rmarkdown.rstudio.com/rmarkdown_websites.html "Build Website with bootswatch theme"
+[bookdown]: https://bookdown.org/ {target="_blank" title="Build eBook"}
+[RmdWebsites]: http://rmarkdown.rstudio.com/rmarkdown_websites.html {target="_blank" title="Build Website with bootswatch theme"}
 
 <!-- CRAN -->
-[Pkg_Tufte]: https://cran.r-project.org/web/packages/tufte/index.html "CRAN Package tufte"
-[Pkg_rmdformats]: https://cran.r-project.org/web/packages/rmdformats/index.html "CRAN Package rmdformats"
-[Pkg_revealjs]: https://cran.r-project.org/web/packages/revealjs/index.html "CRAN Package revealjs"
-[Pkg_xaringan]: https://cran.r-project.org/web/packages/xaringan/index.html "CRAN Package xaringan"
+[Pkg_Tufte]: https://cran.r-project.org/web/packages/tufte/index.html {target="_blank" title="CRAN Package tufte"}
+[Pkg_rmdformats]: https://cran.r-project.org/web/packages/rmdformats/index.html {target="_blank" title="CRAN Package rmdformats"}
+[Pkg_revealjs]: https://cran.r-project.org/web/packages/revealjs/index.html {target="_blank" title="CRAN Package revealjs"}
+[Pkg_xaringan]: https://cran.r-project.org/web/packages/xaringan/index.html {target="_blank" title="CRAN Package xaringan"}
 
-[CRAN_TV_RR]: https://cran.r-project.org/web/views/ReproducibleResearch.html "CRAN Task View: Reproducible Research"
+[CRAN_TV_RR]: https://cran.r-project.org/web/views/ReproducibleResearch.html {target="_blank" title="CRAN Task View: Reproducible Research?"}

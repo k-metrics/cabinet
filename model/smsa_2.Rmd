@@ -33,9 +33,9 @@ tidyverse::tidyverse_conflicts()
 source("../shared/common.R")
 ```
 
-本資料は『[ソフトウェアメトリクス統計分析入門][BN2]』(以降、テキストと記載)の第2章の例題を[R][R]で解いた際の解答例を示したものです。また、[R Markdown][RM]を使うメリットを示すための一手段として作成していますので、テキストにおける計算方法とは異なる部分もあります。本資料で使用しているデータの入手に関してはテキストにてご確認下さい。  
-本資料がHTML形式の場合、[R][R]のコードを参照するには右側にある**`[Code]`**ボタンをクリックして下さい。なお、JavaScriptは必ずOnにしてご覧下さい。  
-なお、[R][R]のコーディングはいわゆるモダンなコーディングにはなっていません。  
+本資料は『[ソフトウェアメトリクス統計分析入門 <i class="fa fa-external-link"></i>][BN2]』(以降、テキストと記載)の第2章の例題を[R <i class="fa fa-external-link"></i>][R]で解いた際の解答例を示したものです。また、[R Markdown <i class="fa fa-external-link"></i>][RM]を使うメリットを示すための一手段として作成していますので、テキストにおける計算方法とは異なる部分もあります。本資料で使用しているデータの入手に関してはテキストにてご確認下さい。  
+本資料がHTML形式の場合、[R <i class="fa fa-external-link"></i>][R]のコードを参照するには右側にある**`[Code]`**ボタンをクリックして下さい。なお、JavaScriptは必ずOnにしてご覧下さい。  
+なお、[R <i class="fa fa-external-link"></i>][R]のコーディングはいわゆるモダンなコーディングにはなっていません。  
 　  
 
 # 例題 2.1
@@ -82,11 +82,11 @@ t.test(values ~ group, alternative = "less", var.equal = TRUE, data = x.stacked)
 ```
 Studentのt検定の結果、帰無仮説（$H_0$：平均値の差はない）は棄却されなかったので改善前後のデータに有意差があるとは言えません。  
 
-最近では等分散性の検定（F検定）を行わず[ウェルチのt検定を行う方が妥当](http://laboratoryofbiology.blogspot.jp/2013/12/welchtanovastatwing.html)だと言われています。  
+最近では等分散性の検定（F検定）を行わず[ウェルチのt検定を行う方が妥当 <i class="fa fa-external-link"></i>](http://laboratoryofbiology.blogspot.jp/2013/12/welchtanovastatwing.html){target="_blank" title="生物科学研究所 井口研究室ブログ"}だと言われています。  
 ```{r}
 t.test(values ~ group, alternative = "less", var.equal = FALSE, data = x.stacked)
 ```
-等分散性に加えて正規性も仮定しない場合には[ブルンナー=ムンツェル検定（Brunner-Munzel Test）を使うのが妥当](http://d.hatena.ne.jp/hoxo_m/20150217/p1)だとされています。[R][R]でブルンナー=ムンツェル検定（Brunner-Munzel Test）を行うには**`lawstat`**パッケージをインストールしてください。  
+等分散性に加えて正規性も仮定しない場合には[ブルンナー=ムンツェル検定（Brunner-Munzel Test）を使うのが妥当 <i class="fa fa-external-link"></i>](http://d.hatena.ne.jp/hoxo_m/20150217/p1){target="_blank" title="ほくそ笑む"}だとされています。[R <i class="fa fa-external-link"></i>][R]でブルンナー=ムンツェル検定（Brunner-Munzel Test）を行うには**`lawstat`**パッケージをインストールしてください。  
 ```{r}
 lawstat::brunner.munzel.test(x$before, x$after)
 ```

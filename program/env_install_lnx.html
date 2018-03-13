@@ -462,12 +462,13 @@ div.tocify {
 
 <div id="ubuntuでのインストール" class="section level3">
 <h3>Ubuntuでのインストール</h3>
-<p>Linuxのディストリビューションに合わせたインストールを行う必要があります。ここでは、Ubuntu(16.04LTS)を前提に説明します。個々のディストリビューションにより手順が異なる場合がありますので、その際は、ググってみてください。</p>
+<p>Linuxのディストリビューションに合わせたインストールを行う必要があります。ここでは、Ubuntu(16.04LTS)を前提に説明します。個々のディストリビューションにより手順が異なる場合がありますので、その際は、ググってみてください。<br />
+　</p>
 <div id="インストール方法" class="section level4">
 <h4>インストール方法</h4>
 <p>Linxuにおけるソフトウェア（パッケージ）のインストール方法はディストリビューションにより異なる場合があります。基本的にはターミナル（端末）からのコマンドラインによる方法ですが、GUIに慣れている場合にはターミナルを利用するCUI(Character User Interface)に抵抗があると思います。</p>
-<p>ただ、Linuxを使っていく上で、かゆいところに手が届く方法ですのでCUIでの操作は慣れておくと便利です。</p>
-<hr />
+<p>ただ、Linuxを使っていく上で、かゆいところに手が届く方法ですのでCUIでの操作は慣れておくと便利です。<br />
+　</p>
 </div>
 </div>
 <div id="事前設定" class="section level3">
@@ -477,9 +478,11 @@ div.tocify {
 <li>リポジトリの登録</li>
 <li>公開鍵の設定</li>
 </ol>
+<p>　</p>
 <div id="リポジトリの登録" class="section level4">
 <h4>リポジトリの登録</h4>
-<p>システム管理者（root）権限でエディタを起動し、Rのインストールに必要な[CRAN][CRAN]または[CRANのミラーサイト][ISM]のリポジトリをリストに登録します。</p>
+<p>システム管理者（root）権限でエディタを起動し、Rのインストールに必要な[CRAN <i class="fa fa-external-link"></i>][CRAN]または[CRANのミラーサイト <i class="fa fa-external-link"></i>][ISM]のリポジトリをリストに登録します。<br />
+　</p>
 <div id="ターミナルから登録する場合" class="section level5">
 <h5>ターミナルから登録する場合</h5>
 <pre><code>sudo add-apt-repository &#39;deb https://cran.ism.ac.jp/bin/linux/ubuntu xenial/&#39;</code></pre>
@@ -488,6 +491,7 @@ div.tocify {
 <h5>GUIツールで登録する場合</h5>
 <p>GUIツールを用いて登録するには［システム設定］-［ソフトウェアのアップデート］-［他のソフトウェア］で以下のサイトを追加します。</p>
 <pre><code>deb https://cran.ism.ac.jp/bin/linux/ubuntu xenial/</code></pre>
+<p>　</p>
 </div>
 <div id="エディタで登録する場合" class="section level5">
 <h5>エディタで登録する場合</h5>
@@ -497,7 +501,8 @@ div.tocify {
 ファイルが開いたら以下の一行を追加して保存します。</p>
 <pre><code>deb https://cran.ism.ac.jp/bin/linux/ubuntu xenial/</code></pre>
 <p>　<br />
-以降、アップデートなどもリポジトリの情報を元に行われますので、インストール後にリポジトリの削除などはせずにそのままにしておいてください。</p>
+以降、アップデートなどもリポジトリの情報を元に行われますので、インストール後にリポジトリの削除などはせずにそのままにしておいてください。<br />
+　</p>
 </div>
 </div>
 <div id="公開鍵の設定" class="section level4">
@@ -505,7 +510,7 @@ div.tocify {
 <p>ターミナル（端末）から以下のコマンドを実行して公開鍵を入手してインストールします。公開鍵を入手するために必要な<code>Key ID</code>は執筆点では<code>E084DAB9</code>ですが変わる可能性もありますので、上手くいかない場合は<a href="https://cran.ism.ac.jp/bin/linux/ubuntu/README.html">CRANのREADME</a>で確認して下さい。</p>
 <pre><code>gpg --keyserver keyserver.ubuntu.com --recv-key E084DAB9
 gpg -a --export E084DAB9 | sudo apt-key add -</code></pre>
-<hr />
+<p>　</p>
 </div>
 </div>
 <div id="rのインストール" class="section level3">
@@ -513,8 +518,10 @@ gpg -a --export E084DAB9 | sudo apt-key add -</code></pre>
 <p>ターミナル（端末）から以下のコマンドを実行してRをインストールします。</p>
 <pre><code>sudo apt-get update
 sudo apt-get install r-base</code></pre>
-<p>　<br />
-#### インストール後の確認 <code>apt-get</code>でインストールした場合は必要なパッケージ群(<code>r-base-*</code>)が全てインストールされるはずですが、念の為にターミナルから以下のコマンドを実行してインストールされているパッケージを確認します。</p>
+<p>　</p>
+<div id="インストール後の確認" class="section level4">
+<h4>インストール後の確認</h4>
+<p><code>apt-get</code>でインストールした場合は必要なパッケージ群(<code>r-base-*</code>)が全てインストールされるはずですが、念の為にターミナルから以下のコマンドを実行してインストールされているパッケージを確認します。</p>
 <pre><code>dpkg -l | grep r-base
 dpkg -l | grep r-cran</code></pre>
 <p>以下のパッケージがインストールされていればインストール完了ですので、Rを起動してみてください。</p>
@@ -535,6 +542,8 @@ dpkg -l | grep r-cran</code></pre>
 <li>r-doc-html</li>
 <li>r-recommended</li>
 </ul>
+<p>　</p>
+</div>
 <div id="追加のインストール" class="section level4">
 <h4>追加のインストール</h4>
 <p>Rcmdrのみを利用する場合はインストール不要ですが、広く利用されているパッケージをインストールする際に備えて以下のUbuntuのライブラリをインストールすることをおすゝめします。</p>
@@ -551,7 +560,7 @@ sudo apt-get install xclip</code></pre>
 </div>
 <div id="r-commanderのインストール" class="section level3">
 <h3>R Commanderのインストール</h3>
-<p>R Commander(Rcmdr)のインストールと動作確認については<a href="./install_pkg.html">パッケージのインストール</a>をご覧ください。</p>
+<p>[R Commander(Rcmdr) <i class="fa fa-external-link"></i>][Rcmdr]のインストールと動作確認については<a href="./env_install_pkg.html">パッケージのインストール</a>をご覧ください。</p>
 <hr />
 </div>
 

@@ -17,31 +17,24 @@ knitr::opts_chunk$set(warning = FALSE, echo = TRUE)
 
 # データハンドリングで利用する外部パッケージの読み込み
 require(tidyverse)
-# 表示で利用する外部パッケージの読み込み
-require(gridExtra)
-require(DT)
-require(knitr)
 tidyverse::tidyverse_conflicts()
-
-# ローカル定義関数の読み込み
-source("../shared/common.R")
 ```
 
-本資料は[データ分析勉強会][0]で使用した「RStudioのすゝめ」の講義資料を再整理したものです。  
+本資料は[データ分析勉強会 <i class="fa fa-external-link"></i>][0]で使用した「RStudioのすゝめ」の講義資料を再整理したものです。  
 　  
 
 # はじめに
-[RStudio][RSD]とはRStudio社が開発している[R言語][R]用のIDE(Integrated Development Environment)、すなわち統合開発環境です。デスクトップ版とサーバ版の二種類が用意されており共にオープンソース版は無償で利用することが可能で、[R言語][R]用IDEのデファクトスタンダートと言っても過言ではありません。  
+[RStudio <i class="fa fa-external-link"></i>][RSD]とはRStudio社が開発している[R言語 <i class="fa fa-external-link"></i>][R]用のIDE(Integrated Development Environment)、すなわち統合開発環境です。デスクトップ版とサーバ版の二種類が用意されており共にオープンソース版は無償で利用することが可能で、[R言語 <i class="fa fa-external-link"></i>][R]用IDEのデファクトスタンダートと言っても過言ではありません。  
 
-RStudioの優れた点は[R言語][R]を用いたプログラムの開発だけでなく[R Markdown][RM]を用いたドキュメントの作成や[R言語][R]以外の言語のサポート、Git/SVNを利用したバージョン管理、独自のパッケージ管理機能等を備えている点です。また、スクリプトの記述を強力にサポートしてくれる高機能なエディタを内蔵している点やプロジェクト管理機能も備えています。  
+RStudioの優れた点は[R言語 <i class="fa fa-external-link"></i>][R]を用いたプログラムの開発だけでなく[R Markdown <i class="fa fa-external-link"></i>][RM]を用いたドキュメントの作成や[R言語 <i class="fa fa-external-link"></i>][R]以外の言語のサポート、Git/SVNを利用したバージョン管理、独自のパッケージ管理機能等を備えている点です。また、スクリプトの記述を強力にサポートしてくれる高機能なエディタを内蔵している点やプロジェクト管理機能も備えています。  
 　  
 
 ## RStudioのインストール
-[RStudio][RSD]のインストールは各プラットフォーム向けのバイナリをダウンロードして実行するだけです。実行した後は対話的に必要な指示をするだけです。  
+[RStudio <i class="fa fa-external-link"></i>][RSD]のインストールは各プラットフォーム向けのバイナリをダウンロードして実行するだけです。実行した後は対話的に必要な指示をするだけです。  
 　  
 
 # RStudio Overview
-最初に[RStudio][RSD]の各部（各ペイン）の名称を確認しておきます。画面各部は設定により配置を変更できますが、ここではデフォルト状態で説明します。
+最初に[RStudio <i class="fa fa-external-link"></i>][RSD]の各部（各ペイン）の名称を確認しておきます。画面各部は設定により配置を変更できますが、ここではデフォルト状態で説明します。
 
 ![RStudio Panes](./fig/RStudio_Pane.png)
 
@@ -63,7 +56,7 @@ No | 名称 | 説明等
 　 
 
 ## 注意点
-[RStudio][RSD]は日本語を始めとしたいわゆるマルチバイト文字（現在はユニコードが主流になりつつあるので表現としては不適切ですが）の扱いが不得手です。特にWindows以外の環境での利用や[R Markdown][RM]の利用を前提として以下の条件で利用するように心がけてください。  
+[RStudio <i class="fa fa-external-link"></i>][RSD]は日本語を始めとしたいわゆるマルチバイト文字（現在はユニコードが主流になりつつあるので表現としては不適切ですが）の扱いが不得手です。特にWindows以外の環境での利用や[R Markdown <i class="fa fa-external-link"></i>][RM]の利用を前提として以下の条件で利用するように心がけてください。  
 
 項目       | 条件                                     | 備考
 -----------|------------------------------------------|-------------------------
@@ -73,7 +66,7 @@ No | 名称 | 説明等
 　  
 
 ## オプション設定
-[RStudio][RSD]のオプション設定は[RStudio][RSD]全体に適用される［Global Option］と個々のプロジェクトのみに適用される［Project Option］の二つがあります。文字コードの設定以外は基本的にはデフォルト設定でも構いません。  
+[RStudio <i class="fa fa-external-link"></i>][RSD]のオプション設定は[RStudio <i class="fa fa-external-link"></i>][RSD]全体に適用される［Global Option］と個々のプロジェクトのみに適用される［Project Option］の二つがあります。文字コードの設定以外は基本的にはデフォルト設定でも構いません。  
 以下は推奨設定内容ならびに必須設定内容の一覧です。  
 　  
 
@@ -111,7 +104,7 @@ Packrat      | Using packrat with this project | Packratを利用する場合に
 　  
 
 # RStudioの使い方
-[RStudio][RSD]はIDEですのでこういう使い方をしなければならないというのはありませんので、まずはヘルプにあるコードや公開されている事例コードを利用して使ってみて下さい。
+[RStudio <i class="fa fa-external-link"></i>][RSD]はIDEですのでこういう使い方をしなければならないというのはありませんので、まずはヘルプにあるコードや公開されている事例コードを利用して使ってみて下さい。
 　  
 
 ## 便利なキーボードショートカット
