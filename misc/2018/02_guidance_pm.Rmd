@@ -23,12 +23,14 @@ require(tidyverse)
 1. データハンドリング入門（午前・午後）
     * 整然データ（tidy data）とは？
     * tidyverseを使ってみる
-1. データハンドリング入門（午後）
+1. **データハンドリング入門（午後）**
     * tidyverseを使ってみる
 
 # データハンドリング入門
 
 ## tidyverseを使ってみる
+
+## 演習１
 ### **メトリクス統計分析入門 演習1.4**
 生産性に加えて、工数予実割合も加味してプロジェクトの評価をしようと考えています。以下の条件、方法に従い、各プロジェクトをA～Eの5段階で評価してください。
 
@@ -37,7 +39,7 @@ require(tidyverse)
     * **欠損値があるレコード（プロジェクト）は外して**ください
 * 分からない点は周りのメンバーと協力してチャレンジしてみてください
     * データの読み込みは[こちら](../../import/index.html)にヒントがあります
-    * [データファイル(CP932)](./data.csv), [データファイル(UTF8)](./data_utf8.csv)はこちらからダウンロード
+    * [データファイル(CP932)](./data.csv), [データファイル(UTF8)](./data_utf8.csv)はこちら
 
 ## ヒント
 やりたいこと       | 利用する関数例              | 備考
@@ -59,8 +61,12 @@ NAを取り除きたい   | **`tidyr::drop_na()`**      |
 require(tidyverse)
 
 # データの読み込み
-x <- "./data_utf8.csv" %>% 
-  read.csv() %>% 
+# x <- "./data.csv" %>%
+x <- "https://k-metrics.github.io/cabinet/misc/2018/data.csv" %>%
+  read.csv() %>%
+# x <- "./data_utf8.csv" %>%
+# x <- "https://k-metrics.github.io/cabinet/misc/2018/data_utf8.csv" %>%
+#   read.csv(encoding = "UTF-8") %>%
   dplyr::rename(pj = 'プロジェクト名', prod = '生産性', rate = '工数予実割合') %>% 
   tidyr::drop_na()
 
@@ -87,6 +93,32 @@ x %>%
   head(7) %>% knitr::kable()
 ```
 
+
+# 演習２（演習１の終わった方）
+
+## アンスコムのデータ例
+```{r}
+anscombe
+```
+
+## 以下のようなTidy Data形式に変更してください
+```{r, echo=FALSE}
+anscombe %>%
+  tibble::rownames_to_column("id") %>%
+  tidyr::gather(key, value, -id) %>%
+  tidyr::separate(key, c("axis", "group"), 1) %>%
+  tidyr::spread(axis, value) %>% 
+  dplyr::select(-id)
+```
+
+## ヒント
+やりたいこと           | 利用する関数例                     | 備考
+-----------------------|------------------------------------|---
+列をまとめる           | **`tidyr::gather()`**              | 
+行を列にする           | **`tidyr::spread()`**              | 
+列名を分割する         | **`tidyr::separete()`**            |
+ユニーク番号を付与する | **`tibble::rownames_to_cloumn()`** | 
+列を選択する           | **`dplyr::select()`**              |
 
 ---
 
