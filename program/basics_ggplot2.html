@@ -9,7 +9,6 @@
 <meta name="generator" content="pandoc" />
 
 
-<meta name="author" content="k-metrics" />
 
 
 <title>ggplot2のすゝめ</title>
@@ -75,7 +74,7 @@ h6 {
 }
 </style>
 
-<link rel="stylesheet" href="../shared/style.css" type="text/css" />
+<link rel="stylesheet" href="style.css" type="text/css" />
 
 </head>
 
@@ -502,7 +501,7 @@ div.tocify {
 </div>
 </div>
 <div id="基本的な使い方" class="section level1">
-<h1><span class="header-section-number">1</span> 基本的な使い方</h1>
+<h1>基本的な使い方</h1>
 <p><strong><code>ggplot2</code></strong>の文法は非常にシンプルです。まず、データと座標を用意し、その上に描きたいコンポーネントを重ねていくイメージです。GIS（地理情報システム）やPhotoshopにおけるレイヤー機能と同じような考え方です。<br />
 　</p>
 <p>散布図を描く場合</p>
@@ -527,7 +526,7 @@ Fig.目標（ゴール）のイメージ
 </div>
 <p>　</p>
 <div id="座標軸を用意する" class="section level2">
-<h2><span class="header-section-number">1.1</span> 座標軸を用意する</h2>
+<h2>座標軸を用意する</h2>
 <p>まず、グラフを描くためのベースとなる座標軸を用意します。今回は、ｘ軸にがく片の幅（<strong><code>Sepal.Width</code></strong>）、ｙ軸にがく片の長さ（<strong><code>Sepal.Length</code></strong>）を指定します。座標軸は<strong><code>ggplot2::ggplot</code></strong>関数を用いて作成します。</p>
 <pre class="r"><code># Usage
 ggplot(data = NULL, mapping = aes(), ..., environment = parent.frame())</code></pre>
@@ -546,7 +545,7 @@ Fig.座標軸
 <p>　</p>
 </div>
 <div id="散布図を描く" class="section level2">
-<h2><span class="header-section-number">1.2</span> 散布図を描く</h2>
+<h2>散布図を描く</h2>
 <p>用意した座標軸の上にグラフを描くには<strong><code>ggplot2::geom_</code></strong>関数群を用います。ここでは散布図を描きますので<strong><code>ggplot2::geom_point</code></strong>関数を用います。</p>
 <pre class="r"><code># Usage
 geom_point(mapping = NULL, data = NULL, stat = &quot;identity&quot;,
@@ -565,7 +564,7 @@ Fig.用意した座標軸に散布図を上書きする
 <p>　</p>
 </div>
 <div id="タイトルをつける" class="section level2">
-<h2><span class="header-section-number">1.3</span> タイトルをつける</h2>
+<h2>タイトルをつける</h2>
 <p>描けた散布図にタイトルを<strong><code>ggplot2::ggtitle</code></strong>関数を用いてつけてみましょう。</p>
 <pre class="r"><code># Usage
 ggtitle(label, subtitle = NULL)</code></pre>
@@ -583,7 +582,7 @@ Fig.タイトルをつける
 <p>　</p>
 </div>
 <div id="座標軸ラベルを変更する" class="section level2">
-<h2><span class="header-section-number">1.4</span> 座標軸ラベルを変更する</h2>
+<h2>座標軸ラベルを変更する</h2>
 <p>座標軸のラベルはデフォルトでは<strong><code>ggplot2::aes</code></strong>関数で指定した変数名が使われます。分かりやすくするために<strong><code>ggplot2::xlab</code></strong>、<strong><code>ggplot2::ylab</code></strong>両関数を用いて座標軸ラベルを変更してみましょう。</p>
 <pre class="r"><code>iris %&gt;% 
   ggplot2::ggplot(ggplot2::aes(x = Sepal.Width, y = Sepal.Length)) +
@@ -599,7 +598,7 @@ Fig.タイトルをつける
 <p>　</p>
 </div>
 <div id="層別にプロットする" class="section level2">
-<h2><span class="header-section-number">1.5</span> 層別にプロットする</h2>
+<h2>層別にプロットする</h2>
 <p>このままでは色気がないので品種(<strong><code>Species</code></strong>)毎に色分けした散布図にしてみましょう。色分けは<strong><code>ggplot2::geom_point</code></strong>関数内で<strong><code>ggplot2::aes</code></strong>関数を用いて指定します。</p>
 <pre class="r"><code># Usage
 aes(colour)</code></pre>
@@ -618,7 +617,7 @@ Fig.散布図を色分け表示する
 <p>　</p>
 </div>
 <div id="回帰直線を描く" class="section level2">
-<h2><span class="header-section-number">1.6</span> 回帰直線を描く</h2>
+<h2>回帰直線を描く</h2>
 <p>散布図が描けましたので回帰直線を加えてみましょう。回帰直線は別途計算する必要はなく<strong><code>ggplot2::geom_smooth</code></strong>関数で描けます。</p>
 <pre class="r"><code># Usage
 geom_smooth(mapping = NULL, data = NULL, stat = &quot;smooth&quot;, position = &quot;identity&quot;,
@@ -640,7 +639,7 @@ Fig.回帰直線を追加する
 <p>　</p>
 </div>
 <div id="信頼区間を加える" class="section level2">
-<h2><span class="header-section-number">1.7</span> 信頼区間を加える</h2>
+<h2>信頼区間を加える</h2>
 <p>回帰線の信頼区間を描くには<strong><code>ggplot2::smooth</code>関数で<code>se = TRUE</code></strong>オプション指定をするだけです。</p>
 <pre class="r"><code># Usage
 geom_smooth(mapping = NULL, data = NULL, stat = &quot;smooth&quot;, position = &quot;identity&quot;,
@@ -662,7 +661,7 @@ Fig.回帰直線に信頼区間を加える
 <p>　</p>
 </div>
 <div id="層別の回帰直線を描く" class="section level2">
-<h2><span class="header-section-number">1.8</span> 層別の回帰直線を描く</h2>
+<h2>層別の回帰直線を描く</h2>
 <p>折角、色分けしてるのですから色毎（層別）に回帰直線を描きたいものです。その場合は<strong><code>colour</code></strong>オプションの指定を<strong><code>ggplot2::geom_point</code></strong>関数ではなく<strong><code>ggplot2::ggplot</code></strong>関数内で指定して下さい。</p>
 <pre class="r"><code>iris %&gt;% 
   ggplot2::ggplot(ggplot2::aes(x = Sepal.Width, y = Sepal.Length,
@@ -681,7 +680,7 @@ Fig.品種で層別に回帰直線を描く
 　</p>
 </div>
 <div id="背景等を変える" class="section level2">
-<h2><span class="header-section-number">1.9</span> 背景等を変える</h2>
+<h2>背景等を変える</h2>
 <p>グラフ全体の色合い等を変える場合は<strong><code>ggplot2::theme_</code></strong>関数群を用います。デフォルトテーマを含め以下の8種類のテーマ関数が用意されています。</p>
 <pre class="r"><code># Usage
 theme_gray(base_size = 11, base_family = &quot;&quot;)        # デフォルトテーマ
@@ -713,11 +712,11 @@ Fig.クラッシックテーマを設定して完了
 </div>
 </div>
 <div id="応用的な使い方" class="section level1">
-<h1><span class="header-section-number">2</span> 応用的な使い方</h1>
+<h1>応用的な使い方</h1>
 <p><strong><code>ggplot2</code></strong>パッケージでは更に様々なアレンジが可能です。<br />
 　</p>
 <div id="サイズを変える" class="section level2">
-<h2><span class="header-section-number">2.1</span> サイズを変える</h2>
+<h2>サイズを変える</h2>
 <p>例えば散布図の点の大きさを変えるには<strong><code>size</code></strong>オプションを用います。</p>
 <pre class="r"><code>iris %&gt;% 
   ggplot2::ggplot(ggplot2::aes(x = Sepal.Width, y = Sepal.Length,
@@ -732,7 +731,7 @@ Fig.クラッシックテーマを設定して完了
 <p>　</p>
 </div>
 <div id="変数を用いてサイズを変える" class="section level2">
-<h2><span class="header-section-number">2.2</span> 変数を用いてサイズを変える</h2>
+<h2>変数を用いてサイズを変える</h2>
 <p>更に花弁の長さ（<strong><code>Petal.Length</code></strong>）に応じた点の大きさにしたい場合は<strong><code>ggplot2::aes</code></strong>関数の中で<strong><code>size</code></strong>オプションを用います。</p>
 <pre class="r"><code>iris %&gt;% 
   ggplot2::ggplot(ggplot2::aes(x = Sepal.Width, y = Sepal.Length,
@@ -747,7 +746,7 @@ Fig.クラッシックテーマを設定して完了
 <p>　</p>
 </div>
 <div id="点を別の形に変える" class="section level2">
-<h2><span class="header-section-number">2.3</span> 点を別の形に変える</h2>
+<h2>点を別の形に変える</h2>
 <p>色分けだけでは見難い場合には<strong><code>shape</code></strong>オプションを用いて丸点とは異なるシンボルマークに変更することができます。</p>
 <pre class="r"><code>iris %&gt;% 
   ggplot2::ggplot(ggplot2::aes(x = Sepal.Width, y = Sepal.Length,
@@ -762,7 +761,7 @@ Fig.クラッシックテーマを設定して完了
 <p>　</p>
 </div>
 <div id="ヒストグラムを描く" class="section level2">
-<h2><span class="header-section-number">2.4</span> ヒストグラムを描く</h2>
+<h2>ヒストグラムを描く</h2>
 <p>がく片の長さ（<strong><code>Sepal.Length</code></strong>）のヒストグラムを<strong><code>ggplot2::geom_histgram</code></strong>関数を用いて描いてみましょう。</p>
 <pre class="r"><code># Usage
 geom_histogram(mapping = NULL, data = NULL, stat = &quot;bin&quot;, position = &quot;stack&quot;,
@@ -781,7 +780,7 @@ Fig.ヒストグラム
 <p>　</p>
 </div>
 <div id="ヒストグラムを色分けする" class="section level2">
-<h2><span class="header-section-number">2.5</span> ヒストグラムを色分けする</h2>
+<h2>ヒストグラムを色分けする</h2>
 <p><strong><code>ggplot2::geom_histgram</code></strong>関数に対する<strong><code>colour</code></strong>オプション指定は枠線にしか適用されません。</p>
 <pre class="r"><code>iris %&gt;% 
   ggplot2::ggplot(aes(x = Sepal.Length, colour = Species)) + 
@@ -800,7 +799,7 @@ Fig.ヒストグラム
 <p>　</p>
 </div>
 <div id="色の透過度を変える" class="section level2">
-<h2><span class="header-section-number">2.6</span> 色の透過度を変える</h2>
+<h2>色の透過度を変える</h2>
 <p>塗りつぶし色は、結構、どぎつい傾向がありますのでの透過度(アルファチャネル)を用いて変更した方がきれいなことがあります。<strong><code>alpha</code></strong>オプションを指定してください。</p>
 <pre class="r"><code>iris %&gt;% 
   ggplot2::ggplot(ggplot2::aes(x = Sepal.Length, fill = Species)) + 
@@ -808,7 +807,7 @@ Fig.ヒストグラム
 <p><img src="basics_ggplot2_files/figure-html/unnamed-chunk-30-1.png" width="672" /> 　</p>
 </div>
 <div id="ヒストグラムを重ねて描く" class="section level2">
-<h2><span class="header-section-number">2.7</span> ヒストグラムを重ねて描く</h2>
+<h2>ヒストグラムを重ねて描く</h2>
 <p><strong><code>ggplot2::geom_histgram</code></strong>関数がデフォルトで描く層別ヒストグラムは積上げグラフになっています。層別で独立したヒストグラムを描く場合には<strong><code>position</code></strong>オプションを指定してください。</p>
 <pre class="r"><code>iris %&gt;% 
   ggplot2::ggplot(ggplot2::aes(x = Sepal.Length, fill = Species)) + 
@@ -823,7 +822,7 @@ Fig.品種で層別した重ね合わせヒストグラム
 <img src="basics_ggplot2_files/figure-html/unnamed-chunk-32-1.png" width="672" /> 　</p>
 </div>
 <div id="密度関数を上書きする" class="section level2">
-<h2><span class="header-section-number">2.8</span> 密度関数を上書きする</h2>
+<h2>密度関数を上書きする</h2>
 <p>ヒストグラムを描く場合、密度関数も同時に描きたい場合があります。密度関数は<strong><code>ggplot2::geom_density</code></strong>関数で描けます。</p>
 <pre class="r"><code># Usage
 geom_density(mapping = NULL, data = NULL, stat = &quot;density&quot;,
@@ -844,7 +843,7 @@ geom_density(mapping = NULL, data = NULL, stat = &quot;density&quot;,
 <p>　</p>
 </div>
 <div id="箱ひげ図を描く" class="section level2">
-<h2><span class="header-section-number">2.9</span> 箱ひげ図を描く</h2>
+<h2>箱ひげ図を描く</h2>
 <p>箱ひげ図を描くには<strong><code>ggplot2::geom_boxplot</code></strong>関数を用います。<strong><code>ggplot2::geom_boxplot</code></strong>を層別で使わない場合はｘ軸に適当な値を指定してください。</p>
 <pre class="r"><code>geom_boxplot(mapping = NULL, data = NULL, stat = &quot;boxplot&quot;,
              position = &quot;dodge&quot;, ..., outlier.colour = NULL,
@@ -865,7 +864,7 @@ geom_density(mapping = NULL, data = NULL, stat = &quot;density&quot;,
 <p>　</p>
 </div>
 <div id="箱ひげ図を層別で描く" class="section level2">
-<h2><span class="header-section-number">2.10</span> 箱ひげ図を層別で描く</h2>
+<h2>箱ひげ図を層別で描く</h2>
 <p><code>ggplot2::geom_boxplot</code>関数はで層別の箱ひげ図を描く場合は<code>x</code>オプションに層別変数を指定してください。</p>
 <pre class="r"><code>iris %&gt;% 
   ggplot2::ggplot(ggplot2::aes(x = Species, y = Sepal.Length)) + 
@@ -879,7 +878,7 @@ geom_density(mapping = NULL, data = NULL, stat = &quot;density&quot;,
 <p>　</p>
 </div>
 <div id="箱ひげ図を色分けする" class="section level2">
-<h2><span class="header-section-number">2.11</span> 箱ひげ図を色分けする</h2>
+<h2>箱ひげ図を色分けする</h2>
 <p>箱ひげ図を色分けするには二つの方法があります。描画線で色分けする場合は散布図の場合と同じく<strong><code>colour</code></strong>オプションで指定します。</p>
 <pre class="r"><code>iris %&gt;% 
   ggplot2::ggplot(ggplot2::aes(x = Species, y = Sepal.Length)) + 
@@ -898,7 +897,7 @@ geom_density(mapping = NULL, data = NULL, stat = &quot;density&quot;,
 <p><img src="basics_ggplot2_files/figure-html/unnamed-chunk-40-1.png" width="672" /> 　</p>
 </div>
 <div id="箱ひげ図にデータを重ねる" class="section level2">
-<h2><span class="header-section-number">2.12</span> 箱ひげ図にデータを重ねる</h2>
+<h2>箱ひげ図にデータを重ねる</h2>
 <p>箱ひげ図だけではデータの分布傾向が分かりませんので<strong><code>ggplot2::geom_jitter</code></strong>関数を用いデータを重ねて描画すると分かりやすくなる場合があります。</p>
 <pre class="r"><code># Usage
 geom_jitter(mapping = NULL, data = NULL, stat = &quot;identity&quot;,
@@ -912,7 +911,7 @@ geom_jitter(mapping = NULL, data = NULL, stat = &quot;identity&quot;,
 <p><img src="basics_ggplot2_files/figure-html/unnamed-chunk-42-1.png" width="672" /> 　</p>
 </div>
 <div id="バイオリンプロット" class="section level2">
-<h2><span class="header-section-number">2.13</span> バイオリンプロット</h2>
+<h2>バイオリンプロット</h2>
 <p><strong><code>ggplot2::geom_violin</code></strong>によるバイオリンプロットを使うとデータの分布を更に視覚的に把握しやすくなる場合があります。</p>
 <pre class="r"><code># Usage
 geom_violin(mapping = NULL, data = NULL, stat = &quot;ydensity&quot;,
@@ -926,7 +925,7 @@ geom_violin(mapping = NULL, data = NULL, stat = &quot;ydensity&quot;,
 <p><img src="basics_ggplot2_files/figure-html/unnamed-chunk-44-1.png" width="672" /> 　</p>
 </div>
 <div id="軸の比率を変更する" class="section level2">
-<h2><span class="header-section-number">2.14</span> 軸の比率を変更する</h2>
+<h2>軸の比率を変更する</h2>
 <p>座標軸の範囲はデータに応じて自動的に決まりますが、ｘ軸とｙ軸の比率を変更することで見やすい、理解しやすいグラフになることがあります。このような場合には<strong><code>ggplot2::coord_fixed</code></strong>関数を用います。</p>
 <pre class="r"><code># Usage
 coord_fixed(ratio = 1, xlim = NULL, ylim = NULL, expand = TRUE)</code></pre>
@@ -942,7 +941,7 @@ coord_fixed(ratio = 1, xlim = NULL, ylim = NULL, expand = TRUE)</code></pre>
 <p><img src="basics_ggplot2_files/figure-html/unnamed-chunk-46-1.png" width="672" /> 　</p>
 </div>
 <div id="対数軸を用いる" class="section level2">
-<h2><span class="header-section-number">2.15</span> 対数軸を用いる</h2>
+<h2>対数軸を用いる</h2>
 <p>描画対象データのレンジが広い場合は対数軸で表示すると便利な時があります。<strong><code>ggplot2</code></strong>パッケージではデータを対数変換せずとも座標軸だけを対数表示してくれます。<br />
 対数軸グラフを描く場合は<strong><code>ggplot2::cord_trans</code></strong>関数または<strong><code>ggplot2::scale_x_log10</code></strong>、<strong><code>ggplot2::scale_y_log10</code></strong>両関数がありますが対数軸以外も描画可能な<strong><code>ggplot2::cord_trans</code></strong>関数を使うのがおすゝめです。</p>
 <pre class="r"><code># Usage
@@ -960,7 +959,7 @@ coord_trans(x = &quot;identity&quot;, y = &quot;identity&quot;, limx = NULL, lim
 <p><img src="basics_ggplot2_files/figure-html/unnamed-chunk-48-1.png" width="672" /> 　</p>
 </div>
 <div id="軸を入れ替る" class="section level2">
-<h2><span class="header-section-number">2.16</span> 軸を入れ替る</h2>
+<h2>軸を入れ替る</h2>
 <p><strong><code>ggplot2::coord_</code></strong>関数群を用いるとデータを変更することなく軸の操作が可能です。横軸と縦軸を入れ替えるには<strong><code>ggplot2::coord_flip</code></strong>関数を用います。</p>
 <pre class="r"><code># Usage
 coord_flip(xlim = NULL, ylim = NULL, expand = TRUE)</code></pre>
@@ -972,7 +971,7 @@ coord_flip(xlim = NULL, ylim = NULL, expand = TRUE)</code></pre>
 <p><img src="basics_ggplot2_files/figure-html/unnamed-chunk-50-1.png" width="672" /> 　</p>
 </div>
 <div id="軸の反転" class="section level2">
-<h2><span class="header-section-number">2.17</span> 軸の反転</h2>
+<h2>軸の反転</h2>
 <p>軸を反転させるには<strong><code>ggplot2::scale_x_reverse</code></strong>、<strong><code>ggplot2::scale_y_reverse</code></strong>関数を用います。</p>
 <pre class="r"><code># Usage
 scale_x_continuous(name = waiver(), breaks = waiver(), minor_breaks = waiver(),
@@ -992,7 +991,7 @@ scale_y_continuous(name = waiver(), breaks = waiver(), minor_breaks = waiver(),
 <p><img src="basics_ggplot2_files/figure-html/unnamed-chunk-52-1.png" width="672" /> 　</p>
 </div>
 <div id="テキストラベルをつける" class="section level2">
-<h2><span class="header-section-number">2.18</span> テキストラベルをつける</h2>
+<h2>テキストラベルをつける</h2>
 <p>個々のデータにテキストラベルを付与することも可能ですが、データ数が多かったりデータの値が近接していたりすると逆に見難くなってしまうというデメリットもあります。テキストやラベルを表示するには<strong><code>ggplot2::geom_text</code></strong>関数または<strong><code>ggplot2::geom_label</code></strong>関数を用います。</p>
 <pre class="r"><code># Usage
 geom_label(mapping = NULL, data = NULL, stat = &quot;identity&quot;,
@@ -1014,7 +1013,7 @@ geom_text(mapping = NULL, data = NULL, stat = &quot;identity&quot;,
 <p><img src="basics_ggplot2_files/figure-html/unnamed-chunk-54-1.png" width="672" /> 　</p>
 </div>
 <div id="統計情報で描く" class="section level2">
-<h2><span class="header-section-number">2.19</span> 統計情報で描く</h2>
+<h2>統計情報で描く</h2>
 <p>平均値とその標準誤差を計算し、平均値を棒グラフで描き、標準誤差をエラーバーで表示するということも<strong><code>ggplot2::stat_summary</code></strong>関数を利用することで実現可能です。</p>
 <pre class="r"><code># Usage
 stat_summary(mapping = NULL, data = NULL, geom = &quot;pointrange&quot;,
@@ -1030,7 +1029,7 @@ stat_summary(mapping = NULL, data = NULL, geom = &quot;pointrange&quot;,
 <p><img src="basics_ggplot2_files/figure-html/unnamed-chunk-56-1.png" width="672" /> 　</p>
 </div>
 <div id="層別に描く" class="section level2">
-<h2><span class="header-section-number">2.20</span> 層別に描く</h2>
+<h2>層別に描く</h2>
 <p>見やすくするために種別（<strong><code>Species</code></strong>）のデータを用いて層別のグラフにしてみましょう。層別に描くには<strong><code>ggplot2::facet_warp</code></strong>を用います。</p>
 <pre class="r"><code># Usage
 facet_wrap(facets, nrow = NULL, ncol = NULL, scales = &quot;fixed&quot;, shrink = TRUE,
@@ -1048,7 +1047,7 @@ facet_wrap(facets, nrow = NULL, ncol = NULL, scales = &quot;fixed&quot;, shrink 
 <p><img src="basics_ggplot2_files/figure-html/unnamed-chunk-58-1.png" width="672" /> 　</p>
 </div>
 <div id="二変数で層別に描く" class="section level2">
-<h2><span class="header-section-number">2.21</span> 二変数で層別に描く</h2>
+<h2>二変数で層別に描く</h2>
 <p>二変数でマトリクス状に層別にしたい場合は<strong><code>ggplot2::facet_grid</code></strong>関数を用います。<strong><code>mtcars</code></strong>データセットを用いて車重（<strong><code>wt</code></strong>）と燃費（<strong><code>mpg</code></strong>）の関係をシリンダ数（<strong><code>cyl</code></strong>）とギア数（<strong><code>gear</code></strong>）で層別表示してみます。</p>
 <pre class="r"><code># Usage
 facet_grid(facets, margins = FALSE, scales = &quot;fixed&quot;, space = &quot;fixed&quot;,
@@ -1063,12 +1062,12 @@ facet_grid(facets, margins = FALSE, scales = &quot;fixed&quot;, space = &quot;fi
 </div>
 </div>
 <div id="まとめ" class="section level1">
-<h1><span class="header-section-number">3</span> まとめ</h1>
+<h1>まとめ</h1>
 <p>このように<strong><code>ggplot2</code></strong>パッケージでは統一的な文法によりどのようなグラフも同じように描けることが分かります。加えて、色指定やグラフ装飾等も標準のグラフに比べるとてリッチです。まさに“ggplot2: Elegant Graphics for Data Analysis”。積極的に使ってみて下さい。<br />
 紹介した以外にも<strong><code>ggplot2</code></strong>パッケージは時系列の折れ線グラフや棒グラフなど、様々なグラフを描くことが可能です。どのようなグラフを描けるかはヘルプはインターネットで調べてみてください。</p>
 <hr />
 <!-- Footer -->
-<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-03-13 19:16(JST)]</p>
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-03-17 15:39(JST)]</p>
 </div>
 
 
