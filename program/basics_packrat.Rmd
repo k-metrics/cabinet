@@ -39,7 +39,7 @@ packrat | Reproducible dependency management
 　  
 
 * [公式チュートリアル（英語） <i class="fa fa-external-link"></i>](http://rstudio.github.io/packrat/walkthrough.html){target="_blank" title="RStudio, Inc."}
-* [packratで人類の拡大再生産に貢献する <i class="fa fa-external-link"></i>](d.hatena.ne.jp/dichika/20131220/p1){target="_blank" title="盆栽日記"}
+* [packratで人類の拡大再生産に貢献する <i class="fa fa-external-link"></i>](http://d.hatena.ne.jp/dichika/20131220/p1){target="_blank" title="盆栽日記"}
 * [Packratの使い道を考えてみた <i class="fa fa-external-link"></i>](https://qiita.com/uri/items/5d473a5df91954585e62){target="_blank" title="Qiita"}
 
 　  
@@ -82,7 +82,7 @@ packratを使うには当然**`packrat`**パッケージが必要です。また
 　  
 
 ```{r, eval=FALSE}
-packrat::init("project_dir")
+> packrat::init("project_dir")
 ```
 
 　  
@@ -99,8 +99,8 @@ packrat::init("project_dir")
 　  
 
 ```{r, eval=FALSE}
-packrat::snapshot()
-packrat::bundle(file = 'tarball.tar.gz', overwrite = TRUE)
+> packrat::snapshot()
+> packrat::bundle(file = 'tarball.tar.gz', overwrite = TRUE)
     # 'tarball.tar.gz'には任意のファイル名を入れてください
 ```
 
@@ -124,10 +124,55 @@ packrat::bundle(file = 'tarball.tar.gz', overwrite = TRUE)
 　  
 
 ```{r, eval=FALSE}
-packrat::restore()
+> packrat::restore()
 ```
 
 　  
+
+## packrat情報の整理
+パッケージ情報を確認するには以下のように**`packrat::status`**関数をコンソールから実行します。  
+　  
+
+```{r, eval=FALSE}
+> packrat::status()
+
+The following packages are tracked by packrat, but are no longer available in the local library nor present in your code:
+               _       
+    clipr        0.4.0 
+    clisymbols   1.2.0 
+    desc         1.1.1 
+    enc          0.2.0 
+    gh           1.0.1 
+    git2r        0.21.0
+    ini          0.3.0 
+    rematch2     2.0.1 
+    styler       1.0.1 
+    usethis      1.3.0 
+
+You can call packrat::snapshot() to remove these packages from the lockfile, or if you intend to use these packages, use packrat::restore() to restore them to your private library.
+```
+
+利用していないパッケージが存在する場合、**`packrat::snapshot`**関数でpackrat環境から削除することで整理ができます。
+　  
+
+```{r, eval=FALSE}
+> packrat::snapshot()
+
+Removing these packages from packrat:
+               _       
+    clipr        0.4.0 
+    clisymbols   1.2.0 
+    desc         1.1.1 
+    enc          0.2.0 
+    gh           1.0.1 
+    git2r        0.21.0
+    ini          0.3.0 
+    rematch2     2.0.1 
+    styler       1.0.1 
+    usethis      1.3.0 
+
+Do you want to continue? [Y/n]: 
+```
 
 ---
 

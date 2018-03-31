@@ -492,7 +492,7 @@ div.tocify {
 　</p>
 <ul>
 <li><a href="http://rstudio.github.io/packrat/walkthrough.html" target="_blank" title="RStudio, Inc.">公式チュートリアル（英語） <i class="fa fa-external-link"></i></a></li>
-<li><a href="d.hatena.ne.jp/dichika/20131220/p1" target="_blank" title="盆栽日記">packratで人類の拡大再生産に貢献する <i class="fa fa-external-link"></i></a></li>
+<li><a href="http://d.hatena.ne.jp/dichika/20131220/p1" target="_blank" title="盆栽日記">packratで人類の拡大再生産に貢献する <i class="fa fa-external-link"></i></a></li>
 <li><a href="https://qiita.com/uri/items/5d473a5df91954585e62" target="_blank" title="Qiita">Packratの使い道を考えてみた <i class="fa fa-external-link"></i></a></li>
 </ul>
 <p>　<br />
@@ -537,7 +537,7 @@ div.tocify {
 <p>　</p>
 <p>これらはコンソールから以下のコマンドを実行するのと同等です。<br />
 　</p>
-<pre class="r"><code>packrat::init(&quot;project_dir&quot;)</code></pre>
+<pre class="r"><code>&gt; packrat::init(&quot;project_dir&quot;)</code></pre>
 <p>　</p>
 <p>初期化が完了しましたら、プロジェクト（packrat情報）を共有します。<br />
 　</p>
@@ -550,8 +550,8 @@ div.tocify {
 <h3>ファイルで渡す場合</h3>
 <p>ファイルを利用して環境を共有する場合は以下のコマンドを実行してtarballを作成します。tarballにはプロジェクトのディレクトリ内のすべてのファイルがアーカイブされます。<br />
 　</p>
-<pre class="r"><code>packrat::snapshot()
-packrat::bundle(file = &#39;tarball.tar.gz&#39;, overwrite = TRUE)
+<pre class="r"><code>&gt; packrat::snapshot()
+&gt; packrat::bundle(file = &#39;tarball.tar.gz&#39;, overwrite = TRUE)
     # &#39;tarball.tar.gz&#39;には任意のファイル名を入れてください</code></pre>
 <p>　<br />
 作成されたアーカイブファイルを共有先で展開し、RStudioの［File］-［New Project…］-［Version Control］から展開先のディレクトリをプロジェクトディレクトりとして指定してください。プロジェクトが開かれると自動的にフォルダ内の<strong><code>packrat/init.R</code></strong>が実行されpackrat環境が構築されます。利用しているパッケージ数やPC、通信環境にもよりますが十数分程度かかります。<br />
@@ -574,10 +574,48 @@ packrat::bundle(file = &#39;tarball.tar.gz&#39;, overwrite = TRUE)
 <h2>packrat情報の更新</h2>
 <p>プロジェクトのパッケージを更新したり追加、削除した場合は<strong><code>packrat::snapshot</code></strong>関数を用いてpackrat情報を更新します。更新された情報は<strong><code>packrat/packrat.lock</code></strong>ファイルに記録されますので、<strong><code>packrat/packrat.lock</code></strong>ファイルを更新してください。<strong><code>packrat/packrat.lock</code></strong>が更新されたらRStudioを再起動するか以下のコマンドを実行してください。<br />
 　</p>
-<pre class="r"><code>packrat::restore()</code></pre>
+<pre class="r"><code>&gt; packrat::restore()</code></pre>
 <p>　</p>
+</div>
+<div id="packrat情報の整理" class="section level2">
+<h2>packrat情報の整理</h2>
+<p>パッケージ情報を確認するには以下のように<strong><code>packrat::status</code></strong>関数をコンソールから実行します。<br />
+　</p>
+<pre class="r"><code>&gt; packrat::status()
+
+The following packages are tracked by packrat, but are no longer available in the local library nor present in your code:
+               _       
+    clipr        0.4.0 
+    clisymbols   1.2.0 
+    desc         1.1.1 
+    enc          0.2.0 
+    gh           1.0.1 
+    git2r        0.21.0
+    ini          0.3.0 
+    rematch2     2.0.1 
+    styler       1.0.1 
+    usethis      1.3.0 
+
+You can call packrat::snapshot() to remove these packages from the lockfile, or if you intend to use these packages, use packrat::restore() to restore them to your private library.</code></pre>
+<p>利用していないパッケージが存在する場合、<strong><code>packrat::snapshot</code></strong>関数でpackrat環境から削除することで整理ができます。 　</p>
+<pre class="r"><code>&gt; packrat::snapshot()
+
+Removing these packages from packrat:
+               _       
+    clipr        0.4.0 
+    clisymbols   1.2.0 
+    desc         1.1.1 
+    enc          0.2.0 
+    gh           1.0.1 
+    git2r        0.21.0
+    ini          0.3.0 
+    rematch2     2.0.1 
+    styler       1.0.1 
+    usethis      1.3.0 
+
+Do you want to continue? [Y/n]: </code></pre>
 <hr />
-<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-03-31 20:52(JST)]</p>
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-03-31 21:55(JST)]</p>
 </div>
 </div>
 
