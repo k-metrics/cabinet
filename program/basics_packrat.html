@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="k-metrics" />
+
+
+<title>Collaboration</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cerulean.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = false;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Program</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-laptop"></span>
+     
+    R Setup
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="./env_index.html">Overall</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="./env_install.html">Install R</a>
+    </li>
+    <li>
+      <a href="./env_install_tls.html">Install Rtools</a>
+    </li>
+    <li>
+      <a href="./env_install_rcmdr.html">Install Rcmdr Package</a>
+    </li>
+    <li>
+      <a href="./env_install_dtp.html">Install RStudio Desktop</a>
+    </li>
+    <li>
+      <a href="./env_install_pkg.html">Install R Packages</a>
+    </li>
+    <li>
+      <a href="./env_update_r.html">Update R</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="./env_install_svr.html">Install RStudio Server</a>
+    </li>
+    <li>
+      <a href="./env_install_vscode.html">Install Visual Studio Code</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="./env_install_tex.html">Install TeX</a>
+    </li>
+    <li class="dropdown-header">Install Git/SVN</li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-info-circle"></span>
+     
+    R Basics
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="./basics_index.html">Overall</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="./basics_coding_style.html">Coding Style</a>
+    </li>
+    <li>
+      <a href="./basics_r.html">R Basics</a>
+    </li>
+    <li>
+      <a href="./basics_r_2.html">R Basics part2</a>
+    </li>
+    <li>
+      <a href="./basics_rstudio.html">RStudio Basics</a>
+    </li>
+    <li>
+      <a href="./basics_dplyr.html">dplyr Basics</a>
+    </li>
+    <li>
+      <a href="./basics_ggplot2.html">ggplot2 Basics</a>
+    </li>
+    <li class="dropdown-header">Collaboration</li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-commenting"></span>
+     
+    Others
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="./env_install_ubuntu_os.html">Install Ubuntu</a>
+    </li>
+    <li>
+      <a href="./about.html">About</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-github"></span>
+     
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../index.html">Cabinet</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="../import/index.html">Import</a>
+    </li>
+    <li>
+      <a href="../tidy/index.html">Tidy/Transform</a>
+    </li>
+    <li>
+      <a href="../model/index.html">Model/Infer</a>
+    </li>
+    <li>
+      <a href="../visualize/index.html">Visualize</a>
+    </li>
+    <li>
+      <a href="../communicate/index.html">Communicate/Automate</a>
+    </li>
+    <li>
+      <a href="./index.html">
+        <span class="fa fa-home"></span>
+         
+        Program
+      </a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="https://github.com/k-metrics/cabinet">
+        <span class="fa fa-github"></span>
+         
+        GitHub Repository
+      </a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="https://sites.google.com/site/kantometrics/home">
+        <span class="fa fa-google"></span>
+         
+        データ分析勉強会
+      </a>
+    </li>
+  </ul>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Collaboration</h1>
+
+</div>
+
+
+<!-- shared Links -->
+<!-- SQiP and others -->
+<!-- Books -->
+<!-- 共立出版 -->
+<!-- 日科技連出版 -->
+<!-- O'Reilly Japan -->
+<!-- 東京図書 -->
+<!-- Docker -->
+<!-- eBooks -->
+<!-- Net Community -->
+<!-- Style Guide -->
+<!-- Creative Commons -->
+<!-- Others -->
+<!-- R -->
+<!-- R Packages -->
+<!-- RStudio -->
+<!-- Docker -->
+<!-- Cabinet Pages -->
+<p>複数のメンバーでRのコード開発を行う際に問題になりやすいのがパッケージのバージョン違いです。特に開発が活発なパッケージを利用していると自分の環境では動くけど別の人の環境では動かないといったことが出てきます。このような問題を解決し開発環境の統一を簡単に図るツールが<strong><code>packrat</code></strong>パッケージです。RStudioのプロジェクト機能と組み合わせて使うことでプロジェクトごとに異なった環境を整備することが可能になります。<br />
+　</p>
+<div id="必要なパッケージ" class="section level1">
+<h1>必要なパッケージ</h1>
+<p>標準パッケージ以外に以下の追加パッケージが必要です。<br />
+　</p>
+<table>
+<thead>
+<tr class="header">
+<th>Package</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>packrat</td>
+<td>Reproducible dependency management</td>
+</tr>
+</tbody>
+</table>
+<p>　</p>
+</div>
+<div id="packratとは" class="section level1">
+<h1>packratとは</h1>
+<p><strong><code>packrat</code></strong>パッケージはCRAN Task Viewの<a href="https://cran.r-project.org/web/views/ReproducibleResearch.html" target="_blank" title="CRAN Task View">Reproducible Research <i class="fa fa-external-link"></i></a>では補助ツール的な位置づけのパッケージですが、かなり実用的なパッケージです。にも関わらずあまり話題にならないのは<a href="https://www.r-project.org/" target="_blank" title="The R Project">R</a>コミュニティのアーリーアダプターの方々もあまり取り上げられていないからだと思われます。<br />
+　</p>
+<ul>
+<li><a href="http://rstudio.github.io/packrat/walkthrough.html" target="_blank" title="RStudio, Inc.">公式チュートリアル（英語） <i class="fa fa-external-link"></i></a></li>
+<li><a href="d.hatena.ne.jp/dichika/20131220/p1" target="_blank" title="盆栽日記">packratで人類の拡大再生産に貢献する <i class="fa fa-external-link"></i></a></li>
+<li><a href="https://qiita.com/uri/items/5d473a5df91954585e62" target="_blank" title="Qiita">Packratの使い道を考えてみた <i class="fa fa-external-link"></i></a></li>
+</ul>
+<p>　<br />
+<strong><code>packrat</code></strong>パッケージはその説明に“A Dependency Management System for Projects and their R Package Dependencies”とあるようにパッケージの依存関係とバージョンをプロジェクト単位で管理することができます。<br />
+　</p>
+</div>
+<div id="packratの使い方" class="section level1">
+<h1>packratの使い方</h1>
+<p><strong><code>packrat</code></strong>の使い方は<a href="http://rstudio.github.io/packrat/walkthrough.html" target="_blank" title="RStudio, Inc.">公式チュートリアル（英語） <i class="fa fa-external-link"></i></a>にありますが、公式チュートリアルのようにコマンドラインから使うよりもRStudioから利用するのが便利です。<br />
+　</p>
+<div id="事前準備" class="section level2">
+<h2>事前準備</h2>
+<p>packratを使うには当然<strong><code>packrat</code></strong>パッケージが必要です。また、Winodws環境では“Rtools”をデフォルトオプションでインストールしておく必要があります。“Rtools”は<strong><code>packart</code></strong>パッケージが必要なパッケージをインストールする際にソースコードからパッケージをコンパイルする場合があるためです。Windows環境以外ではOSがコンパイラを標準搭載していますので不要です。</p>
+<ol style="list-style-type: decimal">
+<li><strong><code>packrat</code></strong>パッケージをインストールします</li>
+<li>Rtoolsを<strong>デフォルトオプション<sup>1</sup>で</strong>インストールします（Winodws Only）</li>
+</ol>
+<p><sup>1</sup> デフォルトオプションでインストールしないと<strong><code>packrat</code></strong>がパッケージのインストールに失敗します<br />
+　</p>
+</div>
+<div id="packratの初期化" class="section level2">
+<h2>packratの初期化</h2>
+<p>メニューの［Tools］-［Project Options…］または［Packages］ペインの［Packrat］ボタンからPackratの設定画面を開きます。<br />
+　</p>
+<div class="figure">
+<img src="fig/packrat_option.png" />
+
+</div>
+<p>　</p>
+<ol style="list-style-type: decimal">
+<li>“Use packrat with this porject”にチェックを入れます</li>
+<li>詳細オプションが表示されますので環境に応じて設定します
+<ul>
+<li>Automatically snapshot local changes （デフォルトオプション）</li>
+<li>Git ignore packrat library</li>
+<li>Git ignore packart sources</li>
+<li>Use glogal chashe for installed packages</li>
+</ul></li>
+<li>［OK］ボタンをクリックします</li>
+<li>自動的に初期化が始まります</li>
+</ol>
+<p>　</p>
+<p>これらはコンソールから以下のコマンドを実行するのと同等です。<br />
+　</p>
+<pre class="r"><code>packrat::init(&quot;project_dir&quot;)</code></pre>
+<p>　</p>
+<p>初期化が完了したら、あとは必要なパッケージをインストールして環境を構築します。<br />
+　</p>
+</div>
+<div id="packrat情報の共有" class="section level2">
+<h2>packrat情報の共有</h2>
+<p>構築した環境を共有するにはプロジェクト全体を圧縮ファイルにして渡すかGitHubのようなリポジトリを利用します。</p>
+<div id="ファイルで直接渡す場合" class="section level3">
+<h3>ファイルで直接渡す場合</h3>
+<p>ファイルを利用して環境を共有する場合は以下のコマンドを実行してtarballを作成します。tarballにはプロジェクトのディレクトリ内のすべてのファイルがアーカイブされます。<br />
+　</p>
+<pre class="r"><code>packrat::snapshot()
+packrat::bundle(file = &#39;tarball.tar.gz&#39;, overwrite = TRUE)
+    # &#39;tarball.tar.gz&#39;には任意のファイル名を入れてください</code></pre>
+<p>　<br />
+アーカイブファイルを共有先で展開すれば同じ環境が構築できます。<br />
+　</p>
+</div>
+<div id="リポジトリを利用する場合" class="section level3">
+<h3>リポジトリを利用する場合</h3>
+<p>GitHubのようなリポジトリを利用する場合で、パッケージ自体の開発を行っていない時には以下のpackratオプションを有効にしておくことをおすすめします。</p>
+<ul>
+<li>Git ignore packrat library</li>
+<li>Git ignore packart sources</li>
+</ul>
+</div>
+</div>
+<div id="packrat情報の導入" class="section level2">
+<h2>packrat情報の導入</h2>
+<p>プロジェクトをリポジトリを利用して共有している場合は［File］-［New Project…］-［Version Control］から利用しているリポジトリ（Gir or Subversion）を選択してリモートリポジトリをローカルのプロジェクトとしてクローンしてください。クローニングが完了すると自動的に<strong><code>packrat/init.R</code></strong>ファイルが実行されてpackrat環境の構築を始めます。利用しているパッケージ数やPC、通信環境にもよりますが十数分程度かかります。<br />
+　</p>
+</div>
+<div id="packrat情報の更新" class="section level2">
+<h2>packrat情報の更新</h2>
+<p>プロジェクトのパッケージを更新したり追加、削除した場合は<strong><code>packrat::snapshot</code></strong>関数を用いてpackrat情報を更新します。更新された情報は<strong><code>packrat/packrat.lock</code></strong>ファイルに記録されますので、プロジェクトをリポジトリを利用して共有している場合は<strong><code>packrat/packrat.lock</code></strong>ファイルをリポジトリにpushしてください。<br />
+ファイルを利用して共有している場合は前述の<strong><code>packrat::bundele</code></strong>関数を用いてアーカイブファイルを作成してください。<br />
+　</p>
+<div id="packat情報の反映" class="section level3">
+<h3>packat情報の反映</h3>
+<p>プロジェクトをリポジトリを利用して共有している場合は更新された<strong><code>packrat/packrat.lock</code></strong>ファイルをpullした後に以下のコマンドを実行してパッケージライブラリを更新してください。<br />
+　</p>
+<pre class="r"><code>packrat::restore()</code></pre>
+<hr />
+<!-- Footer -->
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-03-31 17:44(JST)]</p>
+</div>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
