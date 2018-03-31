@@ -1,5 +1,5 @@
 ---
-title: "Collaboration"
+title: "Packrat"
 author-meta: "k-metrics"
 output: 
   html_document:  
@@ -9,7 +9,7 @@ output:
 ---
 
 <!-- shared Links -->
-```{r collaboration, child="../shared/links.Rmd", include=FALSE}
+```{r packrat, child="../shared/links.Rmd", include=FALSE}
 ```
 
 ```{r setup, include=FALSE}
@@ -47,7 +47,7 @@ packrat | Reproducible dependency management
 　  
 
 # packratの使い方
-**`packrat`**の使い方は[公式チュートリアル（英語） <i class="fa fa-external-link"></i>](http://rstudio.github.io/packrat/walkthrough.html){target="_blank" title="RStudio, Inc."}にありますが、公式チュートリアルのようにコマンドラインから使うよりもRStudioから利用するのが便利です。  
+**`packrat`**の使い方は[公式チュートリアル（英語） <i class="fa fa-external-link"></i>](http://rstudio.github.io/packrat/walkthrough.html){target="_blank" title="RStudio, Inc."}にありますが、公式チュートリアルのようにコマンドラインから使うよりもRStudioのインタフェースから利用するのが便利です。  
 　  
 
 ## 事前準備
@@ -105,7 +105,7 @@ packrat::bundle(file = 'tarball.tar.gz', overwrite = TRUE)
 ```
 
 　  
-作成されたアーカイブファイルを共有先で展開すれば同じ環境が構築できます。  
+作成されたアーカイブファイルを共有先で展開し、RStudioの［File］-［New Project...］-［Version Control］から展開先のディレクトリをプロジェクトディレクトりとして指定してください。プロジェクトが開かれると自動的にフォルダ内の**`packrat/init.R`**が実行されpackrat環境が構築されます。利用しているパッケージ数やPC、通信環境にもよりますが十数分程度かかります。  
 　  
 
 ### リポジトリを利用する場合
@@ -116,29 +116,20 @@ packrat::bundle(file = 'tarball.tar.gz', overwrite = TRUE)
   * Git ignore packart sources
 
 なお、パッケージ自体の開発を行っている場合は、これらのオプションを有効にするのはおすゝめできません。  
-　  
-
-## プロジェクトの作成
-プロジェクトをリポジトリを利用して共有している場合は［File］-［New Project...］-［Version Control］から利用しているリポジトリ（Gir or Subversion）を選択してリモートリポジトリをローカルのプロジェクトとしてクローンしてください。クローニングが完了すると自動的に**`packrat/init.R`**ファイルが実行されてpackrat環境の構築を始めます。利用しているパッケージ数やPC、通信環境にもよりますが十数分程度かかります。  
+リポジトリは［File］-［New Project...］-［Version Control］から利用しているリポジトリ（Gir or Subversion）を選択してリモートリポジトリをローカルのプロジェクトとしてクローンしてください。クローニングが完了すると自動的に**`packrat/init.R`**ファイルが実行されてpackrat環境の構築されます。利用しているパッケージ数やPC、通信環境にもよりますが十数分程度かかります。  
 　  
 
 ## packrat情報の更新
-プロジェクトのパッケージを更新したり追加、削除した場合は**`packrat::snapshot`**関数を用いてpackrat情報を更新します。更新された情報は**`packrat/packrat.lock`**ファイルに記録されますので、プロジェクトをリポジトリを利用して共有している場合は**`packrat/packrat.lock`**ファイルをリポジトリにpushしてください。  
-ファイルを利用して共有している場合は前述の**`packrat::bundele`**関数を用いてアーカイブファイルを作成してください。  
-　  
-
-### packat情報の反映
-プロジェクトをリポジトリを利用して共有している場合は更新された**`packrat/packrat.lock`**ファイルをpullした後に以下のコマンドを実行してパッケージライブラリを更新してください。  
+プロジェクトのパッケージを更新したり追加、削除した場合は**`packrat::snapshot`**関数を用いてpackrat情報を更新します。更新された情報は**`packrat/packrat.lock`**ファイルに記録されますので、**`packrat/packrat.lock`**ファイルを更新してください。**`packrat/packrat.lock`**が更新されたらRStudioを再起動するか以下のコマンドを実行してください。  
 　  
 
 ```{r, eval=FALSE}
 packrat::restore()
 ```
 
+　  
 
 ---
 
-<!-- Footer -->
-
-```{r child="../shared/footer.Rmd"}
+```{r footer, child="../shared/footer.Rmd"}
 ```

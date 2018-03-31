@@ -12,7 +12,7 @@
 <meta name="author" content="k-metrics" />
 
 
-<title>Collaboration</title>
+<title>Packrat</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -356,7 +356,9 @@ div.tocify {
     <li>
       <a href="./basics_ggplot2.html">ggplot2 Basics</a>
     </li>
-    <li class="dropdown-header">Collaboration</li>
+    <li>
+      <a href="./basics_packrat.html">Collaboration work</a>
+    </li>
   </ul>
 </li>
 <li class="dropdown">
@@ -439,7 +441,7 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Collaboration</h1>
+<h1 class="title toc-ignore">Packrat</h1>
 
 </div>
 
@@ -499,7 +501,7 @@ div.tocify {
 </div>
 <div id="packratの使い方" class="section level1">
 <h1>packratの使い方</h1>
-<p><strong><code>packrat</code></strong>の使い方は<a href="http://rstudio.github.io/packrat/walkthrough.html" target="_blank" title="RStudio, Inc.">公式チュートリアル（英語） <i class="fa fa-external-link"></i></a>にありますが、公式チュートリアルのようにコマンドラインから使うよりもRStudioから利用するのが便利です。<br />
+<p><strong><code>packrat</code></strong>の使い方は<a href="http://rstudio.github.io/packrat/walkthrough.html" target="_blank" title="RStudio, Inc.">公式チュートリアル（英語） <i class="fa fa-external-link"></i></a>にありますが、公式チュートリアルのようにコマンドラインから使うよりもRStudioのインタフェースから利用するのが便利です。<br />
 　</p>
 <div id="事前準備" class="section level2">
 <h2>事前準備</h2>
@@ -537,51 +539,45 @@ div.tocify {
 　</p>
 <pre class="r"><code>packrat::init(&quot;project_dir&quot;)</code></pre>
 <p>　</p>
-<p>初期化が完了したら、あとは必要なパッケージをインストールして環境を構築します。<br />
+<p>初期化が完了しましたら、プロジェクト（packrat情報）を共有します。<br />
 　</p>
 </div>
-<div id="packrat情報の共有" class="section level2">
-<h2>packrat情報の共有</h2>
-<p>構築した環境を共有するにはプロジェクト全体を圧縮ファイルにして渡すかGitHubのようなリポジトリを利用します。</p>
-<div id="ファイルで直接渡す場合" class="section level3">
-<h3>ファイルで直接渡す場合</h3>
+<div id="プロジェクトの共有" class="section level2">
+<h2>プロジェクトの共有</h2>
+<p>構築した環境を共有するにはプロジェクト全体を圧縮ファイルにして共有相手に渡すかGitHubのようなリポジトリを利用して共有します。<br />
+　</p>
+<div id="ファイルで渡す場合" class="section level3">
+<h3>ファイルで渡す場合</h3>
 <p>ファイルを利用して環境を共有する場合は以下のコマンドを実行してtarballを作成します。tarballにはプロジェクトのディレクトリ内のすべてのファイルがアーカイブされます。<br />
 　</p>
 <pre class="r"><code>packrat::snapshot()
 packrat::bundle(file = &#39;tarball.tar.gz&#39;, overwrite = TRUE)
     # &#39;tarball.tar.gz&#39;には任意のファイル名を入れてください</code></pre>
 <p>　<br />
-アーカイブファイルを共有先で展開すれば同じ環境が構築できます。<br />
+作成されたアーカイブファイルを共有先で展開し、RStudioの［File］-［New Project…］-［Version Control］から展開先のディレクトリをプロジェクトディレクトりとして指定してください。プロジェクトが開かれると自動的にフォルダ内の<strong><code>packrat/init.R</code></strong>が実行されpackrat環境が構築されます。利用しているパッケージ数やPC、通信環境にもよりますが十数分程度かかります。<br />
 　</p>
 </div>
 <div id="リポジトリを利用する場合" class="section level3">
 <h3>リポジトリを利用する場合</h3>
-<p>GitHubのようなリポジトリを利用する場合で、パッケージ自体の開発を行っていない時には以下のpackratオプションを有効にしておくことをおすすめします。</p>
+<p>アーカイブファイルを利用した場合、更新の都度、ファイルを再作成する必要がありますが、GitHubのようなリポジトリを利用することでリアルタイムの共有が可能になります。<br />
+このようなリポジトリを利用してプロジェクトを共有する場合には以下のオプションを有効にしておくとリポジトリを軽くできます。</p>
 <ul>
 <li>Git ignore packrat library</li>
 <li>Git ignore packart sources</li>
 </ul>
-</div>
-</div>
-<div id="packrat情報の導入" class="section level2">
-<h2>packrat情報の導入</h2>
-<p>プロジェクトをリポジトリを利用して共有している場合は［File］-［New Project…］-［Version Control］から利用しているリポジトリ（Gir or Subversion）を選択してリモートリポジトリをローカルのプロジェクトとしてクローンしてください。クローニングが完了すると自動的に<strong><code>packrat/init.R</code></strong>ファイルが実行されてpackrat環境の構築を始めます。利用しているパッケージ数やPC、通信環境にもよりますが十数分程度かかります。<br />
+<p>なお、パッケージ自体の開発を行っている場合は、これらのオプションを有効にするのはおすゝめできません。<br />
+リポジトリは［File］-［New Project…］-［Version Control］から利用しているリポジトリ（Gir or Subversion）を選択してリモートリポジトリをローカルのプロジェクトとしてクローンしてください。クローニングが完了すると自動的に<strong><code>packrat/init.R</code></strong>ファイルが実行されてpackrat環境の構築されます。利用しているパッケージ数やPC、通信環境にもよりますが十数分程度かかります。<br />
 　</p>
+</div>
 </div>
 <div id="packrat情報の更新" class="section level2">
 <h2>packrat情報の更新</h2>
-<p>プロジェクトのパッケージを更新したり追加、削除した場合は<strong><code>packrat::snapshot</code></strong>関数を用いてpackrat情報を更新します。更新された情報は<strong><code>packrat/packrat.lock</code></strong>ファイルに記録されますので、プロジェクトをリポジトリを利用して共有している場合は<strong><code>packrat/packrat.lock</code></strong>ファイルをリポジトリにpushしてください。<br />
-ファイルを利用して共有している場合は前述の<strong><code>packrat::bundele</code></strong>関数を用いてアーカイブファイルを作成してください。<br />
-　</p>
-<div id="packat情報の反映" class="section level3">
-<h3>packat情報の反映</h3>
-<p>プロジェクトをリポジトリを利用して共有している場合は更新された<strong><code>packrat/packrat.lock</code></strong>ファイルをpullした後に以下のコマンドを実行してパッケージライブラリを更新してください。<br />
+<p>プロジェクトのパッケージを更新したり追加、削除した場合は<strong><code>packrat::snapshot</code></strong>関数を用いてpackrat情報を更新します。更新された情報は<strong><code>packrat/packrat.lock</code></strong>ファイルに記録されますので、<strong><code>packrat/packrat.lock</code></strong>ファイルを更新してください。<strong><code>packrat/packrat.lock</code></strong>が更新されたらRStudioを再起動するか以下のコマンドを実行してください。<br />
 　</p>
 <pre class="r"><code>packrat::restore()</code></pre>
+<p>　</p>
 <hr />
-<!-- Footer -->
-<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-03-31 17:44(JST)]</p>
-</div>
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-03-31 20:52(JST)]</p>
 </div>
 </div>
 
