@@ -9,9 +9,10 @@
 <meta name="generator" content="pandoc" />
 
 
+<meta name="author" content="k-metrics" />
 
 
-<title>環境作成と動作確認</title>
+<title>Packrat</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -23,7 +24,6 @@
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
-<script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 <link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
@@ -167,14 +167,6 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
-<style type="text/css">
-.code-folding-btn { margin-bottom: 4px; }
-</style>
-<script>
-$(document).ready(function () {
-  window.initializeCodeFolding("show" === "show");
-});
-</script>
 
 
 
@@ -447,22 +439,14 @@ div.tocify {
 
 <div class="fluid-row" id="header">
 
-<div class="btn-group pull-right">
-<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
-<ul class="dropdown-menu" style="min-width: 50px;">
-<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
-<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
-</ul>
-</div>
 
 
-
-<h1 class="title toc-ignore">環境作成と動作確認</h1>
+<h1 class="title toc-ignore">Packrat</h1>
 
 </div>
 
 
-<!-- Include shared Links -->
+<!-- shared Links -->
 <!-- SQiP and others -->
 <!-- Books -->
 <!-- 共立出版 -->
@@ -480,63 +464,159 @@ div.tocify {
 <!-- RStudio -->
 <!-- Docker -->
 <!-- Cabinet Pages -->
-<p>本ページはデータ分析勉強会で行うチュートリアルファイルを動かすために必要なパッケージのインストールとインストール後の動作確認方法について記述しています。<br />
+<p>複数のメンバーでRのコード開発を行う際に問題になりやすいのがパッケージのバージョン違いです。特に開発が活発なパッケージを利用していると自分の環境では動くけど別の人の環境では動かないといったことが出てきます。このような問題を解決し開発環境の統一を簡単に図るツールが<strong><code>packrat</code></strong>パッケージです。RStudioのプロジェクト機能と組み合わせて使うことでプロジェクトごとに異なった環境を整備することが可能になります。<br />
 　</p>
-<div id="パッケージのインストール" class="section level1">
-<h1>パッケージのインストール</h1>
-<p>チュートリアルではRStudioと以下のパッケージが必要となりますので事前に<a href="./install_dtp.html">RStudioのインストール</a>ならびに以下を参考に<a href="https://rstudio.github.io/DT/" target="_blank" title="An R interface to the DataTables library">DT <i class="fa fa-external-link"></i></a>, <a href="https://yihui.name/formatr/" target="_blank" title="Format R code automatically">formatR <i class="fa fa-external-link"></i></a>, <a href="https://yihui.name/knitr/" target="_blank" title="Elegant, flexible and fast dynamic report generation with R">knitr <i class="fa fa-external-link"></i></a>, <a href="https://rstudio.github.io/learnr/" target="_blank" title="Interactive Tutorials for R">learnr <i class="fa fa-external-link"></i></a>, <a href="https://cran.r-project.org/web/packages/rmarkdown/index.html" target="_blank" title="Dynamic Documents for R">rmarkdown <i class="fa fa-external-link"></i></a>, <a href="https://shiny.rstudio.com/" target="_blank" title="Shiny by RStudio">shiny <i class="fa fa-external-link"></i></a>, <a href="https://cran.r-project.org/web/packages/tidyverse/index.html" target="_blank" title="Easily Install and Load the &#39;Tidyverse&#39;">tidyverse <i class="fa fa-external-link"></i></a>パッケージをインストールして下さい。なお、バージョン情報等については<a href="../basics_index.html">こちら</a>で確認して下さい。<br />
+<div id="必要なパッケージ" class="section level1">
+<h1>必要なパッケージ</h1>
+<p>標準パッケージ以外に以下の追加パッケージが必要です。<br />
 　</p>
-<div id="r-guiからのインストール" class="section level2">
-<h2>R GUIからのインストール</h2>
-<p>R（R GUI）のメニューからインストールする場合は<a href="./install_pkg.html">パッケージのインストール</a>を参照して個々のパッケージを順に指定してインストールして下さい。<br />
-　</p>
-</div>
-<div id="rstudioからのインストール" class="section level2">
-<h2>RStudioからのインストール</h2>
-<p>RStudioからインストールする場合は［Packages］パネルにある［Install］ボタンをクリックして表示されるダイアログの［Packages］欄に以下のように入力して［Install］ボタンをクリックします。<br />
-<img src="fig/install_pkg_rstudio_02.png" alt="Install Packages RStudio" /></p>
+<table>
+<thead>
+<tr class="header">
+<th>Package</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>packrat</td>
+<td>Reproducible dependency management</td>
+</tr>
+</tbody>
+</table>
 <p>　</p>
 </div>
-<div id="r-consoleからのインストール" class="section level2">
-<h2>R Consoleからのインストール</h2>
-<p>R GUI, R Commander, RStudioのコンソールからスクリプトを用いて直接インストールする場合は以下のコマンドを実行して下さい。</p>
-<pre class="r"><code>chooseCRANmirror()
-pkg_lst &lt;- c(&quot;DT&quot;, &quot;formatR&quot;, &quot;knitr&quot;, &quot;learnr&quot;, &quot;rmarkdown&quot;, &quot;shiny&quot;, &quot;tidyverse&quot;)
-install.packages(pkg_lst, dependencies = TRUE)</code></pre>
+<div id="packratとは" class="section level1">
+<h1>packratとは</h1>
+<p><strong><code>packrat</code></strong>パッケージはCRAN Task Viewの<a href="https://cran.r-project.org/web/views/ReproducibleResearch.html" target="_blank" title="CRAN Task View">Reproducible Research <i class="fa fa-external-link"></i></a>では補助ツール的な位置づけのパッケージですが、かなり実用的なパッケージです。にも関わらずあまり話題にならないのは<a href="https://www.r-project.org/" target="_blank" title="The R Project">R</a>コミュニティのアーリーアダプターの方々もあまり取り上げられていないからだと思われます。<br />
+　</p>
+<ul>
+<li><a href="http://rstudio.github.io/packrat/walkthrough.html" target="_blank" title="RStudio, Inc.">公式チュートリアル（英語） <i class="fa fa-external-link"></i></a></li>
+<li><a href="http://d.hatena.ne.jp/dichika/20131220/p1" target="_blank" title="盆栽日記">packratで人類の拡大再生産に貢献する <i class="fa fa-external-link"></i></a></li>
+<li><a href="https://qiita.com/uri/items/5d473a5df91954585e62" target="_blank" title="Qiita">Packratの使い道を考えてみた <i class="fa fa-external-link"></i></a></li>
+</ul>
+<p>　<br />
+<strong><code>packrat</code></strong>パッケージはその説明に“A Dependency Management System for Projects and their R Package Dependencies”とあるようにパッケージの依存関係とバージョンをプロジェクト単位で管理することができます。<br />
+　</p>
+</div>
+<div id="packratの使い方" class="section level1">
+<h1>packratの使い方</h1>
+<p><strong><code>packrat</code></strong>の使い方は<a href="http://rstudio.github.io/packrat/walkthrough.html" target="_blank" title="RStudio, Inc.">公式チュートリアル（英語） <i class="fa fa-external-link"></i></a>にありますが、公式チュートリアルのようにコマンドラインから使うよりもRStudioのインタフェースから利用するのが便利です。<br />
+　</p>
+<div id="事前準備" class="section level2">
+<h2>事前準備</h2>
+<p>packratを使うには当然<strong><code>packrat</code></strong>パッケージが必要です。また、Winodws環境では“Rtools”をデフォルトオプションでインストールしておく必要があります。“Rtools”は<strong><code>packart</code></strong>パッケージが必要なパッケージをインストールする際にソースコードからパッケージをコンパイルする場合があるためです。Windows環境以外ではOSがコンパイラを標準搭載していますので不要です。</p>
+<ol style="list-style-type: decimal">
+<li><strong><code>packrat</code></strong>パッケージをインストールします</li>
+<li>Rtoolsを<strong>デフォルトオプション<sup>1</sup>で</strong>インストールします（Winodws Only）</li>
+</ol>
+<p><sup>1</sup> デフォルトオプションでインストールしないと<strong><code>packrat</code></strong>がパッケージのインストールに失敗します<br />
+　</p>
+</div>
+<div id="packratの初期化" class="section level2">
+<h2>packratの初期化</h2>
+<p>メニューの［Tools］-［Project Options…］または［Packages］ペインの［Packrat］ボタンからPackratの設定画面を開きます。<br />
+　</p>
+<div class="figure">
+<img src="fig/packrat_option.png" />
+
+</div>
+<p>　</p>
+<ol style="list-style-type: decimal">
+<li>“Use packrat with this porject”にチェックを入れます</li>
+<li>詳細オプションが表示されますので環境に応じて設定します
+<ul>
+<li>Automatically snapshot local changes （デフォルトオプション）</li>
+<li>Git ignore packrat library</li>
+<li>Git ignore packart sources</li>
+<li>Use glogal chashe for installed packages</li>
+</ul></li>
+<li>［OK］ボタンをクリックします</li>
+<li>自動的に初期化が始まります</li>
+</ol>
+<p>　</p>
+<p>これらはコンソールから以下のコマンドを実行するのと同等です。<br />
+　</p>
+<pre class="r"><code>&gt; packrat::init(&quot;project_dir&quot;)</code></pre>
+<p>　</p>
+<p>初期化が完了しましたら、プロジェクト（packrat情報）を共有します。<br />
+　</p>
+</div>
+<div id="プロジェクトの共有" class="section level2">
+<h2>プロジェクトの共有</h2>
+<p>構築した環境を共有するにはプロジェクト全体を圧縮ファイルにして共有相手に渡すかGitHubのようなリポジトリを利用して共有します。<br />
+　</p>
+<div id="ファイルで渡す場合" class="section level3">
+<h3>ファイルで渡す場合</h3>
+<p>ファイルを利用して環境を共有する場合は以下のコマンドを実行してtarballを作成します。tarballにはプロジェクトのディレクトリ内のすべてのファイルがアーカイブされます。<br />
+　</p>
+<pre class="r"><code>&gt; packrat::snapshot()
+&gt; packrat::bundle(file = &#39;tarball.tar.gz&#39;, overwrite = TRUE)
+    # &#39;tarball.tar.gz&#39;には任意のファイル名を入れてください</code></pre>
+<p>　<br />
+作成されたアーカイブファイルを共有先で展開し、RStudioの［File］-［New Project…］-［Version Control］から展開先のディレクトリをプロジェクトディレクトりとして指定してください。プロジェクトが開かれると自動的にフォルダ内の<strong><code>packrat/init.R</code></strong>が実行されpackrat環境が構築されます。利用しているパッケージ数やPC、通信環境にもよりますが十数分程度かかります。<br />
+　</p>
+</div>
+<div id="リポジトリを利用する場合" class="section level3">
+<h3>リポジトリを利用する場合</h3>
+<p>アーカイブファイルを利用した場合、更新の都度、ファイルを再作成する必要がありますが、GitHubのようなリポジトリを利用することでリアルタイムの共有が可能になります。<br />
+このようなリポジトリを利用してプロジェクトを共有する場合には以下のオプションを有効にしておくとリポジトリを軽くできます。</p>
+<ul>
+<li>Git ignore packrat library</li>
+<li>Git ignore packart sources</li>
+</ul>
+<p>なお、パッケージ自体の開発を行っている場合は、これらのオプションを有効にするのはおすゝめできません。<br />
+リポジトリは［File］-［New Project…］-［Version Control］から利用しているリポジトリ（Gir or Subversion）を選択してリモートリポジトリをローカルのプロジェクトとしてクローンしてください。クローニングが完了すると自動的に<strong><code>packrat/init.R</code></strong>ファイルが実行されてpackrat環境の構築されます。利用しているパッケージ数やPC、通信環境にもよりますが十数分程度かかります。<br />
+　</p>
+</div>
+</div>
+<div id="packrat情報の更新" class="section level2">
+<h2>packrat情報の更新</h2>
+<p>プロジェクトのパッケージを更新したり追加、削除した場合は<strong><code>packrat::snapshot</code></strong>関数を用いてpackrat情報を更新します。更新された情報は<strong><code>packrat/packrat.lock</code></strong>ファイルに記録されますので、<strong><code>packrat/packrat.lock</code></strong>ファイルを更新してください。<strong><code>packrat/packrat.lock</code></strong>が更新されたらRStudioを再起動するか以下のコマンドを実行してください。<br />
+　</p>
+<pre class="r"><code>&gt; packrat::restore()</code></pre>
 <p>　</p>
 </div>
-</div>
-<div id="rstudioの動作確認" class="section level1">
-<h1>RStudioの動作確認</h1>
-<p>チュートリアルに必要なパッケージをインストールしましたら以下の手順でRStudioを用いて動作確認を行います。<br />
+<div id="packrat情報の整理" class="section level2">
+<h2>packrat情報の整理</h2>
+<p>パッケージ情報を確認するには以下のように<strong><code>packrat::status</code></strong>関数をコンソールから実行します。<br />
 　</p>
-<div id="新規ファイルの作成" class="section level2">
-<h2>新規ファイルの作成</h2>
-<p>RStudioの左上のアイコンから［R Markdown…］をクリックするか麺ヒューから［File］-［New File］-［R Markdown…］を選択します。<br />
-<img src="fig/opchk_rstudio_01.png" alt="New File" /> 　</p>
-</div>
-<div id="テンプレートの選択" class="section level2">
-<h2>テンプレートの選択</h2>
-<p>テンプレート選択画面が開きますので左側のリストから［From Template］を選択し右側に表示されたテンプレート一覧から［Interactive Tutorial］を選択し［OK］ボタンをクリックします。<br />
-<img src="fig/opchk_rstudio_02.png" alt="Template" /> 　</p>
-</div>
-<div id="ドキュメントのレンダリング" class="section level2">
-<h2>ドキュメントのレンダリング</h2>
-<p>テンプレートが開きましたら［Run Document］ボタンをクリックして下さい。R Markdownファイルのレンダリングが実行されます。<br />
-<img src="fig/opchk_rstudio_03.png" alt="Run Document" /> 　</p>
-</div>
-<div id="ドキュメントの実行" class="section level2">
-<h2>ドキュメントの実行</h2>
-<p>レンダリングが終了し［Viewer］パネルに下図のような表示が出れば動作確認終了です。<br />
-<img src="fig/opchk_rstudio_04.png" alt="Tutorial" /> 　</p>
-</div>
-</div>
-<div id="困った場合は" class="section level1">
-<h1>困った場合は</h1>
-<p>［Console］パネルまたは［R Markdown］パネルにエラーメッセージが表示されていますので、それらを参考に不足しているパッケージをインストールして下さい。特にWindows環境ではUACが原因でパッケージのインストールができない場合もありますので、管理者権限でアプリケーションを立ち上げから実行してください。</p>
+<pre class="r"><code>&gt; packrat::status()
+
+The following packages are tracked by packrat, but are no longer available in the local library nor present in your code:
+               _       
+    clipr        0.4.0 
+    clisymbols   1.2.0 
+    desc         1.1.1 
+    enc          0.2.0 
+    gh           1.0.1 
+    git2r        0.21.0
+    ini          0.3.0 
+    rematch2     2.0.1 
+    styler       1.0.1 
+    usethis      1.3.0 
+
+You can call packrat::snapshot() to remove these packages from the lockfile, or if you intend to use these packages, use packrat::restore() to restore them to your private library.</code></pre>
+<p>利用していないパッケージが存在する場合、<strong><code>packrat::snapshot</code></strong>関数でpackrat環境から削除することで整理ができます。 　</p>
+<pre class="r"><code>&gt; packrat::snapshot()
+
+Removing these packages from packrat:
+               _       
+    clipr        0.4.0 
+    clisymbols   1.2.0 
+    desc         1.1.1 
+    enc          0.2.0 
+    gh           1.0.1 
+    git2r        0.21.0
+    ini          0.3.0 
+    rematch2     2.0.1 
+    styler       1.0.1 
+    usethis      1.3.0 
+
+Do you want to continue? [Y/n]: </code></pre>
 <hr />
-<!-- Include Footer -->
-<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-03-31 21:03(JST)]</p>
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-03-31 21:55(JST)]</p>
+</div>
 </div>
 
 
