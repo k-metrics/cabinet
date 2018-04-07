@@ -34,9 +34,9 @@ UbuntuはWindowsに比べると軽快に動作するように感じますが、�
 
 項目  | 公式推奨環境               | 参考（おすゝめ環境）
 ----- | -------------------------- | ----------------------------
-CPU   | 2GHz dual core or better   | 4 core (dual core 2 thread)
-RAM   | 2GB                        | 8GB以上
-Disk  | 25GB of free space or more | 64GB以上
+CPU   | 2GHz dual core or better   | Core iシリーズ（dual core or better）
+RAM   | 2GB                        | 8GB以上の実装
+Disk  | 25GB of free space or more | 64GB以上の空き
 Media | DVD drive or USB port      | 公式推奨環境に同じ
 
 また、GUIであるUnityの評判はあまり良くないようです（個人的には、そんなに使いにくさを感じませんが）。このあたりは好みですので使い勝手が良くないと感じる場合はUbuntuの公式バリエーションである[Ubuntu flavors <i class="fa fa-external-link"></i>](https://www.ubuntu.com/download/ubuntu-flavours){target="_blank" title="Ubuntu flavours"}から選択するのも手です。  
@@ -291,13 +291,15 @@ R CMD INSTALL --configure-vars='INCLUDE_DIR=... LIB_DIR=...'
 　  
 
 # Git
-RStudioではVCS(Version Control System)としてGitまたはSVCが利用できます。VCSを用いるとソースの版管理ができますので、VCSの利用をおすゝめします。VCSとしはローカル管理だけでなくリモート管理が可能になるGitHubやGitHub Pagesの利用を考慮して現在の主流とも言えるGitを選択するのがベターです。  
+RStudioではVCS(Version Control System)としてGitまたはSVCが利用できます。VCSを用いるとソースの版管理ができますので、VCSの利用をおすゝめします。VCSはGitHubやGitHub Pagesの利用を考慮して現在の主流とも言えるGitを選択するのがベターです。  
 
-［Ctrl+Alt+t］を押下して起動させたターミナル（端末）から以下のコマンドを実行してGitをインストールします。  
+［Ctrl+Alt+t］を押下して起動させたターミナル（端末）から以下のコマンドを実行してGitをインストールします。Ubuntu公式リポジトリのGitはバージョンが古くstashなどの一部機能が利用できませんので、ppaから最新版をインストールします。  
 
 ```
+sudo add-apt-repository ppa:git-core/ppa
 sudo apt-get update
 sudo apt-get install git
+sudo git --version
 ```
 
 　  
@@ -315,30 +317,26 @@ git config --global user.email "hoge@hoge.com"
 なお、Gitではファイル名に日本語を利用する場合には文字化け対策が必要ですが、RStudioを使う場合は日本語ファイル名はご法度ですので日本語ファイル名の文字化け対策は必須ではありませんので、ここでは省略します。  
 　  
 
-## Git Client
-Gitはコマンドライン操作になりますので、GUI操作できるクライアントソフトウェアをインストールすることをおすゝめします。RStudioはGit GUIクライアントとして使えますが、細かいところまで操作が可能なGit GUIクライアントも準備しておくほうが良いでしょう。Ubuntu環境では
+## Git GUI Client
+Gitはコマンドライン操作になりますので、GUIで操作できるソフトウェアをインストールすることをおすゝめします。RStudioはGitの基本的な部分はGUI操作できますが細かいところまで操作が可能なGit GUIクライアントを準備しておくことをおすゝめします。  
+MacやWindows環境では[SourceTree <i class="fa fa-external-link"></i>](https://www.sourcetreeapp.com/){target="_blank" title="Free Git GUI for Mac and Windows"}が有名ですがUbuntu環境では利用できませんので、以下から好みに応じて選択してください。Ubuntu環境以外にMacやWindows環境を利用する場合はGUI環境を統一しておくことをおすゝめします。  
 
-* GitKraken
-* SmartGit
+Git GUI                  | Ubuntu | Mac | Windows | Memo
+-------------------------|:---:|:---:|:---:|---------
+[GitKraken <i class="fa fa-external-link"></i>][GitKraken]   | Yes | Yes | Yes | Free版は機能制限あり
+[SmartGit <i class="fa fa-external-link"></i>][SmartGit]     | Yes | Yes | Yes | Free版でも機能制限なし^1^
+[GitEye <i class="fa fa-external-link"></i>][GitEye]         | Yes | Yes | Yes | 
+[SourceTree <i class="fa fa-external-link"></i>][SourceTree] | No  | Yes | Yes | 日本語版あり
 
-のどちらかが良いかと思います。GitKrakenはフリーのGit GUIクライアントで比較的シンプルなインターフェースが特徴です。基本的な操作に絞られており履歴を追いかけやすいです。一方、SmartGitは非商用利用に限りフリーですが、一通りの操作ができるようになっており、ソースの比較もしたい場合は、こちらの方がおすゝめです。  
+^1^ : 非商用利用の場合  
 　  
 
-### GitKraken
-GitKrakenは開発元の[ダウンロードページ <i class="fa fa-external-link"></i>](https://www.gitkraken.com/download){target="_blank" title="GitKraken"}からDebianパッケージ（Linux(.dev)）をダウンロードして、Ubuntu Softwareからインストールします。  
-　  
+上記以外のGUIクライアントは[こちら <i class="fa fa-external-link"></i>](https://git-scm.com/downloads/guis/){target="_blank" title="GUI Clients"}を参照してください。  
+　  　  
 
 ### SmartGit
-SmartGitはJavaベースのソフトウェアですので、後述のJava環境（JREまたはJDK）を別途インストールする必要があります。  
-
-開発元の[ダウンロードページ <i class="fa fa-external-link"></i>](http://www.syntevo.com/smartgit/download){target="_blank" title="SmartGit"}からDebianパッケージ(deb)をダウンロードして、Ubuntu Softwareからインストールするか以下のコマンドを実行してPPA(Personal Package Archives、非公式リポジトリ)からインストールします。  
-
-```
-sudo add-apt-repository ppa:eugenesan/ppa
-sudo apt-get update
-
-sudo apt-get install smartgit
-```
+SmartGitはJavaベースのソフトウェアですので、後述のJava環境（JREまたはJDK）を別途インストールする必要があります。GUIクライアント本体は開発元の[ダウンロードページ <i class="fa fa-external-link"></i>](http://www.syntevo.com/smartgit/download){target="_blank" title="SmartGit"}からDebianパッケージ(deb)をダウンロードして、Ubuntu Softwareからインストールしてください。  
+　  
 
 ## Java Runtime
 SmartGitを利用する場合はJava環境が必要ですので、以下の手順にしたがってインストールします。  
@@ -514,3 +512,8 @@ Dropboxのインストールは任意ですがUbuntuで利用できる数少な�
 <!-- Include Footer -->
 ```{r, child="../shared/footer.Rmd", include=FALSE}
 ```
+
+[GitKraken]: https://www.gitkraken.com/ {target="_blank" title="he legendary Git GUI client for Windows, Mac and Linux"}
+[SmartGit]: https://www.syntevo.com/smartgit/ {target="_blank" title="SmartGit"}
+[GitEye]: https://www.collab.net/downloads/giteye {target="_blank" title="CollabNet GitEye"}
+[SourceTree]: https://www.sourcetreeapp.com/ {target="_blank" title="Simplicity and power in a beautiful Git GUI"}

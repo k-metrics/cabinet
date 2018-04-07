@@ -330,7 +330,9 @@ div.tocify {
     <li>
       <a href="./env_install_tex.html">Install TeX</a>
     </li>
-    <li class="dropdown-header">Install Git/SVN</li>
+    <li>
+      <a href="./env_install_git.html">Install Git</a>
+    </li>
   </ul>
 </li>
 <li class="dropdown">
@@ -515,17 +517,17 @@ Linuxには様々なディストリビューションと呼ばれる配布形態
 <tr class="odd">
 <td>CPU</td>
 <td>2GHz dual core or better</td>
-<td>4 core (dual core 2 thread)</td>
+<td>Core iシリーズ（dual core or better）</td>
 </tr>
 <tr class="even">
 <td>RAM</td>
 <td>2GB</td>
-<td>8GB以上</td>
+<td>8GB以上の実装</td>
 </tr>
 <tr class="odd">
 <td>Disk</td>
 <td>25GB of free space or more</td>
-<td>64GB以上</td>
+<td>64GB以上の空き</td>
 </tr>
 <tr class="even">
 <td>Media</td>
@@ -682,12 +684,12 @@ sudo apt-get install libjpeg62</code></pre>
 <h2>RStudioのインストール</h2>
 <p>ダウンロードしたRStudioのインストーラを右クリックして［ソフトウェアのインストールで開く］を選択します。</p>
 <div class="figure">
-<img src="fig/install_rstudio.png" alt="RStudioのインストール" />
+<img src="./fig/install_rstudio.png" alt="RStudioのインストール" />
 <p class="caption">RStudioのインストール</p>
 </div>
 <p>Ubuntu Softwareのウィンドウが開いてインストールするかどうか確認してきますので、［インストール］ボタンをクリックしてインストールを行います。</p>
 <div class="figure">
-<img src="fig/installer.png" alt="Ubuntu Software" />
+<img src="./fig/installer.png" alt="Ubuntu Software" />
 <p class="caption">Ubuntu Software</p>
 </div>
 <p>　</p>
@@ -749,10 +751,12 @@ R CMD INSTALL --configure-vars=&#39;INCLUDE_DIR=... LIB_DIR=...&#39;
 </div>
 <div id="git" class="section level1">
 <h1>Git</h1>
-<p>RStudioではVCS(Version Control System)としてGitまたはSVCが利用できます。VCSを用いるとソースの版管理ができますので、VCSの利用をおすゝめします。VCSとしはローカル管理だけでなくリモート管理が可能になるGitHubやGitHub Pagesの利用を考慮して現在の主流とも言えるGitを選択するのがベターです。</p>
-<p>［Ctrl+Alt+t］を押下して起動させたターミナル（端末）から以下のコマンドを実行してGitをインストールします。</p>
-<pre><code>sudo apt-get update
-sudo apt-get install git</code></pre>
+<p>RStudioではVCS(Version Control System)としてGitまたはSVCが利用できます。VCSを用いるとソースの版管理ができますので、VCSの利用をおすゝめします。VCSはGitHubやGitHub Pagesの利用を考慮して現在の主流とも言えるGitを選択するのがベターです。</p>
+<p>［Ctrl+Alt+t］を押下して起動させたターミナル（端末）から以下のコマンドを実行してGitをインストールします。Ubuntu公式リポジトリのGitはバージョンが古くstashなどの一部機能が利用できませんので、ppaから最新版をインストールします。</p>
+<pre><code>sudo add-apt-repository ppa:git-core/ppa
+sudo apt-get update
+sudo apt-get install git
+sudo git --version</code></pre>
 <p>　</p>
 <div id="gitの初期設定" class="section level2">
 <h2>Gitの初期設定</h2>
@@ -765,28 +769,59 @@ git config --global user.email &quot;hoge@hoge.com&quot;</code></pre>
 <p>なお、Gitではファイル名に日本語を利用する場合には文字化け対策が必要ですが、RStudioを使う場合は日本語ファイル名はご法度ですので日本語ファイル名の文字化け対策は必須ではありませんので、ここでは省略します。<br />
 　</p>
 </div>
-<div id="git-client" class="section level2">
-<h2>Git Client</h2>
-<p>Gitはコマンドライン操作になりますので、GUI操作できるクライアントソフトウェアをインストールすることをおすゝめします。RStudioはGit GUIクライアントとして使えますが、細かいところまで操作が可能なGit GUIクライアントも準備しておくほうが良いでしょう。Ubuntu環境では</p>
-<ul>
-<li>GitKraken</li>
-<li>SmartGit</li>
-</ul>
-<p>のどちらかが良いかと思います。GitKrakenはフリーのGit GUIクライアントで比較的シンプルなインターフェースが特徴です。基本的な操作に絞られており履歴を追いかけやすいです。一方、SmartGitは非商用利用に限りフリーですが、一通りの操作ができるようになっており、ソースの比較もしたい場合は、こちらの方がおすゝめです。<br />
+<div id="git-gui-client" class="section level2">
+<h2>Git GUI Client</h2>
+<p>Gitはコマンドライン操作になりますので、GUIで操作できるソフトウェアをインストールすることをおすゝめします。RStudioはGitの基本的な部分はGUI操作できますが細かいところまで操作が可能なGit GUIクライアントを準備しておくことをおすゝめします。<br />
+MacやWindows環境では<a href="https://www.sourcetreeapp.com/" target="_blank" title="Free Git GUI for Mac and Windows">SourceTree <i class="fa fa-external-link"></i></a>が有名ですがUbuntu環境では利用できませんので、以下から好みに応じて選択してください。Ubuntu環境以外にMacやWindows環境を利用する場合はGUI環境を統一しておくことをおすゝめします。</p>
+<table>
+<thead>
+<tr class="header">
+<th>Git GUI</th>
+<th align="center">Ubuntu</th>
+<th align="center">Mac</th>
+<th align="center">Windows</th>
+<th>Memo</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="https://www.gitkraken.com/" target="_blank" title="he legendary Git GUI client for Windows, Mac and Linux">GitKraken <i class="fa fa-external-link"></i></a></td>
+<td align="center">Yes</td>
+<td align="center">Yes</td>
+<td align="center">Yes</td>
+<td>Free版は機能制限あり</td>
+</tr>
+<tr class="even">
+<td><a href="https://www.syntevo.com/smartgit/" target="_blank" title="SmartGit">SmartGit <i class="fa fa-external-link"></i></a></td>
+<td align="center">Yes</td>
+<td align="center">Yes</td>
+<td align="center">Yes</td>
+<td>Free版でも機能制限なし<sup>1</sup></td>
+</tr>
+<tr class="odd">
+<td><a href="https://www.collab.net/downloads/giteye" target="_blank" title="CollabNet GitEye">GitEye <i class="fa fa-external-link"></i></a></td>
+<td align="center">Yes</td>
+<td align="center">Yes</td>
+<td align="center">Yes</td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="https://www.sourcetreeapp.com/" target="_blank" title="Simplicity and power in a beautiful Git GUI">SourceTree <i class="fa fa-external-link"></i></a></td>
+<td align="center">No</td>
+<td align="center">Yes</td>
+<td align="center">Yes</td>
+<td>日本語版あり</td>
+</tr>
+</tbody>
+</table>
+<p><sup>1</sup> : 非商用利用の場合<br />
 　</p>
-<div id="gitkraken" class="section level3">
-<h3>GitKraken</h3>
-<p>GitKrakenは開発元の<a href="https://www.gitkraken.com/download" target="_blank" title="GitKraken">ダウンロードページ <i class="fa fa-external-link"></i></a>からDebianパッケージ（Linux(.dev)）をダウンロードして、Ubuntu Softwareからインストールします。<br />
-　</p>
-</div>
+<p>上記以外のGUIクライアントは<a href="https://git-scm.com/downloads/guis/" target="_blank" title="GUI Clients">こちら <i class="fa fa-external-link"></i></a>を参照してください。<br />
+　 　</p>
 <div id="smartgit" class="section level3">
 <h3>SmartGit</h3>
-<p>SmartGitはJavaベースのソフトウェアですので、後述のJava環境（JREまたはJDK）を別途インストールする必要があります。</p>
-<p>開発元の<a href="http://www.syntevo.com/smartgit/download" target="_blank" title="SmartGit">ダウンロードページ <i class="fa fa-external-link"></i></a>からDebianパッケージ(deb)をダウンロードして、Ubuntu Softwareからインストールするか以下のコマンドを実行してPPA(Personal Package Archives、非公式リポジトリ)からインストールします。</p>
-<pre><code>sudo add-apt-repository ppa:eugenesan/ppa
-sudo apt-get update
-
-sudo apt-get install smartgit</code></pre>
+<p>SmartGitはJavaベースのソフトウェアですので、後述のJava環境（JREまたはJDK）を別途インストールする必要があります。GUIクライアント本体は開発元の<a href="http://www.syntevo.com/smartgit/download" target="_blank" title="SmartGit">ダウンロードページ <i class="fa fa-external-link"></i></a>からDebianパッケージ(deb)をダウンロードして、Ubuntu Softwareからインストールしてください。<br />
+　</p>
 </div>
 </div>
 <div id="java-runtime" class="section level2">
@@ -952,7 +987,7 @@ sudo apt-get install oracle-java8-installer</code></pre>
 </ul>
 <hr />
 <!-- Include Footer -->
-<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-03-31 21:03(JST)]</p>
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-04-07 22:59(JST)]</p>
 </div>
 </div>
 
