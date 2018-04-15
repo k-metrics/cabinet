@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>アンスコムのデータ例</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cerulean.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = false;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Tidy/Transform</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Tidy
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="./anscombe.html">アンスコムのデータ例</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Transform
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="stratify.html">層別で計算する</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="./about.html">About</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-github"></span>
+     
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../index.html">Cabinet</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="../import/index.html">Import</a>
+    </li>
+    <li>
+      <a href="../index.html">
+        <span class="fa fa-home"></span>
+         
+        Tidy/Transform
+      </a>
+    </li>
+    <li>
+      <a href="../model/index.html">Model/Infer</a>
+    </li>
+    <li>
+      <a href="../visualize/index.html">Visualize</a>
+    </li>
+    <li>
+      <a href="../communicate/index.html">Communicate/Automate</a>
+    </li>
+    <li>
+      <a href="../program/index.html">Program</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="https://github.com/k-metrics/cabinet">
+        <span class="fa fa-github"></span>
+         
+        GitHub Repository
+      </a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="https://sites.google.com/site/kantometrics/home">
+        <span class="fa fa-google"></span>
+         
+        データ分析勉強会
+      </a>
+    </li>
+  </ul>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">アンスコムのデータ例</h1>
+
+</div>
+
+
+<!-- shared Links -->
+<!-- SQiP and others -->
+<!-- Books -->
+<!-- 共立出版 -->
+<!-- 日科技連出版 -->
+<!-- O'Reilly Japan -->
+<!-- 東京図書 -->
+<!-- Docker -->
+<!-- eBooks -->
+<!-- Net Community -->
+<!-- Style Guide -->
+<!-- Creative Commons -->
+<!-- Others -->
+<!-- R -->
+<!-- R Packages -->
+<!-- RStudio -->
+<!-- Docker -->
+<!-- Cabinet Pages -->
+<p><a href="https://www.r-project.org/" target="_blank" title="The R Project">R <i class="fa fa-external-link"></i></a>によるデータハンドリングの有用性を実感してもらうためにアンスコム（<strong><code>anscombe</code></strong>）のデータ例を用いて説明します。なお、この説明の元資料は参考資料として最下段に示したあります。<br />
+　</p>
+<div id="アンスコムのデータ例" class="section level1">
+<h1>アンスコムのデータ例</h1>
+<p>アンスコムのデータ例は<a href="https://www.r-project.org/" target="_blank" title="The R Project">R <i class="fa fa-external-link"></i></a>の標準パッケージに<strong><code>anscombe</code></strong>データセットとして格納されており、具体的には下表のような形式になっています。</p>
+<pre class="r"><code>anscombe</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["x1"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["x2"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["x3"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["x4"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["y1"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["y2"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["y3"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["y4"],"name":[8],"type":["dbl"],"align":["right"]}],"data":[{"1":"10","2":"10","3":"10","4":"8","5":"8.04","6":"9.14","7":"7.46","8":"6.58"},{"1":"8","2":"8","3":"8","4":"8","5":"6.95","6":"8.14","7":"6.77","8":"5.76"},{"1":"13","2":"13","3":"13","4":"8","5":"7.58","6":"8.74","7":"12.74","8":"7.71"},{"1":"9","2":"9","3":"9","4":"8","5":"8.81","6":"8.77","7":"7.11","8":"8.84"},{"1":"11","2":"11","3":"11","4":"8","5":"8.33","6":"9.26","7":"7.81","8":"8.47"},{"1":"14","2":"14","3":"14","4":"8","5":"9.96","6":"8.10","7":"8.84","8":"7.04"},{"1":"6","2":"6","3":"6","4":"8","5":"7.24","6":"6.13","7":"6.08","8":"5.25"},{"1":"4","2":"4","3":"4","4":"19","5":"4.26","6":"3.10","7":"5.39","8":"12.50"},{"1":"12","2":"12","3":"12","4":"8","5":"10.84","6":"9.13","7":"8.15","8":"5.56"},{"1":"7","2":"7","3":"7","4":"8","5":"4.82","6":"7.26","7":"6.42","8":"7.91"},{"1":"5","2":"5","3":"5","4":"8","5":"5.68","6":"4.74","7":"5.73","8":"6.89"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>　<br />
+データは<strong><code>(x1, y1)</code></strong>、<strong><code>(x2, y2)</code></strong>で組になっており4組のデータ全ての平均値、分散、相関係数が下表のように（ほぼ）同じという性質を持っています。</p>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["グループ"],"name":[1],"type":["chr"],"align":["left"]},{"label":["平均値(x)"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["平均値(y)"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["分散(x)"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["分散(y)"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["相関係数"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"9","3":"7.500909","4":"3.316625","5":"2.031568","6":"0.8164205"},{"1":"2","2":"9","3":"7.500909","4":"3.316625","5":"2.031657","6":"0.8162365"},{"1":"3","2":"9","3":"7.500000","4":"3.316625","5":"2.030424","6":"0.8162867"},{"1":"4","2":"9","3":"7.500909","4":"3.316625","5":"2.030579","6":"0.8165214"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>　<br />
+ところが、散布図を描いてみるとデータの分布は4組全てが異なっており、一概に要約統計量だけで判断してはならないという非常に教訓に満ちたデータです。<br />
+　</p>
+<p><img src="anscombe_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>　</p>
+</div>
+<div id="データハンドリング" class="section level1">
+<h1>データハンドリング</h1>
+<p>では、このアンスコムのデータ例を用いて実際に要約統計量とグラフを描いてみましょう。</p>
+<pre class="r"><code>anscombe</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["x1"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["x2"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["x3"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["x4"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["y1"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["y2"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["y3"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["y4"],"name":[8],"type":["dbl"],"align":["right"]}],"data":[{"1":"10","2":"10","3":"10","4":"8","5":"8.04","6":"9.14","7":"7.46","8":"6.58"},{"1":"8","2":"8","3":"8","4":"8","5":"6.95","6":"8.14","7":"6.77","8":"5.76"},{"1":"13","2":"13","3":"13","4":"8","5":"7.58","6":"8.74","7":"12.74","8":"7.71"},{"1":"9","2":"9","3":"9","4":"8","5":"8.81","6":"8.77","7":"7.11","8":"8.84"},{"1":"11","2":"11","3":"11","4":"8","5":"8.33","6":"9.26","7":"7.81","8":"8.47"},{"1":"14","2":"14","3":"14","4":"8","5":"9.96","6":"8.10","7":"8.84","8":"7.04"},{"1":"6","2":"6","3":"6","4":"8","5":"7.24","6":"6.13","7":"6.08","8":"5.25"},{"1":"4","2":"4","3":"4","4":"19","5":"4.26","6":"3.10","7":"5.39","8":"12.50"},{"1":"12","2":"12","3":"12","4":"8","5":"10.84","6":"9.13","7":"8.15","8":"5.56"},{"1":"7","2":"7","3":"7","4":"8","5":"4.82","6":"7.26","7":"6.42","8":"7.91"},{"1":"5","2":"5","3":"5","4":"8","5":"5.68","6":"4.74","7":"5.73","8":"6.89"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>　</p>
+<div id="tidy-data形式に変換する" class="section level2">
+<h2>Tidy Data形式に変換する</h2>
+<p>アンスコムのデータ例は見てわかるように雑然（Messy）データ形式ですので、まず、これを整然（Tidy）データ形式に変換します。<br />
+　</p>
+<div id="列を識別できるようにする" class="section level3">
+<h3>列を識別できるようにする</h3>
+<pre class="r"><code>anscombe %&gt;%
+  tibble::rownames_to_column(&quot;id&quot;)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["id"],"name":[1],"type":["chr"],"align":["left"]},{"label":["x1"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["x2"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["x3"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["x4"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["y1"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["y2"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["y3"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["y4"],"name":[9],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"10","3":"10","4":"10","5":"8","6":"8.04","7":"9.14","8":"7.46","9":"6.58"},{"1":"2","2":"8","3":"8","4":"8","5":"8","6":"6.95","7":"8.14","8":"6.77","9":"5.76"},{"1":"3","2":"13","3":"13","4":"13","5":"8","6":"7.58","7":"8.74","8":"12.74","9":"7.71"},{"1":"4","2":"9","3":"9","4":"9","5":"8","6":"8.81","7":"8.77","8":"7.11","9":"8.84"},{"1":"5","2":"11","3":"11","4":"11","5":"8","6":"8.33","7":"9.26","8":"7.81","9":"8.47"},{"1":"6","2":"14","3":"14","4":"14","5":"8","6":"9.96","7":"8.10","8":"8.84","9":"7.04"},{"1":"7","2":"6","3":"6","4":"6","5":"8","6":"7.24","7":"6.13","8":"6.08","9":"5.25"},{"1":"8","2":"4","3":"4","4":"4","5":"19","6":"4.26","7":"3.10","8":"5.39","9":"12.50"},{"1":"9","2":"12","3":"12","4":"12","5":"8","6":"10.84","7":"9.13","8":"8.15","9":"5.56"},{"1":"10","2":"7","3":"7","4":"7","5":"8","6":"4.82","7":"7.26","8":"6.42","9":"7.91"},{"1":"11","2":"5","3":"5","4":"5","5":"8","6":"5.68","7":"4.74","8":"5.73","9":"6.89"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>　</p>
+</div>
+<div id="列をまとめる" class="section level3">
+<h3>列をまとめる</h3>
+<p>次に列をまとめて座標軸をあらわす<strong><code>axis</code></strong>と値をあらわす<strong><code>value</code></strong>に集約します。</p>
+<pre class="r"><code>anscombe %&gt;%
+  tibble::rownames_to_column(&quot;id&quot;) %&gt;%
+  tidyr::gather(key = axis, value, -id)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["id"],"name":[1],"type":["chr"],"align":["left"]},{"label":["axis"],"name":[2],"type":["chr"],"align":["left"]},{"label":["value"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"x1","3":"10.00"},{"1":"2","2":"x1","3":"8.00"},{"1":"3","2":"x1","3":"13.00"},{"1":"4","2":"x1","3":"9.00"},{"1":"5","2":"x1","3":"11.00"},{"1":"6","2":"x1","3":"14.00"},{"1":"7","2":"x1","3":"6.00"},{"1":"8","2":"x1","3":"4.00"},{"1":"9","2":"x1","3":"12.00"},{"1":"10","2":"x1","3":"7.00"},{"1":"11","2":"x1","3":"5.00"},{"1":"1","2":"x2","3":"10.00"},{"1":"2","2":"x2","3":"8.00"},{"1":"3","2":"x2","3":"13.00"},{"1":"4","2":"x2","3":"9.00"},{"1":"5","2":"x2","3":"11.00"},{"1":"6","2":"x2","3":"14.00"},{"1":"7","2":"x2","3":"6.00"},{"1":"8","2":"x2","3":"4.00"},{"1":"9","2":"x2","3":"12.00"},{"1":"10","2":"x2","3":"7.00"},{"1":"11","2":"x2","3":"5.00"},{"1":"1","2":"x3","3":"10.00"},{"1":"2","2":"x3","3":"8.00"},{"1":"3","2":"x3","3":"13.00"},{"1":"4","2":"x3","3":"9.00"},{"1":"5","2":"x3","3":"11.00"},{"1":"6","2":"x3","3":"14.00"},{"1":"7","2":"x3","3":"6.00"},{"1":"8","2":"x3","3":"4.00"},{"1":"9","2":"x3","3":"12.00"},{"1":"10","2":"x3","3":"7.00"},{"1":"11","2":"x3","3":"5.00"},{"1":"1","2":"x4","3":"8.00"},{"1":"2","2":"x4","3":"8.00"},{"1":"3","2":"x4","3":"8.00"},{"1":"4","2":"x4","3":"8.00"},{"1":"5","2":"x4","3":"8.00"},{"1":"6","2":"x4","3":"8.00"},{"1":"7","2":"x4","3":"8.00"},{"1":"8","2":"x4","3":"19.00"},{"1":"9","2":"x4","3":"8.00"},{"1":"10","2":"x4","3":"8.00"},{"1":"11","2":"x4","3":"8.00"},{"1":"1","2":"y1","3":"8.04"},{"1":"2","2":"y1","3":"6.95"},{"1":"3","2":"y1","3":"7.58"},{"1":"4","2":"y1","3":"8.81"},{"1":"5","2":"y1","3":"8.33"},{"1":"6","2":"y1","3":"9.96"},{"1":"7","2":"y1","3":"7.24"},{"1":"8","2":"y1","3":"4.26"},{"1":"9","2":"y1","3":"10.84"},{"1":"10","2":"y1","3":"4.82"},{"1":"11","2":"y1","3":"5.68"},{"1":"1","2":"y2","3":"9.14"},{"1":"2","2":"y2","3":"8.14"},{"1":"3","2":"y2","3":"8.74"},{"1":"4","2":"y2","3":"8.77"},{"1":"5","2":"y2","3":"9.26"},{"1":"6","2":"y2","3":"8.10"},{"1":"7","2":"y2","3":"6.13"},{"1":"8","2":"y2","3":"3.10"},{"1":"9","2":"y2","3":"9.13"},{"1":"10","2":"y2","3":"7.26"},{"1":"11","2":"y2","3":"4.74"},{"1":"1","2":"y3","3":"7.46"},{"1":"2","2":"y3","3":"6.77"},{"1":"3","2":"y3","3":"12.74"},{"1":"4","2":"y3","3":"7.11"},{"1":"5","2":"y3","3":"7.81"},{"1":"6","2":"y3","3":"8.84"},{"1":"7","2":"y3","3":"6.08"},{"1":"8","2":"y3","3":"5.39"},{"1":"9","2":"y3","3":"8.15"},{"1":"10","2":"y3","3":"6.42"},{"1":"11","2":"y3","3":"5.73"},{"1":"1","2":"y4","3":"6.58"},{"1":"2","2":"y4","3":"5.76"},{"1":"3","2":"y4","3":"7.71"},{"1":"4","2":"y4","3":"8.84"},{"1":"5","2":"y4","3":"8.47"},{"1":"6","2":"y4","3":"7.04"},{"1":"7","2":"y4","3":"5.25"},{"1":"8","2":"y4","3":"12.50"},{"1":"9","2":"y4","3":"5.56"},{"1":"10","2":"y4","3":"7.91"},{"1":"11","2":"y4","3":"6.89"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>　</p>
+<p>この時点で整然（Tidy）データのように見えますが、<strong><code>axis</code></strong>には二つの意味（座標軸とグループ）を持ったデータが格納されていますので、これらは分割する必要があります。<br />
+　</p>
+</div>
+<div id="軸名を分割する" class="section level3">
+<h3>軸名を分割する</h3>
+<p><strong><code>x1</code></strong>, <strong><code>x2</code></strong>, …, <strong><code>y3</code></strong>, <strong><code>y4</code></strong>という軸名を軸を表す<strong><code>axis</code></strong>とグループをあらわす<strong><code>group</code></strong>に分割します。</p>
+<pre class="r"><code>anscombe %&gt;%
+  tibble::rownames_to_column(&quot;id&quot;) %&gt;%
+  tidyr::gather(key = axis, value, -id) %&gt;%
+  tidyr::separate(axis, c(&quot;axis&quot;, &quot;group&quot;), 1)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["id"],"name":[1],"type":["chr"],"align":["left"]},{"label":["axis"],"name":[2],"type":["chr"],"align":["left"]},{"label":["group"],"name":[3],"type":["chr"],"align":["left"]},{"label":["value"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"x","3":"1","4":"10.00"},{"1":"2","2":"x","3":"1","4":"8.00"},{"1":"3","2":"x","3":"1","4":"13.00"},{"1":"4","2":"x","3":"1","4":"9.00"},{"1":"5","2":"x","3":"1","4":"11.00"},{"1":"6","2":"x","3":"1","4":"14.00"},{"1":"7","2":"x","3":"1","4":"6.00"},{"1":"8","2":"x","3":"1","4":"4.00"},{"1":"9","2":"x","3":"1","4":"12.00"},{"1":"10","2":"x","3":"1","4":"7.00"},{"1":"11","2":"x","3":"1","4":"5.00"},{"1":"1","2":"x","3":"2","4":"10.00"},{"1":"2","2":"x","3":"2","4":"8.00"},{"1":"3","2":"x","3":"2","4":"13.00"},{"1":"4","2":"x","3":"2","4":"9.00"},{"1":"5","2":"x","3":"2","4":"11.00"},{"1":"6","2":"x","3":"2","4":"14.00"},{"1":"7","2":"x","3":"2","4":"6.00"},{"1":"8","2":"x","3":"2","4":"4.00"},{"1":"9","2":"x","3":"2","4":"12.00"},{"1":"10","2":"x","3":"2","4":"7.00"},{"1":"11","2":"x","3":"2","4":"5.00"},{"1":"1","2":"x","3":"3","4":"10.00"},{"1":"2","2":"x","3":"3","4":"8.00"},{"1":"3","2":"x","3":"3","4":"13.00"},{"1":"4","2":"x","3":"3","4":"9.00"},{"1":"5","2":"x","3":"3","4":"11.00"},{"1":"6","2":"x","3":"3","4":"14.00"},{"1":"7","2":"x","3":"3","4":"6.00"},{"1":"8","2":"x","3":"3","4":"4.00"},{"1":"9","2":"x","3":"3","4":"12.00"},{"1":"10","2":"x","3":"3","4":"7.00"},{"1":"11","2":"x","3":"3","4":"5.00"},{"1":"1","2":"x","3":"4","4":"8.00"},{"1":"2","2":"x","3":"4","4":"8.00"},{"1":"3","2":"x","3":"4","4":"8.00"},{"1":"4","2":"x","3":"4","4":"8.00"},{"1":"5","2":"x","3":"4","4":"8.00"},{"1":"6","2":"x","3":"4","4":"8.00"},{"1":"7","2":"x","3":"4","4":"8.00"},{"1":"8","2":"x","3":"4","4":"19.00"},{"1":"9","2":"x","3":"4","4":"8.00"},{"1":"10","2":"x","3":"4","4":"8.00"},{"1":"11","2":"x","3":"4","4":"8.00"},{"1":"1","2":"y","3":"1","4":"8.04"},{"1":"2","2":"y","3":"1","4":"6.95"},{"1":"3","2":"y","3":"1","4":"7.58"},{"1":"4","2":"y","3":"1","4":"8.81"},{"1":"5","2":"y","3":"1","4":"8.33"},{"1":"6","2":"y","3":"1","4":"9.96"},{"1":"7","2":"y","3":"1","4":"7.24"},{"1":"8","2":"y","3":"1","4":"4.26"},{"1":"9","2":"y","3":"1","4":"10.84"},{"1":"10","2":"y","3":"1","4":"4.82"},{"1":"11","2":"y","3":"1","4":"5.68"},{"1":"1","2":"y","3":"2","4":"9.14"},{"1":"2","2":"y","3":"2","4":"8.14"},{"1":"3","2":"y","3":"2","4":"8.74"},{"1":"4","2":"y","3":"2","4":"8.77"},{"1":"5","2":"y","3":"2","4":"9.26"},{"1":"6","2":"y","3":"2","4":"8.10"},{"1":"7","2":"y","3":"2","4":"6.13"},{"1":"8","2":"y","3":"2","4":"3.10"},{"1":"9","2":"y","3":"2","4":"9.13"},{"1":"10","2":"y","3":"2","4":"7.26"},{"1":"11","2":"y","3":"2","4":"4.74"},{"1":"1","2":"y","3":"3","4":"7.46"},{"1":"2","2":"y","3":"3","4":"6.77"},{"1":"3","2":"y","3":"3","4":"12.74"},{"1":"4","2":"y","3":"3","4":"7.11"},{"1":"5","2":"y","3":"3","4":"7.81"},{"1":"6","2":"y","3":"3","4":"8.84"},{"1":"7","2":"y","3":"3","4":"6.08"},{"1":"8","2":"y","3":"3","4":"5.39"},{"1":"9","2":"y","3":"3","4":"8.15"},{"1":"10","2":"y","3":"3","4":"6.42"},{"1":"11","2":"y","3":"3","4":"5.73"},{"1":"1","2":"y","3":"4","4":"6.58"},{"1":"2","2":"y","3":"4","4":"5.76"},{"1":"3","2":"y","3":"4","4":"7.71"},{"1":"4","2":"y","3":"4","4":"8.84"},{"1":"5","2":"y","3":"4","4":"8.47"},{"1":"6","2":"y","3":"4","4":"7.04"},{"1":"7","2":"y","3":"4","4":"5.25"},{"1":"8","2":"y","3":"4","4":"12.50"},{"1":"9","2":"y","3":"4","4":"5.56"},{"1":"10","2":"y","3":"4","4":"7.91"},{"1":"11","2":"y","3":"4","4":"6.89"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>　</p>
+<p>この時点でも<strong><code>axis</code></strong>には二つの意味（x軸とy軸）を持ったデータが格納されていますので、これらも分割する必要があります（x軸、y軸は因子の水準ではなく、それぞれ異なった意味を持つ変数と見なせます。一方、グループは4つの水準を持つ因子と見なすこと出来ますのでこちらを分割する必要はありません）。<br />
+　</p>
+</div>
+<div id="座標軸を整理する" class="section level3">
+<h3>座標軸を整理する</h3>
+<p>x軸とy軸が同じ<strong><code>axis</code></strong>列に集約されていますので<strong><code>x</code></strong>と<strong><code>y</code></strong>という二つの列に分割します。</p>
+<pre class="r"><code>anscombe %&gt;%
+  tibble::rownames_to_column(&quot;id&quot;) %&gt;%
+  tidyr::gather(key = axis, value, -id) %&gt;%
+  tidyr::separate(axis, c(&quot;axis&quot;, &quot;group&quot;), 1) %&gt;%
+  tidyr::spread(axis, value)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["id"],"name":[1],"type":["chr"],"align":["left"]},{"label":["group"],"name":[2],"type":["chr"],"align":["left"]},{"label":["x"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["y"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"1","3":"10","4":"8.04"},{"1":"1","2":"2","3":"10","4":"9.14"},{"1":"1","2":"3","3":"10","4":"7.46"},{"1":"1","2":"4","3":"8","4":"6.58"},{"1":"10","2":"1","3":"7","4":"4.82"},{"1":"10","2":"2","3":"7","4":"7.26"},{"1":"10","2":"3","3":"7","4":"6.42"},{"1":"10","2":"4","3":"8","4":"7.91"},{"1":"11","2":"1","3":"5","4":"5.68"},{"1":"11","2":"2","3":"5","4":"4.74"},{"1":"11","2":"3","3":"5","4":"5.73"},{"1":"11","2":"4","3":"8","4":"6.89"},{"1":"2","2":"1","3":"8","4":"6.95"},{"1":"2","2":"2","3":"8","4":"8.14"},{"1":"2","2":"3","3":"8","4":"6.77"},{"1":"2","2":"4","3":"8","4":"5.76"},{"1":"3","2":"1","3":"13","4":"7.58"},{"1":"3","2":"2","3":"13","4":"8.74"},{"1":"3","2":"3","3":"13","4":"12.74"},{"1":"3","2":"4","3":"8","4":"7.71"},{"1":"4","2":"1","3":"9","4":"8.81"},{"1":"4","2":"2","3":"9","4":"8.77"},{"1":"4","2":"3","3":"9","4":"7.11"},{"1":"4","2":"4","3":"8","4":"8.84"},{"1":"5","2":"1","3":"11","4":"8.33"},{"1":"5","2":"2","3":"11","4":"9.26"},{"1":"5","2":"3","3":"11","4":"7.81"},{"1":"5","2":"4","3":"8","4":"8.47"},{"1":"6","2":"1","3":"14","4":"9.96"},{"1":"6","2":"2","3":"14","4":"8.10"},{"1":"6","2":"3","3":"14","4":"8.84"},{"1":"6","2":"4","3":"8","4":"7.04"},{"1":"7","2":"1","3":"6","4":"7.24"},{"1":"7","2":"2","3":"6","4":"6.13"},{"1":"7","2":"3","3":"6","4":"6.08"},{"1":"7","2":"4","3":"8","4":"5.25"},{"1":"8","2":"1","3":"4","4":"4.26"},{"1":"8","2":"2","3":"4","4":"3.10"},{"1":"8","2":"3","3":"4","4":"5.39"},{"1":"8","2":"4","3":"19","4":"12.50"},{"1":"9","2":"1","3":"12","4":"10.84"},{"1":"9","2":"2","3":"12","4":"9.13"},{"1":"9","2":"3","3":"12","4":"8.15"},{"1":"9","2":"4","3":"8","4":"5.56"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>　</p>
+</div>
+<div id="不要列を削除する" class="section level3">
+<h3>不要列を削除する</h3>
+<p>最初に付加した列を識別するための<strong><code>id</code></strong>列を削除して整然（Tidy）データの完成です。</p>
+<pre class="r"><code>anscombe %&gt;%
+  tibble::rownames_to_column(&quot;id&quot;) %&gt;%
+  tidyr::gather(key, value, -id) %&gt;%
+  tidyr::separate(key, c(&quot;axis&quot;, &quot;group&quot;), 1) %&gt;%
+  tidyr::spread(axis, value) %&gt;% 
+  dplyr::select(-id)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["group"],"name":[1],"type":["chr"],"align":["left"]},{"label":["x"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["y"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"10","3":"8.04"},{"1":"2","2":"10","3":"9.14"},{"1":"3","2":"10","3":"7.46"},{"1":"4","2":"8","3":"6.58"},{"1":"1","2":"7","3":"4.82"},{"1":"2","2":"7","3":"7.26"},{"1":"3","2":"7","3":"6.42"},{"1":"4","2":"8","3":"7.91"},{"1":"1","2":"5","3":"5.68"},{"1":"2","2":"5","3":"4.74"},{"1":"3","2":"5","3":"5.73"},{"1":"4","2":"8","3":"6.89"},{"1":"1","2":"8","3":"6.95"},{"1":"2","2":"8","3":"8.14"},{"1":"3","2":"8","3":"6.77"},{"1":"4","2":"8","3":"5.76"},{"1":"1","2":"13","3":"7.58"},{"1":"2","2":"13","3":"8.74"},{"1":"3","2":"13","3":"12.74"},{"1":"4","2":"8","3":"7.71"},{"1":"1","2":"9","3":"8.81"},{"1":"2","2":"9","3":"8.77"},{"1":"3","2":"9","3":"7.11"},{"1":"4","2":"8","3":"8.84"},{"1":"1","2":"11","3":"8.33"},{"1":"2","2":"11","3":"9.26"},{"1":"3","2":"11","3":"7.81"},{"1":"4","2":"8","3":"8.47"},{"1":"1","2":"14","3":"9.96"},{"1":"2","2":"14","3":"8.10"},{"1":"3","2":"14","3":"8.84"},{"1":"4","2":"8","3":"7.04"},{"1":"1","2":"6","3":"7.24"},{"1":"2","2":"6","3":"6.13"},{"1":"3","2":"6","3":"6.08"},{"1":"4","2":"8","3":"5.25"},{"1":"1","2":"4","3":"4.26"},{"1":"2","2":"4","3":"3.10"},{"1":"3","2":"4","3":"5.39"},{"1":"4","2":"19","3":"12.50"},{"1":"1","2":"12","3":"10.84"},{"1":"2","2":"12","3":"9.13"},{"1":"3","2":"12","3":"8.15"},{"1":"4","2":"8","3":"5.56"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>　</p>
+</div>
+</div>
+</div>
+<div id="参考資料" class="section level1">
+<h1>参考資料</h1>
+<ul>
+<li><a href="https://heavywatal.github.io/slides/esj65/" target="_blank" title="P26から例題anscombe">それもRにやらせよう 整然データの下ごしらえ <i class="fa fa-external-link"></i></a><br />
+　</li>
+</ul>
+<hr />
+<!-- Footer -->
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-04-15 17:40(JST)]</p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

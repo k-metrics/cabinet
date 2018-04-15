@@ -1,0 +1,145 @@
+---
+title: "アンスコムのデータ例"
+output: 
+  html_document:  
+    code_folding: show
+    css: style.css
+---
+
+<!-- shared Links -->
+```{r index, child="../shared/links.Rmd", include=FALSE}
+
+```
+
+```{r setup, message=FALSE, warning=FALSE, echo=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+require(tidyverse)
+```
+
+[R <i class="fa fa-external-link"></i>][R]によるデータハンドリングの有用性を実感してもらうためにアンスコム（**`anscombe`**）のデータ例を用いて説明します。なお、この説明の元資料は参考資料として最下段に示したあります。  
+　  
+
+# アンスコムのデータ例
+アンスコムのデータ例は[R <i class="fa fa-external-link"></i>][R]の標準パッケージに**`anscombe`**データセットとして格納されており、具体的には下表のような形式になっています。  
+```{r}
+anscombe
+```
+
+　  
+データは**`(x1, y1)`**、**`(x2, y2)`**で組になっており4組のデータ全ての平均値、分散、相関係数が下表のように（ほぼ）同じという性質を持っています。  
+
+```{r, echo=FALSE}
+anscombe %>%
+  tibble::rownames_to_column("id") %>%
+  tidyr::gather(key, value, -id) %>%
+  tidyr::separate(key, c("axis", "group"), 1L) %>%
+  tidyr::spread(axis, value) %>% 
+  dplyr::select(-id) %>%
+  dplyr::group_by(group) %>%
+  dplyr::summarise(x_mean = mean(x), y_mean = mean(y),
+                   x_sd = sd(x), y_sd = sd(y),
+                   cor_xy = cor(x, y)) %>% 
+  dplyr::rename(`平均値(x)` = x_mean, `平均値(y)` = y_mean,
+                `分散(x)` = x_sd, `分散(y)` = y_sd,
+                `相関係数` = cor_xy, `グループ` = group)
+```
+
+　  
+ところが、散布図を描いてみるとデータの分布は4組全てが異なっており、一概に要約統計量だけで判断してはならないという非常に教訓に満ちたデータです。  
+　  
+
+```{r, echo=FALSE}
+anscombe %>%
+  tibble::rownames_to_column("id") %>%
+  tidyr::gather(key, value, -id) %>%
+  tidyr::separate(key, c("axis", "group"), 1) %>%
+  tidyr::spread(axis, value) %>% 
+  ggplot2::ggplot(ggplot2::aes(x, y))+
+    ggplot2::geom_point()+
+    ggplot2::geom_smooth(method = lm, se = FALSE, fullrange = TRUE)+
+    ggplot2::facet_wrap(~ group, nrow = 2)
+```
+
+　  
+
+# データハンドリング
+では、このアンスコムのデータ例を用いて実際に要約統計量とグラフを描いてみましょう。  
+```{r}
+anscombe
+```
+
+　  
+
+## Tidy Data形式に変換する
+アンスコムのデータ例は見てわかるように雑然（Messy）データ形式ですので、まず、これを整然（Tidy）データ形式に変換します。  
+　  
+
+### 列を識別できるようにする
+```{r}
+anscombe %>%
+  tibble::rownames_to_column("id")
+```
+
+　  
+
+### 列をまとめる
+次に列をまとめて座標軸をあらわす**`axis`**と値をあらわす**`value`**に集約します。  
+```{r}
+anscombe %>%
+  tibble::rownames_to_column("id") %>%
+  tidyr::gather(key = axis, value, -id)
+```
+
+　  
+
+この時点で整然（Tidy）データのように見えますが、**`axis`**には二つの意味（座標軸とグループ）を持ったデータが格納されていますので、これらは分割する必要があります。  
+　  
+
+### 軸名を分割する
+**`x1`**, **`x2`**, ..., **`y3`**, **`y4`**という軸名を軸を表す**`axis`**とグループをあらわす**`group`**に分割します。  
+```{r}
+anscombe %>%
+  tibble::rownames_to_column("id") %>%
+  tidyr::gather(key = axis, value, -id) %>%
+  tidyr::separate(axis, c("axis", "group"), 1)
+```
+
+　  
+
+この時点でも**`axis`**には二つの意味（x軸とy軸）を持ったデータが格納されていますので、これらも分割する必要があります（x軸、y軸は因子の水準ではなく、それぞれ異なった意味を持つ変数と見なせます。一方、グループは4つの水準を持つ因子と見なすこと出来ますのでこちらを分割する必要はありません）。  
+　  
+
+### 座標軸を整理する
+x軸とy軸が同じ**`axis`**列に集約されていますので**`x`**と**`y`**という二つの列に分割します。  
+```{r}
+anscombe %>%
+  tibble::rownames_to_column("id") %>%
+  tidyr::gather(key = axis, value, -id) %>%
+  tidyr::separate(axis, c("axis", "group"), 1) %>%
+  tidyr::spread(axis, value)
+```
+
+　  
+
+### 不要列を削除する
+最初に付加した列を識別するための**`id`**列を削除して整然（Tidy）データの完成です。  
+```{r}
+anscombe %>%
+  tibble::rownames_to_column("id") %>%
+  tidyr::gather(key, value, -id) %>%
+  tidyr::separate(key, c("axis", "group"), 1) %>%
+  tidyr::spread(axis, value) %>% 
+  dplyr::select(-id)
+```
+
+　  
+
+# 参考資料
+* [それもRにやらせよう 整然データの下ごしらえ <i class="fa fa-external-link"></i>](https://heavywatal.github.io/slides/esj65/){target="_blank" title="P26から例題anscombe"}  
+　  
+
+---
+
+<!-- Footer -->
+```{r child="../shared/footer.Rmd"}
+```
