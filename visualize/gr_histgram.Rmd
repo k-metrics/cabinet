@@ -1,7 +1,7 @@
 ---
 output:
   html_document:
-    code_folding: show
+    code_folding: hide
     css: style.css
 ---
 
@@ -106,10 +106,10 @@ mtcars %>%
 
 階級数の計算方法        | Rでの関数         | 備考
 ------------------------|-------------------|-----------
-Square-root choice      | sqrt(length(x))   | データ数(n)の平方根
-Sturges's formula       | nclass.Sturges(x) | データ数(n)が$n \ge 30$を満たす場合
-Scott's choice          | nclass.scott(x)   | 標準偏差を用いる計算方法
-Freedman-Diacnis choice | nclass.FD(x)      | 四分位範囲に基づく計算方法
+Square-root choice      | `sqrt(length(x))`   | データ数(n)の平方根
+Sturges's formula       | `nclass.Sturges(x)` | データ数(n)が$n \ge 30$を満たす場合
+Scott's choice          | `nclass.scott(x)`   | 標準偏差を用いる計算方法
+Freedman-Diacnis choice | `nclass.FD(x)`      | 四分位範囲に基づく計算方法
 
 　  
 
@@ -143,21 +143,29 @@ pretty(x, n)
 **`pretty`**関数は$x$の値の範囲をカバーし$階級数+1$個となる（調整あり）ような階級幅を計算します。実際に**`pretty`**関数を用いて**`mtcars`**データセットの**`disp`**データと**`hp`**データに対する階級幅を計算してみると以下のようになります。  
 　  
 
+```{r, include=FALSE}
+x <- mtcars$disp
+```
+
 階級数の計算方法        | 階級数                        | 階級幅
 ------------------------|-------------------------------|-----------
-Square-root choice      | `r round(sqrt(length(disp)))` | `r pretty(disp, round(sqrt(length(disp))))`
-Sturges's formula       | `r nclass.Sturges(disp)`      | `r pretty(disp, nclass.Sturges(disp))`
-Scott's choice          | `r nclass.scott(disp)`        | `r pretty(disp, nclass.scott(disp))`
-Freedman-Diacnis choice | `r nclass.FD(disp)`           | `r pretty(disp, nclass.FD(disp))`
+Square-root choice      | `r round(sqrt(length(x)))` | `r pretty(x, round(sqrt(length(x))))`
+Sturges's formula       | `r nclass.Sturges(x)`      | `r pretty(x, nclass.Sturges(x))`
+Scott's choice          | `r nclass.scott(x)`        | `r pretty(x, nclass.scott(x))`
+Freedman-Diacnis choice | `r nclass.FD(x)`           | `r pretty(x, nclass.FD(x))`
 
 　  
 
+```{r, include=FALSE}
+x <- mtcars$hp
+```
+
 階級数の計算方法        | 階級数                      | 階級幅
 ------------------------|-----------------------------|-----------
-Square-root choice      | `r round(sqrt(length(hp)))` | `r pretty(hp, round(sqrt(length(hp))))`
-Sturges's formula       | `r nclass.Sturges(hp)`      | `r pretty(hp, nclass.Sturges(hp))`
-Scott's choice          | `r nclass.scott(hp)`        | `r pretty(hp, nclass.scott(hp))`
-Freedman-Diacnis choice | `r nclass.FD(hp)`           | `r pretty(hp, nclass.FD(hp))`
+Square-root choice      | `r round(sqrt(length(x)))` | `r pretty(x, round(sqrt(length(x))))`
+Sturges's formula       | `r nclass.Sturges(x)`      | `r pretty(x, nclass.Sturges(x))`
+Scott's choice          | `r nclass.scott(x)`        | `r pretty(x, nclass.scott(x))`
+Freedman-Diacnis choice | `r nclass.FD(x)`           | `r pretty(x, nclass.FD(x))`
 
 　  
 
