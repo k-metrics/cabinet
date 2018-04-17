@@ -1,9 +1,12 @@
 ---
-title: "ヒストグラム"
 output:
   html_document:
+    code_folding: show
     css: style.css
 ---
+
+```{r histgram, child="../shared/links.Rmd", include=FALSE}
+```
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -19,211 +22,307 @@ class <- c("display cell-border compact")
 style <- ifelse(!interactive(), c("bootstrap"), c("default"))
 ```
 
-Rでヒストグラムを描くには、大きく、以下の二つの方法（関数）があります。
+# ヒストグラム
+[R <i class="fa fa-external-link"></i>][R]でヒストグラムを描く代表的な方法としては、以下の二つの方法があります。  
+　  
 
-* graphics::hist()
-* ggplot2::geom_histogram()
+* **`hist`**関数を用いる
+* **`ggplot2::geom_histogram`**関数を用いる
 
-Rでグラフを描く場合には`ggplot2`パッケージを利用した方が統一感のあるコード記述で統一感のある体裁のグラフが描けるので、
+　  
+**`ggplot2`**パッケージは統一感のあるコード記述で統一感のある体裁のグラフが描けますのでこちらを利用することをおすゝめします。ただ、基本パッケージのひとつである**`graphics`**パッケージに含まれる**`hist`**関数は描いたデータに対する各種計算値が簡単に得られるというメリットがありますので必要に応じて使い分けてください。  
+　  
 
-可能であれば`ggplot2`を利用したい
+# 二つの関数の違い
+**`hist`**関数と**`ggplot2::geom_histgram`**関数はデフォルト・オプションでヒストグラムを描いた場合に処理の考え方の違いにより異なる形状のヒストグラムになる場合があります。その違いを知るために組み込みデータセット**`mtcars`**の**`disp`**データと**`hp`**データを用いてその違いを示します。  
+　  
 
-デフォルトの`graphics`パッケージは極力利用したくないのですが、
+## dispデータ
+### **`hist`**関数の場合
+```{r, message=FALSE, echo=FALSE}
+hist(mtcars$disp)
+```
 
-は`ggplot2`パッケージに比べつと扱いが比較的簡単で、描いたデータに対する各種計算値が簡単に得られることもあり
+　  
 
-
-# 課題
-`ggplot2::geom_histgram()`のデフォルト設定でヒストグラムを描くと`graphics::hist()`を使た場合と形状の異なるヒストグラムが描かれます。例えば組み込みデータセットである`mtcars`の`disp`と`hp`の二つのデータでヒストグラムを描くと次のような違いとなります。
-
-## dispデータのヒストグラム
-```{r}
-graphics::hist(mtcars$disp)
+### **`ggplot2::geom_histgram`**関数の場合
+```{r, message=FALSE, echo=FALSE}
 mtcars %>% 
   ggplot2::ggplot(aes(x = disp)) +
     geom_histogram()
 ```
 
-## hpデータのヒストグラム
-```{r}
-graphics::hist(mtcars$hp)
+　  
+
+## hpデータ
+### **`hist`**関数の場合
+```{r, message=FALSE, echo=FALSE}
+hist(mtcars$hp)
+```
+
+　  
+
+### **`ggplot2::geom_histgram`**関数の場合
+```{r, message=FALSE, echo=FALSE}
 mtcars %>% 
   ggplot2::ggplot(aes(x = hp)) +
     geom_histogram()
 ```
 
-このようにデフォルト設定ではヒストグラムを描くと似ても似つかぬ分布になることがあります。これは、`ggplot2::geom_histgram()`はデータ範囲を30分割したものを階級幅とし、`graphics::hist()`では、Sturgesの公式を用いて階級幅を決めているためです。
+　  
 
-そこで、`ggplot2::geom_histgram()`で`graphics::hist()`と同様のヒストグラムを描くためのオプション指定方法を探ります。
+このようにデフォルト設定で描く両者のヒストグラムは似ても似つかぬ形状になることがあります。主な原因は**`hist`**関数は階級幅をSturgesの公式を用いて計算しているのに対して**`ggplot2::geom_histgram`**関数は単に30分割しているためです。  
+　  
+分布形状に影響を与えるオプションは下表のようになっていますので、階級幅の指定にSturgesの公式を用いれば、**`hist`**関数と**`ggplot2::gemo_histgram`**関数は同じ形状になることが分かります。
 
-# 前提条件
-`dataset::mtcars`のデータを用いて`graphics::hist()`で描けるヒストグラムを正とし、同様のグラフを`ggplot2::geom_histgram()`で描くためのオプションを探ります。
+項目           | **`hist`**    | **`ggplot2::geom_histgram`**
+---------------|---------------|------------
+階級幅         | Sturgesの公式 | 単純30分割
+階級の閉じ     | 右閉じ(, ]    | 右閉じ (, ]
+階級下限境界値 | 含む          | 含む
+
+
 ```{r}
-DT::datatable(mtcars, class = class, style = style, caption = "mtcars dataset")
+hist(mtcars$hp)
+mtcars %>% 
+  ggplot2::ggplot(aes(x = hp)) +
+    geom_histogram(breaks = pretty(mtcars$hp,
+                                   n = nclass.Sturges(mtcars$hp)))
 ```
 
-# 方法
+　  
+
+このように**`ggplot2::geom_histgram`**関数を利用する場合には階級幅の指定がポイントになります。  
+　  
+
+# 度数分布表
+前述のようにヒストグラムを描くには度数分布表の作成、すなわち階級幅の指定方法が肝になります。  
+　  
+
 ## 基本的な考え方
-ヒストグラムを描くためには最初にデータから度数分布表を作成する必要があります。この際にポイントとなるのが階級幅や階級数をどのように設定するかです。階級数の決め方には色々な方法がありますが代表的な公式としては以下のものがあげられます。
+### 階級数
+階級幅は階級数を元に決めますが、階級数の求め方にはさまざまな方法があります。代表的な計算方法としては以下のものがあげられます。  
+　  
 
-階級数の計算方法        | Rでの関数        | Package
-------------------------|------------------|-----------
-Sturges's formula       | nclass.Sturges() | grDevices
-Scott's choice          | nclass.scott()   | grDevices 
-Freedman-Diacnis choice | nclass.FD()      | grDevices
+階級数の計算方法        | Rでの関数         | 備考
+------------------------|-------------------|-----------
+Square-root choice      | sqrt(length(x))   | データ数(n)の平方根
+Sturges's formula       | nclass.Sturges(x) | データ数(n)が$n \ge 30$を満たす場合
+Scott's choice          | nclass.scott(x)   | 標準偏差を用いる計算方法
+Freedman-Diacnis choice | nclass.FD(x)      | 四分位範囲に基づく計算方法
 
-これらの公式は階級数を求めるもので、描画の際に必要となる階級幅を決めるために`graphics::hist()`では`base::pretty()`という関数を利用しています。`base::pretty()`はデータにより適切な階級幅を計算しますので、上記の公式で求めた階級数と計算結果が異なる場合があります。  
-実際に`mtcars`の`disp`と`hp`はStargesの公式で階級数を計算すると同じ`6`になりますが、階級幅を計算すると`disp`の階級数が`9`、`hp`の階級数が`6`となります。
-```{r}
-nclass.Sturges(mtcars$disp)
-pretty(range(mtcars$disp), n = nclass.Sturges(mtcars$disp), min.n = 1)
-
-nclass.Sturges(mtcars$hp)
-pretty(range(mtcars$hp), n = nclass.Sturges(mtcars$hp), min.n = 1)
-```
-
-## 度数分布表
-度数分布表は求めた階級幅を元に階級毎にいくつのデータがあるかを集計したものです。一般的には次のような形を取ります。
-```{r}
-mtcars %>% 
-  dplyr::mutate(bin.w = cut(disp,
-                            pretty(range(disp), n = nclass.Sturges(disp), min.n = 1),
-                            right = TRUE, include.lowest = FALSE)) %>% 
-  dplyr::select(bin.w, disp) %>% 
-  dplyr::group_by(bin.w) %>% 
-  dplyr::summarise(freq = n()) %>%
-  dplyr::rename('階級' = bin.w, '度数' = freq) %>%  
-  DT::datatable(class = class, style = style, caption = "度数分布表")
-```
-
-### 集計条件
-各階級毎の度数の集計方法ですが、階級の境界値をどちら側で集計するかでヒストグラムの形が変わってきます。
-
-#### 境界値の扱い
-各階級の下限値側を含まず、上限値側を含む集計方法を**右閉じ**といい**(lwr, upr]**と表現します。数式で表すと以下のようになります。
-
-$$各階級の下限値（lwr） \lt データ \le 各階級の上限値（upr）$$
-```{r}
-mtcars %>% 
-  dplyr::mutate(bin.w = cut(disp,
-                            pretty(range(disp), n = nclass.Sturges(disp), min.n = 1),
-                            right = TRUE, include.lowest = FALSE)) %>% 
-  dplyr::select(bin.w, disp) %>% 
-  dplyr::group_by(bin.w) %>% 
-  dplyr::summarise(freq = n()) %>%
-  dplyr::rename('階級' = bin.w, '度数' = freq) %>%
-  t() %>% as.data.frame() %>% DT::datatable(class = class, style = style,
-                                            caption = "右閉じの場合")
-```
-
-逆に各階級の下限値側を含み上限値側を含まない集計方法を**左閉じ**といい**[lwr, upr)**と表現します。数式で表すと以下のようになります。
-
-$$各階級の下限値（lwr） \le データ \lt 各階級の上限値（upr）$$
-```{r}
-mtcars %>% 
-  dplyr::mutate(bin.w = cut(disp,
-                            pretty(range(disp), n = nclass.Sturges(disp), min.n = 1),
-                            right = FALSE, include.lowest = FALSE)) %>% 
-  dplyr::select(bin.w, disp) %>% 
-  dplyr::group_by(bin.w) %>% 
-  dplyr::summarise(freq = n()) %>%
-  dplyr::rename('階級' = bin.w, '度数' = freq) %>% 
-  t() %>% as.data.frame() %>% DT::datatable(class = class, style = style,
-                                            caption = "左閉じの場合")
-```
-
-右閉じと比べてV6～V8の度数が異なっていることが分かります。
-
-#### 最下限値の扱い
-**右閉じ**で集計する際に最も小さいデータの値が階級の再下限値と同値の場合、この最も小さい値を集計対象とするか否かでヒストグラムの形が変わってきます。
-```{r}
-mtcars %>% 
-  dplyr::mutate(bin.w = cut(disp,
-                            pretty(range(disp), n = nclass.Sturges(disp), min.n = 1),
-                            right = TRUE, include.lowest = TRUE)) %>% 
-  dplyr::select(bin.w, disp) %>% 
-  dplyr::group_by(bin.w) %>% 
-  dplyr::summarise(freq = n()) %>%
-  dplyr::rename('階級' = bin.w, '度数' = freq) %>%
-  t() %>% as.data.frame() %>% DT::datatable(class = class, style = style,
-                                            caption = "右閉じ＆再下限を含む場合")
-```
-
-## geom_histgram
-`ggplot2::geom_histgram()`で`graphics::hist()`と同等のヒストグラムを描くには、前述の階級指定がポイントになります。
-
-`ggplot2::geom_histgram()`で利用できるオプションは
-
-option   | 
----------|---
-breaks   | 境界値による
-bins     | 階級数を指定する
-binwidth | 階級幅を指定する
-closed   | 右閉じまはた左閉じの指定
-boundary | 
-center   | 
-
-```{r}
-graphics::hist(mtcars$disp)
-mtcars %>% 
-  ggplot2::ggplot(aes(x = disp)) +
-    geom_histogram(breaks = pretty(range(mtcars$disp),
-                                   n = nclass.Sturges(mtcars$disp), min.n = 1),
-                   closed = "right")
-```
-
-```{r}
-graphics::hist(mtcars$hp)
-mtcars %>% 
-  ggplot2::ggplot(aes(x = hp)) +
-    geom_histogram(breaks = pretty(range(mtcars$hp),
-                                   n = nclass.Sturges(mtcars$hp), min.n = 1),
-                   closed = "right")
-```
+　  
 
 ```{r, include=FALSE}
-# # breaks
-# q %>%
-#   dplyr::filter(price < 500000) %>%
-#   dplyr::mutate(price.k = price/1000) %>%
-#   ggplot(aes(x = price.k)) +
-#     geom_histogram(breaks = seq(0, 500, by = 50), closed = "right") +
-#     stat_bin(aes(y = ..count.., label = ..count..), geom = "text", vjust = -.5,
-#              breaks = seq(0, 500, by = 50), boundary = 0) +
-#     xlab("") + ylab("度数") +
-#     ggtitle("", subtitle = "")
-# 
-# # bins
-# q %>%
-#   dplyr::filter(price < 500000) %>%
-#   dplyr::mutate(price.k = price/1000) %>%
-#   ggplot(aes(x = price.k)) +
-#     geom_histogram(bins = 10, closed = "right", boundary = 0) +
-#     stat_bin(aes(y = ..count.., label = ..count..), geom = "text", vjust = -.5,
-#              bins = 10, boundary = 0) +
-#     xlab("") + ylab("度数") +
-#     ggtitle("", subtitle = "")
-# 
-# # binwidth
-# q %>%
-#   dplyr::filter(price < 500000) %>%
-#   dplyr::mutate(price.k = price/1000) %>%
-#   ggplot(aes(x = price.k)) +
-#     geom_histogram(binwidth = 50, closed = "right", boundary = 0) +
-#     stat_bin(aes(y = ..count.., label = ..count..), geom = "text", vjust = -.5,
-#              binwidth = 50, boundary = 0) +
-#     xlab("") + ylab("度数") +
-#     ggtitle("", subtitle = "")
-# 
-# # binwidth, no boundary
-# q %>%
-#   dplyr::filter(price < 500000) %>%
-#   dplyr::mutate(price.k = price/1000) %>%
-#   ggplot(aes(x = price.k)) +
-#     geom_histogram(binwidth = 50, closed = "right") +
-#     stat_bin(aes(y = ..count.., label = ..count..), geom = "text", vjust = -.5,
-#              binwidth = 50) +
-#     xlab("") + ylab("度数") +
-#     ggtitle("", subtitle = "")
+disp <- mtcars$disp
+hp <- mtcars$hp
 ```
 
+実際に**`mtcars`**データセットの**`disp`**と**`hp`**で階級数を求めてみます。  
+　  
+
+階級数の計算方法        | mtcars\$disp                  | mtcars$hp
+------------------------|-------------------------------|-----------
+Square-root choice      | `r round(sqrt(length(disp)))` | `r round(sqrt(length(hp)))`
+Sturges's formula       | `r nclass.Sturges(disp)`      | `r nclass.Sturges(hp)`
+Scott's choice          | `r nclass.scott(disp)`        | `r nclass.scott(hp)`
+Freedman-Diacnis choice | `r nclass.FD(disp)`           | `r nclass.FD(hp)`
+
+　  
+
+### 階級幅
+ヒストグラムを描画する際に必要となる適切な階級幅は得られた階級数をから**`pretty()`**関数で算出する必要があります。  
+　  
+
+```{r, eval=FALSE}
+pretty(x, n)
+```
+
+  
+
+**`pretty`**関数は$x$の値の範囲をカバーし$階級数+1$個となる（調整あり）ような階級幅を計算します。実際に**`pretty`**関数を用いて**`mtcars`**データセットの**`disp`**データと**`hp`**データに対する階級幅を計算してみると以下のようになります。  
+　  
+
+階級数の計算方法        | 階級数                        | 階級幅
+------------------------|-------------------------------|-----------
+Square-root choice      | `r round(sqrt(length(disp)))` | `r pretty(disp, round(sqrt(length(disp))))`
+Sturges's formula       | `r nclass.Sturges(disp)`      | `r pretty(disp, nclass.Sturges(disp))`
+Scott's choice          | `r nclass.scott(disp)`        | `r pretty(disp, nclass.scott(disp))`
+Freedman-Diacnis choice | `r nclass.FD(disp)`           | `r pretty(disp, nclass.FD(disp))`
+
+　  
+
+階級数の計算方法        | 階級数                      | 階級幅
+------------------------|-----------------------------|-----------
+Square-root choice      | `r round(sqrt(length(hp)))` | `r pretty(hp, round(sqrt(length(hp))))`
+Sturges's formula       | `r nclass.Sturges(hp)`      | `r pretty(hp, nclass.Sturges(hp))`
+Scott's choice          | `r nclass.scott(hp)`        | `r pretty(hp, nclass.scott(hp))`
+Freedman-Diacnis choice | `r nclass.FD(hp)`           | `r pretty(hp, nclass.FD(hp))`
+
+　  
+
+# ヒストグラム
+```{r}
+x <- mtcars$disp
+```
+
+## dispデータの場合
+```{r}
+x <- mtcars$disp
+
+n <- round(sqrt(length(x)))
+gg_src <- as.data.frame(x) %>% 
+  ggplot2::ggplot(aes(x = x)) +
+    ggplot2::geom_histogram(breaks = pretty(x, n)) +
+    ggplot2::labs(title = "Square-root choice", x = "", y = "")
+
+n <- nclass.Sturges(x)
+gg_sf <- as.data.frame(x) %>% 
+  ggplot2::ggplot(aes(x = x)) +
+    ggplot2::geom_histogram(breaks = pretty(x, n)) +
+    ggplot2::labs(title = "Sturges’s formula", x = "", y = "")
+
+n <- nclass.scott(x)
+gg_sc <- as.data.frame(x) %>% 
+  ggplot2::ggplot(aes(x = x)) +
+    ggplot2::geom_histogram(breaks = pretty(x, n)) +
+    ggplot2::labs(title = "Scott’s choice", x = "", y = "")
+
+n <- nclass.FD(x)
+gg_fdc <- as.data.frame(x) %>% 
+  ggplot2::ggplot(aes(x = x)) +
+    ggplot2::geom_histogram(breaks = pretty(x, n)) +
+    ggplot2::labs(title = "Freedman-Diacnis choice", x = "", y = "")
+
+gridExtra::grid.arrange(gg_src, gg_sf, gg_sc, gg_fdc)
+```
+
+　  
+
+## hpデータの場合
+```{r}
+x <- mtcars$hp
+
+n <- round(sqrt(length(x)))
+gg_src <- as.data.frame(x) %>% 
+  ggplot2::ggplot(aes(x = x)) +
+    ggplot2::geom_histogram(breaks = pretty(x, n)) +
+    ggplot2::labs(title = "Square-root choice", x = "", y = "")
+
+n <- nclass.Sturges(x)
+gg_sf <- as.data.frame(x) %>% 
+  ggplot2::ggplot(aes(x = x)) +
+    ggplot2::geom_histogram(breaks = pretty(x, n)) +
+    ggplot2::labs(title = "Sturges’s formula", x = "", y = "")
+
+n <- nclass.scott(x)
+gg_sc <- as.data.frame(x) %>% 
+  ggplot2::ggplot(aes(x = x)) +
+    ggplot2::geom_histogram(breaks = pretty(x, n)) +
+    ggplot2::labs(title = "Scott’s choice", x = "", y = "")
+
+n <- nclass.FD(x)
+gg_fdc <- as.data.frame(x) %>% 
+  ggplot2::ggplot(aes(x = x)) +
+    ggplot2::geom_histogram(breaks = pretty(x, n)) +
+    ggplot2::labs(title = "Freedman-Diacnis choice", x = "", y = "")
+
+gridExtra::grid.arrange(gg_src, gg_sf, gg_sc, gg_fdc)
+```
+
+　  
+
+# iris
+```{r}
+x <- iris$Sepal.Length
+```
+
+
+階級数の計算方法        | 階級数                        | 階級幅
+------------------------|-------------------------------|-----------
+Square-root choice      | `r round(sqrt(length(x)))` | `r pretty(x, round(sqrt(length(x))))`
+Sturges's formula       | `r nclass.Sturges(x)`      | `r pretty(x, nclass.Sturges(x))`
+Scott's choice          | `r nclass.scott(x)`        | `r pretty(x, nclass.scott(x))`
+Freedman-Diacnis choice | `r nclass.FD(x)`           | `r pretty(x, nclass.FD(x))`
+
+　  
+
+```{r}
+x <- iris$Sepal.Width
+```
+
+
+階級数の計算方法        | 階級数                        | 階級幅
+------------------------|-------------------------------|-----------
+Square-root choice      | `r round(sqrt(length(x)))` | `r pretty(x, round(sqrt(length(x))))`
+Sturges's formula       | `r nclass.Sturges(x)`      | `r pretty(x, nclass.Sturges(x))`
+Scott's choice          | `r nclass.scott(x)`        | `r pretty(x, nclass.scott(x))`
+Freedman-Diacnis choice | `r nclass.FD(x)`           | `r pretty(x, nclass.FD(x))`
+
+　  
+
+```{r}
+x <- iris$Petal.Length
+```
+
+
+階級数の計算方法        | 階級数                        | 階級幅
+------------------------|-------------------------------|-----------
+Square-root choice      | `r round(sqrt(length(x)))` | `r pretty(x, round(sqrt(length(x))))`
+Sturges's formula       | `r nclass.Sturges(x)`      | `r pretty(x, nclass.Sturges(x))`
+Scott's choice          | `r nclass.scott(x)`        | `r pretty(x, nclass.scott(x))`
+Freedman-Diacnis choice | `r nclass.FD(x)`           | `r pretty(x, nclass.FD(x))`
+
+　  
+
+```{r}
+x <- iris$Petal.Width
+```
+
+
+階級数の計算方法        | 階級数                        | 階級幅
+------------------------|-------------------------------|-----------
+Square-root choice      | `r round(sqrt(length(x)))` | `r pretty(x, round(sqrt(length(x))))`
+Sturges's formula       | `r nclass.Sturges(x)`      | `r pretty(x, nclass.Sturges(x))`
+Scott's choice          | `r nclass.scott(x)`        | `r pretty(x, nclass.scott(x))`
+Freedman-Diacnis choice | `r nclass.FD(x)`           | `r pretty(x, nclass.FD(x))`
+
+　  
+
+```{r}
+x <- iris$Petal.Length
+
+n <- round(sqrt(length(x)))
+gg_src <- as.data.frame(x) %>% 
+  ggplot2::ggplot(aes(x = x)) +
+    ggplot2::geom_histogram(breaks = pretty(x, n)) +
+    ggplot2::labs(title = "Square-root choice", x = "", y = "")
+
+n <- nclass.Sturges(x)
+gg_sf <- as.data.frame(x) %>% 
+  ggplot2::ggplot(aes(x = x)) +
+    ggplot2::geom_histogram(breaks = pretty(x, n)) +
+    ggplot2::labs(title = "Sturges’s formula", x = "", y = "")
+
+n <- nclass.scott(x)
+gg_sc <- as.data.frame(x) %>% 
+  ggplot2::ggplot(aes(x = x)) +
+    ggplot2::geom_histogram(breaks = pretty(x, n)) +
+    ggplot2::labs(title = "Scott’s choice", x = "", y = "")
+
+n <- nclass.FD(x)
+gg_fdc <- as.data.frame(x) %>% 
+  ggplot2::ggplot(aes(x = x)) +
+    ggplot2::geom_histogram(breaks = pretty(x, n)) +
+    ggplot2::labs(title = "Freedman-Diacnis choice", x = "", y = "")
+
+gridExtra::grid.arrange(gg_src, gg_sf, gg_sc, gg_fdc)
+```
+
+
+
+---
+
+```{r, child="../shared/footer.Rmd"}
+
+```
