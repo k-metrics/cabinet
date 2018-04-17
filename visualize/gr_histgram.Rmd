@@ -256,6 +256,34 @@ Freedman-Diacnis choice | `r nclass.FD(x)`           | `r pretty(x, nclass.FD(x)
 　  
 
 ```{r}
+n <- round(sqrt(length(x)))
+gg_src <- as.data.frame(x) %>% 
+  ggplot2::ggplot(aes(x = x)) +
+    ggplot2::geom_histogram(breaks = pretty(x, n)) +
+    ggplot2::labs(title = "Square-root choice", x = "", y = "")
+
+n <- nclass.Sturges(x)
+gg_sf <- as.data.frame(x) %>% 
+  ggplot2::ggplot(aes(x = x)) +
+    ggplot2::geom_histogram(breaks = pretty(x, n)) +
+    ggplot2::labs(title = "Sturges’s formula", x = "", y = "")
+
+n <- nclass.scott(x)
+gg_sc <- as.data.frame(x) %>% 
+  ggplot2::ggplot(aes(x = x)) +
+    ggplot2::geom_histogram(breaks = pretty(x, n)) +
+    ggplot2::labs(title = "Scott’s choice", x = "", y = "")
+
+n <- nclass.FD(x)
+gg_fdc <- as.data.frame(x) %>% 
+  ggplot2::ggplot(aes(x = x)) +
+    ggplot2::geom_histogram(breaks = pretty(x, n)) +
+    ggplot2::labs(title = "Freedman-Diacnis choice", x = "", y = "")
+
+gridExtra::grid.arrange(gg_src, gg_sf, gg_sc, gg_fdc)
+```
+
+```{r}
 x <- iris$Sepal.Width
 ```
 
@@ -270,6 +298,34 @@ Freedman-Diacnis choice | `r nclass.FD(x)`           | `r pretty(x, nclass.FD(x)
 　  
 
 ```{r}
+n <- round(sqrt(length(x)))
+gg_src <- as.data.frame(x) %>% 
+  ggplot2::ggplot(aes(x = x)) +
+    ggplot2::geom_histogram(breaks = pretty(x, n)) +
+    ggplot2::labs(title = "Square-root choice", x = "", y = "")
+
+n <- nclass.Sturges(x)
+gg_sf <- as.data.frame(x) %>% 
+  ggplot2::ggplot(aes(x = x)) +
+    ggplot2::geom_histogram(breaks = pretty(x, n)) +
+    ggplot2::labs(title = "Sturges’s formula", x = "", y = "")
+
+n <- nclass.scott(x)
+gg_sc <- as.data.frame(x) %>% 
+  ggplot2::ggplot(aes(x = x)) +
+    ggplot2::geom_histogram(breaks = pretty(x, n)) +
+    ggplot2::labs(title = "Scott’s choice", x = "", y = "")
+
+n <- nclass.FD(x)
+gg_fdc <- as.data.frame(x) %>% 
+  ggplot2::ggplot(aes(x = x)) +
+    ggplot2::geom_histogram(breaks = pretty(x, n)) +
+    ggplot2::labs(title = "Freedman-Diacnis choice", x = "", y = "")
+
+gridExtra::grid.arrange(gg_src, gg_sf, gg_sc, gg_fdc)
+```
+
+```{r}
 x <- iris$Petal.Length
 ```
 
@@ -282,6 +338,34 @@ Scott's choice          | `r nclass.scott(x)`        | `r pretty(x, nclass.scott
 Freedman-Diacnis choice | `r nclass.FD(x)`           | `r pretty(x, nclass.FD(x))`
 
 　  
+
+```{r}
+n <- round(sqrt(length(x)))
+gg_src <- as.data.frame(x) %>% 
+  ggplot2::ggplot(aes(x = x)) +
+    ggplot2::geom_histogram(breaks = pretty(x, n)) +
+    ggplot2::labs(title = "Square-root choice", x = "", y = "")
+
+n <- nclass.Sturges(x)
+gg_sf <- as.data.frame(x) %>% 
+  ggplot2::ggplot(aes(x = x)) +
+    ggplot2::geom_histogram(breaks = pretty(x, n)) +
+    ggplot2::labs(title = "Sturges’s formula", x = "", y = "")
+
+n <- nclass.scott(x)
+gg_sc <- as.data.frame(x) %>% 
+  ggplot2::ggplot(aes(x = x)) +
+    ggplot2::geom_histogram(breaks = pretty(x, n)) +
+    ggplot2::labs(title = "Scott’s choice", x = "", y = "")
+
+n <- nclass.FD(x)
+gg_fdc <- as.data.frame(x) %>% 
+  ggplot2::ggplot(aes(x = x)) +
+    ggplot2::geom_histogram(breaks = pretty(x, n)) +
+    ggplot2::labs(title = "Freedman-Diacnis choice", x = "", y = "")
+
+gridExtra::grid.arrange(gg_src, gg_sf, gg_sc, gg_fdc)
+```
 
 ```{r}
 x <- iris$Petal.Width
@@ -298,8 +382,6 @@ Freedman-Diacnis choice | `r nclass.FD(x)`           | `r pretty(x, nclass.FD(x)
 　  
 
 ```{r}
-x <- iris$Petal.Length
-
 n <- round(sqrt(length(x)))
 gg_src <- as.data.frame(x) %>% 
   ggplot2::ggplot(aes(x = x)) +
