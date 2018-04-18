@@ -34,7 +34,7 @@ qqplotr   | Quantile-Quantile Plot Extensions for ‘ggplot2’
 　  
 
 # 対象データ
-組み込みデータセットである**`iris`**の**`Sepal.Width`**（萼片幅）の分布が正規分布と言えるかどうかをQQプロットを用いて確認してみます。  
+組み込みデータセットである`iris`の`Sepal.Width`（萼片幅）の分布が正規分布と言えるかどうかをQQプロットを用いて確認してみます。  
 ```{r}
 iris %>% 
   tidyr::drop_na(Sepal.Width) %>%
@@ -58,7 +58,7 @@ qqline(iris$Sepal.Width)
 　  
 
 # 追加パッケージを用いる方法
-**`ggplot2`**パッケージに含まれる**`ggplot2::geom_qq`**関数は残念ながら目安となる直線や信頼区間を描画してくれませんので、判断に用いるには難しい面があります。  
+`ggplot2`パッケージに含まれる`ggplot2::geom_qq`関数は残念ながら目安となる直線や信頼区間を描画してくれませんので、判断に用いるには難しい面があります。  
 ```{r}
 iris %>% 
   tidyr::drop_na(Sepal.Width) %>%
@@ -71,7 +71,7 @@ iris %>%
 　  
 
 ## qqplotr 
-そこで、便利なのが**`ggplot2`**パッケージの拡張パッケージである**`qqplotr`**パッケージです。**`ggplot2::geom_qq`**関数に比べるとコード記述の手間が若干増えますが判断の目安となる直線や信頼区間を簡単に描くことが可能です。  
+そこで、便利なのが`ggplot2`パッケージの拡張パッケージである`qqplotr`パッケージです。`ggplot2::geom_qq`関数に比べるとコード記述の手間が若干増えますが判断の目安となる直線や信頼区間を簡単に描くことが可能です。  
 ```{r}
 iris %>% 
   tidyr::drop_na(Sepal.Width) %>%
@@ -89,7 +89,7 @@ iris %>%
 　  
 
 ## 層別で描く
-**`qqplotr`**は**`ggplot2`**パッケージの拡張パッケージですので**`ggplot2`**の機能が使えます。  
+`qqplotr`は`ggplot2`パッケージの拡張パッケージですので`ggplot2`の機能が使えます。  
 ```{r, fig.height=7}
 gg_qq <- iris %>% 
   tidyr::drop_na(Sepal.Width) %>%
@@ -117,7 +117,7 @@ gridExtra::grid.arrange(gg_qq, gg_hist)
 
 　  
 ## 正規分布以外との比較例
-正規分布以外の確率分布ととのQQプロットを描いてみます。対象データは組み込みデータセット**`airquality`**にあるオゾン濃度を使います。  
+正規分布以外の確率分布ととのQQプロットを描いてみます。対象データは組み込みデータセット`airquality`にあるオゾン濃度を使います。  
 ```{r}
 airquality %>% 
   tidyr::drop_na(Ozone) %>% 
