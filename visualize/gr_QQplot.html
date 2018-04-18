@@ -26,6 +26,8 @@
 <script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
 <link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
 
 <style type="text/css">code{white-space: pre;}</style>
@@ -468,7 +470,7 @@ div.tocify {
 </div>
 <div id="対象データ" class="section level1">
 <h1>対象データ</h1>
-<p>組み込みデータセットである<strong><code>iris</code></strong>の<strong><code>Sepal.Width</code></strong>（萼片幅）の分布が正規分布と言えるかどうかをQQプロットを用いて確認してみます。</p>
+<p>組み込みデータセットである<code>iris</code>の<code>Sepal.Width</code>（萼片幅）の分布が正規分布と言えるかどうかをQQプロットを用いて確認してみます。</p>
 <pre class="r"><code>iris %&gt;% 
   tidyr::drop_na(Sepal.Width) %&gt;%
   ggplot2::ggplot(ggplot2::aes(x = Sepal.Width)) +
@@ -489,7 +491,7 @@ qqline(iris$Sepal.Width)</code></pre>
 </div>
 <div id="追加パッケージを用いる方法" class="section level1">
 <h1>追加パッケージを用いる方法</h1>
-<p><strong><code>ggplot2</code></strong>パッケージに含まれる<strong><code>ggplot2::geom_qq</code></strong>関数は残念ながら目安となる直線や信頼区間を描画してくれませんので、判断に用いるには難しい面があります。</p>
+<p><code>ggplot2</code>パッケージに含まれる<code>ggplot2::geom_qq</code>関数は残念ながら目安となる直線や信頼区間を描画してくれませんので、判断に用いるには難しい面があります。</p>
 <pre class="r"><code>iris %&gt;% 
   tidyr::drop_na(Sepal.Width) %&gt;%
   ggplot2::ggplot(ggplot2::aes(sample = Sepal.Width)) +
@@ -500,7 +502,7 @@ qqline(iris$Sepal.Width)</code></pre>
 <p>　</p>
 <div id="qqplotr" class="section level2">
 <h2>qqplotr</h2>
-<p>そこで、便利なのが<strong><code>ggplot2</code></strong>パッケージの拡張パッケージである<strong><code>qqplotr</code></strong>パッケージです。<strong><code>ggplot2::geom_qq</code></strong>関数に比べるとコード記述の手間が若干増えますが判断の目安となる直線や信頼区間を簡単に描くことが可能です。</p>
+<p>そこで、便利なのが<code>ggplot2</code>パッケージの拡張パッケージである<code>qqplotr</code>パッケージです。<code>ggplot2::geom_qq</code>関数に比べるとコード記述の手間が若干増えますが判断の目安となる直線や信頼区間を簡単に描くことが可能です。</p>
 <pre class="r"><code>iris %&gt;% 
   tidyr::drop_na(Sepal.Width) %&gt;%
   ggplot2::ggplot(ggplot2::aes(sample = Sepal.Width)) +
@@ -517,7 +519,7 @@ qqline(iris$Sepal.Width)</code></pre>
 </div>
 <div id="層別で描く" class="section level2">
 <h2>層別で描く</h2>
-<p><strong><code>qqplotr</code></strong>は<strong><code>ggplot2</code></strong>パッケージの拡張パッケージですので<strong><code>ggplot2</code></strong>の機能が使えます。</p>
+<p><code>qqplotr</code>は<code>ggplot2</code>パッケージの拡張パッケージですので<code>ggplot2</code>の機能が使えます。</p>
 <pre class="r"><code>gg_qq &lt;- iris %&gt;% 
   tidyr::drop_na(Sepal.Width) %&gt;%
   ggplot2::ggplot(ggplot2::aes(sample = Sepal.Width)) +
@@ -541,7 +543,7 @@ gg_hist &lt;- iris %&gt;%
 gridExtra::grid.arrange(gg_qq, gg_hist)</code></pre>
 <p><img src="gr_QQplot_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 <p>　<br />
-## 正規分布以外との比較例 正規分布以外の確率分布ととのQQプロットを描いてみます。対象データは組み込みデータセット<strong><code>airquality</code></strong>にあるオゾン濃度を使います。</p>
+## 正規分布以外との比較例 正規分布以外の確率分布ととのQQプロットを描いてみます。対象データは組み込みデータセット<code>airquality</code>にあるオゾン濃度を使います。</p>
 <pre class="r"><code>airquality %&gt;% 
   tidyr::drop_na(Ozone) %&gt;% 
   ggplot2::ggplot(ggplot2::aes(x = Ozone)) + 
@@ -586,7 +588,7 @@ gridExtra::grid.arrange(gg_qq, gg_hist)</code></pre>
 <p>　</p>
 <hr />
 <!-- Footer -->
-<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-03-31 00:03(JST)]</p>
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-04-18 22:33(JST)]</p>
 </div>
 
 
