@@ -2,38 +2,100 @@
 title: "箱ひげ図"
 output:
   html_document:
+    code_folding: show
     css: style.css
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+
+require(tidyverse)
 ```
 
-# 箱ひげ図と頻度分布
+箱ひげ図（ボックスプロット）はヒストグラムと同様にデータの分布を確認するために利用される基本的なグラフです。ヒストグラムと最も異なるのは要約統計量に基づいたグラフを描く点です。  
+
+```{r, echo=FALSE}
+boxplot(Sepal.Length ~ Species, data = iris)
+```
+
+箱ひげ図には様々なバリエーションがありますが[R <i class="fa fa-external-link"></i>][R]の箱ひげ図は下表の要約統計量を元に描かれます。  
+
+項目      | 計算式など                | 図中での位置
+----------|---------------------------|-----------
+上側極値  | 外れ値を除いた最大値^注1^ | 上側のひげ
+上側25%点 | 第三四分位点              | 箱の上側
+中央値    | 第二四分位点              | 箱内の太線
+下側25%点 | 第一四分位点              | 箱の下側
+下側極値  | 外れ値を除いた最小値^注2^ | 下側のひげ
+
+^注1^ $上側25\%点 + 1.5 \times IQR$^注3^以下の範囲で最も大きな値  
+^注2^ $下側25\%点 - 1.5 \times IQR$^注3^以上の範囲で最も小さな値  
+^注3^ $IQR = 上側25\%点 - 下側25\%点$  
+
+上側極値と下側極値の外側にあるデータは外れ値になります。  
+　  
+
+# 必要なパッケージ
+本ページのコードを実行するには標準パッケージ以外に以下の追加パッケージを読み込んでおく必要があります。  
+　  
+
+Packages  | Description
+----------|-------------
+tidyverse | Easily Install and Load the ‘Tidyverse’
+
+　  
+
+# 対象データ
+標準パッケージに組み込まれている以下のデータセットを用います。  
+　  
+
+Dataset | Package
+--------|---------
+iris    | datasets
+
+　  
+
+# 標準パッケージを用いる方法
+標準パッケージを用いて箱ひげ図を描くには`boxplot`関数を用います。`boxplot`関数は引数の指定方法を変えることで二種類の箱ひげ図を描くことができます。  
+　  
+
+## 箱ひげ図
+一つのベクトル変数を指定することで（単一の）箱ひげ図を描くことができます。  
+　  
 
 ```{r}
-# 組込データセット"mtcars"を読み込む
-data(mtcars, package="datasets")
+boxplot(iris$Sepal.Length, main = "Sepal.Length")
+```
 
-# シリンダー数を層別因子にする
-mtcars <- within(mtcars, {
-    f.cyl <- as.factor(cyl)
-})
+　  
 
-# シリンダー数毎のエンジン出力を層別プロットする
-boxplot(hp~f.cyl, data=mtcars, id.method="y", xlab="Number of cylinder", ylab="hp")
+## 層別箱ひげ図
+因子を用いて層別の箱ひげ図を描く場合には`formula`形式で引数を指定してください。この場合、データはデータフレーム型であることが好ましいです。  
+　  
 
-# ドットチャートを上書きする
-stripchart(hp ~ f.cyl, vertical=TRUE, method="stack", data=mtcars, add=TRUE, col="red")
+```{r}
+boxplot(Sepal.Length ~ Species, data = iris, main = "層別箱ひげ図")
 ```
 
 
-# 全体箱ひげ図と層別箱ひげ図
+
+## 箱ひげ図と頻度分布
+箱ひげ図は前述のように要約統計量を用いていますのでデータの分布が見えません。ドットチャートを上書きすることでヒストグラムのような分布を描くことができます。  
+　  
 
 ```{r}
-# 組み込みデータセット"iris"を読み込む
-data("iris")
+boxplot(Sepal.Length ~ Species, data = iris)
+stripchart(Sepal.Length ~ Species, data = iris, vertical = TRUE,
+           method = "stack", add = TRUE, col = "red")
 
+```
+
+
+## 全体箱ひげ図と層別箱ひげ図
+層別データと層別していないデータをひとつの箱ひげ図として表示する場合は多少手間が必要ですが下記のようなコードで描くことができます。  
+　  
+
+```{r}
 # データセットを代入しておくとデータセット名が変わっても処理を変えずに済みます
 x <- iris
 x.lab = "Species"
@@ -66,43 +128,75 @@ for (i in 1:length(type)) {
 axis(1, at = 1:length(type)+1, labels = type, tick = TRUE)
 ```
 
-# 箱ひげ図（ボックスプロット）
-箱ひげ図は
+　  
+なお、データ自体を加工して描くことも可能です。  
+　  
+
+# 追加パッケージを用いる方法
+`ggplot2`パッケージには`ggplot2::geom_boxplot`という箱ひげ図を描くための関数が用意されています。  
+　  
+
+## 箱ひげ図
+`ggplot2::geom_boxplot`関数は層別で描くことを前提としているため単一の箱ひげ図を描きたい場合は引数`x`に任意の数値（ダミー）を指定してください。なお`boxplot`関数と異なりひげ（whisker）は描画されません。  
+　  
+
 ```{r}
-palette <- "Set2"   # カラーパレットは`RColorBrewer::display.brewer.all()`
-
 iris %>% 
-  ggplot2::ggplot(ggplot2::aes(x = Species, y = Sepal.Length)) + 
-  ggplot2::geom_boxplot(ggplot2::aes(colour = Species), alpha = 0.75) + 
-  ggplot2::stat_summary(fun.data = ggplot2::mean_se,  # mean_seは平均値と標準誤差
-                        fun.args = list(mult = 1),    # mean_seへの引数
-                        geom = "pointrange", position = position_nudge(0.0)) + 
+  ggplot2::ggplot(ggplot2::aes(x = 0, y = Sepal.Length)) +
+    ggplot2::geom_boxplot()
+```
 
-  # theme(legend.position = "none") + 
-  labs(x = "Species", y = "Sepal length (cm)") +
-  ggplot2::scale_fill_brewer(palette = palette) +
-  ggplot2::scale_color_brewer(palette = palette)
+　  
+
+## 層別箱ひげ図
+前述のように`ggplot2::geom_boxplot`関数は層別で描くことを前提としていますので、引数`x`に層別因子を指定するだけで層別箱ひげ図を描くことができます。  
+　  
+
+```{r}
+iris %>% 
+  ggplot2::ggplot(ggplot2::aes(x = Species, y = Sepal.Length)) +
+    ggplot2::geom_boxplot()
 ```
 
 
-# ドットプロット
-箱ひげ図だけではデータの分布が見えません。箱ひげ図の便利さを活かしながらデータ分布を見るためにドットプロットを上書してみます。
-```{r}
-palette <- "Set2"   # カラーパレットは`RColorBrewer::display.brewer.all()`
+## 箱ひげ図と頻度分布
+`ggplot2`パッケージを用いても箱ひげ図の上に`ggplot2::geom_dotplot`関数を用いることでドットチャートを描くことができます。
 
+```{r}
 iris %>% 
   ggplot2::ggplot(ggplot2::aes(x = Species, y = Sepal.Length)) + 
-  ggplot2::geom_boxplot(ggplot2::aes(colour = Species), alpha = 0.75) + 
-  ggplot2::stat_summary(fun.data = mean_sdl, fun.args = list(mult = 1),
-                        geom = "pointrange", position = position_nudge(0.05)) + 
-  # mean_sdlは平均値とエラーバー
-  geom_dotplot(binaxis = "y", dotsize = 0.75, stackdir = "down", binwidth = 0.1, 
-               position = position_nudge(-0.0),
-               ggplot2::aes(fill = Species, colour = Species)) + 
-  # theme(legend.position = "none") + 
-  labs(x = "Species", y = "Sepal length (cm)") +
-  ggplot2::scale_fill_brewer(palette = palette) +
-  ggplot2::scale_color_brewer(palette = palette)
+    ggplot2::geom_boxplot() + 
+    geom_dotplot(binaxis = "y", dotsize = 0.75, stackdir = "up", binwidth = 0.1)
+```
+
+　  
+
+## 箱ひげ図と平均値
+箱ひげ図は前述のように要約統計量（四分位値）を用いていますので平均値の値は図示されません。平均値の値を図示したい場合は`ggplot2::stat_summary`関数を用います。
+
+```{r}
+iris %>% 
+  ggplot2::ggplot(ggplot2::aes(x = Species, y = Sepal.Length)) + 
+    ggplot2::geom_boxplot() + 
+    ggplot2::stat_summary(fun.y = mean, geom = "point", colour = "red")
+```
+
+　  
+
+## 頻度分布と平均値の信頼区間
+`ggplot2`では様々なアレンジが簡単にできます。前出の頻度分布と平均値、更に平均値の95%信頼区間を箱ひげ図に重ねてみます。  
+　  
+
+```{r}
+iris %>% 
+  ggplot2::ggplot(ggplot2::aes(x = Species, y = Sepal.Length)) + 
+    ggplot2::geom_boxplot(ggplot2::aes(colour = Species)) + 
+    ggplot2::stat_summary(fun.data = mean_sdl, fun.args = list(mult = 1),
+                          geom = "pointrange", position = position_nudge(0.05),
+                          ggplot2::aes(colour = Species)) + 
+    geom_dotplot(binaxis = "y", dotsize = 0.75, stackdir = "down",
+                 binwidth = 0.1, position = position_nudge(-0.025),
+                 ggplot2::aes(fill = Species, colour = Species), alpha = 0.5)
 ```
 
 # バイオリン・プロット

@@ -422,29 +422,123 @@ div.tocify {
 </div>
 
 
-<div id="箱ひげ図と頻度分布" class="section level1">
-<h1>箱ひげ図と頻度分布</h1>
-<pre class="r"><code># 組込データセット&quot;mtcars&quot;を読み込む
-data(mtcars, package=&quot;datasets&quot;)
-
-# シリンダー数を層別因子にする
-mtcars &lt;- within(mtcars, {
-    f.cyl &lt;- as.factor(cyl)
-})
-
-# シリンダー数毎のエンジン出力を層別プロットする
-boxplot(hp~f.cyl, data=mtcars, id.method=&quot;y&quot;, xlab=&quot;Number of cylinder&quot;, ylab=&quot;hp&quot;)
-
-# ドットチャートを上書きする
-stripchart(hp ~ f.cyl, vertical=TRUE, method=&quot;stack&quot;, data=mtcars, add=TRUE, col=&quot;red&quot;)</code></pre>
+<p>箱ひげ図（ボックスプロット）はヒストグラムと同様にデータの分布を確認するために利用される基本的なグラフです。ヒストグラムと最も異なるのは要約統計量に基づいたグラフを描く点です。</p>
 <p><img src="gr_boxplot_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p>箱ひげ図には様々なバリエーションがありますが[R <i class="fa fa-external-link"></i>][R]の箱ひげ図は下表の要約統計量を元に描かれます。</p>
+<table>
+<thead>
+<tr class="header">
+<th>項目</th>
+<th>計算式など</th>
+<th>図中での位置</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>上側極値</td>
+<td>外れ値を除いた最大値<sup>注1</sup></td>
+<td>上側のひげ</td>
+</tr>
+<tr class="even">
+<td>上側25%点</td>
+<td>第三四分位点</td>
+<td>箱の上側</td>
+</tr>
+<tr class="odd">
+<td>中央値</td>
+<td>第二四分位点</td>
+<td>箱内の太線</td>
+</tr>
+<tr class="even">
+<td>下側25%点</td>
+<td>第一四分位点</td>
+<td>箱の下側</td>
+</tr>
+<tr class="odd">
+<td>下側極値</td>
+<td>外れ値を除いた最小値<sup>注2</sup></td>
+<td>下側のひげ</td>
+</tr>
+</tbody>
+</table>
+<p><sup>注1</sup> <span class="math inline">\(上側25\%点 + 1.5 \times IQR\)</span><sup>注3</sup>以下の範囲で最も大きな値<br />
+<sup>注2</sup> <span class="math inline">\(下側25\%点 - 1.5 \times IQR\)</span><sup>注3</sup>以上の範囲で最も小さな値<br />
+<sup>注3</sup> <span class="math inline">\(IQR = 上側25\%点 - 下側25\%点\)</span></p>
+<p>上側極値と下側極値の外側にあるデータは外れ値になります。<br />
+　</p>
+<div id="必要なパッケージ" class="section level1">
+<h1>必要なパッケージ</h1>
+<p>本ページのコードを実行するには標準パッケージ以外に以下の追加パッケージを読み込んでおく必要があります。<br />
+　</p>
+<table>
+<thead>
+<tr class="header">
+<th>Packages</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>tidyverse</td>
+<td>Easily Install and Load the ‘Tidyverse’</td>
+</tr>
+</tbody>
+</table>
+<p>　</p>
 </div>
-<div id="全体箱ひげ図と層別箱ひげ図" class="section level1">
-<h1>全体箱ひげ図と層別箱ひげ図</h1>
-<pre class="r"><code># 組み込みデータセット&quot;iris&quot;を読み込む
-data(&quot;iris&quot;)
-
-# データセットを代入しておくとデータセット名が変わっても処理を変えずに済みます
+<div id="対象データ" class="section level1">
+<h1>対象データ</h1>
+<p>標準パッケージに組み込まれている以下のデータセットを用います。<br />
+　</p>
+<table>
+<thead>
+<tr class="header">
+<th>Dataset</th>
+<th>Package</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>iris</td>
+<td>datasets</td>
+</tr>
+</tbody>
+</table>
+<p>　</p>
+</div>
+<div id="標準パッケージを用いる方法" class="section level1">
+<h1>標準パッケージを用いる方法</h1>
+<p>標準パッケージを用いて箱ひげ図を描くには<code>boxplot</code>関数を用います。<code>boxplot</code>関数は引数の指定方法を変えることで二種類の箱ひげ図を描くことができます。<br />
+　</p>
+<div id="箱ひげ図" class="section level2">
+<h2>箱ひげ図</h2>
+<p>一つのベクトル変数を指定することで（単一の）箱ひげ図を描くことができます。<br />
+　</p>
+<pre class="r"><code>boxplot(iris$Sepal.Length, main = &quot;Sepal.Length&quot;)</code></pre>
+<p><img src="gr_boxplot_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>　</p>
+</div>
+<div id="層別箱ひげ図" class="section level2">
+<h2>層別箱ひげ図</h2>
+<p>因子を用いて層別の箱ひげ図を描く場合には<code>formula</code>形式で引数を指定してください。この場合、データはデータフレーム型であることが好ましいです。<br />
+　</p>
+<pre class="r"><code>boxplot(Sepal.Length ~ Species, data = iris, main = &quot;層別箱ひげ図&quot;)</code></pre>
+<p><img src="gr_boxplot_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+</div>
+<div id="箱ひげ図と頻度分布" class="section level2">
+<h2>箱ひげ図と頻度分布</h2>
+<p>箱ひげ図は前述のように要約統計量を用いていますのでデータの分布が見えません。ドットチャートを上書きすることでヒストグラムのような分布を描くことができます。<br />
+　</p>
+<pre class="r"><code>boxplot(Sepal.Length ~ Species, data = iris)
+stripchart(Sepal.Length ~ Species, data = iris, vertical = TRUE,
+           method = &quot;stack&quot;, add = TRUE, col = &quot;red&quot;)</code></pre>
+<p><img src="gr_boxplot_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+</div>
+<div id="全体箱ひげ図と層別箱ひげ図" class="section level2">
+<h2>全体箱ひげ図と層別箱ひげ図</h2>
+<p>層別データと層別していないデータをひとつの箱ひげ図として表示する場合は多少手間が必要ですが下記のようなコードで描くことができます。<br />
+　</p>
+<pre class="r"><code># データセットを代入しておくとデータセット名が変わっても処理を変えずに済みます
 x &lt;- iris
 x.lab = &quot;Species&quot;
 y.lab = &quot;Petal.Length&quot;
@@ -474,7 +568,106 @@ for (i in 1:length(type)) {
 
 # 最後に横軸名を描画する(除く全データ)
 axis(1, at = 1:length(type)+1, labels = type, tick = TRUE)</code></pre>
-<p><img src="gr_boxplot_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p><img src="gr_boxplot_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>　<br />
+なお、データ自体を加工して描くことも可能です。<br />
+　</p>
+</div>
+</div>
+<div id="追加パッケージを用いる方法" class="section level1">
+<h1>追加パッケージを用いる方法</h1>
+<p><code>ggplot2</code>パッケージには<code>ggplot2::geom_boxplot</code>という箱ひげ図を描くための関数が用意されています。<br />
+　</p>
+<div id="箱ひげ図-1" class="section level2">
+<h2>箱ひげ図</h2>
+<p><code>ggplot2::geom_boxplot</code>関数は層別で描くことを前提としているため単一の箱ひげ図を描きたい場合は引数<code>x</code>に任意の数値（ダミー）を指定してください。なお<code>boxplot</code>関数と異なりひげ（whisker）は描画されません。<br />
+　</p>
+<pre class="r"><code>iris %&gt;% 
+  ggplot2::ggplot(ggplot2::aes(x = 0, y = Sepal.Length)) +
+    ggplot2::geom_boxplot()</code></pre>
+<p><img src="gr_boxplot_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>　</p>
+</div>
+<div id="層別箱ひげ図-1" class="section level2">
+<h2>層別箱ひげ図</h2>
+<p>前述のように<code>ggplot2::geom_boxplot</code>関数は層別で描くことを前提としていますので、引数<code>x</code>に層別因子を指定するだけで層別箱ひげ図を描くことができます。<br />
+　</p>
+<pre class="r"><code>iris %&gt;% 
+  ggplot2::ggplot(ggplot2::aes(x = Species, y = Sepal.Length)) +
+    ggplot2::geom_boxplot()</code></pre>
+<p><img src="gr_boxplot_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+</div>
+<div id="箱ひげ図と頻度分布-1" class="section level2">
+<h2>箱ひげ図と頻度分布</h2>
+<p><code>ggplot2</code>パッケージを用いても箱ひげ図の上に<code>ggplot2::geom_dotplot</code>関数を用いることでドットチャートを描くことができます。</p>
+<pre class="r"><code>iris %&gt;% 
+  ggplot2::ggplot(ggplot2::aes(x = Species, y = Sepal.Length)) + 
+    ggplot2::geom_boxplot() + 
+    geom_dotplot(binaxis = &quot;y&quot;, dotsize = 0.75, stackdir = &quot;up&quot;, binwidth = 0.1)</code></pre>
+<p><img src="gr_boxplot_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>　</p>
+</div>
+<div id="箱ひげ図と平均値" class="section level2">
+<h2>箱ひげ図と平均値</h2>
+<p>箱ひげ図は前述のように要約統計量（四分位値）を用いていますので平均値の値は図示されません。平均値の値を図示したい場合は<code>ggplot2::stat_summary</code>関数を用います。</p>
+<pre class="r"><code>iris %&gt;% 
+  ggplot2::ggplot(ggplot2::aes(x = Species, y = Sepal.Length)) + 
+    ggplot2::geom_boxplot() + 
+    ggplot2::stat_summary(fun.y = mean, geom = &quot;point&quot;, colour = &quot;red&quot;)</code></pre>
+<p><img src="gr_boxplot_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p>　</p>
+</div>
+<div id="頻度分布と平均値の信頼区間" class="section level2">
+<h2>頻度分布と平均値の信頼区間</h2>
+<p><code>ggplot2</code>では様々なアレンジが簡単にできます。前出の頻度分布と平均値、更に平均値の95%信頼区間を箱ひげ図に重ねてみます。<br />
+　</p>
+<pre class="r"><code>iris %&gt;% 
+  ggplot2::ggplot(ggplot2::aes(x = Species, y = Sepal.Length)) + 
+    ggplot2::geom_boxplot(ggplot2::aes(colour = Species)) + 
+    ggplot2::stat_summary(fun.data = mean_sdl, fun.args = list(mult = 1),
+                          geom = &quot;pointrange&quot;, position = position_nudge(0.05),
+                          ggplot2::aes(colour = Species)) + 
+    geom_dotplot(binaxis = &quot;y&quot;, dotsize = 0.75, stackdir = &quot;down&quot;,
+                 binwidth = 0.1, position = position_nudge(-0.025),
+                 ggplot2::aes(fill = Species, colour = Species), alpha = 0.5)</code></pre>
+<p><img src="gr_boxplot_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+</div>
+</div>
+<div id="バイオリンプロット" class="section level1">
+<h1>バイオリン・プロット</h1>
+<p>バイオリン・プロットは確率密度</p>
+<pre class="r"><code>palette &lt;- &quot;Set2&quot;   # カラーパレットは`RColorBrewer::display.brewer.all()`
+
+iris %&gt;% 
+  ggplot2::ggplot(ggplot2::aes(x = Species, y = Sepal.Length, fill = Species)) + 
+  ggplot2::geom_violin(ggplot2::aes(colour = Species), alpha = 0.75) + 
+  ggplot2::stat_summary(fun.data = mean_sdl, fun.args = list(mult = 1),
+                        geom = &quot;pointrange&quot;, position = position_nudge(0.05)) + 
+  # mean_sdlは平均値とエラーバー
+  geom_dotplot(binaxis = &quot;y&quot;, dotsize = 0.5, stackdir = &quot;down&quot;, binwidth = 0.1, 
+               position = position_nudge(-0.0)) + 
+  # theme(legend.position = &quot;none&quot;) + 
+  labs(x = &quot;Species&quot;, y = &quot;Sepal length (cm)&quot;) +
+  ggplot2::scale_fill_brewer(palette = palette) +
+  ggplot2::scale_color_brewer(palette = palette)</code></pre>
+<p><img src="gr_boxplot_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+</div>
+<div id="フラットバイオリンプロット" class="section level1">
+<h1>フラットバイオリン・プロット</h1>
+</div>
+<div id="レインドロッププロット" class="section level1">
+<h1>レインドロップ・プロット</h1>
+<pre class="r"><code>iris %&gt;% 
+  ggplot2::ggplot(ggplot2::aes(x = Species, y = Sepal.Length, fill = Species,
+                               colour = Species)) + 
+  # geom_flat_violin(scale = &quot;count&quot;, trim = FALSE) + 
+  stat_summary(fun.data = mean_sdl, fun.args = list(mult = 1), 
+               geom = &quot;pointrange&quot;, position = position_nudge(0.05)) + 
+  geom_dotplot(binaxis = &quot;y&quot;, dotsize = 0.5, stackdir = &quot;down&quot;, binwidth = 0.1, 
+               position = position_nudge(-0.025)) + 
+  theme(legend.position = &quot;none&quot;) + 
+  labs(x = &quot;Species&quot;, y = &quot;Sepal length (cm)&quot;)</code></pre>
+<p><img src="gr_boxplot_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 <hr />
 </div>
 
