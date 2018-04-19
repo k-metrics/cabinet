@@ -66,4 +66,78 @@ for (i in 1:length(type)) {
 axis(1, at = 1:length(type)+1, labels = type, tick = TRUE)
 ```
 
+# 箱ひげ図（ボックスプロット）
+箱ひげ図は
+```{r}
+palette <- "Set2"   # カラーパレットは`RColorBrewer::display.brewer.all()`
+
+iris %>% 
+  ggplot2::ggplot(ggplot2::aes(x = Species, y = Sepal.Length)) + 
+  ggplot2::geom_boxplot(ggplot2::aes(colour = Species), alpha = 0.75) + 
+  ggplot2::stat_summary(fun.data = ggplot2::mean_se,  # mean_seは平均値と標準誤差
+                        fun.args = list(mult = 1),    # mean_seへの引数
+                        geom = "pointrange", position = position_nudge(0.0)) + 
+
+  # theme(legend.position = "none") + 
+  labs(x = "Species", y = "Sepal length (cm)") +
+  ggplot2::scale_fill_brewer(palette = palette) +
+  ggplot2::scale_color_brewer(palette = palette)
+```
+
+
+# ドットプロット
+箱ひげ図だけではデータの分布が見えません。箱ひげ図の便利さを活かしながらデータ分布を見るためにドットプロットを上書してみます。
+```{r}
+palette <- "Set2"   # カラーパレットは`RColorBrewer::display.brewer.all()`
+
+iris %>% 
+  ggplot2::ggplot(ggplot2::aes(x = Species, y = Sepal.Length)) + 
+  ggplot2::geom_boxplot(ggplot2::aes(colour = Species), alpha = 0.75) + 
+  ggplot2::stat_summary(fun.data = mean_sdl, fun.args = list(mult = 1),
+                        geom = "pointrange", position = position_nudge(0.05)) + 
+  # mean_sdlは平均値とエラーバー
+  geom_dotplot(binaxis = "y", dotsize = 0.75, stackdir = "down", binwidth = 0.1, 
+               position = position_nudge(-0.0),
+               ggplot2::aes(fill = Species, colour = Species)) + 
+  # theme(legend.position = "none") + 
+  labs(x = "Species", y = "Sepal length (cm)") +
+  ggplot2::scale_fill_brewer(palette = palette) +
+  ggplot2::scale_color_brewer(palette = palette)
+```
+
+# バイオリン・プロット
+バイオリン・プロットは確率密度
+```{r}
+palette <- "Set2"   # カラーパレットは`RColorBrewer::display.brewer.all()`
+
+iris %>% 
+  ggplot2::ggplot(ggplot2::aes(x = Species, y = Sepal.Length, fill = Species)) + 
+  ggplot2::geom_violin(ggplot2::aes(colour = Species), alpha = 0.75) + 
+  ggplot2::stat_summary(fun.data = mean_sdl, fun.args = list(mult = 1),
+                        geom = "pointrange", position = position_nudge(0.05)) + 
+  # mean_sdlは平均値とエラーバー
+  geom_dotplot(binaxis = "y", dotsize = 0.5, stackdir = "down", binwidth = 0.1, 
+               position = position_nudge(-0.0)) + 
+  # theme(legend.position = "none") + 
+  labs(x = "Species", y = "Sepal length (cm)") +
+  ggplot2::scale_fill_brewer(palette = palette) +
+  ggplot2::scale_color_brewer(palette = palette)
+```
+
+# フラットバイオリン・プロット
+
+# レインドロップ・プロット
+```{r}
+iris %>% 
+  ggplot2::ggplot(ggplot2::aes(x = Species, y = Sepal.Length, fill = Species,
+                               colour = Species)) + 
+  # geom_flat_violin(scale = "count", trim = FALSE) + 
+  stat_summary(fun.data = mean_sdl, fun.args = list(mult = 1), 
+               geom = "pointrange", position = position_nudge(0.05)) + 
+  geom_dotplot(binaxis = "y", dotsize = 0.5, stackdir = "down", binwidth = 0.1, 
+               position = position_nudge(-0.025)) + 
+  theme(legend.position = "none") + 
+  labs(x = "Species", y = "Sepal length (cm)")
+```
+
 ---
