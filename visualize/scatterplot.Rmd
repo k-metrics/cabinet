@@ -6,8 +6,11 @@ output:
     css: style.css
 ---
 
-```{r scatterplot, child="../shared/links.Rmd"}
+<!-- 注： carパッケージは新しいバージョンにおいてcar::scatterplotの引数が
+          変更されている。
+-->
 
+```{r scatterplot, child="../shared/links.Rmd"}
 ```
 
 ```{r setup, include=FALSE}
@@ -61,7 +64,8 @@ plot(iris$Sepal.Length, iris$Sepal.Width, type = "p")
 `ggplot2`パッケージ以外にも散布図を描くのに便利な関数がありますので、これらも含めて紹介します。
 
 ## 周辺箱ひげ図付き散布図
-`car`パッケージの`car::scatterplot`関数は[R Commander <i class="fa fa-external-link"></i>][Rcmdr]で散布図を描く際に呼び出されている関数です。特徴は両軸に箱ひげ図（周辺箱ひげ図）を描がける点です。
+`car`パッケージの`car::scatterplot`関数は[R Commander <i class="fa fa-external-link"></i>][Rcmdr]で散布図を描く際に呼び出されている関数です。特徴は両軸に箱ひげ図（周辺箱ひげ図）を描がける点です。ただし、`car`パッケージのv3.0-0版では引数名などがv2.1-6から大きく変わっていますので注意してください。  
+　  
 
 ```{r}
 car::scatterplot(Sepal.Width ~ Sepal.Length, data = iris)
@@ -89,7 +93,7 @@ iris %>%
 
 ```{r}
 car::scatterplot(Sepal.Width ~ Sepal.Length, data = iris, groups = iris$Species,
-                 reg.line = FALSE, smooth = FALSE, spread = FALSE)
+                 regLine = FALSE, smooth = FALSE)
 ```
 
 　  
@@ -104,12 +108,12 @@ iris %>%
 ```
 
 ## 散布図と回帰線
-散布図は前述のように相関関係や回帰分析の際に利用されますので回帰線を描ける必要があります。  
+散布図は前述のように相関関係や回帰分析の際に利用されますので回帰線も描ける必要があります。  
+`car::scatterplot`関数ではデフォルトで回帰直線を描けますが明示的に指定する場合は`regLine`オプションに`"lm"`を指定してください（v2.1-6では`reg.line`オプションです）。なお、v3.0-0では散布図を層別描画するための`groups`オプションを指定し回帰直線を層別描画させないように`by.groups = FALSE`を指定すると散布図が正しく描けないようですので注意してください。  
 　  
 
 ```{r}
-car::scatterplot(Sepal.Width ~ Sepal.Length, data = iris, by.groups = FALSE,
-                 groups = iris$Species, smooth = FALSE, spread = FALSE)
+car::scatterplot(Sepal.Width ~ Sepal.Length, data = iris, smooth = FALSE)
 ```
 
 　  
@@ -132,7 +136,7 @@ iris %>%
 
 ```{r}
 car::scatterplot(Sepal.Width ~ Sepal.Length, data = iris, by.groups = TRUE,
-                 groups = iris$Species, smooth = FALSE, spread = FALSE)
+                 groups = iris$Species, smooth = FALSE)
 ```
 
 　  
@@ -155,8 +159,7 @@ iris %>%
 　  
 
 ```{r}
-car::scatterplot(mpg ~ hp, data = mtcars, reg.line = lm, smooth = FALSE,
-                 span = 0.5, spread = FALSE, boxplots = FALSE)
+car::scatterplot(mpg ~ hp, data = mtcars, smooth = FALSE, boxplots = FALSE)
 with(mtcars, maptools::pointLabel(x = hp, y = mpg,
                                   labels = row.names.data.frame(mtcars),
                                   col = "red", cex = 0.75))

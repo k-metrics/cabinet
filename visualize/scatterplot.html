@@ -311,10 +311,10 @@ div.tocify {
     </li>
     <li class="dropdown-header">散布図行列</li>
     <li>
-      <a href="gr_QQplot.html">QQプロット</a>
+      <a href="qqplot.html">QQプロット</a>
     </li>
     <li>
-      <a href="gr_predict.html">信頼区間と予測区間</a>
+      <a href="predict.html">信頼区間と予測区間</a>
     </li>
     <li>
       <a href="ggrepel.html">ラベルが重ならないように描画する</a>
@@ -422,6 +422,9 @@ div.tocify {
 </div>
 
 
+<!-- 注： carパッケージは新しいバージョンにおいてcar::scatterplotの引数が
+          変更されている。
+-->
 <!-- SQiP and others -->
 <!-- Books -->
 <!-- 共立出版 -->
@@ -506,7 +509,8 @@ div.tocify {
 <p><code>ggplot2</code>パッケージ以外にも散布図を描くのに便利な関数がありますので、これらも含めて紹介します。</p>
 <div id="周辺箱ひげ図付き散布図" class="section level2">
 <h2>周辺箱ひげ図付き散布図</h2>
-<p><code>car</code>パッケージの<code>car::scatterplot</code>関数は<a href="https://socialsciences.mcmaster.ca/jfox/Misc/Rcmdr/" target="_blank" title="The R Commander: A Basic-Statistics GUI for R">R Commander <i class="fa fa-external-link"></i></a>で散布図を描く際に呼び出されている関数です。特徴は両軸に箱ひげ図（周辺箱ひげ図）を描がける点です。</p>
+<p><code>car</code>パッケージの<code>car::scatterplot</code>関数は<a href="https://socialsciences.mcmaster.ca/jfox/Misc/Rcmdr/" target="_blank" title="The R Commander: A Basic-Statistics GUI for R">R Commander <i class="fa fa-external-link"></i></a>で散布図を描く際に呼び出されている関数です。特徴は両軸に箱ひげ図（周辺箱ひげ図）を描がける点です。ただし、<code>car</code>パッケージのv3.0-0版では引数名などがv2.1-6から大きく変わっていますので注意してください。<br />
+　</p>
 <pre class="r"><code>car::scatterplot(Sepal.Width ~ Sepal.Length, data = iris)</code></pre>
 <p><img src="scatterplot_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
 <p>　<br />
@@ -528,7 +532,7 @@ div.tocify {
 <p><code>car::scatterplot</code>関数は層別の散布図を描くことも可能です。ここでは分かりやすくするために回帰線などは描いていません。<br />
 　</p>
 <pre class="r"><code>car::scatterplot(Sepal.Width ~ Sepal.Length, data = iris, groups = iris$Species,
-                 reg.line = FALSE, smooth = FALSE, spread = FALSE)</code></pre>
+                 regLine = FALSE, smooth = FALSE)</code></pre>
 <p><img src="scatterplot_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 <p>　</p>
 <p><code>ggplot2::geom_point</code>関数で層別表示を行うには<code>ggplot2::aes</code>関数を用いて色を変える場合は<code>colour</code>オプションを層別でマーカの形を変える場合は<code>shape</code>オプションを指定してください。<br />
@@ -540,10 +544,10 @@ div.tocify {
 </div>
 <div id="散布図と回帰線" class="section level2">
 <h2>散布図と回帰線</h2>
-<p>散布図は前述のように相関関係や回帰分析の際に利用されますので回帰線を描ける必要があります。<br />
+<p>散布図は前述のように相関関係や回帰分析の際に利用されますので回帰線も描ける必要があります。<br />
+<code>car::scatterplot</code>関数ではデフォルトで回帰直線を描けますが明示的に指定する場合は<code>regLine</code>オプションに<code>&quot;lm&quot;</code>を指定してください（v2.1-6では<code>reg.line</code>オプションです）。なお、v3.0-0では散布図を層別描画するための<code>groups</code>オプションを指定し回帰直線を層別描画させないように<code>by.groups = FALSE</code>を指定すると散布図が正しく描けないようですので注意してください。<br />
 　</p>
-<pre class="r"><code>car::scatterplot(Sepal.Width ~ Sepal.Length, data = iris, by.groups = FALSE,
-                 groups = iris$Species, smooth = FALSE, spread = FALSE)</code></pre>
+<pre class="r"><code>car::scatterplot(Sepal.Width ~ Sepal.Length, data = iris, smooth = FALSE)</code></pre>
 <p><img src="scatterplot_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <p>　</p>
 <p><code>ggplot2</code>パッケージで回帰線を描くためには<code>ggplot2::geom_point</code>関数に加えて<code>ggplot2::geom_smooth</code>関数を用います。デフォルトでは回帰線の計算方法は自動選択になっていますので回帰直線を描きたい場合はには<code>method</code>オプションに<code>&quot;lm&quot;</code>を指定してください。<br />
@@ -560,7 +564,7 @@ div.tocify {
 <p><code>car::scatterplot</code>関数は層別の回帰線も描けます。<code>groups</code>オプションが指定されていると自動的に層別の回帰線を描きますが明示的に指定したい場合は<code>by.groups</code>オプションを<code>TRUE</code>に指定してください。<br />
 　</p>
 <pre class="r"><code>car::scatterplot(Sepal.Width ~ Sepal.Length, data = iris, by.groups = TRUE,
-                 groups = iris$Species, smooth = FALSE, spread = FALSE)</code></pre>
+                 groups = iris$Species, smooth = FALSE)</code></pre>
 <p><img src="scatterplot_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 <p>　</p>
 <p><code>ggplot2</code>パッケージで層別の回帰線を描には<code>ggplot2::aes</code>関数の指定位置を変更するのが簡単です。<br />
@@ -578,8 +582,7 @@ div.tocify {
 <h1>ラベルを表示する</h1>
 <p>散布図はデータの数が多いことが多くどのデータか識別するためにテキストラベル（以降、ラベルと表記）を表示したいことがあります。ラベル表示は追加パッケージを用いると比較的簡単にできます。<br />
 　</p>
-<pre class="r"><code>car::scatterplot(mpg ~ hp, data = mtcars, reg.line = lm, smooth = FALSE,
-                 span = 0.5, spread = FALSE, boxplots = FALSE)
+<pre class="r"><code>car::scatterplot(mpg ~ hp, data = mtcars, smooth = FALSE, boxplots = FALSE)
 with(mtcars, maptools::pointLabel(x = hp, y = mpg,
                                   labels = row.names.data.frame(mtcars),
                                   col = &quot;red&quot;, cex = 0.75))</code></pre>
@@ -601,7 +604,7 @@ with(mtcars, maptools::pointLabel(x = hp, y = mpg,
 <p>　</p>
 <p>データ数が多いとどうしてもラベルが重なってしまいます。ラベルが重なってしまうのを避ける方法は<a href="./ggrepel.html">ラベルが重ならないように描画する</a>を参照してください。</p>
 <hr />
-<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-04-20 22:33(JST)]</p>
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-04-20 23:18(JST)]</p>
 </div>
 
 

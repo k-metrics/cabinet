@@ -311,10 +311,10 @@ div.tocify {
     </li>
     <li class="dropdown-header">散布図行列</li>
     <li>
-      <a href="gr_QQplot.html">QQプロット</a>
+      <a href="qqplot.html">QQプロット</a>
     </li>
     <li>
-      <a href="gr_predict.html">信頼区間と予測区間</a>
+      <a href="predict.html">信頼区間と予測区間</a>
     </li>
     <li>
       <a href="ggrepel.html">ラベルが重ならないように描画する</a>
@@ -480,7 +480,7 @@ div.tocify {
     ggplot2::theme_minimal() +
     ggplot2::ggtitle(&quot;萼片幅の分布&quot;) +
     ggplot2::labs(x = &quot;萼片幅&quot;, y = &quot;度数&quot;)</code></pre>
-<p><img src="gr_QQplot_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p><img src="qqplot_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
 <p>萼片幅の分布はグラフから見て正規分布のように見えます。</p>
 <p>　</p>
 </div>
@@ -488,7 +488,7 @@ div.tocify {
 <h1>標準パッケージを用いる方法</h1>
 <pre class="r"><code>qqnorm(iris$Sepal.Width)
 qqline(iris$Sepal.Width)</code></pre>
-<p><img src="gr_QQplot_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p><img src="qqplot_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
 <p>　</p>
 </div>
 <div id="追加パッケージを用いる方法" class="section level1">
@@ -500,7 +500,7 @@ qqline(iris$Sepal.Width)</code></pre>
     ggplot2::geom_qq() +
     ggplot2::theme_minimal() +
     ggplot2::labs(x = &quot;Theoretical Quantiles&quot;, y = &quot;Sample Quantiles&quot;)</code></pre>
-<p><img src="gr_QQplot_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p><img src="qqplot_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 <p>　</p>
 <div id="qqplotr" class="section level2">
 <h2>qqplotr</h2>
@@ -516,7 +516,7 @@ qqline(iris$Sepal.Width)</code></pre>
                            dparams = list(mean = 0, sd = 1)) +
     ggplot2::theme_minimal() +
     ggplot2::labs(x = &quot;Theoretical Quantiles&quot;, y = &quot;Sample Quantiles&quot;)</code></pre>
-<p><img src="gr_QQplot_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p><img src="qqplot_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 <p>　</p>
 </div>
 <div id="層別で描く" class="section level2">
@@ -543,7 +543,7 @@ gg_hist &lt;- iris %&gt;%
     ggplot2::facet_wrap(~ Species)
 
 gridExtra::grid.arrange(gg_qq, gg_hist)</code></pre>
-<p><img src="gr_QQplot_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p><img src="qqplot_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 <p>　<br />
 ## 正規分布以外との比較例 正規分布以外の確率分布ととのQQプロットを描いてみます。対象データは組み込みデータセット<code>airquality</code>にあるオゾン濃度を使います。</p>
 <pre class="r"><code>airquality %&gt;% 
@@ -552,7 +552,7 @@ gridExtra::grid.arrange(gg_qq, gg_hist)</code></pre>
     ggplot2::geom_histogram(bins = 20) +
     ggplot2::theme_minimal() +
     ggplot2::labs(x = &quot;オゾン濃度&quot;, y = &quot;度数&quot;)</code></pre>
-<p><img src="gr_QQplot_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p><img src="qqplot_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <p>データは右に歪んだ分布になっていますので正規分布と言うには無理があります。指数分布に近いように見えますので、指数分布を用いたQQプロットを描いてみます。</p>
 <pre class="r"><code>airquality %&gt;% 
   tidyr::drop_na(Ozone) %&gt;% 
@@ -562,7 +562,7 @@ gridExtra::grid.arrange(gg_qq, gg_hist)</code></pre>
     qqplotr::stat_qq_point(distribution = &quot;exp&quot;, dparams = list(rate = 2)) +
     ggplot2::theme_minimal() +
     labs(x = &quot;Theoretical Quantiles&quot;, y = &quot;Sample Quantiles&quot;)</code></pre>
-<p><img src="gr_QQplot_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p><img src="qqplot_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 <p>　</p>
 </div>
 </div>
@@ -577,7 +577,7 @@ gridExtra::grid.arrange(gg_qq, gg_hist)</code></pre>
     qqplotr::stat_pp_point() +
     ggplot2::theme_minimal() +
     ggplot2::labs(x = &quot;Probability Points&quot;, y = &quot;Cumulative Probability&quot;)</code></pre>
-<p><img src="gr_QQplot_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p><img src="qqplot_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 <p>　</p>
 </div>
 <div id="参考資料" class="section level1">
@@ -590,7 +590,7 @@ gridExtra::grid.arrange(gg_qq, gg_hist)</code></pre>
 <p>　</p>
 <hr />
 <!-- Footer -->
-<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-04-20 22:16(JST)]</p>
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-04-20 23:17(JST)]</p>
 </div>
 
 
