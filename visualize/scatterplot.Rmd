@@ -1,0 +1,194 @@
+---
+title: "散布図"
+output:
+  html_document:
+    code_folding: show
+    css: style.css
+---
+
+```{r scatterplot, child="../shared/links.Rmd"}
+
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+require(tidyverse)
+require(car)
+require(maptools)
+
+tidyverse::tidyverse_conflicts()
+```
+
+散布図は二つのデータの関係を把握するために利用される基本的なグラフです。散布図は相関関係の把握や単回帰分析の際によく使われます。  
+　  
+
+# 必要なパッケージ
+本ページのコードを実行するには標準パッケージ以外に以下の追加パッケージを読み込んでおく必要があります。  
+　
+
+Package   | Description
+----------|------------
+tidyverse | Easily Install and Load the 'Tidyverse'
+car       | Companion to Applied Regression
+maptools  | Tools for Reading and Handling Spatial Objects
+
+　  
+
+# 対象データ
+標準パッケージに組み込まれている以下のデータセットを用います。
+
+　  
+
+Dataset | Package
+--------|--------
+iris    | datasets
+mtcars  | datasets
+
+　  
+
+# 標準パッケージを用いる方法
+標準パッケージを用いて箱ひげ図を描くには`plot`関数を用います。`plot`関数は様々なグラフを描くことが可能ですが`x`、`y`オプションにデータを指定すると自動的に散布図が指定されます。明示的に散布図を指定したい場合は`type`オプションに`"p"`を指定してください。なお、`formula`形式でデータを指定することも可能です。  
+　  
+
+```{r}
+plot(iris$Sepal.Length, iris$Sepal.Width, type = "p")
+```
+
+　  
+
+# 追加パッケージを用いる方法
+`ggplot2`パッケージ以外にも散布図を描くのに便利な関数がありますので、これらも含めて紹介します。
+
+## 周辺箱ひげ図付き散布図
+`car`パッケージの`car::scatterplot`関数は[R Commander <i class="fa fa-external-link"></i>][Rcmdr]で散布図を描く際に呼び出されている関数です。特徴は両軸に箱ひげ図（周辺箱ひげ図）を描がける点です。
+
+```{r}
+car::scatterplot(Sepal.Width ~ Sepal.Length, data = iris)
+```
+
+　  
+ただし、デフォルトでは上図のように回帰線なども描かれてしまいますので必要に応じてオプションで描画しないように設定してください。  
+　  
+
+## 散布図
+`ggplot2`パッケージでは`ggplot2::geom_point`関数を用いることで散布図を描くことができます。  
+　  
+
+```{r}
+iris %>% 
+  ggplot2::ggplot(ggplot2::aes(x = Sepal.Length, y = Sepal.Width)) +
+    ggplot2::geom_point()
+```
+
+　  
+
+## 層別散布図
+`car::scatterplot`関数は層別の散布図を描くことも可能です。ここでは分かりやすくするために回帰線などは描いていません。  
+　  
+
+```{r}
+car::scatterplot(Sepal.Width ~ Sepal.Length, data = iris, groups = iris$Species,
+                 reg.line = FALSE, smooth = FALSE, spread = FALSE)
+```
+
+　  
+
+`ggplot2::geom_point`関数で層別表示を行うには`ggplot2::aes`関数を用いて色を変える場合は`colour`オプションを層別でマーカの形を変える場合は`shape`オプションを指定してください。  
+　  
+
+```{r}
+iris %>% 
+  ggplot2::ggplot(ggplot2::aes(x = Sepal.Length, y = Sepal.Width)) +
+    ggplot2::geom_point(ggplot2::aes(colour = Species, shape = Species))
+```
+
+## 散布図と回帰線
+散布図は前述のように相関関係や回帰分析の際に利用されますので回帰線を描ける必要があります。  
+　  
+
+```{r}
+car::scatterplot(Sepal.Width ~ Sepal.Length, data = iris, by.groups = FALSE,
+                 groups = iris$Species, smooth = FALSE, spread = FALSE)
+```
+
+　  
+
+`ggplot2`パッケージで回帰線を描くためには`ggplot2::geom_point`関数に加えて`ggplot2::geom_smooth`関数を用います。デフォルトでは回帰線の計算方法は自動選択になっていますので回帰直線を描きたい場合はには`method`オプションに`"lm"`を指定してください。  
+　  
+
+```{r}
+iris %>% 
+  ggplot2::ggplot(ggplot2::aes(x = Sepal.Length, y = Sepal.Width)) +
+    ggplot2::geom_point(ggplot2::aes(colour = Species, shape = Species)) +
+    ggplot2::geom_smooth(method = "lm", se = FALSE)
+```
+
+　  
+
+## 散布図と層別の回帰線
+`car::scatterplot`関数は層別の回帰線も描けます。`groups`オプションが指定されていると自動的に層別の回帰線を描きますが明示的に指定したい場合は`by.groups`オプションを`TRUE`に指定してください。  
+　  
+
+```{r}
+car::scatterplot(Sepal.Width ~ Sepal.Length, data = iris, by.groups = TRUE,
+                 groups = iris$Species, smooth = FALSE, spread = FALSE)
+```
+
+　  
+
+`ggplot2`パッケージで層別の回帰線を描には`ggplot2::aes`関数の指定位置を変更するのが簡単です。  
+　  
+
+```{r}
+iris %>% 
+  ggplot2::ggplot(ggplot2::aes(x = Sepal.Length, y = Sepal.Width,
+                               colour = Species, shape = Species)) +
+    ggplot2::geom_point() +
+    ggplot2::geom_smooth(method = "lm", se = FALSE)
+```
+
+　  
+
+# ラベルを表示する
+散布図はデータの数が多いことが多くどのデータか識別するためにテキストラベル（以降、ラベルと表記）を表示したいことがあります。ラベル表示は追加パッケージを用いると比較的簡単にできます。  
+　  
+
+```{r}
+car::scatterplot(mpg ~ hp, data = mtcars, reg.line = lm, smooth = FALSE,
+                 span = 0.5, spread = FALSE, boxplots = FALSE)
+with(mtcars, maptools::pointLabel(x = hp, y = mpg,
+                                  labels = row.names.data.frame(mtcars),
+                                  col = "red", cex = 0.75))
+```
+
+　  
+
+`ggplot2`パッケージでは`ggplot2::geom_text`関数または`ggplot2::geom_label`関数を用います。  
+　  
+
+```{r}
+mtcars %>% 
+  ggplot2::ggplot(ggplot2::aes(x = wt, y = mpg, colour = as.factor(cyl))) + 
+    ggplot2::geom_point(size = 3) + 
+    ggplot2::geom_text(ggplot2::aes(label = rownames(.)))
+```
+
+　  
+
+```{r}
+mtcars %>% 
+  ggplot2::ggplot(ggplot2::aes(x = wt, y = mpg, colour = as.factor(cyl))) + 
+    ggplot2::geom_point(size = 3) + 
+    ggplot2::geom_label(ggplot2::aes(label = rownames(.)))
+```
+
+　  
+
+データ数が多いとどうしてもラベルが重なってしまいます。ラベルが重なってしまうのを避ける方法は[ラベルが重ならないように描画する](./ggrepel.html)を参照してください。
+
+---
+
+```{r, child="../shared/footer.Rmd"}
+
+```
