@@ -192,14 +192,12 @@ iris %>%
 ```{r}
 iris %>% 
   ggplot2::ggplot(ggplot2::aes(x = Species, y = Sepal.Length)) + 
-    ggplot2::geom_boxplot(ggplot2::aes(colour = Species)) + 
+    ggplot2::geom_boxplot() + 
     ggplot2::stat_summary(fun.data = mean_sdl, fun.args = list(mult = 1),
                           geom = "pointrange", position = position_nudge(0.05),
-                          ggplot2::aes(colour = Species)) + 
+                          colour = "red") + 
     ggplot2::geom_dotplot(binaxis = "y", dotsize = 0.75, stackdir = "down",
-                          binwidth = 0.1, position = position_nudge(-0.025),
-                          ggplot2::aes(fill = Species, colour = Species),
-                          alpha = 0.5)
+                          binwidth = 0.1, position = position_nudge(-0.025))
 ```
 
 　  
