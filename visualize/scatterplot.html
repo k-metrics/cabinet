@@ -11,7 +11,7 @@
 
 
 
-<title>scatterplot</title>
+<title>散布図</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -307,7 +307,7 @@ div.tocify {
       <a href="boxplot.html">箱ひげ図</a>
     </li>
     <li>
-      <a href="gr_scatterplot.html">散布図</a>
+      <a href="scatterplot.html">散布図</a>
     </li>
     <li class="dropdown-header">散布図行列</li>
     <li>
@@ -417,50 +417,191 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">scatterplot</h1>
+<h1 class="title toc-ignore">散布図</h1>
 
 </div>
 
 
-<div id="散布図にラベルを表示する" class="section level1">
-<h1>散布図にラベルを表示する</h1>
-<pre class="r"><code># 組込データセット&quot;mtcars&quot;を読み込む
-data(mtcars, package = &quot;datasets&quot;)
-
-# 散布図を描く（周辺箱ひげ図と外れ値ラベルは描かない）
-#   周辺箱ひげ図を描くと描画原点と軸原点がずれるようで、ラベル表示位置がズレます
-scatterplot(mpg ~ hp, data = mtcars, reg.line = lm, smooth = FALSE, span = 0.5,
-            spread = FALSE, boxplots = FALSE)
-
-# 全点に対してラベル（シリンダ数）を描く
-with(mtcars, pointLabel(x = hp, y = mpg, labels = row.names.data.frame(mtcars),
-                        col = &quot;red&quot;, cex = 0.75))</code></pre>
-<p><img src="gr_scatterplot_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
-<pre class="r"><code>Dataset &lt;- read.table(&quot;clipboard&quot;, header=TRUE, sep=&quot;\t&quot;, na.strings=&quot;NA&quot;,
-                      dec=&quot;.&quot;, strip.white=TRUE, row.names=1)</code></pre>
-<pre class="r"><code># 組込データセット&quot;mtcars&quot;を読み込む
-data(mtcars, package=&quot;datasets&quot;)
-
-# シリンダ数を層別因子にする
-mtcars &lt;- within(mtcars, {
-    f.cyl &lt;- as.factor(cyl)
-})
-
-# 散布図を描く
-#   データセット内に&quot;row.names&quot;というデータ行があると自動的にそのデータ行が使用されます
-scatterplot(mpg~hp, reg.line=lm, smooth=FALSE, spread=FALSE, id.method=&#39;mahal&#39;,
-            id.n = 2, boxplots=&#39;xy&#39;, span=0.5, data=mtcars)</code></pre>
-<p><img src="gr_scatterplot_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
-<pre><code>## Toyota Corolla  Maserati Bora 
-##             20             31</code></pre>
-<pre class="r"><code># 散布図を描く
-#   ラベルとして層別因子にしたシリンダ数を利用した場合
-scatterplot(mpg~hp, reg.line=lm, smooth=FALSE, spread=FALSE,
-            labels=mtcars$f.cyl, id.method=&#39;mahal&#39;, id.n = 2, boxplots=&#39;xy&#39;,
-            span=0.5, data=mtcars)</code></pre>
-<p><img src="gr_scatterplot_files/figure-html/unnamed-chunk-3-2.png" width="672" /></p>
-<pre><code>##  4  8 
-## 20 31</code></pre>
+<!-- SQiP and others -->
+<!-- Books -->
+<!-- 共立出版 -->
+<!-- 日科技連出版 -->
+<!-- O'Reilly Japan -->
+<!-- 東京図書 -->
+<!-- Docker -->
+<!-- eBooks -->
+<!-- Net Community -->
+<!-- Style Guide -->
+<!-- Creative Commons -->
+<!-- Others -->
+<!-- R -->
+<!-- R Packages -->
+<!-- RStudio -->
+<!-- Docker -->
+<!-- Cabinet Pages -->
+<p>散布図は二つのデータの関係を把握するために利用される基本的なグラフです。散布図は相関関係の把握や単回帰分析の際によく使われます。<br />
+　</p>
+<div id="必要なパッケージ" class="section level1">
+<h1>必要なパッケージ</h1>
+<p>本ページのコードを実行するには標準パッケージ以外に以下の追加パッケージを読み込んでおく必要があります。<br />
+　</p>
+<table>
+<thead>
+<tr class="header">
+<th>Package</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>tidyverse</td>
+<td>Easily Install and Load the ‘Tidyverse’</td>
+</tr>
+<tr class="even">
+<td>car</td>
+<td>Companion to Applied Regression</td>
+</tr>
+<tr class="odd">
+<td>maptools</td>
+<td>Tools for Reading and Handling Spatial Objects</td>
+</tr>
+</tbody>
+</table>
+<p>　</p>
+</div>
+<div id="対象データ" class="section level1">
+<h1>対象データ</h1>
+<p>標準パッケージに組み込まれている以下のデータセットを用います。</p>
+<p>　</p>
+<table>
+<thead>
+<tr class="header">
+<th>Dataset</th>
+<th>Package</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>iris</td>
+<td>datasets</td>
+</tr>
+<tr class="even">
+<td>mtcars</td>
+<td>datasets</td>
+</tr>
+</tbody>
+</table>
+<p>　</p>
+</div>
+<div id="標準パッケージを用いる方法" class="section level1">
+<h1>標準パッケージを用いる方法</h1>
+<p>標準パッケージを用いて箱ひげ図を描くには<code>plot</code>関数を用います。<code>plot</code>関数は様々なグラフを描くことが可能ですが<code>x</code>、<code>y</code>オプションにデータを指定すると自動的に散布図が指定されます。明示的に散布図を指定したい場合は<code>type</code>オプションに<code>&quot;p&quot;</code>を指定してください。なお、<code>formula</code>形式でデータを指定することも可能です。<br />
+　</p>
+<pre class="r"><code>plot(iris$Sepal.Length, iris$Sepal.Width, type = &quot;p&quot;)</code></pre>
+<p><img src="scatterplot_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p>　</p>
+</div>
+<div id="追加パッケージを用いる方法" class="section level1">
+<h1>追加パッケージを用いる方法</h1>
+<p><code>ggplot2</code>パッケージ以外にも散布図を描くのに便利な関数がありますので、これらも含めて紹介します。</p>
+<div id="周辺箱ひげ図付き散布図" class="section level2">
+<h2>周辺箱ひげ図付き散布図</h2>
+<p><code>car</code>パッケージの<code>car::scatterplot</code>関数は<a href="https://socialsciences.mcmaster.ca/jfox/Misc/Rcmdr/" target="_blank" title="The R Commander: A Basic-Statistics GUI for R">R Commander <i class="fa fa-external-link"></i></a>で散布図を描く際に呼び出されている関数です。特徴は両軸に箱ひげ図（周辺箱ひげ図）を描がける点です。</p>
+<pre class="r"><code>car::scatterplot(Sepal.Width ~ Sepal.Length, data = iris)</code></pre>
+<p><img src="scatterplot_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>　<br />
+ただし、デフォルトでは上図のように回帰線なども描かれてしまいますので必要に応じてオプションで描画しないように設定してください。<br />
+　</p>
+</div>
+<div id="散布図" class="section level2">
+<h2>散布図</h2>
+<p><code>ggplot2</code>パッケージでは<code>ggplot2::geom_point</code>関数を用いることで散布図を描くことができます。<br />
+　</p>
+<pre class="r"><code>iris %&gt;% 
+  ggplot2::ggplot(ggplot2::aes(x = Sepal.Length, y = Sepal.Width)) +
+    ggplot2::geom_point()</code></pre>
+<p><img src="scatterplot_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>　</p>
+</div>
+<div id="層別散布図" class="section level2">
+<h2>層別散布図</h2>
+<p><code>car::scatterplot</code>関数は層別の散布図を描くことも可能です。ここでは分かりやすくするために回帰線などは描いていません。<br />
+　</p>
+<pre class="r"><code>car::scatterplot(Sepal.Width ~ Sepal.Length, data = iris, groups = iris$Species,
+                 reg.line = FALSE, smooth = FALSE, spread = FALSE)</code></pre>
+<p><img src="scatterplot_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>　</p>
+<p><code>ggplot2::geom_point</code>関数で層別表示を行うには<code>ggplot2::aes</code>関数を用いて色を変える場合は<code>colour</code>オプションを層別でマーカの形を変える場合は<code>shape</code>オプションを指定してください。<br />
+　</p>
+<pre class="r"><code>iris %&gt;% 
+  ggplot2::ggplot(ggplot2::aes(x = Sepal.Length, y = Sepal.Width)) +
+    ggplot2::geom_point(ggplot2::aes(colour = Species, shape = Species))</code></pre>
+<p><img src="scatterplot_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+</div>
+<div id="散布図と回帰線" class="section level2">
+<h2>散布図と回帰線</h2>
+<p>散布図は前述のように相関関係や回帰分析の際に利用されますので回帰線を描ける必要があります。<br />
+　</p>
+<pre class="r"><code>car::scatterplot(Sepal.Width ~ Sepal.Length, data = iris, by.groups = FALSE,
+                 groups = iris$Species, smooth = FALSE, spread = FALSE)</code></pre>
+<p><img src="scatterplot_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>　</p>
+<p><code>ggplot2</code>パッケージで回帰線を描くためには<code>ggplot2::geom_point</code>関数に加えて<code>ggplot2::geom_smooth</code>関数を用います。デフォルトでは回帰線の計算方法は自動選択になっていますので回帰直線を描きたい場合はには<code>method</code>オプションに<code>&quot;lm&quot;</code>を指定してください。<br />
+　</p>
+<pre class="r"><code>iris %&gt;% 
+  ggplot2::ggplot(ggplot2::aes(x = Sepal.Length, y = Sepal.Width)) +
+    ggplot2::geom_point(ggplot2::aes(colour = Species, shape = Species)) +
+    ggplot2::geom_smooth(method = &quot;lm&quot;, se = FALSE)</code></pre>
+<p><img src="scatterplot_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>　</p>
+</div>
+<div id="散布図と層別の回帰線" class="section level2">
+<h2>散布図と層別の回帰線</h2>
+<p><code>car::scatterplot</code>関数は層別の回帰線も描けます。<code>groups</code>オプションが指定されていると自動的に層別の回帰線を描きますが明示的に指定したい場合は<code>by.groups</code>オプションを<code>TRUE</code>に指定してください。<br />
+　</p>
+<pre class="r"><code>car::scatterplot(Sepal.Width ~ Sepal.Length, data = iris, by.groups = TRUE,
+                 groups = iris$Species, smooth = FALSE, spread = FALSE)</code></pre>
+<p><img src="scatterplot_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>　</p>
+<p><code>ggplot2</code>パッケージで層別の回帰線を描には<code>ggplot2::aes</code>関数の指定位置を変更するのが簡単です。<br />
+　</p>
+<pre class="r"><code>iris %&gt;% 
+  ggplot2::ggplot(ggplot2::aes(x = Sepal.Length, y = Sepal.Width,
+                               colour = Species, shape = Species)) +
+    ggplot2::geom_point() +
+    ggplot2::geom_smooth(method = &quot;lm&quot;, se = FALSE)</code></pre>
+<p><img src="scatterplot_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p>　</p>
+</div>
+</div>
+<div id="ラベルを表示する" class="section level1">
+<h1>ラベルを表示する</h1>
+<p>散布図はデータの数が多いことが多くどのデータか識別するためにテキストラベル（以降、ラベルと表記）を表示したいことがあります。ラベル表示は追加パッケージを用いると比較的簡単にできます。<br />
+　</p>
+<pre class="r"><code>car::scatterplot(mpg ~ hp, data = mtcars, reg.line = lm, smooth = FALSE,
+                 span = 0.5, spread = FALSE, boxplots = FALSE)
+with(mtcars, maptools::pointLabel(x = hp, y = mpg,
+                                  labels = row.names.data.frame(mtcars),
+                                  col = &quot;red&quot;, cex = 0.75))</code></pre>
+<p><img src="scatterplot_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p>　</p>
+<p><code>ggplot2</code>パッケージでは<code>ggplot2::geom_text</code>関数または<code>ggplot2::geom_label</code>関数を用います。<br />
+　</p>
+<pre class="r"><code>mtcars %&gt;% 
+  ggplot2::ggplot(ggplot2::aes(x = wt, y = mpg, colour = as.factor(cyl))) + 
+    ggplot2::geom_point(size = 3) + 
+    ggplot2::geom_text(ggplot2::aes(label = rownames(.)))</code></pre>
+<p><img src="scatterplot_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p>　</p>
+<pre class="r"><code>mtcars %&gt;% 
+  ggplot2::ggplot(ggplot2::aes(x = wt, y = mpg, colour = as.factor(cyl))) + 
+    ggplot2::geom_point(size = 3) + 
+    ggplot2::geom_label(ggplot2::aes(label = rownames(.)))</code></pre>
+<p><img src="scatterplot_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p>　</p>
+<p>データ数が多いとどうしてもラベルが重なってしまいます。ラベルが重なってしまうのを避ける方法は<a href="./ggrepel.html">ラベルが重ならないように描画する</a>を参照してください。</p>
+<hr />
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-04-20 18:50(JST)]</p>
 </div>
 
 
