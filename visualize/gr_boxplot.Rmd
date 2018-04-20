@@ -10,6 +10,7 @@ output:
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 
 require(tidyverse)
+source("./geom_flat_violin.R")
 ```
 
 箱ひげ図（ボックスプロット）はヒストグラムと同様にデータの分布を確認するために利用される基本的なグラフです。ヒストグラムと最も異なるのは要約統計量に基づいたグラフを描く点です。  
@@ -166,7 +167,8 @@ iris %>%
 iris %>% 
   ggplot2::ggplot(ggplot2::aes(x = Species, y = Sepal.Length)) + 
     ggplot2::geom_boxplot() + 
-    geom_dotplot(binaxis = "y", dotsize = 0.75, stackdir = "up", binwidth = 0.1)
+    ggplot2::geom_dotplot(binaxis = "y", dotsize = 0.75, stackdir = "up",
+                          binwidth = 0.1)
 ```
 
 　  
@@ -194,14 +196,15 @@ iris %>%
     ggplot2::stat_summary(fun.data = mean_sdl, fun.args = list(mult = 1),
                           geom = "pointrange", position = position_nudge(0.05),
                           ggplot2::aes(colour = Species)) + 
-    geom_dotplot(binaxis = "y", dotsize = 0.75, stackdir = "down",
-                 binwidth = 0.1, position = position_nudge(-0.025),
-                 ggplot2::aes(fill = Species, colour = Species), alpha = 0.5)
+    ggplot2::geom_dotplot(binaxis = "y", dotsize = 0.75, stackdir = "down",
+                          binwidth = 0.1, position = position_nudge(-0.025),
+                          ggplot2::aes(fill = Species, colour = Species),
+                          alpha = 0.5)
 ```
 
 　  
 
-# 進化系箱ひげ図
+# 進化系？箱ひげ図
 箱ひげ図は要約統計量（四分位値）を利用してるため頑健ではありますが、データの分布形状を見ることにはあまり適していません。そこで、箱ひげ図の特徴を利用しながらデータ分布の確率密度（カーネル密度推定）を表示させる進化系箱ひげ図とも言えるバイオリンプロットがあります。  
 　  
 
@@ -264,54 +267,29 @@ iris %>%
 iris %>% 
   ggplot2::ggplot(ggplot2::aes(x = Species, y = Sepal.Length)) + 
     ggplot2::geom_violin(draw_quantiles = c(0.25, 0.5, 0.75)) + 
-    # ggplot2::geom_boxplot(width = 0.1, position = position_dodge(width = 0.5)) +
     ggplot2::stat_summary(fun.y = mean, geom = "point", colour = "red",
-                          position = position_nudge(0.05)) +
-    geom_dotplot(binaxis = "y", dotsize = 0.5, stackdir = "down",
-                 binwidth = 0.1, position = position_nudge(-0.025)) 
+                          position = position_nudge(0.025)) +
+    ggplot2::geom_dotplot(binaxis = "y", dotsize = 0.5, stackdir = "down",
+                          binwidth = 0.1, position = position_nudge(-0.025)) 
 ```
 
+　  
 
+## 雨雲プロット
+GitHubで[`geom_flat_violin`という関数のコード <i class="fa fa-external-link"></i>](https://gist.github.com/dgrtwo/eb7750e74997891d7c20) {target="_blank" title=""}が公開されています。`geom_flat_violine`関数はバイオリンプロットを半分だけ描く関数です。このプロットとドットプロットを組み合わせることで雨雲のようなプロットを描くことができます。  
+　  
 
 ```{r}
 iris %>% 
-  ggplot2::ggplot(ggplot2::aes(x = Species, y = Sepal.Length, fill = Species)) + 
-    ggplot2::geom_violin(ggplot2::aes(colour = Species), alpha = 0.5) + 
-    ggplot2::stat_summary(fun.data = mean_sdl, fun.args = list(mult = 1),
-                        geom = "pointrange", position = position_nudge(0.05))
+  ggplot2::ggplot(ggplot2::aes(x = Species, y = Sepal.Length)) + 
+    geom_flat_violin() + 
+    ggplot2::stat_summary(fun.y = mean, geom = "point", colour = "red",
+                          position = position_nudge(0.025)) +
+    ggplot2::geom_dotplot(binaxis = "y", dotsize = 0.5, stackdir = "down",
+                          binwidth = 0.1, position = position_nudge(-0.05)) + 
+    ggplot2::coord_flip()
 ```
 
-```{r}
-palette <- "Set2"   # カラーパレットは`RColorBrewer::display.brewer.all()`
-
-iris %>% 
-  ggplot2::ggplot(ggplot2::aes(x = Species, y = Sepal.Length, fill = Species)) + 
-  ggplot2::geom_violin(ggplot2::aes(colour = Species), alpha = 0.75) + 
-  ggplot2::stat_summary(fun.data = mean_sdl, fun.args = list(mult = 1),
-                        geom = "pointrange", position = position_nudge(0.05)) + 
-  # mean_sdlは平均値とエラーバー
-  geom_dotplot(binaxis = "y", dotsize = 0.5, stackdir = "down", binwidth = 0.1, 
-               position = position_nudge(-0.0)) + 
-  # theme(legend.position = "none") + 
-  labs(x = "Species", y = "Sepal length (cm)") +
-  ggplot2::scale_fill_brewer(palette = palette) +
-  ggplot2::scale_color_brewer(palette = palette)
-```
-
-# フラットバイオリン・プロット
-
-# レインドロップ・プロット
-```{r}
-iris %>% 
-  ggplot2::ggplot(ggplot2::aes(x = Species, y = Sepal.Length, fill = Species,
-                               colour = Species)) + 
-  # geom_flat_violin(scale = "count", trim = FALSE) + 
-  stat_summary(fun.data = mean_sdl, fun.args = list(mult = 1), 
-               geom = "pointrange", position = position_nudge(0.05)) + 
-  geom_dotplot(binaxis = "y", dotsize = 0.5, stackdir = "down", binwidth = 0.1, 
-               position = position_nudge(-0.025)) + 
-  theme(legend.position = "none") + 
-  labs(x = "Species", y = "Sepal length (cm)")
-```
+　  
 
 ---
