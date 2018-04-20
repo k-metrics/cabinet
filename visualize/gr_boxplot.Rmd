@@ -137,7 +137,7 @@ axis(1, at = 1:length(type)+1, labels = type, tick = TRUE)
 　  
 
 ## 箱ひげ図
-`ggplot2::geom_boxplot`関数は層別で描くことを前提としているため単一の箱ひげ図を描きたい場合は引数`x`に任意の数値（ダミー）を指定してください。なお`boxplot`関数と異なりひげ（whisker）は描画されません。  
+`ggplot2::geom_boxplot`関数は層別で描くことを前提としているため単一の箱ひげ図を描きたい場合は引数`x`に任意の数値（ダミー）を指定してください。なお`boxplot`関数と異なりひげ（whisker）の先端の横棒は描画されません。  
 　  
 
 ```{r}
@@ -199,8 +199,88 @@ iris %>%
                  ggplot2::aes(fill = Species, colour = Species), alpha = 0.5)
 ```
 
-# バイオリン・プロット
-バイオリン・プロットは確率密度
+　  
+
+# 進化系箱ひげ図
+箱ひげ図は要約統計量（四分位値）を利用してるため頑健ではありますが、データの分布形状を見ることにはあまり適していません。そこで、箱ひげ図の特徴を利用しながらデータ分布の確率密度（カーネル密度推定）を表示させる進化系箱ひげ図とも言えるバイオリンプロットがあります。  
+　  
+
+## バイオリンプロット
+バイオリンプロット（バイオリン図）は前述のように箱ひげ図の箱の代わりにデータ分布の確率密度を中心線を挟んで対象にプロットしたもので`ggplot2::geom_violin`関数を用いて描くことができます。なお、`ggplot2::geom_violon`関数での密度推定方法はデフォルトで"gaussian"^注4^が適用されます。  
+　  
+
+```{r}
+iris %>% 
+  ggplot2::ggplot(ggplot2::aes(x = Species, y = Sepal.Length)) + 
+    ggplot2::geom_violin()
+```
+
+　  
+^注4^ 密度推定には`density`関数が利用され推定方法はデフォルトを含めて7種類から選択することができます  
+　  
+
+一般的なバイオリンプロットは確率密度に加えて四分位値が描かれることが多いです。四分位値を描く場合は`draw_quantiles`オプションで描きたい四分位を指定してください。  
+　  
+
+```{r}
+iris %>% 
+  ggplot2::ggplot(ggplot2::aes(x = Species, y = Sepal.Length)) + 
+    ggplot2::geom_violin(draw_quantiles = c(0.25, 0.5, 0.75))
+```
+
+　  
+
+## バイオリンプロットと平均値
+四分位に加えて平均値をプロットしたい場合は、箱ひげ図の場合と同様に`ggplot2::stat_summary`関数を用いてください。  
+　  
+
+```{r}
+iris %>% 
+  ggplot2::ggplot(ggplot2::aes(x = Species, y = Sepal.Length)) + 
+    ggplot2::geom_violin(draw_quantiles = c(0.25, 0.5, 0.75)) + 
+    ggplot2::stat_summary(fun.y = mean, geom = "point", colour = "red")
+```
+
+　  
+
+## バイオリンプロットと箱ひげ図
+見慣れた箱ひげ図の方がいいという場合は`ggplot2::geom_boxplot`関数に引数`width`を指定してください。加えて`ggplot2::stat_summary`関数で平均値を描画することもできます。
+
+```{r}
+iris %>% 
+  ggplot2::ggplot(ggplot2::aes(x = Species, y = Sepal.Length)) + 
+    ggplot2::geom_violin() +
+    ggplot2::geom_boxplot(width = 0.1) +
+    ggplot2::stat_summary(fun.y = mean, geom = "point", colour = "red")
+```
+
+　  
+
+## バイオリンプロットと頻度分布
+やっぱり実際の頻度分布も見たいという場合は箱ひげ図の場合と同様に`ggplot2::geom_dotplot`関数を用いてください。この時に`position`オプションで描画をオフセットさせると複数の描画を重ねても見やすいグラフにすることができます。  
+　  
+
+```{r}
+iris %>% 
+  ggplot2::ggplot(ggplot2::aes(x = Species, y = Sepal.Length)) + 
+    ggplot2::geom_violin(draw_quantiles = c(0.25, 0.5, 0.75)) + 
+    # ggplot2::geom_boxplot(width = 0.1, position = position_dodge(width = 0.5)) +
+    ggplot2::stat_summary(fun.y = mean, geom = "point", colour = "red",
+                          position = position_nudge(0.05)) +
+    geom_dotplot(binaxis = "y", dotsize = 0.5, stackdir = "down",
+                 binwidth = 0.1, position = position_nudge(-0.025)) 
+```
+
+
+
+```{r}
+iris %>% 
+  ggplot2::ggplot(ggplot2::aes(x = Species, y = Sepal.Length, fill = Species)) + 
+    ggplot2::geom_violin(ggplot2::aes(colour = Species), alpha = 0.5) + 
+    ggplot2::stat_summary(fun.data = mean_sdl, fun.args = list(mult = 1),
+                        geom = "pointrange", position = position_nudge(0.05))
+```
+
 ```{r}
 palette <- "Set2"   # カラーパレットは`RColorBrewer::display.brewer.all()`
 
