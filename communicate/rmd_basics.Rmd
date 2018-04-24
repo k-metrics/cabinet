@@ -14,22 +14,22 @@ output:
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, comment = "##")
 ```
 
-[R <i class="fa fa-external-link"></i>][R]や[R Commander（以降、Rcmdr） <i class="fa fa-external-link"></i>][Rcmdr]に限ったことではありませんが、一般的に分析過程の記録というのは残しにくいものです。[データ分析勉強会 <i class="fa fa-external-link"></i>][1]で主に用いた[Rcmdr <i class="fa fa-external-link"></i>][Rcmdr]やExcelのようなGUI操作のものは、操作自体は簡単ですが、それらを使った分析過程を記録するには大変な手間がかかります。例えば[Rcmdr <i class="fa fa-external-link"></i>][Rcmdr]を例に挙げると  
+[R <i class="fa fa-external-link"></i>][R]や[R Commander（以降、Rcmdr） <i class="fa fa-external-link"></i>][Rcmdr]に限ったことではありませんが、一般的に分析過程を記録として残すのは難しいものです。[データ分析勉強会 <i class="fa fa-external-link"></i>][1]で主に用いた[R Commander（以降、Rcmdr） <i class="fa fa-external-link"></i>][Rcmdr]やExcelのようにGUI操作のものは、操作自体は簡単ですが操作の過程（分析過程）を記録するには大変な手間がかかります。例えば[Rcmdr <i class="fa fa-external-link"></i>][Rcmdr]を例に挙げると  
 　  
 
-* 操作が自体が記録に残らない（実行された結果は残せる）
-* データセットやモデルの切り替えが出力されない（記録に残らない）
+* 操作が自体は記録に残らない（実行された結果のみが残る）
+* データセットやモデルの切り替えが出力されない（記録されない）
 * 操作と出力がセットで出力されない（なので一致させるのに一苦労）
 * 計算結果（出力）の整形に手間がかかる
-* グラフィック出力は個別に保存する必要がある
+* グラフィック出力は個々に保存する必要がある
 
 　  
-つまり、分析結果を報告書にまとめるためには分析と並行して常に手順や結果を記録しておく必要があります。このような作業は間違いを誘発することが容易に想像できます。これを防止して間違いのない分析・報告書作成を行う確実な方法は、分析と報告書作成が同時にできる[R Markdown <i class="fa fa-external-link"></i>][RMD]を利用することです。  
+分析自体が簡単にできても分析結果を報告書にまとめるためには、分析と並行して常に手順や結果を記録しておく必要があります。このような作業は間違いを誘発することが容易に想像できます。間違いのない分析・報告書作成を行う唯一にして確実な方法は、分析と報告書作成が同時にできる[R Markdown <i class="fa fa-external-link"></i>][RMD]を利用することです。  
 　  
 
 # R Markdownとは
 [R Markdown <i class="fa fa-external-link"></i>][RMD]は文字通り（軽量）マークアップ言語である
-[Markdown <i class="fa fa-external-link"></i>][MD]による記述を用いた記録方法で、[R <i class="fa fa-external-link"></i>][R]におけるドキュメント作成フレームワークです。[R Markdown <i class="fa fa-external-link"></i>][RMD]を用いるとドキュメントの中にデータやコード、分析結果を埋め込むことが可能になります。  
+[Markdown <i class="fa fa-external-link"></i>][MD]による記述を用いた記録方法で、[R <i class="fa fa-external-link"></i>][R]におけるドキュメント作成フレームワークの一つとして位置づけられています。[R Markdown <i class="fa fa-external-link"></i>][RMD]を用いることで報告書の中にデータやコード、分析結果を手間をかけずに埋め込むことができます。  
 　  
 
 ## なぜR Markdownなのか
@@ -37,16 +37,16 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, comment = "##")
 　  
 [R Makrdown <i class="fa fa-external-link"></i>][RMD]を利用するとドキュメントを生成するたびにデータが読み込まれ、[R <i class="fa fa-external-link"></i>][R]のコードが実行され、グラフや計算結果、表などが出力され、自動的にドキュメントに埋め込まれます。これによりグラフや計算結果、表などをドキュメント修正のたびに切り貼りし直す必要もなく[Markdown <i class="fa fa-external-link"></i>][MD]による章構成も可能で、常に指定したデータから同じ手順で同じ結果を得ることが可能になります。つまり、[R Markdown <i class="fa fa-external-link"></i>][RMD]を用いることで
 
-* ドキュメント生産性の向上（コピペ汚染からの解放、簡単作成）
+* ドキュメント生産性の向上（**コピペ汚染からの解放**、簡単作成）
 * 分析過程の可読性確保
-* 分析再現性の確保（[Reproducible Research <i class="fa fa-external-link"></i>][CRAN_TV_RR]）
+* **分析再現性の確保**（[Reproducible Research <i class="fa fa-external-link"></i>][CRAN_TV_RR]）
 
 が実現できるようになります。更に[R Markdown <i class="fa fa-external-link"></i>][RMD]では、同一ソースから複数のフォーマットのドキュメントを作成することも可能ですので、提出先に応じた形式のドキュメント作成も簡単です。  
 　  
 
 ## 使うためのには
-[R Markdown <i class="fa fa-external-link"></i>][RMD]を使うには必要なソフトウェアが同梱されている[RStudio <i class="fa fa-external-link"></i>][RS]環境で使うのが現状ではベストです。[RStudio <i class="fa fa-external-link"></i>][RS]のインストールは[こちら](../program/env_index.html)を参照してください。[RStudio <i class="fa fa-external-link"></i>][RS]  
-[**`rmarkdown`**パッケージ <i class="fa fa-external-link"></i>](https://cran.r-project.org/web/packages/rmarkdown/index.html){target="_blank" title="Dynamic Documents for R"}が必須ですので、以下のコマンドまたは[RStudio <i class="fa fa-external-link"></i>][RS]のGUIなどからインストールしてください。  
+[R Markdown <i class="fa fa-external-link"></i>][RMD]を使うには必要なソフトウェアが同梱されている[RStudio <i class="fa fa-external-link"></i>][RS]環境で使うのが現状ではベストです。[RStudio <i class="fa fa-external-link"></i>][RS]のインストールは[こちら](../program/env_index.html)を参照してください。[`rmarkdown`パッケージ <i class="fa fa-external-link"></i>](https://cran.r-project.org/web/packages/rmarkdown/index.html){target="_blank" title="Dynamic Documents for R"}が必須ですので、以下のコマンドまたは[RStudio <i class="fa fa-external-link"></i>][RS]のGUIからインストールしてください。  
+　  
 
 ```
 install.packages("rmarkdown")
@@ -55,26 +55,27 @@ install.packages("rmarkdown")
 　  
 
 # R Markdownの基本
-[R Markdown <i class="fa fa-external-link"></i>][RMD]は[Pandoc <i class="fa fa-external-link"></i>](https://pandoc.org/){target="_blank" title="a universal document converter"}の[Markdown <i class="fa fa-external-link"></i>][MD]をベースとした記述を用いますので、ファイル形式はシンプルなテキスト形式になります。なお、日本語を利用する場合には言語コードとしてBOMなしの**UTF-8**を利用することを推奨します。  
+[R Markdown <i class="fa fa-external-link"></i>][RMD]は[Pandoc <i class="fa fa-external-link"></i>](https://pandoc.org/){target="_blank" title="a universal document converter"}の[Markdown <i class="fa fa-external-link"></i>][MD]をベースとした記述を用います。ファイル形式はシンプルなテキスト形式になります。なお、日本語を利用する場合には言語コードとしてBOMなしのUTF-8としてください。  
 
 下記は[RStudio <i class="fa fa-external-link"></i>][RS]のデフォルトテンプレート（HTML Document）です。  
 
 ![](./fig/rmd_default_html_template.png)
 　  
 
-このテンプレートからドキュメントを生成するとこのページを作成してい環境ではこのようなドキュメントになります。  
+このテンプレートからドキュメントを生成するとこのページを作成している環境ではこのようなドキュメントになります。これはR Markdwon Websiteを作成する環境にしているためで、ご利用の環境によっては体裁が異なります。  
 ![R Markdown Documents <i class="fa fa-external-link"></i>](./fig/rmd_default_template.png)
+
 　  
-このように[R Markdown <i class="fa fa-external-link"></i>][RMD]の記述には見慣れない記号などがありますが、記述としては大きく以下の３つパートから構成されますので、この構成さえ覚えれば[R Markdown <i class="fa fa-external-link"></i>][RMD]を記述するのは簡単です。
+このように[R Markdown <i class="fa fa-external-link"></i>][RMD]の記述には見慣れない記号などがあると思いますが、記述自体はいたってシンプルです。記述の構成は以下の３つパートから成り立っていますので、この構成を覚えてください。
 
 * 出力フォーマットや体裁を記述する[YAML](#YAML)部
-* [R][R]のコードを記述する[(Code) Chunk](#Chunk)部
-* 文書を記述する[Markdown <i class="fa fa-external-link"></i>](#Markdown)部
+* [R <i class="fa fa-external-link"></i>][R]のコードを記述する[(Code) Chunk](#Chunk)部
+* 文書を記述する[Markdown](#Markdown)部
 
 　  
 
 ## YAML {#YAML}
-[YAML <i class="fa fa-external-link"></i>][YAML]とはデータ表現形式の一種で[R Markdown <i class="fa fa-external-link"></i>][RMD]では下記のように**`---`**から**`---`**までに囲まれたブロックで表現します。  
+[YAML <i class="fa fa-external-link"></i>][YAML]とはデータ表現形式の一種で[R Markdown <i class="fa fa-external-link"></i>][RMD]では下記のように`---`から`---`までに囲まれたブロックで表現します。  
 [YAML <i class="fa fa-external-link"></i>][YAML]には[R Markdown <i class="fa fa-external-link"></i>][RMD]の出力フォーマットや体裁を定義し、下記の例ではHTML形式のドキュメントがデフォルト体裁で出力されるようになります。  
 
     ---
@@ -93,18 +94,18 @@ install.packages("rmarkdown")
 ドキュメント系フォーマットはHTMLやPDFを始めとして以下のようなフォーマットをサポートしています。標準でサポートされていないフォーマットのドキュメントを作成する場合には追加でパッケージをインストールしてください。  
 　  
 
-フォーマット            | 標準サポート  | output指定      | 備考
-------------------------|---------------|-----------------|-----
+フォーマット               | 標準サポート    | output指定      | 備考
+---------------------------|-----------------|-----------------|-----
 [HTML <i class="fa fa-external-link"></i>][HTML]            | yes           | `html_document` | 
 [PDF <i class="fa fa-external-link"></i>][PDF]              | yes           | `pdf_document`  | 
 [Microsoft Word <i class="fa fa-external-link"></i>][DOCX]  | yes           | `word_document` | DOCX
 [RTF <i class="fa fa-external-link"></i>][RTF]              | yes           | `rtf_document`  | 
 [Markdown <i class="fa fa-external-link"></i>][MDS]         | yes           | `md_document`   | GitHub, etc
 [R package vignette <i class="fa fa-external-link"></i>][Vignette] | yes    | `html_vignette` | 
-[Tufte Handout <i class="fa fa-external-link"></i>][Tufte]  | no, [**`tufte`** <i class="fa fa-external-link"></i>][Pkg_tufte] | `tufte::tufte_handout` | PDF 
+[Tufte Handout <i class="fa fa-external-link"></i>][Tufte]  | no, [`tufte` <i class="fa fa-external-link"></i>][Pkg_tufte] | `tufte::tufte_handout` | PDF 
 　                      | 　            | `tufte::tufte_html` | 
 　                      | 　            | `tufte::tufte_book` | PDF
-[rmdformat <i class="fa fa-external-link"></i>][rmdformats] | no, [**`rmdformats`** <i class="fa fa-external-link"></i>][Pkg_rmdformats] | `rmdformat::material` | HTML
+[rmdformat <i class="fa fa-external-link"></i>][rmdformats] | no, [`rmdformats` <i class="fa fa-external-link"></i>][Pkg_rmdformats] | `rmdformat::material` | HTML
 　                      | 　            | `rmdformats::readthedown` | HTML
 　                      | 　            | `rmdformats::html_clean`  | 
 　                      | 　            | `rmdformats::html_docco`  | 
@@ -116,14 +117,14 @@ install.packages("rmarkdown")
 各フォーマットともスライド切り替えをサポートしていますが、HTML系フォーマットは[HTML widget](http://www.htmlwidgets.org/)との相性が悪いフォーマットが多いので注意してください。  
 　  
 
-フォーマット         | 標準サポート　　 | output指定 | 備考
----------------------|------------------|------------|------
+フォーマット               | 標準サポート    | output指定      | 備考
+---------------------------|-----------------|-----------------|-----
 [Beamer <i class="fa fa-external-link"></i>][Beamer]     | yes              | `beamer_presentation` | PDF 
 [ioslides <i class="fa fa-external-link"></i>][ioslides] | yes              | `ioslides_presentation` | Google ioslides
 [Slidy <i class="fa fa-external-link"></i>][Slidy]       | yes              | `slidy_presentation`  | W3C Slidy
-[revealjs <i class="fa fa-external-link"></i>][revealjs] | no, [**`revealjs`** <i class="fa fa-external-link"></i>][Pkg_revealjs] | `revealjs::revealjs_presentation` | HTML with reveal.js
-[xaringan（写輪眼） <i class="fa fa-external-link"></i>][xaringan] | no, [**`xaringan`** <i class="fa fa-external-link"></i>][Pkg_xaringan] | `xaringan::moon_reader` | HTML with remark.js
-[Shower <i class="fa fa-external-link"></i>][Shower]     | no, [**`rmdshower`** <i class="fa fa-external-link"></i>][Shower] | `rmdshower::shower_presentation` | HTML
+[revealjs <i class="fa fa-external-link"></i>][revealjs] | no, [`revealjs` <i class="fa fa-external-link"></i>][Pkg_revealjs] | `revealjs::revealjs_presentation` | HTML with reveal.js
+[xaringan（写輪眼） <i class="fa fa-external-link"></i>][xaringan] | no, [`xaringan` <i class="fa fa-external-link"></i>][Pkg_xaringan] | `xaringan::moon_reader` | HTML with remark.js
+[Shower <i class="fa fa-external-link"></i>][Shower]     | no, [`rmdshower` <i class="fa fa-external-link"></i>][Shower] | `rmdshower::shower_presentation` | HTML
 
 　  
 
@@ -142,7 +143,7 @@ YAMLでは出力フォーマット以外にドキュメントタイトルや作�
     ---
 
 　  
-**`output`**オプションは出力フォーマットごとに異なります。代表的なオプションは以降を参照してください。  
+`output`オプションは出力フォーマットごとに異なります。代表的なオプションは以降を参照してください。  
 　  
 
 #### HTML系出力オプション
@@ -168,14 +169,14 @@ HTML系フォーマットは概ね同じオプションが使えます。まず�
 各オプションが取る値は以下のようになっています。その他のオプションは[公式ドキュメント <i class="fa fa-external-link"></i>][HTML]または[ぞうさんによる日本語での解説 <i class="fa fa-external-link"></i>](https://qiita.com/kazutan/items/726e03dfcef1615ae999){target="_blank" title="Kazutan"}を参照してください。  
 　  
 
-option          | default   | others               | memo
-----------------|-----------|----------------------|-----
+option | default | others                                | memo
+-------|---------|---------------------------------------|------------
 code_folding    | show      | hide, none           | Rコードの表示方法
 df_print        | default   | kable, tibble, paged | data.frameの表示方法
 highlight       | "default" | "tango", "pygments", "kate", "monochrome", "espresso", "zenburn", "haddock", "textmate" | コードハイライティング
 md_extensions   | NULL      |                      | ^1)^
 number_sections | false     | true, (yes, no)  | 見出し番号
-theme           | "default" | "cerulean", "journal", "flatly", "readable", "spacelab", "united", "cosmo", "lumen", "paper", "sandstone", "simplex", "yeti" | Bootswatchテーマ
+theme           | "default" | "cerulean", "journal", "flatly", "readable", "spacelab", "united", "cosmo", "lumen", "paper", "sandstone", "simplex", "yeti" | [Bootswatch <i class="fa fa-external-link"></i>][Bootswatch]
 toc             | false     | true, (yes, no)      | 目次の有無
 toc_depth       | 3         | 1, 2, 4, 5, 6        | 目次に表示するの階層レベル
 toc_float       | false     | true, (yes, no)      | ^2)^
@@ -183,8 +184,8 @@ toc_float       | false     | true, (yes, no)      | ^2)^
   smooth_scroll | true      | false, (yes, no)     | 目次のスクロール方法
 
 
-^1)^ 日本語見出しを使う場合は**`-ascii_identifiers`**を指定する  
-^2)^ **`collapsed`**, **`smooth_scroll`**を指定する場合は何も指定しない  
+^1)^ 日本語見出しを使う場合は`-ascii_identifiers`を指定する  
+^2)^ `collapsed`, `smooth_scroll`を指定する場合は何も指定しない  
 
 　  
 
@@ -203,7 +204,7 @@ PDF系フォーマットの出力オプションは今後整理する予定で�
 　  
 
 ### チャンク・オプション
-中括弧（**`{`**）の次にある**`r`**はチャンク内に記述されたコードが[R <i class="fa fa-external-link"></i>][R]言語であることを意味しています。次の**`ChunkName`**はチャンクの名前でファイル内でユニークに設定する必要があります。その次の**`echo`**や**`message`**は[R <i class="fa fa-external-link"></i>][R]のコードの実行結果に対するオプションです。  
+中括弧（`{`）の次にある`r`はチャンク内に記述されたコードが[R <i class="fa fa-external-link"></i>][R]言語であることを意味しています。次の`ChunkName`はチャンクの名前でファイル内でユニークに設定する必要があります。その次の`echo`や`message`は[R <i class="fa fa-external-link"></i>][R]のコードの実行結果に対するオプションです。  
 知っておくと便利な基本的なオプションを下表に示しておきます。なお、詳細や他のオプションについては[R Markdown Reference Guid (PDF) <i class="fa fa-external-link"></i>](https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf){target="_blank" title="RStudio"}を参照してください。  
 　  
 
@@ -243,14 +244,14 @@ r round(area_of_circle, 1)
 　  
 
 ### セットアップ・チャンク
-チャンク名が**`setup`**であるチャンクは、セットアップ・チャンクと呼ばれる[RStudio <i class="fa fa-external-link"></i>][RS]環境において特殊な動作をするチャンクです。[RStudio <i class="fa fa-external-link"></i>][RS]のエディタはチャンク単位での実行をサポートしており、任意のチャンクが実行されると自動的に**`setup`**チャンクを呼び出し初期処理を実行してからチャンクを実行します。この動作が行われるのは[RStudio <i class="fa fa-external-link"></i>][RS]エディタで[R Markdown <i class="fa fa-external-link"></i>][RMD]文書を開き最初に任意のチャンクを実行させたときのみです。なので、セットアップ・チャンクには後述の共通チャンク・オプションの設定や分析に必要なパッケージの読み込み、ローカル定義関数などを記述しておくようにしてください。  
+チャンク名が`setup`であるチャンクは、セットアップ・チャンクと呼ばれる[RStudio <i class="fa fa-external-link"></i>][RS]環境において特殊な動作をするチャンクです。[RStudio <i class="fa fa-external-link"></i>][RS]のエディタはチャンク単位での実行をサポートしており、任意のチャンクが実行されると自動的に`setup`チャンクを呼び出し初期処理を実行してからチャンクを実行します。この動作が行われるのは[RStudio <i class="fa fa-external-link"></i>][RS]エディタで[R Markdown <i class="fa fa-external-link"></i>][RMD]文書を開き最初に任意のチャンクを実行させたときのみです。なので、セットアップ・チャンクには後述の共通チャンク・オプションの設定や分析に必要なパッケージの読み込み、ローカル定義関数などを記述しておくようにしてください。  
 　  
 ![](./fig/rmd_setup_chunk.png)
 
 　  
 
 ### 共通チャンク・オプション
-チャンク・オプションはチャンクごとに指定しますが、全てのチャンクに対して同様の設定を繰り返すのは面倒です。それを回避するにはセットアップ・チャンクで**`knitr::opt_chenk$set`**関数を用いて共通のオプションを指定します。  
+チャンク・オプションはチャンクごとに指定しますが、全てのチャンクに対して同様の設定を繰り返すのは面倒です。それを回避するにはセットアップ・チャンクで`knitr::opt_chenk$set`関数を用いて共通のオプションを指定します。  
 ```{r eval=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, comment = "#>")
 ```
@@ -383,7 +384,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, comment = "#>")
 
 文字種 | 指定方法            | 備考
 -------|---------------------|----------
-太字   | `**Bold**`          | フォントによっては**太字**にならない場合があります
+太字   | `Bold`          | フォントによっては太字にならない場合があります
 斜体   | `*Italic*`          | フォントによっては*斜体*にならない場合があります
 上付き | `^Superscript^`     | リンクと組み合わせるとジャンプ可能です^[1]^
 下付き | `~Subscript~`       | 同上~[2]~
@@ -460,7 +461,7 @@ $\LaTeX$の数式モードで扱える表現は[$\LaTeX$コマンド集 <i class
 　  
 
 ### 区切り線
-区切り線（プレゼンテーション系ドキュメントの場合はスライド区切り）は三つ以上の連続した半角アスタリスク`***`またはハイフン`---`を記述します。  
+区切り線（プレゼンテーション系ドキュメントの場合はスライド区切り）は三つ以上の連続した半角アスタリスク`*`またはハイフン`---`を記述します。  
 　  
 
 # 参考資料
@@ -509,3 +510,22 @@ $\LaTeX$の数式モードで扱える表現は[$\LaTeX$コマンド集 <i class
 [Pkg_xaringan]: https://cran.r-project.org/web/packages/xaringan/index.html {target="_blank" title="CRAN Package xaringan"}
 
 [CRAN_TV_RR]: https://cran.r-project.org/web/views/ReproducibleResearch.html {target="_blank" title="CRAN Task View: Reproducible Research?"}
+
+<!-- Bootstrap -->
+[Bootswatch]: https://bootswatch.com/3/ {target="_blank" title="Free themes for Bootstrap"}
+[cerulean]: https://bootswatch.com/3/cerulean/ {target="_blank" title="Cerulean, A calm blue sky"}
+[cosmo]: https://bootswatch.com/3/cosmo/ {target="_blank" title="Cosmo, An ode to Metro"}
+<!-- [cyborg]: -->
+<!-- [darkly]: -->
+[flatly]: https://bootswatch.com/3/flatly/ {target="_blank" title="Flatly, Flat and modern"}
+[journal]: https://bootswatch.com/3/journal/ {target="_blank" title="Journal, Crisp like a new sheet of paper"}
+[lumen]: https://bootswatch.com/3/lumen/ {target="_blank" title="Lumen, Light and shadow"}
+[paper]: https://bootswatch.com/3/paper/ {target="_blank" title="Paper, Material is the metaphor"}
+[readable]: https://bootswatch.com/3/readable/ {target="_blank" title="Readable, Optimized for legibility"}
+[sandstone]: https://bootswatch.com/3/sandstone/ {target="_blank" title="Sandstone, A touch of warmth"}
+[simplex]: https://bootswatch.com/3/simplex/ {target="_blank" title="Simplex, Mini and minimalist"}
+<!-- [slate]: -->
+[spacelab]: https://bootswatch.com/3/spacelab/ {target="_blank" title="Spacelab, Silvery and sleek"}
+<!-- [superhero]: -->
+[united]: https://bootswatch.com/3/united/ {target="_blank" title="United, Ubuntu orange and unique font"}
+[yeti]: https://bootswatch.com/3/yeti/ {target="_blank" title="Yeti, A friendly foundation"}
