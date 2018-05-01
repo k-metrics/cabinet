@@ -2,10 +2,69 @@
 title: "GGally"
 output:
   html_document:
+    code_folding: show
     css: style.css
 ---
 
-```{r}
+<!-- shared Links -->
+```{r GGally, child="../shared/links.Rmd", include=FALSE}
+```
+
+```{r setup, include=FALSE, message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(warning = FALSE, echo = TRUE)
+
+require(tidyverse)
+require(GGally)
+
+tidyverse::tidyverse_conflicts()
+```
+
+データ分析を行うにあたってデータの分布を確認しておくことは重要なポイントのひとつです。データの分布を確認する基本的な方法としては、ヒストグラム、箱ひげ図、散布図などありますが、データ項目が多いとグラフを描くのも一苦労です。そこで、利用したいのが複数のグラフ（ペアプロットなど）を一度に描ける`GGally`パッケージです。ただし、ペアプロットは描くグラフの数がデータ項目数の二乗個になりますので相応の処理時間がかかります。  
+　  
+
+# 必要なパッケージ
+本ページのコードを実行するには標準パッケージ以外に以下の追加パッケージを読み込んでおく必要があります。  
+　  
+
+Package   | Description
+----------|-----------
+tidyverse | Easily Install and Load the ‘Tidyverse’
+GGally    | Extension to 'ggplot2'
+
+　  
+
+# 対象データ
+以下のデータセットを用います。  
+　  
+
+Dataset | Package
+--------|---------
+iris    | datasets
+mtcars  | datasets
+diamonds | ggplot2
+
+　  
+
+# GGally::ggpairs
+`iris`データセットを`GGally::ggpairs`関数を用いてプロットしてみます。  
+　  
+
+```{r, message=FALSE}
+iris %>% 
+  GGally::ggpairs()
+```
+
+`ggplot2`パッケージがベースなので`ggplot2`パッケージの関数と同様の指定が可能です。例えば`Species`で層別して色分けしたい場合は`ggplot2`パッケージと同様に`ggplot2::aes`関数を用います。  
+　  
+
+```{r, message=FALSE}
+iris %>% 
+  GGally::ggpairs(ggplot2::aes(colour = Species, alpha = 0.5))
+```
+
+
+
+```{r, eval=FALSE}
 require(tidyverse)
 mtcars %>% 
   GGally::ggpairs(mapping = aes(color = cyl),
@@ -25,3 +84,106 @@ GGally::ggpairs(data = TestData, columns = c(1, 5, 2, 3), mapping = aes(color = 
 ```
 
 
+
+
+```{r, message=FALSE, eval=FALSE}
+ggplot2::diamonds %>% 
+  dplyr::select(-color, -clarity, -x, -y, -z) %>% 
+  GGally::ggpairs(ggplot2::aes(colour = cut, alpha = 0.6))
+```
+
+　  
+
+```{r, message=FALSE, eval=FALSE}
+ggplot2::diamonds %>% 
+  dplyr::select(-cut, -clarity) %>% 
+  GGally::ggpairs(ggplot2::aes(colour = color, alpha = 0.6))
+```
+
+　  
+
+```{r, message=FALSE, eval=FALSE}
+ggplot2::diamonds %>% 
+  dplyr::select(-cut, -color) %>% 
+  GGally::ggpairs(ggplot2::aes(colour = clarity, alpha = 0.6))
+```
+
+　  
+
+```{r, message=FALSE}
+ggplot2::diamonds %>% 
+  GGally::ggpairs()
+```
+
+# ggcoef
+`GGally::ggcoef`関数はモデルとその95%信頼区間を図示します。利用できるモデルは`lm`ならびに`glm`の他に`broom::tidy`関数で整然データ（tidy data）にできるモデルです。例えば`iris`データセットの`Sepal.Length`と`Sepal.Width`  
+　  
+
+
+```{r, message=FALSE}
+ggplot2::mpg %>% 
+  dplyr::select(-model) %>% 
+  GGally::ggpairs()
+```
+
+```{r}
+step(lm(cty ~ displ + year + cyl + trans + drv + fl + class,
+        data = ggplot2::mpg)) %>% summary()
+```
+
+
+```{r}
+iris %>% 
+  lm(Sepal.Length ~ Sepal.Width, data = .) %>% 
+  summary()
+```
+
+　  
+
+```{r}
+iris %>% 
+  lm(Sepal.Length ~ Sepal.Width, data = .) %>% 
+  GGally::ggcoef(errorbar_color = "blue", errorbar_height = .1) +
+    ggrepel::geom_label_repel(ggplot2::aes(label = round(estimate, 2)))
+```
+
+　  
+
+ただし、モデルの推定値として`estimate`項、推定値の項目名として`term`項が含まれている必要がありますので、多重比較の場合は描画前にちょっとした前処理が必要な場合もあります。前述のグラフの箱ひげ図をみると`iris`データセットの`Petal.Width`が`Species`により有意差があるように見えましたので多重比較を用いて確認してみます。  
+　  
+
+```{r}
+aov(Petal.Width ~ Species, data = iris) %>% 
+  TukeyHSD() %>%
+  broom::tidy()
+```
+
+　  
+
+多重比較により`Species`が異なると`Petal.Width`の大きさが異なっていることが分かります。`Petal.Width`の平均値と95％信頼区間を可視化すると下図のようになります。  
+　  
+
+```{r}
+aov(Petal.Width ~ Species, data = iris) %>% 
+  TukeyHSD() %>%
+  broom::tidy() %>% 
+  dplyr::select(-term) %>% 
+  dplyr::rename(term = comparison) %>% 
+  GGally::ggcoef(errorbar_color = "blue", errorbar_height = .1)
+```
+
+　  
+
+
+
+
+# Reference
+
+[GGally Docs](http://ggobi.github.io/ggally/index.html)
+　  
+
+---
+
+<!-- Footer -->
+```{r child="../shared/footer.Rmd"}
+```

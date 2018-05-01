@@ -422,24 +422,98 @@ div.tocify {
 </div>
 
 
+<!-- shared Links -->
+<!-- SQiP and others -->
+<!-- Books -->
+<!-- 共立出版 -->
+<!-- 日科技連出版 -->
+<!-- O'Reilly Japan -->
+<!-- 東京図書 -->
+<!-- Docker -->
+<!-- eBooks -->
+<!-- Net Community -->
+<!-- Style Guide -->
+<!-- Creative Commons -->
+<!-- Others -->
+<!-- R -->
+<!-- R Packages -->
+<!-- RStudio -->
+<!-- Docker -->
+<!-- Cabinet Pages -->
+<p>データ分析を行うにあたってデータの分布を確認しておくことは重要なポイントのひとつです。データの分布を確認する基本的な方法としては、ヒストグラム、箱ひげ図、散布図などありますが、データ項目が多いとグラフを描くのも一苦労です。そこで、利用したいのが複数のグラフ（ペアプロットなど）を一度に描ける<code>GGally</code>パッケージです。ただし、ペアプロットは描くグラフの数がデータ項目数の二乗個になりますので相応の処理時間がかかります。<br />
+　</p>
+<div id="必要なパッケージ" class="section level1">
+<h1>必要なパッケージ</h1>
+<p>本ページのコードを実行するには標準パッケージ以外に以下の追加パッケージを読み込んでおく必要があります。<br />
+　</p>
+<table>
+<thead>
+<tr class="header">
+<th>Package</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>tidyverse</td>
+<td>Easily Install and Load the ‘Tidyverse’</td>
+</tr>
+<tr class="even">
+<td>GGally</td>
+<td>Extension to ‘ggplot2’</td>
+</tr>
+</tbody>
+</table>
+<p>　</p>
+</div>
+<div id="対象データ" class="section level1">
+<h1>対象データ</h1>
+<p>以下のデータセットを用います。<br />
+　</p>
+<table>
+<thead>
+<tr class="header">
+<th>Dataset</th>
+<th>Package</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>iris</td>
+<td>datasets</td>
+</tr>
+<tr class="even">
+<td>mtcars</td>
+<td>datasets</td>
+</tr>
+<tr class="odd">
+<td>diamonds</td>
+<td>ggplot2</td>
+</tr>
+</tbody>
+</table>
+<p>　</p>
+</div>
+<div id="ggallyggpairs" class="section level1">
+<h1>GGally::ggpairs</h1>
+<p><code>iris</code>データセットを<code>GGally::ggpairs</code>関数を用いてプロットしてみます。<br />
+　</p>
+<pre class="r"><code>iris %&gt;% 
+  GGally::ggpairs()</code></pre>
+<p><img src="gr_GGally_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p><code>ggplot2</code>パッケージがベースなので<code>ggplot2</code>パッケージの関数と同様の指定が可能です。例えば<code>Species</code>で層別して色分けしたい場合は<code>ggplot2</code>パッケージと同様に<code>ggplot2::aes</code>関数を用います。<br />
+　</p>
+<pre class="r"><code>iris %&gt;% 
+  GGally::ggpairs(ggplot2::aes(colour = Species, alpha = 0.5))</code></pre>
+<p><img src="gr_GGally_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
 <pre class="r"><code>require(tidyverse)
 mtcars %&gt;% 
   GGally::ggpairs(mapping = aes(color = cyl),
                   upper = list(continuous = &quot;smooth&quot;), lower = list(combo = &quot;facetdensity&quot;),
-                  diag = list(continuous = &quot;barDiag&quot;))</code></pre>
-<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
-<p><img src="gr_GGally_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
-<pre class="r"><code>n &lt;- 15
+                  diag = list(continuous = &quot;barDiag&quot;))
+
+
+n &lt;- 15
 TestData &lt;- data.frame(Group = sample(paste0(&quot;Group&quot;, 1:5), n, replace = TRUE),
                        Data1 = rnorm(n),
                        Data2 = rnorm(n) + rnorm(n) + rnorm(n),
@@ -448,58 +522,80 @@ TestData &lt;- data.frame(Group = sample(paste0(&quot;Group&quot;, 1:5), n, repl
 GGally::ggpairs(data = TestData, columns = c(1, 5, 2, 3), mapping = aes(color = Group),
                 upper = list(continuous = &quot;smooth&quot;), lower = list(combo = &quot;facetdensity&quot;),
                 diag = list(continuous = &quot;barDiag&quot;))</code></pre>
-<pre><code>## geom_path: Each group consists of only one observation. Do you need to
-## adjust the group aesthetic?</code></pre>
-<pre><code>## geom_path: Each group consists of only one observation. Do you need to
-## adjust the group aesthetic?
-## geom_path: Each group consists of only one observation. Do you need to
-## adjust the group aesthetic?
-## geom_path: Each group consists of only one observation. Do you need to
-## adjust the group aesthetic?
-## geom_path: Each group consists of only one observation. Do you need to
-## adjust the group aesthetic?
-## geom_path: Each group consists of only one observation. Do you need to
-## adjust the group aesthetic?
-## geom_path: Each group consists of only one observation. Do you need to
-## adjust the group aesthetic?
-## geom_path: Each group consists of only one observation. Do you need to
-## adjust the group aesthetic?
-## geom_path: Each group consists of only one observation. Do you need to
-## adjust the group aesthetic?
-## geom_path: Each group consists of only one observation. Do you need to
-## adjust the group aesthetic?
-## geom_path: Each group consists of only one observation. Do you need to
-## adjust the group aesthetic?
-## geom_path: Each group consists of only one observation. Do you need to
-## adjust the group aesthetic?</code></pre>
-<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
-<pre><code>## Warning in qt((1 - level)/2, df): 計算結果が NaN になりました</code></pre>
-<pre><code>## geom_path: Each group consists of only one observation. Do you need to
-## adjust the group aesthetic?</code></pre>
-<pre><code>## geom_path: Each group consists of only one observation. Do you need to
-## adjust the group aesthetic?
-## geom_path: Each group consists of only one observation. Do you need to
-## adjust the group aesthetic?
-## geom_path: Each group consists of only one observation. Do you need to
-## adjust the group aesthetic?
-## geom_path: Each group consists of only one observation. Do you need to
-## adjust the group aesthetic?
-## geom_path: Each group consists of only one observation. Do you need to
-## adjust the group aesthetic?
-## geom_path: Each group consists of only one observation. Do you need to
-## adjust the group aesthetic?
-## geom_path: Each group consists of only one observation. Do you need to
-## adjust the group aesthetic?
-## geom_path: Each group consists of only one observation. Do you need to
-## adjust the group aesthetic?
-## geom_path: Each group consists of only one observation. Do you need to
-## adjust the group aesthetic?
-## geom_path: Each group consists of only one observation. Do you need to
-## adjust the group aesthetic?
-## geom_path: Each group consists of only one observation. Do you need to
-## adjust the group aesthetic?</code></pre>
-<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
-<p><img src="gr_GGally_files/figure-html/unnamed-chunk-1-2.png" width="672" /></p>
+<pre class="r"><code>ggplot2::diamonds %&gt;% 
+  dplyr::select(-color, -clarity, -x, -y, -z) %&gt;% 
+  GGally::ggpairs(ggplot2::aes(colour = cut, alpha = 0.6))</code></pre>
+<p>　</p>
+<pre class="r"><code>ggplot2::diamonds %&gt;% 
+  dplyr::select(-cut, -clarity) %&gt;% 
+  GGally::ggpairs(ggplot2::aes(colour = color, alpha = 0.6))</code></pre>
+<p>　</p>
+<pre class="r"><code>ggplot2::diamonds %&gt;% 
+  dplyr::select(-cut, -color) %&gt;% 
+  GGally::ggpairs(ggplot2::aes(colour = clarity, alpha = 0.6))</code></pre>
+<p>　</p>
+<pre class="r"><code>ggplot2::diamonds %&gt;% 
+  GGally::ggpairs()</code></pre>
+<p><img src="gr_GGally_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+</div>
+<div id="ggcoef" class="section level1">
+<h1>ggcoef</h1>
+<p>モデルの95%信頼区間を図示します。利用できるモデルは<code>lm</code>ならびに<code>glm</code>の他に<code>broom</code>パッケージで整然データ（tidy data）にできるモデルです。<br />
+　</p>
+<pre class="r"><code>iris %&gt;% 
+  lm(Sepal.Length ~ Sepal.Width, data = .) %&gt;% 
+  summary()</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = Sepal.Length ~ Sepal.Width, data = .)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -1.5561 -0.6333 -0.1120  0.5579  2.2226 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)   6.5262     0.4789   13.63   &lt;2e-16 ***
+## Sepal.Width  -0.2234     0.1551   -1.44    0.152    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.8251 on 148 degrees of freedom
+## Multiple R-squared:  0.01382,    Adjusted R-squared:  0.007159 
+## F-statistic: 2.074 on 1 and 148 DF,  p-value: 0.1519</code></pre>
+<pre class="r"><code>iris %&gt;% 
+  lm(Sepal.Length ~ Sepal.Width, data = .) %&gt;% 
+  GGally::ggcoef(errorbar_color = &quot;blue&quot;, errorbar_height = .1) +
+    ggrepel::geom_label_repel(ggplot2::aes(label = round(estimate, 2)))</code></pre>
+<pre><code>## Loading required package: broom</code></pre>
+<p><img src="gr_GGally_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<pre class="r"><code>    # ggplot2::geom_label(ggplot2::aes(label = round(estimate, 2)), nudge_y = 0.15)</code></pre>
+<p>　</p>
+<p>ただし、モデルの推定値として<code>estimate</code>項、推定値の項目名として<code>term</code>項が含まれている必要がありますので、多重比較の場合は描画前にちょっとした前処理が必要な場合もあります。前述のグラフの箱ひげ図をみると<code>iris</code>データセットの<code>Petal.Width</code>が<code>Species</code>により有意差があるように見えましたので多重比較を用いて確認してみます。<br />
+　</p>
+<pre class="r"><code>aov(Petal.Width ~ Species, data = iris) %T&gt;% 
+  TukeyHSD() %&gt;%
+  broom::tidy()</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["term"],"name":[1],"type":["chr"],"align":["left"]},{"label":["df"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["sumsq"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["meansq"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["statistic"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["p.value"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"Species","2":"2","3":"80.41333","4":"40.20666667","5":"960.0071","6":"4.169446e-85"},{"1":"Residuals","2":"147","3":"6.15660","4":"0.04188163","5":"NA","6":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<pre class="r"><code>aov(Petal.Width ~ Species, data = iris) %&gt;% 
+  TukeyHSD() %&gt;%
+  broom::tidy() %&gt;% 
+  dplyr::select(-term) %&gt;% 
+  dplyr::rename(term = comparison) %&gt;% 
+  GGally::ggcoef(errorbar_color = &quot;blue&quot;, errorbar_height = .1)</code></pre>
+<p><img src="gr_GGally_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+</div>
+<div id="reference" class="section level1">
+<h1>Reference</h1>
+<p><a href="http://ggobi.github.io/ggally/index.html">GGally Docs</a> 　</p>
+<hr />
+<!-- Footer -->
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-04-30 22:00(JST)]</p>
+</div>
 
 
 
