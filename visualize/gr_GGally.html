@@ -540,8 +540,70 @@ GGally::ggpairs(data = TestData, columns = c(1, 5, 2, 3), mapping = aes(color = 
 </div>
 <div id="ggcoef" class="section level1">
 <h1>ggcoef</h1>
-<p>モデルの95%信頼区間を図示します。利用できるモデルは<code>lm</code>ならびに<code>glm</code>の他に<code>broom</code>パッケージで整然データ（tidy data）にできるモデルです。<br />
+<p><code>GGally::ggcoef</code>関数はモデルとその95%信頼区間を図示します。利用できるモデルは<code>lm</code>ならびに<code>glm</code>の他に<code>broom::tidy</code>関数で整然データ（tidy data）にできるモデルです。例えば<code>iris</code>データセットの<code>Sepal.Length</code>と<code>Sepal.Width</code><br />
 　</p>
+<pre class="r"><code>ggplot2::mpg %&gt;% 
+  dplyr::select(-model) %&gt;% 
+  GGally::ggpairs()</code></pre>
+<p><img src="gr_GGally_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<pre class="r"><code>step(lm(cty ~ displ + year + cyl + trans + drv + fl + class,
+        data = ggplot2::mpg)) %&gt;% summary()</code></pre>
+<pre><code>## Start:  AIC=237.84
+## cty ~ displ + year + cyl + trans + drv + fl + class
+## 
+##         Df Sum of Sq    RSS    AIC
+## - trans  9     31.51 553.70 233.55
+## &lt;none&gt;               522.20 237.84
+## - displ  1     22.43 544.62 245.68
+## - cyl    1     41.39 563.58 253.68
+## - drv    2     48.53 570.72 254.63
+## - year   1     52.97 575.16 258.44
+## - class  6    120.96 643.15 274.59
+## - fl     4    354.80 876.99 351.16
+## 
+## Step:  AIC=233.55
+## cty ~ displ + year + cyl + drv + fl + class
+## 
+##         Df Sum of Sq    RSS    AIC
+## &lt;none&gt;               553.70 233.55
+## - displ  1     20.75 574.45 240.15
+## - drv    2     55.22 608.93 251.79
+## - year   1     54.36 608.06 253.46
+## - cyl    1     56.75 610.46 254.38
+## - class  6    142.32 696.03 275.08
+## - fl     4    359.88 913.59 342.72</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = cty ~ displ + year + cyl + drv + fl + class, data = ggplot2::mpg)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -6.5058 -0.6653 -0.0187  0.7505  6.1012 
+## 
+## Coefficients:
+##                   Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)     -197.58580   49.09452  -4.025 7.87e-05 ***
+## displ             -0.85136    0.29789  -2.858 0.004677 ** 
+## year               0.11328    0.02449   4.626 6.39e-06 ***
+## cyl               -0.91066    0.19265  -4.727 4.09e-06 ***
+## drvf               1.86246    0.40026   4.653 5.67e-06 ***
+## drvr               0.60212    0.48092   1.252 0.211909    
+## fld                6.16410    1.76991   3.483 0.000600 ***
+## fle               -4.69141    1.73353  -2.706 0.007343 ** 
+## flp               -2.14975    1.65621  -1.298 0.195662    
+## flr               -1.25190    1.63171  -0.767 0.443775    
+## classcompact      -2.94178    0.96795  -3.039 0.002662 ** 
+## classmidsize      -3.44780    0.95607  -3.606 0.000385 ***
+## classminivan      -5.62342    1.04836  -5.364 2.07e-07 ***
+## classpickup       -4.66252    0.97347  -4.790 3.09e-06 ***
+## classsubcompact   -2.57248    0.96981  -2.653 0.008576 ** 
+## classsuv          -4.52534    0.90454  -5.003 1.16e-06 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 1.594 on 218 degrees of freedom
+## Multiple R-squared:  0.8688, Adjusted R-squared:  0.8598 
+## F-statistic: 96.24 on 15 and 218 DF,  p-value: &lt; 2.2e-16</code></pre>
 <pre class="r"><code>iris %&gt;% 
   lm(Sepal.Length ~ Sepal.Width, data = .) %&gt;% 
   summary()</code></pre>
@@ -563,38 +625,42 @@ GGally::ggpairs(data = TestData, columns = c(1, 5, 2, 3), mapping = aes(color = 
 ## Residual standard error: 0.8251 on 148 degrees of freedom
 ## Multiple R-squared:  0.01382,    Adjusted R-squared:  0.007159 
 ## F-statistic: 2.074 on 1 and 148 DF,  p-value: 0.1519</code></pre>
+<p>　</p>
 <pre class="r"><code>iris %&gt;% 
   lm(Sepal.Length ~ Sepal.Width, data = .) %&gt;% 
   GGally::ggcoef(errorbar_color = &quot;blue&quot;, errorbar_height = .1) +
     ggrepel::geom_label_repel(ggplot2::aes(label = round(estimate, 2)))</code></pre>
 <pre><code>## Loading required package: broom</code></pre>
-<p><img src="gr_GGally_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
-<pre class="r"><code>    # ggplot2::geom_label(ggplot2::aes(label = round(estimate, 2)), nudge_y = 0.15)</code></pre>
+<p><img src="gr_GGally_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 <p>　</p>
 <p>ただし、モデルの推定値として<code>estimate</code>項、推定値の項目名として<code>term</code>項が含まれている必要がありますので、多重比較の場合は描画前にちょっとした前処理が必要な場合もあります。前述のグラフの箱ひげ図をみると<code>iris</code>データセットの<code>Petal.Width</code>が<code>Species</code>により有意差があるように見えましたので多重比較を用いて確認してみます。<br />
 　</p>
-<pre class="r"><code>aov(Petal.Width ~ Species, data = iris) %T&gt;% 
+<pre class="r"><code>aov(Petal.Width ~ Species, data = iris) %&gt;% 
   TukeyHSD() %&gt;%
   broom::tidy()</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["term"],"name":[1],"type":["chr"],"align":["left"]},{"label":["df"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["sumsq"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["meansq"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["statistic"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["p.value"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"Species","2":"2","3":"80.41333","4":"40.20666667","5":"960.0071","6":"4.169446e-85"},{"1":"Residuals","2":"147","3":"6.15660","4":"0.04188163","5":"NA","6":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["term"],"name":[1],"type":["fctr"],"align":["left"]},{"label":["comparison"],"name":[2],"type":["chr"],"align":["left"]},{"label":["estimate"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["conf.low"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["conf.high"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["adj.p.value"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"Species","2":"versicolor-setosa","3":"1.08","4":"0.9830903","5":"1.1769097","6":"2.997602e-15"},{"1":"Species","2":"virginica-setosa","3":"1.78","4":"1.6830903","5":"1.8769097","6":"2.997602e-15"},{"1":"Species","2":"virginica-versicolor","3":"0.70","4":"0.6030903","5":"0.7969097","6":"2.997602e-15"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
+<p>　</p>
+<p>多重比較により<code>Species</code>が異なると<code>Petal.Width</code>の大きさが異なっていることが分かります。<code>Petal.Width</code>の平均値と95％信頼区間を可視化すると下図のようになります。<br />
+　</p>
 <pre class="r"><code>aov(Petal.Width ~ Species, data = iris) %&gt;% 
   TukeyHSD() %&gt;%
   broom::tidy() %&gt;% 
   dplyr::select(-term) %&gt;% 
   dplyr::rename(term = comparison) %&gt;% 
   GGally::ggcoef(errorbar_color = &quot;blue&quot;, errorbar_height = .1)</code></pre>
-<p><img src="gr_GGally_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p><img src="gr_GGally_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p>　</p>
 </div>
 <div id="reference" class="section level1">
 <h1>Reference</h1>
 <p><a href="http://ggobi.github.io/ggally/index.html">GGally Docs</a> 　</p>
 <hr />
 <!-- Footer -->
-<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-04-30 22:00(JST)]</p>
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-05-03 17:54(JST)]</p>
 </div>
 
 
