@@ -626,6 +626,37 @@ R CMD INSTALL --configure-vars=&#39;INCLUDE_DIR=... LIB_DIR=...&#39;
 <pre><code>sudo apt-get install libssl-dev</code></pre>
 <p>　</p>
 </div>
+<div id="ファイルが見当たらない場合" class="section level2">
+<h2>ファイルが見当たらない場合</h2>
+<p>前述のようにパッケージやライブラリが不足しているというメッセージが出た場合は、当該のパッケージやライブラリをインストールすれば解決できますが、パッケージによっては「ヘッダファイルが見当たらない」とか「コンフィグファイルが見当たらない」というようなエラーが出る場合があります。例えば以下のメッセージはパッケージのコンパイルに必要な<code>libpq-fe.h</code>ファイルが見当たらないのでコンパイルが中止されていることが分かります。<br />
+　</p>
+<pre><code>RS-PostgreSQL.h:23:26: fatal error: libpq-fe.h: そのようなファイルやディレクトリはありません
+compilation terminated.</code></pre>
+<p>　<br />
+このような場合、Ubuntuの<code>apt-file</code>コマンドを利用して当該のファイルがどのライブラリに含まれているかを調べることで解決できます。<code>apt-file</code>コマンドは標準ではインストールされていませんので以下の手順でインストール、セットアップしてください。<br />
+　</p>
+<pre><code>$ sudo apt-get update
+$ sudo apt-get install apt-file
+...
+
+$ apt-file update
+apt-file is now using the user&#39;s cache directory.
+If you want to switch back to the system-wide cache directory,
+ run &#39;apt-file purge&#39;
+Downloading complete file http://jp.archive.ubuntu.com/ubuntu/dists/xenial/Contents-amd64.gz
+...</code></pre>
+<p>　</p>
+<p><code>apt-file update</code>の実行にはしばらく時間がかかります。実行が完了したら以下のようにしてファイルがどのライブラリに含まれているか調べ、対象のライブラリが特定できたらインストールします。<br />
+　</p>
+<pre><code>$ apt-file search libpq-fe.h
+libpq-dev: /usr/include/postgresql/libpq-fe.h
+
+$ sudo apt-get update
+$ sudo apt-get install libpq-dev</code></pre>
+<p>　</p>
+<p>これで必要なファイルが入手できましたので、再度、パッケージのインストールを実行します。<br />
+　</p>
+</div>
 </div>
 <div id="参考インストール用スクリプト" class="section level1">
 <h1>参考）インストール用スクリプト</h1>
@@ -651,7 +682,7 @@ R CMD INSTALL --configure-vars=&#39;INCLUDE_DIR=... LIB_DIR=...&#39;
 <tr class="even">
 <td>category</td>
 <td>パッケージのカテゴリ</td>
-<td>現状未使用なので項目ごと省略可</td>
+<td>現状未使用なので項目ごとの省略可</td>
 </tr>
 <tr class="odd">
 <td>omit</td>
@@ -661,7 +692,7 @@ R CMD INSTALL --configure-vars=&#39;INCLUDE_DIR=... LIB_DIR=...&#39;
 <tr class="even">
 <td>rep</td>
 <td>パッケージのあるリポジトリ</td>
-<td>CRANは記述省略可、他は未対応</td>
+<td>CRANのみ対応</td>
 </tr>
 <tr class="odd">
 <td>memo</td>
@@ -670,12 +701,14 @@ R CMD INSTALL --configure-vars=&#39;INCLUDE_DIR=... LIB_DIR=...&#39;
 </tr>
 </tbody>
 </table>
-<p>　</p>
+<p>　<br />
+memo欄以外はの記述は省略しないで記述してください。<br />
+　</p>
 <div id="パッケージリストファイルの例一部" class="section level3">
 <h3>パッケージリストファイルの例（一部）</h3>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["package"],"name":[1],"type":["fctr"],"align":["left"]},{"label":["category"],"name":[2],"type":["fctr"],"align":["left"]},{"label":["omit"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["rep"],"name":[4],"type":["fctr"],"align":["left"]},{"label":["memo"],"name":[5],"type":["lgl"],"align":["right"]}],"data":[{"1":"ggforce","2":"visualize","3":"","4":"","5":"NA"},{"1":"ggrepel","2":"visualize","3":"","4":"","5":"NA"},{"1":"plotly","2":"visualize","3":"","4":"","5":"NA"},{"1":"reprex","2":"tidy","3":"","4":"","5":"NA"},{"1":"tibble","2":"tidy","3":"","4":"","5":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["package"],"name":[1],"type":["fctr"],"align":["left"]},{"label":["category"],"name":[2],"type":["fctr"],"align":["left"]},{"label":["omit"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["rep"],"name":[4],"type":["fctr"],"align":["left"]},{"label":["memo"],"name":[5],"type":["fctr"],"align":["left"]}],"data":[{"1":"forecast","2":"model","3":"n","4":"CRAN","5":"Forecasting Functions for Time Series and Linear Models"},{"1":"lawstat","2":"model","3":"n","4":"CRAN","5":"Tools for Biostatistics, Public Policy, and Law"},{"1":"odbc","2":"import","3":"n","4":"CRAN","5":"Connect to ODBC Compatible Databases (using the DBI Interface)"},{"1":"plotly","2":"visualize","3":"n","4":"CRAN","5":"Create Interactive Web Graphics via 'plotly.js'"},{"1":"rmarkdown","2":"communicate","3":"n","4":"CRAN","5":"Dynamic Documents for R"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <p>　</p>
@@ -721,7 +754,7 @@ rm(pkg_lst, installed_list, install_list, install_pkg)</code></pre>
 <p>　</p>
 <hr />
 <!-- Include Footer -->
-<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-04-08 21:01(JST)]</p>
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-05-03 18:19(JST)]</p>
 </div>
 </div>
 

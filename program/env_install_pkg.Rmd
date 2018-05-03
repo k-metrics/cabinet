@@ -153,6 +153,50 @@ sudo apt-get install libssl-dev
 ```
 　  
 
+## ファイルが見当たらない場合
+前述のようにパッケージやライブラリが不足しているというメッセージが出た場合は、当該のパッケージやライブラリをインストールすれば解決できますが、パッケージによっては「ヘッダファイルが見当たらない」とか「コンフィグファイルが見当たらない」というようなエラーが出る場合があります。例えば以下のメッセージはパッケージのコンパイルに必要な`libpq-fe.h`ファイルが見当たらないのでコンパイルが中止されていることが分かります。  
+　  
+
+```
+RS-PostgreSQL.h:23:26: fatal error: libpq-fe.h: そのようなファイルやディレクトリはありません
+compilation terminated.
+```
+
+　  
+このような場合、Ubuntuの`apt-file`コマンドを利用して当該のファイルがどのライブラリに含まれているかを調べることで解決できます。`apt-file`コマンドは標準ではインストールされていませんので以下の手順でインストール、セットアップしてください。  
+　  
+
+```
+$ sudo apt-get update
+$ sudo apt-get install apt-file
+...
+
+$ apt-file update
+apt-file is now using the user's cache directory.
+If you want to switch back to the system-wide cache directory,
+ run 'apt-file purge'
+Downloading complete file http://jp.archive.ubuntu.com/ubuntu/dists/xenial/Contents-amd64.gz
+...
+```
+
+　  
+
+`apt-file update`の実行にはしばらく時間がかかります。実行が完了したら以下のようにしてファイルがどのライブラリに含まれているか調べ、対象のライブラリが特定できたらインストールします。  
+　  
+
+```
+$ apt-file search libpq-fe.h
+libpq-dev: /usr/include/postgresql/libpq-fe.h
+
+$ sudo apt-get update
+$ sudo apt-get install libpq-dev
+```
+
+　  
+
+これで必要なファイルが入手できましたので、再度、パッケージのインストールを実行します。  
+　  
+
 # 参考）インストール用スクリプト
 モダンな[R <i class="fa fa-external-link"></i>][R]のプログラミングを行う際に一通り必要と思われるパッケージを一度にインストールできるスクリプトを用意しました。ご自分の環境初期設定用に必ずインストールするパッケージをリストアップしておきスクリプト化しておくとRのアップデートの際などに便利です。  
 　  
@@ -163,17 +207,19 @@ sudo apt-get install libssl-dev
 項目名   | 内容                                                   | 備考
 ---------|--------------------------------------------------------|------------
 package  | インストールしたいパッケージ名                         | 
-category | パッケージのカテゴリ                                   | 現状未使用なので項目ごと省略可
+category | パッケージのカテゴリ                                   | 現状未使用なので項目ごとの省略可
 omit     | リストには残したいがインストールしたくない場合のフラグ | `y`でインストールしない
-rep      | パッケージのあるリポジトリ                             | CRANは記述省略可、他は未対応
+rep      | パッケージのあるリポジトリ                             | CRANのみ対応
 memo     | 備考用                                                 | 省略可
 
+　  
+memo欄以外はの記述は省略しないで記述してください。  
 　  
 
 ### パッケージリストファイルの例（一部）
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 require(tidyverse)
-"../../packages.csv" %>% 
+"../../packages_new.csv" %>% 
   read.csv(fileEncoding = "UTF-8") %>% 
   dplyr::sample_n(5) %>% 
   dplyr::arrange(package)
