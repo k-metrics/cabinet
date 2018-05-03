@@ -440,7 +440,7 @@ div.tocify {
 <!-- RStudio -->
 <!-- Docker -->
 <!-- Cabinet Pages -->
-<p>データ分析を行うにあたってデータの分布を確認しておくことは重要なポイントのひとつです。データの分布を確認する基本的な方法としては、ヒストグラム、箱ひげ図、散布図などありますが、データ項目が多いとグラフを描くのも一苦労です。そこで、利用したいのが複数のグラフ（ペアプロットなど）を一度に描ける<code>GGally</code>パッケージです。ただし、ペアプロットは描くグラフの数がデータ項目数の二乗個になりますので相応の処理時間がかかります。<br />
+<p>データ分析を行うにあたってデータの分布を確認しておくことは重要なポイントのひとつです。データの分布を確認する基本的な方法としては、ヒストグラム、箱ひげ図、散布図などありますが、データ項目が多いとグラフを描くのも一苦労です。そこで、利用したいのが複数のグラフを一度に描ける<code>GGally</code>パッケージです。ただし、ペアプロットの場合、描くグラフの数がデータ項目数の二乗個になりますのでデータ項目数が多いとかなりの処理時間がかかることに注意してください。<br />
 　</p>
 <div id="必要なパッケージ" class="section level1">
 <h1>必要なパッケージ</h1>
@@ -494,18 +494,222 @@ div.tocify {
 </table>
 <p>　</p>
 </div>
-<div id="ggallyggpairs" class="section level1">
-<h1>GGally::ggpairs</h1>
-<p><code>iris</code>データセットを<code>GGally::ggpairs</code>関数を用いてプロットしてみます。<br />
+<div id="ペアプロット" class="section level1">
+<h1>ペアプロット</h1>
+<p><code>psych::pairs.panels</code>関数が描く相関係数付きの散布図行列（ペアプロット）はデータを俯瞰するのに便利です。<br />
+　</p>
+<pre class="r"><code>iris %&gt;% 
+  psych::pairs.panels()</code></pre>
+<p><img src="gr_GGally_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p>　</p>
+<p><code>ggplot2</code>ベースのペアプロットを描きたい場合は様々なペアプロットが描ける<code>GGally::ggpairs</code>関数が便利です。<br />
 　</p>
 <pre class="r"><code>iris %&gt;% 
   GGally::ggpairs()</code></pre>
-<p><img src="gr_GGally_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p><img src="gr_GGally_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>　</p>
 <p><code>ggplot2</code>パッケージがベースなので<code>ggplot2</code>パッケージの関数と同様の指定が可能です。例えば<code>Species</code>で層別して色分けしたい場合は<code>ggplot2</code>パッケージと同様に<code>ggplot2::aes</code>関数を用います。<br />
 　</p>
 <pre class="r"><code>iris %&gt;% 
   GGally::ggpairs(ggplot2::aes(colour = Species, alpha = 0.5))</code></pre>
-<p><img src="gr_GGally_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p><img src="gr_GGally_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>　</p>
+<p><code>GGally::ggpairs</code>関数に引数を渡すことで散布図に回帰直線を描くこともできます。<br />
+　</p>
+<pre class="r"><code>iris %&gt;% 
+  GGally::ggpairs(lower = list(continuous=&quot;smooth&quot;),
+                  ggplot2::aes(colour = Species, alpha = 0.5))</code></pre>
+<p><img src="gr_GGally_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>　</p>
+<div id="様々なペアプロット" class="section level2">
+<h2>様々なペアプロット</h2>
+<p><code>GGally::ggpairs</code>関数は対角の上側（<code>upper</code>）と下側（<code>lower</code>）、対角線上（<code>diag</code>）の三つのエリアに対して以下のパラメータを指定することで様々なペアプロットを描くことが可能です。<br />
+　</p>
+<table>
+<colgroup>
+<col width="15%" />
+<col width="42%" />
+<col width="42%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>parameter</th>
+<th>upper/lower</th>
+<th>diag</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>conrinuous</td>
+<td>points, smooth, smooth_loess, density, cor, blank</td>
+<td>densityDiag, barDiag, blankDiag</td>
+</tr>
+<tr class="even">
+<td>combo</td>
+<td>box, box_no_facet, dot, dot_no_facet, facethist, facetdensity, denstrip, blank</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>discrete</td>
+<td>facetbar, ratio, blank</td>
+<td>barDiag, blankDiag</td>
+</tr>
+<tr class="even">
+<td>na</td>
+<td>na, blank</td>
+<td>naDiag, blankDiag</td>
+</tr>
+</tbody>
+</table>
+<p>　</p>
+<div id="continuousパラメータ" class="section level3">
+<h3>continuousパラメータ</h3>
+<p><code>continuous</code>は連続量に対して有効なオプションで<code>upper/lower</code>と<code>diag</code>に指定できますが、<code>upper/lower</code>に指定できる値と<code>diag</code>に指定できる値は異なります。指定した値はタイトルを参照してください。<br />
+　</p>
+<table>
+<colgroup>
+<col width="15%" />
+<col width="42%" />
+<col width="42%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>parameter</th>
+<th>upper/lower</th>
+<th>diag</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>conrinuous</td>
+<td>points, smooth, smooth_loess, density, cor, blank</td>
+<td>densityDiag, barDiag, blankDiag</td>
+</tr>
+</tbody>
+</table>
+<p>　</p>
+<pre class="r"><code>iris %&gt;% 
+  dplyr::select(-Petal.Length, -Petal.Width) %&gt;% 
+  GGally::ggpairs(title = &quot;u:cor l:points d:densityDiag, as default&quot;)</code></pre>
+<p><img src="gr_GGally_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<pre class="r"><code>iris %&gt;% 
+  dplyr::select(-Petal.Length, -Petal.Width) %&gt;% 
+  GGally::ggpairs(upper = list(continuous = &quot;smooth&quot;),
+                  lower = list(continuous = &quot;smooth_loess&quot;),
+                  diag = list(continuous = &quot;barDiag&quot;),
+                  title = &quot;u:smooth l:smooth_loess d:barDiag&quot;)</code></pre>
+<p><img src="gr_GGally_files/figure-html/unnamed-chunk-5-2.png" width="672" /></p>
+<pre class="r"><code>iris %&gt;% 
+  dplyr::select(-Petal.Length, -Petal.Width) %&gt;% 
+  GGally::ggpairs(upper = list(continuous = &quot;density&quot;),
+                  lower = list(continuous = &quot;cor&quot;),
+                  diag = list(continuous = &quot;blankDiag&quot;),
+                  title = &quot;u:density l:cor d:blankDiag&quot;)</code></pre>
+<p><img src="gr_GGally_files/figure-html/unnamed-chunk-5-3.png" width="672" /></p>
+</div>
+<div id="comboパラメータ" class="section level3">
+<h3>comboパラメータ</h3>
+<p><code>combo</code>は因子がある場合に有効となるオプションで<code>upper/lower</code>だけに指定できます。太字はデフォルト値。<br />
+　</p>
+<table>
+<colgroup>
+<col width="15%" />
+<col width="42%" />
+<col width="42%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>parameter</th>
+<th>upper/lower</th>
+<th>diag</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>combo</td>
+<td>box, <strong>box_no_facet</strong>, dot, dot_no_facet, <strong>facethist</strong>, facetdensity, denstrip, blank</td>
+<td>（指定不可）</td>
+</tr>
+</tbody>
+</table>
+<p>　</p>
+<pre class="r"><code>iris %&gt;% 
+  dplyr::select(-Petal.Length, -Petal.Width) %&gt;% 
+  GGally::ggpairs(title = &quot;u:box_no_facet l:facethist, as default&quot;,
+                  ggplot2::aes(colour = Species, alpha = 0.5))</code></pre>
+<p><img src="gr_GGally_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<pre class="r"><code>iris %&gt;% 
+  dplyr::select(-Petal.Length, -Petal.Width) %&gt;% 
+  GGally::ggpairs(upper = list(combo = &quot;dot&quot;),
+                  lower = list(combo = &quot;box&quot;),
+                  title = &quot;u:dot l:box&quot;,
+                  ggplot2::aes(colour = Species, alpha = 0.5))</code></pre>
+<p><img src="gr_GGally_files/figure-html/unnamed-chunk-6-2.png" width="672" /></p>
+<pre class="r"><code>iris %&gt;% 
+  dplyr::select(-Petal.Length, -Petal.Width) %&gt;% 
+  GGally::ggpairs(upper = list(combo = &quot;dot_no_facet&quot;),
+                  lower = list(combo = &quot;facetdensity&quot;),
+                  title = &quot;u:dot_no_facet l:facetdensity&quot;,
+                  ggplot2::aes(colour = Species, alpha = 0.5))</code></pre>
+<p><img src="gr_GGally_files/figure-html/unnamed-chunk-6-3.png" width="672" /></p>
+<pre class="r"><code>iris %&gt;% 
+  dplyr::select(-Petal.Length, -Petal.Width) %&gt;% 
+  GGally::ggpairs(upper = list(combo = &quot;denstrip&quot;),
+                  lower = list(combo = &quot;blank&quot;),
+                  title = &quot;u:denstrip l:blank&quot;,
+                  ggplot2::aes(colour = Species, alpha = 0.5))</code></pre>
+<p><img src="gr_GGally_files/figure-html/unnamed-chunk-6-4.png" width="672" /></p>
+</div>
+<div id="discreteパラメータ" class="section level3">
+<h3>discreteパラメータ</h3>
+<p><code>discrete</code>は非連続量（カテゴリカルデータ）どうしに対して有効なオプションで<code>upper/lower</code>と<code>diag</code>に指定できますが、<code>upper/lower</code>に指定できる値と<code>diag</code>に指定できる値は異なります。指定した値はタイトルを参照してください。<br />
+　</p>
+<table>
+<thead>
+<tr class="header">
+<th>parameter</th>
+<th>upper/lower</th>
+<th>diag</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>discrete</td>
+<td>facetbar, ratio, blank</td>
+<td>barDiag, blankDiag</td>
+</tr>
+</tbody>
+</table>
+<p>　</p>
+<pre class="r"><code>set.seed(50)
+ggplot2::diamonds %&gt;%
+  dplyr::sample_n(50) %&gt;% 
+  dplyr::select(carat, cut, color) %&gt;% 
+  GGally::ggpairs(title = &quot;u:facetbar l:facetbar d:barDiag, as default&quot;)</code></pre>
+<p><img src="gr_GGally_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<pre class="r"><code>set.seed(50)
+ggplot2::diamonds %&gt;%
+  dplyr::sample_n(50) %&gt;% 
+  dplyr::select(carat, cut, color) %&gt;% 
+  GGally::ggpairs(upper = list(discrete = &quot;ratio&quot;),
+                  lower = list(discrete = &quot;blank&quot;),
+                  diag = list(discrete = &quot;blankDiag&quot;),
+                  title = &quot;u:ratio l:blank d:blankDiag&quot;)</code></pre>
+<p><img src="gr_GGally_files/figure-html/unnamed-chunk-7-2.png" width="672" /></p>
+<pre class="r"><code>GGally::ggscatmat(flea, columns = 2:4, color=&quot;species&quot;, alpha=0.8)</code></pre>
+<p><img src="gr_GGally_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<pre class="r"><code>GGally::ggscatmat(iris, columns = 1:4, color=&quot;Species&quot;, alpha=0.8)</code></pre>
+<p><img src="gr_GGally_files/figure-html/unnamed-chunk-8-2.png" width="672" /></p>
+<pre class="r"><code>GGally::ggpairs(iris, color=&quot;Species&quot;, alpha=0.8)</code></pre>
+<p><img src="gr_GGally_files/figure-html/unnamed-chunk-8-3.png" width="672" /></p>
+<pre class="r"><code>ggplot2::diamonds %&gt;% 
+  dplyr::sample_n(200) %&gt;% 
+  dplyr::select(carat, cut, color) %&gt;% 
+  GGally::ggpairs(upper = list(continuous = &quot;density&quot;, combo = &quot;box&quot;),
+                  lower = list(continuous = &quot;points&quot;, combo = &quot;dot&quot;),
+                  ggplot2::aes_string(color = &quot;cut&quot;, alpha = 0.3),
+                  title = &quot;Diamonds&quot;)</code></pre>
+<p><img src="gr_GGally_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 <pre class="r"><code>require(tidyverse)
 mtcars %&gt;% 
   GGally::ggpairs(mapping = aes(color = cyl),
@@ -536,16 +740,19 @@ GGally::ggpairs(data = TestData, columns = c(1, 5, 2, 3), mapping = aes(color = 
 <p>　</p>
 <pre class="r"><code>ggplot2::diamonds %&gt;% 
   GGally::ggpairs()</code></pre>
-<p><img src="gr_GGally_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p><img src="gr_GGally_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p>　</p>
 </div>
-<div id="ggcoef" class="section level1">
-<h1>ggcoef</h1>
+</div>
+</div>
+<div id="信頼区間プロット" class="section level1">
+<h1>信頼区間プロット</h1>
 <p><code>GGally::ggcoef</code>関数はモデルとその95%信頼区間を図示します。利用できるモデルは<code>lm</code>ならびに<code>glm</code>の他に<code>broom::tidy</code>関数で整然データ（tidy data）にできるモデルです。例えば<code>iris</code>データセットの<code>Sepal.Length</code>と<code>Sepal.Width</code><br />
 　</p>
 <pre class="r"><code>ggplot2::mpg %&gt;% 
   dplyr::select(-model) %&gt;% 
   GGally::ggpairs()</code></pre>
-<p><img src="gr_GGally_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p><img src="gr_GGally_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
 <pre class="r"><code>step(lm(cty ~ displ + year + cyl + trans + drv + fl + class,
         data = ggplot2::mpg)) %&gt;% summary()</code></pre>
 <pre><code>## Start:  AIC=237.84
@@ -631,7 +838,7 @@ GGally::ggpairs(data = TestData, columns = c(1, 5, 2, 3), mapping = aes(color = 
   GGally::ggcoef(errorbar_color = &quot;blue&quot;, errorbar_height = .1) +
     ggrepel::geom_label_repel(ggplot2::aes(label = round(estimate, 2)))</code></pre>
 <pre><code>## Loading required package: broom</code></pre>
-<p><img src="gr_GGally_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p><img src="gr_GGally_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
 <p>　</p>
 <p>ただし、モデルの推定値として<code>estimate</code>項、推定値の項目名として<code>term</code>項が含まれている必要がありますので、多重比較の場合は描画前にちょっとした前処理が必要な場合もあります。前述のグラフの箱ひげ図をみると<code>iris</code>データセットの<code>Petal.Width</code>が<code>Species</code>により有意差があるように見えましたので多重比較を用いて確認してみます。<br />
 　</p>
@@ -652,7 +859,7 @@ GGally::ggpairs(data = TestData, columns = c(1, 5, 2, 3), mapping = aes(color = 
   dplyr::select(-term) %&gt;% 
   dplyr::rename(term = comparison) %&gt;% 
   GGally::ggcoef(errorbar_color = &quot;blue&quot;, errorbar_height = .1)</code></pre>
-<p><img src="gr_GGally_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p><img src="gr_GGally_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
 <p>　</p>
 </div>
 <div id="reference" class="section level1">
@@ -660,7 +867,7 @@ GGally::ggpairs(data = TestData, columns = c(1, 5, 2, 3), mapping = aes(color = 
 <p><a href="http://ggobi.github.io/ggally/index.html">GGally Docs</a> 　</p>
 <hr />
 <!-- Footer -->
-<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-05-03 17:54(JST)]</p>
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-05-03 23:42(JST)]</p>
 </div>
 
 
