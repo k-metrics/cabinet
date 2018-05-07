@@ -37,11 +37,12 @@ GGally    | Extension to 'ggplot2'
 以下のデータセットを用います。  
 　  
 
-Dataset | Package
---------|---------
-iris    | datasets
-mtcars  | datasets
-diamonds | ggplot2
+Dataset    | Package  | Description
+-----------|----------|---
+iris       | datasets | Edgar Anderson's Iris Data
+mtcars     | datasets | Motor Trend Car Road Tests
+airquality | datasets | New York Air Quality Measurements
+diamonds   | ggplot2  | Prices of 50,000 round cut diamonds
 
 　  
 
@@ -204,6 +205,27 @@ iris %>%
                                combo = GGally::wrap("facethist", binwidth = 0.5)),
                   diag = list(continuous = GGally::wrap("barDiag", binwidth = 0.5)),
                   title = "binwidth = 0.5")
+```
+
+　  
+
+## NAが含まれる場合
+
+```{r}
+airquality
+
+airquality %>% 
+  GGally::ggpairs(upper = list(continuous = "smooth"),
+                  lower = list(continuous = "smooth_loess"),
+                  diag = list(continuous = "barDiag"),
+                  title = "u:smooth l:smooth_loess d:barDiag")
+```
+
+
+```{r}
+iris %>% 
+  dplyr::filter(Species != "setosa") %>% 
+  GGally::ggpairs()
 ```
 
 
