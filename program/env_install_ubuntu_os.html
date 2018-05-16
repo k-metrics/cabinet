@@ -682,12 +682,12 @@ sudo apt-get install libjpeg62</code></pre>
 <h2>RStudioのインストール</h2>
 <p>ダウンロードしたRStudioのインストーラを右クリックして［ソフトウェアのインストールで開く］を選択します。</p>
 <div class="figure">
-<img src="./fig/install_rstudio.png" alt="RStudioのインストール" />
+<img src="fig/rstudio/install_rstudio.png" alt="RStudioのインストール" />
 <p class="caption">RStudioのインストール</p>
 </div>
 <p>Ubuntu Softwareのウィンドウが開いてインストールするかどうか確認してきますので、［インストール］ボタンをクリックしてインストールを行います。</p>
 <div class="figure">
-<img src="./fig/installer.png" alt="Ubuntu Software" />
+<img src="fig/rstudio/installer.png" alt="Ubuntu Software" />
 <p class="caption">Ubuntu Software</p>
 </div>
 <p>　</p>
@@ -710,7 +710,7 @@ sudo apt-get install libjpeg62</code></pre>
 <div id="エラーが出る場合" class="section level2">
 <h2>エラーが出る場合</h2>
 <p>Rcmdrのインストール中に以下のようなエラーが表示されてインストール出来ない場合は、<code>r-base-dev</code>がインストールされていない可能性がありますので前述の方法で再確認してください。</p>
-<p>なお、<code>r-base-dev</code>がインストールされているにもかかわらず下記のようなエラーが出た場合は、エラーメッセージにあるソフトウェア、この場合は<code>libssl-dev</code>を個別にインストールして下さい。</p>
+<p>なお、<code>r-base-dev</code>がインストールされているにもかかわらず下記のようなエラーが出た場合は、エラーメッセージにあるOSのライブラリ、この場合は<code>libssl-dev</code>を個別にインストールして下さい。</p>
 <pre><code>* installing *source* package ‘openssl’ ...
 **  パッケージ ‘openssl’ の解凍および MD5 サムの検証に成功しました 
 Using PKG_CFLAGS=
@@ -727,12 +727,44 @@ is unavailable you can set INCLUDE_DIR and LIB_DIR manually via:
 R CMD INSTALL --configure-vars=&#39;INCLUDE_DIR=... LIB_DIR=...&#39;
 --------------------------------------------------------------------</code></pre>
 <p><code>libssl-dev</code>はターミナル（端末）で以下のコマンドを実行してインストールします。</p>
-<pre><code>sudo apt-get install libssl-dev</code></pre>
-<p>なお、<code>r-base-dev</code>がインストールされていない場合、<code>libxml2-dev</code>や<code>libcurl4-openssl-dev</code>などのソフトウェアも見つからない旨のエラーメッセージが出ることがあります。<br />
+<pre><code>sudo apt-get update
+sudo apt-get install libssl-dev</code></pre>
+<p>なお、<code>libxml2-dev</code>や<code>libcurl4-openssl-dev</code>などの下表のライブラリが見つからない旨のエラーメッセージが出ることがありますので合わせてインストールしておくことをおすゝめします。<br />
 　</p>
+<table>
+<thead>
+<tr class="header">
+<th>Ubuntu Library</th>
+<th>Libraryを必要とするパッケージの例</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>libssl-dev</td>
+<td>openssl</td>
+</tr>
+<tr class="even">
+<td>libxml2-dev</td>
+<td>xml2</td>
+</tr>
+<tr class="odd">
+<td>libcurl4-openssl-dev</td>
+<td>curl</td>
+</tr>
+<tr class="even">
+<td>libudunits2-dev</td>
+<td>ggforce</td>
+</tr>
+<tr class="odd">
+<td>unixodbc-dev</td>
+<td>odbc</td>
+</tr>
+</tbody>
+</table>
+<p>　</p>
 <div id="エラーの確認方法" class="section level3">
 <h3>エラーの確認方法</h3>
-<p>Rcmdrのインストール中にエラーがでた場合、エラーメッセージ中の“ANTICONF ERROR”に着目します。Ubuntu環境では2行目にある<code>deb:</code>以降のメッセージが該当します。。この場合、<code>libxml2-dev</code>ライブラリがインストールされていませんので、コンソール（端末）からライブラリをインストールします。</p>
+<p>Rcmdrのインストール中にエラーがでた場合、エラーメッセージ中の“ANTICONF ERROR”に着目します。Ubuntu環境では2行目にある<code>deb:</code>以降のメッセージが該当します。この場合、<code>libxml2-dev</code>ライブラリがインストールされていませんので、コンソール（端末）からライブラリをインストールします。</p>
 <pre><code>------------------------- ANTICONF ERROR ---------------------------
 Configuration failed because libxml-2.0 was not found. Try installing:
  * deb: libxml2-dev (Debian, Ubuntu, etc)
@@ -743,6 +775,16 @@ PATH and PKG_CONFIG_PATH contains a libxml-2.0.pc file. If pkg-config
 is unavailable you can set INCLUDE_DIR and LIB_DIR manually via:
 R CMD INSTALL --configure-vars=&#39;INCLUDE_DIR=... LIB_DIR=...&#39;
 --------------------------------------------------------------------</code></pre>
+</div>
+<div id="ファイルの確認方法" class="section level3">
+<h3>ファイルの確認方法</h3>
+<p>パッケージによっては“ANTICONF ERROR”を吐き出してくれずに「何々というヘッダーファイルが不足している」というような出力のみの場合があります。このような場合<code>apt-file</code>コマンドを用いて、そのファイルがどのライブラリに含まれるのかを確認します。<code>apt-file</code>コマンドは標準ではインストールされていませんので以下のコマンドを実行してインストールします。</p>
+<pre><code>sudo apt-get update
+sudo apt-get install apt-file</code></pre>
+<p>インストールが完了したら以下のコマンドで検索用データベースを更新します。</p>
+<pre><code>apt-file update</code></pre>
+<p>データベースの更新が完了したら以下のように検索を実行します。</p>
+<pre><code>apt-file search filename</code></pre>
 <p>　</p>
 </div>
 </div>
@@ -985,7 +1027,7 @@ sudo apt-get install oracle-java8-installer</code></pre>
 </ul>
 <hr />
 <!-- Include Footer -->
-<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-04-08 21:01(JST)]</p>
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-05-16 11:57(JST)]</p>
 </div>
 </div>
 
