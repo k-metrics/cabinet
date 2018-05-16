@@ -208,11 +208,11 @@ sudo apt-get install libjpeg62
 ## RStudioのインストール
 ダウンロードしたRStudioのインストーラを右クリックして［ソフトウェアのインストールで開く］を選択します。  
 
-![RStudioのインストール](./fig/install_rstudio.png)
+![RStudioのインストール](./fig/rstudio/install_rstudio.png)
 
 Ubuntu Softwareのウィンドウが開いてインストールするかどうか確認してきますので、［インストール］ボタンをクリックしてインストールを行います。  
 
-![Ubuntu Software](./fig/installer.png)
+![Ubuntu Software](./fig/rstudio/installer.png)
 
 　  
 
@@ -243,7 +243,7 @@ Rcmdr(R Commander)は必要に応じてCRANからインストールします。
 ## エラーが出る場合
 Rcmdrのインストール中に以下のようなエラーが表示されてインストール出来ない場合は、`r-base-dev`がインストールされていない可能性がありますので前述の方法で再確認してください。  
 
-なお、`r-base-dev`がインストールされているにもかかわらず下記のようなエラーが出た場合は、エラーメッセージにあるソフトウェア、この場合は`libssl-dev`を個別にインストールして下さい。  
+なお、`r-base-dev`がインストールされているにもかかわらず下記のようなエラーが出た場合は、エラーメッセージにあるOSのライブラリ、この場合は`libssl-dev`を個別にインストールして下さい。  
 
 ```
 * installing *source* package ‘openssl’ ...
@@ -266,14 +266,25 @@ R CMD INSTALL --configure-vars='INCLUDE_DIR=... LIB_DIR=...'
 `libssl-dev`はターミナル（端末）で以下のコマンドを実行してインストールします。  
 
 ```
+sudo apt-get update
 sudo apt-get install libssl-dev
 ```
 
-なお、`r-base-dev`がインストールされていない場合、`libxml2-dev`や`libcurl4-openssl-dev`などのソフトウェアも見つからない旨のエラーメッセージが出ることがあります。  
+なお、`libxml2-dev`や`libcurl4-openssl-dev`などの下表のライブラリが見つからない旨のエラーメッセージが出ることがありますので合わせてインストールしておくことをおすゝめします。  
+　  
+
+Ubuntu Library       | Libraryを必要とするパッケージの例
+---------------------|---------
+libssl-dev           | openssl
+libxml2-dev          | xml2
+libcurl4-openssl-dev | curl
+libudunits2-dev      | ggforce
+unixodbc-dev         | odbc
+
 　  
 
 ### エラーの確認方法
-Rcmdrのインストール中にエラーがでた場合、エラーメッセージ中の"ANTICONF ERROR"に着目します。Ubuntu環境では2行目にある`deb:`以降のメッセージが該当します。。この場合、`libxml2-dev`ライブラリがインストールされていませんので、コンソール（端末）からライブラリをインストールします。  
+Rcmdrのインストール中にエラーがでた場合、エラーメッセージ中の"ANTICONF ERROR"に着目します。Ubuntu環境では2行目にある`deb:`以降のメッセージが該当します。この場合、`libxml2-dev`ライブラリがインストールされていませんので、コンソール（端末）からライブラリをインストールします。  
 
 ```
 ------------------------- ANTICONF ERROR ---------------------------
@@ -286,6 +297,26 @@ PATH and PKG_CONFIG_PATH contains a libxml-2.0.pc file. If pkg-config
 is unavailable you can set INCLUDE_DIR and LIB_DIR manually via:
 R CMD INSTALL --configure-vars='INCLUDE_DIR=... LIB_DIR=...'
 --------------------------------------------------------------------
+```
+
+### ファイルの確認方法
+パッケージによっては"ANTICONF ERROR"を吐き出してくれずに「何々というヘッダーファイルが不足している」というような出力のみの場合があります。このような場合`apt-file`コマンドを用いて、そのファイルがどのライブラリに含まれるのかを確認します。`apt-file`コマンドは標準ではインストールされていませんので以下のコマンドを実行してインストールします。  
+
+```
+sudo apt-get update
+sudo apt-get install apt-file
+```
+
+インストールが完了したら以下のコマンドで検索用データベースを更新します。  
+
+```
+apt-file update
+```
+
+データベースの更新が完了したら以下のように検索を実行します。  
+
+```
+apt-file search filename
 ```
 
 　  
