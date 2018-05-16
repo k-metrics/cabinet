@@ -2,10 +2,257 @@
 title: "GGally"
 output:
   html_document:
+    code_folding: show
     css: style.css
 ---
 
+<!-- shared Links -->
+```{r GGally, child="../shared/links.Rmd", include=FALSE}
+```
+
+```{r setup, include=FALSE, message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(warning = FALSE, echo = TRUE)
+
+require(tidyverse)
+require(GGally)
+
+tidyverse::tidyverse_conflicts()
+```
+
+データ分析を行うにあたってデータの分布を確認しておくことは重要なポイントのひとつです。データの分布を確認する基本的な方法としては、ヒストグラム、箱ひげ図、散布図などありますが、データ項目が多いとグラフを描くのも一苦労です。そこで、利用したいのが複数のグラフを一度に描ける`GGally`パッケージです。ただし、ペアプロットの場合、描くグラフの数がデータ項目数の二乗個になりますのでデータ項目数が多いとかなりの処理時間がかかることに注意してください。  
+　  
+
+# 必要なパッケージ
+本ページのコードを実行するには標準パッケージ以外に以下の追加パッケージを読み込んでおく必要があります。  
+　  
+
+Package   | Description
+----------|-----------
+tidyverse | Easily Install and Load the ‘Tidyverse’
+GGally    | Extension to 'ggplot2'
+
+　  
+
+# 対象データ
+以下のデータセットを用います。  
+　  
+
+Dataset    | Package  | Description
+-----------|----------|---
+iris       | datasets | Edgar Anderson's Iris Data
+mtcars     | datasets | Motor Trend Car Road Tests
+airquality | datasets | New York Air Quality Measurements
+diamonds   | ggplot2  | Prices of 50,000 round cut diamonds
+
+　  
+
+# ペアプロット
+`psych::pairs.panels`関数が描く相関係数付きの散布図行列（ペアプロット）はデータを俯瞰するのに便利です。  
+　  
+
 ```{r}
+iris %>% 
+  psych::pairs.panels()
+```
+
+　  
+
+`ggplot2`ベースのペアプロットを描きたい場合は様々なペアプロットが描ける`GGally::ggpairs`関数が便利です。  
+　  
+
+```{r, message=FALSE}
+iris %>% 
+  GGally::ggpairs()
+```
+
+　  
+
+`ggplot2`パッケージがベースなので`ggplot2`パッケージの関数と同様の指定が可能です。例えば`Species`で層別して色分けしたい場合は`ggplot2`パッケージと同様に`ggplot2::aes`関数を用います。  
+　  
+
+```{r, message=FALSE}
+iris %>% 
+  GGally::ggpairs(ggplot2::aes(colour = Species, alpha = 0.5))
+```
+
+　  
+
+`GGally::ggpairs`関数に引数を渡すことで散布図に回帰直線を描くこともできます。  
+　  
+
+```{r, message=FALSE}
+iris %>% 
+  GGally::ggpairs(lower = list(continuous="smooth"),
+                  ggplot2::aes(colour = Species, alpha = 0.5))
+```
+
+　  
+
+## 様々なペアプロット
+`GGally::ggpairs`関数は対角の上側（`upper`）と下側（`lower`）、対角線上（`diag`）の三つのエリアに対して以下のパラメータを指定することで様々なペアプロットを描くことが可能です。  
+　  
+
+parameter  | upper/lower                     | diag
+-----------|---------------------------------|---------------------------------
+conrinuous | points, smooth, smooth_loess, density, cor, blank | densityDiag, barDiag, blankDiag
+combo      | box, box_no_facet, dot, dot_no_facet, facethist, facetdensity, denstrip, blank | 
+discrete   | facetbar, ratio, blank | barDiag, blankDiag
+na         | na, blank | naDiag, blankDiag
+
+　  
+
+### continuousパラメータ
+`continuous`は連続量に対して有効なオプションで`upper/lower`と`diag`に指定できますが、`upper/lower`に指定できる値と`diag`に指定できる値は異なります。指定した値はタイトルを参照してください。  
+　  
+
+parameter  | upper/lower                     | diag
+-----------|---------------------------------|---------------------------------
+conrinuous | points, smooth, smooth_loess, density, cor, blank | densityDiag, barDiag, blankDiag
+
+　  
+
+```{r, message=FALSE}
+iris %>% 
+  dplyr::select(-Petal.Length, -Petal.Width) %>% 
+  GGally::ggpairs(title = "u:cor l:points d:densityDiag, as default")
+iris %>% 
+  dplyr::select(-Petal.Length, -Petal.Width) %>% 
+  GGally::ggpairs(upper = list(continuous = "smooth"),
+                  lower = list(continuous = "smooth_loess"),
+                  diag = list(continuous = "barDiag"),
+                  title = "u:smooth l:smooth_loess d:barDiag")
+iris %>% 
+  dplyr::select(-Petal.Length, -Petal.Width) %>% 
+  GGally::ggpairs(upper = list(continuous = "density"),
+                  lower = list(continuous = "cor"),
+                  diag = list(continuous = "blankDiag"),
+                  title = "u:density l:cor d:blankDiag")
+```
+
+### comboパラメータ
+`combo`は因子がある場合に有効となるオプションで`upper/lower`だけに指定できます。太字はデフォルト値。    
+　  
+
+parameter  | upper/lower                     | diag
+-----------|---------------------------------|---------------------------------
+combo      | box, **box_no_facet**, dot, dot_no_facet, **facethist**, facetdensity, denstrip, blank | （指定不可）
+
+　  
+
+```{r, message=FALSE}
+iris %>% 
+  dplyr::select(-Petal.Length, -Petal.Width) %>% 
+  GGally::ggpairs(title = "u:box_no_facet l:facethist, as default",
+                  ggplot2::aes(colour = Species, alpha = 0.5))
+
+iris %>% 
+  dplyr::select(-Petal.Length, -Petal.Width) %>% 
+  GGally::ggpairs(upper = list(combo = "dot"),
+                  lower = list(combo = "box"),
+                  title = "u:dot l:box",
+                  ggplot2::aes(colour = Species, alpha = 0.5))
+iris %>% 
+  dplyr::select(-Petal.Length, -Petal.Width) %>% 
+  GGally::ggpairs(upper = list(combo = "dot_no_facet"),
+                  lower = list(combo = "facetdensity"),
+                  title = "u:dot_no_facet l:facetdensity",
+                  ggplot2::aes(colour = Species, alpha = 0.5))
+iris %>% 
+  dplyr::select(-Petal.Length, -Petal.Width) %>% 
+  GGally::ggpairs(upper = list(combo = "denstrip"),
+                  lower = list(combo = "blank"),
+                  title = "u:denstrip l:blank",
+                  ggplot2::aes(colour = Species, alpha = 0.5))
+```
+
+### discreteパラメータ
+`discrete`は非連続量（カテゴリカルデータ）どうしに対して有効なオプションで`upper/lower`と`diag`に指定できますが、`upper/lower`に指定できる値と`diag`に指定できる値は異なります。指定した値はタイトルを参照してください。  
+　  
+
+parameter  | upper/lower                     | diag
+-----------|---------------------------------|---------------------------------
+discrete   | facetbar, ratio, blank | barDiag, blankDiag
+
+　  
+
+```{r, message=FALSE}
+set.seed(50)
+ggplot2::diamonds %>%
+  dplyr::sample_n(50) %>% 
+  dplyr::select(carat, cut, color) %>% 
+  GGally::ggpairs(title = "u:facetbar l:facetbar d:barDiag, as default")
+set.seed(50)
+ggplot2::diamonds %>%
+  dplyr::sample_n(50) %>% 
+  dplyr::select(carat, cut, color) %>% 
+  GGally::ggpairs(upper = list(discrete = "ratio"),
+                  lower = list(discrete = "blank"),
+                  diag = list(discrete = "blankDiag"),
+                  title = "u:ratio l:blank d:blankDiag")
+```
+
+　  
+
+## ヒストグラムの階級幅を変更する
+デフォルトで描かれるヒストグラムの階級は`ggplot2::geom_histgram`関数と同じで30分割になっています。階級を変更したい場合は`GGally::wrap`関数を利用して引数（階級幅や階級数）を指定します。  
+　  
+
+```{r}
+iris %>% 
+  dplyr::select(-Petal.Length, -Petal.Width) %>% 
+  GGally::ggpairs(upper = list(continuous = "smooth"),
+                  lower = list(continuous = "smooth_loess",
+                               combo = GGally::wrap("facethist", binwidth = 0.5)),
+                  diag = list(continuous = GGally::wrap("barDiag", binwidth = 0.5)),
+                  title = "binwidth = 0.5")
+```
+
+　  
+
+## NAが含まれる場合
+
+```{r}
+airquality
+
+airquality %>% 
+  GGally::ggpairs(upper = list(continuous = "smooth"),
+                  lower = list(continuous = "smooth_loess"),
+                  diag = list(continuous = "barDiag"),
+                  title = "u:smooth l:smooth_loess d:barDiag")
+```
+
+
+```{r}
+iris %>% 
+  dplyr::filter(Species != "setosa") %>% 
+  GGally::ggpairs()
+```
+
+```{r, message=FALSE}
+mtcars %>% 
+  GGally::ggpairs(diag = list(continuous = "barDiag"))
+```
+
+
+```{r, message=FALSE}
+GGally::ggscatmat(flea, columns = 2:4, color="species", alpha=0.8)
+GGally::ggscatmat(iris, columns = 1:4, color="Species", alpha=0.8)
+GGally::ggpairs(iris, color="Species", alpha=0.8)
+
+```
+
+```{r}
+ggplot2::diamonds %>% 
+  dplyr::sample_n(200) %>% 
+  dplyr::select(carat, cut, color) %>% 
+  GGally::ggpairs(upper = list(continuous = "density", combo = "box"),
+                  lower = list(continuous = "points", combo = "dot"),
+                  ggplot2::aes_string(color = "cut", alpha = 0.3),
+                  title = "Diamonds")
+```
+
+
+```{r, eval=FALSE}
 require(tidyverse)
 mtcars %>% 
   GGally::ggpairs(mapping = aes(color = cyl),
@@ -25,3 +272,108 @@ GGally::ggpairs(data = TestData, columns = c(1, 5, 2, 3), mapping = aes(color = 
 ```
 
 
+
+
+```{r, message=FALSE, eval=FALSE}
+ggplot2::diamonds %>% 
+  dplyr::select(-color, -clarity, -x, -y, -z) %>% 
+  GGally::ggpairs(ggplot2::aes(colour = cut, alpha = 0.6))
+```
+
+　  
+
+```{r, message=FALSE, eval=FALSE}
+ggplot2::diamonds %>% 
+  dplyr::select(-cut, -clarity) %>% 
+  GGally::ggpairs(ggplot2::aes(colour = color, alpha = 0.6))
+```
+
+　  
+
+```{r, message=FALSE, eval=FALSE}
+ggplot2::diamonds %>% 
+  dplyr::select(-cut, -color) %>% 
+  GGally::ggpairs(ggplot2::aes(colour = clarity, alpha = 0.6))
+```
+
+　  
+
+```{r, message=FALSE}
+ggplot2::diamonds %>% 
+  GGally::ggpairs()
+```
+
+　  
+
+# 信頼区間プロット
+`GGally::ggcoef`関数はモデルとその95%信頼区間を図示します。利用できるモデルは`lm`ならびに`glm`の他に`broom::tidy`関数で整然データ（tidy data）にできるモデルです。例えば`iris`データセットの`Sepal.Length`と`Sepal.Width`  
+　  
+
+
+```{r, message=FALSE}
+ggplot2::mpg %>% 
+  dplyr::select(-model) %>% 
+  GGally::ggpairs()
+```
+
+```{r}
+step(lm(cty ~ displ + year + cyl + trans + drv + fl + class,
+        data = ggplot2::mpg)) %>% summary()
+```
+
+
+```{r}
+iris %>% 
+  lm(Sepal.Length ~ Sepal.Width, data = .) %>% 
+  summary()
+```
+
+　  
+
+```{r}
+iris %>% 
+  lm(Sepal.Length ~ Sepal.Width, data = .) %>% 
+  GGally::ggcoef(errorbar_color = "blue", errorbar_height = .1) +
+    ggrepel::geom_label_repel(ggplot2::aes(label = round(estimate, 2)))
+```
+
+　  
+
+ただし、モデルの推定値として`estimate`項、推定値の項目名として`term`項が含まれている必要がありますので、多重比較の場合は描画前にちょっとした前処理が必要な場合もあります。前述のグラフの箱ひげ図をみると`iris`データセットの`Petal.Width`が`Species`により有意差があるように見えましたので多重比較を用いて確認してみます。  
+　  
+
+```{r}
+aov(Petal.Width ~ Species, data = iris) %>% 
+  TukeyHSD() %>%
+  broom::tidy()
+```
+
+　  
+
+多重比較により`Species`が異なると`Petal.Width`の大きさが異なっていることが分かります。`Petal.Width`の平均値と95％信頼区間を可視化すると下図のようになります。  
+　  
+
+```{r}
+aov(Petal.Width ~ Species, data = iris) %>% 
+  TukeyHSD() %>%
+  broom::tidy() %>% 
+  dplyr::select(-term) %>% 
+  dplyr::rename(term = comparison) %>% 
+  GGally::ggcoef(errorbar_color = "blue", errorbar_height = .1)
+```
+
+　  
+
+
+
+
+# Reference
+
+[GGally Docs](http://ggobi.github.io/ggally/index.html)
+　  
+
+---
+
+<!-- Footer -->
+```{r child="../shared/footer.Rmd"}
+```
