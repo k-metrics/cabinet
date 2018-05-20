@@ -1,0 +1,114 @@
+---
+title: "GGally"
+output:
+  html_document:
+    code_folding: show
+    css: style.css
+---
+
+<!-- shared Links -->
+```{r GGally, child="../shared/links.Rmd", include=FALSE}
+```
+
+```{r setup, include=FALSE, message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(warning = FALSE, echo = TRUE, message = FALSE)
+
+require(tidyverse)
+require(GGally)
+
+tidyverse::tidyverse_conflicts()
+```
+
+データ分析を行うにあたってデータの分布を確認しておくことは重要なポイントのひとつです。データの分布を確認する基本的な方法としては、ヒストグラム、箱ひげ図、散布図などありますが、データ項目が多いとグラフを描くのも一苦労です。そこで、利用したいのが複数のグラフを一度に描ける`GGally`パッケージです。ただし、ペアプロットの場合、描くグラフの数がデータ項目数の二乗個になりますのでデータ項目数が多いとかなりの処理時間がかかることに注意してください。  
+　  
+
+# 必要なパッケージ
+本ページは標準パッケージ以外に以下の追加パッケージを利用しています。  
+　  
+
+Package   | Version |Description
+----------|---------|---
+tidyverse | `r packageVersion("tidyverse")`| Easily Install and Load the ‘Tidyverse’
+GGally    | `r packageVersion('GGally')`| Extension to 'ggplot2'
+
+　  
+
+# 対象データ
+本ページは以下のデータセットを用いています。  
+　  
+
+Dataset    | Package  | Version | Description
+-----------|----------|---------|---
+iris       | datasets | `r packageVersion('datasets')`| Edgar Anderson's Iris Data
+mtcars     | datasets | `r packageVersion('datasets')`| Motor Trend Car Road Tests
+airquality | datasets | `r packageVersion('datasets')`| New York Air Quality Measurements
+
+　  
+
+# 信頼区間プロット
+信頼区間を
+　  
+
+## 回帰分析の信頼区間
+`GGally::ggcoef`関数はモデルとその95%信頼区間を図示します。利用できるモデルは`lm`ならびに`glm`の他に`broom::tidy`関数で整然データ（tidy data）にできるモデルです。例えば`iris`データセットの`Sepal.Length`と`Sepal.Width`の直線回帰を計算すると以下のような標準誤差も計算できます。  
+　  
+
+```{r}
+iris %>% 
+  lm(Sepal.Length ~ Sepal.Width, data = .) %>% 
+  broom::tidy()
+```
+
+　  
+この標準誤差を`GGally::ggcoef`関数に渡すと95%信頼区間を計算して図示してくれます。  
+　  
+
+```{r}
+iris %>% 
+  lm(Sepal.Length ~ Sepal.Width, data = .) %>% 
+  GGally::ggcoef(errorbar_color = "blue", errorbar_height = .1) +
+    ggrepel::geom_label_repel(ggplot2::aes(label = round(estimate, 2)))
+```
+
+　  
+
+## 多重比較の信頼区間
+`GGally::ggcoef`関数はモデルの推定値名として`estimate`項、推定値の項目名として`term`項が含まれている必要がありますので、多重比較の場合は描画前にちょっとした前処理が必要な場合もあります。前述のグラフの箱ひげ図をみると`iris`データセットの`Petal.Width`が`Species`により有意差があるように見えましたので多重比較を用いて確認してみます。  
+　  
+
+```{r}
+iris %>% 
+  ggplot2::ggplot(ggplot2::aes(x = Species, y = Petal.Width)) +
+    ggplot2::geom_boxplot()
+
+aov(Petal.Width ~ Species, data = iris) %>% 
+  TukeyHSD() %>%
+  broom::tidy()
+```
+
+　  
+
+多重比較により`Species`が異なると`Petal.Width`の大きさが異なっていることが分かります。`Petal.Width`の平均値と95％信頼区間を可視化するには`comparison`項を`term`項に変更する必要があります。  
+　  
+
+```{r}
+aov(Petal.Width ~ Species, data = iris) %>% 
+  TukeyHSD() %>%
+  broom::tidy() %>% 
+  dplyr::select(-term) %>% 
+  dplyr::rename(term = comparison) %>% 
+  GGally::ggcoef(errorbar_color = "blue", errorbar_height = .1)
+```
+
+　  
+
+# Reference
+
+[GGally Docs](http://ggobi.github.io/ggally/index.html)
+　  
+
+---
+
+<!-- Footer -->
+```{r child="../shared/footer.Rmd"}
+```
