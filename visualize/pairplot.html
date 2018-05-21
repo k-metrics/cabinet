@@ -567,7 +567,6 @@ div.tocify {
 <div id="package-ggally" class="section level2">
 <h2>Package GGally</h2>
 <p><code>ggplot2</code>風の散布図行列を描けるのが<code>GGally::ggscatmat</code>です。<code>GGally::ggpairs</code>関数と異なりカテゴリカルデータ（因子型データ）は描画の適用外となります。ただし、<code>mtcars</code>データセットのようにカテゴリカルデータでも因子型データになっていない場合には描画対象となりますので注意してください。<br />
-<<<<<<< HEAD:visualize/pairplot.html
 　</p>
 <pre class="r"><code>iris %&gt;% 
   GGally::ggscatmat()</code></pre>
@@ -608,48 +607,6 @@ div.tocify {
   GGally::ggscatmat(color = &#39;Species&#39;, alpha = 0.5)</code></pre>
 <p><img src="pairplot_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 <p>　</p>
-=======
-　</p>
-<pre class="r"><code>iris %&gt;% 
-  GGally::ggscatmat()</code></pre>
-<p><img src="pairplot_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
-<p>　</p>
-<p><code>psych::pairs.panels</code>関数と同様に相関係数の計算方法を指定できます。デフォルトでは<code>pearson</code>の積率相関係数ですが<code>corMethod</code>オプションの指定により<code>kendall</code>の<span class="math inline">\(\tau\)</span>や<code>spearman</code>の<span class="math inline">\(\rho\)</span>の計算も可能です。<br />
-　</p>
-<table>
-<thead>
-<tr class="header">
-<th>指定方法</th>
-<th>計算される相関係数</th>
-<th>備考</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>corMethod = “pearson”</td>
-<td>ピアソンの積率相関係数</td>
-<td>デフォルト</td>
-</tr>
-<tr class="even">
-<td>corMethod = “spearman”</td>
-<td>スピアマンの順位相関係数</td>
-<td>ノンパラメトリック</td>
-</tr>
-<tr class="odd">
-<td>corMethod = “kendall”</td>
-<td>ケンドールの順位相関係数</td>
-<td>ノンパラメトリック</td>
-</tr>
-</tbody>
-</table>
-<p>　</p>
-<p><code>GGally::ggscatmat</code>関数は残念ながら<code>ggplot2</code>風な散布図行列を描く関数で<code>ggplot2</code>パッケージの各関数と連携させることはできません。ですので層別描画したい場合は<code>ggplot2::aes</code>関数ではなく<code>color</code>オプションで指定してください。<code>ggplot2</code>パッケージと連携したい場合には後述の<code>GGally::ggpairs</code>関数を用いてください。<br />
-　</p>
-<pre class="r"><code>iris %&gt;% 
-  GGally::ggscatmat(color = &#39;Species&#39;, alpha = 0.5)</code></pre>
-<p><img src="pairplot_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-<p>　</p>
->>>>>>> feature/visualize:visualize/pairplot.html
 </div>
 </div>
 <div id="モダンな散布図行列" class="section level1">
@@ -666,16 +623,6 @@ div.tocify {
   GGally::ggpairs(ggplot2::aes(colour = Species, alpha = 0.5))</code></pre>
 <p><img src="pairplot_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <p>　</p>
-<div id="様々なオプション" class="section level2">
-<h2>様々なオプション</h2>
-<p>オプション指定で散布図に回帰線を描くこともできます。<br />
-　</p>
-<pre class="r"><code>iris %&gt;% 
-  GGally::ggpairs(lower = list(continuous=&quot;smooth&quot;),
-                  ggplot2::aes(colour = Species, alpha = 0.5))</code></pre>
-<p><img src="pairplot_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
-<p>　</p>
-</div>
 <div id="様々なペアプロット" class="section level2">
 <h2>様々なペアプロット</h2>
 <p><code>GGally::ggpairs</code>関数は対角の上側（<code>upper</code>）と下側（<code>lower</code>）、対角線上（<code>diag</code>）の三つのエリアに対して以下のパラメータをリスト型で指定することにより様々なペアプロットを描くことが可能です。<br />
@@ -706,21 +653,13 @@ div.tocify {
 <td>combo</td>
 <td>box, box_no_facet, dot, dot_no_facet, facethist, facetdensity, denstrip, blank</td>
 <td></td>
-<<<<<<< HEAD:visualize/pairplot.html
-<td>連続量（数値型）と離散量（因子型）の組合わせに対するグラフ形式</td>
-=======
 <td>連続量（数値型）とカテゴリカルデータ（因子型）の組合わせに対するグラフ形式</td>
->>>>>>> feature/visualize:visualize/pairplot.html
 </tr>
 <tr class="odd">
 <td>discrete</td>
 <td>facetbar, ratio, blank</td>
 <td>barDiag, blankDiag</td>
-<<<<<<< HEAD:visualize/pairplot.html
-<td>離散量（因子型）に対するグラフ形式</td>
-=======
 <td>カテゴリカルデータ（因子型）に対するグラフ形式</td>
->>>>>>> feature/visualize:visualize/pairplot.html
 </tr>
 <tr class="even">
 <td>na</td>
@@ -858,27 +797,20 @@ div.tocify {
 <pre class="r"><code>iris %&gt;% 
   GGally::ggpairs() + 
     ggplot2::ggtitle(&quot;upper:cor, lower:points, diag:densityDiag, as default&quot;)</code></pre>
-<p><img src="pairplot_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p><img src="pairplot_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 <pre class="r"><code>iris %&gt;% 
   GGally::ggpairs(upper = list(continuous = &quot;smooth&quot;),
                   lower = list(continuous = &quot;smooth_loess&quot;),
                   diag = list(continuous = &quot;barDiag&quot;)) + 
     ggplot2::ggtitle(&quot;upper:smooth, lower:smooth_loess, diag:barDiag&quot;)</code></pre>
-<p><img src="pairplot_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p><img src="pairplot_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 <pre class="r"><code>iris %&gt;% 
   GGally::ggpairs(upper = list(continuous = &quot;density&quot;),
-<<<<<<< HEAD:visualize/pairplot.html
-                  lower = list(continuous = &quot;points&quot;),
-                  diag = list(continuous = &quot;blankDiag&quot;),
-                  title = &quot;u:density l:cor d:blankDiag&quot;)</code></pre>
-<p><img src="pairplot_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
-=======
                   lower = list(continuous = &quot;blank&quot;),
                   diag = list(continuous = &quot;blankDiag&quot;)) +
     ggplot2::ggtitle(&quot;upper:density, lower:blank, d:blankDiag&quot;)</code></pre>
-<p><img src="pairplot_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p><img src="pairplot_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 <p>　</p>
->>>>>>> feature/visualize:visualize/pairplot.html
 </div>
 <div id="comboパラメータ" class="section level3">
 <h3>comboパラメータ</h3>
@@ -959,60 +891,32 @@ div.tocify {
 </table>
 <p>　</p>
 <pre class="r"><code>iris %&gt;% 
-<<<<<<< HEAD:visualize/pairplot.html
-  dplyr::select(-Petal.Length, -Petal.Width) %&gt;% 
-  GGally::ggpairs(title = &quot;u:box_no_facet l:facethist, as default&quot;,
-                  ggplot2::aes(colour = Species, alpha = 0.5))</code></pre>
-<p><img src="pairplot_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
-=======
   dplyr::select(Sepal.Length, Species) %&gt;% 
   GGally::ggpairs() + 
     ggplot2::ggtitle(&quot;upper:box_no_facet, lower:facethist, as default&quot;)</code></pre>
-<p><img src="pairplot_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p><img src="pairplot_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 <p>　</p>
->>>>>>> feature/visualize:visualize/pairplot.html
 <pre class="r"><code>iris %&gt;% 
   dplyr::select(Sepal.Length, Species) %&gt;% 
   GGally::ggpairs(upper = list(combo = &quot;box&quot;),
                   lower = list(combo = &quot;facetdensity&quot;)) + 
     ggplot2::ggtitle(&quot;upper:box, lower:facetdensity&quot;)</code></pre>
-<p><img src="pairplot_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p><img src="pairplot_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 <p>　</p>
 <pre class="r"><code>iris %&gt;% 
   dplyr::select(Sepal.Length, Species) %&gt;% 
   GGally::ggpairs(upper = list(combo = &quot;dot&quot;),
-<<<<<<< HEAD:visualize/pairplot.html
-                  lower = list(combo = &quot;box&quot;),
-                  title = &quot;u:dot l:box&quot;,
-                  ggplot2::aes(colour = Species, alpha = 0.5))</code></pre>
-<p><img src="pairplot_files/figure-html/unnamed-chunk-11-2.png" width="672" /></p>
-=======
                   lower = list(combo = &quot;denstrip&quot;)) +
     ggplot2::ggtitle(&quot;upper:dot, lower:density&quot;)</code></pre>
-<p><img src="pairplot_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p><img src="pairplot_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 <p>　</p>
->>>>>>> feature/visualize:visualize/pairplot.html
 <pre class="r"><code>iris %&gt;% 
   dplyr::select(Sepal.Length, Species) %&gt;% 
   GGally::ggpairs(upper = list(combo = &quot;dot_no_facet&quot;),
-<<<<<<< HEAD:visualize/pairplot.html
-                  lower = list(combo = &quot;facetdensity&quot;),
-                  title = &quot;u:dot_no_facet l:facetdensity&quot;,
-                  ggplot2::aes(colour = Species, alpha = 0.5))</code></pre>
-<p><img src="pairplot_files/figure-html/unnamed-chunk-11-3.png" width="672" /></p>
-<pre class="r"><code>iris %&gt;% 
-  dplyr::select(-Petal.Length, -Petal.Width) %&gt;% 
-  GGally::ggpairs(upper = list(combo = &quot;denstrip&quot;),
-                  lower = list(combo = &quot;blank&quot;),
-                  title = &quot;u:denstrip l:blank&quot;,
-                  ggplot2::aes(colour = Species, alpha = 0.5))</code></pre>
-<p><img src="pairplot_files/figure-html/unnamed-chunk-11-4.png" width="672" /></p>
-=======
                   lower = list(combo = &quot;blank&quot;)) + 
     ggplot2::ggtitle(&quot;upper:dot_no_facet, lower:blank&quot;)</code></pre>
-<p><img src="pairplot_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p><img src="pairplot_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 <p>　</p>
->>>>>>> feature/visualize:visualize/pairplot.html
 </div>
 <div id="discreteパラメータ" class="section level3">
 <h3>discreteパラメータ</h3>
@@ -1035,39 +939,23 @@ div.tocify {
 </tbody>
 </table>
 <p>　</p>
-<<<<<<< HEAD:visualize/pairplot.html
-<pre class="r"><code>set.seed(50)
-ggplot2::diamonds %&gt;%
-  dplyr::sample_n(50) %&gt;% 
-  dplyr::select(carat, cut, color) %&gt;% 
-  GGally::ggpairs(title = &quot;u:facetbar l:facetbar d:barDiag, as default&quot;)</code></pre>
-<p><img src="pairplot_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
-<pre class="r"><code>set.seed(50)
-=======
 <pre class="r"><code>set.seed(20)
 diamonds %&gt;% 
   dplyr::sample_n(20) %&gt;% 
   dplyr::select(cut, color) %&gt;% 
   GGally::ggpairs() +
     ggplot2::ggtitle(&quot;upper:facetbar, lower:facetbar, diag:barDiag, as default&quot;)</code></pre>
-<p><img src="pairplot_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<p><img src="pairplot_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 <p>　</p>
 <pre class="r"><code>set.seed(20)
->>>>>>> feature/visualize:visualize/pairplot.html
 ggplot2::diamonds %&gt;%
   dplyr::sample_n(20) %&gt;% 
   dplyr::select(cut, color) %&gt;% 
   GGally::ggpairs(upper = list(discrete = &quot;ratio&quot;),
                   lower = list(discrete = &quot;blank&quot;),
-<<<<<<< HEAD:visualize/pairplot.html
-                  diag = list(discrete = &quot;blankDiag&quot;),
-                  title = &quot;u:ratio l:blank d:blankDiag&quot;)</code></pre>
-<p><img src="pairplot_files/figure-html/unnamed-chunk-12-2.png" width="672" /></p>
-=======
                   diag = list(discrete = &quot;blankDiag&quot;)) + 
     ggplot2::ggtitle(&quot;upper:ratio, lower:Diag, diag:blankDiag&quot;)</code></pre>
-<p><img src="pairplot_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
->>>>>>> feature/visualize:visualize/pairplot.html
+<p><img src="pairplot_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
 <p>　</p>
 </div>
 </div>
@@ -1084,19 +972,11 @@ ggplot2::diamonds %&gt;%
                                combo = GGally::wrap(&quot;facethist&quot;, binwidth = 0.5)),
                   diag = list(continuous = GGally::wrap(&quot;barDiag&quot;, binwidth = 0.5)),
                   title = &quot;binwidth = 0.5&quot;)</code></pre>
-<<<<<<< HEAD:visualize/pairplot.html
-<p><img src="pairplot_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
-<p>　</p>
-</div>
-<div id="naが含まれる場合" class="section level2">
-<h2>NAが含まれる場合</h2>
-=======
-<p><img src="pairplot_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<p><img src="pairplot_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
 <p>　</p>
 </div>
 <div id="naが含まれる場合" class="section level3">
 <h3>NAが含まれる場合</h3>
->>>>>>> feature/visualize:visualize/pairplot.html
 <p>データにNAが含まれている場合でも特別な指定をしなくても描画処理をしてくれます。例えば<code>airquality</code>データセットには複数の項目にNAが含まれています。<br />
 　</p>
 <pre class="r"><code>airquality</code></pre>
@@ -1110,14 +990,9 @@ ggplot2::diamonds %&gt;%
 <pre class="r"><code>airquality %&gt;% 
   GGally::ggpairs(lower = list(continuous = &quot;smooth_loess&quot;),
                   diag = list(continuous = &quot;barDiag&quot;))</code></pre>
-<<<<<<< HEAD:visualize/pairplot.html
-<p><img src="pairplot_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
-<p>　</p>
-=======
-<p><img src="pairplot_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
+<p><img src="pairplot_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
 <p>　</p>
 </div>
->>>>>>> feature/visualize:visualize/pairplot.html
 </div>
 </div>
 <div id="reference" class="section level1">
@@ -1125,11 +1000,7 @@ ggplot2::diamonds %&gt;%
 <p><a href="http://ggobi.github.io/ggally/index.html">GGally Docs</a> 　</p>
 <hr />
 <!-- Footer -->
-<<<<<<< HEAD:visualize/pairplot.html
-<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-05-21 00:25(JST)]</p>
-=======
-<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-05-21 22:13(JST)]</p>
->>>>>>> feature/visualize:visualize/pairplot.html
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-05-21 23:00(JST)]</p>
 </div>
 
 
