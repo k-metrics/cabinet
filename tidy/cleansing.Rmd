@@ -1,0 +1,134 @@
+---
+title: "データクレンジング"
+output: 
+  html_document:  
+    code_folding: show
+    css: style.css
+---
+
+<!-- shared Links -->
+```{r index, child="../shared/links.Rmd", include=FALSE}
+```
+
+```{r setup, message=FALSE, warning=FALSE, echo=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+require(Nippon)
+require(tidyverse)
+```
+
+データクレンジングとは[IT用語辞典](http://e-words.jp/w/%E3%83%87%E3%83%BC%E3%82%BF%E3%82%AF%E3%83%AC%E3%83%B3%E3%82%B8%E3%83%B3%E3%82%B0.html)によると「データベースに保存されているデータの中から、重複や誤記、表記の揺れなどを探し出し、削除や修正、正規化などを行い、データの品質を高めること。」と説明されています。よく見かける例としては  
+
+* 全角文字と半角文字の混在
+* 空白の利用有無
+* 区切り文字の有無や揺れ
+* 前（株）後（株）
+
+などがあります。データ入力特にフリフォーマットの場合はクレンジングを行わないと使い物にならない場合が多くなる傾向があります。  
+　  
+
+# 必要なパッケージ
+本ページは標準パッケージ以外に以下の追加パッケージを用いています。  
+　  
+
+Package   | Version |Description
+----------|---------|----------------------------------------------------------
+Nippon    | `r packageVersion('Nippon')`| Japanese Utility Functions and Data
+tidyverse | `r packageVersion('tidyverse')`| Easily Install and Load the ‘Tidyverse’
+
+　  
+
+# 対象データ
+本ページは以下のデータセットを用いています。  
+　  
+
+Dataset    | Package  | Version | Description
+-----------|----------|---------|----------------------------------------------
+anscombe   | datasets | `r packageVersion('datasets')`| Anscombe's Quartet of ‘Identical’ Simple Linear Regressions
+
+
+# 正規表現
+データのクレンジングを行う場合、憶えておきたいのが正規表現です。特に空白や区切り文字の揺れをクレンジングしたい場合には便利です。  
+　  
+
+## 拡張正規表現
+Rにおける拡張正規表現はPOSIX 1003.2標準に基づいています。  
+　  
+
+### メタ文字
+メタ文字（特殊な意味を持つ文字）を指定する場合はメタ文字の前にバックスラッシュ（\\）を配置してください。メタ文字とは「.」，「\\」，「|」，「(」，「)」，「[」，「{」，「^」，「$」，「*」，「+」，「?」 の12文字です。  
+　  
+
+## 文字クラス
+文字クラスとは「[」と「]」で囲まれた文字のリストで、その内のいずれも文字ともマッチします。文字をハイフン「-」で結んだ場合は最初の文字から最後の文字の範囲を指定することになります（ただし、ロケール依存）。  
+　  
+
+### 名前付き文字クラス
+比較的利用頻度が多いと思われる文字クラスが名前付き文字クラスとして定義されています（ロケール依存）。  
+　  
+
+クラス     | 内容                     | 備考
+-----------|--------------------------|----------------------------------------
+`[:alnum:]`  | アルファベットと数値     | `[:alpha:]` + `[:digit:]`
+`[:alpha:]`  | 大小文字アルファベット   | `[:lower:]` + `[:upper:]`
+`[:lower:]`  | 小文字アルファベット     | 
+`[:upper:]`  | 大文字アルファベット     | 
+`[:digit:]`  | 数字                     | 
+`[:blank:]`  | 空白文字、スペースとタブ | ロケールによっては全角文字も含む
+`[:cntrl:]`  | 制御文字                 | `000-037`, `177`(`DEL`)
+`[:graph:]`  | グラフィカル文字         | `[:alnum:]` + `[:punct:]`
+`[:print:]`  | 印字可能な文字           | `[:alnum:]` + `[:punct:]` + `[:space:]`
+`[:punct:]`  | パンクチュエーション文字 | 記号（`! " # $ % & ' ( ) * + , - . /`）
+`[:space:]`  | 空白                     | `[:blank:]` + 改行、水平タブ、給紙、キャリッジリターン
+`[:xdigit:]` | 16進数                   | `0-9`, `A-F`, `a-f`
+
+　  
+
+# 日本語特有の処理
+日本語を含むデータを処理する場合正規表現だけでは処理できない場合があります。そのような場合には日本語処理に特化した`Nippon`パッケージが便利です。  
+　  
+
+## 全角半角変換
+```{r}
+(zen <- "./data/text.csv" %>% 
+  readr::read_csv())
+```
+
+```{r}
+zen %>% 
+  dplyr::summarize_all(funs(Nippon::zen2han))
+```
+
+```{r}
+zen %>% 
+  dplyr::mutate_all(funs(Nippon::kata2hira))
+
+zen$全角カナ %>% 
+  Nippon::kata2hira()
+```
+
+```{r}
+zen %>% 
+  dplyr::mutate(Nippon::kansu2arabic(漢数字))
+```
+
+```{r}
+Nippon::zenkaku$upper
+Nippon::zen2han(Nippon::zenkaku$upper)
+Nippon::zen2han(c("！", "”", "＃", "＄", "％", "＆", "’", "（", "）", "＝"))
+Nippon::han2zen(LETTERS)
+```
+
+
+## 平仮名片仮名変換
+## 文字コード変換
+## ローマ字変換
+ 
+
+# 参考資料
+* [dplyr でグループごとに複数カラムを追加したい](https://qiita.com/hoxo_m/items/9d2f91008335b03bf082)  
+
+---
+
+<!-- Footer -->
+```{r child="../shared/footer.Rmd"}
+```

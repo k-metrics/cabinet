@@ -413,16 +413,16 @@ div.tocify {
 　</p>
 <div id="標準パッケージを用いる方法" class="section level1">
 <h1>標準パッケージを用いる方法</h1>
-<p>標準パッケージで層別統計量を計算するには<strong><code>apply</code></strong>関数群の<strong><code>tapply</code></strong>関数を用います。統計用の計算結果が一つの値（長さ1になる）の場合と複数の値（長さ2以上）になる場合では、層別の統計量算出後に型変換する場合は処理方法が異なりますので、その点についても記載しておきます。<br />
+<p>標準パッケージで層別統計量を計算するには<code>apply</code>関数群の<code>tapply</code>関数を用います。統計用の計算結果が一つの値（長さ1になる）の場合と複数の値（長さ2以上）になる場合では、層別の統計量算出後に型変換する場合は処理方法が異なりますので、その点についても記載しておきます。<br />
 　</p>
 <div id="平均値を計算する" class="section level2">
 <h2>平均値を計算する</h2>
-<p><a href="https://www.r-project.org/" target="_blank" title="The R Project">R</a>に標準で組み込まれている<strong><code>iris</code></strong>データセットを用いて<strong><code>Sepal.Length</code></strong>（萼片の長さ）の平均値を<strong><code>Species</code></strong>（品種）毎に計算してみます。</p>
+<p><a href="https://www.r-project.org/" target="_blank" title="The R Project">R</a>に標準で組み込まれている<code>iris</code>データセットを用いて<code>Sepal.Length</code>（萼片の長さ）の平均値を<code>Species</code>（品種）毎に計算してみます。</p>
 <pre class="r"><code>with(iris, tapply(Sepal.Length, Species, mean, na.rm = TRUE))</code></pre>
 <pre><code>##     setosa versicolor  virginica 
 ##      5.006      5.936      6.588</code></pre>
 <p>　<br />
-<strong><code>tapply</code></strong>関数の返り値はアレイ型ですが、<strong><code>mean</code></strong>関数の返り値が長さ1のベクトル型ですので、その後に型の変換処理を行いたい場合は以下のように比較的簡単にできます。<br />
+<code>tapply</code>関数の返り値はアレイ型ですが、<code>mean</code>関数の返り値が長さ1のベクトル型ですので、その後に型の変換処理を行いたい場合は以下のように比較的簡単にできます。<br />
 　</p>
 <div id="マトリクス型に変換する" class="section level3">
 <h3>マトリクス型に変換する</h3>
@@ -449,7 +449,7 @@ div.tocify {
 </div>
 <div id="五数要約を計算する" class="section level2">
 <h2>五数要約を計算する</h2>
-<p>同様に<strong><code>fivenum</code></strong>関数で五数要約（最小値、第1四分位数、中央値、第3四分位数、最大値）を計算してみましょう。</p>
+<p>同様に<code>fivenum</code>関数で五数要約（最小値、第1四分位数、中央値、第3四分位数、最大値）を計算してみましょう。</p>
 <pre class="r"><code>with(iris, tapply(Sepal.Length, Species, fivenum, na.rm = TRUE))</code></pre>
 <pre><code>## $setosa
 ## [1] 4.3 4.8 5.0 5.2 5.8
@@ -460,11 +460,11 @@ div.tocify {
 ## $virginica
 ## [1] 4.9 6.2 6.5 6.9 7.9</code></pre>
 <p>　<br />
-<strong><code>fivenum</code></strong>関数のように返り値の長さが1より大きいベクトルの場合は、平均値を計算した時とは異なり型を変換するにはひと手間必要です。<br />
+<code>fivenum</code>関数のように返り値の長さが1より大きいベクトルの場合は、平均値を計算した時とは異なり型を変換するにはひと手間必要です。<br />
 　</p>
 <div id="マトリクス型に変換する-1" class="section level3">
 <h3>マトリクス型に変換する</h3>
-<p><strong><code>tapply</code></strong>関数の返り値は複数の値を持つアレイ型ですので<strong><code>do.call</code></strong>関数を用いて行方向に結合する必要があります。</p>
+<p><code>tapply</code>関数の返り値は複数の値を持つアレイ型ですので<code>do.call</code>関数を用いて行方向に結合する必要があります。</p>
 <pre class="r"><code>do.call(rbind, 
         with(iris, tapply(Sepal.Length, Species, fivenum, na.rm = TRUE)))</code></pre>
 <pre><code>##            [,1] [,2] [,3] [,4] [,5]
@@ -490,11 +490,11 @@ div.tocify {
 </div>
 <div id="追加パッケージを用いる方法" class="section level1">
 <h1>追加パッケージを用いる方法</h1>
-<p><strong><code>dplyr</code></strong>パッケージを用いることでパイプ（ %&gt;% ）処理による分かりやすい処理が可能になります。<br />
+<p><code>dplyr</code>パッケージを用いることでパイプ（ %&gt;% ）処理による分かりやすい処理が可能になります。<br />
 　</p>
 <div id="平均値を計算する-1" class="section level2">
 <h2>平均値を計算する</h2>
-<p><a href="#base">標準パッケージを用いる方法</a>と同様の処理を<strong><code>dplyr</code></strong>パッケージを用いて処理すると以下のように全ての数値変数に対して一度に処理できるようになります。</p>
+<p><a href="#base">標準パッケージを用いる方法</a>と同様の処理を<code>dplyr</code>パッケージを用いて処理すると以下のように全ての数値変数に対して一度に処理できるようになります。</p>
 <pre class="r"><code>require(tidyverse)
 
 iris %&gt;% 
@@ -509,11 +509,11 @@ iris %&gt;%
 </div>
 <div id="五数要約を計算する-1" class="section level2">
 <h2>五数要約を計算する</h2>
-<p><strong><code>dplyr::summarise</code></strong>関数では「返り値の長さが1」である関数のみしか使えませんので、返り値の長さが5つある五数要約（<strong><code>quantile</code></strong>関数）を平均値の計算の時のように計算することはできません。なお、<strong><code>mean</code></strong>関数のように全ての数値変数に対して一度に処理することはできませんので注意してください。<br />
+<p><code>dplyr::summarise</code>関数では「返り値の長さが1」である関数のみしか使えませんので、返り値の長さが5つある五数要約（<code>quantile</code>関数）を平均値の計算の時のように計算することはできません。なお、<code>mean</code>関数のように全ての数値変数に対して一度に処理することはできませんので注意してください。<br />
 　</p>
 <div id="方法" class="section level3">
 <h3>方法１</h3>
-<p><strong><code>quantile</code></strong>関数の返り値をリスト型にしてから<strong><code>dplyr::summarise</code></strong>関数に渡し<strong><code>cbind</code></strong>関数で列方向に展開します。</p>
+<p><code>quantile</code>関数の返り値をリスト型にしてから<code>dplyr::summarise</code>関数に渡し<code>cbind</code>関数で列方向に展開します。</p>
 <pre class="r"><code>require(tidyverse)
 
 iris %&gt;% 
@@ -530,7 +530,7 @@ iris %&gt;%
 </div>
 <div id="方法-1" class="section level3">
 <h3>方法２</h3>
-<p><strong><code>dplyr::do</code></strong>を用いてリスト型の返り値を<strong><code>cbind</code></strong>関数で展開します。より<strong><code>dplyr</code></strong>的な処理です。</p>
+<p><code>dplyr::do</code>を用いてリスト型の返り値を<code>cbind</code>関数で展開します。より<code>dplyr</code>的な処理です。</p>
 <pre class="r"><code>require(tidyverse)
 
 iris %&gt;%
@@ -554,7 +554,7 @@ iris %&gt;%
 </ul>
 <hr />
 <!-- Footer -->
-<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-04-15 17:54(JST)]</p>
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-05-22 22:07(JST)]</p>
 </div>
 
 
