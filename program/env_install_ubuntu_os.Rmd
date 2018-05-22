@@ -299,6 +299,8 @@ R CMD INSTALL --configure-vars='INCLUDE_DIR=... LIB_DIR=...'
 --------------------------------------------------------------------
 ```
 
+　  
+
 ### ファイルの確認方法
 パッケージによっては"ANTICONF ERROR"を吐き出してくれずに「何々というヘッダーファイルが不足している」というような出力のみの場合があります。このような場合`apt-file`コマンドを用いて、そのファイルがどのライブラリに含まれるのかを確認します。`apt-file`コマンドは標準ではインストールされていませんので以下のコマンドを実行してインストールします。  
 
@@ -492,6 +494,20 @@ Dropboxのインストールは任意ですがUbuntuで利用できる数少な�
 
 ## Redshift
 （準備中）  
+　  
+
+## Ubuntu Software
+Ubuntu Softwareが起動しなくなることがあります。起動しなくなった場合は以下のコマンドを実行して再インストール後にキャッシュファイルなどを削除してみてください。  
+　  
+
+```
+sudo apt purge gnome-software gnome-software-common ubuntu-software
+sudo apt install ubuntu-software gnome-software*
+sudo appstreamcli refresh --force --verbose
+sudo rm -r /var/cache/app-info && sudo appstreamcli refresh --force --verbose
+rm -rf ~/.local/share/gnome-software/
+```
+
 　  
 
 <!-- # Install 1Password -->
