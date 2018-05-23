@@ -16,14 +16,15 @@ require(Nippon)
 require(tidyverse)
 ```
 
-データクレンジングとは[IT用語辞典](http://e-words.jp/w/%E3%83%87%E3%83%BC%E3%82%BF%E3%82%AF%E3%83%AC%E3%83%B3%E3%82%B8%E3%83%B3%E3%82%B0.html)によると「データベースに保存されているデータの中から、重複や誤記、表記の揺れなどを探し出し、削除や修正、正規化などを行い、データの品質を高めること。」と説明されています。よく見かける例としては  
+データクレンジングとは[IT用語辞典](http://e-words.jp/w/%E3%83%87%E3%83%BC%E3%82%BF%E3%82%AF%E3%83%AC%E3%83%B3%E3%82%B8%E3%83%B3%E3%82%B0.html)によると「データベースに保存されているデータの中から、重複や誤記、表記の揺れなどを探し出し、削除や修正、正規化などを行い、データの品質を高めること。」と説明されています。よく見かけるクレンジング対象となる例としては  
 
+* 欠損値
 * 全角文字と半角文字の混在
-* 空白の利用有無
+* 空白の有無
 * 区切り文字の有無や揺れ
 * 前（株）後（株）
 
-などがあります。データ入力特にフリフォーマットの場合はクレンジングを行わないと使い物にならない場合が多くなる傾向があります。  
+などがあります。データ入力特にフリフォーマットの場合はクレンジングを行わないと使い物にならない場合が多くなる傾向がるといえます。  
 　  
 
 # 必要なパッケージ
@@ -32,19 +33,101 @@ require(tidyverse)
 
 Package   | Version |Description
 ----------|---------|----------------------------------------------------------
-Nippon    | `r packageVersion('Nippon')`| Japanese Utility Functions and Data
 tidyverse | `r packageVersion('tidyverse')`| Easily Install and Load the ‘Tidyverse’
+Nippon    | `r packageVersion('Nippon')`| Japanese Utility Functions and Data
 
 　  
 
 # 対象データ
 本ページは以下のデータセットを用いています。  
-　  
 
 Dataset    | Package  | Version | Description
 -----------|----------|---------|----------------------------------------------
-anscombe   | datasets | `r packageVersion('datasets')`| Anscombe's Quartet of ‘Identical’ Simple Linear Regressions
+airquality | datasets | `r packageVersion('datasets')`| New York Air Quality Measurements
 
+また、独自のデータセットとして以下を用いています。  
+
+```{r, echo=FALSE}
+(zen <- "./data/text_zen.csv" %>% 
+  readr::read_csv())
+(han <- "./data/text_han.csv" %>% 
+  readr::read_csv())
+```
+
+　  
+
+# 欠損値の処理
+データには必ずと言っていいほどレコードの一部のデータが取得できていないものが含まれます。取得できていないデータを欠損値と呼びます。欠損値を含んだデータを読み込んだ場合、Rのデフォルト処理では`NA`という特殊なデータとして扱います。
+
+欠損値の扱いはデータや分析目的などにより変わりますが、主な扱い方は以下のようになります。
+
+* 欠損値は欠損値としてそのまま扱う
+* 欠損値を特定の値に変換して扱う
+* 欠損値を含むレコードを分析対象外として扱う
+
+`airquality`データセットは６つの変数それぞれに「`r colSums(is.na(airquality))`」個の`NA`を含むデータセットです。このデータセットを用いて`NA`の代表的な処理例を以降に示します。  
+　  
+
+```{r}
+airquality
+```
+
+　  
+
+## 特定の値に変換する
+`NA`を特定データに変換する場合は当該データが`NA`か否かを判断するために`is.na`関数を用います。例えば`Ozone`変数の`NA`を`0`に変換する場合は`ifelse`関数と組み合わせて処理を行います。  
+　  
+
+```{r}
+airquality %>% 
+  dplyr::mutate(ozone = ifelse(is.na(Ozone), 0, Ozone)) %>% 
+  dplyr::select(Ozone, ozone, Solar.R, Wind, Temp, Month, Day)
+```
+
+　  
+
+## 欠損値を含むレコードを削除する
+NAを含むデータを削除する場合
+
+* NAが含まれているレコード全てを削除する
+* 特定の変数にNAが含まれているレコードを削除する
+
+のどちらかの方法があります。Base Rには`na.omit`関数が用意されていますが、`na.omit`関数は`NA`を含む全てのレコードを削除します。特定の変数にNAが含まれている場合にのみ`NA`を削除したい場合には`tidyr::drop_na`関数を用います。例えば`Solar.R`変数に`NA`が含まれているレコードのみを削除する場合は以下のようにします。  
+　  
+
+```{r}
+airquality %>% 
+  tidyr::drop_na(Solar.R)
+```
+
+　  
+
+`tidyr::drop_na`関数は`NA`を含む全てのレコードを削除することも可能です。  
+　  
+```{r}
+airquality %>% 
+  tidyr::drop_na()
+```
+
+　  
+
+# 分割・結合
+例えば氏名や日付のようなデータが一つの変数として扱われている場合や複数の変数として扱われているような場合があります。
+
+## 分割
+```{r}
+# tidyr::separate()
+```
+
+## 結合
+
+```{r}
+airquality %>% 
+  tidyr::unite("Date", Month, Day, sep = "/")
+```
+
+
+　  
 
 # 正規表現
 データのクレンジングを行う場合、憶えておきたいのが正規表現です。特に空白や区切り文字の揺れをクレンジングしたい場合には便利です。  
@@ -55,7 +138,7 @@ Rにおける拡張正規表現はPOSIX 1003.2標準に基づいています。
 　  
 
 ### メタ文字
-メタ文字（特殊な意味を持つ文字）を指定する場合はメタ文字の前にバックスラッシュ（\\）を配置してください。メタ文字とは「.」，「\\」，「|」，「(」，「)」，「[」，「{」，「^」，「$」，「*」，「+」，「?」 の12文字です。  
+メタ文字（特殊な意味を持つ文字）を指定する場合はメタ文字の前にバックスラッシュ「\\」を配置してください。メタ文字とは「.」，「\\」，「|」，「(」，「)」，「[」，「{」，「^」，「$」，「*」，「+」，「?」 の12文字です。  
 　  
 
 ## 文字クラス
@@ -88,41 +171,87 @@ Rにおける拡張正規表現はPOSIX 1003.2標準に基づいています。
 　  
 
 ## 全角半角変換
-```{r}
-(zen <- "./data/text.csv" %>% 
-  readr::read_csv())
-```
+英数記号の全角と半角が混在している場合には`Nippon::zen2han`関数または`Nippon::han2zen`関数が便利です。ヘルプに記載されているように全角半角の双方向に変換できるのはアルファベット、数字、記号のみです。漢数字は半角に変換できますが、漢字、平仮名、片仮名は半角に変換できません。  
+　  
 
-```{r}
-zen %>% 
-  dplyr::summarize_all(funs(Nippon::zen2han))
-```
-
+`Nippon::zen2han`関数の返り値は単一ベクトル型になりますのでデータフレームに対して適用したい場合は`dplyr::rowwise`関数を用いて行毎に適用してください。
 ```{r}
 zen %>% 
-  dplyr::mutate_all(funs(Nippon::kata2hira))
-
-zen$全角カナ %>% 
-  Nippon::kata2hira()
+  dplyr::select('全角大文字', '全角小文字', '全角数字', '全角記号') %>% 
+  dplyr::rowwise() %>%
+  dplyr::mutate('半角大文字' = Nippon::zen2han(全角大文字),
+                '半角小文字' = Nippon::zen2han(全角小文字),
+                '半角数字' = Nippon::zen2han(全角数字),
+                '半角記号' = Nippon::zen2han(全角記号)) %>% 
+  dplyr::select('全角大文字', '半角大文字', '全角小文字', '半角小文字',
+                '全角数字', '半角数字', '全角記号', '半角記号')
 ```
+
+　  
+
+`Nippon::han2zen`関数の返り値の型は`Nippon::zen2han`関数と異なり通常のベクトル型になりますのでデータフレームに対して適用する場合でも`dplyr::rowwise`関数を用いる必要はありません。なお、変換元のデータ形式は文字型である必要がありますので注意してください。  
+　  
 
 ```{r}
-zen %>% 
-  dplyr::mutate(Nippon::kansu2arabic(漢数字))
+han %>% 
+  dplyr::mutate('全角大文字' = Nippon::han2zen(半角大文字),
+                '全角小文字' = Nippon::han2zen(半角小文字),
+                '全角数字' = Nippon::han2zen(as.character(半角数字)),
+                '全角記号' = Nippon::han2zen(半角記号),
+                '全角カナ' = Nippon::han2zen(半角カナ)) %>% 
+  dplyr::select('半角大文字', '全角大文字', '半角小文字', '全角小文字',
+                '半角数字', '全角数字', '半角記号', '全角記号',
+                '半角カナ', '全角カナ')
 ```
 
-```{r}
-Nippon::zenkaku$upper
-Nippon::zen2han(Nippon::zenkaku$upper)
-Nippon::zen2han(c("！", "”", "＃", "＄", "％", "＆", "’", "（", "）", "＝"))
-Nippon::han2zen(LETTERS)
-```
-
+　  
 
 ## 平仮名片仮名変換
-## 文字コード変換
+平仮名と片仮名が混在している場合には`Nippon::hira2kana`関数または`Nippon::kana2hira`関数が便利です。  
+　  
+
+```{r}
+zen %>% 
+  dplyr::select('全角かな', '全角カナ') %>% 
+  dplyr::mutate('カナ変換' = Nippon::hira2kata(全角かな),
+                'かな変換' = Nippon::kata2hira(全角カナ)) %>% 
+  dplyr::select('全角かな', 'カナ変換', '全角カナ', 'かな変換')
+```
+
+　  
+
 ## ローマ字変換
+```{r}
+Nippon::kana2roma(zen$全角かな)
+Nippon::kana2roma(zen$全角カナ)
+```
+
  
+## 漢数字変換
+漢数字をアラビア数字に変換するには`Nippon::kansu2arabic`関数を用います。`Nippon::kansu2arabic`関数は単一の文字列ベクトル変数（スカラー変数）に対してのみ有効ですので、データフレーム型に適用する場合には`dplyr::rowwise`関数で行毎に処理を適用させる必要があります。漢数字以外に適用してもエラーになりますので注意してください。  
+また、"十"、"百"、"千"のように"一"を省略しても数値として意味をなす場合は正しく変換してくれますが、万"、"億"などのように単位だけでは数値として意味をなしにくい場合は正しく変換してくれませんので必ず頭に漢数字を添えてください。  
+　  
+
+```{r, include=FALSE}
+old <- options()$scipen   # 指数表示にしないための処理
+options(scipen = 4)       # scipenは桁数ではない点に注意
+```
+
+```{r}
+zen %>% 
+  dplyr::select(漢数字, 単位) %>% 
+  dplyr::rowwise() %>% 
+  dplyr::mutate(Arabic = Nippon::kansu2arabic(漢数字),
+                Unit = Nippon::kansu2arabic(単位)) %>% 
+  dplyr::select('漢数字', Arabic, '単位', Unit)
+```
+
+
+```{r, include=FALSE}
+options(scipen = old)     # 桁数表示を元に戻す
+```
+
+　  
 
 # 参考資料
 * [dplyr でグループごとに複数カラムを追加したい](https://qiita.com/hoxo_m/items/9d2f91008335b03bf082)  
