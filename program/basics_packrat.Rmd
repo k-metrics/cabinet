@@ -21,7 +21,7 @@ source("../shared/common.R")
 ```
 
 
-複数のメンバーでRのコード開発を行う際に問題になりやすいのがパッケージのバージョン違いです。特に開発が活発なパッケージを利用していると自分の環境では動くけど別の人の環境では動かないといったことが出てきます。このような問題を解決し開発環境の統一を簡単に図るツールが**`packrat`**パッケージです。RStudioのプロジェクト機能と組み合わせて使うことでプロジェクトごとに異なった環境を整備することが可能になります。  
+複数のメンバーでRのコード開発を行う際に問題になりやすいのがパッケージのバージョン違いです。特に開発が活発なパッケージを利用していると自分の環境では動くけど別の人の環境では動かないといったことが出てきます。このような問題を解決し開発環境の統一を簡単に図るツールが`packrat`パッケージです。RStudioのプロジェクト機能と組み合わせて使うことでプロジェクトごとに異なった環境を整備することが可能になります。  
 　  
 
 # 必要なパッケージ
@@ -35,7 +35,7 @@ packrat | Reproducible dependency management
 　  
 
 # packratとは
-**`packrat`**パッケージはCRAN Task Viewの[Reproducible Research <i class="fa fa-external-link"></i>](https://cran.r-project.org/web/views/ReproducibleResearch.html){target="_blank" title="CRAN Task View"}では補助ツール的な位置づけのパッケージですが、かなり実用的なパッケージです。にも関わらずあまり話題にならないのは[R][R]コミュニティのアーリーアダプターの方々もあまり取り上げられていないからだと思われます。  
+`packrat`パッケージはCRAN Task Viewの[Reproducible Research <i class="fa fa-external-link"></i>](https://cran.r-project.org/web/views/ReproducibleResearch.html){target="_blank" title="CRAN Task View"}では補助ツール的な位置づけのパッケージですが、かなり実用的なパッケージです。にも関わらずあまり話題にならないのは[R][R]コミュニティのアーリーアダプターの方々もあまり取り上げられていないからだと思われます。  
 　  
 
 * [公式チュートリアル（英語） <i class="fa fa-external-link"></i>](http://rstudio.github.io/packrat/walkthrough.html){target="_blank" title="RStudio, Inc."}
@@ -43,20 +43,20 @@ packrat | Reproducible dependency management
 * [Packratの使い道を考えてみた <i class="fa fa-external-link"></i>](https://qiita.com/uri/items/5d473a5df91954585e62){target="_blank" title="Qiita"}
 
 　  
-**`packrat`**パッケージはその説明に"A Dependency Management System for Projects and their R Package Dependencies"とあるようにパッケージの依存関係とバージョンをプロジェクト単位で管理することができます。  
+`packrat`パッケージはその説明に"A Dependency Management System for Projects and their R Package Dependencies"とあるようにパッケージの依存関係とバージョンをプロジェクト単位で管理することができます。  
 　  
 
 # packratの使い方
-**`packrat`**の使い方は[公式チュートリアル（英語） <i class="fa fa-external-link"></i>](http://rstudio.github.io/packrat/walkthrough.html){target="_blank" title="RStudio, Inc."}にありますが、公式チュートリアルのようにコマンドラインから使うよりもRStudioのインタフェースから利用するのが便利です。  
+`packrat`の使い方は[公式チュートリアル（英語） <i class="fa fa-external-link"></i>](http://rstudio.github.io/packrat/walkthrough.html){target="_blank" title="RStudio, Inc."}にありますが、公式チュートリアルのようにコマンドラインから使うよりもRStudioのインタフェースから利用するのが便利です。  
 　  
 
 ## 事前準備
-packratを使うには当然**`packrat`**パッケージが必要です。また、Winodws環境では"Rtools"をデフォルトオプションでインストールしておく必要があります。"Rtools"は**`packart`**パッケージが必要なパッケージをインストールする際にソースコードからパッケージをコンパイルする場合があるためです。Windows環境以外ではOSがコンパイラを標準搭載していますので不要です。  
+packratを使うには当然`packrat`パッケージが必要です。また、Winodws環境では"Rtools"をデフォルトオプションでインストールしておく必要があります。"Rtools"は`packart`パッケージが必要なパッケージをインストールする際にソースコードからパッケージをコンパイルする場合があるためです。Windows環境以外ではOSがコンパイラを標準搭載していますので不要です。  
 
-1. **`packrat`**パッケージをインストールします
-1. Rtoolsを**デフォルトオプション^1^で**インストールします（Winodws Only）
+1. `packrat`パッケージをインストールします
+1. Rtoolsをデフォルトオプション^1^でインストールします（Winodws Only）
 
-^1^ デフォルトオプションでインストールしないと**`packrat`**がパッケージのインストールに失敗します  
+^1^ デフォルトオプションでインストールしないと`packrat`がパッケージのインストールに失敗します  
 　  
 
 ## packratの初期化
@@ -105,7 +105,7 @@ packratを使うには当然**`packrat`**パッケージが必要です。また
 ```
 
 　  
-作成されたアーカイブファイルを共有先で展開し、RStudioの［File］-［New Project...］-［Version Control］から展開先のディレクトリをプロジェクトディレクトりとして指定してください。プロジェクトが開かれると自動的にフォルダ内の**`packrat/init.R`**が実行されpackrat環境が構築されます。利用しているパッケージ数やPC、通信環境にもよりますが十数分程度かかります。  
+作成されたアーカイブファイルを共有先で展開し、RStudioの［File］-［New Project...］-［Version Control］から展開先のディレクトリをプロジェクトディレクトりとして指定してください。プロジェクトが開かれると自動的にフォルダ内の`packrat/init.R`が実行されpackrat環境が構築されます。利用しているパッケージ数やPC、通信環境にもよりますが十数分程度かかります。  
 　  
 
 ### リポジトリを利用する場合
@@ -116,11 +116,11 @@ packratを使うには当然**`packrat`**パッケージが必要です。また
   * Git ignore packart sources
 
 なお、パッケージ自体の開発を行っている場合は、これらのオプションを有効にするのはおすゝめできません。  
-リポジトリは［File］-［New Project...］-［Version Control］から利用しているリポジトリ（Gir or Subversion）を選択してリモートリポジトリをローカルのプロジェクトとしてクローンしてください。クローニングが完了すると自動的に**`packrat/init.R`**ファイルが実行されてpackrat環境の構築されます。利用しているパッケージ数やPC、通信環境にもよりますが十数分程度かかります。  
+リポジトリは［File］-［New Project...］-［Version Control］から利用しているリポジトリ（Gir or Subversion）を選択してリモートリポジトリをローカルのプロジェクトとしてクローンしてください。クローニングが完了すると自動的に`packrat/init.R`ファイルが実行されてpackrat環境の構築されます。利用しているパッケージ数やPC、通信環境にもよりますが十数分程度かかります。  
 　  
 
 ## packrat情報の反映
-プロジェクトにpackrat情報が含まれている場合、プロジェクトを開いた際に**`packrat/init.R`**が自動的に実行され必要な処理が行われます。例えば最初にプロジェクトを開いた際には必要なパッケージをインストールする初期化処理が行われます。  
+プロジェクトにpackrat情報が含まれている場合、プロジェクトを開いた際に`packrat/init.R`が自動的に実行され必要な処理が行われます。例えば最初にプロジェクトを開いた際には必要なパッケージをインストールする初期化処理が行われます。  
 　  
 
 ```{r, eval=FALSE}
@@ -135,7 +135,7 @@ Installing BH (1.66.0-1) ...
 Installing tidyverse (1.2.1) ... 
 	OK (built source)
 Packrat mode on. Using library in directory:
-- "~/*****/project_folder/packrat/lib"
+- "~/*/project_folder/packrat/lib"
 ```
 
 　  
@@ -147,7 +147,7 @@ Packrat mode on. Using library in directory:
 > packrat::restore()
 ```
 
-**`packrat::restore`**関数の処理が終了したら念の為にRStudioを再起動しプロジェクトを開き以下の関数を実行してください。  
+`packrat::restore`関数の処理が終了したら念の為にRStudioを再起動しプロジェクトを開き以下の関数を実行してください。  
 
 　  
 
@@ -158,7 +158,7 @@ Packrat mode on. Using library in directory:
 　  
 
 ### Windowsの場合
-packratの初期化処理が完了してもRのセッションがCPUを数十パーセント専有し続ける場合があります。このような場合はRStudio（Rのセッション）を**強制終了**させてください。再起動後に以下の関数を実行して状態を確認してください。  
+packratの初期化処理が完了してもRのセッションがCPUを数十パーセント専有し続ける場合があります。このような場合はRStudio（Rのセッション）を強制終了させてください。再起動後に以下の関数を実行して状態を確認してください。  
 　  
 
 ```{r, eval=FALSE}
@@ -168,7 +168,7 @@ packratの初期化処理が完了してもRのセッションがCPUを数十パ
 　  
 
 ## packrat情報の更新
-プロジェクトのパッケージを更新したり追加、削除した場合は**`packrat::snapshot`**関数を用いてpackrat情報を更新します。更新された情報は**`packrat/packrat.lock`**ファイルに記録されますので、**`packrat/packrat.lock`**ファイルを更新してください。**`packrat/packrat.lock`**が更新されたらRStudioを再起動するか以下の関数を実行してください。  
+プロジェクトのパッケージを更新したり追加、削除した場合は`packrat::snapshot`関数を用いてpackrat情報を更新します。更新された情報は`packrat/packrat.lock`ファイルに記録されますので、`packrat/packrat.lock`ファイルを更新してください。`packrat/packrat.lock`が更新されたらRStudioを再起動するか以下の関数を実行してください。  
 　  
 
 ```{r, eval=FALSE}
@@ -178,7 +178,7 @@ packratの初期化処理が完了してもRのセッションがCPUを数十パ
 　  
 
 ## packrat情報の整理
-パッケージ情報を確認するには以下のように**`packrat::status`**関数をコンソールから実行します。  
+パッケージ情報を確認するには以下のように`packrat::status`関数をコンソールから実行します。  
 　  
 
 ```{r, eval=FALSE}
@@ -200,7 +200,7 @@ The following packages are tracked by packrat, but are no longer available in th
 You can call packrat::snapshot() to remove these packages from the lockfile, or if you intend to use these packages, use packrat::restore() to restore them to your private library.
 ```
 
-利用していないパッケージが存在する場合、**`packrat::snapshot`**関数でpackrat環境から削除することで整理ができます。
+利用していないパッケージが存在する場合、`packrat::snapshot`関数でpackrat環境から削除することで整理ができます。
 　  
 
 ```{r, eval=FALSE}
@@ -270,7 +270,7 @@ packratは起動時にパッケージ情報をプロジェクト内のソース�
 　  
 
 ## メッセージが出続ける
-**`packrat::status`**関数や**`packrat::snapshot`**関数を実行した場合に延々とメッセージを出し続ける場合があります。これはpackratが管理対象としているパッケージがコード内で使われているかをチェックするためにパッケージ単位でプロジェクトフォルダ内のファイルをチェックして（Rmdファイルの場合はkinitしている模様)おり、その際にファイルに記述されたコードにエラーがあるとエラー行をメッセージ表示し続けるためです。ちなみにエラーが出た場合、その行でチェックがabortされるのでエラー行の後でパッケージを呼び出しているような場合には正しいパッケージ情報を取得できない場合があるようです。  
+`packrat::status`関数や`packrat::snapshot`関数を実行した場合に延々とメッセージを出し続ける場合があります。これはpackratが管理対象としているパッケージがコード内で使われているかをチェックするためにパッケージ単位でプロジェクトフォルダ内のファイルをチェックして（Rmdファイルの場合はkinitしている模様)おり、その際にファイルに記述されたコードにエラーがあるとエラー行をメッセージ表示し続けるためです。ちなみにエラーが出た場合、その行でチェックがabortされるのでエラー行の後でパッケージを呼び出しているような場合には正しいパッケージ情報を取得できない場合があるようです。  
 　  
 
 ---
