@@ -515,7 +515,7 @@ div.tocify {
 </div>
 <div id="rパッケージのインストール" class="section level1">
 <h1>Rパッケージのインストール</h1>
-<p>Rのパッケージをインストールする手順は<strong><code>Rcmdr</code></strong>のインストールと同じく起動したRから行う方法、RStudioから行う方法、スクリプトを用いる方法があります。<br />
+<p>Rのパッケージをインストールする手順は<code>Rcmdr</code>のインストールと同じく起動したRから行う方法、RStudioから行う方法、スクリプトを用いる方法があります。<br />
 　</p>
 <div id="rからインストールする方法" class="section level2">
 <h2>Rからインストールする方法</h2>
@@ -589,18 +589,18 @@ install.packages(pkg_lst, dependencies = TRUE)</code></pre>
 </div>
 <div id="cran以外からのインストール" class="section level1">
 <h1>CRAN以外からのインストール</h1>
-<p>試験的なパッケージなどは<a href="https://cran.r-project.org/" target="_blank" title="CRAN, The Comprehensive R Archive Network">CRAN <i class="fa fa-external-link"></i></a>には登録されていないことがあります。このようなパッケージを使いたい場合は<strong><code>devtool</code></strong>パッケージを利用します。例えばGitHubからインストーする場合は<strong><code>devtools::install_github</code></strong>関数を用います。この関数で注意すべき点はリポジトリの指定方法です。必ずGitHubのユーザアカウントと共に指定して下さい。</p>
+<p>試験的なパッケージなどは<a href="https://cran.r-project.org/" target="_blank" title="CRAN, The Comprehensive R Archive Network">CRAN <i class="fa fa-external-link"></i></a>には登録されていないことがあります。このようなパッケージを使いたい場合は<code>devtool</code>パッケージを利用します。例えばGitHubからインストーする場合は<code>devtools::install_github</code>関数を用います。この関数で注意すべき点はリポジトリの指定方法です。必ずGitHubのユーザアカウントと共に指定して下さい。</p>
 <pre><code>install.packages(&quot;devtools&quot;)        # インストールされていない場合のみ
 git_rep &lt;- c(&quot;account/repository&quot;)
 devtools::install_github(git_rep)</code></pre>
-<p><strong><code>devtools</code></strong>パッケージを用いるとGitHub以外にもBioconductorやbitbucket、SVNのリポジトリ等からもインストールが可能になります。詳しくは<strong><code>devtools</code></strong>パッケージのヘルプを参照して下さい。<br />
+<p><code>devtools</code>パッケージを用いるとGitHub以外にもBioconductorやbitbucket、SVNのリポジトリ等からもインストールが可能になります。詳しくは<code>devtools</code>パッケージのヘルプを参照して下さい。<br />
 　</p>
 </div>
 <div id="インストールが失敗する場合" class="section level1">
 <h1>インストールが失敗する場合</h1>
 <p>Linux環境やMacOS環境ではパッケージをインストールする際に以下のようなエラーが出てパッケージのインストールが失敗する場合があります。失敗する原因はRをインストールした際に必要なアプリケーションモジュール（ライブラリ）がインストールされていないためです。</p>
 <pre><code>* installing *source* package ‘openssl’ ...
-**  パッケージ ‘openssl’ の解凍および MD5 サムの検証に成功しました 
+  パッケージ ‘openssl’ の解凍および MD5 サムの検証に成功しました 
 Using PKG_CFLAGS=
 Using PKG_LIBS=-lssl -lcrypto
 ------------------------- ANTICONF ERROR ---------------------------
@@ -614,14 +614,14 @@ PATH and PKG_CONFIG_PATH contains a openssl.pc file. If pkg-config
 is unavailable you can set INCLUDE_DIR and LIB_DIR manually via:
 R CMD INSTALL --configure-vars=&#39;INCLUDE_DIR=... LIB_DIR=...&#39;
 --------------------------------------------------------------------</code></pre>
-<p>このようなエラーメッセージが表示された場合は、まず、<strong><code>r-base-dev</code></strong>というアプリケーションモジュールがインストールされているか確認してください。Ubuntu環境の場合はターミナル（端末）から以下のコマンドを実行することでインストールの有無を確認できます。</p>
+<p>このようなエラーメッセージが表示された場合は、まず、<code>r-base-dev</code>というアプリケーションモジュールがインストールされているか確認してください。Ubuntu環境の場合はターミナル（端末）から以下のコマンドを実行することでインストールの有無を確認できます。</p>
 <p>Ubuntuの場合</p>
 <pre><code>dpkg -l | grep r-base-dev</code></pre>
-<p>出力結果に<strong><code>r-base-dev</code></strong>が表示されない場合はインストールされていませんので、<strong><code>r-base-dev</code></strong>を<a href="./env_install.html">Install R</a>を参考にしてインストールしてください。<br />
+<p>出力結果に<code>r-base-dev</code>が表示されない場合はインストールされていませんので、<code>r-base-dev</code>を<a href="./env_install.html">Install R</a>を参考にしてインストールしてください。<br />
 　</p>
 <div id="それでもインストールが失敗する場合" class="section level2">
 <h2>それでもインストールが失敗する場合</h2>
-<p><strong><code>r-base-dev</code></strong>がインストールされているにも関わらずインストールが失敗する場合は、エラーメッセージの<strong>“ANTICONF ERROR”</strong>に注目して不足しているライブラリを手動でインストールします。上記の場合は<strong><code>libssl-dev</code></strong>（Ubuntuの場合）がインストールされていませんので、ターミナル（端末）から以下のコマンドを実行してインストールします。</p>
+<p><code>r-base-dev</code>がインストールされているにも関わらずインストールが失敗する場合は、エラーメッセージの“ANTICONF ERROR”に注目して不足しているライブラリを手動でインストールします。上記の場合は<code>libssl-dev</code>（Ubuntuの場合）がインストールされていませんので、ターミナル（端末）から以下のコマンドを実行してインストールします。</p>
 <p>Ubuntuの場合</p>
 <pre><code>sudo apt-get install libssl-dev</code></pre>
 <p>　</p>
@@ -707,7 +707,7 @@ memo欄以外はの記述は省略しないで記述してください。<br />
 <h3>パッケージリストファイルの例（一部）</h3>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["package"],"name":[1],"type":["fctr"],"align":["left"]},{"label":["category"],"name":[2],"type":["fctr"],"align":["left"]},{"label":["omit"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["rep"],"name":[4],"type":["fctr"],"align":["left"]},{"label":["memo"],"name":[5],"type":["fctr"],"align":["left"]}],"data":[{"1":"fst","2":"import","3":"n","4":"CRAN","5":"Lightning Fast Serialization of Data Frames for R"},{"1":"prettydoc","2":"communicate","3":"n","4":"CRAN","5":"Creating Pretty Documents from R Markdown"},{"1":"sampling","2":"model","3":"n","4":"CRAN","5":"Survey Sampling"},{"1":"sparklyr","2":"import","3":"n","4":"CRAN","5":"R Interface to Apache Spark"},{"1":"tidyverse","2":"tidy","3":"n","4":"CRAN","5":"Easily Install and Load the 'Tidyverse'"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["package"],"name":[1],"type":["fctr"],"align":["left"]},{"label":["category"],"name":[2],"type":["fctr"],"align":["left"]},{"label":["omit"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["rep"],"name":[4],"type":["fctr"],"align":["left"]},{"label":["memo"],"name":[5],"type":["fctr"],"align":["left"]}],"data":[{"1":"GGally","2":"visualize","3":"n","4":"CRAN","5":"Extension to 'ggplot2'"},{"1":"bookdown","2":"communicate","3":"n","4":"CRAN","5":"Authoring Books and Technical Documents with R Markdown"},{"1":"ggThemeAssist","2":"visualize","3":"n","4":"CRAN","5":"Add-in to Customize 'ggplot2' Themes"},{"1":"maptools","2":"visualize","3":"n","4":"CRAN","5":"Tools for Reading and Handling Spatial Objects"},{"1":"revealjs","2":"communicate","3":"n","4":"CRAN","5":"R Markdown Format for 'reveal.js' Presentations"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <p>　</p>
@@ -753,7 +753,7 @@ rm(pkg_lst, installed_list, install_list, install_pkg)</code></pre>
 <p>　</p>
 <hr />
 <!-- Include Footer -->
-<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-05-03 20:44(JST)]</p>
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-05-26 23:50(JST)]</p>
 </div>
 </div>
 
