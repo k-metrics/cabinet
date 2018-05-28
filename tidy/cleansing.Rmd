@@ -234,10 +234,10 @@ DT::datatable(aq_mice)
 ### 可視化による比較
 補完結果がどのようになっているか確認してみます。下図において赤線の部分が欠損値を補完したものです。主観ですが、かなりいい感じになっていると思います。
 ```{r, echo=FALSE}
-# airquality %>% 
-#   mice::mice() %>% 
-#   mice::complete() %>% 
-aq_mice %>% 
+# airquality %>%
+#   mice::mice(m = 10) %>%
+#   mice::complete() %>%
+aq_mice %>%
   dplyr::bind_cols(airquality) %>% 
   dplyr::select(Ozone, Ozone1, Solar.R, Solar.R1) %>% 
   tibble::rowid_to_column("days") %>% 
