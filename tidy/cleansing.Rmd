@@ -13,19 +13,21 @@ output:
 ```{r setup, message=FALSE, warning=FALSE, echo=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 require(Nippon)
+require(mice)
+require(VIM)
 require(tidyverse)
 ```
 
 　  
 
 # はじめに
-データクレンジングとは[IT用語辞典 <i class="fa fa-external-link"></i>](http://e-words.jp/w/%E3%83%87%E3%83%BC%E3%82%BF%E3%82%AF%E3%83%AC%E3%83%B3%E3%82%B8%E3%83%B3%E3%82%B0.html){target="_blank" title="e-Words"}によると「データベースに保存されているデータの中から、重複や誤記、表記の揺れなどを探し出し、削除や修正、正規化などを行い、データの品質を高めること。」と説明されています。よく見かけるクレンジング対象となる例としては  
+データクレンジングとは[IT用語辞典 <i class="fa fa-external-link"></i>](http://e-words.jp/w/%E3%83%87%E3%83%BC%E3%82%BF%E3%82%AF%E3%83%AC%E3%83%B3%E3%82%B8%E3%83%B3%E3%82%B0.html){target="_blank" title="e-Words"}によると「データベースに保存されているデータの中から、重複や誤記、表記の揺れなどを探し出し、削除や修正、正規化などを行い、データの品質を高めること。」と説明されています。よく見かけるクレンジング対象になるデータ例としては  
 
 * 欠損値
 * 全角文字と半角文字の混在
 * 空白の有無
 * 区切り文字の有無や揺れ
-* 前（株）後（株）
+* 前（株）後（株）のような表記揺れ
 
 などがあります。特にデータ入力がフリフォーマットの場合はクレンジングを行わないと使い物にならないデータが多くなる傾向があるようにみえます。  
 　  
@@ -52,15 +54,20 @@ airquality | datasets | `r packageVersion('datasets')`| New York Air Quality Mea
 また、独自のデータセットとして以下を用いています。  
 
 ```{r, echo=FALSE}
-(zen <- "./data/text_zen.csv" %>% 
-  readr::read_csv())
-(han <- "./data/text_han.csv" %>% 
-  readr::read_csv())
+zen <- "./data/text_zen.csv" %>% 
+  readr::read_csv()
+han <- "./data/text_han.csv" %>% 
+  readr::read_csv()
 ```
+```{r, echo=FALSE}
+DT::datatable(zen)
+DT::datatable(han)
+```
+
 
 　  
 
-# 欠損値の処理
+# 欠損値処理の概要
 データには必ずと言っていいほどレコードの一部のデータが取得できていないものが含まれます。取得できていないデータを欠損値と呼びます。Rで欠損値を含んだデータを読み込んだ場合、デフォルト処理では欠損値は`NA`という特殊なデータとして処理されます。
 
 欠損値の扱いはデータや分析目的などにより変わりますが、扱い方は大きく以下のように三つに分類されます。
@@ -69,10 +76,7 @@ airquality | datasets | `r packageVersion('datasets')`| New York Air Quality Mea
 * 欠損値を削除する
 * 欠損値を補完する
 
-<!-- http://fixxman.hatenablog.com/entry/2015/10/06/045417 -->
-<!-- http://koumurayama.com/koujapanese/missing_data.pdf -->
-<!-- http://smrmkt.hatenablog.jp/entry/2013/01/06/164758 -->
-<!-- http://pediatricsurgery.hatenadiary.jp/entry/2016/11/20/233217 -->
+　  
 
 ## 欠損値を削除する
 欠損値を含むレコードは不完全なものとして分析対象外として扱う方法です。欠損値を削除する代表的な方法には下表のような方法があります。  
@@ -82,7 +86,7 @@ airquality | datasets | `r packageVersion('datasets')`| New York Air Quality Mea
 リストワイズ法　| 欠損値を持つレコード全てを削除します
 ペアワイズ法    | 統計量の算出に関わる二変数のいずれかに欠損値があるレコードを削除します
 
-したがって、欠損値を含まないようなレコードを取得することが分析の精度を上げるポイントになります。  
+欠損値を削除する場合には欠損値を含まないようなレコードを取得することが分析の精度を上げるポイントになります。  
 　  
 
 ## 分析値を補完する
@@ -121,7 +125,7 @@ VIM::marginplot(airquality[, c("Ozone", "Solar.R")])
 <!-- VIM::aggr(airquality) -->
 <!-- ``` -->
 
-## 具体的な処理方法
+# 欠損値の処理方法
 欠損値の補完や削除方法を`airqularity`データセットを用いて説明します。`airquality`データセットは６つの変数それぞれに「`r colSums(is.na(airquality))`」個の`NA`を含むデータセットです。このデータセットを用いて`NA`の代表的な処理例を示します。  
 　  
 
@@ -131,13 +135,13 @@ airquality
 
 　  
 
-### 特定の値に変換する
+## 特定の値に変換する
 平均値代入法、回帰代入法のように欠損値を特定の値に変換する場合は、まず変数の値が`NA`であるか否かを判断する必要があります。これには`is.na`関数を用います。例えば`Ozone`変数の`NA`を`Ozone`変数の平均値に変換する場合は`ifelse`関数と組み合わせて処理を行います。  
 　  
 
 ```{r}
 ozone <- airquality %>% 
-  dplyr::summarise(mean = round(mean(Ozone, na.rm = TRUE)),
+  dplyr::summarise(mean = round(mean(Ozone, na.rm = TRUE), 4),
                    median = round(median(Ozone, na.rm = TRUE)))
 
 airquality %>% 
@@ -168,12 +172,99 @@ airquality %>%
 　  
 
 ### ペアワイズ法
-例えば`Solar.R`変数と`Wind`変数を用いて統計量を計算するために両変数とも`NA`であるレコードのみを削除するペアワイズ法の場合には以下のようにします。  
+例えば`Solar.R`変数と`Wind`変数を用いて統計量を計算するために両変数とも`NA`であるレコードのみを削除するペアワイズ法の場合には
+
+* 統計量計算時のみ当該レコードを削除する
+* データセットからレコードを削除する
+
+の二つの方法が考えられますが基本的には全社の統計量計算時のみ欠損値のあるレコードを削除するアプローチを用いるようです（確認中）。例えば相関係数を計算するには`use`オプションで`"pairwise.complete.obs"`を指定します。  
+　  
+
+```{r}
+cor(airquality$Solar.R, airquality$Wind, use = "pairwise.complete.obs")
+```
+
+　  
+
+同様に分散（`var`）や共分散（`cov`）でも同様のオプション指定が可能です。  
+　  
+データセットから任意の二変数が共にNAの場合のレコードを削除するには以下のような方法があります。  
 　  
 
 ```{r}
 airquality %>% 
-  tidyr::drop_na(Solar.R, Wind)
+  mutate(flag = Solar.R | Ozone) %>% 
+  tidyr::drop_na(flag) %>% 
+  dplyr::select(-flag)
+```
+
+　  
+
+## 平均値代入法
+平均値代入法はその名の通り平均値を用いて欠損値を補完する方法です。「特定の値に変換する」の項で示したように`is.na`関数を用いる方法を用いるのが簡単です。ちなみに平均値代入法のような特定の値（単一の値）で欠損値を補完する方法を後述の多重代入法と対比させて単一代入法と呼ぶこともあります。  
+　  
+
+## 完全情報最尤推定法
+（調査中）
+　  
+
+## 多重代入法
+多重代入法は欠損値を疑似的に補完したデータセット（疑似完全データともいう）を複数作成し、統計分析を行う際に作成した全ての疑似完全データを用いて統計分析を行い、分析結果を統合して結論を出す方法です。なお、疑似完全データの作成にはベイズ統計学を利用します。  
+と書くと何やら難しそうですが、前出の`mice`パッケージを利用することで計算が可能です。例えば、`airquality`データセットでは`Onone`変数と`Solar.R`変数にある欠損値を多重代入法で補完するには以下を実行するだけで済みます。  
+　  
+
+```{r, include=FALSE}
+aq_mice <- airquality %>% 
+  mice::mice() %>% 
+  mice::complete()
+```
+
+```{r, eval=FALSE}
+aq_mice <- airquality %>% 
+  mice::mice() %>% 
+  mice::complete()
+```
+
+```{r}
+DT::datatable(aq_mice)
+```
+
+　  
+
+### 可視化による比較
+補完結果がどのようになっているか確認してみます。下図において赤線の部分が欠損値を補完したものです。主観ですが、かなりいい感じになっていると思います。
+```{r, echo=FALSE}
+# airquality %>% 
+#   mice::mice() %>% 
+#   mice::complete() %>% 
+aq_mice %>% 
+  dplyr::bind_cols(airquality) %>% 
+  dplyr::select(Ozone, Ozone1, Solar.R, Solar.R1) %>% 
+  tibble::rowid_to_column("days") %>% 
+  ggplot2::ggplot(ggplot2::aes(x = days)) + 
+    ggplot2::geom_line(ggplot2::aes(y = Ozone), colour = "red") +
+    ggplot2::geom_line(ggplot2::aes(y = Ozone1), colour = "blue")
+```
+
+　  
+
+下図の平均値代入法（単一代入法）と比べての`airquality`データセットでは上図の多重代入法を用いた方がより適切な補完が行われていると言えます。  
+　  
+
+```{r, echo=FALSE}
+ozone <- airquality %>% 
+  dplyr::summarise(ozone_mean = round(mean(Ozone, na.rm = TRUE)),
+                   solar_mean = round(median(Solar.R, na.rm = TRUE)))
+
+airquality %>% 
+  dplyr::mutate(Ozone = ifelse(is.na(Ozone), ozone$ozone_mean, Ozone),
+                Solar.R = ifelse(is.na(Solar.R), ozone$solar_mean, Solar.R)) %>% 
+  dplyr::bind_cols(airquality) %>% 
+  dplyr::select(Ozone, Ozone1, Solar.R, Solar.R1) %>% 
+  tibble::rowid_to_column("days") %>% 
+  ggplot2::ggplot(ggplot2::aes(x = days)) + 
+    ggplot2::geom_line(ggplot2::aes(y = Ozone), colour = "red") +
+    ggplot2::geom_line(ggplot2::aes(y = Ozone1), colour = "blue")
 ```
 
 　  
@@ -311,7 +402,7 @@ options(scipen = 4)       # scipenは桁数ではない点に注意
 
 ```{r}
 zen %>% 
-  dplyr::select(漢数字, 単位) %>% 
+  dplyr::select('漢数字', '単位') %>% 
   dplyr::rowwise() %>% 
   dplyr::mutate(Arabic = Nippon::kansu2arabic(漢数字),
                 Unit = Nippon::kansu2arabic(単位)) %>% 
@@ -326,6 +417,11 @@ options(scipen = old)     # 桁数表示を元に戻す
 　  
 
 # 参考資料
+* [欠損値に対応しよう -多重代入法とその他の代入法- <i class="fa fa-external-link"></i>](http://www.procomu.jp/jspd2016/pdf/yougo_kaisetu04.pdf){target="_blank" title="PDF"}
+* [データ解析における欠損値対応フロー <i class="fa fa-external-link"></i>](http://fixxman.hatenablog.com/entry/2015/10/06/045417){target="_blank" title="SE Can't Code"}
+* [欠損データ分析 -完全情報最尤推定法と多重代入法- <i class="fa fa-external-link"></i>](http://koumurayama.com/koujapanese/missing_data.pdf){target="_blank" title="PDF"}
+* [kaggleで予測モデルを構築してみた (5) - Rで行うMultipleImputation <i class="fa fa-external-link"></i>](http://smrmkt.hatenablog.jp/entry/2013/01/06/164758){target="_blank" title="About connecting the dots."}
+* [欠損値の種類と補完とRでのワークフロー <i class="fa fa-external-link"></i>](http://pediatricsurgery.hatenadiary.jp/entry/2016/11/20/233217){target="_blank" title="Note of Pediatric Surgery"}
 * [dplyr でグループごとに複数カラムを追加したい](https://qiita.com/hoxo_m/items/9d2f91008335b03bf082)  
 
 ---
