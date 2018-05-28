@@ -54,16 +54,11 @@ airquality | datasets | `r packageVersion('datasets')`| New York Air Quality Mea
 また、独自のデータセットとして以下を用いています。  
 
 ```{r, echo=FALSE}
-zen <- "./data/text_zen.csv" %>% 
-  readr::read_csv()
-han <- "./data/text_han.csv" %>% 
-  readr::read_csv()
+(zen <- "./data/text_zen.csv" %>% 
+  readr::read_csv())
+(han <- "./data/text_han.csv" %>% 
+  readr::read_csv())
 ```
-```{r, echo=FALSE}
-DT::datatable(zen)
-DT::datatable(han)
-```
-
 
 　  
 
@@ -112,7 +107,7 @@ mice::md.pattern(airquality)
 ```
 
 　  
-となり`Ozone`変数の欠損値が最も多く、ついで`Solar.R`の欠損値が多いことが分かります。更に詳細な可視化が必要な場合は`VIM`パッケージを用います。  
+赤色の升（テキスト表示の場合は`0`の部分）が欠損値のある組み合わせになり`Ozone`変数単独の欠損値が最も多く、ついで`Solar.R`変数単独の欠損値が多いことが分かります。更に詳細な可視化が必要な場合は`VIM`パッケージを用います。  
 　  
 
 ```{r}
@@ -209,35 +204,24 @@ airquality %>%
 　  
 
 ## 多重代入法
-多重代入法は欠損値を疑似的に補完したデータセット（疑似完全データともいう）を複数作成し、統計分析を行う際に作成した全ての疑似完全データを用いて統計分析を行い、分析結果を統合して結論を出す方法です。なお、疑似完全データの作成にはベイズ統計学を利用します。  
-と書くと何やら難しそうですが、前出の`mice`パッケージを利用することで計算が可能です。例えば、`airquality`データセットでは`Onone`変数と`Solar.R`変数にある欠損値を多重代入法で補完するには以下を実行するだけで済みます。  
+多重代入法は欠損値を疑似的に補完したデータセット（疑似完全データともいう）を複数作成し、統計分析を行う際に作成した全ての疑似完全データを用いて統計分析を行い、分析結果を統合して結論を出す方法です。一口に多重代入法といっても様々なアルゴリズムが提案されていますが、ここで扱う多重代入法はMICE（連鎖方程式による多変量補定）によるものです。  
+と書くと何やら難しそうですが、前出の`mice`パッケージを利用することで計算自体は簡単に行えます。例えば、`airquality`データセットでは`Onone`変数と`Solar.R`変数にある欠損値を多重代入法で補完するには以下を実行するだけで済みます。  
 　  
 
-```{r, include=FALSE}
-aq_mice <- airquality %>% 
-  mice::mice() %>% 
-  mice::complete()
-```
-
-```{r, eval=FALSE}
-aq_mice <- airquality %>% 
-  mice::mice() %>% 
-  mice::complete()
-```
-
 ```{r}
-DT::datatable(aq_mice)
+(aq_mice <- airquality %>% 
+  mice::mice(printFlag = FALSE, seed = 0) %>% 
+  mice::complete())
 ```
 
 　  
 
 ### 可視化による比較
-補完結果がどのようになっているか確認してみます。下図において赤線の部分が欠損値を補完したものです。主観ですが、かなりいい感じになっていると思います。
-```{r, echo=FALSE}
-# airquality %>%
-#   mice::mice(m = 10) %>%
-#   mice::complete() %>%
-aq_mice %>%
+補完結果がどのようになっているか確認してみます。下図において赤線の部分が欠損値を補完したものです。主観ですが、かなりいい感じになっていると思います。  
+　  
+
+```{r}
+aq_mice %>% 
   dplyr::bind_cols(airquality) %>% 
   dplyr::select(Ozone, Ozone1, Solar.R, Solar.R1) %>% 
   tibble::rowid_to_column("days") %>% 
@@ -251,7 +235,7 @@ aq_mice %>%
 下図の平均値代入法（単一代入法）と比べての`airquality`データセットでは上図の多重代入法を用いた方がより適切な補完が行われていると言えます。  
 　  
 
-```{r, echo=FALSE}
+```{r}
 ozone <- airquality %>% 
   dplyr::summarise(ozone_mean = round(mean(Ozone, na.rm = TRUE)),
                    solar_mean = round(median(Solar.R, na.rm = TRUE)))
@@ -268,6 +252,26 @@ airquality %>%
 ```
 
 　  
+
+#### 注意事項
+多重代入法は乱数を用いますので、本ページでは`mice::mice`関数に`seed`オプションを指定して発生する乱数を固定することで再現性を確保しています。また、疑似完全データセットの数はデフォルトの`m = 5`を使用しています。疑似完全データセットの数は歴史的にはデフォルト値程度と言われてきたようですが、最近では`m = 20`くらいが目安と言われているようです。
+参考までに`mice::mice`関数が計算した疑似完全データセットの密度分布（赤線）を下図にしめします。疑似完全データセット数が多い方が青線の元データ（欠損値を含むデータの密度分布）に近づいており大きく外れた値を計算していないように見えます。  
+　  
+
+```{r}
+airquality %>% 
+  mice::mice(printFlag = FALSE, seed = 0) %>% 
+  densityplot()
+
+airquality %>% 
+  mice::mice(m = 20, printFlag = FALSE, seed = 0) %>% 
+  densityplot()
+```
+
+<!-- ### データセット数 -->
+<!-- `mice::mice`関数はデフォルトで`m = 5`セットのデータセットを作成します。 -->
+
+<!-- https://www.slideshare.net/koichirogibo/ss-32418161 -->
 
 <!-- # 分割・結合・置換 -->
 <!-- 氏名や日付のようなデータが一つの変数として扱われている場合や複数の変数として扱われているような場合があります。このような場合、その後の処理によってはデータを分割したり結合したりしておきたい場合があります。 -->
@@ -422,6 +426,7 @@ options(scipen = old)     # 桁数表示を元に戻す
 * [欠損データ分析 -完全情報最尤推定法と多重代入法- <i class="fa fa-external-link"></i>](http://koumurayama.com/koujapanese/missing_data.pdf){target="_blank" title="PDF"}
 * [kaggleで予測モデルを構築してみた (5) - Rで行うMultipleImputation <i class="fa fa-external-link"></i>](http://smrmkt.hatenablog.jp/entry/2013/01/06/164758){target="_blank" title="About connecting the dots."}
 * [欠損値の種類と補完とRでのワークフロー <i class="fa fa-external-link"></i>](http://pediatricsurgery.hatenadiary.jp/entry/2016/11/20/233217){target="_blank" title="Note of Pediatric Surgery"}
+* [欠損値があるデータの分析 <i class="fa fa-external-link"></i>](http://norimune.net/1811){target="_blank" title="Sunny side up!"}
 * [dplyr でグループごとに複数カラムを追加したい](https://qiita.com/hoxo_m/items/9d2f91008335b03bf082)  
 
 ---
