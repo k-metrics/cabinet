@@ -15,6 +15,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 require(Nippon)
 require(mice)
 require(VIM)
+require(imputeMissings)
 require(tidyverse)
 ```
 
@@ -37,10 +38,11 @@ require(tidyverse)
 
 Package   | Version |Description
 ----------|---------|----------------------------------------------------------
-tidyverse | `r packageVersion('tidyverse')`| Easily Install and Load the ‘Tidyverse’
-Nippon    | `r packageVersion('Nippon')`| Japanese Utility Functions and Data
-mice      | `r packageVersion('mice')`|Multivariate Imputation by Chained Equations
-VIM       | `r packageVersion('VIM')`| Visualization and Imputation of Missing Values 
+tidyverse | `r packageVersion('tidyverse')` | Easily Install and Load the ‘Tidyverse’
+Nippon    | `r packageVersion('Nippon')` | Japanese Utility Functions and Data
+mice      | `r packageVersion('mice')` |Multivariate Imputation by Chained Equations
+VIM       | `r packageVersion('VIM')` | Visualization and Imputation of Missing Values 
+imputeMissings | `r packageVersion('imputeMissings')` | Impute Missing Values in a Predictive Context
 
 　  
 
@@ -62,7 +64,7 @@ airquality | datasets | `r packageVersion('datasets')`| New York Air Quality Mea
 
 　  
 
-# 欠損値処理の概要
+# 欠損値処理
 データには必ずと言っていいほどレコードの一部のデータが取得できていないものが含まれます。取得できていないデータを欠損値と呼びます。Rで欠損値を含んだデータを読み込んだ場合、デフォルト処理では欠損値は`NA`という特殊なデータとして処理されます。
 
 欠損値の扱いはデータや分析目的などにより変わりますが、扱い方は大きく以下のように三つに分類されます。
@@ -120,7 +122,7 @@ VIM::marginplot(airquality[, c("Ozone", "Solar.R")])
 <!-- VIM::aggr(airquality) -->
 <!-- ``` -->
 
-# 欠損値の処理方法
+# 欠損値処理詳細
 欠損値の補完や削除方法を`airqularity`データセットを用いて説明します。`airquality`データセットは６つの変数それぞれに「`r colSums(is.na(airquality))`」個の`NA`を含むデータセットです。このデータセットを用いて`NA`の代表的な処理例を示します。  
 　  
 
@@ -188,7 +190,7 @@ cor(airquality$Solar.R, airquality$Wind, use = "pairwise.complete.obs")
 
 ```{r}
 airquality %>% 
-  mutate(flag = Solar.R | Ozone) %>% 
+  dplyr::mutate(flag = Solar.R | Ozone) %>% 
   tidyr::drop_na(flag) %>% 
   dplyr::select(-flag)
 ```
@@ -196,15 +198,27 @@ airquality %>%
 　  
 
 ## 平均値代入法
-平均値代入法はその名の通り平均値を用いて欠損値を補完する方法です。「特定の値に変換する」の項で示したように`is.na`関数を用いる方法を用いるのが簡単です。ちなみに平均値代入法のような特定の値（単一の値）で欠損値を補完する方法を後述の多重代入法と対比させて単一代入法と呼ぶこともあります。  
+平均値代入法はその名の通り平均値を用いて欠損値を補完する方法です。「特定の値に変換する」の項で示したように`is.na`関数を用いる方法を用いるのが簡単です。ちなみに平均値代入法のような特定の値（単一の値）で欠損値を補完する方法を後述の多重代入法と対比させて単一代入法と呼ぶこともあります。下図において赤線の部分が欠損値を補完したものです。  
 　  
 
-## 完全情報最尤推定法
-（調査中）
+```{r}
+ozone <- airquality %>% 
+  dplyr::summarise(ozone_mean = round(mean(Ozone, na.rm = TRUE)))
+
+airquality %>% 
+  dplyr::mutate(Ozone = ifelse(is.na(Ozone), ozone$ozone_mean, Ozone)) %>% 
+  dplyr::bind_cols(airquality) %>% 
+  dplyr::select(Ozone, Ozone1) %>% 
+  tibble::rowid_to_column("days") %>% 
+  ggplot2::ggplot(ggplot2::aes(x = days)) + 
+    ggplot2::geom_line(ggplot2::aes(y = Ozone), colour = "red") +
+    ggplot2::geom_line(ggplot2::aes(y = Ozone1), colour = "blue")
+```
+
 　  
 
 ## 多重代入法
-多重代入法は欠損値を疑似的に補完したデータセット（疑似完全データともいう）を複数作成し、全ての擬似完全データを分析し、それらの分析結果を統合して結論（推定値）を導き出す方法です。一口に多重代入法といっても様々なアルゴリズムが提案されていますが、ここで扱う多重代入法はMICE（連鎖方程式による多変量補定）によるものです。  
+多重代入法は確率的代入の考えに基づき欠損値を疑似的に補完したデータ（疑似完全データという）を複数作成し、全ての擬似完全データを分析、それらの分析結果を統合して結論（推定値）を出すという代入、解析、統合の三段階で値を導き出す方法です。一口に多重代入法といっても様々なアルゴリズムが提案されていますが、ここで扱う多重代入法はMICE（連鎖方程式による多変量補定）によるものです。  
 と書くと何やら難しそうですが、前出の`mice`パッケージを利用することで計算自体は簡単に行えます。例えば、`airquality`データセットでは`Onone`変数と`Solar.R`変数にある欠損値を多重代入法で補完するには以下を実行するだけで済みます。  
 　  
 
@@ -216,35 +230,13 @@ airquality %>%
 
 　  
 
-### 可視化による比較
-補完結果がどのようになっているか確認してみます。下図において赤線の部分が欠損値を補完したものです。主観ですが、かなりいい感じになっていると思います。  
+補完結果がどのようになっているか確認してみます。下図において赤線の部分が欠損値を補完したものです。平均値代入法（単一代入法）にくらべるとかなり"らしい"感じになっていると思います。  
 　  
 
 ```{r}
 aq_mice %>% 
   dplyr::bind_cols(airquality) %>% 
-  dplyr::select(Ozone, Ozone1, Solar.R, Solar.R1) %>% 
-  tibble::rowid_to_column("days") %>% 
-  ggplot2::ggplot(ggplot2::aes(x = days)) + 
-    ggplot2::geom_line(ggplot2::aes(y = Ozone), colour = "red") +
-    ggplot2::geom_line(ggplot2::aes(y = Ozone1), colour = "blue")
-```
-
-　  
-
-下図の平均値代入法（単一代入法）と比べて`airquality`データセットでは上図の多重代入法を用いた方がより適切な補完が行われていると言えます。  
-　  
-
-```{r}
-ozone <- airquality %>% 
-  dplyr::summarise(ozone_mean = round(mean(Ozone, na.rm = TRUE)),
-                   solar_mean = round(median(Solar.R, na.rm = TRUE)))
-
-airquality %>% 
-  dplyr::mutate(Ozone = ifelse(is.na(Ozone), ozone$ozone_mean, Ozone),
-                Solar.R = ifelse(is.na(Solar.R), ozone$solar_mean, Solar.R)) %>% 
-  dplyr::bind_cols(airquality) %>% 
-  dplyr::select(Ozone, Ozone1, Solar.R, Solar.R1) %>% 
+  dplyr::select(Ozone, Ozone1) %>% 
   tibble::rowid_to_column("days") %>% 
   ggplot2::ggplot(ggplot2::aes(x = days)) + 
     ggplot2::geom_line(ggplot2::aes(y = Ozone), colour = "red") +
@@ -266,6 +258,23 @@ airquality %>%
 airquality %>% 
   mice::mice(m = 20, printFlag = FALSE, seed = 0) %>% 
   densityplot()
+```
+
+　  
+
+## 機械学習による補完
+Rでは機械学習（ランダムフォレスト）による欠損値の補完を`imputeMissings`パッケージを用いて行うことができます。`imputeMissings::compute`関数を用いて学習データを作成し`imputeMissings::impute`関数で補完する値を求めますが、学習データの用意ができない場合でも対象データを元に演算を行ってくれます。  
+　  
+
+```{r}
+airquality %>% 
+  imputeMissings::impute(method = "randomForest") %>% 
+  dplyr::bind_cols(airquality) %>% 
+  dplyr::select(Ozone, Ozone1) %>% 
+  tibble::rowid_to_column("days") %>% 
+  ggplot2::ggplot(ggplot2::aes(x = days)) + 
+    ggplot2::geom_line(ggplot2::aes(y = Ozone), colour = "red") +
+    ggplot2::geom_line(ggplot2::aes(y = Ozone1), colour = "blue")
 ```
 
 　  
@@ -401,6 +410,7 @@ options(scipen = old)     # 桁数表示を元に戻す
 * [kaggleで予測モデルを構築してみた (5) - Rで行うMultipleImputation <i class="fa fa-external-link"></i>](http://smrmkt.hatenablog.jp/entry/2013/01/06/164758){target="_blank" title="About connecting the dots."}
 * [欠損値の種類と補完とRでのワークフロー <i class="fa fa-external-link"></i>](http://pediatricsurgery.hatenadiary.jp/entry/2016/11/20/233217){target="_blank" title="Note of Pediatric Surgery"}
 * [欠損値があるデータの分析 <i class="fa fa-external-link"></i>](http://norimune.net/1811){target="_blank" title="Sunny side up!"}
+* [欠測値補完に関する調査研究報告書 内閣府経済社会総合研究所 <i class="fa fa-external-link"></i>](http://www.esri.cao.go.jp/jp/stat/report/report_all_detail.pdf){target="_blank" title="PDF"}
 * [dplyr でグループごとに複数カラムを追加したい](https://qiita.com/hoxo_m/items/9d2f91008335b03bf082)  
 
 ---

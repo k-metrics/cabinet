@@ -456,6 +456,11 @@ div.tocify {
 <td>4.7.0</td>
 <td>Visualization and Imputation of Missing Values</td>
 </tr>
+<tr class="odd">
+<td>imputeMissings</td>
+<td>0.0.3</td>
+<td>Impute Missing Values in a Predictive Context</td>
+</tr>
 </tbody>
 </table>
 <p>　</p>
@@ -492,8 +497,8 @@ div.tocify {
 </div>
 <p>　</p>
 </div>
-<div id="欠損値処理の概要" class="section level1">
-<h1>欠損値処理の概要</h1>
+<div id="欠損値処理" class="section level1">
+<h1>欠損値処理</h1>
 <p>データには必ずと言っていいほどレコードの一部のデータが取得できていないものが含まれます。取得できていないデータを欠損値と呼びます。Rで欠損値を含んだデータを読み込んだ場合、デフォルト処理では欠損値は<code>NA</code>という特殊なデータとして処理されます。</p>
 <p>欠損値の扱いはデータや分析目的などにより変わりますが、扱い方は大きく以下のように三つに分類されます。</p>
 <ul>
@@ -585,8 +590,8 @@ div.tocify {
 <!-- ``` -->
 </div>
 </div>
-<div id="欠損値の処理方法" class="section level1">
-<h1>欠損値の処理方法</h1>
+<div id="欠損値処理詳細" class="section level1">
+<h1>欠損値処理詳細</h1>
 <p>欠損値の補完や削除方法を<code>airqularity</code>データセットを用いて説明します。<code>airquality</code>データセットは６つの変数それぞれに「37, 7, 0, 0, 0, 0」個の<code>NA</code>を含むデータセットです。このデータセットを用いて<code>NA</code>の代表的な処理例を示します。<br />
 　</p>
 <pre class="r"><code>airquality</code></pre>
@@ -653,7 +658,7 @@ airquality %&gt;%
 データセットから任意の二変数が共にNAの場合のレコードを削除するには以下のような方法があります。<br />
 　</p>
 <pre class="r"><code>airquality %&gt;% 
-  mutate(flag = Solar.R | Ozone) %&gt;% 
+  dplyr::mutate(flag = Solar.R | Ozone) %&gt;% 
   tidyr::drop_na(flag) %&gt;% 
   dplyr::select(-flag)</code></pre>
 <div data-pagedtable="false">
@@ -666,16 +671,25 @@ airquality %&gt;%
 </div>
 <div id="平均値代入法" class="section level2">
 <h2>平均値代入法</h2>
-<p>平均値代入法はその名の通り平均値を用いて欠損値を補完する方法です。「特定の値に変換する」の項で示したように<code>is.na</code>関数を用いる方法を用いるのが簡単です。ちなみに平均値代入法のような特定の値（単一の値）で欠損値を補完する方法を後述の多重代入法と対比させて単一代入法と呼ぶこともあります。<br />
+<p>平均値代入法はその名の通り平均値を用いて欠損値を補完する方法です。「特定の値に変換する」の項で示したように<code>is.na</code>関数を用いる方法を用いるのが簡単です。ちなみに平均値代入法のような特定の値（単一の値）で欠損値を補完する方法を後述の多重代入法と対比させて単一代入法と呼ぶこともあります。下図において赤線の部分が欠損値を補完したものです。<br />
 　</p>
-</div>
-<div id="完全情報最尤推定法" class="section level2">
-<h2>完全情報最尤推定法</h2>
-<p>（調査中） 　</p>
+<pre class="r"><code>ozone &lt;- airquality %&gt;% 
+  dplyr::summarise(ozone_mean = round(mean(Ozone, na.rm = TRUE)))
+
+airquality %&gt;% 
+  dplyr::mutate(Ozone = ifelse(is.na(Ozone), ozone$ozone_mean, Ozone)) %&gt;% 
+  dplyr::bind_cols(airquality) %&gt;% 
+  dplyr::select(Ozone, Ozone1) %&gt;% 
+  tibble::rowid_to_column(&quot;days&quot;) %&gt;% 
+  ggplot2::ggplot(ggplot2::aes(x = days)) + 
+    ggplot2::geom_line(ggplot2::aes(y = Ozone), colour = &quot;red&quot;) +
+    ggplot2::geom_line(ggplot2::aes(y = Ozone1), colour = &quot;blue&quot;)</code></pre>
+<p><img src="cleansing_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p>　</p>
 </div>
 <div id="多重代入法" class="section level2">
 <h2>多重代入法</h2>
-<p>多重代入法は欠損値を疑似的に補完したデータセット（疑似完全データともいう）を複数作成し、全ての擬似完全データを分析し、それらの分析結果を統合して結論（推定値）を導き出す方法です。一口に多重代入法といっても様々なアルゴリズムが提案されていますが、ここで扱う多重代入法はMICE（連鎖方程式による多変量補定）によるものです。<br />
+<p>多重代入法は確率的代入の考えに基づき欠損値を疑似的に補完したデータ（疑似完全データという）を複数作成し、全ての擬似完全データを分析、それらの分析結果を統合して結論（推定値）を出すという代入、解析、統合の三段階で値を導き出す方法です。一口に多重代入法といっても様々なアルゴリズムが提案されていますが、ここで扱う多重代入法はMICE（連鎖方程式による多変量補定）によるものです。<br />
 と書くと何やら難しそうですが、前出の<code>mice</code>パッケージを利用することで計算自体は簡単に行えます。例えば、<code>airquality</code>データセットでは<code>Onone</code>変数と<code>Solar.R</code>変数にある欠損値を多重代入法で補完するには以下を実行するだけで済みます。<br />
 　</p>
 <pre class="r"><code>(aq_mice &lt;- airquality %&gt;% 
@@ -687,30 +701,11 @@ airquality %&gt;%
   </script>
 </div>
 <p>　</p>
-<div id="可視化による比較" class="section level3">
-<h3>可視化による比較</h3>
-<p>補完結果がどのようになっているか確認してみます。下図において赤線の部分が欠損値を補完したものです。主観ですが、かなりいい感じになっていると思います。<br />
+<p>補完結果がどのようになっているか確認してみます。下図において赤線の部分が欠損値を補完したものです。平均値代入法（単一代入法）にくらべるとかなり“らしい”感じになっていると思います。<br />
 　</p>
 <pre class="r"><code>aq_mice %&gt;% 
   dplyr::bind_cols(airquality) %&gt;% 
-  dplyr::select(Ozone, Ozone1, Solar.R, Solar.R1) %&gt;% 
-  tibble::rowid_to_column(&quot;days&quot;) %&gt;% 
-  ggplot2::ggplot(ggplot2::aes(x = days)) + 
-    ggplot2::geom_line(ggplot2::aes(y = Ozone), colour = &quot;red&quot;) +
-    ggplot2::geom_line(ggplot2::aes(y = Ozone1), colour = &quot;blue&quot;)</code></pre>
-<p><img src="cleansing_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
-<p>　</p>
-<p>下図の平均値代入法（単一代入法）と比べて<code>airquality</code>データセットでは上図の多重代入法を用いた方がより適切な補完が行われていると言えます。<br />
-　</p>
-<pre class="r"><code>ozone &lt;- airquality %&gt;% 
-  dplyr::summarise(ozone_mean = round(mean(Ozone, na.rm = TRUE)),
-                   solar_mean = round(median(Solar.R, na.rm = TRUE)))
-
-airquality %&gt;% 
-  dplyr::mutate(Ozone = ifelse(is.na(Ozone), ozone$ozone_mean, Ozone),
-                Solar.R = ifelse(is.na(Solar.R), ozone$solar_mean, Solar.R)) %&gt;% 
-  dplyr::bind_cols(airquality) %&gt;% 
-  dplyr::select(Ozone, Ozone1, Solar.R, Solar.R1) %&gt;% 
+  dplyr::select(Ozone, Ozone1) %&gt;% 
   tibble::rowid_to_column(&quot;days&quot;) %&gt;% 
   ggplot2::ggplot(ggplot2::aes(x = days)) + 
     ggplot2::geom_line(ggplot2::aes(y = Ozone), colour = &quot;red&quot;) +
@@ -732,6 +727,20 @@ airquality %&gt;%
 <p>　</p>
 </div>
 </div>
+<div id="機械学習による補完" class="section level2">
+<h2>機械学習による補完</h2>
+<p>Rでは機械学習（ランダムフォレスト）による欠損値の補完を<code>imputeMissings</code>パッケージを用いて行うことができます。<code>imputeMissings::compute</code>関数を用いて学習データを作成し<code>imputeMissings::impute</code>関数で補完する値を求めますが、学習データの用意ができない場合でも対象データを元に演算を行ってくれます。<br />
+　</p>
+<pre class="r"><code>airquality %&gt;% 
+  imputeMissings::impute(method = &quot;randomForest&quot;) %&gt;% 
+  dplyr::bind_cols(airquality) %&gt;% 
+  dplyr::select(Ozone, Ozone1) %&gt;% 
+  tibble::rowid_to_column(&quot;days&quot;) %&gt;% 
+  ggplot2::ggplot(ggplot2::aes(x = days)) + 
+    ggplot2::geom_line(ggplot2::aes(y = Ozone), colour = &quot;red&quot;) +
+    ggplot2::geom_line(ggplot2::aes(y = Ozone1), colour = &quot;blue&quot;)</code></pre>
+<p><img src="cleansing_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p>　</p>
 </div>
 </div>
 <div id="正規表現" class="section level1">
@@ -924,11 +933,12 @@ airquality %&gt;%
 <li><a href="http://smrmkt.hatenablog.jp/entry/2013/01/06/164758" target="_blank" title="About connecting the dots.">kaggleで予測モデルを構築してみた (5) - Rで行うMultipleImputation <i class="fa fa-external-link"></i></a></li>
 <li><a href="http://pediatricsurgery.hatenadiary.jp/entry/2016/11/20/233217" target="_blank" title="Note of Pediatric Surgery">欠損値の種類と補完とRでのワークフロー <i class="fa fa-external-link"></i></a></li>
 <li><a href="http://norimune.net/1811" target="_blank" title="Sunny side up!">欠損値があるデータの分析 <i class="fa fa-external-link"></i></a></li>
+<li><a href="http://www.esri.cao.go.jp/jp/stat/report/report_all_detail.pdf" target="_blank" title="PDF">欠測値補完に関する調査研究報告書 内閣府経済社会総合研究所 <i class="fa fa-external-link"></i></a></li>
 <li><a href="https://qiita.com/hoxo_m/items/9d2f91008335b03bf082">dplyr でグループごとに複数カラムを追加したい</a></li>
 </ul>
 <hr />
 <!-- Footer -->
-<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-05-28 21:49(JST)]</p>
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-05-29 21:37(JST)]</p>
 </div>
 
 
