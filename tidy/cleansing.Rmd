@@ -197,11 +197,27 @@ airquality %>%
 　  
 
 ## 平均値代入法
-平均値代入法はその名の通り平均値を用いて欠損値を補完する方法です。「特定の値に変換する」の項で示したように`is.na`関数を用いる方法を用いるのが簡単です。ちなみに平均値代入法のような特定の値（単一の値）で欠損値を補完する方法を後述の多重代入法と対比させて単一代入法と呼ぶこともあります。  
+平均値代入法はその名の通り平均値を用いて欠損値を補完する方法です。「特定の値に変換する」の項で示したように`is.na`関数を用いる方法を用いるのが簡単です。ちなみに平均値代入法のような特定の値（単一の値）で欠損値を補完する方法を後述の多重代入法と対比させて単一代入法と呼ぶこともあります。下図において赤線の部分が欠損値を補完したものです。  
+　  
+
+```{r}
+ozone <- airquality %>% 
+  dplyr::summarise(ozone_mean = round(mean(Ozone, na.rm = TRUE)))
+
+airquality %>% 
+  dplyr::mutate(Ozone = ifelse(is.na(Ozone), ozone$ozone_mean, Ozone)) %>% 
+  dplyr::bind_cols(airquality) %>% 
+  dplyr::select(Ozone, Ozone1) %>% 
+  tibble::rowid_to_column("days") %>% 
+  ggplot2::ggplot(ggplot2::aes(x = days)) + 
+    ggplot2::geom_line(ggplot2::aes(y = Ozone), colour = "red") +
+    ggplot2::geom_line(ggplot2::aes(y = Ozone1), colour = "blue")
+```
+
 　  
 
 ## 多重代入法
-多重代入法は欠損値を疑似的に補完したデータセット（疑似完全データともいう）を複数作成し、全ての擬似完全データを分析し、それらの分析結果を統合して結論（推定値）を導き出す方法です。一口に多重代入法といっても様々なアルゴリズムが提案されていますが、ここで扱う多重代入法はMICE（連鎖方程式による多変量補定）によるものです。  
+多重代入法は確率的代入の考えに基づき欠損値を疑似的に補完したデータ（疑似完全データという）を複数作成し、全ての擬似完全データを分析、それらの分析結果を統合して結論（推定値）を出すという代入、解析、統合の三段階で値を導き出す方法です。一口に多重代入法といっても様々なアルゴリズムが提案されていますが、ここで扱う多重代入法はMICE（連鎖方程式による多変量補定）によるものです。  
 と書くと何やら難しそうですが、前出の`mice`パッケージを利用することで計算自体は簡単に行えます。例えば、`airquality`データセットでは`Onone`変数と`Solar.R`変数にある欠損値を多重代入法で補完するには以下を実行するだけで済みます。  
 　  
 
@@ -213,31 +229,11 @@ airquality %>%
 
 　  
 
-### 可視化による比較
-補完結果がどのようになっているか確認してみます。下図において赤線の部分が欠損値を補完したものです。主観ですが、かなりいい感じになっていると思います。  
+補完結果がどのようになっているか確認してみます。下図において赤線の部分が欠損値を補完したものです。平均値代入法（単一代入法）にくらべるとかなり"らしい"感じになっていると思います。  
 　  
 
 ```{r}
 aq_mice %>% 
-  dplyr::bind_cols(airquality) %>% 
-  dplyr::select(Ozone, Ozone1) %>% 
-  tibble::rowid_to_column("days") %>% 
-  ggplot2::ggplot(ggplot2::aes(x = days)) + 
-    ggplot2::geom_line(ggplot2::aes(y = Ozone), colour = "red") +
-    ggplot2::geom_line(ggplot2::aes(y = Ozone1), colour = "blue")
-```
-
-　  
-
-下図の平均値代入法（単一代入法）と比べて`airquality`データセットでは上図の多重代入法を用いた方がより適切な補完が行われていると言えます。  
-　  
-
-```{r}
-ozone <- airquality %>% 
-  dplyr::summarise(ozone_mean = round(mean(Ozone, na.rm = TRUE)))
-
-airquality %>% 
-  dplyr::mutate(Ozone = ifelse(is.na(Ozone), ozone$ozone_mean, Ozone)) %>% 
   dplyr::bind_cols(airquality) %>% 
   dplyr::select(Ozone, Ozone1) %>% 
   tibble::rowid_to_column("days") %>% 
@@ -266,7 +262,7 @@ airquality %>%
 　  
 
 ## 機械学習による補完
-Rでは機械学習（ランダムフォレスト）による欠損値の補完を`imputeMissings`パッケージを用いて行うことができます。`imputeMissings::compute`関数を用いて学習データを作成し`imputeMissings::impute`関数で欠損値を求めますが、学習データの用意ができない場合でも対象データを元に演算を行ってくれます。  
+Rでは機械学習（ランダムフォレスト）による欠損値の補完を`imputeMissings`パッケージを用いて行うことができます。`imputeMissings::compute`関数を用いて学習データを作成し`imputeMissings::impute`関数で補完する値を求めますが、学習データの用意ができない場合でも対象データを元に演算を行ってくれます。  
 　  
 
 ```{r}
