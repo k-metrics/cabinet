@@ -100,28 +100,6 @@ airquality | datasets | `r packageVersion('datasets')`| New York Air Quality Mea
 上記以外にも変数の性格から欠損値に特定値（例えばゼロ）を割り当てる方法もよく使われる方法です。  
 　  
 
-## 欠損値のパターンを可視化する
-欠損値の処理方法は前述のように様々な方法がありますが、まずは、欠損値の発生パターンを把握することが必要です。`mice::md.pattern`関数は欠損値のパターンを可視化してくれます。`airquaility`データセットの欠損値を可視化すると下図のようになります。  
-　  
-
-```{r}
-mice::md.pattern(airquality)
-```
-
-　  
-赤色の升（テキスト表示の場合は`0`の部分）が欠損値のある組み合わせになり`Ozone`変数単独の欠損値が最も多く、ついで`Solar.R`変数単独の欠損値が多いことが分かります。更に詳細な可視化が必要な場合は`VIM`パッケージを用います。  
-　  
-
-```{r}
-VIM::marginplot(airquality[, c("Ozone", "Solar.R")])
-```
-
-　  
-
-<!-- ```{r} -->
-<!-- VIM::aggr(airquality) -->
-<!-- ``` -->
-
 # 欠損値処理詳細
 欠損値の補完や削除方法を`airqularity`データセットを用いて説明します。`airquality`データセットは６つの変数それぞれに「`r colSums(is.na(airquality))`」個の`NA`を含むデータセットです。このデータセットを用いて`NA`の代表的な処理例を示します。  
 　  
