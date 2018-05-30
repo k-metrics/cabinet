@@ -567,28 +567,6 @@ div.tocify {
 <p>上記以外にも変数の性格から欠損値に特定値（例えばゼロ）を割り当てる方法もよく使われる方法です。<br />
 　</p>
 </div>
-<div id="欠損値のパターンを可視化する" class="section level2">
-<h2>欠損値のパターンを可視化する</h2>
-<p>欠損値の処理方法は前述のように様々な方法がありますが、まずは、欠損値の発生パターンを把握することが必要です。<code>mice::md.pattern</code>関数は欠損値のパターンを可視化してくれます。<code>airquaility</code>データセットの欠損値を可視化すると下図のようになります。<br />
-　</p>
-<pre class="r"><code>mice::md.pattern(airquality)</code></pre>
-<p><img src="cleansing_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
-<pre><code>##     Wind Temp Month Day Solar.R Ozone   
-## 111    1    1     1   1       1     1  0
-## 35     1    1     1   1       1     0  1
-## 5      1    1     1   1       0     1  1
-## 2      1    1     1   1       0     0  2
-##        0    0     0   0       7    37 44</code></pre>
-<p>　<br />
-赤色の升（テキスト表示の場合は<code>0</code>の部分）が欠損値のある組み合わせになり<code>Ozone</code>変数単独の欠損値が最も多く、ついで<code>Solar.R</code>変数単独の欠損値が多いことが分かります。更に詳細な可視化が必要な場合は<code>VIM</code>パッケージを用います。<br />
-　</p>
-<pre class="r"><code>VIM::marginplot(airquality[, c(&quot;Ozone&quot;, &quot;Solar.R&quot;)])</code></pre>
-<p><img src="cleansing_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
-<p>　</p>
-<!-- ```{r} -->
-<!-- VIM::aggr(airquality) -->
-<!-- ``` -->
-</div>
 </div>
 <div id="欠損値処理詳細" class="section level1">
 <h1>欠損値処理詳細</h1>
@@ -684,7 +662,7 @@ airquality %&gt;%
   ggplot2::ggplot(ggplot2::aes(x = days)) + 
     ggplot2::geom_line(ggplot2::aes(y = Ozone), colour = &quot;red&quot;) +
     ggplot2::geom_line(ggplot2::aes(y = Ozone1), colour = &quot;blue&quot;)</code></pre>
-<p><img src="cleansing_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p><img src="cleansing_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 <p>　</p>
 </div>
 <div id="多重代入法" class="section level2">
@@ -710,7 +688,7 @@ airquality %&gt;%
   ggplot2::ggplot(ggplot2::aes(x = days)) + 
     ggplot2::geom_line(ggplot2::aes(y = Ozone), colour = &quot;red&quot;) +
     ggplot2::geom_line(ggplot2::aes(y = Ozone1), colour = &quot;blue&quot;)</code></pre>
-<p><img src="cleansing_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p><img src="cleansing_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 <p>　</p>
 <div id="注意事項" class="section level4">
 <h4>注意事項</h4>
@@ -719,11 +697,11 @@ airquality %&gt;%
 <pre class="r"><code>airquality %&gt;% 
   mice::mice(printFlag = FALSE, seed = 0) %&gt;% 
   densityplot()</code></pre>
-<p><img src="cleansing_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p><img src="cleansing_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 <pre class="r"><code>airquality %&gt;% 
   mice::mice(m = 20, printFlag = FALSE, seed = 0) %&gt;% 
   densityplot()</code></pre>
-<p><img src="cleansing_files/figure-html/unnamed-chunk-12-2.png" width="672" /></p>
+<p><img src="cleansing_files/figure-html/unnamed-chunk-10-2.png" width="672" /></p>
 <p>　</p>
 </div>
 </div>
@@ -739,7 +717,7 @@ airquality %&gt;%
   ggplot2::ggplot(ggplot2::aes(x = days)) + 
     ggplot2::geom_line(ggplot2::aes(y = Ozone), colour = &quot;red&quot;) +
     ggplot2::geom_line(ggplot2::aes(y = Ozone1), colour = &quot;blue&quot;)</code></pre>
-<p><img src="cleansing_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p><img src="cleansing_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 <p>　</p>
 </div>
 </div>
@@ -934,11 +912,12 @@ airquality %&gt;%
 <li><a href="http://pediatricsurgery.hatenadiary.jp/entry/2016/11/20/233217" target="_blank" title="Note of Pediatric Surgery">欠損値の種類と補完とRでのワークフロー <i class="fa fa-external-link"></i></a></li>
 <li><a href="http://norimune.net/1811" target="_blank" title="Sunny side up!">欠損値があるデータの分析 <i class="fa fa-external-link"></i></a></li>
 <li><a href="http://www.esri.cao.go.jp/jp/stat/report/report_all_detail.pdf" target="_blank" title="PDF">欠測値補完に関する調査研究報告書 内閣府経済社会総合研究所 <i class="fa fa-external-link"></i></a></li>
+<li><a href="https://datahotel.io/archives/6573" target="_blank" title="NHN TECHORUS::テックブログ">Rで実践！欠損データ分析入門【2】 <i class="fa fa-external-link"></i></a></li>
 <li><a href="https://qiita.com/hoxo_m/items/9d2f91008335b03bf082">dplyr でグループごとに複数カラムを追加したい</a></li>
 </ul>
 <hr />
 <!-- Footer -->
-<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-05-29 21:37(JST)]</p>
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-05-30 21:56(JST)]</p>
 </div>
 
 
