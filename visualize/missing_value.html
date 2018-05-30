@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>欠損を可視化する</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cerulean.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = false;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Visualize</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    base/ggplot2
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li class="dropdown-header">base basics</li>
+    <li>
+      <a href="../program/basics_ggplot2.html">ggplot2 basics</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="histogram.html">ヒストグラム</a>
+    </li>
+    <li>
+      <a href="boxplot.html">箱ひげ図</a>
+    </li>
+    <li>
+      <a href="scatterplot.html">散布図</a>
+    </li>
+    <li>
+      <a href="pairplot.html">散布図行列</a>
+    </li>
+    <li>
+      <a href="qqplot.html">QQプロット</a>
+    </li>
+    <li class="dropdown-header">信頼区間のプロット</li>
+    <li>
+      <a href="predict.html">信頼区間と予測区間</a>
+    </li>
+    <li>
+      <a href="ggrepel.html">ラベルが重ならないように描画する</a>
+    </li>
+    <li>
+      <a href="missing_value.html">欠損の可視化</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    htmlwidgets
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li class="dropdown-header">DT</li>
+    <li class="dropdown-header">plotly</li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Others
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li class="dropdown-header">gridExtra</li>
+    <li class="dropdown-header">RColorBrewer</li>
+  </ul>
+</li>
+<li>
+  <a href="./about.html">About</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-github"></span>
+     
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../index.html">Cabinet</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="../import/index.html">Import</a>
+    </li>
+    <li>
+      <a href="../tidy/index.html">Tidy/Transform</a>
+    </li>
+    <li>
+      <a href="../model/index.html">Model/Infer</a>
+    </li>
+    <li>
+      <a href="../index.html">
+        <span class="fa fa-home"></span>
+         
+        Visualize
+      </a>
+    </li>
+    <li>
+      <a href="../communicate/index.html">Communicate/Automate</a>
+    </li>
+    <li>
+      <a href="../program/index.html">Program</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="https://github.com/k-metrics/cabinet">
+        <span class="fa fa-github"></span>
+         
+        GitHub Repository
+      </a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="https://sites.google.com/site/kantometrics/home">
+        <span class="fa fa-google"></span>
+         
+        データ分析勉強会
+      </a>
+    </li>
+  </ul>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">欠損を可視化する</h1>
+
+</div>
+
+
+<!-- shared Links -->
+<!-- SQiP and others -->
+<!-- Books -->
+<!-- 共立出版 -->
+<!-- 日科技連出版 -->
+<!-- O'Reilly Japan -->
+<!-- 東京図書 -->
+<!-- Docker -->
+<!-- eBooks -->
+<!-- Net Community -->
+<!-- Style Guide -->
+<!-- Creative Commons -->
+<!-- Others -->
+<!-- R -->
+<!-- R Packages -->
+<!-- RStudio -->
+<!-- Docker -->
+<!-- Cabinet Pages -->
+<p>データの欠損はその発生メカニズムにより対処方法が異なってきます。そこで、欠損に対して何等かの処理を行う場合には分析と同様に欠損を可視化することにより欠損のパターンを把握しておくことが大切です。<br />
+本ページでは欠損を可視化するのに有用な方法を紹介します。<br />
+　<br />
+なお、本ページではR version 3.4.4 (2018-03-15)の標準パッケージ以外に以下の追加パッケージを用いています。<br />
+　</p>
+<table>
+<thead>
+<tr class="header">
+<th>Package</th>
+<th>Version</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>tidyverse</td>
+<td>1.2.1</td>
+<td>Easily Install and Load the ‘Tidyverse’</td>
+</tr>
+<tr class="even">
+<td>mice</td>
+<td>3.0.0</td>
+<td>Multivariate Imputation by Chained Equations</td>
+</tr>
+<tr class="odd">
+<td>VIM</td>
+<td>4.7.0</td>
+<td>Visualization and Imputation of Missing Values</td>
+</tr>
+</tbody>
+</table>
+<p>　</p>
+<p>また、本ページでは以下のデータセットを用いています。<br />
+　</p>
+<table>
+<thead>
+<tr class="header">
+<th>Dataset</th>
+<th>Package</th>
+<th>Version</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>airquality</td>
+<td>datasets</td>
+<td>3.4.4</td>
+<td>New York Air Quality Measurements</td>
+</tr>
+</tbody>
+</table>
+<p>　</p>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Ozone"],"name":[1],"type":["int"],"align":["right"]},{"label":["Solar.R"],"name":[2],"type":["int"],"align":["right"]},{"label":["Wind"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["Temp"],"name":[4],"type":["int"],"align":["right"]},{"label":["Month"],"name":[5],"type":["int"],"align":["right"]},{"label":["Day"],"name":[6],"type":["int"],"align":["right"]}],"data":[{"1":"41","2":"190","3":"7.4","4":"67","5":"5","6":"1"},{"1":"36","2":"118","3":"8.0","4":"72","5":"5","6":"2"},{"1":"12","2":"149","3":"12.6","4":"74","5":"5","6":"3"},{"1":"18","2":"313","3":"11.5","4":"62","5":"5","6":"4"},{"1":"NA","2":"NA","3":"14.3","4":"56","5":"5","6":"5"},{"1":"28","2":"NA","3":"14.9","4":"66","5":"5","6":"6"},{"1":"23","2":"299","3":"8.6","4":"65","5":"5","6":"7"},{"1":"19","2":"99","3":"13.8","4":"59","5":"5","6":"8"},{"1":"8","2":"19","3":"20.1","4":"61","5":"5","6":"9"},{"1":"NA","2":"194","3":"8.6","4":"69","5":"5","6":"10"},{"1":"7","2":"NA","3":"6.9","4":"74","5":"5","6":"11"},{"1":"16","2":"256","3":"9.7","4":"69","5":"5","6":"12"},{"1":"11","2":"290","3":"9.2","4":"66","5":"5","6":"13"},{"1":"14","2":"274","3":"10.9","4":"68","5":"5","6":"14"},{"1":"18","2":"65","3":"13.2","4":"58","5":"5","6":"15"},{"1":"14","2":"334","3":"11.5","4":"64","5":"5","6":"16"},{"1":"34","2":"307","3":"12.0","4":"66","5":"5","6":"17"},{"1":"6","2":"78","3":"18.4","4":"57","5":"5","6":"18"},{"1":"30","2":"322","3":"11.5","4":"68","5":"5","6":"19"},{"1":"11","2":"44","3":"9.7","4":"62","5":"5","6":"20"},{"1":"1","2":"8","3":"9.7","4":"59","5":"5","6":"21"},{"1":"11","2":"320","3":"16.6","4":"73","5":"5","6":"22"},{"1":"4","2":"25","3":"9.7","4":"61","5":"5","6":"23"},{"1":"32","2":"92","3":"12.0","4":"61","5":"5","6":"24"},{"1":"NA","2":"66","3":"16.6","4":"57","5":"5","6":"25"},{"1":"NA","2":"266","3":"14.9","4":"58","5":"5","6":"26"},{"1":"NA","2":"NA","3":"8.0","4":"57","5":"5","6":"27"},{"1":"23","2":"13","3":"12.0","4":"67","5":"5","6":"28"},{"1":"45","2":"252","3":"14.9","4":"81","5":"5","6":"29"},{"1":"115","2":"223","3":"5.7","4":"79","5":"5","6":"30"},{"1":"37","2":"279","3":"7.4","4":"76","5":"5","6":"31"},{"1":"NA","2":"286","3":"8.6","4":"78","5":"6","6":"1"},{"1":"NA","2":"287","3":"9.7","4":"74","5":"6","6":"2"},{"1":"NA","2":"242","3":"16.1","4":"67","5":"6","6":"3"},{"1":"NA","2":"186","3":"9.2","4":"84","5":"6","6":"4"},{"1":"NA","2":"220","3":"8.6","4":"85","5":"6","6":"5"},{"1":"NA","2":"264","3":"14.3","4":"79","5":"6","6":"6"},{"1":"29","2":"127","3":"9.7","4":"82","5":"6","6":"7"},{"1":"NA","2":"273","3":"6.9","4":"87","5":"6","6":"8"},{"1":"71","2":"291","3":"13.8","4":"90","5":"6","6":"9"},{"1":"39","2":"323","3":"11.5","4":"87","5":"6","6":"10"},{"1":"NA","2":"259","3":"10.9","4":"93","5":"6","6":"11"},{"1":"NA","2":"250","3":"9.2","4":"92","5":"6","6":"12"},{"1":"23","2":"148","3":"8.0","4":"82","5":"6","6":"13"},{"1":"NA","2":"332","3":"13.8","4":"80","5":"6","6":"14"},{"1":"NA","2":"322","3":"11.5","4":"79","5":"6","6":"15"},{"1":"21","2":"191","3":"14.9","4":"77","5":"6","6":"16"},{"1":"37","2":"284","3":"20.7","4":"72","5":"6","6":"17"},{"1":"20","2":"37","3":"9.2","4":"65","5":"6","6":"18"},{"1":"12","2":"120","3":"11.5","4":"73","5":"6","6":"19"},{"1":"13","2":"137","3":"10.3","4":"76","5":"6","6":"20"},{"1":"NA","2":"150","3":"6.3","4":"77","5":"6","6":"21"},{"1":"NA","2":"59","3":"1.7","4":"76","5":"6","6":"22"},{"1":"NA","2":"91","3":"4.6","4":"76","5":"6","6":"23"},{"1":"NA","2":"250","3":"6.3","4":"76","5":"6","6":"24"},{"1":"NA","2":"135","3":"8.0","4":"75","5":"6","6":"25"},{"1":"NA","2":"127","3":"8.0","4":"78","5":"6","6":"26"},{"1":"NA","2":"47","3":"10.3","4":"73","5":"6","6":"27"},{"1":"NA","2":"98","3":"11.5","4":"80","5":"6","6":"28"},{"1":"NA","2":"31","3":"14.9","4":"77","5":"6","6":"29"},{"1":"NA","2":"138","3":"8.0","4":"83","5":"6","6":"30"},{"1":"135","2":"269","3":"4.1","4":"84","5":"7","6":"1"},{"1":"49","2":"248","3":"9.2","4":"85","5":"7","6":"2"},{"1":"32","2":"236","3":"9.2","4":"81","5":"7","6":"3"},{"1":"NA","2":"101","3":"10.9","4":"84","5":"7","6":"4"},{"1":"64","2":"175","3":"4.6","4":"83","5":"7","6":"5"},{"1":"40","2":"314","3":"10.9","4":"83","5":"7","6":"6"},{"1":"77","2":"276","3":"5.1","4":"88","5":"7","6":"7"},{"1":"97","2":"267","3":"6.3","4":"92","5":"7","6":"8"},{"1":"97","2":"272","3":"5.7","4":"92","5":"7","6":"9"},{"1":"85","2":"175","3":"7.4","4":"89","5":"7","6":"10"},{"1":"NA","2":"139","3":"8.6","4":"82","5":"7","6":"11"},{"1":"10","2":"264","3":"14.3","4":"73","5":"7","6":"12"},{"1":"27","2":"175","3":"14.9","4":"81","5":"7","6":"13"},{"1":"NA","2":"291","3":"14.9","4":"91","5":"7","6":"14"},{"1":"7","2":"48","3":"14.3","4":"80","5":"7","6":"15"},{"1":"48","2":"260","3":"6.9","4":"81","5":"7","6":"16"},{"1":"35","2":"274","3":"10.3","4":"82","5":"7","6":"17"},{"1":"61","2":"285","3":"6.3","4":"84","5":"7","6":"18"},{"1":"79","2":"187","3":"5.1","4":"87","5":"7","6":"19"},{"1":"63","2":"220","3":"11.5","4":"85","5":"7","6":"20"},{"1":"16","2":"7","3":"6.9","4":"74","5":"7","6":"21"},{"1":"NA","2":"258","3":"9.7","4":"81","5":"7","6":"22"},{"1":"NA","2":"295","3":"11.5","4":"82","5":"7","6":"23"},{"1":"80","2":"294","3":"8.6","4":"86","5":"7","6":"24"},{"1":"108","2":"223","3":"8.0","4":"85","5":"7","6":"25"},{"1":"20","2":"81","3":"8.6","4":"82","5":"7","6":"26"},{"1":"52","2":"82","3":"12.0","4":"86","5":"7","6":"27"},{"1":"82","2":"213","3":"7.4","4":"88","5":"7","6":"28"},{"1":"50","2":"275","3":"7.4","4":"86","5":"7","6":"29"},{"1":"64","2":"253","3":"7.4","4":"83","5":"7","6":"30"},{"1":"59","2":"254","3":"9.2","4":"81","5":"7","6":"31"},{"1":"39","2":"83","3":"6.9","4":"81","5":"8","6":"1"},{"1":"9","2":"24","3":"13.8","4":"81","5":"8","6":"2"},{"1":"16","2":"77","3":"7.4","4":"82","5":"8","6":"3"},{"1":"78","2":"NA","3":"6.9","4":"86","5":"8","6":"4"},{"1":"35","2":"NA","3":"7.4","4":"85","5":"8","6":"5"},{"1":"66","2":"NA","3":"4.6","4":"87","5":"8","6":"6"},{"1":"122","2":"255","3":"4.0","4":"89","5":"8","6":"7"},{"1":"89","2":"229","3":"10.3","4":"90","5":"8","6":"8"},{"1":"110","2":"207","3":"8.0","4":"90","5":"8","6":"9"},{"1":"NA","2":"222","3":"8.6","4":"92","5":"8","6":"10"},{"1":"NA","2":"137","3":"11.5","4":"86","5":"8","6":"11"},{"1":"44","2":"192","3":"11.5","4":"86","5":"8","6":"12"},{"1":"28","2":"273","3":"11.5","4":"82","5":"8","6":"13"},{"1":"65","2":"157","3":"9.7","4":"80","5":"8","6":"14"},{"1":"NA","2":"64","3":"11.5","4":"79","5":"8","6":"15"},{"1":"22","2":"71","3":"10.3","4":"77","5":"8","6":"16"},{"1":"59","2":"51","3":"6.3","4":"79","5":"8","6":"17"},{"1":"23","2":"115","3":"7.4","4":"76","5":"8","6":"18"},{"1":"31","2":"244","3":"10.9","4":"78","5":"8","6":"19"},{"1":"44","2":"190","3":"10.3","4":"78","5":"8","6":"20"},{"1":"21","2":"259","3":"15.5","4":"77","5":"8","6":"21"},{"1":"9","2":"36","3":"14.3","4":"72","5":"8","6":"22"},{"1":"NA","2":"255","3":"12.6","4":"75","5":"8","6":"23"},{"1":"45","2":"212","3":"9.7","4":"79","5":"8","6":"24"},{"1":"168","2":"238","3":"3.4","4":"81","5":"8","6":"25"},{"1":"73","2":"215","3":"8.0","4":"86","5":"8","6":"26"},{"1":"NA","2":"153","3":"5.7","4":"88","5":"8","6":"27"},{"1":"76","2":"203","3":"9.7","4":"97","5":"8","6":"28"},{"1":"118","2":"225","3":"2.3","4":"94","5":"8","6":"29"},{"1":"84","2":"237","3":"6.3","4":"96","5":"8","6":"30"},{"1":"85","2":"188","3":"6.3","4":"94","5":"8","6":"31"},{"1":"96","2":"167","3":"6.9","4":"91","5":"9","6":"1"},{"1":"78","2":"197","3":"5.1","4":"92","5":"9","6":"2"},{"1":"73","2":"183","3":"2.8","4":"93","5":"9","6":"3"},{"1":"91","2":"189","3":"4.6","4":"93","5":"9","6":"4"},{"1":"47","2":"95","3":"7.4","4":"87","5":"9","6":"5"},{"1":"32","2":"92","3":"15.5","4":"84","5":"9","6":"6"},{"1":"20","2":"252","3":"10.9","4":"80","5":"9","6":"7"},{"1":"23","2":"220","3":"10.3","4":"78","5":"9","6":"8"},{"1":"21","2":"230","3":"10.9","4":"75","5":"9","6":"9"},{"1":"24","2":"259","3":"9.7","4":"73","5":"9","6":"10"},{"1":"44","2":"236","3":"14.9","4":"81","5":"9","6":"11"},{"1":"21","2":"259","3":"15.5","4":"76","5":"9","6":"12"},{"1":"28","2":"238","3":"6.3","4":"77","5":"9","6":"13"},{"1":"9","2":"24","3":"10.9","4":"71","5":"9","6":"14"},{"1":"13","2":"112","3":"11.5","4":"71","5":"9","6":"15"},{"1":"46","2":"237","3":"6.9","4":"78","5":"9","6":"16"},{"1":"18","2":"224","3":"13.8","4":"67","5":"9","6":"17"},{"1":"13","2":"27","3":"10.3","4":"76","5":"9","6":"18"},{"1":"24","2":"238","3":"10.3","4":"68","5":"9","6":"19"},{"1":"16","2":"201","3":"8.0","4":"82","5":"9","6":"20"},{"1":"13","2":"238","3":"12.6","4":"64","5":"9","6":"21"},{"1":"23","2":"14","3":"9.2","4":"71","5":"9","6":"22"},{"1":"36","2":"139","3":"10.3","4":"81","5":"9","6":"23"},{"1":"7","2":"49","3":"10.3","4":"69","5":"9","6":"24"},{"1":"14","2":"20","3":"16.6","4":"63","5":"9","6":"25"},{"1":"30","2":"193","3":"6.9","4":"70","5":"9","6":"26"},{"1":"NA","2":"145","3":"13.2","4":"77","5":"9","6":"27"},{"1":"14","2":"191","3":"14.3","4":"75","5":"9","6":"28"},{"1":"18","2":"131","3":"8.0","4":"76","5":"9","6":"29"},{"1":"20","2":"223","3":"11.5","4":"68","5":"9","6":"30"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>　</p>
+<div id="欠損の分布を可視化する" class="section level1">
+<h1>欠損の分布を可視化する</h1>
+<p>データ内のどの位置に欠損があるかを確認するには<code>VIM</code>パッケージを用いるのが便利です。<br />
+　</p>
+<div id="箱ひげ図による可視化" class="section level2">
+<h2>箱ひげ図による可視化</h2>
+<p>箱ひげ図を用いた可視化には<code>VIM::pbox</code>関数を使います。データフレームの最初にある変数を縦軸に縦軸に配置します（今ひとつ変数の指定方法が分からないので分かりましたら追記します）。<br />
+　</p>
+<pre class="r"><code>airquality %&gt;% 
+  # dplyr::select(-Month, -Day) %&gt;%
+  tibble::rowid_to_column(&quot;days&quot;) %&gt;%
+  VIM::pbox()</code></pre>
+<pre><code>## Warning in createPlot(main, sub, xlab, ylab, labels, ca$at): not enough
+## space to display frequencies</code></pre>
+<p><img src="missing_value_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>　</p>
+</div>
+<div id="ヒートマップによる可視化" class="section level2">
+<h2>ヒートマップによる可視化</h2>
+<p>ヒートマップを用いた可視化には<code>VIM::matrixplot</code>関数を使います。欠損の位置をヒートマップ上にプロットしてくれます。ヒートマップですので各変数の値の変化も把握できます。縦軸は表示の通りインデックスで、赤色の部分が欠損です。グレーの部分は値がある部分で、色の濃さにより数値の大小を表しています。<br />
+　</p>
+<pre class="r"><code>airquality %&gt;% 
+  dplyr::select(-Month, -Day) %&gt;% 
+  VIM::matrixplot()</code></pre>
+<p><img src="missing_value_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>　</p>
+</div>
+</div>
+<div id="欠損の組み合わせを可視化する" class="section level1">
+<h1>欠損の組み合わせを可視化する</h1>
+<p>データ内の特定の組み合わせで欠損が発生しているか否かを可視化するには<code>mice::md.pattern</code>関数または<code>VIM::aggr</code>関数が便利です。<br />
+　</p>
+<div id="マトリクスタイルによる可視化" class="section level2">
+<h2>マトリクス（タイル）による可視化</h2>
+<p><code>mice::md.pattern</code>関数はテキスト表とタイルグラフの二種類の出力してくれます。グラフの出力を抑制したい場合には<code>plot = FALSE</code>オプションを指定してください。<br />
+　<br />
+グラフ出力では欠損がある部分をマゼンタ、欠損がない部分をシアンで表示し、どのような組み合わせで欠損が発生しているかを視覚的に把握することができます。<br />
+　</p>
+<pre class="r"><code>airquality %&gt;%
+  mice::md.pattern()</code></pre>
+<p><img src="missing_value_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<pre><code>##     Wind Temp Month Day Solar.R Ozone   
+## 111    1    1     1   1       1     1  0
+## 35     1    1     1   1       1     0  1
+## 5      1    1     1   1       0     1  1
+## 2      1    1     1   1       0     0  2
+##        0    0     0   0       7    37 44</code></pre>
+<p>　<br />
+テキスト表の場合は「0:欠損あり、1:欠損なし」という表示になっていますので注意してください。<br />
+　<br />
+　<br />
+## タイルとヒストグラムによる可視化 <code>VIM::aggr</code>関数は前述の<code>mice::md.pattern</code>関数と同様の可視化に加えて欠損数も可視化してくれるの関数です。ただし、<code>mice::md.pattern</code>関数とは逆の表示になっているので注意してください。また、デフォルトパラメータで使うよりも以下のオプションを指定した方が傾向を把握しやすいと思います。<br />
+　</p>
+<pre class="r"><code>airquality %&gt;%
+  VIM::aggr(prop = FALSE, number = TRUE)</code></pre>
+<p><img src="missing_value_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>　<br />
+# 欠損の関連性を可視化する 欠損の発生が他の変数と関連がありそうな場合、他の変数が取る値と欠損の関係性を確認するための可視化には<code>VIM</code>パッケージが便利です。<br />
+　</p>
+</div>
+<div id="ヒストグラムによる可視化" class="section level2">
+<h2>ヒストグラムによる可視化</h2>
+<p>ヒストグラムを用いた可視化には<code>VIM::barMiss</code>関数を使います。<code>VIM::barMiss</code>関数は縦軸に欠損を含む変数の度数、横軸に関係性を確認したい変数を配置することで、関係性を確認したい変数の特定の値で欠損が発生しているか否かを把握できるようにしています。<br />
+データフレームにある最初の変数を横軸、二番目の変数を縦軸に配置しますので<code>dplyr::select</code>関数と組み合わせて明示的に変数を指定した方が分かりやすいと思います。<br />
+　</p>
+<pre class="r"><code>airquality %&gt;% 
+  VIM::barMiss(only.miss = FALSE, main = &quot;データフレームを指定した場合&quot;)</code></pre>
+<p><img src="missing_value_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<pre class="r"><code>airquality %&gt;% 
+  dplyr::select(Ozone, Solar.R) %&gt;% 
+  VIM::barMiss(only.miss = FALSE, main = &quot;OzoneとSolar.Rだけを明示的に指定した場合&quot;)</code></pre>
+<p><img src="missing_value_files/figure-html/unnamed-chunk-6-2.png" width="672" /></p>
+<pre class="r"><code>airquality %&gt;% 
+  dplyr::select(Wind, Ozone) %&gt;% 
+  VIM::barMiss(only.miss = FALSE)</code></pre>
+<p><img src="missing_value_files/figure-html/unnamed-chunk-6-3.png" width="672" /></p>
+</div>
+<div id="散布図行列による可視化" class="section level2">
+<h2>散布図行列による可視化</h2>
+<p>散布図行列を用いた可視化には<code>VIM::scattmatrixMiss</code>関数を使います。散布図に使われている当該変数を除いた変数に欠損がある場合は赤色の印で表示します。これにより欠損が他の変数の影響を受けているか否かを確認することができます。<br />
+　</p>
+<pre class="r"><code>airquality %&gt;% 
+  dplyr::select(-Month, -Day) %&gt;% 
+  VIM::scattmatrixMiss()</code></pre>
+<p><img src="missing_value_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>　</p>
+</div>
+<div id="散布図による可視化" class="section level2">
+<h2>散布図による可視化</h2>
+<p>散布図を用いた可視化には<code>VIM::marginplot</code>関数を用います。散布図ですので<strong>二変数間</strong>における欠損の関係を把握する場合に使います。欠損が変数の特定の値に集中しているかどうかが一目で分かります。<br />
+　</p>
+<pre class="r"><code>airquality %&gt;% 
+  dplyr::select(Ozone, Solar.R) %&gt;%
+  VIM::marginplot()</code></pre>
+<p><img src="missing_value_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>　</p>
+</div>
+</div>
+<div id="参考資料" class="section level1">
+<h1>参考資料</h1>
+<ul>
+<li><a href="http://jojoshin.hatenablog.com/entry/2017/02/03/220118" target="_blank" title="統計学と疫学と時々、助教生活">R 欠損値の対応（missing value treatment） <i class="fa fa-external-link"></i></a></li>
+<li><a href="https://www.karada-good.net/analyticsr/r-147" target="_blank" title="からだにいいもの">Rで解析：欠損値を制するモノは解析も制す？「VIM」パッケージの紹介 <i class="fa fa-external-link"></i></a></li>
+<li><a href="http://norimune.net/1811" target="_blank" title="Sunny side up!">欠損値があるデータの分析 <i class="fa fa-external-link"></i></a></li>
+</ul>
+<p>　</p>
+<hr />
+<!-- Footer -->
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-05-30 17:32(JST)]</p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
