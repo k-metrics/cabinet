@@ -17,11 +17,15 @@ require(mice)
 require(VIM)
 require(imputeMissings)
 require(tidyverse)
+
+zen <- "./data/text_zen.csv" %>% 
+  readr::read_csv()
+han <- "./data/text_han.csv" %>% 
+  readr::read_csv()
+han_kana <- "./data/text_kana.csv" %>% 
+  readr::read_csv()
 ```
 
-　  
-
-# はじめに
 データクレンジングとは[IT用語辞典 <i class="fa fa-external-link"></i>](http://e-words.jp/w/%E3%83%87%E3%83%BC%E3%82%BF%E3%82%AF%E3%83%AC%E3%83%B3%E3%82%B8%E3%83%B3%E3%82%B0.html){target="_blank" title="e-Words"}によると「データベースに保存されているデータの中から、重複や誤記、表記の揺れなどを探し出し、削除や修正、正規化などを行い、データの品質を高めること。」と説明されています。よく見かけるクレンジング対象になるデータ例としては  
 
 * 欠損値
@@ -33,16 +37,17 @@ require(tidyverse)
 などがあります。特にデータ入力がフリフォーマットの場合はクレンジングを行わないと使い物にならないデータが多くなる傾向があるようにみえます。  
 　  
 
-なお、本ページでは標準パッケージ以外に以下の追加パッケージを用いています。  
+なお、本ページでは`r R.version$version.string`の標準パッケージ以外に以下の追加パッケージを用いています。  
 　  
 
 Package   | Version |Description
 ----------|---------|----------------------------------------------------------
 tidyverse | `r packageVersion('tidyverse')` | Easily Install and Load the ‘Tidyverse’
-Nippon    | `r packageVersion('Nippon')` | Japanese Utility Functions and Data
-mice      | `r packageVersion('mice')` |Multivariate Imputation by Chained Equations
-VIM       | `r packageVersion('VIM')` | Visualization and Imputation of Missing Values 
 imputeMissings | `r packageVersion('imputeMissings')` | Impute Missing Values in a Predictive Context
+mice      | `r packageVersion('mice')` |Multivariate Imputation by Chained Equations
+Nippon    | `r packageVersion('Nippon')` | Japanese Utility Functions and Data
+stringi   | `r packageVersion('stringi')` | Character String Processing Facilities
+VIM       | `r packageVersion('VIM')` | Visualization and Imputation of Missing Values 
 
 　  
 
@@ -52,15 +57,9 @@ imputeMissings | `r packageVersion('imputeMissings')` | Impute Missing Values in
 Dataset    | Package  | Version | Description
 -----------|----------|---------|----------------------------------------------
 airquality | datasets | `r packageVersion('datasets')`| New York Air Quality Measurements
-
-また、独自のデータセットとして以下を用いています。  
-
-```{r, echo=FALSE}
-(zen <- "./data/text_zen.csv" %>% 
-  readr::read_csv())
-(han <- "./data/text_han.csv" %>% 
-  readr::read_csv())
-```
+zen        | N/A      | N/A     | 全角文字のデータセット（自作）
+han        | N/A      | N/A     | 半角文字のデータセット（自作）
+han_kana   | N/A      | N/A     | 半角カナ文字のデータセット（自作）
 
 　  
 
@@ -297,6 +296,17 @@ Rにおける拡張正規表現はPOSIX 1003.2標準に基づいています。
 # 日本語特有の処理
 日本語を含むデータを処理する場合正規表現だけでは処理できない場合があります。そのような場合には日本語処理に特化した`Nippon`パッケージが便利です。  
 　  
+なお、本章で利用しているデータセットは作成した以下の全角文字、半角文字、半角カナ文字の三つのデータセットです。  
+　  
+
+```{r}
+
+zen
+han
+han_kana
+```
+
+　  
 
 ## 全角半角変換
 英数記号の全角と半角が混在している場合には`Nippon::zen2han`関数または`Nippon::han2zen`関数が便利です。ヘルプに記載されているように全角半角の双方向に変換できるのはアルファベット、数字、記号のみです。漢数字は半角に変換できますが、漢字、平仮名、片仮名は半角に変換できません。  
@@ -348,13 +358,6 @@ zen %>%
 
 　  
 
-## ローマ字変換
-```{r}
-Nippon::kana2roma(zen$全角かな)
-Nippon::kana2roma(zen$全角カナ)
-```
-
- 
 ## 漢数字変換
 漢数字をアラビア数字に変換するには`Nippon::kansu2arabic`関数を用います。`Nippon::kansu2arabic`関数は単一の文字列ベクトル変数（スカラー変数）に対してのみ有効ですので、データフレーム型に適用する場合には`dplyr::rowwise`関数で行毎に処理を適用させる必要があります。漢数字以外に適用してもエラーになりますので注意してください。  
 また、"十"、"百"、"千"のように"一"を省略しても数値として意味をなす場合は正しく変換してくれますが、万"、"億"などのように単位だけでは数値として意味をなしにくい場合は正しく変換してくれませんので必ず頭に漢数字を添えてください。  
@@ -377,6 +380,18 @@ zen %>%
 
 ```{r, include=FALSE}
 options(scipen = old)     # 桁数表示を元に戻す
+```
+
+　  
+
+## 半角全角変換
+日本語を含んだデータを扱う上で厄介なのが半角カナ文字です。前述の`Nippon`パッケージでは残念ながら半角全角変換をサポートしていませんので半角カナ文字を扱う場合は`stringi`パッケージの`stringi::str_trans_nfkc`関数を用います。この関数は`ICU(International Components for Unicode)`ライブラリを利用して変換を行っているようです。濁点半濁点、拗音促音、その他を含む半角カナ文字も正しく変換してくれます。前者が変換前、後者が変換後です。    
+　  
+
+```{r}
+han_kana
+han_kana %>% 
+  dplyr::mutate_all(funs(stringi::stri_trans_nfkc))
 ```
 
 　  
