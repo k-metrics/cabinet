@@ -17,11 +17,15 @@ require(mice)
 require(VIM)
 require(imputeMissings)
 require(tidyverse)
+
+zen <- "./data/text_zen.csv" %>% 
+  readr::read_csv()
+han <- "./data/text_han.csv" %>% 
+  readr::read_csv()
+han_kana <- "./data/text_kana.csv" %>% 
+  readr::read_csv()
 ```
 
-　  
-
-# はじめに
 データクレンジングとは[IT用語辞典 <i class="fa fa-external-link"></i>](http://e-words.jp/w/%E3%83%87%E3%83%BC%E3%82%BF%E3%82%AF%E3%83%AC%E3%83%B3%E3%82%B8%E3%83%B3%E3%82%B0.html){target="_blank" title="e-Words"}によると「データベースに保存されているデータの中から、重複や誤記、表記の揺れなどを探し出し、削除や修正、正規化などを行い、データの品質を高めること。」と説明されています。よく見かけるクレンジング対象になるデータ例としては  
 
 * 欠損値
@@ -33,16 +37,17 @@ require(tidyverse)
 などがあります。特にデータ入力がフリフォーマットの場合はクレンジングを行わないと使い物にならないデータが多くなる傾向があるようにみえます。  
 　  
 
-なお、本ページでは標準パッケージ以外に以下の追加パッケージを用いています。  
+なお、本ページでは`r R.version$version.string`の標準パッケージ以外に以下の追加パッケージを用いています。  
 　  
 
 Package   | Version |Description
 ----------|---------|----------------------------------------------------------
 tidyverse | `r packageVersion('tidyverse')` | Easily Install and Load the ‘Tidyverse’
-Nippon    | `r packageVersion('Nippon')` | Japanese Utility Functions and Data
-mice      | `r packageVersion('mice')` |Multivariate Imputation by Chained Equations
-VIM       | `r packageVersion('VIM')` | Visualization and Imputation of Missing Values 
 imputeMissings | `r packageVersion('imputeMissings')` | Impute Missing Values in a Predictive Context
+mice      | `r packageVersion('mice')` |Multivariate Imputation by Chained Equations
+Nippon    | `r packageVersion('Nippon')` | Japanese Utility Functions and Data
+stringi   | `r packageVersion('stringi')` | Character String Processing Facilities
+VIM       | `r packageVersion('VIM')` | Visualization and Imputation of Missing Values 
 
 　  
 
@@ -52,15 +57,9 @@ imputeMissings | `r packageVersion('imputeMissings')` | Impute Missing Values in
 Dataset    | Package  | Version | Description
 -----------|----------|---------|----------------------------------------------
 airquality | datasets | `r packageVersion('datasets')`| New York Air Quality Measurements
-
-また、独自のデータセットとして以下を用いています。  
-
-```{r, echo=FALSE}
-(zen <- "./data/text_zen.csv" %>% 
-  readr::read_csv())
-(han <- "./data/text_han.csv" %>% 
-  readr::read_csv())
-```
+han        | N/A      | N/A     | 半角文字のデータセット（自作）
+han_kana   | N/A      | N/A     | 半角カナ文字のデータセット（自作）
+zen        | N/A      | N/A     | 全角文字のデータセット（自作）
 
 　  
 
@@ -78,61 +77,12 @@ airquality | datasets | `r packageVersion('datasets')`| New York Air Quality Mea
 ## 欠損値を削除する
 欠損値を含むレコードは不完全なものとして分析対象外として扱う方法です。欠損値を削除する代表的な方法には下表のような方法があります。  
 
-方法            | 詳細
-----------------|---------------------------------------------------
+方法               | 詳細
+-------------------|---------------------------------------------------
 リストワイズ法　| 欠損値を持つレコード全てを削除します
 ペアワイズ法    | 統計量の算出に関わる二変数のいずれかに欠損値があるレコードを削除します
 
-欠損値を削除する場合には欠損値を含まないようなレコードを取得することが分析の精度を上げるポイントになります。  
-　  
-
-## 欠損値を補完する
-データ収集対象の性格などにより欠損値の発生が避けられない場合や取得したデータをなるべく活かしたい場合に欠損値を推定して補完する方法があります。
-
-方法               | 詳細
--------------------|-----------------------------------------------
-平均値代入法       | 平均値を用いて欠損値を補完します
-回帰代入法         | 欠損値を削除したデータから回帰分析を行いその推定値を用いて欠損値を補完します
-確率的回帰代入法   | 回帰代入法で得られた推定値にランダム誤差を加えた値で欠損値を補完します
-完全情報最尤推定法 | 欠損パターンに応じた尤度関数で最尤推定を行い推定値を求めます
-多重代入法         | 欠損値を代入した複数のデータセットを作成してそこから欠損値を推測します
-
-上記以外にも変数の性格から欠損値に特定値（例えばゼロ）を割り当てる方法もよく使われる方法です。  
-　  
-
-# 欠損値処理詳細
-欠損値の補完や削除方法を`airqularity`データセットを用いて説明します。`airquality`データセットは６つの変数それぞれに「`r colSums(is.na(airquality))`」個の`NA`を含むデータセットです。このデータセットを用いて`NA`の代表的な処理例を示します。  
-　  
-
-```{r}
-airquality
-```
-
-　  
-
-## 特定の値に変換する
-平均値代入法、回帰代入法のように欠損値を特定の値に変換する場合は、まず変数の値が`NA`であるか否かを判断する必要があります。これには`is.na`関数を用います。例えば`Ozone`変数の`NA`を`Ozone`変数の平均値に変換する場合は`ifelse`関数と組み合わせて処理を行います。  
-　  
-
-```{r}
-ozone <- airquality %>% 
-  dplyr::summarise(mean = round(mean(Ozone, na.rm = TRUE), 4),
-                   median = round(median(Ozone, na.rm = TRUE)))
-
-airquality %>% 
-  dplyr::mutate(ozone = ifelse(is.na(Ozone), ozone$mean, Ozone)) %>% 
-  dplyr::select(Ozone, ozone, Solar.R, Wind, Temp, Month, Day)
-```
-
-　  
-
-## 欠損値を含むレコードを削除する
-NAを含むデータを削除する場合
-
-* NAが含まれているレコード全てを削除する（リストワイズ法）
-* 特定の変数にNAが含まれているレコードを削除する（ペアワイズ法）
-
-のどちらかの方法があります。Base Rには`na.omit`関数が用意されていますが、`na.omit`関数は`NA`を含む全てのレコードを削除します。特定の変数にNAが含まれている場合にのみ`NA`を削除したい場合には`tidyr::drop_na`関数を用います。  
+Base Rには`na.omit`関数が用意されていますが、`na.omit`関数は`NA`を含む全てのレコードを削除します。特定の変数にNAが含まれている場合にのみ`NA`を削除したい場合には`tidyr::drop_na`関数を用います。  
 　  
 
 ### リストワイズ法
@@ -175,14 +125,49 @@ airquality %>%
 
 　  
 
-## 平均値代入法
-平均値代入法はその名の通り平均値を用いて欠損値を補完する方法です。「特定の値に変換する」の項で示したように`is.na`関数を用いる方法を用いるのが簡単です。ちなみに平均値代入法のような特定の値（単一の値）で欠損値を補完する方法を後述の多重代入法と対比させて単一代入法と呼ぶこともあります。下図において赤線の部分が欠損値を補完したものです。  
+## 欠損値を補完する
+データ収集対象の性格などにより欠損値の発生が避けられない場合や取得したデータをなるべく活かしたい場合に欠損値を推定して補完する方法があります。
+
+方法               | 詳細
+-------------------|-----------------------------------------------
+平均値代入法       | 平均値を用いて欠損値を補完します
+回帰代入法         | 欠損値を削除したデータから回帰分析を行いその推定値を用いて欠損値を補完します
+確率的回帰代入法   | 回帰代入法で得られた推定値にランダム誤差を加えた値で欠損値を補完します
+完全情報最尤推定法 | 欠損パターンに応じた尤度関数で最尤推定を行い推定値を求めます
+多重代入法         | 欠損値を代入した複数のデータセットを作成してそこから欠損値を推測します
+その他の方法       | その他機械学習を用いた補完方法など
+
+上記以外にも変数の性格から欠損値に特定値（例えばゼロ）を割り当てる方法もよく使われる方法です。  
+　  
+
+欠損値の補完や削除方法を`airqularity`データセットを用いて説明します。`airquality`データセットは６つの変数それぞれに「`r colSums(is.na(airquality))`」個の`NA`を含むデータセットです。このデータセットを用いて`NA`の代表的な処理例を示します。  
+　  
+
+```{r}
+airquality
+```
+
+　  
+
+### 単一代入法
+平均値や回帰値を用いて欠損値を補完する方法を後述の多重代入法と対比させて単一代入法と呼びます。単一代入法のように欠損値を特定の値に変換する場合は、まず変数の値が`NA`であるか否かを判断する必要があります。これには`is.na`関数を用います。例えば`Ozone`変数の`NA`を`Ozone`変数の平均値に変換する場合は`ifelse`関数と組み合わせて処理を行います。  
 　  
 
 ```{r}
 ozone <- airquality %>% 
-  dplyr::summarise(ozone_mean = round(mean(Ozone, na.rm = TRUE)))
+  dplyr::summarise(ozone_mean = round(mean(Ozone, na.rm = TRUE), 0))
 
+airquality %>% 
+  dplyr::mutate(ozone = ifelse(is.na(Ozone), ozone$ozone_mean, Ozone)) %>% 
+  dplyr::select(Ozone, ozone, Solar.R, Wind, Temp, Month, Day)
+```
+
+　  
+
+平均値代入法の結果を可視化すると下図のようになります。赤線の部分が欠損値を平均値で補完したものです。このような時系列データには不向きな手法に見えます。  
+　  
+
+```{r}
 airquality %>% 
   dplyr::mutate(Ozone = ifelse(is.na(Ozone), ozone$ozone_mean, Ozone)) %>% 
   dplyr::bind_cols(airquality) %>% 
@@ -195,7 +180,7 @@ airquality %>%
 
 　  
 
-## 多重代入法
+### 多重代入法
 多重代入法は確率的代入の考えに基づき欠損値を疑似的に補完したデータ（疑似完全データという）を複数作成し、全ての擬似完全データを分析、それらの分析結果を統合して結論（推定値）を出すという代入、解析、統合の三段階で値を導き出す方法です。一口に多重代入法といっても様々なアルゴリズムが提案されていますが、ここで扱う多重代入法はMICE（連鎖方程式による多変量補定）によるものです。  
 と書くと何やら難しそうですが、前出の`mice`パッケージを利用することで計算自体は簡単に行えます。例えば、`airquality`データセットでは`Onone`変数と`Solar.R`変数にある欠損値を多重代入法で補完するには以下を実行するだけで済みます。  
 　  
@@ -240,8 +225,8 @@ airquality %>%
 
 　  
 
-## 機械学習による補完
-Rでは機械学習（ランダムフォレスト）による欠損値の補完を`imputeMissings`パッケージを用いて行うことができます。`imputeMissings::compute`関数を用いて学習データを作成し`imputeMissings::impute`関数で補完する値を求めますが、学習データの用意ができない場合でも対象データを元に演算を行ってくれます。  
+### 機械学習による補完
+Rでは機械学習（ランダムフォレスト）による欠損値の補完を`imputeMissings`パッケージを用いて行うことができます。`imputeMissings::compute`関数を用いて学習データを作成し`imputeMissings::impute`関数で補完する値を求めますが、学習データの用意ができない場合でも以下のように対象データを元に演算を行ってくれます。  
 　  
 
 ```{r}
@@ -256,6 +241,10 @@ airquality %>%
 ```
 
 　  
+
+<!-- # 加工処理 -->
+<!-- 区切り文字を使って複数のデータを一つの変数に入れている場合や省略表記（例えば(株)）で文字列が揺れているような場合には`stringr`パッケージが便利です。   -->
+<!-- 　   -->
 
 # 正規表現
 データのクレンジングを行う場合、憶えておきたいのが正規表現です。特に空白や区切り文字の揺れをクレンジングしたい場合には便利です。  
@@ -296,6 +285,17 @@ Rにおける拡張正規表現はPOSIX 1003.2標準に基づいています。
 
 # 日本語特有の処理
 日本語を含むデータを処理する場合正規表現だけでは処理できない場合があります。そのような場合には日本語処理に特化した`Nippon`パッケージが便利です。  
+　  
+なお、本章で利用しているデータセットは作成した以下の全角文字、半角文字、半角カナ文字の三つのデータセットです。  
+　  
+
+```{r}
+
+zen
+han
+han_kana
+```
+
 　  
 
 ## 全角半角変換
@@ -348,13 +348,6 @@ zen %>%
 
 　  
 
-## ローマ字変換
-```{r}
-Nippon::kana2roma(zen$全角かな)
-Nippon::kana2roma(zen$全角カナ)
-```
-
- 
 ## 漢数字変換
 漢数字をアラビア数字に変換するには`Nippon::kansu2arabic`関数を用います。`Nippon::kansu2arabic`関数は単一の文字列ベクトル変数（スカラー変数）に対してのみ有効ですので、データフレーム型に適用する場合には`dplyr::rowwise`関数で行毎に処理を適用させる必要があります。漢数字以外に適用してもエラーになりますので注意してください。  
 また、"十"、"百"、"千"のように"一"を省略しても数値として意味をなす場合は正しく変換してくれますが、万"、"億"などのように単位だけでは数値として意味をなしにくい場合は正しく変換してくれませんので必ず頭に漢数字を添えてください。  
@@ -377,6 +370,18 @@ zen %>%
 
 ```{r, include=FALSE}
 options(scipen = old)     # 桁数表示を元に戻す
+```
+
+　  
+
+## 半角全角変換
+日本語を含んだデータを扱う上で厄介なのが半角カナ文字です。前述の`Nippon`パッケージでは残念ながら半角全角変換をサポートしていませんので半角カナ文字を扱う場合は`stringi`パッケージの`stringi::str_trans_nfkc`関数を用います。この関数は`ICU(International Components for Unicode)`ライブラリを利用して変換を行っているようです。濁点半濁点、拗音促音、その他を含む半角カナ文字も正しく変換してくれます。前者が変換前、後者が変換後です。    
+　  
+
+```{r}
+han_kana
+han_kana %>% 
+  dplyr::mutate_all(funs(stringi::stri_trans_nfkc))
 ```
 
 　  
