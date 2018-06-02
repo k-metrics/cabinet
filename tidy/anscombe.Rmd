@@ -16,13 +16,10 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 require(tidyverse)
 ```
 
-　  
-
-# はじめに
 [R <i class="fa fa-external-link"></i>][R]によるデータハンドリングの有用性を実感してもらうためにアンスコム（`anscombe`）のデータ例を用いて説明します。なお、この説明の元資料は参考資料として最下段に示したあります。  
 　  
 
-なお、本ページでは標準パッケージ以外に以下の追加パッケージを用いています。  
+なお、本ページでは`r R.version$version.string`の標準パッケージ以外に以下の追加パッケージを用いています。  
 　  
 
 Package   | Version |Description
@@ -47,7 +44,7 @@ anscombe
 ```
 
 　  
-データは`(x1, y1)`、`(x2, y2)` …… で組になっており4組のデータ全ての平均値、分散、相関係数が下表のように（ほぼ）同じという性質を持っています。  
+データは`(x1, y1)`、`(x2, y2)` …… で組になっており4組のデータ全ての平均値、分散、相関係数、共分散が同じという性質を持っています。  
 
 ```{r, echo=FALSE}
 anscombe %>%
@@ -57,12 +54,12 @@ anscombe %>%
   tidyr::spread(axis, value) %>% 
   dplyr::select(-id) %>%
   dplyr::group_by(group) %>%
-  dplyr::summarise(x_mean = mean(x), y_mean = mean(y),
-                   x_sd = sd(x), y_sd = sd(y),
-                   cor_xy = cor(x, y)) %>% 
+  dplyr::summarise(x_mean = round(mean(x), 2), y_mean = round(mean(y), 2),
+                   x_sd = round(sd(x), 2), y_sd = round(sd(y), 2),
+                   cor_xy = round(cor(x, y), 2), cov_xy = round(cov(x, y), 2)) %>% 
   dplyr::rename(`平均値(x)` = x_mean, `平均値(y)` = y_mean,
                 `分散(x)` = x_sd, `分散(y)` = y_sd,
-                `相関係数` = cor_xy, `グループ` = group)
+                `相関係数` = cor_xy, `共分散` = cov_xy, `グループ` = group)
 ```
 
 　  
