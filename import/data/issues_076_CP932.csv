@@ -1,0 +1,1071 @@
+#,プロジェクト,トラッカー,親チケット,ステータス,優先度,題名,作成者,担当者,更新日,カテゴリ,対象バージョン,開始日,期日,予定工数,進捗率,作成日,終了日,関連するチケット,Resolution,Affected version,説明
+14412,Redmine,Defect,"",New,Normal,Wiki > Textile text with hidden part not correctly exported to pdf,Adrien SALES,"",2013-07-21 12:33,PDF export,"","","","",0,2013-07-08 23:03,"",関連している #13051,"",2.3.1,"When i put the content (see textile source in attachment), and that i see the page with the section hidden, the pdf output is showing the raw textile output in the pdf, i'll put attachment very soon."
+14405,Redmine,Defect,"",Closed,Normal,Alternate repo commit: link wrong when automatically added from a commit message,Olivier Mehani,"",2014-03-17 06:28,SCM,"","","","",0,2013-07-08 10:21,2014-03-17 06:28,次のチケットと重複 #13544,Duplicate,"","When adding some markup, in a commit message, containing an issue number, Redmine updates this issue with a link to the commit.
+
+However, when this commit shows up in a repo which is not the main one for that project, the @commit:@ link is not formatted properly, and reads @REPONAME|commit:SHA@ instead of @commit:REPONAME|SHA@
+
+An example can be found at [0]
+
+[0] http://oml.mytestbed.net/issues/1156#note-19"
+14403,Redmine,Defect,"",Closed,Normal,No error message if notification mail could not delivered,Mathias Walter,Jean-Philippe Lang,2013-08-15 18:01,Email notifications,2.4.0,"","","",0,2013-07-06 01:26,2013-07-13 10:12,"",Fixed,2.2.2,"As soon as one mail address of a user is wrong or does not exist anymore, no notification mails are send to any other involved or watching user of an issue. Also, no error message is displayed and no log entry is made. Sending of notification mails in other projects is not affected.
+
+This bug report is strongly related to #123 but focuses on the traceability and logging.
+
+It is not possible to find the cause of nondelivery notification mails until @config.action_mailer.logger = nil@ in @config/environments/production.rb@ is commented out. But still no error message is logged. Someone has to guess which of the mail addresses is invalid."
+14402,Redmine,Patch,"",Closed,Normal,Plugin migration directory should use plugin directory,Florian Schwab,Jean-Philippe Lang,2015-06-21 18:32,Plugin API,3.1.0,"","","",0,2013-07-06 00:06,2015-06-21 18:32,関連している #13927,"","","Currently the plugin migrate directory is fixed to ""plugins/<plugin_name>/db/migrate"" but the plugin API allows setting a custom directory.
+I attached a patch to use the plugin directory instead. Because the default value for the plugin directory is ""plugins/<plugin_name>"" this should be compatible with existing plugins."
+14401,Redmine,Defect,"",Closed,Normal,"Filtering issues on ""related to"" may ignore other filters",Joel SCHAAL,Jean-Philippe Lang,2013-07-29 15:23,Issues,2.3.3,"","","",0,2013-07-05 19:55,2013-07-28 22:45,"",Fixed,2.3.0,"When performing a search (for issues) using the filter _related to_, if there is another filter, like _Status_ this other filter seems not to be taken in account.
+
+Example :
+
+!screenshot-issues.png!"
+14400,Redmine,Defect,"",New,Normal,Email Reminder doesn't have the right behavior,Benjamin Billon,"",2013-09-18 06:35,Email notifications,"","","","",0,2013-07-05 17:29,2013-07-05 18:09,"","","","Hello there, 
+
+Let's start by a small complaint.
+Here https://github.com/chantra/redmine_whining/issues/25, it is said that
+<pre>redmine now include the rake task send_reminders.
+So this plugin is now redundant.
+</pre>
+
+WELL, not exactly. Redmine Whining had the bright idea to send a reminder to assignees who didn't process a ticket for X days.
+The send_reminders now included in Redmine sends a reminder to assignees whose issue's due date is in X days.
+Quite a difference here, notably when the due date is empty or rarely used.
+
+While patching send_reminders (./app/models/mailer.rb) to meet my needs, I've encountered the following:
+<pre>
+scope = Issue.open.where(""#{Issue.table_name}.assigned_to_id IS NOT NULL"" +
+      "" AND #{Project.table_name}.status = #{Project::STATUS_ACTIVE}"" +
+      "" AND #{Issue.table_name}.due_date >= ?"", days.day.from_now.to_date
+    )
+</pre>
+for which the last line would generate something like
+<pre>
+ AND issues.due_date >= 'Fri, 12 Jul 2013'
+</pre>
+issues.due_date being of type DATE, that is just not going to work properly.
+
+For those interested, I replaced the line by
+<pre>
+"" AND DATEDIFF(NOW(),#{Issue.table_name}.updated_on) >= ?"", days
+</pre>"
+14391,Redmine,Defect,"",Closed,Normal,"""stack level too deep"" error in lib/active_support/callbacks.rb:409 when setting a dev time",Olivier Houdas,"",2014-05-15 09:46,Issues,"","","","",0,2013-07-03 13:16,2013-12-02 04:16,"",Cant reproduce,2.3.1,"Steps :
+1. On an existing bug, Choose to update
+2. Enter an activity time (1h) and an activity type (Dev), Submit
+<pre>
+Result : Internal error, and in the log, we have:
+Started PUT ""/redmine/issues/15363"" for 193.xxx.xxx.xxx at 2013-07-03 13:02:58 +0200
+Processing by IssuesController#update as HTML
+  Parameters: {""utf8""=>""??“"", ""authenticity_token""=>""wsTB11rdgHduC2Q/6TCBUN0CZp+34XD6yH42d9A8GcM="", ""issue""=>{""is_private""=>""0"", ""project_id""=>""19"", ""tracker_id""=>""1"", ""subject""=>""Certains titres de bugs sont tronqu??s lors du passage automatique de Mantis ?? Gertrud"", ""description""=>""Envoy?? par courriel ?? : name1@xyz.com;name2@xyz.com;\r\n\r\nEtapes pour repro:\r\n1. Saisir un nouveau bug dans http://gss.geoconcept.com/mantis/, avec un long titre (ou peut-??tre est-ce d?? ?? certains caract?¨res non g??r??s?)\r\n2. aller voir dans gertrud (par exemple, #15362)\r\nR??sultat obtenu : titre coup??\r\nR??sultat attendu : titre complet\r\n"", ""status_id""=>""3"", ""priority_id""=>""12"", ""assigned_to_id""=>""128"", ""category_id""=>""159"", ""fixed_version_id""=>""966"", ""parent_issue_id""=>"""", ""start_date""=>"""", ""due_date""=>"""", ""estimated_hours""=>"""", ""custom_field_values""=>{""2""=>""964"", ""3""=>""1"", ""4""=>[""Win XP"", """"], ""5""=>"""", ""7""=>[""Fran?§ais"", """"], ""8""=>""0""}, ""notes""=>"""", ""private_notes""=>""0"", ""lock_version""=>""2""}, ""time_entry""=>{""hours""=>""1"", ""activity_id""=>""19"", ""comments""=>""""}, ""last_journal_id""=>""141326"", ""commit""=>""Soumettre"", ""id""=>""15363""}
+  Current user: olivier (id=128)
+Completed 500 Internal Server Error in 774ms
+
+SystemStackError (stack level too deep):
+  activesupport (3.2.13) lib/active_support/callbacks.rb:409
+</pre>
+
+My configuration:
+Environment:
+  Redmine version                          2.3.1.stable
+  Ruby version                             2.0.0 (x86_64-linux)
+  Rails version                            3.2.13
+  Environment                              production
+  Database adapter                         SQLServer
+Redmine plugins:
+  extended_fields                          0.2.1
+  redmine_default_columns                  0.1.1
+  redmine_plugin_views_revisions           0.0.1
+
+Note that I have tested removing the 3 plugins I have (Extended fields, Views_revisions and default_columns), and I still reproduced.
+I also updated Ruby from 1.9.3 to 2.0.0 as I saw #13327, but this did not fix my issue."
+14388,Redmine,Defect,"",New,High,Pdf generation always uses latest wiki page - even if viewing older version ,Stuart Alexander,"",2013-07-02 18:16,PDF export,"","","","",0,2013-07-02 18:16,"","","",2.3.1,"As described in subject. When hovering over the PDF text at the bottom
+of the wiki page the URL that displays in the bottom of the browser looks
+like it's going to generate the currently viewed version e.g. $PATH/18.pdf
+but it goes onto use the latest revision of the wiki page. This is quite
+a serious fault if trying to generate approved documentation from a living
+wiki.
+
+Environment:
+  Redmine version                          2.3.1.stable
+  Ruby version                             1.9.3 (i686-linux)
+  Rails version                            3.2.13
+  Environment                              production
+  Database adapter                         Mysql2
+Redmine plugins:
+  redmine_code_review                      0.6.2
+  redmine_dmsf                             1.4.5p1 stable
+  redmine_wiki_extensions                  0.6.3"
+14379,Redmine,Defect,"",Closed,Normal,failing LDAP auth,Michal Dwuznik,"",2013-07-01 20:12,Accounts / authentication,"","","","",0,2013-07-01 16:15,2013-07-01 20:12,"",Invalid,1.0.1,"Redmine 1.4
+LDAP auth working 'test connection successfull', user creation on the fly worked for some 20 users.
+
+After that I created two test local users, and afterwards deleted them from the database 
+(using u = User.find_by_login(""testuser"") 
+u.destroy).
+
+Now, all the local accounts stayed ok and users can log in, LDAP athenticated users get 'wrong username or password'.
+
+
+Any hints for a newbie?
+
+"
+14378,Redmine,Defect,"",Closed,Urgent,"""Move"" function is not visible in new  redmine ",zam kp,"",2013-07-02 09:44,Issues,"","","","",0,2013-07-01 14:18,2013-07-02 09:44,"",Invalid,2.3.1,"Hi Team
+
+I've updated Redmine version from version 1.3.1 to 2.3.1  a week ago.I cannot find a function ""move"". It was visible in the previous version  when the ticket was opened and it was a link in line along with ""update"", ""watch"", ""delete"" etc.
+
+Is ""move"" somewhere hidden or is it out of this version? Please help me"
+14369,Redmine,Defect,"",Closed,Normal,Open/closed issue counts on issues summary are not displayed with SQLServer,sandip patel,Jean-Philippe Lang,2013-07-28 22:49,Issues,2.3.3,"","","",0,2013-06-29 13:49,2013-07-28 22:49,"",Fixed,2.3.1,"->Migrate Database from MYSQL to MS SQL
+-> Working file with old data
+->issue in ...Total count of Open/Close issue in Summary
+!Count Issue.png!"
+14367,Redmine,Defect,"",New,Normal,Validation of required target version fails if no versions are defined for the project,Christoph R?diger,"",2013-07-02 14:28,Issues workflow,"","","","",0,2013-06-28 13:04,"","","",2.3.1,"We've marked the target version field in our defect and feature trackers as a required field if the issue is at least in the ""in progress"" state. This was done to ensure, that no issue will fall under the table during version planning. Additionally to our customer projects, we have one project which is used as our internal IT helpdesk. This project has no target versions defined. Therefore, the validation of issues failed with the error message, that a target version is required.
+
+I think that this is an erroneous validation failure, because if the project manager does not specify any versions, requiring a not specified version is not helpful.
+
+How does other teams solve this issue?
+
+I can confirm this behaviour for 2.3.0.stable (don't now the exact SVN revision) as well as for 2.3.1.stable.11984."
+14366,Redmine,Defect,"",Closed,Normal,Spent Time report sorting on custom fields causes error,Robert Barnebeck,"",2013-07-28 12:25,Time tracking,2.3.3,"","","",0,2013-06-28 12:44,2013-07-28 12:25,次のチケットと重複 #14362,Fixed,2.3.2,"
+
+Since the last version of Redmine it is possible to add custom fields of a Log Time entry in the Spent Time report, which is very cool by the way :-). If I want to sort by this custom field, then it causes an ""Internal Error"". Here an example URL, which is called by the sorting Link:
+
+https://ticketsystem.de/projects/xyz/time_entries?c[]=project&c[]=spent_on&c[]=user&c[]=activity&c[]=issue&c[]=comments&c[]=hours&c[]=cf_3&f[]=spent_on&f[]=&op[spent_on]=*&sort=cf_3%2Chours%2Cspent_on%3Adesc&utf8=%E2%9C%93
+"
+14362,Redmine,Defect,"",Closed,Normal,Spent Time report sorting on custom fields causes error,Robert Barnebeck,"",2013-06-30 05:19,Time tracking,"","","","",0,2013-06-26 18:00,2013-06-30 05:16,次のチケットが重複 #14366,Duplicate,2.3.1,"Since the last version of Redmine it is possible to add custom fields of a Log Time entry in the Spent Time report, which is very cool by the way :-). If I want to sort by this custom field, then it causes an ""Internal Error"". Here the URL, which is called by the sorting Link:
+
+https://redmine.tritum.de/projects/syltiges/time_entries?c[]=project&c[]=spent_on&c[]=user&c[]=activity&c[]=issue&c[]=comments&c[]=hours&c[]=cf_3&f[]=spent_on&f[]=&op[spent_on]=*&sort=cf_3%2Chours%2Cspent_on%3Adesc&utf8=%E2%9C%93"
+14361,Redmine,Defect,"",Closed,Normal,Mercurial commit ids are short (12 digits) on database,Claudio Bley,Toshi MARUYAMA,2014-02-23 09:48,SCM,2.5.0,"","","",100,2013-06-26 15:39,2014-02-23 09:48,"",Fixed,2.3.1,"I'm using redmine 2.3.1 and configured a Mercurial repository.
+
+Referring to a commit with the changeset id (a 40 digit hexadecimal number) redmine does not render this as a link.
+
+Furthermore, loading projects/$p/repository/revisions/$changeset_id just gives a 404 ""The entry or revision was not found in the repository."" error.
+
+Of course, the commit does exist in the repo.
+
+@select scmid from changesets;@ only gives the short-form ID, well, unsurprisingly.
+
+To quote http://mercurial.selenic.com/wiki/ChangeSetID
+
+??Note: a short-form ID can start out valid, but *become invalid* because another changeset with the same prefix shows up later on. *Do not use short-form IDs for long-lived representations*. You can use the --debug option to display the full changeset ID.??"
+14360,Redmine,Patch,"",Closed,Normal,Slovene language translation,Toshi MARUYAMA,"",2013-06-26 13:43,Translations,2.4.0,"","","",0,2013-06-26 13:37,2013-06-26 13:43,"","","",https://github.com/redmine/redmine/pull/11
+14357,Redmine,Defect,"",New,High,Wrong encoding for Bazaar repository,Muhammad Bashir Al-Noimi,"",2013-06-28 15:32,SCM,"","","","",0,2013-06-26 10:01,"","","",1.4.4,"I configured my project for reading my bazaar repository but I surprised when I discoverd that redmine shows the log with '?' charterers instead of Unicode (I'm using Arabic characters)
+
+I read about similar ""bug"":http://www.redmine.org/issues/8385 but it seems fixed while I'm still face this issue!
+
+How can I fix this issue?
+
+PS
+* ""bzr log"" shows correctly (""see this screenshot"":http://www.redmine.org/attachments/download/9965/snapshot3.png)
+* I configured redmine to use Arabic interface (""see this screenshot"":http://www.redmine.org/attachments/download/9960/snapshot2.png)
+
+*My System locale*
+<pre>
+linux-server ~ # env
+TERM=xterm
+SHELL=/bin/bash
+XDG_SESSION_COOKIE=8bc01c29c7eefef0c99074e800000005-1370964589.800340-2108479271
+SSH_CLIENT=192.168.0.129 45329 22
+SSH_TTY=/dev/pts/1
+USER=root
+MAIL=/var/mail/root
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games
+PWD=/root
+LANG=en_US.UTF-8
+SHLVL=1
+HOME=/root
+LOGNAME=root
+SSH_CONNECTION=192.168.0.129 45329 192.168.0.74 22
+_=/usr/bin/env
+linux-server ~ # dpkg-reconfigure locales
+Generating locales...
+  ar_LY.UTF-8... up-to-date
+  ar_SA.UTF-8... up-to-date
+  ar_SY.UTF-8... up-to-date
+  en_AG.UTF-8... up-to-date
+  en_AU.UTF-8... up-to-date
+  en_BW.UTF-8... up-to-date
+  en_CA.UTF-8... up-to-date
+  en_DK.UTF-8... up-to-date
+  en_GB.UTF-8... up-to-date
+  en_HK.UTF-8... up-to-date
+  en_IE.UTF-8... up-to-date
+  en_IN.UTF-8... up-to-date
+  en_NG.UTF-8... up-to-date
+  en_NZ.UTF-8... up-to-date
+  en_PH.UTF-8... up-to-date
+  en_SG.UTF-8... up-to-date
+  en_US.UTF-8... up-to-date
+  en_ZA.UTF-8... up-to-date
+  en_ZM.UTF-8... up-to-date
+  en_ZW.UTF-8... up-to-date
+Generation complete.
+linux-server ~ # locale
+LANG=en_US.UTF-8
+LANGUAGE=
+LC_CTYPE=""en_US.UTF-8""
+LC_NUMERIC=""en_US.UTF-8""
+LC_TIME=""en_US.UTF-8""
+LC_COLLATE=""en_US.UTF-8""
+LC_MONETARY=""en_US.UTF-8""
+LC_MESSAGES=""en_US.UTF-8""
+LC_PAPER=""en_US.UTF-8""
+LC_NAME=""en_US.UTF-8""
+LC_ADDRESS=""en_US.UTF-8""
+LC_TELEPHONE=""en_US.UTF-8""
+LC_MEASUREMENT=""en_US.UTF-8""
+LC_IDENTIFICATION=""en_US.UTF-8""
+LC_ALL=
+linux-server ~ # 
+</pre>
+
+*Postgresql configuration*
+<pre>
+-- Database: redmine_default
+
+-- DROP DATABASE redmine_default;
+
+CREATE DATABASE redmine_default
+  WITH OWNER = postgres
+       ENCODING = 'UTF8'
+       TABLESPACE = pg_default
+       LC_COLLATE = 'en_US.UTF-8'
+       LC_CTYPE = 'en_US.UTF-8'
+       CONNECTION LIMIT = -1;
+
+</pre>"
+14351,Redmine,Defect,"",New,Normal,Problem with Receiving emails,Sasha Harutyunyan,"",2013-06-29 11:48,Email receiving,"","","","",0,2013-06-25 16:18,"","","",2.3.1,"Hello , 
+
+I have a problem with Receiving emails on Redmine 2.3.1 
+My Env 
+# ruby script/about 
+
+Environment:
+  Redmine version                          2.3.1.stable.11981
+  Ruby version                             1.9.3 (i686-linux)
+  Rails version                            3.2.13
+  Environment                              production
+  Database adapter                         Mysql2
+__________________________________________________________________
+And command output is ... 
+
+# rake -f /opt/redmine/Rakefile  redmine:email:receive_imap RAILS_ENV=""production"" host=imap.yandex.ru port=993 username=redmine@reborns.info password=PASWORD ssl=true --trace
+** Invoke redmine:email:receive_imap (first_time)
+** Invoke environment (first_time)
+** Execute environment
+** Execute redmine:email:receive_imap
+rake aborted!
+undefined method `[]' for nil:NilClass
+/usr/lib/ruby/1.9.1/net/imap.rb:1332:in `block in search_internal'
+/usr/lib/ruby/1.9.1/monitor.rb:211:in `mon_synchronize'
+/usr/lib/ruby/1.9.1/net/imap.rb:1326:in `search_internal'
+/usr/lib/ruby/1.9.1/net/imap.rb:752:in `search'
+/opt/redmine/lib/redmine/imap.rb:32:in `check'
+/opt/redmine/lib/tasks/email.rake:141:in `block (3 levels) in <top (required)>'
+/usr/lib/ruby/gems/1.9.1/gems/rake-10.1.0/lib/rake/task.rb:236:in `call'
+/usr/lib/ruby/gems/1.9.1/gems/rake-10.1.0/lib/rake/task.rb:236:in `block in execute'
+/usr/lib/ruby/gems/1.9.1/gems/rake-10.1.0/lib/rake/task.rb:231:in `each'
+/usr/lib/ruby/gems/1.9.1/gems/rake-10.1.0/lib/rake/task.rb:231:in `execute'
+/usr/lib/ruby/gems/1.9.1/gems/rake-10.1.0/lib/rake/task.rb:175:in `block in invoke_with_call_chain'
+/usr/lib/ruby/1.9.1/monitor.rb:211:in `mon_synchronize'
+/usr/lib/ruby/gems/1.9.1/gems/rake-10.1.0/lib/rake/task.rb:168:in `invoke_with_call_chain'
+/usr/lib/ruby/gems/1.9.1/gems/rake-10.1.0/lib/rake/task.rb:161:in `invoke'
+/usr/lib/ruby/gems/1.9.1/gems/rake-10.1.0/lib/rake/application.rb:149:in `invoke_task'
+/usr/lib/ruby/gems/1.9.1/gems/rake-10.1.0/lib/rake/application.rb:106:in `block (2 levels) in top_level'
+/usr/lib/ruby/gems/1.9.1/gems/rake-10.1.0/lib/rake/application.rb:106:in `each'
+/usr/lib/ruby/gems/1.9.1/gems/rake-10.1.0/lib/rake/application.rb:106:in `block in top_level'
+/usr/lib/ruby/gems/1.9.1/gems/rake-10.1.0/lib/rake/application.rb:115:in `run_with_threads'
+/usr/lib/ruby/gems/1.9.1/gems/rake-10.1.0/lib/rake/application.rb:100:in `top_level'
+/usr/lib/ruby/gems/1.9.1/gems/rake-10.1.0/lib/rake/application.rb:78:in `block in run'
+/usr/lib/ruby/gems/1.9.1/gems/rake-10.1.0/lib/rake/application.rb:165:in `standard_exception_handling'
+/usr/lib/ruby/gems/1.9.1/gems/rake-10.1.0/lib/rake/application.rb:75:in `run'
+/usr/lib/ruby/gems/1.9.1/gems/rake-10.1.0/bin/rake:33:in `<top (required)>'
+/usr/bin/rake:23:in `load'
+/usr/bin/rake:23:in `<main>'
+Tasks: TOP => redmine:email:receive_imap
+
+
+Thanks,"
+14346,Redmine,Defect,"",Closed,Normal,"Latvian translation for ""Log time""",Arnis Juraga,"",2013-07-11 20:46,Translations,2.3.2,"","","",0,2013-06-25 09:33,2013-07-11 20:46,"",Fixed,2.3.1,"Latvian translation for ""Log time"" now is ""Ilgs laiks"" :D. This is total mistake.
+Direct translation from latvian ""Ilgs laiks"" mean ""Long time""  :)
+https://github.com/archwomen/redmine/blob/master/config/locales/lv.yml#L778
+
+Log time in this context means ""Re?istr?t laiku"" or we can discuss exact phrase. 
+Please, how we can fix it, because this is annoying for a long time (:) already."
+14344,Redmine,Defect,"",New,Normal,Deleting svn repo Page not found,alex paet,"",2013-08-28 22:20,SCM,"","","","",0,2013-06-25 01:21,"","","",2.3.1,"When going into settings for a project, click repository, and delete the svn repository I get 
+Page not found
+
+The page you were trying to access doesn't exist or has been removed.
+
+Back
+
+Any ideas?
+
+Environment:
+  Redmine version                          2.3.1.stable
+  Ruby version                             1.8.7 (x86_64-linux)
+  Rails version                            3.2.13
+  Environment                              production
+  Database adapter                         SQLite"
+14343,Redmine,Defect,"",Closed,Normal,Delete a file in an copied issu causes redmine crash,florent THOMAS,"",2013-06-25 09:31,Issues,"","","","",0,2013-06-24 23:24,2013-06-25 09:31,"",Invalid,2.3.1,"Hy,
+
+Something probably weird here.
+I copied an issue with 2 files attached.
+In the copy issue, I added a file inside, I validated the issue, navigate etc...
+Later, I realised that one of the 2 files coming from the copied one was useless. I clicked on the bin icaon and then redmine crashed.
+Here is the message :
+<pre><code class=""ruby"">
+Processing by IssuesController#show as HTML
+  Parameters: {""id""=>""961""}
+  Current user: xxxxxx (id=1)
+  Rendered issues/_action_menu.html.erb (3.3ms)
+  Rendered plugins/redmine_code_review/app/views/code_review/_issues_show_details_bottom.html.erb (0.1ms)
+  Rendered plugins/redmine_lightbox/app/views/attachments/_links.html.erb (5.3ms)
+  Rendered plugins/redmine_issue_checklist/app/views/issues/_checklist.html.erb (1.8ms)
+  Rendered issue_relations/_form.html.erb (1.3ms)
+  Rendered issues/_relations.html.erb (120.5ms)
+  Rendered plugins/redmine_inline_note_images_plugin/app/views/hooks/inline_image_hook/_inline_images_paste.erb (5.4ms)
+  Rendered issues/_history.html.erb (7.9ms)
+  Rendered issues/show.html.erb within layouts/base (158.5ms)
+Completed 500 Internal Server Error in 217ms
+
+ActionView::Template::Error (undefined method `image?' for nil:NilClass):
+    3: 	<% attachments.push Attachment.find_by_id a.prop_key %>
+    4: <% end %>
+    5: 
+    6: <% images = attachments.select(&:image?) %>
+    7: <% if images.any? %>
+    8: 	<div class=""journal attachments"">
+    9: 	<% images.each do |image| %>
+  lib/redmine/hook.rb:111:in `send'
+  lib/redmine/hook.rb:111:in `view_issues_history_journal_bottom'
+  lib/redmine/hook.rb:61:in `send'
+  lib/redmine/hook.rb:61:in `call_hook'
+  lib/redmine/hook.rb:61:in `each'
+  lib/redmine/hook.rb:61:in `call_hook'
+  lib/redmine/hook.rb:58:in `tap'
+  lib/redmine/hook.rb:58:in `call_hook'
+  lib/redmine/hook.rb:158:in `call_hook'
+  app/views/issues/_history.html.erb:19:in `_app_views_issues__history_html_erb___1595220940_77022580'
+  app/views/issues/_history.html.erb:2:in `each'
+  app/views/issues/_history.html.erb:2:in `_app_views_issues__history_html_erb___1595220940_77022580'
+  app/views/issues/show.html.erb:120:in `_app_views_issues_show_html_erb___1327379965_76646980'
+  app/controllers/issues_controller.rb:119:in `show'
+  app/controllers/issues_controller.rb:116:in `show'
+
+</pre>
+
+I don't know how to change this and keep the issue without deleteing everything in the database"
+14342,Redmine,Defect,"",New,Normal,Subtasks dont receive properties change when copied,Luis Furtado,"",2014-06-02 19:47,Issues,"","","","",0,2013-06-24 20:25,"",関連している #15742,"",2.3.0,"When I copy tasks with subtasks, the changed properties are applied only in the parent tasks.
+
+<pre>
+Environment:
+
+  Redmine version                          2.2.3.stable
+  Ruby version                             1.8.7 (i686-linux)
+  Rails version                            3.2.12
+  Environment                              production
+  Database adapter                         MySQL
+
+Redmine plugins:
+
+  redmine_impasse                          1.2.2
+  redmine_screenshot_paste                 2.1.0
+  redmine_wiki_extensions                  0.6.2
+  redmine_wiki_lists                       0.0.1
+</pre>"
+14340,Redmine,Defect,"",Closed,Low,Autocomplete fields rendering issue with alternate theme,Stefan Tatschner,Jean-Philippe Lang,2013-07-28 22:44,UI,2.3.3,"","","",0,2013-06-24 15:57,2013-07-28 22:44,"",Fixed,"",See screenshot below.
+14338,Redmine,Defect,"",Closed,Low,svn: repository statistics issue when user names only differ in case,Dennis Wouters,Jean-Baptiste Barth,2014-08-26 15:39,SCM,"","","","",0,2013-06-24 13:59,2014-08-26 15:39,関連している #13487,Wont fix,2.2.2,"I have SVN repository to which I commit from my Windows and Linux account. On one system my username is lowercase, on the other uppercase.
+When requesting the repository statistics, only the upper case version is shown in the 'commits per author' graph. (This is fine!)
+However, my user has a 'revisions' associated with it, but no 'changes' bar. (While it should be the largest bar.)
+(The other users in the graph appear ok, with both bars showing.)"
+14336,Redmine,Defect,"",Closed,Normal,ActiveRecordError,tinux cn,"",2013-06-24 12:49,"","","","","",0,2013-06-24 10:07,2013-06-24 10:42,"","",1.4.4,"Some problems in Parent task and Subtasks
+when add a task A to a parent task B, it automatically added to an other task C as a subtask, but A & B has no relation.
+Delete task C, change the parent task to task D, it cause 500(Interal Server Error)
+
+
+
+ActiveRecord::ActiveRecordError (Impossible move, target node cannot be inside moved tree.):
+  app/models/issue.rb:881:in `update_nested_set_attributes'
+  app/models/issue.rb:732:in `save_issue_with_child_records'
+  app/models/issue.rb:719:in `save_issue_with_child_records'
+  app/controllers/issues_controller.rb:182:in `update'
+  passenger (3.0.12) lib/phusion_passenger/rack/request_handler.rb:96:in `process_request'
+  passenger (3.0.12) lib/phusion_passenger/abstract_request_handler.rb:513:in `accept_and_process_next_request'
+  passenger (3.0.12) lib/phusion_passenger/abstract_request_handler.rb:274:in `main_loop'
+  passenger (3.0.12) lib/phusion_passenger/classic_rails/application_spawner.rb:321:in `start_request_handler'
+  passenger (3.0.12) lib/phusion_passenger/classic_rails/application_spawner.rb:275:in `send'
+  passenger (3.0.12) lib/phusion_passenger/classic_rails/application_spawner.rb:275:in `handle_spawn_application'
+  passenger (3.0.12) lib/phusion_passenger/utils.rb:479:in `safe_fork'
+  passenger (3.0.12) lib/phusion_passenger/classic_rails/application_spawner.rb:270:in `handle_spawn_application'
+  passenger (3.0.12) lib/phusion_passenger/abstract_server.rb:357:in `__send__'
+  passenger (3.0.12) lib/phusion_passenger/abstract_server.rb:357:in `server_main_loop'
+  passenger (3.0.12) lib/phusion_passenger/abstract_server.rb:206:in `start_synchronously'
+  passenger (3.0.12) lib/phusion_passenger/abstract_server.rb:180:in `start'
+  passenger (3.0.12) lib/phusion_passenger/classic_rails/application_spawner.rb:149:in `start'
+  passenger (3.0.12) lib/phusion_passenger/spawn_manager.rb:219:in `spawn_rails_application'
+  passenger (3.0.12) lib/phusion_passenger/abstract_server_collection.rb:132:in `lookup_or_add'
+  passenger (3.0.12) lib/phusion_passenger/spawn_manager.rb:214:in `spawn_rails_application'
+  passenger (3.0.12) lib/phusion_passenger/abstract_server_collection.rb:82:in `synchronize'
+  passenger (3.0.12) lib/phusion_passenger/abstract_server_collection.rb:79:in `synchronize'
+  passenger (3.0.12) lib/phusion_passenger/spawn_manager.rb:213:in `spawn_rails_application'
+  passenger (3.0.12) lib/phusion_passenger/spawn_manager.rb:132:in `spawn_application'
+  passenger (3.0.12) lib/phusion_passenger/spawn_manager.rb:275:in `handle_spawn_application'
+  passenger (3.0.12) lib/phusion_passenger/abstract_server.rb:357:in `__send__'
+  passenger (3.0.12) lib/phusion_passenger/abstract_server.rb:357:in `server_main_loop'
+  passenger (3.0.12) lib/phusion_passenger/abstract_server.rb:206:in `start_synchronously'
+  passenger (3.0.12) helper-scripts/passenger-spawn-server:99
+"
+14335,Redmine,Defect,"",Closed,Normal,"Issue.rebuild! ""lft"" and ""rgt"" are 1 and 2",Morten MacFly,"",2017-09-16 06:23,Issues,"","","","",0,2013-06-24 09:05,2015-02-19 18:46,関連している #6579,Wont fix,"","Discussion here: http://www.redmine.org/boards/2/topics/38378
+
+I would like to see this feature, because otherwise the update from an earlier version of Redmine might be broken."
+14334,Redmine,Defect,"",Closed,Normal,[BUG] Segmentation fault ruby 1.8.7,Sandeep Soni,"",2013-06-25 13:16,Rails support,"","","","",0,2013-06-24 08:57,2013-06-24 10:49,"",Invalid,2.3.0,"/usr/local/rvm/gems/ruby-1.9.3-p429/gems/json-1.8.0/lib/json/ext/parser.so: [BUG] Segmentation fault
+ruby 1.8.7 (2011-06-30 patchlevel 352) [i386-linux]
+
+Application root
+/var/www/redmine
+Environment (value of RAILS_ENV, RACK_ENV, WSGI_ENV and PASSENGER_ENV)
+production
+Ruby interpreter command
+/usr/bin/ruby
+User and groups
+uid=48(apache) gid=48(apache) groups=48(apache) context=unconfined_u:system_r:passenger_t:s0
+Environment variables
+rvm_bin_path=/usr/local/rvm/bin
+HOSTNAME=localhost.localdomain
+GEM_HOME=/usr/local/rvm/gems/ruby-1.9.3-p429
+SHELL=/sbin/nologin
+TERM=xterm
+HISTSIZE=1000
+IRBRC=/usr/local/rvm/rubies/ruby-1.9.3-p429/.irbrc
+QTDIR=/usr/lib/qt-3.3
+PASSENGER_DEBUG_DIR=/tmp/passenger.spawn-debug.11642-3054505644
+MY_RUBY_HOME=/usr/local/rvm/rubies/ruby-1.9.3-p429
+QTINC=/usr/lib/qt-3.3/include
+USER=apache
+rvm_path=/usr/local/rvm
+rvm_prefix=/usr/local
+MAIL=/var/spool/mail/apache
+PATH=/usr/local/rvm/gems/ruby-1.9.3-p429/bin:/usr/local/rvm/gems/ruby-1.9.3-p429@global/bin:/usr/local/rvm/rubies/ruby-1.9.3-p429/bin:/usr/local/rvm/bin:/usr/lib/qt-3.3/bin:/sbin:/usr/sbin:/bin:/usr/bin:/usr/local/sbin
+PWD=/var/www/redmine
+LANG=C
+rvm_env_string=ruby-1.9.3-p429
+SSH_ASKPASS=/usr/libexec/openssh/gnome-ssh-askpass
+HISTCONTROL=ignoredups
+rvm_version=1.21.1 (stable)
+HOME=/var/www
+SHLVL=2
+rvm_ruby_string=ruby-1.9.3-p429
+LOGNAME=apache
+QTLIB=/usr/lib/qt-3.3/lib
+GEM_PATH=/usr/local/rvm/gems/ruby-1.9.3-p429:/usr/local/rvm/gems/ruby-1.9.3-p429@global
+LESSOPEN=|/usr/bin/lesspipe.sh %s
+RUBY_VERSION=ruby-1.9.3-p429
+G_BROKEN_FILENAMES=1
+IN_PASSENGER=1
+PYTHONUNBUFFERED=1
+RAILS_ENV=production
+RACK_ENV=production
+WSGI_ENV=production
+PASSENGER_ENV=production
+SERVER_PORT=80
+REQUEST_URI=/
+REMOTE_ADDR=192.168.154.1
+DOCUMENT_ROOT=/var/www/redmine/public
+SERVER_NAME=192.168.154.128
+REMOTE_PORT=49507
+SERVER_PROTOCOL=HTTP/1.1
+SERVER_SOFTWARE=Apache/2.2.15 (CentOS)
+SERVER_ADDR=192.168.154.128
+SERVER_ADMIN=root@localhost
+QUERY_STRING=
+REQUEST_METHOD=GET
+Ulimits
+Unknown
+System memory usage
+             total       used       free     shared    buffers     cached
+Mem:          1006        476        530          0         88        260
+-/+ buffers/cache:        126        879
+Swap:         2015          0       2015
+General Ruby interpreter information
+RUBY_VERSION = 1.8.7
+RUBY_PLATFORM = i386-linux
+RUBY_ENGINE = nil
+RubyGems version = 1.3.7
+Ruby configuration (RbConfig::CONFIG)
+vendorlibdir = /usr/lib/ruby/1.8
+PACKAGE_STRING = 
+TEENY = 7
+COMMON_MACROS = 
+PREP = miniruby
+AS = as
+LIBEXT = a
+CPP = gcc -E
+DLEXT2 = 
+sharedstatedir = /var/lib
+mandir = /usr/share/man
+EXTSTATIC = 
+RUBYW_INSTALL_NAME = 
+CC = gcc
+STRIP = strip -S -x
+archdir = /usr/lib/ruby/1.8/i386-linux
+libexecdir = /usr/libexec
+ECHO_T = 
+INSTALL_DATA = /usr/bin/install -c -m 644
+LIBRUBY_DLDFLAGS = -Wl,-soname,libruby.so.1.8
+EXTOUT = .ext
+ENABLE_SHARED = yes
+LDSHARED = gcc -shared
+sitedir = /usr/lib/ruby/site_ruby
+RPATHFLAG = 
+EXPORT_PREFIX = 
+RUBY_SO_NAME = ruby
+PATCHLEVEL = 352
+EGREP = /bin/grep -E
+OBJEXT = o
+ECHO_N = -n
+ruby_mm_version = 1.8
+LIBRUBYARG_SHARED = -lruby
+MAKEFILES = Makefile
+host_alias = i386-redhat-linux-gnu
+cflags =  
+DLLWRAP = 
+LIBPATHFLAG =  -L%s
+target_vendor = redhat
+optflags = 
+OBJDUMP = 
+LIBRUBY = libruby.so.1.8.7
+cppflags = 
+LIBRUBYARG_STATIC = -lruby-static
+ASFLAGS = 
+prefix = /usr
+target_alias = i686-redhat-linux-gnu
+setup = Setup
+arch = i386-linux
+rubyw_install_name = 
+CP = cp
+SOLIBS = -lpthread -lrt -ldl -lcrypt -lm 
+sysconfdir = /etc
+RDOCTARGET = 
+SET_MAKE = 
+oldincludedir = /usr/include
+htmldir = /usr/share/doc/$(PACKAGE)
+COMMON_LIBS = 
+EXEEXT = 
+localstatedir = /var
+RM = rm -f
+TRY_LINK = 
+host_vendor = redhat
+PATH_SEPARATOR = :
+PACKAGE_VERSION = 
+ARCHFILE = 
+configure_args =  '--build=i386-redhat-linux-gnu' '--host=i386-redhat-linux-gnu' '--target=i686-redhat-linux-gnu' '--program-prefix=' '--prefix=/usr' '--exec-prefix=/usr' '--bindir=/usr/bin' '--sbindir=/usr/sbin' '--sysconfdir=/etc' '--datadir=/usr/share' '--includedir=/usr/include' '--libdir=/usr/lib' '--libexecdir=/usr/libexec' '--localstatedir=/var' '--sharedstatedir=/var/lib' '--mandir=/usr/share/man' '--infodir=/usr/share/info' '--with-default-kcode=none' '--enable-shared' '--enable-pthread' '--disable-rpath' '--with-readline-include=/usr/include/readline5' '--with-readline-lib=/usr/lib/readline5' '--enable-dtrace' '--with-sitedir=/usr/lib/ruby/site_ruby' '--with-sitearchdir=/usr/lib/ruby/site_ruby' '--with-vendordir=/usr/lib/ruby' '--with-vendorarchdir=/usr/lib/ruby' 'build_alias=i386-redhat-linux-gnu' 'host_alias=i386-redhat-linux-gnu' 'target_alias=i686-redhat-linux-gnu' 'CFLAGS=-O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector --param=ssp-buffer-size=4 -m32 -march=i686 -mtune=atom -fasynchronous-unwind-tables -fno-strict-aliasing'
+LIBS = -lpthread -lrt -ldl -lcrypt -lm 
+DLDLIBS =  -lc
+RANLIB = ranlib
+topdir = /usr/lib/ruby/1.8/i386-linux
+DEFS = -D_FILE_OFFSET_BITS=64
+RUBY_INSTALL_NAME = ruby
+YACC = bison -y
+GREP = /bin/grep
+LIBRUBY_ALIASES = libruby.so.1.8 libruby.so
+DLEXT = so
+WINDRES = 
+host_cpu = i386
+ruby_install_name = ruby
+ALLOCA = 
+SHELL = /bin/sh
+ECHO_C = 
+target_os = linux
+DLDFLAGS = 
+LIBRUBYARG = -lruby
+infodir = /usr/share/info
+target_cpu = i386
+CFLAGS = -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector --param=ssp-buffer-size=4 -m32 -march=i686 -mtune=atom -fasynchronous-unwind-tables -fno-strict-aliasing  -fPIC  
+LIBRUBY_LDSHARED = gcc -shared
+ARCH_FLAG = 
+sitearch = i386-linux
+INSTALL_PROGRAM = /usr/bin/install -c
+ruby_version = 1.8
+datadir = /usr/share
+localedir = /usr/share/locale
+host_os = linux-gnu
+sitearchdir = /usr/lib/ruby/site_ruby/1.8/i386-linux
+LINK_SO = 
+NROFF = /usr/bin/nroff
+COMMON_HEADERS = 
+PACKAGE_TARNAME = 
+psdir = /usr/share/doc/$(PACKAGE)
+vendordir = /usr/lib/ruby
+INSTALL = /usr/bin/install -c
+CPPFLAGS =  -D_FILE_OFFSET_BITS=64 
+LIBRUBY_SO = libruby.so.1.8.7
+LDFLAGS = -L.  -rdynamic -Wl,-export-dynamic
+pdfdir = /usr/share/doc/$(PACKAGE)
+AR = ar
+LN_S = ln -s
+MAJOR = 1
+DTRACE_HEADER = dtrace.h
+DESTDIR = 
+build_alias = i386-redhat-linux-gnu
+bindir = /usr/bin
+datarootdir = /usr/share
+build_vendor = redhat
+CPPOUTFILE = -o conftest.i
+GNU_LD = yes
+CCDLFLAGS =  -fPIC
+build_os = linux-gnu
+build_cpu = i386
+includedir = /usr/include
+MAKEDIRS = mkdir -p
+build = i386-redhat-linux-gnu
+MANTYPE = doc
+LIBPATHENV = LD_LIBRARY_PATH
+host = i386-redhat-linux-gnu
+vendorarchdir = /usr/lib/ruby/1.8/i386-linux
+PACKAGE_BUGREPORT = 
+sbindir = /usr/sbin
+rubylibdir = /usr/lib/ruby/1.8
+PACKAGE_NAME = 
+exec_prefix = /usr
+dvidir = /usr/share/doc/$(PACKAGE)
+INSTALL_SCRIPT = /usr/bin/install -c
+debugflags = 
+NM = 
+libdir = /usr/lib
+YFLAGS = 
+MINOR = 8
+MAINLIBS = 
+target = i686-redhat-linux-gnu
+docdir = /usr/share/doc/$(PACKAGE)
+OUTFLAG = -o 
+STATIC = 
+sitelibdir = /usr/lib/ruby/site_ruby/1.8
+LIBRUBY_A = libruby-static.a
+Activated Ruby gems
+rubygems-bundler => 1.2.0
+bundler-unload => 1.0.1
+Ruby load path ($LOAD_PATH)
+/usr/lib/ruby/gems/1.8/gems/passenger-4.0.5/lib
+/usr/local/rvm/gems/ruby-1.9.3-p429@global/gems/bundler-unload-1.0.1/bin
+/usr/local/rvm/gems/ruby-1.9.3-p429@global/gems/bundler-unload-1.0.1/lib
+/usr/local/rvm/gems/ruby-1.9.3-p429@global/gems/rubygems-bundler-1.2.0/bin
+/usr/local/rvm/gems/ruby-1.9.3-p429@global/gems/rubygems-bundler-1.2.0/lib
+/usr/lib/ruby/site_ruby/1.8
+/usr/lib/ruby/site_ruby/1.8/i386-linux
+/usr/lib/ruby/site_ruby
+/usr/lib/site_ruby/1.8
+/usr/lib/site_ruby/1.8/i386-linux
+/usr/lib/site_ruby
+/usr/lib/ruby/1.8
+/usr/lib/ruby/1.8/i386-linux
+.
+Ruby loaded libraries ($LOADED_FEATURES)
+enumerator.so
+phusion_passenger.rb
+rbconfig.rb
+etc.so
+fileutils.rb
+tmpdir.rb
+phusion_passenger/utils/tmpio.rb
+phusion_passenger/platform_info.rb
+phusion_passenger/platform_info/ruby.rb
+phusion_passenger/platform_info/operating_system.rb
+phusion_passenger/platform_info/binary_compatibility.rb
+/usr/lib/ruby/gems/1.8/gems/passenger-4.0.5/libout/ruby/ruby-1.8.7-x86-linux/passenger_native_support.so
+phusion_passenger/native_support.rb
+rubygems/defaults.rb
+thread.so
+thread.rb
+rubygems/exceptions.rb
+rubygems/version.rb
+rubygems/requirement.rb
+rubygems/dependency.rb
+rubygems/gem_path_searcher.rb
+rubygems/user_interaction.rb
+rubygems/platform.rb
+rubygems/specification.rb
+rubygems/source_index.rb
+rubygems/builder.rb
+rubygems/config_file.rb
+rubygems/custom_require.rb
+rubygems-bundler/wrapper.rb
+rubygems-bundler/rubygems_bundler_installer.rb
+timeout.rb
+optparse.rb
+rubygems/command.rb
+rubygems/command_manager.rb
+find.rb
+stringio.so
+yaml/error.rb
+syck.so
+yaml/ypath.rb
+yaml/basenode.rb
+yaml/syck.rb
+yaml/tag.rb
+yaml/stream.rb
+yaml/constants.rb
+rational.rb
+date/format.rb
+date.rb
+yaml/rubytypes.rb
+yaml/types.rb
+yaml.rb
+zlib.so
+digest.so
+digest.rb
+openssl.so
+openssl/bn.rb
+openssl/cipher.rb
+openssl/config.rb
+openssl/digest.rb
+openssl/pkcs7.rb
+openssl/buffering.rb
+fcntl.so
+openssl/ssl-internal.rb
+openssl/x509-internal.rb
+openssl.rb
+rubygems/gem_openssl.rb
+rubygems/security.rb
+rubygems/package/f_sync_dir.rb
+rubygems/package/tar_header.rb
+rubygems/package/tar_input.rb
+rubygems/package/tar_output.rb
+rubygems/package/tar_reader/entry.rb
+rubygems/package/tar_reader.rb
+rubygems/package/tar_writer.rb
+rubygems/package.rb
+rubygems/format.rb
+rubygems/ext/builder.rb
+rubygems/ext/configure_builder.rb
+rubygems/ext/ext_conf_builder.rb
+rubygems/ext/rake_builder.rb
+rubygems/ext.rb
+rubygems/require_paths_builder.rb
+rubygems/installer.rb
+rubygems-bundler/regenerate_binstubs_command.rb
+rubygems.rb
+socket.so
+phusion_passenger/ruby_core_enhancements.rb
+phusion_passenger/utils/tmpdir.rb
+phusion_passenger/preloader_shared_helpers.rb
+phusion_passenger/public_api.rb
+phusion_passenger/debug_logging.rb
+phusion_passenger/loader_shared_helpers.rb
+phusion_passenger/constants.rb
+phusion_passenger/message_channel.rb
+phusion_passenger/utils.rb
+phusion_passenger/message_client.rb
+phusion_passenger/utils/unseekable_socket.rb
+phusion_passenger/request_handler/thread_handler.rb
+phusion_passenger/request_handler.rb
+phusion_passenger/utils/tee_input.rb
+phusion_passenger/rack/thread_handler_extension.rb"
+14331,Redmine,Defect,"",Closed,Urgent,No mail notifications sent after upgrade,zam kp,"",2013-06-29 07:21,Email notifications,"","","","",0,2013-06-23 09:45,2013-06-25 22:27,"",Fixed,2.3.0,"Hi Team
+
+After I'v upgraded Redmine from 1.3.1 to 2.3.0 it stopped sending mail notifications.
+The configuration file seems OK (didn't change) but I didn't see anything from the associated email mailbox in /var/log/mail.log.
+Also there are no more 'Sending email notification to: ...' lines in Redmine's log.
+
+MY Ruby Version is:
+ruby 1.9.3p429 (2013-05-15 revision 40747) [x86_64-linux]
+
+Rails version:
+Rails 3.2.13
+
+GeM
+1.8.25
+
+Here is my configuration.yml
+
+email_delivery:
+    delivery_method: :smtp
+    smtp_settings:
+     tls: true
+     enable_starttls_auto: true
+     address: ""email-smtp.us-east-1.amazonaws.com""
+     port: 587
+     domain: ""example.com""
+     authentication: :plain
+     user_name: ""AKIAJT2T5DPXVAQE55A""
+     password: ""AiJxoNpgFjytdOyG4xlpsUy9uifxvy5BxwD2ErCWuz/H""
+
+
+My Upgrade is stopped due to this issue.Please help me,its urgent
+
+Thanks
+Zam
+
+
+
+
+"
+14326,Redmine,Defect,"",New,Normal,Repository Browser not showing latest revisions,David Pettifor,"",2013-06-29 06:38,SCM,"","","","",0,2013-06-21 16:43,"","","","","I have Redmine 2.2.4 setup on the same server which is hosting a Subversion repository.  They link up just fine and I can use the repository browser to view all of the code, but when I click on ""View Revisions"", they all stop sometime in May (regardless of which project I'm viewing, or when the last update was).
+
+When looking at the repository for specific files, the ""Age"" column is correct.  However, when I click on a particular file, the latest revision date is way too old (2 months ago for one project, when the file was updated 9 days ago).
+
+Is there a known solution for this?"
+14325,Redmine,Defect,"",Closed,Normal,not possible to manage watchers after upgrade to 2.3.1,Goce Boshkovski,"",2017-04-15 05:04,"","","","","",0,2013-06-21 10:40,2017-04-15 05:04,関連している #21011,Invalid,2.3.1,"After the upgrade of Redmine from version 2.2.1 to 2.3.1 it is not possible to remove already present watchers for all the projects. 
+
+Environment:
+  Redmine version                          2.3.1.stable
+  Ruby version                             1.9.3 (x86_64-linux)
+  Rails version                            3.2.13
+  Environment                              production
+  Database adapter                         SQLite
+Redmine plugins:
+  no plugin installed
+
+"
+14324,Redmine,Defect,"",New,Normal,Moving Repository to another URL forces losing of manually added commit relations,Vito Marolda,"",2013-06-21 10:39,SCM,"","","","",0,2013-06-21 10:39,"","","",2.2.2,"Hello,
+
+We use Git repository.
+When someone in the team forgets to mention ""IssueID #xxx"" in the commit text (or for any other reason), +we manually add the link between the commit and the issue+ directly from Redmine, opening the ""commit"" page, and clicking ""Add"" in the ""Related Issues"" section.
+
+Now, I am trying to migrate the git repository from a path to another, but since +changing the URL is not possible+, I followed the suggestions found around to change the repository URL: +delete, then add the repository+ (with the same repository name).
+
+So, I tried ""delete"" and then ""add"" (with the same repository name and a different path), but in this way +I'm losing all the links+ between the commits and the issues that were made clicking ""Add"" in the commit's page in Redmine."
+14320,Redmine,Defect,"",Closed,Normal,Development_Question,宋 超,"",2013-06-20 10:10,"","","","","",0,2013-06-20 09:42,2013-06-20 10:10,"",Invalid,"",""
+14318,Redmine,Patch,"",Closed,Normal,Watchers Alerted To Changes But Cannot See Issues (potentially),Brett Patterson,"",2018-05-25 23:54,Issues permissions,"","","","",0,2013-06-19 22:13,2016-05-08 09:11,"関連している #23546, 次のチケットと重複 #8488","","","At our company we try to keep things private so user A cannot see tickets from user B.  With this in mind, I set the Issues Visibility setting for all user groups to be the assigned to or created by me value.  This has the draw back that if I add a watcher because it may not directly implicate that person but they need to be kept in the loop (e.g. supervisor/boss), they would get the email updates but can't see the issue within Redmine itself.
+
+So I added two more options to the Issue Visibility dropdown:
+
+# Created by, Assigned to, or watched by the user
+# Created by, Assigned to, watched by, or contributed to by the user
+
+The contributed to just looks at the journals of the issues to see if you've modified the issue in some way (meaning you now have a vested interest in the issue).
+
+Attached is the patch I developed against the core of 2.2.3.  I haven't tested it in the 3.x line yet, but hope to soon.
+
+Hopefully this could be wrapped into 2.2.5 or the next 3.x release."
+14312,Redmine,Defect,"",Closed,Normal,Field Permissions dropdown in Workflow is missing ' Required ' option.  ,Nick Gorbikoff,"",2013-06-19 12:35,Issues workflow,"","","","",0,2013-06-18 21:31,2013-06-19 12:35,"",Invalid,2.3.1,"Hello.
+I'm pretty sure it's a bug. This is a brand new installation of redmine with some plugins. Everything worked pretty much out of the box. (I'm using 1x elsewhere this is my first 2x Redmine installation).  When I go into Workflow > Field Permissions to require some standard fields ( I want users to select category, due date and assigned_to fields ) - the only option I get in a dropdown is 'read-only'. However according to everything I read on forums and issues list it should also have 'required' option. Amy missing something or did I knot do something during install? (I'm pretty sure I followed installation guide to the letter). It's not critical, just really annoying to go into the system and clean up after users - make sure that all bugs have a person and due date assigned and are properly categorized. Some of my users are untrainable :-)
+
+
+Here are my Redmine details: 
+
+<pre>
+Environment:
+  Redmine version                          2.3.1.stable 
+  Ruby version                             2.0.0 (x86_64-linux)  # Ruby 2.0.0p195 through rbenv on Debian 7
+  Rails version                            3.2.13
+  Environment                              production
+  Database adapter                         PostgreSQL  # 9.2
+</pre>"
+14303,Redmine,Defect,"",Closed,Normal,Can't add members into project,Tony Dong,"",2015-09-07 11:58,"","","","","",0,2013-06-18 09:04,2015-09-07 11:58,"",Cant reproduce,"","I downloaded the Bitnami package for Redmine 2.3.1, it looks like everything is perfect. But I found the big mistake that I can't add members into any project, even the user has admin rights. And when I create the project, it should display I were the project manager. but nothing happened.
+
+BTW, if there is something wrong with Bitnami, please update install procedure for windows user. "
+14302,Redmine,Defect,"",New,Normal,Some text formatting don't work on projects page,Vadim Sloun,"",2013-06-18 04:28,Projects,"","","","",0,2013-06-18 04:28,"","","",2.3.0,"Ordered and Unsortered lists showng are missed at projects page (http://redmine.site/projects) at all. But in project page (http://redmine/projects/projectname) it works.
+<pre>
+Environment:
+  Redmine version                          2.3.0.stable.11692
+  Ruby version                             1.8.7 (i486-linux)
+  Rails version                            3.2.13
+  Environment                              production
+  Database adapter                         Mysql2
+</pre>"
+14299,Redmine,Defect,"",New,Normal,Filter Assignee list users not member of Project,Nothing Ctrl,"",2013-06-17 05:56,Issues,"","","","",0,2013-06-17 05:56,"","","",2.3.1,"Just happen in one of my projects, when use filter Assignee, it show some user/group not assign to project. How can I remove these user/group.
+
+> Environment:
+> Redmine version                          2.3.1.stable
+> Ruby version                             1.9.3 (i386-mingw32)
+> Rails version                            3.2.13
+> Environment                              production
+> Database adapter                         Mysql2
+> Redmine plugins:
+> no plugin installed
+"
+14298,Redmine,Defect,"",Closed,Normal,Error generated on 'search for watchers to add' after clicking add without selected users,Ricardo S,Jean-Philippe Lang,2014-03-29 15:34,Issues,2.5.1,"","","",0,2013-06-16 19:43,2014-03-29 15:34,次のチケットが重複 #16379,Fixed,"","On the *New Issue* page, after clicking *Add* on *Search for watchers to add* without selecting any user, generates the following error on the logs:
+<pre>
+An ActionView::Template::Error occurred in watchers#append:
+
+undefined method `each' for nil:NilClass
+app/views/watchers/append.js.erb:1:in `_app_views_watchers_append_js_erb__1816769395046035616_62007020'
+  actionpack (3.2.13) lib/action_view/template.rb:145:in `block in render'
+  activesupport (3.2.13) lib/active_support/notifications.rb:125:in `instrument'
+  actionpack (3.2.13) lib/action_view/template.rb:143:in `render'
+  actionpack (3.2.13) lib/action_view/renderer/template_renderer.rb:47:in `block (2 levels) in render_template'
+  actionpack (3.2.13) lib/action_view/renderer/abstract_renderer.rb:38:in `block in instrument'
+(...)
+</pre>
+
+A possible fix is to change *WatchersController#append* to render nothing when no user is selected:
+<pre><code class=""ruby"">
+  def append
+    if params[:watcher].is_a?(Hash)
+      user_ids = params[:watcher][:user_ids] || [params[:watcher][:user_id]]
+      @users = User.active.find_all_by_id(user_ids)
+    else
+      render :nothing => true
+    end
+  end
+</code></pre>
+
+My redmine environment is:
+---
+<pre>
+Environment:
+  Redmine version                          2.3.1.devel
+  Ruby version                             1.9.3 (x86_64-linux)
+  Rails version                            3.2.13
+  Environment                              production
+  Database adapter                         PostgreSQL
+SCM:
+  Subversion                               1.7.5
+  Mercurial                                2.6.1
+  Cvs                                      1.12.13
+  Bazaar                                   2.6
+  Git                                      1.7.10.4
+  Filesystem                               
+</pre>"
+14297,Redmine,Defect,"",Closed,Low,Error in REST API documentation,Remi Ferrand,"",2013-07-05 20:13,Documentation,"","","","",0,2013-06-16 12:12,2013-07-05 20:13,"",Fixed,"","Hi,
+
+In the documentation at http://www.redmine.org/projects/redmine/wiki/Rest_Issues#Creating-an-issue, the
+
+<pre>
+POST /issues.[format]
+</pre>
+
+parameters is incomplete.
+
+The parameter @priority_id@ is not listed and seems to be mandatory.
+"
+14294,Redmine,Defect,"",Closed,Normal,How to edit code export csv on Redmine,Long Nguyen Hai,"",2013-06-16 14:13,Code cleanup/refactoring,"","","","",0,2013-06-15 18:20,2013-06-16 14:13,"",Invalid,2.3.1,"I have some problem with csv export on redmine. 
+I want to edit code export csv but I don't know where. I try to find them on lib/redmine/export/ and app/helpers/ 
+"
+14288,Redmine,Defect,"",Closed,Normal,REST API - 500 Internal Server Error,Robson Peixoto,"",2013-06-15 11:03,REST API,"","","","",0,2013-06-14 19:30,2013-06-15 11:03,"",Invalid,2.3.1,"<pre>
+Started GET ""/issues/26.json"" for 177.135.203.181 at 2013-06-14 14:27:01 -0300
+Processing by IssuesController#show as JSON
+  Parameters: {""id""=>""26""}
+   (0.2ms)  SELECT MAX(`settings`.`updated_on`) AS max_id FROM `settings`
+Completed 500 Internal Server Error in 2ms
+
+ArgumentError (wrong number of arguments (3 for 2)):
+  app/models/user.rb:157:in `try_to_login'
+  app/controllers/application_controller.rb:113:in `block in find_current_user'
+  app/controllers/application_controller.rb:112:in `find_current_user'
+  app/controllers/application_controller.rb:87:in `user_setup'
+
+</pre>
+
+<pre>
+# ruby script/about
+/opt/redmine/config/initializers/bypass_ssl_verification.rb:2: warning: already initialized constant VERIFY_PEER
+
+Environment:
+  Redmine version                          2.3.1.stable
+  Ruby version                             1.9.3 (x86_64-linux)
+  Rails version                            3.2.13
+  Environment                              production
+  Database adapter                         Mysql2
+Redmine plugins:
+  redmine_backlogs                         v1.0.2
+  redmine_contacts                         3.2.3-light
+  redmine_issue_checklist                  2.0.5
+  redmine_ldap_sync                        2.0.1
+  redmine_my_roadmaps                      0.1.13_redmine2.3
+  redmine_scm                              0.4.2
+  redmine_zenedit                          0.0.1
+
+</pre>"
+14286,Redmine,Defect,"",Closed,Normal,how to create a project,匿名ユーザー,"",2013-06-14 23:56,"","","","","",0,2013-06-14 17:50,2013-06-14 23:56,"",Invalid,"",i'm a new redmine user.i have on idea on creating a project or a user.somebody can help me? thx.
+14282,Redmine,Defect,"",New,Normal,Wrong validation while updating custom field through API,Christopher  Gabriel,"",2013-06-17 09:45,Custom fields,"","","","",0,2013-06-14 12:36,"","","",2.2.4,"While updating an issue's custom field (both integer or float type, both with size validation) we get a 500 Internal Server Error.
+
+From the production log (some values are X's for privacy reasons):
+<pre>
+
+Started PUT ""/issues/200043.json"" for 172.50.1.78 at Fri Jun 14 11:53:25 +0200 2013
+Processing by IssuesController#update as JSON
+  Parameters: {""id""=>""200043"", ""issue""=>{""notes""=>""XXXXX"", ""subject""=>""XXX"", ""id""=>200043, ""custom_fields""=>[{""id""=>73, ""value""=>""X""}, {""id""=>90, ""value""=>""XXXXX""}, {""id""=>7, ""value""=>""XXXX""}, {""id""=>6, ""value""=>""XXX""}, {""id""=>89, ""value""=>""XXXX""}, {""id""=>13, ""value""=>""XXXX""}, {""id""=>43, ""value""=>""XXXX""}, {""id""=>95, ""value""=>""I""}, {""id""=>14, ""value""=>""XXXX""}, {""id""=>52, ""value""=>""XXXX""}, {""id""=>74, ""value""=>""XX""}, {""id""=>96, ""value""=>""XX""}, {""id""=>15, ""value""=>""XXXX""}, {""id""=>16, ""value""=>""XXXXX""}, {""id""=>17, ""value""=>""XXXX""}, {""id""=>101, ""value""=>11}, {""id""=>105, ""value""=>""XXXX""}, {""id""=>123, ""value""=>110.0}, {""id""=>103, ""value""=>2012}, {""id""=>21, ""value""=>10.0}, {""id""=>22, ""value""=>1}, {""id""=>41, ""value""=>""XXXXX""}, {""id""=>35, ""value""=>""XXXXX""}, {""id""=>35, ""value""=>""XXXX""}, {""id""=>86, ""value""=>0}, {""id""=>87, ""value""=>0}, {""id""=>48, ""value""=>""XXXXXX""}, {""id""=>71, ""value""=>""XXXX""}, {""id""=>22, ""value""=>""XXXX""}], ""status_id""=>""88""}, ""key""=>""XXXXX""}
+ Current user: SOAP (id=165)
+Completed 500 Internal Server Error in 571ms
+
+NoMethodError (undefined method `length' for 10.0:Float):
+  app/models/custom_field.rb:310:in `validate_field_value_format'
+  app/models/custom_field.rb:288:in `validate_field_value'
+  app/models/custom_field_value.rb:46:in `validate_value'
+  lib/plugins/acts_as_customizable/lib/acts_as_customizable.rb:125:in `each'
+  lib/plugins/acts_as_customizable/lib/acts_as_customizable.rb:125:in `validate_custom_field_values'
+  app/models/issue.rb:965:in `save_issue_with_child_records'
+  app/models/issue.rb:952:in `save_issue_with_child_records'
+  app/controllers/issues_controller.rb:176:in `update'
+
+</pre>
+
+Seems that our custom field with id 21 (with has a validator for the size, 0 -> 10) has the issues.
+
+Any hints?
+
+Thanks."
+14281,Redmine,Defect,"",Closed,Normal,"Parent issue autocomplete does not follow to the ""Allow cross-project subtasks"" setting",Anders Lisspers,Jean-Philippe Lang,2014-09-14 12:43,Issues,2.6.0,"","","",0,2013-06-14 09:18,2014-09-14 12:43,"",Fixed,"","When editing an issue, you're able to get auto completion for the parent issue ID by typing a search term in the input box. However, as of r10587 this does not search the current project's issues but issues across all projects.
+
+If I understand correctly, the call to @#{escape_javascript auto_complete_issues_path}@ on line 46 of _app/views/issues/_attributes.html.erb_ should (1) pass the current projects ID as @project_id@ parameter and (2) pass the @scope@ parameter depending on the ""Allow cross-project issue relations"" administration setting.
+
+A change of line 46 in __attributes.html.erb_ as follows has been tested and seems to be working in our environment at least:
+
+<pre>
+-<%= javascript_tag ""observeAutocompleteField('issue_parent_issue_id', '#{escape_javascript auto_complete_issues_path}')"" %>
++<%= javascript_tag ""observeAutocompleteField('issue_parent_issue_id', '#{escape_javascript auto_complete_issues_path(:project_id => @issue.project, :scope => (Setting.cross_project_issue_relations? ? 'all' : nil))}')"" %>
+</pre>
+
+@$ ruby script/about@
+<pre>
+Environment:
+  Redmine version                          2.2.2.stable
+  Ruby version                             1.8.7 (x86_64-linux)
+  Rails version                            3.2.11
+  Environment                              production
+  Database adapter                         Mysql2
+Redmine plugins:
+  redmine_add_subissue_menuitem            0.0.1
+  redmine_favourite_projects               0.6.2
+  redmine_ics_export                       2.0.0.dev
+  redmine_knowledgebase                    2.2.0
+  redmine_time_tracker                     0.4
+</pre>"
+14277,Redmine,Patch,"",Closed,Normal,German translation for r11950,Daniel Felix,"",2013-06-14 06:43,Translations,"","","","",0,2013-06-13 17:13,2013-06-14 06:43,"","","","notice_account_register_done: Account was successfully created. An email containing
+    the instructions to activate your account was sent to %{email}.
+
+should be:
+notice_account_register_done: Konto wurde erfolgreich angelegt. Eine E-Mail mit 
+    weiteren Instruktionen zur Kontoaktivierung wurde an %{email} gesendet.
+
+ 
+"
+14276,Redmine,Defect,"",Closed,Normal,Limit users than can reference and fix issues in commit messages,Benoit Duffez,"",2013-06-18 08:43,SCM,"","","","",0,2013-06-13 15:43,2013-06-18 08:43,次のチケットと重複 #13762,Duplicate,"","Currently, all commit messages are analyzed and processed to update issues.
+
+This can be an issue if one merges an existing git repository into the project's, if that said repository has commit messages that contain ""fix issue #xyz"" for example.
+
+An easy way to fix this would be to actually edit the referenced/fixed issues from commit messages only if the committer is mapped to a Redmine user.
+
+Hence, commit messages containing ""fixes #xyz"" from another repository wouldn't mess with the current project, because they are not linked to a Redmine user."
+14274,Redmine,Defect,"",New,Normal,Default Issue Value Workflow  doesn't work as expected,Jorge S.,"",2013-06-13 13:52,Issues workflow,"","","","",0,2013-06-13 13:52,"","","",2.3.0,"Hi, I have a New and Confirmed statuses in Redmine 2.3
+
+My intention is to have New for newly opened tickets (obviously), and then users can set it to Confirmed.
+
+The problem is that at creation time, it is possible to set New or Confirmed.
+
+In my Workflow I have edited:
+
+Current Status--------------------- New allowed Statuses
+New ------------------------------- New -- Confirmed (X) -- Rejected
+Confirmed ------------------------- New -- Confirmed ------ Rejected
+Rejected -------------------------- New -- Confirmed ------ Rejected
+
+For Non-Member users...
+
+I think the problem is that when displaying the New Issue form, it loads the page as having the issue with Status New, so it is showing Confirmed too.
+
+Any non-hack way to hide the Status field for new issues?
+
+Thanks!"
+14269,Redmine,Defect,"",New,Urgent,custom field not displayed but not in read  only,Aur?lien M,"",2013-06-12 18:30,Issues workflow,"","","","",0,2013-06-12 18:30,"","","",2.3.1,"I have different group.
+For group1 I display a the custom_field1once the status change to status2
+For group2 I display a the custom_field1once the status change to status2
+
+One I'm logged as group1 I can see that custom field, but if I'm logged as group2 I cannot see that field.
+I'm wondering why this is happening as they have the same fields permissions.
+
+I have also noticed that updating fields permissions for group2 is not taken into account"
+14265,Redmine,Defect,"",Closed,High,Calendar view for Croatian localization is not correct. Name of days are shifted one day in advance.,VD DV,"",2013-06-12 14:18,Translations,"","","","",0,2013-06-12 12:37,2013-06-12 14:18,関連している #13931,Duplicate,2.3.0,"Calendar view for Croatian localization is not correct.
+Day names are shifted one day in advance."
+14261,Redmine,Defect,"",Closed,High,Why I can't reply my posts at redmine.org?!,Muhammad Bashir Al-Noimi,Jean-Philippe Lang,2014-03-13 22:06,Website (redmine.org),"","","","",0,2013-06-12 05:29,2014-03-13 22:06,"",Wont fix,"","Whenever I tried to reply ""my forum's post"":http://www.redmine.org/boards/2/topics/38222 redmine gives me error message that I'm spammer!!!
+
+!http://i.share.pho.to/1c349390_o.png!"

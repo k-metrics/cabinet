@@ -1,0 +1,641 @@
+#,プロジェクト,トラッカー,親チケット,ステータス,優先度,題名,作成者,担当者,更新日,カテゴリ,対象バージョン,開始日,期日,予定工数,進捗率,作成日,終了日,関連するチケット,Resolution,Affected version,説明
+28446,Redmine,Patch,"",Closed,Normal,Bulgarian translation,Ivan Cenov,Go MAEDA,2018-03-28 02:38,Translations,"","","","",0,2018-03-27 19:27,2018-03-28 02:38,"","","","Bulgarian translation of the following labels (#28000)
+
+* error_can_not_delete_auth_source"
+28440,Redmine,Defect,"",New,Normal,After commit missing file,Roman Shipiev,"",2018-04-28 09:28,Attachments,"","","","",0,2018-03-27 10:05,"","","","","<pre>
+--- a/test/unit/attachment_transaction_test.rb
++++ b/test/unit/attachment_transaction_test.rb
+@@ -73,4 +73,18 @@ class AttachmentTest < ActiveSupport::TestCase
+     end
+     assert File.exist?(diskfile)
+   end
++
++  def test_after_commit_dont_missing_file
++    attachments =
++        ActiveRecord::Base.transaction do
++          (1..3).map do
++            Attachment.create!(
++                :file => 'anything',
++                :filename => 'filename.pdf',
++                :author => User.find(1)
++            )
++          end
++        end
++    assert attachments.reject { |a| File.exist?(a.diskfile) }.empty?
++  end
+ end
+</pre>"
+28414,Redmine,Defect,"",New,High,Does Redmine compatible with MySQL 5.7 or not ?,Gena Makhomed,"",2018-04-11 09:51,Database,"","","","",0,2018-03-24 22:27,"","","",3.4.4,"
+On page https://github.com/redmine/redmine/blob/master/doc/INSTALL 
+we can read what Redmine tested with MySQL 5.7 and should work fine with this version.
+
+But on page http://www.redmine.org/projects/redmine/wiki/RedmineInstall
+we can read what Redmine is not compatible with MySQL 5.7
+
+Does Redmine compatible with MySQL 5.7 or not ? On which page written truth?
+
+If Redmine is not compatible with MySQL 5.7 - how it is possible to use Redmine with Ubuntu 16.04 ?
+Ubuntu 16.04 was packaged with MySQL 5.7 and have no way to use older MySQL version 5.0 - 5.5
+
+Can you please make Redmine fully compatible with MySQL 5.7 ?
+"
+28409,Redmine,Defect,"",New,Normal,Total estimated time value not visible when tracker has estimate time field disabled,Sebastian Paluch,"",2018-05-28 07:09,Issues,Candidate for next minor release,"","","",0,2018-03-23 16:15,"","","",3.4.4,"There is a tracker that does have estimate time field disabled. The issue of that tracker can have subtasks of different trackers that do have estimated time. The estiamted time for the parent issue is not shown at all, it should show total estimated time, in brackets. This works fine for spend time."
+28404,Redmine,Defect,"",New,Normal,"""Cancel"" does not cancel a ticket update",Moritz Winter,"",2018-03-22 12:49,UI,"","","","",0,2018-03-22 12:49,"","","",3.4.3,"If I start to update a ticket (e.g. write some notes) and then hit the cancel button I would expect all my changes to be deleted. If I update the ticket again without reloading the page all previously made (but canceled) changes are still there.
+This behavior caused some confusion among our users. Is there a possibility this could be fixed?
+
+Redmine version: 3.4.3
+Ruby version: 2.3.0
+Rails version: 4.2.8"
+28393,Redmine,Defect,"",Closed,Normal,Sort issue custom fields by position in tracker UI,Gregor Schmidt,Go MAEDA,2018-03-25 11:54,Custom fields,3.3.7,"","","",0,2018-03-21 14:40,2018-03-25 11:54,"",Fixed,"","When configuring issue custom fields for a single tracker, the custom fields are order by creation date. Instead they should be ordered by their position.
+
+Attached you may find a patch, implementing the desired behavior. Furthermore, it's changing the line @IssueCustomField.all.sort@ to @IssueCustomField.sorted@ in the @TrackersController@. The latter will sort the records within the DB, which should be slightly faster."
+28392,Redmine,Defect,"",New,Normal,"Styles for h4, h5 and h6 wiki headings are not defined",Go MAEDA,"",2018-03-22 14:12,Wiki,"","","","",0,2018-03-21 12:53,"",関連している #28331,"","","In the current versions of Redmine, styles for h4, h5, and h6 are not defined in application.css. As a result, you sometimes see an unnatural appearance of wiki pages. Please see the screenshot below.
+
+!{border: 1px solid #ccc; width: 495px}.heading-styles-are-not-defined@2x.png!"
+28383,Redmine,Defect,"",New,Normal,custom field filter on issues list requires other filters to be respected,Andreas Kohlbecker,"",2018-03-20 16:02,REST API,"","","","",0,2018-03-20 16:02,"","","",3.3.6,"Custom field filters included into _issues_ REST api request are not working as expected.
+
+
+<pre>
+/issues.json?cf_1=1234
+</pre>
+
+
+will return all issues not only those with the value @1234@ in the custom field with id 1. That is the filter is completely ignored.
+The only case in which custom field filters are working is when the query string includes a @project_id@ filter.
+
+<pre>
+/issues.json?cf_1=1234&project_id=1
+</pre>
+
+This works. Only issues with the custom field 1 containing the value @1234@ are being returned.
+
+In contrast to this adding the @status_id@ is not causing the custom field filter to be respected.
+
+"
+28372,Redmine,Patch,"",New,Normal,Czech localisation update,Karel Pi?man,"",2018-03-19 14:50,Translations,"","","","",0,2018-03-19 14:50,"","","","","An untranslated text translated
+A typo fixed
+Format unification"
+28356,Redmine,Defect,"",New,Normal,Jump to a project not showing whole project name,Simon Tr?an,"",2018-03-18 12:11,UI,"","","","",0,2018-03-18 12:11,"","","",3.4.4,"When having nested projects or longer project names the drop down menu ""Jump to a project"" does not resize to content and project names are trimmed at the end.
+It is impossible to distinguish projects from each other if the difference between project names is only at the end."
+28354,Redmine,Defect,"",Closed,Normal,"Wrong menu option for enabling REST API in docs, can't fix it",Fabi?n Rodr?guez,"",2018-03-28 09:52,Documentation,"","","","",0,2018-03-16 15:33,2018-03-28 09:52,"",Fixed,"","It seems I can't edit this page:
+
+* http://www.redmine.org/projects/redmine/wiki/Rest_api
+
+It indicates:
+
+> To enable the API-style authentication, you have to check Enable REST API in Administration -> Settings -> Authentication.
+
+It should be:
+
+> To enable the API-style authentication, you have to check Enable REST API in Administration -> Settings -> *API*.
+
+If there's a way to update my editing rights to fix this, I'll fix it.
+
+Thank you!"
+28343,Redmine,Defect,"",New,High,Error to save custom query,Brice Beaumesnil,"",2018-03-28 09:37,Issues filter,"","","","",0,2018-03-15 10:50,"","","",3.4.4,"When i want to save a custom query, the sort_criteria saved in database is wrong.
+And i have this error :
+
+<pre>
+ActionView::Template::Error (undefined method `+' for nil:NilClass):
+    1: <%= hidden_field_tag 'set_filter', '1' %>
+    2: <%= hidden_field_tag 'type', @query.type, :disabled => true, :id => 'query_type' %>
+    3: <%= query_hidden_sort_tag(@query) %>
+    4:
+    5: <div id=""query_form_with_buttons"" class=""hide-when-print"">
+    6: <div id=""query_form_content"">
+  lib/redmine/sort_criteria.rb:35:in `block in to_param'
+  lib/redmine/sort_criteria.rb:35:in `collect'
+  lib/redmine/sort_criteria.rb:35:in `to_param'
+  app/helpers/queries_helper.rb:372:in `query_hidden_sort_tag'
+  app/views/queries/_query_form.html.erb:3:in `_3dab2d6c79ffe592a7e685bf7851a687'
+  app/views/issues/index.html.erb:11:in `block in _f2c5feeaee6cbb1d8e600dad9df23bd6'
+  app/views/issues/index.html.erb:10:in `_f2c5feeaee6cbb1d8e600dad9df23bd6'
+  app/controllers/issues_controller.rb:51:in `block (2 levels) in index'
+  app/controllers/issues_controller.rb:46:in `index'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+</pre>
+
+The value used to be : @--- []@
+but i have :
+<pre>
+---
+- - 
+  - asc
+- - 
+  - asc
+- - 
+  - asc
+</pre>
+
+Or if i select just one sort item :
+<pre>
+---
+- - id
+  - desc
+- - 
+  - asc
+- - 
+  - asc
+</pre>"
+28340,Redmine,Defect,"",New,Low,Plugin Tutorial doesn't work,Grigoriy Vasilchenko,"",2018-05-10 10:22,Documentation,"","","","",0,2018-03-15 09:00,"","","",3.4.4,"Ruby 2.4.3
+Rails 4.2.8
+Redmine 3.4.4
+
+Hello.
+
+I tried to create plugin using step by step [[plugin tutorial]] and there were some problems. I had to make several corrections to make plugin working. Since I'm newbie to ruby, rails, redmine - there is no confidence in rightness of my adjustments.
+
+Paragraph ""Extending the project menu"":
+1. I replaced @@polls = Poll.find(:all)@ with @@polls = Poll.all@
+<pre>
+def index
+  @project = Project.find(params[:project_id])
+  @polls = Poll.find(:all) # @project.polls
+end
+</pre>
+2. After clicking 'Yes' or 'No' error page was displaying. To solve this I  modified method 'vote' ('redirect_to' invocation) to:
+<pre>
+  def vote	
+    poll = Poll.find(params[:id])
+    poll.vote(params[:answer])
+    if poll.save
+      flash[:notice] = 'Vote saved.'
+    end
+		
+    redirect_to :action => 'index', :project_id => params[:project_id]
+  end
+</pre>
+and added 'project_id' parameter in 'link_to' index.html.erb: 
+<pre>
+<% @polls.each do |poll| %>
+	<p>
+		<%= poll.question %>?
+		<%= link_to 'Yes', { :action => 'vote', :id => poll[:id], :answer => 'yes', :project_id => @project }, :method => :post %> <%= poll.yes %> /
+		<%= link_to 'No', { :action => 'vote', :id => poll[:id], :answer => 'no', :project_id => @project }, :method => :post %> <%= poll.no %>
+	</p>
+<% end %>
+</pre>"
+28339,Redmine,Defect,"",New,Normal,Some parts are unseen with dark theme.,sergio .,"",2018-05-25 11:20,UI,"","","","",0,2018-03-15 02:11,"","","",3.4.4,"I'v just set dark theme for GTK:
+
+export GTK_THEME=Adwaita:dark
+
+and firefox uses it.
+
+So by default all backgroud is dark and font is light. And it's OK while you changes both values (fg and bg) together and avoid change only one value. But really if your style is Light you should define all colors and avoid defaults!"
+28337,Redmine,Defect,"",Closed,Normal,Problem when creating PDF with too many columns,Vincent Robert,"",2018-03-15 14:54,Third-party libraries,"","","","",0,2018-03-14 16:21,2018-03-15 14:54,次のチケットと重複 #23962,Duplicate,3.4.4,"The application does not respond if we try to export issues to PDF with too many columns (more than 60).
+
+How to reproduce this bug:
+1. Create many issue custom fields
+    You can use this command in the console: (1..60).each { |i| CustomField.new(IssueCustomField.last.attributes.merge!({id:nil,name:""test-#{i}"", is_for_all: true})).save }
+2. Go to /issues page
+3. Choose to display every columns and apply the filter
+4. Try to export to PDF
+
+This bug seems to come from the RBPDF Gem. An infinite loop may appear in the ""Write"" method here:
+https://github.com/naitoh/rbpdf/blob/0eff3fdae5a17ec111b63e3825b358a6b34c3f56/lib/rbpdf.rb#L4510
+This infinite loop could overload the server and affect website availability."
+28331,Redmine,Defect,"",Closed,Normal,"h4, h5 and h6 headings on wiki pages should have a paragraph mark",Mizuki ISHIKAWA,Go MAEDA,2018-03-28 11:25,Text formatting,3.3.7,"","","",0,2018-03-14 07:32,2018-03-28 11:15,"関連している #28392, 関連している #1647",Fixed,"","When you enter ""h1, h2, h3"" paragraph begins from there, and paragraph mark (¶) will be displayed by mouse hover.
+!{width: 50%; border:1px solid #ccc}paragraph.png!
+In case of ""h4, h5, h6"" There is a paragraph mark, but it is not displayed because there is no setting to display.
+
+As ""h4, h5, h6"" is also the beginning of a paragraph like ""h1, h2, h3"", a paragraph mark should be displayed."
+28327,Redmine,Defect,"",New,Normal,Use of 'Feedback' term instead of 'Notes' in Edit-event,Shreyas Moolya,"",2018-03-13 12:48,Activity view,"","","","",0,2018-03-13 12:48,"","","",3.4.4,"Hi,
+
+I have been using redmine since last 2 years. Redmine solves a lot of problems in a very organized manner so I thought contribution to this community would be a value addition for me. 
+
+The term 'notes' in the edit section does provide me a beautiful functionality of entering my queries related to development. But somehow this term does not signify what the user wants to highlight.
+The term 'notes' is being used where the user wants to highlight any specific point but since the functionality also serves us with a feedback loop for the 'Author' a change in the term is necessary. Will it be right to use 'Feedback' or 'Feeds' as the term instead of 'notes'.
+Also if I was a beta tester this point would definitely be highlighted. There is a possibility I may be wrong. The issue is debatable. Suggestions are appreciated."
+28325,Redmine,Defect,"",New,Normal,Copy of project fails,Reidar M. Tronstad,"",2018-03-12 17:11,Performance,"","","","",0,2018-03-12 17:11,"","","",3.4.3,"We use projects as templates for new projects, new projects are created by copying the template project.
+Some times the copy terminates but it takes very long > 6 hours blocking Redmine for other updates.
+Usually the copy fails without copying any issues.
+Our project is not extremely big about 5000-6000 issues with relations and attached files.
+
+We can copy using export/import losing the attached files.
+
+Is this a bug?
+
+Thank you for a great product.
+Regards"
+28322,Redmine,Defect,"",New,Normal,Commit messages referencing issues should stop at line breaks,Gregor Schmidt,"",2018-03-12 14:28,SCM,Candidate for next minor release,"","","",0,2018-03-12 09:53,"","","","","When referencing an issue via commit message, the matching should stop at line breaks. Otherwise, unexpected things may happen. 
+
+E.g given the following commit message:
+
+<pre>
+Initial version of Feature #123
+
+Includes the following changes:
+
+#124 some UI fixes
+#125 still work in progress
+</pre>
+
+the current implementation will mark @#125@ as fixed. I think, this is unexpected.
+
+I've attached a patch, which replaces all @\s@ with @[[:blank:]]@ in the relevant regular expressions. Those matchers are equivalent, but @[[:blank:]]@ does not match @\r\n@. I've also added a test.
+
+This bug was identified by Holger Just from Planio."
+28321,Redmine,Patch,"",Closed,Normal,"Change Japanese translation for ""in use""",Go MAEDA,Go MAEDA,2018-04-01 14:50,Translations,4.0.0,"","","",0,2018-03-12 07:03,2018-03-21 10:14,ブロックされている #28320,"","","I suggest improving Japanese translation for ""X is in use"", to change from ""使用されています"" to ""使用中です"". Both two expression have almost the same meaning, but ""使用中です"" is shorter and more natural."
+28320,Redmine,Patch,"",Closed,Normal,Japanese translation update (r17233),Go MAEDA,Go MAEDA,2018-03-13 09:57,Translations,"","","","",0,2018-03-12 06:45,2018-03-13 09:57,ブロックしている #28321,"","","Translated @error_can_not_delete_auth_source@ added by #28000.
+
+<pre><code class=""diff"">
+Index: config/locales/ja.yml
+===================================================================
+--- config/locales/ja.yml	(revision 17233)
++++ config/locales/ja.yml	(working copy)
+@@ -1240,5 +1240,4 @@
+   setting_timelog_accept_0_hours: 作業時間に0時間の入力を許可
+   setting_timelog_max_hours_per_day: 1日・1人あたりの作業時間の上限
+   label_x_revisions: ""%{count}件の履歴""
+-  error_can_not_delete_auth_source: This authentication mode is in use and cannot be
+-    deleted.
++  error_can_not_delete_auth_source: この認証方式は使用されています。削除できません。
+</code></pre>"
+28311,Redmine,Patch,"",Closed,Normal,"Remove unused i18n key ""permission_move_issues""",Go MAEDA,Go MAEDA,2018-04-01 14:50,Translations,4.0.0,"","","",0,2018-03-09 03:59,2018-03-14 03:04,関連している #18855,"","",The i18n string @:permission_move_issues@ is no longer used because @:move_issues@ permission was removed by #18855 (Redmine 3.0.0).
+28309,Redmine,Defect,"",New,Normal,Error when query filter model inherited from other class which inherited from Query,Eduard Panov,"",2018-03-08 12:55,Code cleanup/refactoring,"","","","",0,2018-03-08 12:55,"","","",3.4.4,"We have a plugin, where: @MyPluginModelQuery < MyCustomClassQuery < Query@
+After redmine update 3.4.4 have a string https://github.com/redmine/redmine/commit/fd3c08aaa107e2c5a412a06aea6890b147e46aaf#diff-0fd59f260b10d1cfcf0c5695de8a99e6R90
+where call @Query.get_subclass@
+where a condition @subclasses.include? klass@
+
+And if my MyPluginModelQuery not a direct children of Query error raised.
+
+My suggest: improve string https://github.com/redmine/redmine/blob/master/lib/redmine/subclass_factory.rb#L32 for support children's any deep, for example @unless  klass < self@"
+28304,Redmine,Defect,"",New,Normal,Move tests related to textile syntax to dedicated TextileFormatterTest class,Mischa The Evil,"",2018-03-07 09:24,Code cleanup/refactoring,"","","","",0,2018-03-07 09:24,"","","","","_Originating from #28119#note-2 and #28207._
+
+While looking at those two issues, the question of 'how many other textile syntax tests are there remaining, lurking outside of source:/trunk/test/unit/lib/redmine/wiki_formatting/textile_formatter_test.rb and what do we want to do with them?' came up...
+The answer to the first part would be 'several'. My answer to the second part of the question would be 'move them to the dedicated TextileFormatterTest class'.
+"
+28303,Redmine,Defect,"",New,Urgent,Documentation needs tutorial for installing Redmine 3.4 with Apache on Ubuntu 16.04 ,PJ Legendre,"",2018-03-07 02:51,Documentation,"","","","",0,2018-03-07 02:51,"","","",3.4.4,"I have spend 12 hours attempting this and have gotten nowhere. I see reason for it to be this difficult to install Redmine. :/
+
+I have tried various other tutorials that use Nginx, other OS versions, etc. But it seems they're too different to actually be of use."
+28302,Redmine,Defect,"",Closed,Normal,Security notification when changing password on password forgotten is empty,Felix Sch?fer,Jean-Philippe Lang,2018-04-07 09:56,Email notifications,3.3.7,"","","",0,2018-03-06 22:16,2018-04-07 09:56,"",Fixed,3.3.0,"Currently the ""User"" and ""IP address"" fields in security notification emails sent when changing a password using the forgotten password feature are empty.
+
+Jan had already proposed a patch for this in the original security notification issue #21421#note-15, but it seems to have been overlooked. If this was intentionally left out, I am sorry to bother and I suggest adapting the email to not include the fields at all instead of leaving them blank.
+
+I have updated Jans patch against master and I will attach it to this issue."
+28295,Redmine,Patch,"",Closed,Normal,Show name changes in diff preview,Gregor Schmidt,Go MAEDA,2018-04-27 11:16,Attachments,4.0.0,"","","",0,2018-03-05 14:59,2018-04-27 11:16,"","","","When previewing uploaded diff/patch files, which contains renames, Redmine will always show the new file name in the diff preview. This can be misleading, since it would not show that the old file was removed.
+
+The attached patch keeps track of the previous file name and shows the additional information in the UI.
+
+!Screen Shot 2018-03-05 at 14.48.00.png!
+
+Please note, this patch was tested with/developed for git's patch files. Also, pure renames (without file modifications) will not be visible -- just like they are today."
+28279,Redmine,Patch,"",Closed,Normal,Change German translation for not_a_regexp and setting_mail_handler_enable_regex,Go MAEDA,Go MAEDA,2018-03-03 05:52,Translations,4.0.0,"","","",0,2018-03-03 04:32,2018-03-03 05:52,ブロックされている #27025,"","","This patch was originally submitted as a part of #27025 by ""Jan from Planio www.plan.io"":http://www.redmine.org/users/347."
+28275,Redmine,Defect,"",Closed,Normal,Redmine install plus MSSQL,Andrey Sergeev,"",2018-03-03 06:01,"","","","","",0,2018-03-02 11:04,2018-03-03 06:01,"",Invalid,"","Good day.
+Is there any full detailed manual how should i install redmine with mssql server.
+Thanks. 
+Please urgent.
+"
+28268,Redmine,Defect,"",Closed,Normal,Fix typo in test name: s/udpate/update/,Marius BALTEANU,Go MAEDA,2018-03-01 06:12,Code cleanup/refactoring,4.0.0,"","","",0,2018-02-28 22:20,2018-03-01 06:12,"",Fixed,"",_test_udpate_global_private_query_ should be _test_update_global_private_query_ in source:trunk/test/functional/queries_controller_test.rb#L493
+28267,Redmine,Defect,"",New,Normal,"New, empty repositories show white, 404 error page instead of the empty repository view",Wojtek …,"",2018-02-28 19:29,SCM,"","","","",0,2018-02-28 19:29,"","","",3.4.4,"Previously, when @reposman.rb@ created an empty repository, navigating to @project/repository@ view yielded 404 error on the page, that there is no entry (and there was link to clone the repository). We observe recently, that empty repositories yield white, 404 error page and the log contains only:
+
+<pre>
+Started GET ""/projects/project/repository"" for 18….….….…9 at 2018-02-28 06:25:22 -0800
+Processing by RepositoriesController#show as HTML
+  Parameters: {""id""=>""project""}
+  Current user: w (id=1985)
+Completed 404 Not Found in 117ms (ActiveRecord: 9.5ms)
+</pre>
+
+
+<pre>
+Environment:
+  Redmine version                3.4.3.stable
+  Ruby version                   2.3.1-p112 (2016-04-26) [x86_64-linux-gnu]
+  Rails version                  4.2.8
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.9.3
+  Git                            2.7.4
+  Filesystem                     
+
+</pre>"
+28264,Redmine,Defect,"",Reopened,Normal,Global and public custom queries are shown as editable to non administrators in projects,Bernhard Rohloff,Jean-Philippe Lang,2018-04-29 07:29,Issues,4.0.0,"","","",0,2018-02-28 17:19,2018-04-08 15:24,"関連している #17669, 関連している #14239, 関連している #9108",Fixed,3.4.4,"If a globally available custom query is created by the administrator it gets shown as editable for project members who have the ""Manage public queries"" right. Because they don't have the right to edit a global public query, they get the following error message:
+> 403 You are not authorized to access this page.
+... which I think is the intended behavior.
+
+The exact issue is that the icons for edit and delete are incorrectly shown in the filter section.
+
+*Steps to reproduce the issue:*
+
+* Login as administrator
+* Create a global and public query
+* Login as project member with right ""Manage public queries""
+* Enter the ""Issues"" tab within a project
+* Select the global and public query
+
+*Expected result:* The icons for edit and delete are not shown
+
+*Result:* The icons to edit and delete the query are shown in the filter section
+
+
+
+The global ""Issues"" tab for all projects shows the expected result.
+
+It seems to me that #14239 and #17669 describe the same issue but not in the correct way."
+28259,Redmine,Defect,"",Closed,Normal,attachments_fields id to class change not properly reflected in all CSS,Felix Sch?fer,Go MAEDA,2018-03-02 05:37,UI,3.4.5,"","","",0,2018-02-28 12:11,2018-03-02 05:37,関連している #6719,Fixed,3.4.4,"In r15917 the @attachments_fields@ was changed from an id to a class in the HTML and the CSS. Unfortunately, this was not propagated to the @rtl.css@ and @responsive.css@"
+28258,Redmine,Defect,"",New,Normal,"Ticket is invisible on other Roadmap, if target version of another project is selected",Edgars Batna,"",2018-02-28 07:19,Roadmap,"","","","",0,2018-02-28 07:19,"","","",3.4.4,"It is invisible, unless the other project is selected in Impacted Projects. 
+
+Roadmaps should show all tickets assigned to it globally, regardless of what project they come from. 
+
+Titles of tickets should probably be even visible for anyone not having access to the other projects, but without link to the ticket page. This way problems with permissions can also be detected sooner."
+28254,Redmine,Defect,"",New,Normal,issues in incorrect project,Christophe Gosiau,"",2018-02-27 14:28,"","","","","",0,2018-02-27 14:28,"","","","","I came across an issue with redmine:email:receive_imap
+As described here (http://www.redmine.org/projects/redmine/wiki/RedmineReceivingEmails), the script accepts a parameter to indicate the project where the new issue will be created in.
+However, redmine checks the mail subject for a syntax like ""[#123]"". If found, the mail will be added as a reply of the given ticket.
+
+It seems now that if the syntax ""[#123]"" is added in the subject, it is possible to add a reply to a project where the sender has no access to. Wouldn't it be better to check the project parameter and never add a reply if the ticket exists in another project than the one that is passed as a parameter? 
+"
+28252,Redmine,Defect,"",Closed,Normal,redmine plugin project setting tabs add,曾 詠智,"",2018-03-07 09:34,"","","","","",0,2018-02-27 07:23,2018-03-07 09:34,"",Invalid,"","my patch.rb
+
+<pre><code class=""ruby"">
+require_dependency 'projects_helper'
+
+module SampleProjectsHelperPatch
+  def self.included(base)   
+	base.send(:include, ProjectsHelperMethodsSample)
+    base.class_eval do
+		alias_method_chain :project_settings_tabs, :redmine_dfi_category
+    end
+  end
+end
+
+module ProjectsHelperMethodsSample
+  def project_settings_tabs_with_redmine_dfi_category 
+    tabs = project_settings_tabs_without_redmine_dfi_category
+    action = {:name => 'sample_plugin', 
+      :controller => 'example',
+      :action => :show, 
+      :partial => 'sample_settings/sample_plugin_settings', :label => :label_plugin_example}
+    tabs << action #if User.current.allowed_to?(action, @project)
+	tabs
+  end
+end
+</code></pre>
+
+my init.rb
+
+<pre><code class=""ruby"">
+require 'redmine'
+#require 'tasks\dfi_category_helper_patch'
+require 'dfi_category_issues_hook'
+require 'dfi_category_controller_issue_hook'
+require 'sample_projects_helper_patch'
+Redmine::Plugin.register :redmine_dfi_category do
+  name 'Redmine Dfi Category plugin'
+  author 'Tony'
+  description 'This is a plugin for Redmine'
+  version '0.0.1'
+  url 'http://example.com/path/to/plugin'
+  author_url 'http://example.com/about'
+   
+  menu :project_menu, :categories,{ :controller =>'dfi_categories', :action=>'index' } 
+  
+    project_module :dfi_categories do
+	permission :dfi, :dfi_categories => :index
+	permission :redmine_dfi_category, {:categories_setting => [:show, :edit]}, :require => :member
+	end
+	
+   Rails.configuration.to_prepare do
+    require_dependency 'projects_helper'
+   unless ProjectsHelper.included_modules.include? SampleProjectsHelperPatch
+      ProjectsHelper.send(:include, SampleProjectsHelperPatch)   
+    end 
+  end 
+end
+</code></pre>
+
+I follow the plugin's patch of content
+(https://github.com/akiko-pusu/redmine_issue_templates/blob/master/lib/issue_templates/projects_helper_patch.rb)
+
+but my tab can't work...
+
+thinks
+
+
+
+
+"
+28251,Redmine,Defect,"",Closed,Normal,Unable to delete article in Knowledgebase,Jinhee Jo,"",2018-03-07 09:27,"","","","","",0,2018-02-27 05:07,2018-03-07 09:27,"",Invalid,3.2.1,"Dear Support,
+
+I cannot delete articles from KB, and when I try to create an article, Error page appears, but new article is created anyway if I refresh the page.
+
+Both logs are below.
+
+
+(1) Error log when deleting an article
+
+I, [2018-02-27T12:50:43.234267 #29220]  INFO --: Started GET ""/projects/knowledgebase/knowledgebase/articles/587"" for 10.1.1.254 at 2018-02-27 12:50:43 +0900
+I, [2018-02-27T12:50:43.235551 #29220]  INFO --: Processing by ArticlesController#show as HTML
+I, [2018-02-27T12:50:43.235605 #29220]  INFO -- :   Parameters: {""project_id""=>""knowledgebase"", ""id""=>""587""}
+I, [2018-02-27T12:50:43.268528 #29220]  INFO -- :   Current user: jhjo (id=63)
+I, [2018-02-27T12:50:43.294487 #29220]  INFO -- :   Rendered plugins/redmine_knowledgebase/app/views/categories/_jump_box.html.erb (16.8ms)
+I, [2018-02-27T12:50:43.299177 #29220]  INFO -- :   Rendered watchers/_watchers.html.erb (2.0ms)
+I, [2018-02-27T12:50:43.301331 #29220]  INFO -- :   Rendered plugins/redmine_knowledgebase/app/views/articles/_rating.html.erb (2.0ms)
+I, [2018-02-27T12:50:43.312649 #29220]  INFO -- :   Rendered plugins/redmine_knowledgebase/app/views/articles/sections/_content.html.erb (6.4ms)
+I, [2018-02-27T12:50:43.315954 #29220]  INFO -- :   Rendered plugins/redmine_knowledgebase/app/views/articles/sections/_comments.html.erb (3.0ms)
+I, [2018-02-27T12:50:43.316618 #29220]  INFO -- :   Rendered plugins/redmine_knowledgebase/app/views/articles/sections/_attachments.html.erb (0.4ms)
+I, [2018-02-27T12:50:43.324682 #29220]  INFO -- :   Rendered plugins/redmine_knowledgebase/app/views/articles/_history.html.erb (7.2ms)
+I, [2018-02-27T12:50:43.324805 #29220]  INFO -- :   Rendered plugins/redmine_knowledgebase/app/views/articles/sections/_history.html.erb (7.9ms)
+I, [2018-02-27T12:50:43.324902 #29220]  INFO -- :   Rendered common/_tabs.html.erb (19.6ms)
+I, [2018-02-27T12:50:43.324965 #29220]  INFO -- :   Rendered plugins/redmine_knowledgebase/app/views/articles/show.html.erb within layouts/base (48.4ms)
+I, [2018-02-27T12:50:43.328142 #29220]  INFO -- :   Rendered inline template (0.6ms)
+I, [2018-02-27T12:50:43.328967 #29220]  INFO -- :   Rendered plugins/clipboard_image_paste/app/views/clipboard_image_paste/_headers.html.erb (0.3ms)
+I, [2018-02-27T12:50:43.345543 #29220]  INFO -- :   Rendered plugins/redmine_banner/app/views/banner/_project_body_bottom.html.erb (1.0ms)
+I, [2018-02-27T12:50:43.348516 #29220]  INFO -- :   Rendered plugins/clipboard_image_paste/app/views/clipboard_image_paste/_add_form.html.erb (2.4ms)
+I, [2018-02-27T12:50:43.348760 #29220]  INFO --: Completed 200 OK in 113ms (Views: 63.3ms | ActiveRecord: 40.8ms)
+I, [2018-02-27T12:50:44.436271 #29220]  INFO --: Started DELETE ""/projects/knowledgebase/knowledgebase/articles/587"" for 10.1.1.254 at 2018-02-27 12:50:44 +0900
+I, [2018-02-27T12:50:44.437456 #29220]  INFO --: Processing by ArticlesController#destroy as HTML
+I, [2018-02-27T12:50:44.437515 #29220]  INFO -- :   Parameters: {""authenticity_token""=>""PMm9N/BNYGJqQMU7s0uiu5n3XDNp82jPQVKc7/iCcemGJ0B9rIj8sw/FHH77IWACGg8es+6sLnQbG/cnVO+vNg=="", ""project_id""=>""knowledgebase"", ""id""=>""587""}
+I, [2018-02-27T12:50:44.443324 #29220]  INFO -- :   Current user: jhjo (id=63)
+I, [2018-02-27T12:50:44.518518 #29220]  INFO -- :   Rendered plugins/redmine_knowledgebase/app/views/kb_mailer/article_destroy.text.erb within layouts/mailer (0.3ms)
+I, [2018-02-27T12:50:44.519190 #29220]  INFO -- :   Rendered plugins/redmine_knowledgebase/app/views/kb_mailer/article_destroy.html.erb within layouts/mailer (0.2ms)
+I, [2018-02-27T12:50:45.784562 #29220]  INFO --: Completed 500 Internal Server Error in 1347ms (ActiveRecord: 19.0ms)
+F, [2018-02-27T12:50:45.785743 #29220] FATAL --: 
+Net::SMTPFatalError (550 5.1.1 sorry, no mailbox here by that name (chkuser)
+):
+  app/models/mailer.rb:458:in `deliver_mail'
+  config/initializers/10-patches.rb:154:in `deliver'
+  plugins/redmine_knowledgebase/app/controllers/articles_controller.rb:165:in `destroy'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+  plugins/redmine_dmsf/lib/redmine_dmsf/webdav/no_parse.rb:33:in `call'
+
+
+(2) Error log when registering an article
+
+I, [2018-02-27T13:01:31.910817 #29220]  INFO --: Started POST ""/projects/knowledgebase/knowledgebase/articles"" for 10.1.1.254 at 2018-02-27 13:01:31 +0900
+I, [2018-02-27T13:01:31.911912 #29220]  INFO --: Processing by ArticlesController#create as HTML
+I, [2018-02-27T13:01:31.911980 #29220]  INFO -- :   Parameters: {""utf8""=>""?"", ""authenticity_token""=>""aK8B2rRvnsyAHlL3IKbERCqWIQC+HmHNPipmXFQUX5fSQfyQ6KoCHeWbi7JozAb9qW5jgDlBJ3ZkYw2U+HmBSA=="", ""category_id""=>""34"", ""article""=>{""title""=>""tt"", ""content""=>""tt"", ""tag_list""=>"""", ""version_comments""=>""""}, ""commit""=>""Create"", ""project_id""=>""knowledgebase""}
+I, [2018-02-27T13:01:31.917577 #29220]  INFO -- :   Current user: jhjo (id=63)
+I, [2018-02-27T13:01:31.929748 #29220]  INFO --: Redirected to https://ts.infinitt.com/projects/knowledgebase/knowledgebase/articles/590
+I, [2018-02-27T13:01:31.999186 #29220]  INFO -- :   Rendered plugins/redmine_knowledgebase/app/views/kb_mailer/article_create.text.erb within layouts/mailer (0.4ms)
+I, [2018-02-27T13:01:31.999959 #29220]  INFO -- :   Rendered plugins/redmine_knowledgebase/app/views/kb_mailer/article_create.html.erb within layouts/mailer (0.3ms)
+I, [2018-02-27T13:01:33.261598 #29220]  INFO --: Completed 500 Internal Server Error in 1350ms (ActiveRecord: 19.9ms)
+F, [2018-02-27T13:01:33.262741 #29220] FATAL --: 
+Net::SMTPFatalError (550 5.1.1 sorry, no mailbox here by that name (chkuser)
+):
+  app/models/mailer.rb:458:in `deliver_mail'
+  config/initializers/10-patches.rb:154:in `deliver'
+  plugins/redmine_knowledgebase/app/controllers/articles_controller.rb:81:in `create'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+  plugins/redmine_dmsf/lib/redmine_dmsf/webdav/no_parse.rb:33:in `call'
+
+
+
+I didn't make any changes in mainbox.
+Could you please help me to solve this issue?
+
+
+Thanks,
+Julia"
+28243,Redmine,Patch,"",New,Normal,Consistent interface for Principal.member_of and not_member_of,Alexander Oleynikov,"",2018-02-25 20:46,"","","","","",0,2018-02-25 20:46,"","","","","Principal model has the following two scopes: member_of and not_member_of, both of them expect project or collection of projects as an argument. The problem is that given <pre>projects = Project.where(:name => 'My Project')</pre> you'll get correct results from <pre>Principal.member_of(projects)</pre>, but an exception will be thrown if you'll try to run <pre>Principal.not_member_of(projects)</pre>. That's because not_member_of puts its argument into an array if it's not a subclass of Array (which Project::ActiveRecord_Relation is not, though it knows how to #map).
+
+I think one should be able to call both member_of and not_member_of with any kind of project collection, not just Array, and both of them should process arguments in the same way. So I provide a patch for that."
+28242,Redmine,Patch,"",Closed,Normal,Add toggle checkboxes link (green tick) to several screens  ,Marius BALTEANU,Go MAEDA,2018-04-04 06:19,UI,4.0.0,"","","",0,2018-02-25 15:52,2018-02-26 13:08,"関連している #27807, 関連している #28463","","","- Active activities from Time tracking tab (Project settings)
+- Trackers and custom fields settings from Issues tracking tab (Project settings)
+- Project modules settings (Project settings)
+- Roles permissions for each module (Administration)
+
+"
+28240,Redmine,Defect,"",New,Normal,Issue parents are getting set incorrectly,Tomoko  Shimizu,"",2018-03-04 13:35,Issues,"","","","",0,2018-02-24 07:50,2017-09-27 12:24,関連している #27066,"",3.2.0,"It is same as Defect #27066.  
+---
+When adding and saving a sub issue under a parent issue, the subtask appear under wrong parent.
+----
+
+In our Redmine environment, this occurs pretty often for some root_id issues have over 100 decendent issues.  
+We recently start running ""Issues#rebuild_tree!"" once a month at midnight.
+But ""once a month"" is not enough.
+""Issues#rebuild_tree!"" takes over 5 hours and lockes all issues meanwhile. So running this script every day is not good.
+
+'Issue.rebuild_single_tree!(1)' needs manual operation by redmine admins at daytime.  
+ 
+So preventing ""issue parents is wrong(=""lft"" and ""rgt"" values of issues become wrong.)"" from happening would be much better.
+
+
+Environment
+* Redmine 3.2
+* Rails 4
+* Ruby 2.3
+* Issue number:about 400000
+
+
+"
+28239,Redmine,Defect,"",Closed,Normal,redmine3.3: issue charts plugins install successed - Error Loading Chart: No adapter found,子 木,"",2018-02-24 01:09,"","","","","",0,2018-02-23 10:55,2018-02-24 01:09,コピー元 #28238,Invalid,"",""
+28238,Redmine,Defect,"",Closed,Normal,redmine3.3: issue charts - Error Loading Chart: No adapter found,子 木,"",2018-02-24 01:09,"","","","","",0,2018-02-23 10:53,2018-02-24 01:09,コピー先 #28239,Invalid,"",如?
+28233,Redmine,Defect,"",Closed,Normal,IssuesPdfHelperTest fails when run in isolation,Gregor Schmidt,Go MAEDA,2018-02-24 10:29,PDF export,"","","","",0,2018-02-22 11:23,2018-02-24 10:29,関連している #12510,Fixed,"","The @IssuesPdfHelperTest@ test fails, when starting it in isolation. It's missing the neccessary fixture definitions. Depending on the random test order, this might also lead to errors, when running the whole test suite.
+
+Steps to reproduce:
+
+<pre>
+RAILS_ENV=test rake db:drop db:create
+rake db:test:prepare
+ruby -Itest test/unit/lib/redmine/export/pdf/issues_pdf_test.rb
+</pre>
+
+The attached patch adds the required fixture declarations and fixes the test failure."
+28232,Redmine,Defect,"",New,Normal,Sql error when adding custom field in issues list,Aleksandr S,"",2018-03-08 08:19,Custom fields,"","","","",0,2018-02-22 10:58,"","","",3.4.3,"Hello,
+i have this error, when i try to add custom field in issue list
+
+<pre>
+Started GET ""/projects/helpdesk/issues?utf8=%E2%9C%93&set_filter=1&sort=id%3Adesc&f%5B%5D=status_id&op%5Bstatus_id%5D=o&f%5B%5D=&c%5B%5D=tracker&c%5B%5D=status&c%5B%5D=author&c%5B%5D=subject&c%5B%5D=assigned_to&c%5B%5D=priority&c%5B%5D=updated_on&c%5B%5D=done_ratio&c%5B%5D=cf_8&group_by=&t%5B%5D="" for 192.168.4.70 at 2018-02-22 10:36:56 +0300
+Processing by IssuesController#index as HTML
+  Parameters: {""utf8""=>""?"", ""set_filter""=>""1"", ""sort""=>""id:desc"", ""f""=>[""status_id"", """"], ""op""=>{""status_id""=>""o""}, ""c""=>[""tracker"", ""status"", ""author"", ""subject"", ""assigned_to"", ""priority"", ""updated_on"", ""done_ratio"", ""cf_8""], ""group_by""=>"""", ""t""=>[""""], ""project_id""=>""helpdesk""}
+  Current user: a.sinushin (id=46)
+Query::StatementInvalid: PG::SyntaxError: ОШИБКА:  ошибка синтаксиса (примерное положение: ""."")
+LINE 4: ...                                                     cv.cnt,
+                                                                  ^
+: SELECT custom_values.*, cv.cnt, cv.field_format FROM ""custom_values"" INNER JOIN
+                                                (
+                                                  SELECT cv.id
+                                                         cv.cnt,
+                                                         cv.field_format
+                                                  FROM
+                                                  (
+                                                    SELECT cv.id,
+                                                           cv_m.cnt,
+                                                           cf.field_format,
+                                                           case when cf.multiple = 't' and cf.acl_trim_multiple = 't' then 1 else 0 end as mlt,
+                                                           ROW_NUMBER() OVER (PARTITION BY i.id, cv.custom_field_id, ORDER BY i.id, cv.custom_field_id, cv.id) as row_number
+                                                    FROM custom_values cv
+                                                         INNER JOIN custom_fields cf on cf.id = cv.custom_field_id
+                                                         INNER JOIN issues i on i.id = cv.customized_id
+                                                         INNER JOIN (SELECT COUNT(1) as cnt, cv.custom_field_id, cv.customized_id FROM custom_values cv WHERE cv.customized_type = 'Issue' and cv.custom_field_id IN (8) and cv.customized_id IN (1166,1160,1159,1157,1155,1151,1148,923) GROUP BY cv.custom_field_id, cv.customized_id) cv_m on cv_m.custom_field_id = cf.id and cv_m.customized_id = i.id
+                                                    WHERE cv.customized_type = 'Issue'
+                                                      and cv.custom_field_id IN (8)
+                                                      and i.id IN (1166,1160,1159,1157,1155,1151,1148,923)
+                                                    ORDER BY i.id, cv.custom_field_id, cv.id
+                                                  ) cv
+                                                  WHERE cv.mlt = 0 OR cv.row_number <= 3
+                                                ) cv on cv.id = custom_values.id  ORDER BY ""custom_values"".""customized_id"" ASC, ""custom_values"".""custom_field_id"" ASC, ""custom_values"".""id"" ASC
+  Rendered common/error.html.erb within layouts/base (0.3ms)
+</pre>
+
+How can i patch it?"
+28229,Redmine,Patch,"",Closed,Normal,"Remove unused i18n key ""setting_app_subtitle""",Go MAEDA,Go MAEDA,2018-02-24 04:31,Code cleanup/refactoring,4.0.0,"","","",0,2018-02-21 16:35,2018-02-24 04:31,"","","","The i18n string ""setting_app_subtitle"" is no longer used since r747 (2007-09-22)."
+28228,Redmine,Defect,"",Closed,Normal,REST API Parameter GET /issues.json?assigned_to_id=me doesn't work,vishal gohil,"",2018-02-22 05:01,REST API,"","","","",0,2018-02-21 11:21,2018-02-22 00:25,"",Cant reproduce,3.3.3,"I want to query only for Issues which are assigned to one user.
+Example Redmine-User-Login ist ""vishal-px""
+so I hoped that GET */issues.json?assigned_to_id=me* will deliver issues assigned to vishal-px
+Even if I try GET */issues.json?assigned_to_id=342710* it doesn't work.
+It always returns the blank response.
+<pre>
+{
+   issues: [ ],
+   total_count: 0,
+   offset: 0,
+   limit: 25
+}
+</pre>
+
+Is there any solution for this bug?
+
+regards
+Vishal"
+28224,Redmine,Defect,"",Closed,Normal,Misplaced macro on donors wiki page,Bernhard Rohloff,"",2018-02-20 20:56,Website (redmine.org),"","","","",0,2018-02-20 19:48,2018-02-20 20:41,関連している #13060,Invalid,"","There is a not working macro @{{sample_macro}}@ on the donors wiki page, which I think, was not intended to be a part of it."
+28215,Redmine,Defect,"",Closed,High,Can not create issue via REST API,Francisco Mancardi,"",2018-02-19 22:52,REST API,"","","","",0,2018-02-19 21:53,2018-02-19 22:52,"",Invalid,3.4.4,"I'm using redmine on cloud provided by planio.
+I'm able to UPDATE an issue SUBJECT, but can not create an ISSUE.
+Have tried using this curl
+
+ curl 'https://testlinktest.planio.com/issues.json' \
+  -X POST \
+  -H 'X-Redmine-API-Key: c1796c2215a55723f134a4c546e9c121' \
+  -H 'Content-Type: application/json' \
+  -d '{ ""issue"": {""subject"": ""A new issue with LOVE "",""project_id"": ""3""} }'
+
+But I always get:
+
+<?xml version=""1.0"" encoding=""UTF-8""?><errors type=""array""><error>Subject cannot be blank</error><error>Project cannot be blank</error><error>Tracker cannot be blank</error><error>Status cannot be blank</error></errors>
+
+Any hint?
+any idea?
+"
+28212,Redmine,Defect,"",Closed,Normal,Request: No Link to attached files,Jo Wa,"",2018-02-19 16:45,Files,"","","","",0,2018-02-19 09:32,2018-02-19 16:45,"",Invalid,2.5.2,"Hello,
+
+i had installed redmine on debian jessie with apt repository running on apache2, configured redmine and beeing almost ready to use.
+One thing i'm not able to run are the attachments.
+The upload is working, physically the files are stored in /var/lib/redmine/default/files but i can't see none of them in the frontend. Neither in documents nor in files or any attachments to tickets.
+In configuration.yml i left attachments_storage_path: empty, the logs are saying that the upload is successfull.
+Switched off all server security options.
+Maybe someone has a idea, because i have no clue, what is wrong there.
+
+cheers
+
+"
+28209,Redmine,Defect,"",Closed,Normal,cannot download attachment .vsd,匿名ユーザー,"",2018-02-18 18:55,"","","","","",0,2018-02-18 16:58,2018-02-18 18:55,"",Invalid,"","I have some problem with my Redmine server.
+
+I have some attachments file that formated from visio (.vsd documents).
+
+Where the file downloaded from our server, this is the production.log in the server :
+
+<pre>
+Started GET ""/redmine/dmsf/files/2427/download"" for 114.124.141.205 at 2018-02-18 22:51:36 +0700
+Processing by DmsfFilesController#show as HTML
+  Parameters: {""download""=>"""", ""id""=>""2427""}
+  Current user: harapan (id=124)
+2018-02-18 22:51:36 harapan@114.124.141.205/: downloaded dmsf://crt/2427/4802
+Sent file /var/www/redmine/files/dmsf/p_crt/170924140613_2427_Compositional_Tpc_and_Ppc.vsd (0.1ms)
+Completed 200 OK in 40.3ms (ActiveRecord: 23.3ms)
+</pre>
+
+but in the browser don't download anything
+
+how to resolve this issues?"

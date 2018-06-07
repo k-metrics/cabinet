@@ -1,0 +1,884 @@
+#,プロジェクト,トラッカー,親チケット,ステータス,優先度,題名,作成者,担当者,更新日,カテゴリ,対象バージョン,開始日,期日,予定工数,進捗率,作成日,終了日,関連するチケット,Resolution,Affected version,説明
+26714,Redmine,Patch,"",New,Normal,pluck instead of map in issue_query,jwjw yy,"",2017-08-18 19:50,Code cleanup/refactoring,4.1.0,"","","",0,2017-08-17 08:30,"","","","","The previous issue_query.rb, line  438 version_ids = versions(:conditions => [where]).map(&:id) will issue query as:
+
+<pre><code class=""sql"">
+SELECT `versions`.`id` AS t0_r0, `versions`.`project_id` AS t0_r1, `versions`.`name` AS t0_r2, `versions`.`description` AS t0_r3, `versions`.`effective_date` AS t0_r4, `versions`.`created_on` AS t0_r5, `versions`.`updated_on` AS t0_r6, `versions`.`wiki_page_title` AS t0_r7, `versions`.`status` AS t0_r8, `versions`.`sharing` AS t0_r9, `projects`.`id` AS t1_r0, `projects`.`name` AS t1_r1, `projects`.`description` AS t1_r2, `projects`.`homepage` AS t1_r3, `projects`.`is_public` AS t1_r4, `projects`.`parent_id` AS t1_r5, `projects`.`created_on` AS t1_r6, `projects`.`updated_on` AS t1_r7, `projects`.`identifier` AS t1_r8, `projects`.`status` AS t1_r9, `projects`.`lft` AS t1_r10, `projects`.`rgt` AS t1_r11, `projects`.`inherit_members` AS t1_r12, `projects`.`default_version_id` AS t1_r13 FROM `versions` INNER JOIN `projects` ON `projects`.`id` = `versions`.`project_id` WHERE (projects.status <> 9 AND projects.id IN (SELECT em.project_id FROM enabled_modules em WHERE em.name='issue_tracking')) AND ( 1 = 1 )
+</code></pre>
+
+However, only id is needed, so , it's possible to change to 
+
+<pre><code class=""ruby"">
+ version_ids = versions_for_id(:conditions => [where]).pluck(:id)
+  def versions_for_id(options={})
+    Version.visible.
+      where(project_statement).
+      where(options[:conditions]).
+      includes(:project).
+      references(:project)
+  rescue ::ActiveRecord::StatementInvalid => e
+    raise StatementInvalid.new(e.message)
+  end    
+</code></pre>
+
+As shown in diff.rb"
+26711,Redmine,Patch,"",Closed,Normal,Use pluck instead of map in MyHelper,jwjw yy,Go MAEDA,2017-11-26 15:40,Code cleanup/refactoring,4.0.0,"","","",0,2017-08-17 05:03,2017-11-26 15:40,"","","","In app/helpers/my_helpers, 
+68:     where(:project_id => User.current.projects.map(&:id)).
+Use pluck to get the id is much more efficient, since the query will only access the id field, instead of select * from projects:
+Before:
+SELECT `projects`.* FROM `projects` INNER JOIN `members` ON `projects`.`id` = `members`.`project_id` WHERE `members`.`user_id` = ? AND (projects.status<>9)  [[""user_id"", 5341]]
+
+After:
+ SELECT `projects`.`id` FROM `projects` INNER JOIN `members` ON `projects`.`id` = `members`.`project_id` WHERE `members`.`user_id` = ? AND (projects.status<>9)  [[""user_id"", 5341]]"
+26709,Redmine,Patch,"",New,Normal,Use correct http status codes,Pavel Rosick?,"",2017-10-13 03:59,REST API,4.1.0,"","","",0,2017-08-17 01:26,"","","","","1/ redmine ignores accept headers and jquery dataType attribute
+
+The Accept request-header field can be used to specify certain media types which are acceptable for the response.
+
+If no Accept header field is present, then it is assumed that the client accepts all media types. If an Accept header field is present, and if the server cannot send a response which is acceptable according to the combined Accept field value, then the server SHOULD send a 406 (not acceptable) response.
+
+http://api.jquery.com/jQuery.ajax/
+
+The type of data that you're expecting back from the server. If none is specified, jQuery will try to infer it based on the MIME type of the response (an XML MIME type will yield XML, in 1.4 JSON will yield a JavaScript object, in 1.4 script will execute the script, and anything else will be returned as a string). The available types (and the result passed as the first argument to your success callback)
+
+examples:
+<pre>
+curl -v -H http://demo.redmine.org/issues.json
+-> 200 + json OK!
+
+but
+curl -v -H ""Accept: application/json"" http://demo.redmine.org/issues
+-> 500 no builder for format
+
+expected (with patch)
+-> 200 + json output
+</pre>
+
+in some cases html is returned even if json was requested
+
+2/ 406 error raises exception
+<pre>
+curl -v http://demo.redmine.org/issues.xxx
+-> 406 + exception ActionController::UnknownFormat
+
+expected (with patch)
+-> 406 no exception
+</pre>
+
+3/ csrf protection - useful to avoid exceptions because of site-scanner bots
+<pre>
+curl -v -H ""Accept: text/javascript"" http://demo.redmine.org/issues/new
+-> 422 + exception ActionController::InvalidCrossOriginRequest: Security warning: an embedded <script> tag on another site requested protected JavaScript.
+
+expected
+-> 400 - no exception
+</pre>"
+26708,Redmine,Defect,"",New,Normal,Diff formatting results empty lines if they contains HTML tags,Robert Korulczyk,"",2017-08-16 22:49,Text formatting,"","","","",0,2017-08-16 22:48,"","","",3.3.4,"h2. Steps to reproduce:
+
+In issue description write something like (need to remove space in @< /pre>@):
+
+<pre>
+<pre><code class=""diff"">
+--- a/test.php
++++ b/test.php
+@@ -329,7 +329,7 @@
+
+-echo '<div></div>';
++echo '<div id=""test""></div>';
+
+</code>< /pre>
+</pre>
+
+h2. Expected result:
+
+Proper diff.
+
+h2. What I get:
+
+!058577fc.png!
+"
+26705,Redmine,Defect,"",Confirmed,Normal,Unable to download file if custom field is not defined as visible to any users,Thibault Deregnaucourt,"",2017-12-14 17:19,Custom fields,3.4.4,"","","",0,2017-08-16 18:28,"",関連している #6719,"",3.4.2,"Even if my user account has all available roles (and is also an administrator), i am not able to download custom field file, unless custom field is configured as visible to any users.
+
+I am getting a ""403 - You are not authorized to access this page."" error page when i am trying to download file (either from issue or custom query).
+
+It does not occur when i add file as issue attachment.
+
+My (bitnami) environment is : 
+
+<pre>
+Environment:
+  Redmine version                3.4.2.stable
+  Ruby version                   2.3.4-p301 (2017-03-30) [x86_64-linux]
+  Rails version                  4.2.8
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.9.5
+  Cvs                            1.12.13
+  Git                            2.7.4
+  Filesystem                     
+Redmine plugins:
+  hide_journal_details           0.0.2
+  redmine_contacts               4.1.1
+  redmine_issue_templates        0.1.7
+</pre>
+
+The production.log file : 
+
+<pre>
+Started GET ""/attachments/@@@/@@@"" for @@@.@@@.@@@.@@@ at 2017-08-16 16:11:05 +0000
+Processing by AttachmentsController#show as HTML
+  Parameters: {""id""=>""@@@"", ""filename""=>""@@@""}
+  Current user: @@@ (id=@@@)
+  Rendered common/error.html.erb within layouts/base (1.2ms)
+  Rendered plugins/redmine_contacts/app/views/contacts_issues/_additional_assets.html.erb (1.1ms)
+  Rendered plugins/redmine_contacts/app/views/common/_contacts_select2_data.html.erb (0.4ms)
+Filter chain halted as :read_authorize rendered or redirected
+Completed 403 Forbidden in 57ms (Views: 35.7ms | ActiveRecord: 10.2ms)
+</pre>
+"
+26703,Redmine,Patch,"",Closed,Normal,German translations in 3.4-stable,Peter Pfl?ging,"",2017-09-15 07:45,Translations,3.4.3,"","","",0,2017-08-16 10:29,2017-09-15 07:44,"","","","Hi,
+
+I'm missing some German translations in 3.4.2. 
+
+I've made the translations. 
+
+Attached is a patch for config/locales/de.yml
+"
+26702,Redmine,Defect,"",Closed,Normal,Getting an internal error when I tried to open up a project.,Chung Ley,"",2017-08-16 17:30,"","","","","",0,2017-08-15 21:01,2017-08-16 09:01,"",Invalid,3.4.1,"Currently, if I logged on as regular user to my redmine installation of 3.4.1; I can see the list of projects, but when I tried to open any ""Project"", I got the following:
+<pre>
+Internal error
+
+An error occurred on the page you were trying to access.
+If you continue to experience problems please contact your Redmine administrator for assistance.
+
+If you are the Redmine administrator, check your log files for details about the error.
+</pre>
+
+If I opened the log, I see this ""error"":
+NoMethodError (undefined method `accessor' for #<ActiveRecord::Type::Value:0x000000036cfce8>):
+<pre>
+  app/models/role.rb:229:in `permissions_all_trackers'
+  app/models/role.rb:238:in `permissions_all_trackers?'
+  app/models/tracker.rb:61:in `block (2 levels) in <class:Tracker>'
+  app/models/project.rb:217:in `block in allowed_to_condition'
+  app/models/project.rb:216:in `each'
+  app/models/project.rb:216:in `allowed_to_condition'
+  app/models/tracker.rb:60:in `block in <class:Tracker>'
+  app/controllers/projects_controller.rb:152:in `show'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+</pre>
+
+I then logged on as ""Admin"", I can then open the project.  I then tried to looking inside ""Settings"" to see if there is something peculiar but got the internal error again, and this time the error in the log file is a little different:
+<pre>
+  ActionView::Template::Error (undefined method `default_assigned_to_id' for #<Project:0x007f4611fb2878>
+Did you mean?  default_assigned_to
+               default_assigned_to=):
+    25: <% end %>
+    26: 
+    27: <% if @project.safe_attribute?('default_assigned_to_id') && (default_assigned_to_options = project_default_assigned_to_options(@project)).present? %>
+    28:   <p><%= f.select :default_assigned_to_id, default_assigned_to_options, include_blank: true %></p>
+    29: <% end %>
+    30: 
+    31: <%= wikitoolbar_for 'project_description' %>
+  lib/redmine/views/labelled_form_builder.rb:38:in `select'
+  app/views/projects/_form.html.erb:28:in `_app_views_projects__form_html_erb__2072855206031296453_69969313185660'
+  app/views/projects/_edit.html.erb:2:in `block in _app_views_projects__edit_html_erb___116871158613782057_69969313241060'
+  app/helpers/application_helper.rb:1188:in `labelled_form_for'
+  app/views/projects/_edit.html.erb:1:in `_app_views_projects__edit_html_erb___116871158613782057_69969313241060'
+  app/views/common/_tabs.html.erb:17:in `block in _app_views_common__tabs_html_erb__1006688546081786105_69969313437680'
+  app/views/common/_tabs.html.erb:16:in `each'
+  app/views/common/_tabs.html.erb:16:in `_app_views_common__tabs_html_erb__1006688546081786105_69969313437680'
+  app/helpers/application_helper.rb:343:in `render_tabs'
+  app/views/projects/settings.html.erb:3:in `_app_views_projects_settings_html_erb___3324488570488824154_69969313523340'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+</pre>
+
+I installed Redmine using ""regular"" account that does not have superuser privilege.  I am pretty sure it was working before and I don't remember making any changes to the setup/configuration except for the attempt with starting on Apache/Tomcat which basically did a copy of public/dispatch.fcgi.example to public/dispatch.fcgi; but I had already removed that file and restart Redmine and the problem persisted.
+
+Below is my environment.
+
+<pre>
+[<user>@<server> redmine-3.4.1]$ RAILS_ENV=production bin/about
+
+sh: darcs: command not found
+sh: hg: command not found
+sh: bzr: command not found
+Environment:
+  Redmine version                3.4.1.stable
+  Ruby version                   2.4.1-p111 (2017-03-22) [x86_64-linux]
+  Rails version                  4.2.8
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.6.19
+  Cvs                            1.12.13
+  Git                            2.13.0
+  Filesystem                     
+Redmine plugins:
+  no plugin installed
+
+[<user>@<server> redmine-3.4.1]$ uname -a
+Linux <server> 2.6.32-642.6.2.el6.x86_64 #1 SMP Mon Oct 24 10:22:33 EDT 2016 x86_64 GNU/Linux
+</pre>
+
+ "
+26699,Redmine,Defect,"",New,Normal,Anonymous user should have their icon,Go MAEDA,"",2017-10-16 01:10,UI,3.4.4,"","","",0,2017-08-15 17:01,"",関連している #25775,"","","@ApplicationHelper#avatar@ method returns blank string instead of @img@ tag for the anonymous user. The behavior causes disordered layout in IssuesController#show page.
+
+This patch adds an icon for the anonymous user and fixes the broken layout.
+
+*Before:*
+The author of the issue is the anonymous user. But in the upper left corner of the page, the assignee's icon is displayed as if it is the author's icon because the anonymous user does not have their avatar icon.
+!{width: 320px; border: 1px solid #ddd;}.before1@2x.png!
+
+No icon is displayed in the journal which was made by the anonymous user.
+!{width: 320px; border: 1px solid #ddd;}.before2@2x.png!
+
+*After:*
+New anonymous icon is displayed.
+!{width: 320px; border: 1px solid #ddd;}.after1@2x.png!
+
+!{width: 320px; border: 1px solid #ddd;}.after2@2x.png!
+"
+26691,Redmine,Defect,"",New,Normal,N + 1 queries when rendering the Gantt,jwjw yy,"",2017-08-15 18:59,Performance,4.1.0,"","","",0,2017-08-15 03:27,"","","","","Rails 4.2.7.1
+20000 issues in the database
+When rendering the GanttsController.show action, it will issue a lot of queries to get the the start_date and due_date of an project like:
+
+
+<pre><code class=""sql"">
+SELECT MIN(`issues`.`start_date`) FROM `issues` WHERE `issues`.`project_id` = ?  [[""project_id"", 1436]]
+SELECT MAX(`issues`.`due_date`) FROM `issues` WHERE `issues`.`project_id` = ?  [[""project_id"", 1436]]
+SELECT MIN(`issues`.`start_date`) FROM `issues` WHERE `issues`.`project_id` = ?  [[""project_id"", 1317]]
+SELECT MAX(`issues`.`due_date`) FROM `issues` WHERE `issues`.`project_id` = ?  [[""project_id"", 1317]]
+</code></pre>
+
+Which will make the performance very bad.
+
+My solution is that add cached_due_date and cached_start_date for projects.rb, and while constructing the project_tree, I will use a group query to retrieve the corresponding start_date and due_date for a group of projects, so that they don't need to issue N queries later on. "
+26689,Redmine,Patch,"",Closed,Normal,Add title to author's and assignee's icon ,Marius BALTEANU,Jean-Philippe Lang,2017-10-15 13:35,UI,3.4.3,"","","",0,2017-08-14 22:48,2017-10-15 13:35,関連している #25775,"","","After the release of Redmine 3.4.2 in our company, we received some complains regarding the author and assignee icons (feature added in #25775). Some users thought that is a bug (especially when the author = assignee).
+
+I'm thinking that adding a title to that icons could help users to understand better the functionality. 
+
+Attached is a patch that adds these titles."
+26685,Redmine,Patch,"",New,Normal,Check of child classes of all levels is added for Redmine::SubclassFactory::ClassMethods,Vladimir Litov,"",2017-08-14 17:01,"","","","","",0,2017-08-14 17:01,"","","","","SubQuery < Query
+
+NewSubQuery < SubQuery
+
+And I will see ""Undefined method new for nil class"""
+26682,Redmine,Patch,"",Closed,Normal,URL-escape the ! character in generated markup for dropped uploads,Holger Just,Jean-Philippe Lang,2017-10-15 13:37,Text formatting,3.4.3,"","","",0,2017-08-14 15:26,2017-10-15 13:37,関連している #26071,"","","In #26071, we introduced the ability to just drag an image into a textbox and have Redmine generate the correct image markup for the uploaded file for easy inclusion. 
+
+Unfortunately, the @!@ character in the filename is not escaped here. Thus, when using Textile as the markup language and if the filename of the dropped file contains a @!@ character, the resulting markup will be invalid and the image will not be correctly referenced in the generated HTML.
+
+The attached patch fixes this by explicitly percent-escaping the exclamation mark. While this step is not strictly required for markdown, it doesn't hurt there since the escaped version is strictly equivalent to the unescaped one for URLs."
+26681,Redmine,Defect,"",Closed,Normal,disk_filename of attachment when issue is created via mail,Felix Muster,"",2017-08-14 15:44,"","","","","",0,2017-08-14 15:25,2017-08-14 15:44,"",Invalid,"","Hello,
+
+when an issue with attachment is created via mail, the disk_filename of this attachment get created with an hash-function.
+
+I think this is the code.
+\xampp\Redmine\app\models\attachment.rb line 369:
+
+<pre><code class=""ruby"">
+    if filename =~ %r{^[a-zA-Z0-9_\.\-]*$}
+      ascii = filename
+    else
+      ascii = Digest::MD5.hexdigest(filename)
+      # keep the extension if any
+</code></pre>
+
+How can I use the real filename? Like it's done with the other issues.
+
+Thank you."
+26679,Redmine,Defect,"",Needs feedback,Normal,Edit Journal - Can't verify CSRF token authenticity,Adriano Baptistella,"",2017-08-14 15:39,"","","","","",0,2017-08-14 14:52,"","","",3.4.2,"From View: 402 - Invalid form authenticity token.
+
+Possible solution:
+add: config/application.rb
+config.action_controller.allow_forgery_protection = false"
+26678,Redmine,Defect,"",Closed,Normal,Custom field required not work with 3.4.2,James Wang,"",2017-08-14 14:32,Permissions and roles,"","","","",0,2017-08-14 14:17,2017-08-14 14:32,"",Invalid,3.4.2,"I created a custom field and setup in the workflow as required during some status and not worked. 
+But Setting default field as required worked.
+
+I also tried 3.3.2 and still same."
+26674,Redmine,Patch,"",New,Normal,Additional css for query column headers,Dmitry Lisichkin,"",2017-12-19 11:26,UI,Candidate for next major release,"","","",0,2017-08-14 11:38,"","","","","For now there no any chances to style table headers for several columns becouse there no any css classes (it just <th> with column caption)
+In patch I offer to add two classes: @query-column-header@ and @query-column-header-#{column.name}@"
+26671,Redmine,Patch,"",Closed,Normal,Use the new pagination style in gantt,Go MAEDA,Go MAEDA,2017-11-28 03:44,Gantt,4.0.0,"","","",0,2017-08-14 07:58,2017-11-28 03:36,関連している #21258,"","","This patch applies the new pagination style introduced by #21258. 
+I think it would be better to use this style in gantt to improve consistency and usability.
+
+**Before:**
+!{width: 785px;border: 1px solid #ccc;}.pagination-before@2x.png!
+
+**After:**
+!{width: 785px;border: 1px solid #ccc;}.pagination-after@2x.png!
+"
+26668,Redmine,Defect,"",New,Normal,"Create ""Documentation support"" subsection in the ""Non Code Related"" section of the ""Contribution"" page.",Masakazu IZUI,"",2017-11-26 05:21,Documentation,"","","","",0,2017-08-12 10:33,"","","","","It would be great to show ""how to contribute to documentation"" in the ""Non Code Related"" section of the ""Contribute"" page.
+
+The related information is already in the ""Code documentation"" subsection in the ""Code Related"" section. Surely, code documentation needs code experience, but the documentation on this site doesn't necessarily need code experience. So non code related section is a good place to put this kind of information in, I think. It would be easier for new contributors to find.
+
+The most of Redmine documentation is written on the ""Wiki"" of redmine.org. So, that is better to have a link to ""Submitting a Wiki improvement"" subsection in the ""Submissions"" page in this section.
+
+For example,
+
+> **How to contribute to documentation on this site**
+>
+> ----
+>
+> You can contribute to the documentation on this site with directly [[Submissions#Submitting a-Wiki-improvement|editing the Wiki]]. Firstly you need to register your account on this site and you can edit the Wiki. Some Wiki pages doesn't allow you to edit and in the case you need to file an issue on the issue queue with the category ""documentation"".
+"
+26667,Redmine,Defect,"",Closed,Normal,Filtering time entries after issue's target version doesn't work as expected in some cases,Marius BALTEANU,Jean-Philippe Lang,2017-10-15 14:29,Time tracking,3.4.3,"","","",0,2017-08-11 16:33,2017-10-15 13:42,"関連している #13558, 次のチケットが重複 #27117",Fixed,3.4.2,"1. Target version select is empty when you add the issue's target version filter
+To reproduce:
+- Open spent time tab from a project
+- Add the Issue's target version filter
+- Observe that the dropdown is empty. 
+
+If you apply the query, a validation message will appear and the dropdown gets populated. 
+
+2. Filtering time entries after multiple target version filters only after the first version. 
+To reproduce:
+- performe de above steps and apply the query
+- expand the Target version select to multiselect 
+- select two versions that have issues with time entries. 
+- apply the query
+- observe that only the time entries related to the issues from first version are returned. 
+
+Attached are two patches that fix these 2 issues. "
+26665,Redmine,Defect,"",Closed,Normal,comment button in wiki editing page not work,James Wang,"",2017-08-14 14:29,Wiki,"","","","",0,2017-08-11 09:53,2017-08-14 08:34,"",Invalid,"","I searched a lot and found nothing about this ""comment"" feature. 
+I did not see anything happened when adding something in comment input box.
+So I wonder this is a bug."
+26664,Redmine,Patch,"",Closed,Normal,Traditional Chinese translation (to r16952),ChunChang Lo,"",2017-08-30 06:26,Translations,"","","","",0,2017-08-11 08:51,2017-08-30 06:26,コピー元 #26475,"","","* New
+** label_x_revisions
+"
+26662,Redmine,Patch,"",New,Normal,Add border around issue history to prevent accidental deletion of an issue,Go MAEDA,"",2017-08-22 03:23,UI,4.1.0,"","","",0,2017-08-11 06:24,"","","","","In my observation, some users accidentally delete an issue trying to delete last note. The misoperation is probably caused by the current UI of Redmine. The delete button at the bottom of IssuesController#show page looks as if it is a button for delete the last note, but actually it is a button to deletes the issue.
+
+Such misoperation can be prevented by making a slight change to UI. Please see the following screenshots. By adding border around issue history, it becomes clear that the button is not a button for deleting the note. Our company have succeeded in significantly reducing accidents that our customers mistakenly delete an issue by implementing the change.
+
+The patch was extracted from ""farend basic"":https://github.com/farend/redmine_theme_farend_basic theme.
+
+*Before:*
+!{width: 787px;border: 1px solid #ccc;}.border-around-history-before@2x.png!
+
+*After:*
+!{width: 787px;border: 1px solid #ccc;}.border-around-history-after@2x.png!
+"
+26655,Redmine,Patch,"",New,Normal,Additional icon for contextmenu,Felix Gliesche,"",2017-08-24 13:19,UI,4.1.0,"","","",0,2017-08-09 12:03,"","関連している #5711, 次のチケットが重複 #1590","","","The contextmenu is a very helpful feature that can increase the productivity while working with redmine. Many people don't know of this great feature because it is only triggered by a right mouse click, which is not a common user interaction on the web. In order to make this feature more prominent this patch adds an icon to table rows that have a contextmenu, which allows to trigger the appearance of the contextmenu with a regular mouse click. 
+
+As there was no icon with three dots available in the famfamfam available, we created our own by using an existing icon with a dot.
+
+This gif shows this new icon in action on the issues table:
+
+!contextmenu.gif!"
+26649,Redmine,Defect,"",Closed,Normal,Error after Login on Redmine 3.4.2,Rene Kolbe,"",2017-08-08 20:37,"","","","","",0,2017-08-08 13:22,2017-08-08 20:37,"",Invalid,"","Hello,
+
+i've installed Redmine 3.4.2 on Ruby2.2.6 and Rails 4.2. 
+I can start the Redmine on http://localhost:3000, if i logged me on i get this Error in the production.log
+<pre>
+Started POST ""/login"" for 127.0.0.1 at 2017-08-08 13:09:57 +0200
+Processing by AccountController#login as HTML
+  Parameters: {""utf8""=>""?"", ""authenticity_token""=>""rGhz6l23Kc2JvgWxksKdRpBlmxeeCQJuchdr3RAVABuBybqJI4mFOgXtKS0p2DbWYFzlrQ2w8R7AQ0pxJKOldA=="", ""back_url""=>""http://localhost:3000/account/register"", ""username""=>""rene.kolbe"", ""password""=>""[FILTERED]"", ""login""=>""Anmelden""}
+  Current user: anonymous
+Successful authentication for 'Rene.Kolbe' from 127.0.0.1 at 2017-08-08 11:09:57 UTC
+Completed 500 Internal Server Error in 62ms (ActiveRecord: 31.2ms)
+
+ActiveRecord::StatementInvalid (TinyTds::Error: Invalid column name 'updated_on'.: EXEC sp_executesql N'SELECT [tokens].[id] FROM [tokens] WHERE [tokens].[user_id] = @0 AND [tokens].[action] = @1  ORDER BY [tokens].[updated_on] DESC OFFSET 9 ROWS', N'@0 int, @1 nvarchar(30)', @0 = 1080, @1 = N'session'):
+  app/models/token.rb:135:in `delete_previous_tokens'
+  app/models/user.rb:416:in `generate_session_token'
+  app/controllers/application_controller.rb:82:in `start_user_session'
+  app/controllers/application_controller.rb:162:in `logged_user='
+  app/controllers/account_controller.rb:273:in `successful_authentication'
+  app/controllers/account_controller.rb:219:in `password_authentication'
+  app/controllers/account_controller.rb:205:in `authenticate_user'
+  app/controllers/account_controller.rb:38:in `login'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+</pre>
+
+We use the Database from an Redmine 2.6 installation on SQL Server 2012. i had installed Redmine 3.0.4 before and the log on was successfully.
+
+Anybody has an idea? 
+
+Pls help me as soon as possible - for Information: I'm not an Ruby Developer...
+
+Best Regards
+"
+26646,Redmine,Patch,"",New,Normal,Remove hardcoded width in query column selects,Vladimir Litov,"",2017-10-18 00:37,UI,4.1.0,"","","",0,2017-08-07 14:55,"","","","",Automatic increase in width of query columns
+26645,Redmine,Defect,"",Closed,Normal,git 2.14 compatibility,Philip Taffner,"",2017-08-26 06:55,SCM,3.3.5,"","","",0,2017-08-07 13:53,2017-08-26 06:55,"関連している #5324, 次のチケットが重複 #26765",Fixed,3.4.2,"There is no ""--no-color"" argument for ""git version"" anymore.
+
+Potential fix:
+
+<pre><code class=""diff"">
+Index: lib/redmine/scm/adapters/git_adapter.rb
+===================================================================
+--- lib/redmine/scm/adapters/git_adapter.rb     (revision 16828)
++++ lib/redmine/scm/adapters/git_adapter.rb     (working copy)
+@@ -54,7 +54,7 @@
+           end
+ 
+           def scm_version_from_command_line
+-            shellout(""#{sq_bin} --version --no-color"") { |io| io.read }.to_s
++            shellout(""#{sq_bin} --version"") { |io| io.read }.to_s
+           end
+         end
+</code></pre>"
+26637,Redmine,Defect,"",Closed,Normal,ActionView::Template::Error (undefined method `remote' for #<Hash:0x007f9aede03320>),Martin Blom,"",2018-01-05 03:12,"","","","","",0,2017-08-06 10:51,2017-08-06 20:28,次のチケットと重複 #26567,Invalid,3.4.2,"Patch #24787 seems to have introduced the following error that I get when I upgraded from 3.3.0 to 3.4.2. 
+
+<pre>
+Processing by IssuesController#index as HTML
+  Parameters: {""project_id""=>""term""}
+  Current user: mb (id=27)
+  Rendered queries/_filters.html.erb (14.1ms)
+  Rendered queries/_query_form.html.erb (20.7ms)
+  Rendered issues/index.html.erb within layouts/base (33.4ms)
+Completed 500 Internal Server Error in 285ms (ActiveRecord: 32.3ms)
+
+ActionView::Template::Error (undefined method `remote' for #<Hash:0x007f9aede03320>):
+    1: <%= javascript_tag do %>
+    2: var operatorLabels = <%= raw_json Query.operators_labels %>;
+    3: var operatorByType = <%= raw_json Query.operators_by_filter_type %>;
+    4: var availableFilters = <%= raw_json query.available_filters_as_json %>;
+    5: var labelDayPlural = <%= raw_json l(:label_day_plural) %>;
+    6: 
+    7: var filtersUrl = <%= raw_json queries_filter_path(:project_id => @query.project.try(:id), :type => @query.type) %>;
+  app/models/query.rb:464:in `block in available_filters_as_json'
+  app/models/query.rb:462:in `each'
+  app/models/query.rb:462:in `available_filters_as_json'
+  app/views/queries/_filters.html.erb:4:in `block in _app_views_queries__filters_html_erb___1036324529149116392_40939120'
+  app/views/queries/_filters.html.erb:1:in `_app_views_queries__filters_html_erb___1036324529149116392_40939120'
+  app/views/queries/_query_form.html.erb:10:in `_app_views_queries__query_form_html_erb___3000346872455193333_41555900'
+  app/views/issues/index.html.erb:11:in `block in _app_views_issues_index_html_erb__2853989323921202783_43093980'
+  app/views/issues/index.html.erb:10:in `_app_views_issues_index_html_erb__2853989323921202783_43093980'
+  app/controllers/issues_controller.rb:51:in `block (2 levels) in index'
+  app/controllers/issues_controller.rb:46:in `index'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+</pre>
+
+I am aware of #26567 and I do have the Agile Plugin installed, but the stack trace seems to indicates that the plugin is not responsible...?
+
+I hacked around the error like this:
+
+<pre><code class=""diff"">
+diff --git a/app/models/query.rb b/app/models/query.rb
+index c8c8986..95d43f5 100644
+--- a/app/models/query.rb
++++ b/app/models/query.rb
+@@ -461,9 +461,9 @@ class Query < ActiveRecord::Base
+     json = {}
+     available_filters.each do |field, filter|
+       options = {:type => filter[:type], :name => filter[:name]}
+-      options[:remote] = true if filter.remote
++      options[:remote] = true if filter.respond_to?('remote') && filter.remote
+ 
+-      if has_filter?(field) || !filter.remote
++      if has_filter?(field) || !filter.respond_to?('remote') || !filter.remote
+         options[:values] = filter.values
+         if options[:values] && values_for(field)
+           missing = Array(values_for(field)).select(&:present?) - options[:values].map(&:last)
+</code></pre>
+
+I'm not a Ruby coder so I'm not sure why the remote method is missing, or if the logic is correct when the method is missing, though.
+
+My environment:
+
+<pre>
+
+
+Environment:
+  Redmine version                3.4.2.stable
+  Ruby version                   2.2.1-p85 (2015-02-26) [x86_64-linux]
+  Rails version                  4.2.8
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Git                            1.7.1
+  Filesystem                     
+Redmine plugins:
+  bestest_timer                  1.1.2
+  redmine_agile                  1.4.4
+  redmine_checklists             3.1.3
+  redmine_editor_preview_tab     0.1.5
+  redmine_issue_templates        0.1.6
+  redmine_ldap_sync              2.0.4.gab2ba815ed-dirty
+  redmine_tags                   3.1.1
+  sidebar_hide                   0.0.8
+</pre>
+"
+26636,Redmine,Defect,"",New,Normal,"Rails 5: ""Page not found"" error when accessing a page of a plugin in production mode",Go MAEDA,"",2017-08-07 06:48,Plugin API,4.0.0,"","","",0,2017-08-06 06:24,"","","","","**Steps to reproduce:**
+
+1. Create a test plugin.
+
+<pre>
+bin/rails g redmine_plugin foo
+bin/rails g redmine_plugin_controller foo foo index
+echo 'get ""foo"", :to => ""foo#index""' >> plugins/foo/config/routes.rb
+</pre>
+
+2. Run Redmine in production mode
+
+<pre>
+bin/rails s -e production
+</pre>
+
+3. Open http://localhost/foo and you will see ""Page not found"" error. No problem in development mode.
+
+
+**production.log:**
+
+{{collapse
+<pre>
+Started GET ""/foo"" for 127.0.0.1 at 2017-08-06 13:19:10 +0900
+  
+ActionController::RoutingError (uninitialized constant FooController):
+  
+activesupport (5.1.2) lib/active_support/inflector/methods.rb:269:in `const_get'
+activesupport (5.1.2) lib/active_support/inflector/methods.rb:269:in `block in constantize'
+activesupport (5.1.2) lib/active_support/inflector/methods.rb:267:in `each'
+activesupport (5.1.2) lib/active_support/inflector/methods.rb:267:in `inject'
+activesupport (5.1.2) lib/active_support/inflector/methods.rb:267:in `constantize'
+activesupport (5.1.2) lib/active_support/dependencies.rb:582:in `get'
+activesupport (5.1.2) lib/active_support/dependencies.rb:613:in `constantize'
+actionpack (5.1.2) lib/action_dispatch/http/request.rb:82:in `controller_class'
+actionpack (5.1.2) lib/action_dispatch/routing/route_set.rb:43:in `controller'
+actionpack (5.1.2) lib/action_dispatch/routing/route_set.rb:29:in `serve'
+actionpack (5.1.2) lib/action_dispatch/journey/router.rb:46:in `block in serve'
+actionpack (5.1.2) lib/action_dispatch/journey/router.rb:33:in `each'
+actionpack (5.1.2) lib/action_dispatch/journey/router.rb:33:in `serve'
+actionpack (5.1.2) lib/action_dispatch/routing/route_set.rb:832:in `call'
+rack-openid (1.4.2) lib/rack/openid.rb:98:in `call'
+request_store (1.0.5) lib/request_store/middleware.rb:9:in `call'
+rack (2.0.3) lib/rack/etag.rb:25:in `call'
+rack (2.0.3) lib/rack/conditional_get.rb:25:in `call'
+rack (2.0.3) lib/rack/head.rb:12:in `call'
+rack (2.0.3) lib/rack/session/abstract/id.rb:232:in `context'
+rack (2.0.3) lib/rack/session/abstract/id.rb:226:in `call'
+actionpack (5.1.2) lib/action_dispatch/middleware/cookies.rb:613:in `call'
+actionpack (5.1.2) lib/action_dispatch/middleware/callbacks.rb:26:in `block in call'
+activesupport (5.1.2) lib/active_support/callbacks.rb:97:in `run_callbacks'
+actionpack (5.1.2) lib/action_dispatch/middleware/callbacks.rb:24:in `call'
+actionpack (5.1.2) lib/action_dispatch/middleware/debug_exceptions.rb:59:in `call'
+actionpack (5.1.2) lib/action_dispatch/middleware/show_exceptions.rb:31:in `call'
+railties (5.1.2) lib/rails/rack/logger.rb:36:in `call_app'
+railties (5.1.2) lib/rails/rack/logger.rb:24:in `block in call'
+activesupport (5.1.2) lib/active_support/tagged_logging.rb:69:in `block in tagged'
+activesupport (5.1.2) lib/active_support/tagged_logging.rb:26:in `tagged'
+activesupport (5.1.2) lib/active_support/tagged_logging.rb:69:in `tagged'
+railties (5.1.2) lib/rails/rack/logger.rb:24:in `call'
+actionpack (5.1.2) lib/action_dispatch/middleware/remote_ip.rb:79:in `call'
+actionpack (5.1.2) lib/action_dispatch/middleware/request_id.rb:25:in `call'
+rack (2.0.3) lib/rack/method_override.rb:22:in `call'
+rack (2.0.3) lib/rack/runtime.rb:22:in `call'
+activesupport (5.1.2) lib/active_support/cache/strategy/local_cache_middleware.rb:27:in `call'
+actionpack (5.1.2) lib/action_dispatch/middleware/executor.rb:12:in `call'
+actionpack (5.1.2) lib/action_dispatch/middleware/static.rb:125:in `call'
+rack (2.0.3) lib/rack/content_length.rb:15:in `call'
+rack (2.0.3) lib/rack/sendfile.rb:111:in `call'
+railties (5.1.2) lib/rails/engine.rb:522:in `call'
+puma (3.9.1) lib/puma/configuration.rb:224:in `call'
+puma (3.9.1) lib/puma/server.rb:602:in `handle_request'
+puma (3.9.1) lib/puma/server.rb:435:in `process_client'
+puma (3.9.1) lib/puma/server.rb:299:in `block in run'
+puma (3.9.1) lib/puma/thread_pool.rb:120:in `block in spawn_thread'
+</pre>
+}}"
+26633,Redmine,Defect,"",Closed,Normal,Timesheet plugin,Валерий Никитин,"",2017-08-06 07:11,"","","","","",0,2017-08-05 19:49,2017-08-06 07:11,"",Invalid,3.4.2,"I'm trying to install this plugin, but when I go into it I get this error in the log / production.log.
+<pre>
+NoMethodError (undefined method `sort_criteria' for nil:NilClass):
+  plugins/timesheet/app/controllers/timesheets_controller.rb:20:in `show'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+</pre>
+What am I doing wrong?
+Debian 8.8
+Redmine 3.4.2
+Ruby 2.2.0
+Rails 4.2.8"
+26628,Redmine,Defect,"",Closed,Normal,"When assignee change, previous assignee did't notified",Eugen Daltin,"",2017-08-05 08:20,Email notifications,"","","","",0,2017-08-05 07:32,2017-08-05 08:20,次のチケットと重複 #26627,Duplicate,3.4.2,"If ticket assignee to ""Fist_Person"" - he receive email. If than ticker change assignee to ""Second_person"" - ""Fist_Person"" did't  receive email with this change. Need send last notification with information about assignee changes.
+
+Settings:
+Email notification set to: ""Only for things i watch or I'm involved in"""
+26627,Redmine,Defect,"",Closed,Normal,Editing issues no longer sends notifications to previous assignee,Rocket Lee,Jean-Philippe Lang,2017-10-16 19:52,Issues,3.4.3,"","","",0,2017-08-04 21:07,2017-10-15 21:56,"関連している #25794, 次のチケットが重複 #26628",Fixed,3.4.2,"Editing issues no longer sends notifications to previous assignee. 
+
+This is happening because of the change made in #25794, which changed app/models/journal.rb from <code>after_create :send_notification</code> to <code>after_commit :send_notification, :on => :create</code>. This is causing <code>clear_assigned_to_was()</code> in app/models/issue.rb to be called before the notifications are being generated and so the previous assignee variable is already set to nil when it's time to send the notification. <code>after_commit</code> runs too late.
+
+I know this affects up through 3.4.2, but I don't know how it affects the new master.
+
+Here's the specific line change: https://github.com/redmine/redmine/commit/9439cae70fab58b8cafdd753aa83135d4279345d#diff-b3b2ca7a3d44a3146792e51535d4acd5"
+26624,Redmine,Defect,"",Closed,Normal,Admin page unavailable when behind a proxy,Guillaume Rossolini,"",2017-08-04 13:58,"","","","","",0,2017-08-04 12:51,2017-08-04 13:58,"",Invalid,3.4.2,"Hi,
+
++Context+
+Our Redmine is set up on a box that isn't available from the internet, only on our internal network. For several reasons, we never installed TLS on that box. For convenience if not for security, we use the HTTP authentication and a forward proxy that requires client certificates to work.
+redmine box: HTTP Auth required, no TLS
+proxy: client certificates required
+
+That enables us to autologin our team members with the client certificate already installed on their computers.
+
++The problem+
+With the latest version 3.4.2, the admin pages are unavailable through the proxy, while the rest of the app seems to work fine."
+26622,Redmine,Patch,"",New,Normal,Copy version attachments (i.e. Files) along with the versions on project copy,Holger Just,"",2017-08-09 10:53,Projects,4.1.0,"","","",0,2017-08-03 19:08,"","","","","When copying a project and opting to also copy versions, the attached files (i.e. the content of the ""Files"" tab of the source project) is not copied along.
+
+The attached patch fixes this and also copies the version attachments."
+26621,Redmine,Patch,"",New,Normal,Allow to copy documents along with projects,Holger Just,"",2017-08-04 04:49,Projects,4.1.0,"","","",0,2017-08-03 18:46,"",次のチケットが重複 #5664,"","","The attached patch implements copying of existing documents when a whole project is copied.
+
+This allows people to create a ""template"" project where they create documents which should later be updated."
+26620,Redmine,Defect,"",Needs feedback,Normal,Wrong text of submit button on search page,Dmitry Lisichkin,"",2017-11-04 14:29,Translations,4.1.0,"","","",0,2017-08-03 17:36,"","","","",@:button_search@ is more intuitive then @:button_submit@
+26619,Redmine,Defect,"",New,Normal,Workflow field permissions does not work with several different roles,Sergey Gnuskov,"",2017-11-19 08:52,Permissions and roles,"","","","",0,2017-08-03 16:27,"","","",3.4.2,"I have 2 roles and 1 tracker: 
+* first one does not have permission @edit_issues@ at all, it has no any workflow field permissions configured;
+* second has permission @edit_issues@, but there is a workflow field permission, where some fields is in readonly state for my tracker and that role (in all statuses).
+
+When user has both roles for project he *CAN* edit this readonly fields until I create same workflow field permissions to first role. Is this correct? I think, workflow field permissions should be found only among roles that have @edit_issues@ permission."
+26615,Redmine,Defect,"",Closed,Normal,"""schema_migrations_table_name is deprecated"" warning during redmine:plugins:migrate",Go MAEDA,"",2017-08-31 17:57,Plugin API,"","","","",0,2017-08-03 02:42,2017-08-31 17:57,関連している #23630,Fixed,"","<pre>
+$ bin/rails redmine:plugins:migrate
+Migrating polls (Polls plugin)...
+DEPRECATION WARNING: schema_migrations_table_name is deprecated and will be removed from Rails 5.2 (called from current_version at /Users/somebody/redmines/redmine-trunk/lib/redmine/plugin.rb:487)
+DEPRECATION WARNING: schema_migrations_table_name is deprecated and will be removed from Rails 5.2 (called from migrated at /Users/somebody/redmines/redmine-trunk/lib/redmine/plugin.rb:493)
+DEPRECATION WARNING: schema_migrations_table_name is deprecated and will be removed from Rails 5.2 (called from migrated at /Users/somebody/redmines/redmine-trunk/lib/redmine/plugin.rb:493)
+</pre>"
+26610,Redmine,Defect,"",Resolved,Normal,Migration file generated by redmine_plugin_model generator is not compatible with Rails 5.1,Go MAEDA,"",2017-08-03 03:27,Plugin API,4.0.0,"","","",0,2017-08-02 15:08,"",関連している #23630,"","","plugins/polls/db/migrate/001_create_polls.rb:
+(generated by @bin/rails generate redmine_plugin_model polls poll question:string yes:integer no:integer@)
+<pre><code class=""ruby"">
+class CreatePolls < ActiveRecord::Migration
+  def change
+    create_table :polls do |t|
+      t.string :question
+      t.integer :yes
+      t.integer :no
+    end
+  end
+end
+</code></pre>
+
+
+error:
+<pre>
+$ bin/rails redmine:plugins:migrate
+Migrating polls (Polls plugin)...
+DEPRECATION WARNING: schema_migrations_table_name is deprecated and will be removed from Rails 5.2 (called from current_version at /Users/somebody/redmines/redmine-trunk/lib/redmine/plugin.rb:487)
+DEPRECATION WARNING: schema_migrations_table_name is deprecated and will be removed from Rails 5.2 (called from migrated at /Users/somebody/redmines/redmine-trunk/lib/redmine/plugin.rb:493)
+DEPRECATION WARNING: schema_migrations_table_name is deprecated and will be removed from Rails 5.2 (called from migrated at /Users/somebody/redmines/redmine-trunk/lib/redmine/plugin.rb:493)
+rails aborted!
+StandardError: An error has occurred, this and all later migrations canceled:
+
+Directly inheriting from ActiveRecord::Migration is not supported. Please specify the Rails release the migration was written for:
+
+  class CreatePolls < ActiveRecord::Migration[4.2]
+/Users/somebody/redmines/gems/ruby/2.4.0/gems/activerecord-5.1.2/lib/active_record/migration.rb:525:in `inherited'
+/Users/somebody/redmines/redmine-trunk/plugins/polls/db/migrate/001_create_polls.rb:1:in `<top (required)
+</pre>"
+26608,Redmine,Defect,"",Closed,Normal,Assign Role to a Custom Query fires an error-message,Klemens Rosenberg,"",2017-08-02 14:00,Issues,"","","","",0,2017-08-02 12:15,2017-08-02 14:00,次のチケットと重複 #20427,Duplicate,3.1.0,"+*Error store Custom Query*+
+On creating custom issue-queries it is possible to assign a role to permit access to that query to users of that role.
+But saving that query failes because selected roles are cleared on saving-process. Following effect is occuring an errormessage that roles has to be selected - but they were selected.
++Reproduce as+:
+* Create a custom query
+* Select for visibility: Only for these roles and select effected roles
+* Press save-button
+* Error occures: ""Roles has to be selected"""
+26604,Redmine,Patch,"",New,Normal,Set a random name attribute on all forms to prevent overwritten values after soft reload with Firefox,Holger Just,"",2017-08-31 09:30,UI,4.1.0,"","","",0,2017-08-01 19:26,"","","","","Given the following flow with each of the users using the Firefox browser:
+
+* User A opens issue 42 (for viewing, the issue edit form is already rendered hidden)
+* User B opens issue 42 and changes the version field (or any other select box)
+* User A becomes aware of the change (e.g. via notification mails) and soft-reloads the issue view (F5 in Windows)
+* User A adds an issue note.
+
+With the last update of User A, they inadvertently also update the Version field back to the value it had when User A first loaded the issue in step 1. The cause of this is a peculiarity of how Firefox handles changes on forms with soft reloads. This is described on https://bugzilla.mozilla.org/show_bug.cgi?id=1279253. What happens here is that Firefox ignores the changed @selected@ value on select box and always retains the value it had on first load, even if the value was never actually changed by the user.
+
+Unfortunately, this results in unwanted behaviour of the issue form (and possibly all other forms using select boxes like the project or admin settings). If users are not very carefully, they might inadvertently overwrite values. This problem is not really detectable on the server since the values sent by Firefox are valid. Here, it looks like the user just changed the value back.
+
+After a couple of tests, it appears that Firefox takes the @name@ attribute of a form tag into account to detect values of existing forms on reload. If the name value changes, firefox doesn't take any changed values into account and assumes that the newly loaded form is completely different. The attached patch leverages this behaviour by adding a random @name@ attribute to all rendered forms. For Firefox, this results in no form values being preserved on reload. Since Redmine already asks for confirmation on leave, this isn't much of a loss probably.
+
+The name attribute does ""not appear"":https://stackoverflow.com/a/8946369/421705 to be actually used for anything else and is thus save to be used here. Still, we preserve any explicitly set @name@ attribute.
+
+
+"
+26599,Redmine,Defect,"",Closed,Normal,Corrupted file name when exporting a wiki page with Non-ASCII title using Microsoft's browsers,Go MAEDA,"",2017-08-31 06:09,Wiki,3.3.5,"","","",0,2017-08-01 13:02,2017-08-31 06:09,"",Fixed,3.3.4,"Steps to reproduce:
+
+1. Create a wiki page with Non-ASCII title (e.g. ""日本語"").
+2. Open the wiki page using Microsoft Edge or Internet Explorer.
+3. Click ""TXT"" in ""Also available in"" area.
+4. The page will be exported but its file name is corrupted.
+
+!currepted-filename.png!"
+26598,Redmine,Defect,"",Needs feedback,Normal,no issue-filtering permission for non-admin user,Lucie Zemann,"",2017-08-29 15:56,Permissions and roles,"","","","",0,2017-08-01 10:00,"","","",3.3.1,"only administrators can filter issues.
+non-admin users with full issue-permissions (view, edit...) get ""No data to display"" on the default filter-page /projects/<name>/issues.
+removing the ""Status"" filter and ""Apply""ing, though, then shows all issues in that project.
+
+<pre>
+Environment:
+  Redmine version                3.3.1.stable
+  Ruby version                   2.3.3-p222 (2016-11-21) [x86_64-linux-gnu]
+  Rails version                  4.2.9
+  Environment                    production
+  Database adapter               PostgreSQL
+SCM:
+  Subversion                     1.9.5
+  Git                            2.11.0
+  Filesystem                     
+Redmine plugins:
+  redmine_local_avatars          1.0.0
+</pre>
+
+all from debian packages"
+26591,Redmine,Patch,"",Closed,Normal,"Spanish ""text_journal_changed"" translate change",Ezequiel Hernandez,"",2017-08-30 06:00,Translations,4.0.0,"","","",0,2017-07-31 10:19,2017-08-30 06:00,"","","","Hi:
+For Spanish translation, it's better the next translation:
+
+<pre>
+ text_journal_changed: ""%{label} cambiado %{old} por %{new}""
+</pre>
+to 
+<pre>
+ text_journal_changed: ""%{label} cambiado de %{old} a %{new}""
+</pre>
+
+http://www.redmine.org/projects/redmine/repository/entry/trunk/config/locales/es.yml#L861"
+26590,Redmine,Patch,"",Closed,Normal,Japanese translation update (r16906),Go MAEDA,"",2017-08-01 06:48,Translations,"","","","",0,2017-07-31 04:10,2017-08-01 06:48,"","","",Translated label_x_revisions.
+26568,Redmine,Defect,"",Closed,Normal,Multiple Selection List Filter View - items are cut off from view,Oscar Santos,Jean-Philippe Lang,2017-07-30 18:34,UI,3.4.3,"","","",0,2017-07-28 19:14,2017-07-30 18:34,"",Fixed,"","Hello,
+
+I have recently upgraded to the latest RM 3.4.2 and I had an issue reported to me where view filters are being cut off from being displayed when multiple select is enabled. This causes issues for my users as they can not distinguish between items they would like to select. 
+
+Please see screenshots below of single select (which is working normally) and multiple select of view filter options:
+
++Single Select+
+!Single_Selection_List_working.PNG!
+
++Multiple Select+
+!Multiple_Selection_List_issue.PNG!
+
+I attempted to make some adjustments to the application.css files within the stylesheet directories of both Redmine Root and of my custom theme stylesheet directory, but I am a Ruby on Rails novice at best; so could not make any headway here.
+
+I was able to verify that on my prior Redmine 3.3.0 instance, this issue is not present. Additionally, the issue is present even when plugins are removed from current Redmine instance. Please advise.
+
+<pre>
+Environment:
+
+  Redmine version                3.4.2.stable
+  Ruby version                   2.3.4-p301 (2017-03-30) [x86_64-linux]
+  Rails version                  4.2.8
+  Environment                    production
+  Database adapter               Mysql2
+
+SCM:
+
+  Subversion                     1.9.5
+  Git                            1.7.1                   
+
+Redmine plugins:
+
+  redmine_agile                  1.4.4
+  redmine_checklists             3.1.6
+  redmine_gitlab_hook            0.1.3
+  redmine_landing_page           0.1.1
+  redmine_status_history         1.0.0
+  redmine_wiki_extensions        0.8.0
+</pre>"
+26567,Redmine,Defect,"",Closed,Normal,ActionView::Template::Error when trying to access time_entries,Kevin K?llmann,"",2017-08-08 20:30,"","","","","",0,2017-07-28 15:24,2017-07-28 15:55,次のチケットが重複 #26637,Invalid,3.4.2,"I just upgraded Redmine from 3.3.3 to 3.4.2.
+Now, when trying to access the time entries of an issue (or a whole project),
+I get an Internal Server Error (500).
+
+The production log states:
+<pre>
+Started GET ""/projects/idial-server/time_entries"" for 192.168.0.254 at 2017-07-28 15:17:40 +0200
+Processing by TimelogController#index as HTML
+  Parameters: {""project_id""=>""idial-server""}
+  Current user: kevin.koellmann (id=8)
+  Rendered queries/_filters.html.erb (4.0ms)
+  Rendered queries/_query_form.html.erb (4.3ms)
+  Rendered timelog/_date_range.html.erb (4.4ms)
+  Rendered timelog/index.html.erb within layouts/base (4.8ms)
+Completed 500 Internal Server Error in 41ms (ActiveRecord: 11.5ms)
+
+ActionView::Template::Error (undefined method `remote' for #<Hash:0x007fb44f144280>):
+    1: <%= javascript_tag do %>
+    2: var operatorLabels = <%= raw_json Query.operators_labels %>;
+    3: var operatorByType = <%= raw_json Query.operators_by_filter_type %>;
+    4: var availableFilters = <%= raw_json query.available_filters_as_json %>;
+    5: var labelDayPlural = <%= raw_json l(:label_day_plural) %>;
+    6:
+    7: var filtersUrl = <%= raw_json queries_filter_path(:project_id => @query.project.try(:id), :type => @query.type) %>;
+  app/models/query.rb:464:in `block in available_filters_as_json'
+  app/models/query.rb:462:in `each'
+  app/models/query.rb:462:in `available_filters_as_json'
+  app/views/queries/_filters.html.erb:4:in `block in _app_views_queries__filters_html_erb___218005857970535534_70206203145280'
+  app/views/queries/_filters.html.erb:1:in `_app_views_queries__filters_html_erb___218005857970535534_70206203145280'
+  app/views/queries/_query_form.html.erb:10:in `_app_views_queries__query_form_html_erb__4133403555005295366_70206203058420'
+  app/views/timelog/_date_range.html.erb:1:in `_app_views_timelog__date_range_html_erb__3845577496136492909_70206203018520'
+  app/views/timelog/index.html.erb:10:in `block in _app_views_timelog_index_html_erb__4526196220538483806_70206202905200'
+  app/views/timelog/index.html.erb:9:in `_app_views_timelog_index_html_erb__4526196220538483806_70206202905200'
+  app/controllers/timelog_controller.rb:54:in `block (2 levels) in index'
+  app/controllers/timelog_controller.rb:48:in `index'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+</pre>
+
+My environment:
+<pre>
+Environment:
+  Redmine version                3.4.2.stable
+  Ruby version                   2.3.1-p112 (2016-04-26) [x86_64-linux-gnu]
+  Rails version                  4.2.8
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.9.3
+  Cvs                            1.12.13
+  Git                            2.7.4
+  Filesystem                     
+Redmine plugins:
+  redmine_agile                  1.4.4
+  redmine_ckeditor               1.1.5
+  redmine_gitlab_hook            0.1.3
+  redmine_ldap_sync              2.0.8.devel.gf916e6574e
+  redmine_tagging                0.1.6
+</pre>"
+26564,Redmine,Defect,"",Closed,Urgent,Enumerations sorting does not work,Sergey Gnuskov,Jean-Philippe Lang,2017-07-30 18:32,Administration,3.4.3,"","","",0,2017-07-28 10:49,2017-07-30 18:32,"",Fixed,3.4.2,"When drag/drop enumerations, it makes successful request to server, but position does not change after page reload. The problem is that @position@ attribute is not added to permitted params in enumerations controller, so it's skipped."
+26563,Redmine,Defect,"",Needs feedback,Normal,ActionView::Template::Error Accessing to LDAP configuration,pacolotero pacolotero,"",2017-07-31 18:18,LDAP,"","","","",0,2017-07-28 08:37,"","","",3.3.3,"Accesing to Administration -> LDAP authentication -> My Ldap Organization i get next error:
+
+<pre>
+Started GET ""/auth_sources/1/edit"" for 81.43.32.194 at 2017-07-28 08:26:00 +0200
+Processing by AuthSourcesController#edit as HTML
+  Parameters: {""id""=>""1""}
+  Current user: agalisteo (id=35)
+  Rendered auth_sources/_form_auth_source_ldap.html.erb (30.2ms)
+  Rendered auth_sources/edit.html.erb within layouts/admin (31.6ms)
+Completed 500 Internal Server Error in 175ms (ActiveRecord: 133.0ms)
+
+ActionView::Template::Error (private method `timeout' called for #<AuthSourceLdap:0x005567abbf4128>
+Did you mean?  timeout=
+               timeout?):
+    12:            :onchange => ""this.name='auth_source[account_password]';"" %></p>
+    13:   <p><%= f.text_field :base_dn, :required => true, :size => 60 %></p>
+    14:   <p><%= f.text_area :filter, :size => 60, :label => :field_auth_source_ldap_filter %></p>
+    15:   <p><%= f.text_field :timeout, :size => 4 %></p>
+    16:   <p><%= f.check_box :onthefly_register, :label => :field_onthefly %></p>
+    17: </div>
+    18: 
+  lib/redmine/views/labelled_form_builder.rb:31:in `text_field'
+  app/views/auth_sources/_form_auth_source_ldap.html.erb:15:in `_app_views_auth_sources__form_auth_source_ldap_html_erb___2279895477480212392_46951877349980'
+  app/views/auth_sources/edit.html.erb:4:in `block in _app_views_auth_sources_edit_html_erb___2140026764370812182_46951877567740'
+  app/helpers/application_helper.rb:1051:in `labelled_form_for'
+  app/views/auth_sources/edit.html.erb:3:in `_app_views_auth_sources_edit_html_erb___2140026764370812182_46951877567740'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+</pre>
+
+My environment:
+<pre>
+Environment:
+  Redmine version                3.3.3.stable
+  Ruby version                   2.3.1-p112 (2016-04-26) [x86_64-linux]
+  Rails version                  4.2.7.1
+  Environment                    production
+  Database adapter               PostgreSQL
+SCM:
+  Git                            2.7.4
+  Filesystem                     
+Redmine plugins:
+  redmine_agile                  1.4.1
+  redmine_backlogs               v1.0.6
+  redmine_checklists             3.1.5
+  redmine_contacts               4.0.4
+  redmine_contacts_helpdesk      3.0.4
+  redmine_contacts_invoices      4.1.1
+  redmine_finance                2.1.1
+  redmine_people                 1.2.0
+  redmine_products               2.0.1
+</pre>"
+26562,Redmine,Defect,"",Closed,Normal,Wrong journal link in Firefox due to r16900,Go MAEDA,"",2017-07-30 03:52,UI,"","","","",0,2017-07-28 00:06,2017-07-29 14:19,関連している #26638,"","","Firefox:
+!firefox@2x.png!
+
+Chrome:
+!chrome@2x.png!"
+26549,Redmine,Defect,"",Closed,Normal,redminInstall problem ,carol Gao,"",2017-07-27 15:05,"","","","","",0,2017-07-27 11:42,2017-07-27 15:05,"",Fixed,"","Step 6 - Database schema objects creation
+
+Create the database structure, by running the following command under the application root directory:
+
+RAILS_ENV=production bundle exec *rails* db:migrate
+
+Maybe the command should be changed to RAILS_ENV=production bundle exec *rake* db:migrate"

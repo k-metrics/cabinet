@@ -1,0 +1,617 @@
+#,プロジェクト,トラッカー,親チケット,ステータス,優先度,題名,作成者,担当者,更新日,カテゴリ,対象バージョン,開始日,期日,予定工数,進捗率,作成日,終了日,関連するチケット,Resolution,Affected version,説明
+28693,Redmine,Defect,"",Closed,Normal,Irrelevant permission is required to access some tabs in project settings page,Fabrizio Sebastiani,Go MAEDA,2018-06-03 06:38,Permissions and roles,3.4.6,"","","",0,2018-05-07 11:27,2018-06-03 06:38,"",Fixed,3.1.2,"It is not clear why is necessary to give ""Edit project"" right to create new Forum and so let ""Settings"" tab to appears; in fact giving ""Forum Manager"" right do not let ""new forum"" command to appears."
+28689,Redmine,Defect,"",Closed,Normal,csv 1.0.2 gem breaks ImportsControllerTest ,Go MAEDA,"",2018-05-06 09:51,Gems support,"","","","",0,2018-05-06 02:10,2018-05-06 09:51,"関連している #27849, 関連している #28112",Fixed,"","This issue is reproducible only on Ruby 2.5 because csv gem is used for Ruby 2.5 only (see r17245). No problem with csv 1.0.1.
+
+<pre>
+$ ruby test/functional/imports_controller_test.rb
+Run options: --seed 38551
+
+# Running:
+
+.......F
+
+Failure:
+ImportsControllerTest#test_post_settings_with_wrong_encoding_should_display_error [test/functional/imports_controller_test.rb:125]:
+<(?-mix:not a valid UTF-8 encoded file)> expected but was
+<The file is not a CSV file or does not match the settings below>..
+Expected 0 to be >= 1.
+
+
+bin/rails test test/functional/imports_controller_test.rb:111
+</pre>"
+28687,Redmine,Defect,"",Closed,Normal,How to install redmine on cpanel ,abdelrahman osama,"",2018-05-05 03:36,Issues,"","","","",0,2018-05-04 23:08,2018-05-05 03:36,"",Invalid,"","I tried to install redmine on my server but I have issue on step 9 in the below link 
+https://documentation.cpanel.net/display/CKB/How+to+Install+Redmine#937d9dced1db4b3583bcfd1a1e80551e"
+28686,Redmine,Defect,"",Closed,Normal,/users API does not accept boolean-like String values for generate_password,Gregor Schmidt,Go MAEDA,2018-05-07 03:35,REST API,4.0.0,"","","",0,2018-05-04 12:07,2018-05-06 10:32,"",Fixed,"","When creating a new user using the XML Rest API and the following XML, Redmine is not generating a new password.
+
+<pre>
+<user>
+    <login>test</login>
+    <firstname>test</firstname>
+    <lastname>test</lastname>
+    <mail>test@example.org</mail>
+    <generate_password>true</generate_password>
+    <must_change_passwd>true</must_change_passwd>
+</user>
+</pre>
+
+The @true@ value for @must_change_passwd@ works as expected, the one for @generate_password@ is ignored.
+
+The reason for that is, that @must_change_passwd@ is a proper database column and ActiveRecord will translate certain expected values to Boolean @true@. Among these are @""1""@, @""true""@, and @true@. In contrast @generate_password@ is a _virtual_ attribute, which is not backed by a database column. Redmine has its own code to handle the translation here. But this custom code only accepts @""1""@ and @true@, i.e it's missing the @""true""@ option.
+
+The attached patch fixes this shortcoming by using ActiveRecord's translation method directly."
+28672,Redmine,Defect,"",New,Normal,Browsing of single file projects using SVN does not work,Andrius Merkys,"",2018-05-02 13:12,SCM,"","","","",0,2018-05-02 13:12,"","","",3.0.0,"Dear maintainers,
+
+I have attempted to create a single file project. I have added a SVN repository URL pointing to a single file (let's say, svn://www.crystallography.net/cod-tools/trunk/CHANGELOG). Everything works fine except 'History | View | Annotate | Download' tabs in projects/cod-tools-changelog/repository/changes/CHANGELOG. Error log says:
+
+App 12828 stderr: svn: E160013: File not found: revision 6179, path '/trunk/CHANGELOG/CHANGELOG'
+App 12828 stderr: svn: E145000: Unknown node kind for 'svn://www.crystallography.net/cod-tools/trunk/CHANGELOG/CHANGELOG'
+
+It seems as repository's URLs are required to point to directories only. However, having project per file would be beneficial, and it is what I need now. Can this defect be evaded?
+
+I am using redmine 3.0 and subversion 1.8 as supplied by APT package manager of Debian-8.10.
+
+Many thanks,
+Andrius"
+28669,Redmine,Defect,"",New,Normal,Project filter is (sometimes) ignored in CSV export,Jens Kr?mer,"",2018-05-01 05:34,Issues filter,"","","","",0,2018-05-01 05:34,"","","",3.4.5,"Suppose you have a project P which has subprojects P1. Further you have a global, saved issue query with a @project_id@ filter for just the subproject P1.
+
+When calling that query in the context of P (by going to /projects/p/issues?query_id=123), only issues of P1 are shown. The same is true for the PDF export when accessed from this page. However, the CSV export when accessed from the same page, will contain issues from P as well.
+
+The cause of that discrepancy is, that the modal CSV export options window serializes the query into a bunch of hidden fields, while the PDF export just uses the @query_id@ URL parameter, like the web UI view does.
+
+Deeper down, the problem is the timing of when @@query.project@ is set in @QueriesHelper#retrieve_query@: With @query_id@ present, the query is loaded and then the project is set. Without @query_id@ (in the CSV export case), the project is set first, before the params are applied. This results in a different available_filters configuration, because only in absence of the project, the @project_id@ filter will be added. So with the project being set early, the project_id filter isn't initialized in the query object and thus all issues of P are rendered in the CSV. I'm attaching a failing test case illustrating the problem.
+
+I tried two approaches to solve the problem but both weren't really straightforward and I'm not sure which one to pursue further.
+
+1. Use @query_id@ in the hidden fields of the modal instead of serializing all the filters. I changed the @query_as_hidden_field_tags@ helper for this, basing it's output on @Query#as_params@. That worked somewhat but at least the 'all columns' option would need special treatment in this case because it was ignored.
+2. Change QueriesHelper#retrieve_query to not initialize the new query with the project when creating it, but apply the params first and set the project later. While this solved my case, it broke a lot of other test cases in both issues and timelog_reports controller tests.
+3. There might be a better way to fix this in @IssueQuery@ itself, by differentiating the cases of 'should I show the project filter in the UI' (only if called outside project context) from 'should I apply an already set project filter' (yes, if the projects filtered for are sub-projects of the present project).
+
+Opinions, anybody?
+
+The problem is present at least since 3.3, I worked on current trunk (r17320)."
+28668,Redmine,Defect,"",Closed,Normal,redmine_plugin_controller generates camelcase filename,Toru Takahashi,Go MAEDA,2018-05-05 04:55,Plugin API,4.0.0,"","","",0,2018-05-01 02:44,2018-05-05 04:55,"",Fixed,3.4.5,"redmine_plugin_controller generates not snake case file name but camel case file name when specifying controller name as camel case.
+
+For example:
+<pre>
+$ bundle exec rails generate redmine_plugin_controller hello_message FooBars
+      create  plugins/hello_message/app/controllers/FooBars_controller.rb
+      create  plugins/hello_message/app/helpers/FooBars_helper.rb
+      create  plugins/hello_message/test/functional/FooBars_controller_test.rb
+</pre>
+
+This causes 
+
+On the other hand, redmine_plugin_model generates snake case file name when specifying model name as camel case.
+
+<pre>
+$ bundle exec rails generate redmine_plugin_model hello_message FooBar
+      create  plugins/hello_message/app/models/foo_bar.rb
+      create  plugins/hello_message/test/unit/foo_bar_test.rb
+      create  plugins/hello_message/db/migrate/004_create_foo_bars.rb
+</pre>
+
+Ruby on Rails' @rails generate controller FooBars@ command generates snake case file name: 'foo_bars_controller.rb', too.
+
+Environment is as follows
+<pre>
+Environment:
+  Redmine version                3.4.5.stable.17297
+  Ruby version                   2.4.3-p205 (2017-12-14) [x86_64-linux]
+  Rails version                  4.2.8
+  Environment                    production
+  Database adapter               SQLite
+</pre>
+
+* trunk has same behavior.
+
+I expect to generate controller file with snake case name even if controller name is specified by camel case, like model file name.
+"
+28662,Redmine,Patch,"",New,Normal,"Replace ""Cancel"" buttons from the modals with ""Cancel"" link",Marius BALTEANU,"",2018-05-13 02:09,UI,4.1.0,"","","",0,2018-04-30 11:05,"","","","","In the current UI, the main action for a form is represented by a button element (eg: Create, Create and continue, Add, etc) and the ""Cancel"" action is represented by a link. This is a very useful because the main action should be more evident for an user.
+
+In the modals (Export to CSV, Add watchers, Add members), both actions (main and cancel) are represented by a button and this is confusing. The attached patch replaces all the cancel buttons from the modals with the same ""Cancel"" link used in the rest of the app.    "
+28659,Redmine,Defect,"",Closed,Normal,Redmine 3.4-stable + Passenger failed to start: cannot load such file -- bundler/setup (LoadError),herbert koelman,"",2018-04-29 01:35,"","","","","",0,2018-04-28 18:49,2018-04-29 01:35,"",Invalid,3.4.2,"When I try to access Redmine through passenger I end up with a web page that says :
+<pre>
+Application error
+
+Rails application failed to start properly
+</pre>
+
+The Apache error log records these error messages:
+<pre>
+/usr/share/rubygems/rubygems/core_ext/kernel_require.rb:55:in `require': cannot load such file -- bundler/setup (LoadError)
+	from /usr/share/rubygems/rubygems/core_ext/kernel_require.rb:55:in `require'
+	from /home/redmine/redmine/config/boot.rb:4:in `<top (required)>'
+	from /usr/share/rubygems/rubygems/core_ext/kernel_require.rb:55:in `require'
+	from /usr/share/rubygems/rubygems/core_ext/kernel_require.rb:55:in `require'
+	from /home/redmine/redmine/public/dispatch.fcgi:3:in `<main>'
+</pre>
+
+The relevant line seems to be */home/redmine/redmine/config/boot.rb:4:in `<top (required)>'*.
+<pre>
+# Set up gems listed in the Gemfile.
+ENV['BUNDLE_GEMFILE'] ||= File.expand_path('../../Gemfile', __FILE__)
+
+require 'bundler/setup' if File.exists?(ENV['BUNDLE_GEMFILE'])
+</pre>
+
+I'm running:
+* Redmine 3.4-stable (as returned by git status)
+* Fedora 27
+* Passenger-5.2.1
+* Using postgresql 9.6.8
+
+Redmine starts up when I use rails' web server @bundle exec rails server webrick -e production@.
+
+Any help is welcomed"
+28653,Redmine,Defect,"",Closed,Normal,Hindi font support issue ,Ankit Singh,"",2018-04-30 09:36,Administration,"","","","",0,2018-04-27 11:32,2018-04-30 09:36,"",Invalid,3.4.5,"Hi,
+
+Im trying to create a new issue with Hindi font then its showing following error. 
+
+!hindi.png!
+
+
+Please help how can I fix this issue.
+
+Thanks "
+28649,Redmine,Patch,"",New,Normal,Log automatic rescheduling of following issues to journal,Kevin Fischer,"",2018-05-08 01:56,Issues,3.3.8,"","","",0,2018-04-27 07:43,"","関連している #4154, 関連している #27644","","","The bug described in #4154 seems to be already fixed.
+
+The attached patch fixes a related bug, because of which updates to the due date of a preceding issue were not reflected in the following issue's history. "
+28636,Redmine,Defect,"",New,Normal,Cannot find an issue from a closed subproject,Rene Sperling,"",2018-04-26 09:18,Issues list,"","","","",0,2018-04-26 09:18,"","","",3.4.5,"Hi,
+
+I have a main project with several closed subprojets. I want to find an issue from one of these closed projects.
+Using the search function with 'project with subprojects' Redmine does not list it.
+When using 'all projects' or reopening the concerning project Redmine shows the issue.
+
+If this is not a bug, it would be nice to have an option to switch that behavior off."
+28628,Redmine,Defect,"",Closed,Normal,it possible to add group as a watcher Redmine 3.4.4 stable?,cleber souza,"",2018-04-25 15:30,"","","","","",0,2018-04-25 15:27,2018-04-25 15:30,"",Invalid,3.4.4,"I found some plugins, but none is compatible with this version of redmine 3.4.4 stable. Can someone help me?"
+28624,Redmine,Defect,"",Resolved,Normal,"How to hide ""Non member"" and ""Anonymous"" from admin/groups page.",膺升 陳,"",2018-04-28 13:18,"","","","","",0,2018-04-25 10:29,"","","","","Hi all,
+
+I know that ""Non member"" and ""Anonymous"" are two system roles for internal used by redmine,so that cannot be deleted.But if we would like to hide the two items from admin/groups page,can we do that? "
+28618,Redmine,Patch,"",New,Normal,Datepicker is called incorrectly,Elena Krasnopolskaya,"",2018-04-24 14:12,Calendar,"","","","",0,2018-04-24 14:12,"","","","","When calling Datepicker an array of objects was passed incorrectly: at the time of the call @$(input).datepickerFallback(""option"", ""defaultDate"", default_date);@ [application.js:689] in array is passed 3 arguments, but in [application.js:216-217] one argument is passed to the function. Function is declared @$.fn.datepickerFallback = function( options )@ [application.js:836] with one argument. Therefore when calling the ""real"" Datepicker only one argument is passed instead of three.
+
+The attached patch fixes this.
+"
+28611,Redmine,Patch,"",Closed,Normal,Remove unused i18n strings from locale files,Go MAEDA,Go MAEDA,2018-04-26 14:54,Code cleanup/refactoring,4.0.0,"","","",0,2018-04-23 15:24,2018-04-26 14:53,"","","","Some translation files have unused keys. Some keys should have been removed in earlier versions of Redmine, and some keys have never been used in vanilla Redmine."
+28610,Redmine,Patch,"",Closed,Normal,Japanese translation update (r17302),Go MAEDA,Go MAEDA,2018-04-24 13:57,Translations,"","","","",0,2018-04-23 14:23,2018-04-24 13:57,"","","","Translated button_actions added by #26655.
+
+<pre><code class=""diff"">
+Index: config/locales/ja.yml
+===================================================================
+--- config/locales/ja.yml	(revision 17303)
++++ config/locales/ja.yml	(working copy)
+@@ -1240,4 +1240,4 @@
+   setting_timelog_max_hours_per_day: 1日・1人あたりの作業時間の上限
+   label_x_revisions: ""%{count}件の履歴""
+   error_can_not_delete_auth_source: この認証方式は使用中です。削除できません。
+-  button_actions: Actions
++  button_actions: 操作
+</code></pre>"
+28609,Redmine,Defect,"",New,High,Error 404 on configure plugin,mauricio kagel,"",2018-04-23 14:08,Plugin API,"","","","",0,2018-04-23 14:08,"","","",3.4.5,"Redmine 3.4.5 installed (suse linux leap 42.3)
+
+the following plugin are have been downloaded from the redmine plugin repo and installed
+
+* event notification  plugin
+* plantuml
+* worktime plugin
+
+they appear in the plugin list, whenever i try to configure them
+hyperlink ""configure"" a err404 occors telling an attachment is missing,
+german translaton ""anhang existiert nicht oder ist gel?scht worden"" 
+"
+28605,Redmine,Patch,"",New,Normal,Add the missing icon class to the items with icons from the contextual menu,Marius BALTEANU,"",2018-04-26 02:45,Code cleanup/refactoring,4.1.0,"","","",0,2018-04-23 07:33,"",関連している #24313,"","","In the contextual menu, the items with icons have only the 'icon-' class. The attached patch adds also the 'icon' class."
+28602,Redmine,Patch,"",New,Normal,[Gantt] Move edit and delete buttons for queries to the buttons section,Bernhard Rohloff,"",2018-05-08 13:15,Gantt,4.1.0,"","","",0,2018-04-22 09:03,"",関連している #26125,"","","Except in the gantts view, in all query based views the edit and delete buttons are placed inside the buttons section (apply/clear/save) under the filters and options.
+I think the gantts view should be aligned to the common UI pattern, as well.
+
+In the submitted patch the yet empty contextual area is left inside the view as it breaks the tests and I don't know if it should be left to make further modifications easier.
+
+!gantt_before_patch.png!
+
+*Current view*
+
+!gantt_after_patch.png!
+
+*Proposed view*
+
+
+
+"
+28595,Redmine,Defect,"",New,Normal,Please remove font definition from the body element.,sergio .,"",2018-04-21 09:21,UI,"","","","",0,2018-04-21 09:21,"","","","","public/stylesheets/application.css
+
+body { font-family: Verdana, sans-serif; font-size: 12px; color:#333; margin: 0; padding: 0; min-width: 900px; }
+
+It's really bad idea to redefine default user font size and family. You can define any font (menu, footer, anywhere), but the main one should be user defined.
+
+"
+28589,Redmine,Defect,"",Closed,Urgent,User Guide wiki section is broken,sergio .,Marius BALTEANU,2018-04-21 08:45,Documentation,"","","","",0,2018-04-20 15:30,2018-04-21 08:45,"",Fixed,"","The
+https://www.redmine.org/projects/redmine/wiki/RedmineWikis
+page is broken."
+28578,Redmine,Defect,"",Closed,Normal,Redmine JAVA API: Journal is missing User Data,Shailesh Pathak,"",2018-04-30 04:38,REST API,"","","","",0,2018-04-17 17:52,2018-04-30 04:38,"",Invalid,3.0.0,"tried to read an issue along with Journal with following code
+
+> issue = issueManager.getIssueById(issueId, Include.journals);
+
+It gets me all the Journal data as expected but missing User Info (null) who made that change.
+While debugging figured out there is some issue while parsing the data in API classes.
+Please check.
+
+On browser with API URL, I get all the data along with User data."
+28576,Redmine,Defect,"",New,Normal,Redmine rejects e-mail but adds the attachment,Doruk Fi?ek,"",2018-04-23 18:32,"","","","","",0,2018-04-17 15:32,"","","","","Setting: There's an issue that a required field's empty.
+
+When I try to update the issue via e-mail (but not add value to the required field), Redmine rejects the e-mail update (as it should).
+
+However if the e-mail has an attachment, it adds the attachment to the issue nevertheless.
+
+What it should do is to reject the attachment also."
+28567,Redmine,Defect,"",Closed,Normal,"""No preview available""",Alex Perez,"",2018-04-30 04:33,Attachments,"","","","",0,2018-04-17 11:55,2018-04-30 04:33,関連している #22482,Invalid,3.4.4,"Hello,
+I'm not sure if this is a defect or a configuration issue in redmine. See redmine/plugins versions below
+
+!ss1.png!
+
+!ss2.png!
+
+When a user clicks on a a issue with file attached, then the file name ... Redmine is showing a screen with ""no preview available"" and a link to download the file. I noticed in previous versions there was a preview, so ..
+
+* the preview on attached files is controlled by a redmine setting? 
+* is the preview option dependent on the file-type?
+
+How can I get redmine to show a preview of the attachment?
+
+Thanks in advance.
+-Alex
+
+
+
+--------------------------------
+
+Environment:
+  Redmine version                3.4.4.stable
+  Ruby version                   2.3.4-p301 (2017-03-30) [x86_64-linux]
+  Rails version                  4.2.8
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Git                            1.7.1
+  Filesystem                     
+Redmine plugins:
+  advanced_roadmap_v2            2.4.2
+  easy_baseline                  1.4
+  easy_gantt                     1.10
+  easy_gantt_pro                 1.10
+  easy_wbs                       2016-0.0
+  redmine_agile                  1.4.5
+  redmine_checklists             3.1.5
+  redmine_ckeditor               1.1.4
+  redmine_contacts               4.1.1
+  redmine_contacts_helpdesk      3.0.9
+  redmine_dmsf                   1.6.0
+  redmine_drawio                 0.8.1
+  redmine_people                 1.3.0"
+28565,Redmine,Defect,"",Confirmed,Normal,PDF export has too many whitespace,Tyler Nguyen,"",2018-04-30 02:40,PDF export,Candidate for next minor release,"","","",0,2018-04-17 10:41,"","","",3.1.7,"When exported in pdf format, there are too many whitespace under each note (attached).
+As far as I can see, white space is automatically generated equal to the line number of the note.
+I tested on Redmine 3.4.4.stable.17198 and Redmine 3.1.7.stable.17140, this issue persists.
+Hope this issue is fixed soon.
+Thank you !"
+28564,Redmine,Patch,"",New,Normal,JSON API responses cannot have elements named 'request' or 'response',Jens Kr?mer,"",2018-05-20 06:11,REST API,4.1.0,"","","",0,2018-04-17 03:42,"","","","","I stumbled upon this while creating a Plugin with an API.
+
+The problem is that @Builders::Structure@ declares @attr_accessor :request, :response@. As a consequence, these get called instead of @Structure#method_missing@ when doing @api.request@ or @api.response@ in a @.rsb@ template.
+
+This patch adds a test illustrating the problem and replaces the accessors with direct instance variable usage."
+28563,Redmine,Defect,"",New,Normal,Due date is not visible,Maksim Brazhin,"",2018-04-16 17:59,Issues filter,"","","","",0,2018-04-16 17:59,"","","",3.4.4,"due date is not visible if it at the end of the report either occupies the whole area if at the beginning
+"
+28558,Redmine,Defect,"",New,Normal,OpenLDAP,Brian Rose,"",2018-04-21 03:59,Accounts / authentication,"","","","",0,2018-04-14 13:47,"","","",3.4.3,"Disclaimer: I am not an IT pro, I just play one on TV.
+
+I am trying to migrate a Redmine instance from one server to another. The last bit that I am trying to get working is to connect Redmine to OpenLDAP.
+
+My server configuration (details attached) is an Ubuntu 16.04.04 Server, with OpenLDAP 2.4.42 and Redmine 3.4.4. Note that this machine has a self-signed security certificate.
+
+I am able to connect to the LDAP server with Apache Directory Studio and also ldapsearch on the command line.
+
+@LDAPTLS_REQCERT=never ldapsearch -D ""cn=admin,dc=ubuntutest"" -W -p 389 -h ubuntutest -b ""dc=ubuntutest"" -s sub -x -ZZ ""(objectclass=*)""
+@
+
+When I configure the LDAP connection in Redmine and test it, I get the following error.
+
+<pre>
+Unable to connect (SSL_connect SYSCALL returned=5 errno=0 state=SSLv2/v3 read server hello A)
+</pre>
+
+I have a feeling this has to do with the self signed cert in some way, but I am not sure where to start looking here.
+
+Any ideas?
+"
+28553,Redmine,Defect,"",Closed,Normal,Redmine ,sebastian villalonga,"",2018-04-14 03:06,Website (redmine.org),"","","","",0,2018-04-13 16:27,2018-04-14 03:06,"",Invalid,3.2.0,"
+My version of redmine:
+
+Environment:
+  Redmine version                3.2.0.stable
+  Ruby version                   2.2.2-p95 (2015-04-13) [i386-mingw32]
+  Rails version                  4.2.5
+
+Issue:
+
+I can not connect to other PCs in redmine.
+I'm using Xampp.
+
+
+Thank you very much
+regards"
+28529,Redmine,Defect,"",New,Normal,Plugin settings trouble,Vladimir Kh,"",2018-04-11 12:27,Plugin API,"","","","",0,2018-04-11 12:27,"","","","","The problem is that now is impossible to call the option of plugin setting via symbol, only via the string.
+now:
+<pre>
+irb(main):006:0> Setting.plugin_redmine_ckeditor[""skin""]
+=> ""kama""
+irb(main):007:0> Setting.plugin_redmine_ckeditor[:skin]
+=> nil
+irb(main):008:0> Setting.plugin_redmine_ckeditor.class 
+=> Hash
+irb(main):009:0> puts Redmine::VERSION
+3.4.4.stable
+</pre>
+
+earlier:
+<pre>
+irb(main):001:0> Setting.plugin_redmine_ckeditor[:skin]
+=> ""kama""
+irb(main):002:0> Setting.plugin_redmine_ckeditor[""skin""]
+=> ""kama""
+irb(main):003:0> Setting.plugin_redmine_ckeditor.class
+=> ActionController::Parameters
+irb(main):004:0> puts Redmine::VERSION
+3.3.4.stable
+</pre>
+So now some plugins are not working correctly.
+This is connected with issue #26393 and r16812"
+28523,Redmine,Defect,"",Closed,Normal,Display horizontal scroll bar of plugins table when overflow occurs on small screen,Eduard Panov,Go MAEDA,2018-04-12 02:54,UI - Responsive,3.4.6,"","","",0,2018-04-10 13:20,2018-04-12 02:51,関連している #24309,Fixed,3.3.0,"On small screens (mobile phone) not scrolling table on plugin page (/admin/plugins).
+Need wrap <table> in <div class=""autoscroll""> tag to fix that."
+28519,Redmine,Defect,"",Closed,Normal,Redmine csv export encoding problem,Aziz ???tl?,"",2018-04-10 16:34,I18n,"","","","",0,2018-04-10 09:28,2018-04-10 16:34,"",Invalid,3.4.4,"We're using Redmine 3.3.0 and we've updated to 3.4.4 version with language Turkish (on locales/tr.yml encoding is ISO-8859-9).
+When we're using old version, open exported csv issue list has successfully opened with MS Excel (version 2016). But on new version, Turkish characters are corrupted.
+I also see #11116 issue is similar, but cannot fix on new version.
+Could you please help on this?"
+28510,Redmine,Patch,"",New,Normal,Show issue assignee gravatar in roadmap and version page,Marius BALTEANU,"",2018-04-24 06:16,UI,"","","","",0,2018-04-09 13:22,"","","","","I'm trying to make the roadmap and version page more useful for the users. I believe that this module should be one of the most important modules from Redmine, but currently it does provide only some basic features or information (from my/our users point of view).
+
+A first improvement that is quite small and easy to add is the issue assignee gravatar. 
+
+On mouse over the image, the assignee name is shown under the format (""Assignee: assignee name"" - for eg: ""Assignee: David Loper""). 
+
+Some screenshots: 
+
+!{width:50%;}.roadmap.png!
+
+!{width:50%;}.version.png!
+
+PS: After/if this patch is committed, we can use this new title format also for author/assignee avatars in the issue page instead of the one added in #26689. "
+28509,Redmine,Patch,"",New,Normal,hu.yml for Redmine 3.4,Greg T,"",2018-04-09 11:45,Translations,"","","","",0,2018-04-09 11:45,"","","","","Corrected, complete formal language file for Hungarian users.
+Includes localized strings for the important patch #25402. Please accept that patch, too (also attached in #25130)."
+28506,Redmine,Defect,"",New,Normal,Error Setup Redmine with Win10,Ha Van Truong,"",2018-04-09 07:04,"","","","","",0,2018-04-09 07:04,"","","","","when typing command:
+""bundle exec rake generate_secret_token""
+Error:
+C:\Redmine\redmine-3.2.9>bundle exec rake generate_secret_token
+rake aborted!
+LoadError: cannot load such file -- tiny_tds/tiny_tds
+C:/Redmine/redmine-3.2.9/config/application.rb:5:in `<top (required)>'
+C:/Redmine/redmine-3.2.9/Rakefile:5:in `require'
+C:/Redmine/redmine-3.2.9/Rakefile:5:in `<top (required)>'"
+28505,Redmine,Patch,"",Closed,Normal,Update pg gem to 1.0,Marius BALTEANU,Go MAEDA,2018-06-02 09:28,Gems support,4.0.0,"","","",0,2018-04-08 14:01,2018-06-02 09:28,"次のチケットが重複 #27985, コピー元 #28504","","","Rails 5.1.5 supports pg gem 1.0
+
+https://github.com/rails/rails/blob/v5.1.6/activerecord/CHANGELOG.md#rails-515-february-14-2018
+
+Unfortunately, I can't run the test suite on PG as database engine.
+"
+28504,Redmine,Patch,"",Closed,Normal,Update mysql2 gem to 0.5.0,Marius BALTEANU,Go MAEDA,2018-06-02 08:09,Gems support,4.0.0,"","","",0,2018-04-08 13:57,2018-06-02 08:09,コピー先 #28505,"","","Rails 5.1.6 supports mysql2 gem 0.5*
+
+https://github.com/rails/rails/blob/v5.1.6/activerecord/CHANGELOG.md#rails-516-march-29-2018
+
+All tests passed on my local environment.
+
+"
+28502,Redmine,Defect,"",New,Normal,Support issue[assigned_to_id]=me when prefilling issues,Ceesjan Luiten,"",2018-04-08 10:32,"","","","","",0,2018-04-08 10:32,"","","","","h2. Current situation
+
+This works:
+* http://demo.redmine.org/issues.xml?assigned_to_id=me shows all issues assigned my account
+* http://demo.redmine.org/issues/new?issue[assigned_to_id]=336461 create a new ticket, assigned to account 336461
+
+This does not work:
+* http://demo.redmine.org/issues/new?issue[assigned_to_id]=me create a new issue, assigned to my account. Note the selected assignee dropdown is empty
+
+h2. Desired situation
+
+We can use @issue[assigned_to_id]=me@ as part of the prefilling of issues as well."
+28501,Redmine,Defect,"",New,Normal,Update copyright year to 2018,Go MAEDA,Jean-Philippe Lang,2018-04-07 09:12,Code cleanup/refactoring,"","","","",0,2018-04-07 09:12,"","","",3.3.6,""
+28494,Redmine,Patch,"",Closed,Normal,Recalculate issue priority position names if default value changed,Holger Just,Go MAEDA,2018-05-12 05:34,Issues,4.0.0,"","","",0,2018-04-05 15:34,2018-05-12 05:34,"","","","The attached patch fixes the logic to set the position names of issue priorities which are used to define issue colours is assigned issues.
+
+Before this fix, the names were not re-calculated if the default issue priority was changed. This resulted in the the previous colours being used which thus would not match with the defined order anymore."
+28493,Redmine,Patch,"",Closed,Normal,Persian translation update and improvements,Ebrahim Mohammadi,Jean-Philippe Lang,2018-04-21 16:42,Translations,4.0.0,"","","",0,2018-04-05 14:54,2018-04-21 16:42,関連している #7418,"","","Persian translation of Redmine has been updated to fix the usability issues with the very old translation still in use (see #7418-18) and also to add translations for newly introduced strings since the last update of Persian translation which has been a long time ago.
+
+It's notable that the provided translations are based on commercially proven ones used and improved in ""Peygir"":https://peygir.com service over the years.
+
+This is an official contribution by developers of Peygir service, ""Bonyan"":https://bonyan.co Co., back to the great Redmine community."
+28482,Redmine,Defect,"",Closed,Normal,Buttons are disabled when modal is opened again after exporting CSV,Mizuki ISHIKAWA,Go MAEDA,2018-05-01 06:34,UI,"","","","",0,2018-04-03 07:41,2018-05-01 05:43,関連している #23630,Fixed,"","*Steps to reproduce:*
+# Open issues/index.
+# Click on the ""CSV"" link to open modal.
+# Click the export button to export csv.
+# After exporting csv, click “CSV"" link again to open modal.
+
+*Expected result:* 
+By export button, you can export csv again.
+
+*Result:*
+CSV can not be exported because export button and cancel button are disabled.
+!{width: 50%; border:1px solid #ccc}csv_modal.png!
+
+This is a problem only occurring with the *trunk* .
+I think that the cause of this problem is that disable_with option of submit_tag of rails5 is the default. 
+( https://github.com/rails/rails/pull/21135 )
+
+disable_with is an option to disable the submit button to prevent duplicate transmission.
+The export button and cancel button are disabled at the moment of clicking because disable_with is true.
+But that buttons do not reload the screen so the buttons will remain disabled.
+
+I have not confirmed, but there may be other buttons that are in the same state."
+28478,Redmine,Patch,"",Closed,Normal,Update the app name in extra/sample_plugin/init.rb: s/RedMine/Redmine/,Go MAEDA,Go MAEDA,2018-04-08 00:07,Code cleanup/refactoring,4.0.0,"","","",0,2018-04-02 07:11,2018-04-03 00:25,"","","","<pre><code class=""diff"">
+Index: extra/sample_plugin/init.rb
+===================================================================
+--- extra/sample_plugin/init.rb	(revision 17253)
++++ extra/sample_plugin/init.rb	(working copy)
+@@ -1,4 +1,4 @@
+-Rails.logger.info 'Starting Example plugin for RedMine'
++Rails.logger.info 'Starting Example plugin for Redmine'
+
+ Redmine::Plugin.register :sample_plugin do
+   name 'Example plugin'
+</code></pre>"
+28469,Redmine,Defect,"",Closed,Normal,Syntax highlighter does not work if language name is single-quoted,Go MAEDA,Go MAEDA,2018-05-02 04:31,Text formatting,3.3.8,"","","",0,2018-03-30 09:09,2018-05-02 04:31,"",Fixed,"","Please see the screenshot below. Syntax highlighter does not work if ""Text formatting"" is set to ""Textile"" and the language name is enclosed by single quotation marks. The Textile formatter should accept single quotation marks as well as double quotation marks.
+
+!{width: 252px; border: 1px solid #ccc;}.screenshot@2x.png!"
+28468,Redmine,Defect,"",Closed,Normal,updated redmine from version 3.3.2 to 3.4.4 have  error,James Lai,"",2018-03-31 04:03,"","","","","",0,2018-03-30 03:38,2018-03-31 04:03,"",Invalid,"","Hello,Team,
+I have updated redmine from version3.3.2 to 3.4.4,when I imported database data and files,it seem work normal,but when I click project setting,it appear ""Internal error"",log as below:
+  Current user: admin (id=1)
+  Rendered projects/_form.html.erb (83.3ms)
+  Rendered projects/_edit.html.erb (83.8ms)
+  Rendered common/_tabs.html.erb (86.0ms)
+  Rendered projects/settings.html.erb within layouts/base (86.3ms)
+Completed 500 Internal Server Error in 97ms (ActiveRecord: 6.6ms)
+
+ActionView::Template::Error (undefined method `default_assigned_to_id' for #<Project:0x00007f6ac85cce18>
+Did you mean?  default_assigned_to
+               default_assigned_to=):
+    25: <% end %>
+    26:
+    27: <% if @project.safe_attribute?('default_assigned_to_id') && (default_assigned_to_options = project_default_assigned_to_options(@project)).present? %>
+    28:   <p><%= f.select :default_assigned_to_id, default_assigned_to_options, include_blank: true %></p>
+    29: <% end %>
+    30:
+    31: <%= wikitoolbar_for 'project_description' %>
+  lib/redmine/views/labelled_form_builder.rb:38:in `select'
+  app/views/projects/_form.html.erb:28:in `_app_views_projects__form_html_erb___3291442570450357428_70048327060060'
+  app/views/projects/_edit.html.erb:2:in `block in _app_views_projects__edit_html_erb__932987621284645149_70048327002560'
+  app/helpers/application_helper.rb:1190:in `labelled_form_for'
+  app/views/projects/_edit.html.erb:1:in `_app_views_projects__edit_html_erb__932987621284645149_70048327002560'
+  app/views/common/_tabs.html.erb:17:in `block in _app_views_common__tabs_html_erb___3545613976734949968_70048326888560'
+  app/views/common/_tabs.html.erb:16:in `each'
+  app/views/common/_tabs.html.erb:16:in `_app_views_common__tabs_html_erb___3545613976734949968_70048326888560'
+  app/helpers/application_helper.rb:345:in `render_tabs'
+  app/views/projects/settings.html.erb:3:in `_app_views_projects_settings_html_erb___3874295062219565917_70048326828240'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+by comparison,I found v3.3.2 (redmine/app/views/projects/_form.html.erb) havs no ""default_assigned_to_id"" field but v3.4.4 have this field,is it any way to resolved this problem?thank you,
+
+my redmine environment:
+Environment:
+  Redmine version                3.4.4.stable
+  Ruby version                   2.4.3-p205 (2017-12-14) [x86_64-linux]
+  Rails version                  4.2.8
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Git                            1.8.3.1
+  Filesystem                     
+Redmine plugins:
+  _query                         0.0.3
+  clipboard_image_paste          1.12
+  redmine_ckeditor               1.1.5
+  redmine_contacts               4.1.2
+  redmine_custom_workflows       0.1.6
+  redmine_editauthor             0.11.0
+  redmine_favorite_projects      2.0.3
+  redmine_issues_tree            0.0.11
+  redmine_knowledgebase          3.3.1"
+28463,Redmine,Defect,"",Closed,Normal,"Permissions table for trackers should have ""check/uncheck all"" icon",Go MAEDA,Go MAEDA,2018-04-04 06:16,UI,"","","","",0,2018-03-29 06:33,2018-04-04 06:16,関連している #28242,Fixed,"","Permission table for trackers (placed on the bottom of permissions page for a Role) does not have ""check/uncheck all"" icon.
+
+Almost all tables which have many checkboxes have ""check/uncheck all"" icon (e.g., Workflow, Permissions report, Trackers summary). I think that also permission table for trackers should have the icon for usability and consistency. Checking/Unchecking many checkboxes is tiresome work especially when the Redmine instance has many trackers.
+
+!{width: 756px;}.trackers-permissions-table@2x.png!
+
+!{width: 756px;}.workflow-table@2x.png!"
+28456,Redmine,Defect,"",Closed,Normal,Error 500 on project setting page,David BOUCHE,"",2018-03-30 16:24,"","","","","",0,2018-03-28 10:54,2018-03-30 16:24,"",Invalid,3.4.4,"Hello,
+
+I'm having an issue since the update to Redmine 3.4.4.
+
+Here's the error : 
+
+<pre>
+2018-03-28T08:39:18.131Z: Started GET ""/projects/********/settings"" for 163.172.235.152 at 2018-03-28 08:39:17 +0000
+2018-03-28T08:39:18.131Z: Processing by ProjectsController#settings as HTML
+2018-03-28T08:39:18.132Z:  Parameters: {""id""=>""*********""}
+2018-03-28T08:39:18.132Z:  Current user: dbouche (id=177)
+2018-03-28T08:39:18.133Z:  Rendered projects/_form.html.erb (95.4ms)
+2018-03-28T08:39:18.133Z:  Rendered projects/_edit.html.erb (96.0ms)
+2018-03-28T08:39:18.133Z:  Rendered common/_tabs.html.erb (97.7ms)
+2018-03-28T08:39:18.134Z:  Rendered projects/settings.html.erb within layouts/base (98.2ms)
+2018-03-28T08:39:18.134Z: Completed 500 Internal Server Error in 124ms (ActiveRecord: 21.2ms)
+2018-03-28T08:39:18.134Z: ActionView::Template::Error (undefined method `default_assigned_to_id' for #<Project:0x00000004e995e0>
+2018-03-28T08:39:18.135Z: Did you mean?  default_assigned_to
+2018-03-28T08:39:18.135Z:               default_assigned_to=):
+2018-03-28T08:39:18.135Z:    25: <% end %>
+2018-03-28T08:39:18.136Z:    26: 
+2018-03-28T08:39:18.136Z:    27: <% if @project.safe_attribute?('default_assigned_to_id') && (default_assigned_to_options = project_default_assigned_to_options(@project)).present? %>
+2018-03-28T08:39:18.137Z:    28:   <p><%= f.select :default_assigned_to_id, default_assigned_to_options, include_blank: true %></p>
+2018-03-28T08:39:18.137Z:    29: <% end %>
+2018-03-28T08:39:18.137Z:    30: 
+2018-03-28T08:39:18.138Z:    31: <%= wikitoolbar_for 'project_description' %>
+2018-03-28T08:39:18.138Z:  lib/redmine/views/labelled_form_builder.rb:38:in `select'
+2018-03-28T08:39:18.138Z:  app/views/projects/_form.html.erb:28:in `_app_views_projects__form_html_erb___3429773259204725780_36217920'
+2018-03-28T08:39:18.139Z:  app/views/projects/_edit.html.erb:2:in `block in _app_views_projects__edit_html_erb___1823953753553664077_36110120'
+2018-03-28T08:39:18.139Z:  app/helpers/application_helper.rb:1190:in `labelled_form_for'
+2018-03-28T08:39:18.139Z:  app/views/projects/_edit.html.erb:1:in `_app_views_projects__edit_html_erb___1823953753553664077_36110120'
+2018-03-28T08:39:18.140Z:  app/views/common/_tabs.html.erb:17:in `block in _app_views_common__tabs_html_erb__1848136464132884495_48519660'
+2018-03-28T08:39:18.140Z:  app/views/common/_tabs.html.erb:16:in `each'
+2018-03-28T08:39:18.140Z:  app/views/common/_tabs.html.erb:16:in `_app_views_common__tabs_html_erb__1848136464132884495_48519660'
+2018-03-28T08:39:18.141Z:  app/helpers/application_helper.rb:345:in `render_tabs'
+2018-03-28T08:39:18.142Z:  app/views/projects/settings.html.erb:3:in `_app_views_projects_settings_html_erb___310978515768946799_35392640'
+2018-03-28T08:39:18.143Z:  lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+2018-03-28T08:39:18.209Z: {address space usage: 492253184 bytes/469MB} {rss usage: 207372288 bytes/197MB} [pid: 13162|app: 0|req: 2399/2399] 92.154.72.118 () {54 vars in 1930 bytes} [Wed Mar 28 08:39:17 2018] GET /projects/********/settings => generated 648 bytes in 272 msecs (HTTP/1.1 500) 4 headers in 172 bytes (0 switches on core 0)
+</pre>
+
+The Redmine environment :
+
+<pre>
+Environment:
+  Redmine version                3.4.4.stable
+  Ruby version                   2.3.3-p222 (2016-11-21) [x86_64-linux]
+  Rails version                  4.2.8
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.9.7
+  Git                            2.16.2
+  Filesystem                     
+Redmine plugins:
+  redmine_agile                  1.4.6
+  redmine_contacts               4.1.2
+  redmine_contacts_helpdesk      3.0.9
+  redmine_wktime                 3.2.1
+</pre>
+
+I'm available to give ou more information if you need.
+
+Thanks for support,
+David"
+28447,Redmine,Defect,"",New,Normal,fields_for produces a broken <label for=“”> value,Phlip Plumlee,"",2018-03-28 05:08,UI,"","","","",0,2018-03-28 05:08,"","","",3.4.2,"Here's some code from the @redmine_people@ plugin illustrating the problem:
+
+    <%= f.fields_for :information do |information| %>
+      <p><%= information.text_field :middlename, :label => l(:label_people_middlename) %></p>
+      <p><%= f.text_field :lastname, :required => true %></p>
+
+Then one of the fields declares a label:
+
+    <p><%= information.select :gender, Person.get_genders, :label => l(:label_people_gender)%></p>
+
+That generates this HTML:
+
+    <p><label for=""person[information_attributes]_gender"">Gender</label>
+      <select name=""person[information_attributes][gender]"" id=""person_information_attributes_gender"">
+      <option selected=""selected"" value=""0"">Male</option>
+      <option value=""1"">Female</option>
+    </select></p>
+
+The @<label for="""">@ value has @[]@ in it instead of underscores @_@, so it does not match the target field's @id=""person_information_attributes_gender""@. Clicking on the label does not put the keyboard focus into that @<select>@ field.
+
+The bug comes from this statement in LabelledFormBuilder:
+
+    @template.content_tag(""label"", text.html_safe,
+                                   :class => (@object && @object.errors[field].present? ? ""error"" : nil),
+                                   :for => (@object_name.to_s + ""_"" + field.to_s))
+
+The @object_name@ has @[]@ in it, so something should replace them with ""_"".
+"
+28446,Redmine,Patch,"",Closed,Normal,Bulgarian translation,Ivan Cenov,Go MAEDA,2018-03-28 02:38,Translations,"","","","",0,2018-03-27 19:27,2018-03-28 02:38,"","","","Bulgarian translation of the following labels (#28000)
+
+* error_can_not_delete_auth_source"

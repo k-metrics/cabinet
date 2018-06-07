@@ -1,0 +1,766 @@
+#,プロジェクト,トラッカー,親チケット,ステータス,優先度,題名,作成者,担当者,更新日,カテゴリ,対象バージョン,開始日,期日,予定工数,進捗率,作成日,終了日,関連するチケット,Resolution,Affected version,説明
+17621,Redmine,Defect,"",Closed,High,Completed 500 Internal Server Error ,Ladislav B.,"",2014-08-06 14:40,"","","","","",0,2014-08-06 14:25,2014-08-06 14:40,関連している #12900,Duplicate,"","I need help with a redmine. Sometimes application crashes and I can't why. After apache reload redmine goes many days without problems.
+
+Can anybody help me with this problem?
+
+Environment:
+  Redmine version                2.5.1.stable
+  Ruby version                   1.9.3-p448 (2013-06-27) [x86_64-linux]
+  Rails version                  3.2.17
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.6.11
+  Mercurial                      2.2.2
+  Git                            1.7.1
+  Filesystem                     
+Redmine plugins:
+  appmenuadds                    1.4.2
+  calendar_shortcut_plugin       0.0.1
+  project_alias                  0.1.0
+  redmine_message_issues         0.1.0
+  scrum                          0.5.0
+--
+
+Started GET ""/"" for 213.81.172.253 at 2014-08-06 13:51:07 +0200
+Processing by WelcomeController#index as HTML
+  Current user: Ladislav (id=117)
+  Rendered news/_news.html.erb (2.1ms)
+  Rendered welcome/index.html.erb within layouts/base (2.6ms)
+Completed 500 Internal Server Error in 6.4ms
+
+ActionView::Template::Error (translation missing: en.date.formats.default):
+    3: <%= ""(#{l(:label_x_comments, :count => news.comments_count)})"" if news.comments_count > 0 %>
+    4: <br />
+    5: <% unless news.summary.blank? %><span class=""summary""><%=h news.summary %></span><br /><% end %>
+    6: <span class=""author""><%= authoring news.created_on, news.author %></span></p>
+  lib/redmine/i18n.rb:60:in `format_date'
+  lib/redmine/i18n.rb:71:in `format_time'
+  app/helpers/application_helper.rb:442:in `time_tag'
+  app/helpers/application_helper.rb:434:in `authoring'
+  app/views/news/_news.html.erb:6:in `_app_views_news__news_html_erb__3644809541294843667_70358917994100'
+  app/views/welcome/index.html.erb:8:in `_app_views_welcome_index_html_erb___56145358015715849_70358917874300'"
+17617,Redmine,Defect,"",Closed,Normal,Ruby bundle install error when upgrading from Redmine 2.4.1 to 2.5.2,Peter Berkman,"",2014-08-06 01:44,Gems support,"","","","",0,2014-08-06 01:29,2014-08-06 01:44,"",Invalid,2.5.2,"OS: Windows Server 2008 R2 
+
+unziped version 2.5.2 into e:\redmine
+cd \redmine
+
+bundle install --without development test
+
+error
+<pre>
+[ E:\Redmine ]
+==>bundle install --without development test
+The source :rubygems is deprecated because HTTP requests are insecure.
+Please change your source to 'https://rubygems.org' if possible, or 'http://rubygems.org' if not.
+The source :rubygems is deprecated because HTTP requests are insecure.
+Please change your source to 'https://rubygems.org' if possible, or 'http://rubygems.org' if not.
+Fetching gem metadata from https://rubygems.org/.........
+Fetching gem metadata from https://rubygems.org/.........
+Fetching gem metadata from http://rubygems.org/.........
+Fetching gem metadata from http://rubygems.org/.........
+Fetching gem metadata from https://rubygems.org/..
+Fetching gem metadata from https://rubygems.org/..
+Fetching gem metadata from http://rubygems.org/..
+Fetching gem metadata from http://rubygems.org/..
+Resolving dependencies...
+Installing rake (10.1.1)
+Installing i18n (0.6.11)
+Installing multi_json (1.10.1)
+Installing activesupport (3.2.19)
+Using builder (3.0.0)
+Installing activemodel (3.2.19)
+Using erubis (2.7.0)
+Using journey (1.0.4)
+Using rack (1.4.5)
+Using rack-cache (1.2)
+Using rack-test (0.6.2)
+Using hike (1.2.3)
+Using tilt (1.4.1)
+Using sprockets (2.2.2)
+Installing actionpack (3.2.19)
+Using mime-types (1.25.1)
+Installing polyglot (0.3.5)
+Using treetop (1.4.15)
+Using mail (2.5.4)
+Installing actionmailer (3.2.19)
+Using arel (3.0.3)
+Installing tzinfo (0.3.40)
+Installing activerecord (3.2.19)
+Installing activeresource (3.2.19)
+Using bundler (1.2.4)
+Installing rack-ssl (1.3.4)
+Using json (1.8.1)
+Using rdoc (3.12.2)
+Installing thor (0.19.1)
+Installing railties (3.2.19)
+Installing rails (3.2.19)
+Using acts-as-taggable-on (2.3.3)
+Using acts_as_votable (0.4.0)
+Installing awesome_nested_set (2.1.6)
+Using coderay (1.1.0)
+Using jquery-rails (2.0.3)
+Using money (5.0.0)
+Installing mysql2 (0.3.16) with native extensions
+Gem::Installer::ExtensionBuildError: ERROR: Failed to build gem native extension.
+
+        E:/Ruby/bin/ruby.exe extconf.rb
+checking for ruby/thread.h... no
+checking for rb_thread_blocking_region()... yes
+checking for rb_wait_for_single_fd()... yes
+checking for rb_hash_dup()... yes
+checking for rb_intern3()... yes
+checking for mysql_query() in -lmysqlclient... no
+checking for main() in -lm... yes
+checking for mysql_query() in -lmysqlclient... no
+checking for main() in -lz... no
+checking for mysql_query() in -lmysqlclient... no
+checking for main() in -lsocket... no
+checking for mysql_query() in -lmysqlclient... no
+checking for main() in -lnsl... no
+checking for mysql_query() in -lmysqlclient... no
+checking for main() in -lmygcc... no
+checking for mysql_query() in -lmysqlclient... no
+*** extconf.rb failed ***
+Could not create Makefile due to some reason, probably lack of
+necessary libraries and/or headers.  Check the mkmf.log file for more
+details.  You may need configuration options.
+</pre>
+
+"
+17609,Redmine,Defect,"",New,Normal,The issue ID number increments a lot for no apparent reason (example 2 subsequent id's are 1299 and the next one is 2297),Kristof Despiere,"",2015-03-31 19:47,Database,"","","","",0,2014-08-04 16:38,"","","",2.3.2,"The issue ID number increments a lot for no apparent reason (example 2 subsequent id's are 1299 and the next one is 2297)
+
+We have had the same issue again now, it jumped from 2362 to 3355.
+
+The backend database we use is a SQL Server 2012 Express. Apart from that I do not see an entry in the log pointing to why it behaves like this.
+
+Anyone has an idea how this happens/can happen ? Or how to avoid it in the future ?"
+17608,Redmine,Defect,"",Closed,Normal,Problem when updating the to ubuntu 14.04,Hud Hood,"",2014-08-05 09:36,Ruby support,"","","","",0,2014-08-04 13:17,2014-08-05 09:36,"",Invalid,2.4.2,"I have not been able to update my redmine. Everytime I ran `apt-get upgrade`, I'm getting a ruby not found error:
+
+    **Setting up redmine (2.4.2-1) ...
+    dbconfig-common: writing config to /etc/dbconfig-common/redmine/instances/default.conf
+    Creating config file /etc/redmine/default/database.yml.new with new version
+    dbconfig-common: flushing administrative password
+    Populating database for redmine instance ""default"".
+    This may take a while.
+    /usr/bin/env: ruby1.8: No such file or directory
+    Error when running rake db:migrate, check database configuration.
+    dpkg: error processing package redmine (--configure):
+     subprocess installed post-installation script returned error exit status 1
+    Errors were encountered while processing:
+     redmine
+    E: Sub-process /usr/bin/dpkg returned an error code (1)**
+
+I am stuck now. My redmine has stopped working.
+
+"
+17606,Redmine,Defect,"",Closed,Normal,Reproduction of forms to add files in the browser Google Chrome!,Максим Сазонов,"",2014-08-05 01:15,"","","","","",0,2014-08-04 11:35,2014-08-05 01:15,次のチケットと重複 #17151,Duplicate,"",When adding a single file is downloaded about 7 pieces (not counted). A little more than add forms to add a file! Kokaya version does not know! In your current so!
+17602,Redmine,Patch,"",Closed,Normal,Include enabled modules in projects API,Jan from Planio www.plan.io,Jean-Baptiste Barth,2014-09-06 05:19,REST API,2.6.0,"","","",90,2014-08-03 18:26,2014-09-06 05:19,次のチケットが重複 #8545,"","","For some API use cases, it will certainly be helpful to find out *which modules are enabled* in a project. It is at least for a new feature we're developing at ""Planio"":https://plan.io/redmine-hosting. But in general, every API client which uses - let's say the issues API - should be able to check beforehand, if the issue tracking module is active in a particular project or not.
+
+This patch adds @enabled_modules@ to the @projects#show@ API. They will be shown only if the @include=enabled_modules@ URL parameter is used. The behaviour is exactly the same as for issue categories and trackers.
+
+And while we're at it, it also makes the @include=...@ URL parameters (for issue categories, trackers and enabled modules) available in the @projects#index@ API.
+
+Tests are included, only needs merging :)"
+17600,Redmine,Defect,"",Closed,Normal,Calendar error 500 after install,James Netherwood,"",2015-08-23 17:06,Calendar,"","","","",0,2014-08-03 13:15,2015-08-23 17:06,"",No feedback,"",Maybe this is a conflict on database fields
+17598,Redmine,Defect,"",New,Normal,Wiki page for installation instructions is incomplete,Michel Behr,"",2014-08-29 10:27,Documentation,"","","","",0,2014-08-03 02:37,"","","",2.5.2,"Please correct me if I'm wrong, but AFAIU, what we see here:
+http://www.redmine.org/projects/redmine/wiki/redmineinstall#PostgreSQL
+
+Is this:
+CREATE ROLE redmine LOGIN ENCRYPTED PASSWORD 'my_password' NOINHERIT VALID UNTIL 'infinity';
+CREATE DATABASE redmine WITH ENCODING='UTF8' OWNER=redmine;
+
+When in fact it should THIS:
+su postgres
+psql
+postgres=# CREATE ROLE redmine LOGIN ENCRYPTED PASSWORD '<password>' NOINHERIT VALID UNTIL 'infinity';
+postgres=# CREATE DATABASE redmine WITH ENCODING='UTF8' OWNER=redmine TEMPLATE template0;
+postgres=# \q
+exit
+
+The same applies to MySQL, we should present more complete instructions - shouldn't we...? (I don't have write access to the wiki, that's why I didn't do it on my own).
+"
+17590,Redmine,Defect,"",New,High,UI issue in Redmine Roadmap page,Lajish Lakshmanan,"",2014-08-01 05:22,UI,"","","","",0,2014-08-01 05:22,"","","","","There is an UI issue in Redmine Roadmap page while viewing through 1024x768 resolutions screen. Please have a look over attached screenshot.
+
+Go to roadmap-> Click on version having much amount of issues-> On right side, select filter option category wise"
+17589,Redmine,Defect,"",Closed,Normal,Error in IMAP command received by server.,Daniel Drucker,"",2014-07-31 22:46,Email receiving,"","","","",0,2014-07-31 19:35,2014-07-31 22:46,"",Invalid,2.3.2,"What am I doing wrong here? How can I get redmine to receive emails?
+
+<pre>
+root@up:/usr/share/redmine# rake --trace RAILS_ENV=production redmine:email:receive_imap host=myhostname username=myusername password=mypassword project=Company tracker=bug move_on_success=read move_on_failure=failed allow_override=tracker,project unknown_user=accept
+
+** Invoke redmine:email:receive_imap (first_time)
+** Invoke environment (first_time)
+** Execute environment
+** Execute redmine:email:receive_imap
+rake aborted!
+Error in IMAP command received by server.
+/usr/local/lib/ruby/1.9.1/net/imap.rb:1141:in `get_tagged_response'
+/usr/local/lib/ruby/1.9.1/net/imap.rb:1195:in `block in send_command'
+/usr/local/lib/ruby/1.9.1/monitor.rb:211:in `mon_synchronize'
+/usr/local/lib/ruby/1.9.1/net/imap.rb:1177:in `send_command'
+/usr/local/lib/ruby/1.9.1/net/imap.rb:1365:in `copy_internal'
+/usr/local/lib/ruby/1.9.1/net/imap.rb:825:in `uid_copy'
+/usr/share/redmine/lib/redmine/imap.rb:45:in `block in check'
+/usr/share/redmine/lib/redmine/imap.rb:32:in `each'
+/usr/share/redmine/lib/redmine/imap.rb:32:in `check'
+/usr/share/redmine/lib/tasks/email.rake:141:in `block (3 levels) in <top (required)>'
+/usr/local/lib/ruby/gems/1.9.1/gems/rake-10.1.0/lib/rake/task.rb:236:in `call'
+/usr/local/lib/ruby/gems/1.9.1/gems/rake-10.1.0/lib/rake/task.rb:236:in `block in execute'
+/usr/local/lib/ruby/gems/1.9.1/gems/rake-10.1.0/lib/rake/task.rb:231:in `each'
+/usr/local/lib/ruby/gems/1.9.1/gems/rake-10.1.0/lib/rake/task.rb:231:in `execute'
+/usr/local/lib/ruby/gems/1.9.1/gems/rake-10.1.0/lib/rake/task.rb:175:in `block in invoke_with_call_chain'
+/usr/local/lib/ruby/1.9.1/monitor.rb:211:in `mon_synchronize'
+/usr/local/lib/ruby/gems/1.9.1/gems/rake-10.1.0/lib/rake/task.rb:168:in `invoke_with_call_chain'
+/usr/local/lib/ruby/gems/1.9.1/gems/rake-10.1.0/lib/rake/task.rb:161:in `invoke'
+/usr/local/lib/ruby/gems/1.9.1/gems/rake-10.1.0/lib/rake/application.rb:149:in `invoke_task'
+/usr/local/lib/ruby/gems/1.9.1/gems/rake-10.1.0/lib/rake/application.rb:106:in `block (2 levels) in top_level'
+/usr/local/lib/ruby/gems/1.9.1/gems/rake-10.1.0/lib/rake/application.rb:106:in `each'
+/usr/local/lib/ruby/gems/1.9.1/gems/rake-10.1.0/lib/rake/application.rb:106:in `block in top_level'
+/usr/local/lib/ruby/gems/1.9.1/gems/rake-10.1.0/lib/rake/application.rb:115:in `run_with_threads'
+/usr/local/lib/ruby/gems/1.9.1/gems/rake-10.1.0/lib/rake/application.rb:100:in `top_level'
+/usr/local/lib/ruby/gems/1.9.1/gems/rake-10.1.0/lib/rake/application.rb:78:in `block in run'
+/usr/local/lib/ruby/gems/1.9.1/gems/rake-10.1.0/lib/rake/application.rb:165:in `standard_exception_handling'
+/usr/local/lib/ruby/gems/1.9.1/gems/rake-10.1.0/lib/rake/application.rb:75:in `run'
+/usr/local/lib/ruby/gems/1.9.1/gems/rake-10.1.0/bin/rake:33:in `<top (required)>'
+/usr/local/bin/rake:23:in `load'
+/usr/local/bin/rake:23:in `<main>'
+Tasks: TOP => redmine:email:receive_imap
+</pre>"
+17588,Redmine,Defect,"",New,Normal,Warn that the authenticity token is invalid before you get the textarea to edit issues,Pablo Yanez Trujillo,"",2014-07-31 17:14,Issues,"","","","",0,2014-07-31 17:14,"","","","","I've tried to do a google search about that but I wasn't able to find anything useful. I don't know whether this should be counted as a bug or as a feature.
+
+My problem is that I save the tabs in my browser, so when I close my browser and open it again, the last open tabs are displayed. However, Opera *does not* make a GET request to the sites in the tabs but displays the contents as they were before closing the browser (probaly it renders them from its cache).
+
+Anyway, the redmine site of my company has been configured so that you have to log in before you 
+can edit issues. It happens to me quite often that when I start my working day, and start working on the issues I've got, I lose track of the time spending on the individual issues and after working on them, opening and closing new tabs, I come across a tab with an issue of a past session (like the day before).
+
+Here I've forgotten to press F5 to get a new authenticity token. Then I happily click on _Update_ to update the status of the issue and start editing the issue. After a couple of minutes I click on _Submit_ and get a nasty surprise:
+
+<pre>
+422
+
+Invalid form authenticity token.
+</pre>
+
+If you go back (by pressing the backspace-key or clicking on the back-button of the browser) then you realize that you've lost everything, since the _Update_-Link executes
+
+<pre>
+showAndScrollTo(""update"", ""issue_notes""); return false;
+</pre>
+
+and even if you execute it again, the form fields are all empty again :(
+
+
+On some occasions I've lost more than 30 minutes of typing... that's very frustrating, specially when you are in a hurry and need to type everything again.
+
+So, wouldn't it make more sense that when you click on _Update_ instead of getting the textarea right away, you get first an error message/warning that your csrf token is invalid thus preventing you from wasting you time in the first place?
+
+
+The version of redmine my company is running
+
+<pre>
+Environment:
+  Redmine version                2.4.1.stable
+  Ruby version                   1.9.3-p194 (2012-04-20) [x86_64-linux]
+  Rails version                  3.2.15
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.6.17
+  Git                            1.7.10.4
+  Filesystem                     
+Redmine plugins:
+  redmine_favorite_projects      1.0.1
+  redmine_startpage              0.1.0
+  redmine_theme_changer          0.1.0
+</pre>"
+17586,Redmine,Defect,"",Closed,Normal,best suited OS to install  for redmine,peter smith,"",2014-07-31 22:47,"","","","","",0,2014-07-31 12:28,2014-07-31 22:47,"",Invalid,"","Is anyone knows that whcih operating system is best suited to install  for redmine ?
+I don't want to go experience the dependencies hell again !! ( i tried to install it under Windows, it just piss me off )
+
+
+
+thank you for suggestion !!"
+17585,Redmine,Defect,"",Closed,Normal,Typo in Traditional Chinese detailed syntax help,Felix Sch?fer,"",2014-08-25 01:46,Translations,2.4.7,"","","",0,2014-07-31 11:36,2014-08-25 01:46,"",Fixed,2.5.2,"source:branches/2.5-stable/public/help/zh-tw/wiki_syntax_detailed.html#L146 should probably say ""Redmine"", not ""Remine""."
+17581,Redmine,Defect,"",Closed,Normal,Drag & Drop does not work with Safari 5.1,fred bregar,"",2014-09-14 19:32,Attachments,2.4.7,"","","",0,2014-07-29 16:15,2014-09-14 19:32,関連している #13932,Fixed,2.5.2,see #13932-13 - i would have re-opened but i do not have permission
+17580,Redmine,Defect,"",Closed,Normal,"After copying a task, setting the parent as the orignal task's parent triggers an error",Olivier Houdas,Jean-Philippe Lang,2016-01-10 16:33,Issues,3.3.0,"","","",0,2014-07-29 15:29,2016-01-10 16:33,"関連している #12893, 関連している #13654",Fixed,"","*Steps for repro:*
+1. Create an issue (1), and add a sub-issue (2) to it
+2. Copy this sub-issue (creates issue 3)
+3. Edit issue 3, set issue 1 as its parent
+*Result:* We get an error that Parent Issue is invalid
+4. Copy (2), and while in edit mode, define issue 1 as the parent
+*Result:* this relationship is accepted
+5. Create sub-issue (4) of issue 1
+6. Display issue 4, add issue 2 as a related issue
+*Result:* this relationship is accepted
+
+*Expected result:* the behavior should be consistent. As far as I'm concerned, I do not see what would justify that ""relations"" would be forbidden inside the parent-children tree, so the faulty behavior would be the first result (Parent issue invalid) but I might be missing some cases.
+
+Notes :
+1) This is related to #12893 (obviously on purpose, see line 216 of app/models/issue.rb:
+    self.attributes = issue.attributes.dup.except(""id"", ""root_id"", *""parent_id""*, ""lft"", ""rgt"", ""created_on"", ""updated_on"")
+
+2) The current behaviour for 1st result is on purpose: the  error message is triggered by line 600 of issue.rb:
+      elsif (@parent_issue != parent) && (*all_dependent_issues.include?(@parent_issue)* || @parent_issue.all_dependent_issues.include?(self))
+
+which definitely parses parents, children, cousins, etc., but also *_related_* issues."
+17579,Redmine,Defect,"",Closed,Normal,Edit Watchers List Loses Checked Watchers When Performing Multiple Searches,Brandon Liles,"",2018-05-15 00:31,Issues,"","","","",0,2014-07-29 14:44,2018-05-15 00:31,"関連している #28771, 次のチケットが重複 #18916, 次のチケットと重複 #17071",Duplicate,2.4.2,"When editing the watchers list on an issue, if you search for a user, click their name but do not click ""Add"", and then perform a new search, the clicked contact is lost.
+
+It would be more intuitive if checked watchers were not lost by doing a new search.  The search could filter the user list client-side instead of requiring server round trips, and this would prevent the clicked contacts from being lost."
+17577,Redmine,Defect,"",Closed,Normal,"<code> blocks have no numbers, help shows line numbers for <code> blocks though",Felix Sch?fer,"",2015-12-14 00:48,Text formatting,"","","","",0,2014-07-29 11:52,2015-12-14 00:48,次のチケットと重複 #20288,Duplicate,2.5.2,"The detailed wiki syntax help shows line numbers for @code@ blocks in wiki syntax source:/branches/2.5-stable/public/help/en/wiki_syntax_detailed.html#L275, currently the wiki syntax doesn't show them though:
+
+<pre><code class=""ruby"">
+# The Greeter class
+class Greeter
+  def initialize(name)
+    @name = name.capitalize
+  end
+
+  def salute
+    puts ""Hello #{@name}!""
+  end
+end
+</code></pre>
+
+Should the line numbers be added to the @code@ blocks or the line numbers be removed from the detailed help?"
+17575,Redmine,Defect,"",Closed,High,"EVM Plugin Github 66666syntax error, unexpected ':', expecting ')' (SyntaxError)",Jack Black,"",2014-07-29 15:36,"","","","","",0,2014-07-29 11:08,2014-07-29 15:36,"",Invalid,2.2.2,"Hey Guys,
+
+I installed the EVM Plugin.
+Does anyone know this Error and does anyone hava a Answere for my how I can fix this?
+
+Thank you
+
+/var/lib/gems/1.8/gems/activesupport-3.2.11/lib/active_support/dependencies.rb:251:in `require': /var/www/redmine-2.2.2/plugins/redmine_evm/lib/redmine_evm/patches/project_patch.rb:83: syntax error, unexpected ':', expecting ')' (SyntaxError)
+
+
+Cpmplete Error 
+______________________
+
+kobil@marco-ubuntu-12-04-lts:/var/www/redmine-2.2.2$ sudo ruby script/rails server webrick -e production -p 3000
+=> Booting WEBrick
+=> Rails 3.2.11 application starting in production on http://0.0.0.0:3000
+=> Call with -d to detach
+=> Ctrl-C to shutdown server
+Exiting
+/var/lib/gems/1.8/gems/activesupport-3.2.11/lib/active_support/dependencies.rb:251:in `require': /var/www/redmine-2.2.2/plugins/redmine_evm/lib/redmine_evm/patches/project_patch.rb:83: syntax error, unexpected ':', expecting ')' (SyntaxError)
+...ssues.where(original_issue_id: issue.id, baseline_id: baseli...
+                              ^
+/var/www/redmine-2.2.2/plugins/redmine_evm/lib/redmine_evm/patches/project_patch.rb:83: syntax error, unexpected ':', expecting '='
+...sue_id: issue.id, baseline_id: baseline_id).first.try(:exclu...
+                              ^
+	from /var/lib/gems/1.8/gems/activesupport-3.2.11/lib/active_support/dependencies.rb:251:in `require'
+	from /var/lib/gems/1.8/gems/activesupport-3.2.11/lib/active_support/dependencies.rb:236:in `load_dependency'
+	from /var/lib/gems/1.8/gems/activesupport-3.2.11/lib/active_support/dependencies.rb:251:in `require'
+	from /var/www/redmine-2.2.2/plugins/redmine_evm/lib/redmine_evm.rb:2:in `_callback_before_49'
+	from /var/lib/gems/1.8/gems/activesupport-3.2.11/lib/active_support/callbacks.rb:462:in `_run__986092299__prepare__4__callbacks'
+	from /var/lib/gems/1.8/gems/activesupport-3.2.11/lib/active_support/callbacks.rb:405:in `send'
+	from /var/lib/gems/1.8/gems/activesupport-3.2.11/lib/active_support/callbacks.rb:405:in `__run_callback'
+	from /var/lib/gems/1.8/gems/activesupport-3.2.11/lib/active_support/callbacks.rb:385:in `_run_prepare_callbacks'
+	from /var/lib/gems/1.8/gems/activesupport-3.2.11/lib/active_support/callbacks.rb:81:in `send'
+	from /var/lib/gems/1.8/gems/activesupport-3.2.11/lib/active_support/callbacks.rb:81:in `run_callbacks'
+	from /var/lib/gems/1.8/gems/actionpack-3.2.11/lib/action_dispatch/middleware/reloader.rb:74:in `prepare!'
+	from /var/lib/gems/1.8/gems/actionpack-3.2.11/lib/action_dispatch/middleware/reloader.rb:48:in `prepare!'
+	from /var/lib/gems/1.8/gems/railties-3.2.11/lib/rails/application/finisher.rb:47
+	from /var/lib/gems/1.8/gems/railties-3.2.11/lib/rails/initializable.rb:30:in `instance_exec'
+	from /var/lib/gems/1.8/gems/railties-3.2.11/lib/rails/initializable.rb:30:in `run'
+	from /var/lib/gems/1.8/gems/railties-3.2.11/lib/rails/initializable.rb:55:in `run_initializers'
+	from /var/lib/gems/1.8/gems/railties-3.2.11/lib/rails/initializable.rb:54:in `each'
+	from /var/lib/gems/1.8/gems/railties-3.2.11/lib/rails/initializable.rb:54:in `run_initializers'
+	from /var/lib/gems/1.8/gems/railties-3.2.11/lib/rails/application.rb:136:in `initialize!'
+	from /var/lib/gems/1.8/gems/railties-3.2.11/lib/rails/railtie/configurable.rb:30:in `send'
+	from /var/lib/gems/1.8/gems/railties-3.2.11/lib/rails/railtie/configurable.rb:30:in `method_missing'
+	from /var/www/redmine-2.2.2/config/environment.rb:14
+	from /var/www/redmine-2.2.2/config.ru:3:in `require'
+	from /var/www/redmine-2.2.2/config.ru:3
+	from /var/lib/gems/1.8/gems/rack-1.4.4/lib/rack/builder.rb:51:in `instance_eval'
+	from /var/lib/gems/1.8/gems/rack-1.4.4/lib/rack/builder.rb:51:in `initialize'
+	from /var/www/redmine-2.2.2/config.ru:0:in `new'
+	from /var/www/redmine-2.2.2/config.ru:0
+kobil@marco-ubuntu-12-04-lts:/var/www/redmine-2.2"
+17569,Redmine,Defect,"",New,Low,Time spent in minutes ~ Rounding Error,Kira Schmieja,"",2015-03-31 19:42,Time tracking,"","","","",0,2014-07-28 16:56,"","","",2.5.2,"When I enter the folloing values for time spent:
+""10 min"", ""10 min"", ""10 min""
+
+The task then displays:
+""Time spent: 0.51 hour""
+
+I can almost gurantee that this is because redmine converts the minute-entries into hour-entries, rounding at the second digit, instead of saving them as fractions of 60, which would produce a more accurate result."
+17567,Redmine,Defect,"",Closed,High,Priority and other fields are not editable for unknown reasons,Stefanie Wehling,"",2014-08-26 13:53,Issues,"","","","",0,2014-07-28 15:25,2014-08-26 13:53,"",Invalid,2.5.1,"A number of different tickets have fields that are not editable.
+Affected fields are 'Priority', 'Start date', 'Due date' and 'Estimated time'.
+
+Priority is greyed out.
+The other fields show no value at all when in the edit mask wether the field is filled or not.
+
+I am using my administrator account with full access, so I don't think it is a permission issue.
+
+<pre>
+Environment:
+  Redmine version                2.5.1.stable
+  Ruby version                   1.9.3-p545 (2014-02-24) [x86_64-linux]
+  Rails version                  3.2.17
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.6.11
+  Git                            1.7.1
+  Filesystem                     
+Redmine plugins:
+  redmine_dashboard              2.2.2
+  redmine_graphs                 0.1.0
+  redmine_http_auth              0.3.0-dev-redmine-2.x
+  redmine_importer               1.2.2
+  redmine_information            1.0.2
+  redmine_monitoring_controlling 0.1.1
+  redmine_release_notes          1.3.1
+  scrum2b                        2.0
+</pre>
+"
+17563,Redmine,Patch,"",Closed,Normal,Fixes some issues in the Galician (gl) translation,Adri?n Chaves Fern?ndez,"",2014-08-25 01:45,Translations,2.6.0,"","","",0,2014-07-27 14:21,2014-08-25 01:45,"","","","Fixed issues in previously-translated strings that I noticed when using Redmine myself, and translated the English strings at the end."
+17560,Redmine,Defect,"",Closed,Low,Favicon is not displayed,Bj?rn Peem?ller,Jean-Philippe Lang,2014-07-25 17:36,Website (redmine.org),"","","","",0,2014-07-25 17:03,2014-07-25 17:36,次のチケットと重複 #9139,Duplicate,"","Today I realized that the favicon of redmine.org is not displayed, neither in my browser (Firefox 31) nor in my atom feed reader (Thunderbird 31). It seems for me that the icon could be retrieved but has size zero:
+
+<pre>
+ curl -v http://www.redmine.org/favicon.ico?1322400152
+* About to connect() to www.redmine.org port 80 (#0)
+*   Trying 46.4.36.71...
+* connected
+* Connected to www.redmine.org (46.4.36.71) port 80 (#0)
+> GET /favicon.ico?1322400152 HTTP/1.1
+> User-Agent: curl/7.26.0
+> Host: www.redmine.org
+> Accept: */*
+> 
+* additional stuff not fine transfer.c:1037: 0 0
+* HTTP 1.1 or later with persistent connection, pipelining supported
+< HTTP/1.1 200 OK
+< Date: Fri, 25 Jul 2014 15:02:00 GMT
+< Server: Apache
+< Last-Modified: Sun, 27 Nov 2011 13:22:32 GMT
+< ETag: ""1159493-0-4b2b7474f9600""
+< Accept-Ranges: bytes
+< Content-Length: 0
+< Content-Type: image/x-icon
+< 
+* Connection #0 to host www.redmine.org left intact
+* Closing connection #0
+</pre>"
+17559,Redmine,Defect,"",Closed,High,Same file gets Attach at atime with 21 FileUpload fields and other 8 uploading status on waiting.,Amit Baswa,"",2014-07-25 17:46,Attachments,"","","","",0,2014-07-25 16:01,2014-07-25 17:46,次のチケットと重複 #17151,Duplicate,2.4.2,"Hi there,
+
+On our Redmine application when we try to attach the file, after choosing any file to attach the redmine application automatically starts uploading the file with 2 instants and other 8 on weaiting. Also, it creates 21 fileupload field. This is unexpected behavious, we had not made any changes on redmine code. 
+This problem start occured to be unknown.
+
+I had attached the ScreenShot of issue. Kindly let us know the fix on it.
+Keeping it HIGH, as this is creating an issue while uploading large files.
+
+HEY, this is unexpected, I can see same issue on redmine.org website too....!!! ATTACHING SS
+
+Regards,
+Amit"
+17558,Redmine,Defect,"",Closed,Normal,How to configure localhost installed bitnami in redmine,Pedro  Sanchez Lopez,"",2014-07-25 17:38,"","","","","",0,2014-07-25 15:27,2014-07-25 17:38,"",Invalid,"","Hi Everyone!
+I have the next problema. I can download the program of redmine, but I don´t know How configurate the diferentes program for having acces public for the differents user!
+Thanks!"
+17555,Redmine,Defect,"",New,High,Mandatory condition for 'Category' & 'Assignee' is not working according to workflow defined,Lajish Lakshmanan,"",2014-07-25 19:44,Administration,"","","","",0,2014-07-25 08:05,"",関連している #23394,"",2.5.2,"Hi folks,
+I encountered a loop hole in workflow where a member having tester role is having  *Required* condition for *Category* & *Assignee* against an issues status *New*.
+But tester can create a *New* issue without providing *Category* & *Assignee*.
+
+I don't know whether this issue has been reported earlier or not. But I request humbly to incorporate this defect's remedy to very next version of Redmine."
+17552,Redmine,Patch,"",Closed,Normal,Bringing together of the translation of Members at Polish translation,Dariusz Kowalski,"",2014-08-25 01:46,Translations,2.6.0,"","","",0,2014-07-24 20:06,2014-08-25 01:46,"","","","Please change translation 
+
+ field_inherit_members: Dziedziczenie cz?onk?w
+
+to:
+
+  field_inherit_members: Dziedziczenie uczestnik?w
+
+
+"
+17551,Redmine,Defect,"",Closed,High,Closed Ticket not opening Again,suresh kumar,"",2014-07-24 23:23,"","","","","",0,2014-07-24 17:16,2014-07-24 23:23,"",Invalid,"","Hi Team,
+I have a issue.
+h1. We are using your ticketing Tool. if any one sent a mail to my ticketing tool it was create a Ticket and we are closing it.it showing the ticket is closed.up that ok. after that if any one sends the mail to same ticket conversation its not creating a new Ticket. its directly going to add the massage to closed Ticket. 
+
+So at that time we are not finding the new conversation (Ticket)Status.
+please help on these. if any think i need to do.
+
+
+  
+"
+17550,Redmine,Defect,"",Closed,Normal,Spent time in exported CSV is wrong,Albano Freire de Sousa Junior,"",2017-01-15 14:21,Time tracking,"","","","",0,2014-07-24 15:42,2017-01-15 14:21,"関連している #16092, 関連している #16159, 関連している #11253",Fixed,"","When choose column *spent time* to show in issues list, spent time value is correct, which is the sum of spent time of all children and itself.
+But in the exported CSV, the spent time value is only of itself, not children."
+17548,Redmine,Defect,"",Closed,Normal,ActionController::RoutingError, Eve Maple,"",2014-08-19 06:24,"","","","","",0,2014-07-24 10:22,2014-07-24 19:44,"",Invalid,2.5.2,"Started OPTIONS ""*"" for 127.0.0.1 at 2014-07-24 16:21:41 +0800
+
+ActionController::RoutingError (No route matches [OPTIONS] ""/*""):
+  actionpack (3.2.17) lib/action_dispatch/middleware/debug_exceptions.rb:21:in `call'
+  actionpack (3.2.17) lib/action_dispatch/middleware/show_exceptions.rb:56:in `call'
+  railties (3.2.17) lib/rails/rack/logger.rb:32:in `call_app'
+  railties (3.2.17) lib/rails/rack/logger.rb:16:in `block in call'
+  activesupport (3.2.17) lib/active_support/tagged_logging.rb:22:in `tagged'
+  railties (3.2.17) lib/rails/rack/logger.rb:16:in `call'
+  actionpack (3.2.17) lib/action_dispatch/middleware/request_id.rb:22:in `call'
+  rack (1.4.5) lib/rack/methodoverride.rb:21:in `call'
+  rack (1.4.5) lib/rack/runtime.rb:17:in `call'
+  activesupport (3.2.17) lib/active_support/cache/strategy/local_cache.rb:72:in `call'
+  rack (1.4.5) lib/rack/lock.rb:15:in `call'
+  actionpack (3.2.17) lib/action_dispatch/middleware/static.rb:63:in `call'
+  rack-cache (1.2) lib/rack/cache/context.rb:136:in `forward'
+  rack-cache (1.2) lib/rack/cache/context.rb:143:in `pass'
+  rack-cache (1.2) lib/rack/cache/context.rb:155:in `invalidate'
+  rack-cache (1.2) lib/rack/cache/context.rb:71:in `call!'
+  rack-cache (1.2) lib/rack/cache/context.rb:51:in `call'
+  railties (3.2.17) lib/rails/engine.rb:484:in `call'
+  railties (3.2.17) lib/rails/application.rb:231:in `call'
+  railties (3.2.17) lib/rails/railtie/configurable.rb:30:in `method_missing'
+  passenger (4.0.45) lib/phusion_passenger/rack/thread_handler_extension.rb:74:in `process_request'
+  passenger (4.0.45) lib/phusion_passenger/request_handler/thread_handler.rb:141:in `accept_and_process_next_request'
+  passenger (4.0.45) lib/phusion_passenger/request_handler/thread_handler.rb:109:in `main_loop'
+  passenger (4.0.45) lib/phusion_passenger/request_handler.rb:448:in `block (3 levels) in start_threads'
+"
+17542,Redmine,Defect,"",New,Normal,Gantt lost informations when export to pdf or png,Roberto Viola,"",2014-07-23 17:39,Gantt,"","","","",0,2014-07-23 17:39,"","","",2.4.5,"I saw a few issues on gantt export (see the images attached).
+
+# Issue description are cut off
+# Add ability to hide the parent projects in the export phase
+# PDF export lost weeks and days columns
+# PNG export lost days column
+
+Thanks."
+17541,Redmine,Defect,"",Closed,Normal,Can't alter category of an issue,Alexandr Mansurov,"",2014-09-19 10:28,Issues,"","","","",0,2014-07-23 16:24,2014-09-19 10:28,"",No feedback,"","Created an issue, later on decided to set category for it. Clicked edit. Expected to see Category option to change value, which wasn't there"
+17540,Redmine,Defect,"",Closed,Normal,Viewing user pages does not work after rename,Krishna M S,"",2014-07-29 20:18,UI,"","","","",0,2014-07-23 12:31,2014-07-29 20:18,"",Invalid,2.4.3,"Hi,
+
+I have one username whose login is msk. When i click on
+
+http://redmine-ip/users/msk it shows information about the user.
+
+I then rename the username to krishna.ms and when i click on http://redmine-ip/users/krishna.ms it throws a blank page.
+
+However when i type http://redmine-ip/users/124 where 124 is the id of krishna.ms(I verified with the DB of redmine with users table too), the information is shown perfectly.
+
+How do we resolve this issue? Is there a way of mapping this?
+
+Thanks,
+Krishna M S
+"
+17536,Redmine,Defect,"",Closed,Normal,File attachment bug in the new version of chrome.,Maksim Gaiduk,"",2014-07-23 20:19,"","","","","",0,2014-07-23 09:48,2014-07-23 20:19,次のチケットと重複 #17151,Duplicate,"","I have recently updated Google Chrome to Version 36.0.1985.125 m.
+As a result, file attachment in Redmine tasks is ""broken"". When i try to attach a file, it loads up 2 copies of the file, also creating 8 empty fields and like 50 more ""choose files"" buttons.
+This problem happens both in my local redmine server, as well as official www.redmine.org site.
+Attached is the screenshot of the bug that i got while trying to attach a file to a www.redmine.org issue."
+17533,Redmine,Defect,"",Closed,Normal,Attach File Broken in Chrome,Niall Stallion,"",2014-08-07 06:31,Attachments,"","","","",0,2014-07-22 21:18,2014-07-22 22:55,次のチケットと重複 #17151,Duplicate,2.4.2,"I'm not sure what update caused this to happen.  I did not update Chrome, but did accept a Java update recently.  I can't imagine this has anything to do with the problem.
+
+When I try to attach a file to a redmine issue, the interface seems to bug out.  I also cannot attach more than one file to an issue, and cannot attach anything in an update.
+
+The interface looks normal before the attachment:
+
+!RedmineAttachments1.jpg!
+
+Then once you attach the file, this happens:
+
+!RedmineAttachments2.jpg!
+
+I was actually only able to post this through IE because I'm encountering the same bug through Chrome on the redmine.org website.  Everyone in my company using Chrome is having the same problem.  What's going on?
+
+"
+17529,Redmine,Defect,"",Closed,Normal,Mysql,Manu ps,"",2014-07-22 22:59,"","","","","",0,2014-07-22 15:15,2014-07-22 22:59,"",Invalid,"",""
+17528,Redmine,Defect,"",Closed,Normal,AJAX uploading shows multiple uploads and inputs,Matt Rogowski,"",2014-08-06 15:25,"","","","","",0,2014-07-22 12:32,2014-07-22 22:56,次のチケットと重複 #17151,Duplicate,"","When you upload a file, it shows multiple rows for the AJAX upload, and several file upload input buttons. This seems to only happen in Chrome, and only recently (I'm on 36.0.1985.125 m), so must be due to a Chrome update. It happens on this site too, see attached."
+17527,Redmine,Defect,"",Closed,Normal,Notes are not shown (and not saved) on issues,Anthony HERB?,"",2014-07-22 22:57,Issues,"","","","",0,2014-07-22 11:11,2014-07-22 22:57,"",Invalid,2.5.2,"After migrating our Redmine instance from 1.3.3 to 2.5.2 version, we can't add notes on issues. When a authenticated user try to add note(s) on issue, when he update the issue, no error are shown (nor in log) and the notes aren't shown on history panel.
+
+In our MySQL database, the changesets table is not populate correctly.
+
+These are our install Redmine information :
+<pre>
+Environment:
+  Redmine version                2.5.2.stable
+  Ruby version                   1.8.7-p352 (2011-06-30) [x86_64-linux]
+  Rails version                  3.2.19
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.7.4
+  Mercurial                      1.4
+  Git                            1.7.1
+  Filesystem                     
+Redmine plugins:
+  projects_tree_view             0.0.7
+  redirect_to_after_login        0.0.2
+  redmine_activerecord_session_store 0.0.1
+  redmine_advanced_issues        0.0.5
+  redmine_banner                 0.0.9
+  redmine_improved_searchbox     0.0.3
+  redmine_inline_attach_screenshot 0.4.6
+  redmine_ldap_sync              2.0.3.devel.g507a5c00e1-dirty
+  redmine_monitoring_controlling 0.1.1
+  redmine_mylyn_connector        2.8.2.stable
+  redmine_track_control          1.0.8
+</pre>"
+17525,Redmine,Defect,"",Closed,Normal,Duplicated Id issue column on issues tab,Anthony HERB?,"",2014-07-22 22:57,Issues,"","","","",0,2014-07-22 11:02,2014-07-22 22:57,"",Invalid,2.5.2,"After migrating our Redmine instance from 1.3.3 to 2.5.2 version, we obtain duplicated id issue colum on issues tab for all projects.
+
+No specific error are shown on log.
+
+These are our install Redmine information :
+<pre>
+Environment:
+  Redmine version                2.5.2.stable
+  Ruby version                   1.8.7-p352 (2011-06-30) [x86_64-linux]
+  Rails version                  3.2.19
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.7.4
+  Mercurial                      1.4
+  Git                            1.7.1
+  Filesystem                     
+Redmine plugins:
+  projects_tree_view             0.0.7
+  redirect_to_after_login        0.0.2
+  redmine_activerecord_session_store 0.0.1
+  redmine_advanced_issues        0.0.5
+  redmine_banner                 0.0.9
+  redmine_improved_searchbox     0.0.3
+  redmine_inline_attach_screenshot 0.4.6
+  redmine_ldap_sync              2.0.3.devel.g507a5c00e1-dirty
+  redmine_monitoring_controlling 0.1.1
+  redmine_mylyn_connector        2.8.2.stable
+  redmine_track_control          1.0.8
+</pre>"
+17520,Redmine,Defect,"",New,Normal,When I edit a saved Query I lose my project focus,Ewan Makepeace,"",2014-08-19 05:55,"","","","","",0,2014-07-22 03:13,"","","",2.0.3,"To reproduce:
+
+# Go to a project
+# Click on a saved query
+# Click the edit link
+# Modify the query
+# Save
+
+If the query applies to All Projects I am then shown the results of that query for all projects and not the project I was working on."
+17517,Redmine,Defect,"",Needs feedback,Normal,Attempting to Add a Related Issue Multiple Times Sequentially Causes 500,Zach Auclair,"",2018-05-15 00:00,UI,4.0.0,"","","",0,2014-07-21 18:59,"",関連している #23630,"",2.5.1,"When pressing ""Add"" after typing a related issue, the form ajax submits but does not prevent further ajax submits while the request is being processed.
+
+As a result of this, clicking ""add"" multiple times quickly will cause sequential requests to link an issue (after the first) to fail; along with this, the results of the last post are displayed (meaning the first successful add of a related issue may be hidden).
+
+*proposed patch:*
+<pre>
+diff --git a/app/views/issue_relations/_form.html.erb b/app/views/issue_relations/_form.html.erb
+index 29b7f0f..ff80e47 100644
+--- a/app/views/issue_relations/_form.html.erb
++++ b/app/views/issue_relations/_form.html.erb
+@@ -5,7 +5,7 @@
+ <span id=""predecessor_fields"" style=""display:none;"">
+ <%= l(:field_delay) %>: <%= f.text_field :delay, :size => 3 %> <%= l(:label_day_plural) %>
+ </span>
+-<%= submit_tag l(:button_add) %>
++<%= submit_tag l(:button_add), :disable_with => l(:button_add) %>
+ <%= link_to_function l(:button_cancel), '$(""#new-relation-form"").hide();'%>
+ </p>
+</pre>"
+17516,Redmine,Defect,"",Closed,Normal,Redmine Issue Importer,rama krishna,"",2014-07-22 05:56,"","","","","",0,2014-07-21 14:09,2014-07-22 05:56,"",Invalid,"","Hi,
+I referred https://github.com/zh/redmine_importer for importing issues from csv file got below error:
+
+The following data-validation errors occurred on issue 1 in the list below
+ is invalid
+ is invalid
+ is invalid
+ is invalid
+ is invalid
+
+Tried this plugin on both redmine 1.2.0 and redmine 1.2.1.
+
+Please guide how to resolve this issue.
+
+csv file is attached for your reference.
+"
+17511,Redmine,Defect,"",New,Normal,Wiki URL 404 when using markdown,Jakob Gillich,"",2014-08-24 00:04,Wiki,"","","","",0,2014-07-21 10:34,"","","","","I configured Redmine to use markdown for text input. On my main wiki page, I added a link:
+
+    [API](api)
+
+Which renders to:
+
+    @<a class=""external"" href=""api"">API</a>@
+
+But when I'm on the main page, it points to `projects/PROJECT/api` instead of `projects/PROJECT/wiki/api`, thus giving me a 404 when clicked.
+
+Environment:
+  Redmine version                2.5.2.stable
+  Ruby version                   2.0.0-p353 (2013-11-22) [x86_64-linux]
+  Rails version                  3.2.19
+  Environment                    production
+  Database adapter               Mysql2
+"
+17507,Redmine,Defect,"",Closed,High,Error db:migrate with SQL Server 2008 db,ye htut naung,"",2014-07-19 13:56,Database,"","","","",0,2014-07-19 13:30,2014-07-19 13:56,"",Invalid,2.5.2,"Hi,
+
+When I run in Windows command line for database mirgation, I got error. Please see attached 2 screen-shots for detail.
+I use Micorsoft SQL  Server 2008 R2.
+I gave permissions already for ""REDMIINE"" user account with ""db_datareader"" and ""db_datawriter"".
+Could you please find out what is the root cause of this error?
+
+Thanks & Regards,
+Ye"
+17497,Redmine,Defect,"",New,Normal,Bad Request in repository when there is a '%' in the svn-folder-name,Oliver Jokiel,"",2014-08-15 15:52,SCM,"","","","",0,2014-07-18 16:36,"","","",2.5.1,"When opening a folder in the repository-view, that contains a '%'-character, a ""Bad Request"" message will be shown.
+
+Steps to repoduce:
+# Create a svn-folder, which contains a '%'-character (e.g. PERCENT_%)
+# Open the repository-view and navigate to the new folder (see screenshot01.png)
+# Open the folder -> ""Bad Request"" occures (see screenshot02.png)
+
+When you replace '%' by '%25', the folder can be displayed (see workarround.png)
+
+<pre>
+Environment:
+  Redmine version                2.5.1.stable
+  Ruby version                   1.9.3-p545 (2014-02-24) [x86_64-linux]
+  Rails version                  3.2.17
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.6.11
+  Git                            1.7.1
+  Filesystem                     
+Redmine plugins:
+  redmine_dashboard              2.2.2
+  redmine_graphs                 0.1.0
+  redmine_http_auth              0.3.0-dev-redmine-2.x
+  redmine_importer               1.2.2
+  redmine_information            1.0.2
+  redmine_monitoring_controlling 0.1.1
+  redmine_release_notes          1.3.1
+  scrum2b                        2.0
+</pre>"
+17495,Redmine,Defect,"",Closed,Normal,"Problem attaching files using Chrome ver. 36.0.1985.125 m and Button ""Select files""",Eugene B,"",2014-07-20 05:33,Files,"","","","",0,2014-07-18 12:14,2014-07-20 05:33,次のチケットと重複 #17151,Duplicate,2.5.2,"Problem appeared with 36.0.1985.125 m and Redmine 2.4.1 (ny installation) and confirmed on current version of demo.redmine.org
+TEst confirmed on 2 separeted PC (win 2k8 R2 and win 8.1)
+
+There are 2 ways to attach files (drag and drop to task field and use select files button. Drag and drop is ok, but using select file is broken now. It tries to upload over 10 same files (while you have selected only one) and does not attach it to task. I have sent same report to Chrome team, but I dont know If they will react to this. This function is important, I hope to have fix soon...
+"
+17494,Redmine,Defect,"",Closed,Normal,Can't Add New Issue Status,Sherman Schlar,"",2014-07-17 22:37,Issues,"","","","",0,2014-07-17 14:59,2014-07-17 22:37,"",Invalid,2.5.1,"Trying to add a new choice called ""Deferred"" to Issue Statuses but it doesn't show up. Seems like you can only have the default Issue Statuses, five in total. Unable to delete default Issue Statuses to make room for this new one.
+
+I've seen other mentions of the same problem in other threads. This is important to my company as the VP of Engineering is asking for this.
+
+Any assistance is appreciated. "
+17492,Redmine,Patch,"",Closed,Normal,Lowering configuration.example.yml confusion,Priit Tamboom,Jean-Philippe Lang,2014-09-14 13:33,Email notifications,2.6.0,"","","",0,2014-07-17 11:30,2014-09-14 13:33,"","","","When installing Redmine and uncomment example outgoing stmp settings at configuration.example.yml then user will get into annoying trobule, where default settings will overwrite uncommented one above. It took me a bit time to figure out why email delivery does not work.
+
+I created a patch against master where I moved examples below default settings, thus users will not get easely into this kind of trouble again.
+
+This issue is common (google: ""Redmine getaddrinfo: Name or service not known"") but not all solutions will point into correct solution, most will talk about DNS resolving etc."
+17486,Redmine,Defect,"",Closed,Normal,Error when removing user from group,Roland Lezuo,Jean-Philippe Lang,2014-09-13 12:08,Groups,2.5.3,"","","",0,2014-07-16 18:46,2014-09-13 12:08,"",Fixed,2.5.1,"Trying to remove certain users from certain groups raises and redmine error.
+
+i.e.: deleting ""foo"" from group ""bar"" (using Administration->Groups)
+leads to the following trace in production.log:
+
+Started DELETE ""/redmine/groups/207/users/211"" for 192.168.122.1 at 2014-07-16 18:36:28 +0200
+Processing by GroupsController#remove_user as JS
+ Parameters: {""id""=>""207"", ""user_id""=>""211""}
+ Current user: xxx (id=608)
+Completed 500 Internal Server Error in 21.8ms
+
+NoMethodError (undefined method `id' for nil:NilClass):
+ app/models/member.rb:87:in `set_issue_category_nil'
+ app/models/member_role.rb:42:in `remove_member_if_empty'
+ app/models/group.rb:68:in `block in user_removed'
+ app/models/group.rb:67:in `user_removed'
+ app/controllers/groups_controller.rb:103:in `remove_user'
+
+
+Some users were successfully deleted, but some others consistently raise this error."
+17484,Redmine,Defect,"",Closed,Normal,"Custom fields added to ""spent time"" don't show in context menu",Roland Giesler,Jean-Philippe Lang,2014-08-21 08:56,Time tracking,2.6.0,"","","",0,2014-07-16 17:17,2014-07-29 19:53,"",Fixed,2.3.2,"I have added a custom field to ""spent time"" as shown in the attached file.
+
+!Screenshot from 2014-07-16 16:46:19.png!
+
+I also have a custom field in ""issues"" as shown in the next attached file.
+
+When I right click the issue in the list, I get a context menu which allow easy setting of the fields.  I can tick something invoiced or not.  See the next attachment.
+
+However, when I right click the detail of ""spent time"", the menu doesn't show all the fields and also not the custom field.  Se the fourth attachment.
+
+This seems to be a defect, but it could be by design.  If it is by design, then I'll change this to a feature request.  However, in either case, this cannot be to difficult to fix or what?
+
+Thank you!"
+17481,Redmine,Defect,"",Closed,Normal,Increase Redmine custom field name text size ,Muditha Jayawardana,"",2014-08-15 02:54,Custom fields,"","","","",0,2014-07-16 13:45,2014-07-16 14:07,"",Invalid,"",As to our project requirements we need create custom filed with more than 30 chars. I have tried with modifying custom_fields table name column def to varchar(30) to varchar(60). but it didn't worked. Is there any way to do this. please be kind enough to provide feed back for this.

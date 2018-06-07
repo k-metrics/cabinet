@@ -1,0 +1,506 @@
+#,プロジェクト,トラッカー,親チケット,ステータス,優先度,題名,作成者,担当者,更新日,カテゴリ,対象バージョン,開始日,期日,予定工数,進捗率,作成日,終了日,関連するチケット,Resolution,Affected version,説明
+22646,Redmine,Defect,"",Closed,Normal,PostgreSQL: Exception in issue report view.,Lars Kanis,"",2016-04-28 15:18,Issues,"","","","",0,2016-04-27 17:44,2016-04-28 14:04,"",Invalid,"","The following exception is raised, when viewing /projects/projektmanagement/issues/report on PostgreSQL:
+
+<pre>
+ActiveRecord::StatementInvalid (PG::AmbiguousColumn: ERROR:  column reference ""status_id"" is ambiguous
+LINE 1: SELECT COUNT(*) AS count_all, status_id AS status_id, is_clo...
+                                      ^
+: SELECT COUNT(*) AS count_all, status_id AS status_id, is_closed AS is_closed, tracker_id AS tracker_id FROM ""issues"" INNER JOIN ""projects"" ON ""projects"".""id"" = ""issues"".""project_id"" INNER JOIN ""issue_statuses"" ON ""issue_statuses"".""id"" = ""issues"".""status_id"" INNER JOIN ""trackers"" ON ""trackers"".""id"" = ""issues"".""tracker_id"" WHERE ((projects.id = 204) AND (projects.status <> 9 AND projects.id IN (SELECT em.project_id FROM enabled_modules em WHERE em.name='issue_tracking'))) GROUP BY ""issues"".""status_id"", ""is_closed"", ""issues"".""tracker_id""):
+  app/models/issue.rb:1348:in `count_and_group_by'
+  app/models/issue.rb:1305:in `by_tracker'
+  app/controllers/reports_controller.rb:31:in `issue_report'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+</pre>
+
+The attached patch fixes this.
+"
+22638,Redmine,Defect,"",New,Normal,creating with REST API new issue on a project without any tracker enabled return misleading error message,Fabien Camous,"",2016-04-26 23:50,REST API,"","","","",0,2016-04-26 23:50,"",次のチケットが重複 #22195,"","","creating a new issue on an existing project without any tracker enabled give a misleading answer
+
+request
+!2016-04-26_10-43-11_Fiddler.png!
+
+response
+!2016-04-26_23-47-34_chrome.png!
+
+however project is ""correctly""setup but no trackers were activated
+!2016-04-26_23-42-20_chrome.png!
+
+<pre>
+  Redmine version                3.2.0.stable
+  Ruby version                   2.1.8-p440 (2015-12-16) [x86_64-linux-gnu]
+  Rails version                  4.2.5
+  Environment                    production
+  Database adapter               Mysql2
+</pre>"
+22635,Redmine,Defect,"",Closed,Normal,Get news notification even though unwatch,Johan Vervloet,Jean-Philippe Lang,2016-05-07 08:59,News,"","","","",0,2016-04-26 16:32,2016-05-07 08:59,関連している #2549,Wont fix,3.2.1,"I noticed that all my project members get e-mail notifications when I add a news item to the project. None of them have actually clicked 'Watch' on the news page though.
+
+I would like to see the ability for project members to unwatch the news."
+22630,Redmine,Defect,"",Closed,Normal,Time Logger for user,Marlon Ferreira Minotti,"",2016-04-26 04:58,Issues,"","","","",0,2016-04-25 16:02,2016-04-26 04:58,"",Invalid,"","My user, not administrator, can not start a task using the Time Logger. because? Permissions?"
+22628,Redmine,Defect,"",Closed,Normal,Create issue with custom fields with ruby API,Marcin Garski,"",2016-04-25 15:17,REST API,"","","","",0,2016-04-25 13:28,2016-04-25 15:17,"","",3.2.0,"Hey!
+I'm trying to create an issus in ruby script with one custom_field. I've created custom field (down drop list with 5 values) with web interface. I tried to do this according to wiki: [[Rest_api_with_ruby]], but I think this wiki page is out of date. I searched for older tickets, found that 'custom_field_values' isn't used anymore, the new approach is to do this with array 'custom_fields' and by update operation (get issue by id and set values in custom_fields array). 
+The example given in wiki throws error: 
+<pre>ActiveResource::BadRequest: Failed.  Response code = 400.  Response message = Bad Reques</pre>
+
+The best solution would be to assign the right value while creating issue (one save operation), I don't want to create it in first step, and then set the right value of custom field with update method (two save operations).
+
+Is it possible? Please, correct the wiki page if it's deprecated.
+
+Thx for help. 
+gary"
+22618,Redmine,Defect,"",Closed,Normal,subject utf-8 char vs mysql2,Peter Peter,"",2016-04-22 15:49,Database,"","","","",0,2016-04-22 14:33,2016-04-22 15:49,"",Invalid,3.0.7,"we have some problem submitting an ""?"" character in the subject or in the body. without this char, the system working as intended.
+
+*relevant info from production.log:* x.x.x.x at 2016-04-22 11:46:39 +0200
+Processing by IssuesController#create as HTML
+  Parameters: {""utf8""=>""?"", ""authenticity_token""=>""some_token"", ""issue""=>{""is_private""=>""0"", ""tracker_id""=>""2"", ""subject""=>""szerz?d?s"", ""description""=>""Az issue akkor z?rhat?, ha a szerz?d?s al??r?sra ker?lt."", ""status_id""=>""1"", ""priority_id""=>""2"", ""assigned_to_id""=>""1"", ""parent_issue_id""=>"""", ""start_date""=>""2016-04-22"", ""due_date""=>""2016-04-29"", ""estimated_hours""=>""2"", ""done_ratio""=>""70"", ""checklists_attributes""=>{""0""=>{""is_done""=>""0"", ""subject""=>""v?gleges aj?nlat egyeztet?se"", ""_destroy""=>""false"", ""position""=>""1"", ""id""=>""""}, ""1461318375687s""=>{""is_done""=>""0"", ""subject""=>""sz?ks?ges inform?ci?k megk?ld?se"", ""_destroy""=>""false"", ""position""=>""1"", ""id""=>""""}, ""1461318384837s""=>{""is_done""=>""0"", ""subject""=>""szerz?d?s megk?t?se"", ""_destroy""=>""false"", ""position""=>""1"", ""id""=>""""}}}, ""was_default_status""=>""1"", ""continue""=>""L?trehoz?s ?s folytat?s"", ""project_id""=>""xyz""}
+  Current user: admin (id=1)
+Mysql2::Error: Incorrect string value: '\xC5\x91d\xC3\xA9s' for column 'subject' at row 1: INSERT INTO `issues` (`project_id`, `author_id`, `start_date`, `tracker_id`, `status_id`, `subject`, `description`, `priority_id`, `assigned_to_id`, `due_date`, `estimated_hours`, `done_ratio`, `updated_on`, `created_on`, `lock_version`) VALUES (1, 1, '2016-04-22', 2, 1, 'szerz?d?s', 'Az issue akkor z?rhat?, ha a szerz?d?s al??r?sra ker?lt.', 2, 1, '2016-04-29', 2.0, 70, '2016-04-22 11:46:39', '2016-04-22 11:46:39', 0)
+Completed 500 Internal Server Error in 87ms (ActiveRecord: 41.1ms)                                                                                                                                             
+
+ActiveRecord::StatementInvalid (Mysql2::Error: Incorrect string value: '\xC5\x91d\xC3\xA9s' for column 'subject' at row 1: INSERT INTO `issues` (`project_id`, `author_id`, `start_date`, `tracker_id`, `status_id`, `subject`, `description`, `priority_id`, `assigned_to_id`, `due_date`, `estimated_hours`, `done_ratio`, `updated_on`, `created_on`, `lock_version`) VALUES (1, 1, '2016-04-22', 2, 1, 'szerz?d?s', 'Az issue akkor z?rhat?, ha a szerz?d?s al??r?sra ker?lt.', 2, 1, '2016-04-29', 2.0, 70, '2016-04-22 11:46:39', '2016-04-22 11:46:39', 0)):
+  app/models/issue.rb:175:in `create_or_update'
+  app/controllers/issues_controller.rb:141:in `create'</pre>
+
+*environment:*
+
+<pre>$ ruby bin/about
+
+sh: 1: svn: not found
+sh: 1: darcs: not found
+sh: 1: hg: not found
+sh: 1: cvs: not found
+sh: 1: bzr: not found
+Environment:
+  Redmine version                3.0.7.stable
+  Ruby version                   1.9.3-p551 (2014-11-13) [x86_64-linux]
+  Rails version                  4.2.3
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Git                            2.1.4
+  Filesystem                     
+Redmine plugins:
+  progressive_projects_list      2.0.1
+  redmine_checklists             3.1.3
+  redmine_lightbox2              0.2.4
+  redmine_mentions               0.0.1
+  redmine_slack                  0.1
+  time_logger                    0.5.3</pre>
+
+config:
+
+<pre>production:
+  adapter: mysql2
+  database: xxx
+  host: localhost
+  username: xxx
+  password: """"
+  encoding: utf8</pre>"
+22589,Redmine,Defect,"",Closed,Normal,J_Chat Plugin is not Working,Debojyoti Das,"",2016-04-20 13:55,"","","","","",0,2016-04-20 13:48,2016-04-20 13:55,"",Invalid,3.1.3,"I have Installed Redmine Latest Version i.e. Redmine 3.1.X, I need to Implement Chat Plugins There!!! But the plugins are now working there. Can anybody Help me related the Issue? Or Improve the Compatibility of the Plugin. Implement it for the Redmine Latest Version also else Tell the Alternative Way to Implement the Chat to Redmine."
+22583,Redmine,Defect,"",Closed,Normal,CSV import delimiter detection broken,Jan from Planio www.plan.io,Jean-Philippe Lang,2016-04-24 17:14,Issues,3.2.2,"","","",0,2016-04-19 16:40,2016-04-24 17:14,"",Fixed,3.2.1,"When uploading a CSV file to import, the delimiter used in the CSV is supposed to be auto-detected.
+
+However, ""@File.read@"":http://ruby-doc.org/core-2.2.0/IO.html#method-c-read seems to not be used properly: The third parameter may not be a string.
+
+This is rescued in the block and therefore, the user does not see the error. However, the auto-detection does not work.
+
+Attached is a simple patch that fixes this."
+22581,Redmine,Defect,"",Closed,Normal,Version 3.2.1. and on Version 3.2.0. add new custom field creates internal server error,maximilian gablinger,"",2016-05-20 14:08,"","","","","",0,2016-04-19 14:34,2016-05-20 14:08,"",Cant reproduce,3.2.1,"When I try to add a custom_field the result is an internal server error.
+Our production system is version 3.2.0. 
+then I tried to upgrade this system from 3.2.0 to 3.2.1   in a testenvironment. It happened the same behavior. Again the internal Server error.
+
+When I installed Version 3.2.1 native without our data then it works fine. But we need our data.
+This is the redmine.log output:
+
+<pre>
+I, [2016-04-19T14:28:18.538655 #31226]  INFO -- : Started GET ""/custom_fields"" for 10.242.2.42 at 2016-04-19 14:28:18 +0200
+I, [2016-04-19T14:28:18.540342 #31226]  INFO -- : Processing by CustomFieldsController#index as HTML
+I, [2016-04-19T14:28:18.544275 #31226]  INFO -- :   Current user: max.gablinger (id=83)
+I, [2016-04-19T14:28:18.547327 #31226]  INFO -- :   Rendered custom_fields/index.html.erb within layouts/admin (0.6ms)
+I, [2016-04-19T14:28:18.552676 #31226]  INFO -- :   Rendered admin/_menu.html.erb (4.9ms)
+I, [2016-04-19T14:28:18.568188 #31226]  INFO -- :   Rendered layouts/base.html.erb (15.2ms)
+I, [2016-04-19T14:28:18.568614 #31226]  INFO -- : Completed 200 OK in 28ms (Views: 21.7ms | ActiveRecord: 1.6ms)
+I, [2016-04-19T14:28:23.440563 #31226]  INFO -- : Started GET ""/custom_fields/new"" for 10.242.2.42 at 2016-04-19 14:28:23 +0200
+I, [2016-04-19T14:28:23.442718 #31226]  INFO -- : Processing by CustomFieldsController#new as HTML
+I, [2016-04-19T14:28:23.447456 #31226]  INFO -- :   Current user: max.gablinger (id=83)
+I, [2016-04-19T14:28:23.451739 #31226]  INFO -- :   Rendered custom_fields/select_type.html.erb within layouts/admin (2.1ms)
+I, [2016-04-19T14:28:23.457445 #31226]  INFO -- :   Rendered admin/_menu.html.erb (5.1ms)
+I, [2016-04-19T14:28:23.474245 #31226]  INFO -- :   Rendered layouts/base.html.erb (16.3ms)
+I, [2016-04-19T14:28:23.474717 #31226]  INFO -- : Filter chain halted as :build_new_custom_field rendered or redirected
+I, [2016-04-19T14:28:23.474976 #31226]  INFO -- : Completed 200 OK in 32ms (Views: 24.8ms | ActiveRecord: 1.6ms)
+I, [2016-04-19T14:28:27.375380 #31226]  INFO -- : Started GET ""/custom_fields/new?utf8=%E2%9C%93&type=IssueCustomField"" for 10.242.2.42 at 2016-04-19 14:28:27 +0200
+I, [2016-04-19T14:28:27.377806 #31226]  INFO -- : Processing by CustomFieldsController#new as HTML
+I, [2016-04-19T14:28:27.378009 #31226]  INFO -- :   Parameters: {""utf8""=>""?"", ""type""=>""IssueCustomField""}
+I, [2016-04-19T14:28:27.383201 #31226]  INFO -- :   Current user: max.gablinger (id=83)
+I, [2016-04-19T14:28:27.411212 #31226]  INFO -- :   Rendered custom_fields/formats/_regexp.html.erb (1.0ms)
+I, [2016-04-19T14:28:27.413224 #31226]  INFO -- :   Rendered custom_fields/formats/_string.html.erb (3.2ms)
+I, [2016-04-19T14:28:27.413394 #31226]  INFO -- :   Rendered custom_fields/_form.html.erb (6.2ms)
+I, [2016-04-19T14:28:27.413677 #31226]  INFO -- :   Rendered custom_fields/new.html.erb within layouts/admin (7.5ms)
+I, [2016-04-19T14:28:27.414061 #31226]  INFO -- : Completed 500 Internal Server Error in 36ms (ActiveRecord: 1.0ms)
+F, [2016-04-19T14:28:27.417767 #31226] FATAL -- : 
+ActionView::Template::Error (undefined method `accessor' for #<ActiveRecord::Type::Value:0x000000039f8320>):
+    1: <%= render :partial => 'custom_fields/formats/regexp', :locals => {:f => f, :custom_field => custom_field} %>
+    2: <p><%= f.check_box :text_formatting, {:label => :setting_text_formatting, :data => {:disables => '#custom_field_url_pattern'}}, 'full', '' %></p>
+    3: <p><%= f.text_field(:default_value) %></p>
+    4: <p><%= f.text_field :url_pattern, :size => 50, :label => :label_link_values_to %></p>
+  lib/redmine/views/labelled_form_builder.rb:34:in `check_box'
+  app/views/custom_fields/formats/_string.html.erb:2:in `_app_views_custom_fields_formats__string_html_erb__1606230260471594377_70355629062560'
+  app/helpers/custom_fields_helper.rb:57:in `render_custom_field_format_partial'
+  app/views/custom_fields/_form.html.erb:18:in `_app_views_custom_fields__form_html_erb__2568629039713508363_70355629215560'
+  app/views/custom_fields/new.html.erb:6:in `block in _app_views_custom_fields_new_html_erb__1990438466245273424_70355629262800'
+  app/helpers/application_helper.rb:1027:in `labelled_form_for'
+  app/views/custom_fields/new.html.erb:5:in `_app_views_custom_fields_new_html_erb__1990438466245273424_70355629262800'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+</pre>"
+22575,Redmine,Patch,"",Closed,Normal,Enable updating private_notes property on journal edit form,Takenori TAKAKI,Jean-Philippe Lang,2016-07-10 13:17,Issues,"","","","",0,2016-04-18 03:42,2016-07-10 13:16,次のチケットと重複 #12706,"","","In current versions of Redmine, users can set 'private' flag when they add new notes, but they don't have any way of updating the flag of existing notes.
+I have made the patch, enable to updating `private_notes` property on journal update form.
+
+!updating_private_notes.jpg!
+
+patch: attachment:enable_to_update_private_notes_trunk_r15336.patch"
+22532,Redmine,Defect,"",Closed,Normal,Strip whitespace from login on login page,Artur Borisovich,Go MAEDA,2017-12-13 17:59,Accounts / authentication,3.4.4,"","","",0,2016-04-16 23:34,2017-12-13 15:08,関連している #27754,Fixed,"",Spaces in login is removed before user account will saved. But when you try to login  you made a mistake like whitespace before login or after it will be not you login.
+22506,Redmine,Patch,"",Closed,Normal,Updated Korean locale data,Yonghwan SO,"",2016-05-07 18:13,Translations,3.3.0,"","","",0,2016-04-15 03:43,2016-05-07 18:13,次のチケットが重複 #22421,"","","Here is an updated Korean translation. (against today's trunk)
+
+* mainly for missing translations
+* shorten some line-wrapped messages on setting for more pretty UI.
+* fix ""?? ??(English Term)"" to ""?? ??"" (without ""English original"")
+
+Anyway, How about #22177?"
+22504,Redmine,Defect,"",Closed,Normal,Progress bar calculation in 3.2,Tobias Fischer,"",2016-07-18 23:29,Roadmap,"","","","",0,2016-04-14 19:58,2016-07-18 21:56,"","",3.2.1,"Starting with 3.2 and still an issue in 3.2.1 the progress bar calculation is questionable.
+
+!Bildschirmfoto 2016-04-14 um 19.49.08.png!
+
+My setup:
+* progress calculation by ticket status
+* status ""closed"" and ""invalid"" are both marked as ""closed"" and ""% done"" is set to ""100%""
+
+All 50 closed tickets are either in the state ""closed"" or ""invalid"". So why is there a difference between ""closed"" and ""done"" in the progress table?
+
+In this certain case, I would expect the ""closed/done"" progress part to be at 50% in the darker green tone and then I would expect for example 30% ""work in progress"" in the lighter green color for all the tickets being work in progress. This was the behaviour before 3.2."
+22503,Redmine,Defect,"",Closed,Normal,Percent done in parent task shows progress even if subtasks are at zero % done,Pavel Potcheptsov,"",2016-05-13 06:03,Issues,"","","","",0,2016-04-14 13:43,2016-05-13 06:02,"",Invalid,3.2.0,"How could it be?
+
+*Calculate the issue done ratio with* set to *Use the issue field*.
+*Parent tasks attributes* for *% Done* set to *Calculated from subtasks*.
+"
+22502,Redmine,Defect,"",Closed,Normal,Internal error affter install plugin,Phong Bui-Quang,"",2016-04-14 10:58,"","","","","",0,2016-04-14 10:50,2016-04-14 10:58,"",Invalid,"","I installed and used Easy Redmine 2016. But it has problem ""Internal error 500"" affter install plugin ""redmine_wktime"""
+22498,Redmine,Defect,"",Needs feedback,Normal,"""View all issues"" page should allow to filter by all custom fields",Sebastian Paluch,"",2017-08-06 08:53,Issues filter,"","","","",0,2016-04-14 09:22,"","関連している #17664, 関連している #22500","",3.2.0,"
+The all issue page under ""/redmine/issues"" has only core fields, custom fields are missing in both filters and columns, this is a problem as does not allow to build cross project summary queries.
+
+I thought I saw similar issue but could not find it, somehow related is #17664."
+22496,Redmine,Patch,"",Closed,Normal,Add text wrap for multiple value list custom fields,Sebastian Paluch,Jean-Philippe Lang,2016-05-08 09:22,UI,3.3.0,"","","",0,2016-04-14 09:05,2016-05-08 09:22,次のチケットが重複 #22794,"","","For multiple value list custom fields there is no text wrap when displayed as a column on issue list, this breaks page layout.
+
+This should be added to application.css:
+
+tr.issue td.subject, tr.issue td.category, td.assigned_to, tr.issue td.string, tr.issue td.text, *tr.issue td.list,* tr.issue td.relations, tr.issue td.parent { white-space: normal; }"
+22493,Redmine,Defect,"",Closed,Normal,Test code bug in application_helper_test,Gregor Schmidt,Jean-Philippe Lang,2016-04-14 20:45,Code cleanup/refactoring,3.3.0,"","","",0,2016-04-13 21:57,2016-04-14 20:45,"",Fixed,"","@ApplicationHelperTest#test_table_of_content_should_generate_unique_anchors@ concatenates an @expected@ string. Unfortunately, there are two @+@ signs missing, so that the test does not test, what is immediately expected.
+
+The attached patch fixes that bug.
+
+Since the most important element of the expected string - the generated ID - was always part of the generated expected string, this error was technically not relevant. Nevertheless, I think it should be fixed."
+22489,Redmine,Defect,"",Closed,High,Browsing to http://redmine.org/ results in HTTP 403 Forbidden error,Nels Nelson,Jean-Philippe Lang,2016-04-13 18:22,Website (redmine.org),"","","","",0,2016-04-13 18:19,2016-04-13 18:22,次のチケットと重複 #22281,Duplicate,"","<pre>
+Forbidden
+
+You don't have permission to access / on this server.
+Apache Server at redmine.org Port 80
+</pre>
+
+Navigating to https://redmine.org/, however, is fine and behaves as expected.
+
+Setting to high priority, since http://redmine.org/ is the URL which is presented to users as the top hit result when searching DuckDuckGo for ""redmine"".
+"
+22484,Redmine,Defect,"",Closed,Normal,"Multiple entries in project activity after single ""save"" action",Wadim Incognito,"",2016-09-19 16:51,Activity view,"","","","",0,2016-04-13 16:17,2016-09-19 16:51,"",Invalid,3.2.1,"When I cange several fields in issue, say ""due date"", ""Assigned"" and add a comment - I've got three entries in project ""Activity"" Project. I think, It's wrong - because I's been taken a single activity."
+22445,Redmine,Defect,"",Closed,Low,Restore from Backup ,Joachim Weber,"",2016-04-11 15:05,Database,"","","","",0,2016-04-11 10:49,2016-04-11 15:05,"",Invalid,"","Hello 
+
+I have Setup a Remine on Untuntu 14.04 LTS
+The Setup is working fine and the Redmine Sitre is shown.
+
+My Problem now is:
+
+I have Backup from the older Version and did a restore of mysql and Redmine Files to the new Server.
+I can not Login to the new Redmine.
+I found out that i have to migrate the mysql database.
+
+Can anyone tell me how i have to do that or can give me a Place where i can find i how to.
+
+
+"
+22428,Redmine,Defect,"",Closed,Normal,Translation missing: pt-BR.label_show_user_activity,Luiz Moura,"",2016-04-09 01:06,Translations,"","","","",0,2016-04-08 15:17,2016-04-09 01:06,"",Invalid,3.1.1,""
+22427,Redmine,Patch,"",Closed,Normal,pt-BR translation for 3.2.stable,Luiz Moura,Jean-Philippe Lang,2016-05-07 12:58,Translations,3.2.3,"","","",0,2016-04-08 15:11,2016-05-07 10:10,"","","",Lines 1135 to 1203 do not translated to pt-BR (portuguese brazil)
+22424,Redmine,Defect,"",Needs feedback,Normal,Change Russian translation for default_issue_status_feedback,Serguei Okladnikov,"",2017-12-27 10:13,Translations,4.0.0,"","","",0,2016-04-07 23:24,2017-08-01 13:03,"",Fixed,"","I suggest rename default russian translation of feedback status.
+Currenly it is ""Обратная связь"" that mean like technical term feedback
+""positive"":https://en.wikipedia.org/wiki/Positive_feedback or ""negative"":https://en.wikipedia.org/wiki/Negative_feedback feedback
+I suggest ""Нужен отклик"" that may be per world translated as ""need a response"".
+See google translate to check: ""Нужен отклик"":https://translate.google.com/#ru/en/%D0%9D%D1%83%D0%B6%D0%B5%D0%BD%20%D0%BE%D1%82%D0%BA%D0%BB%D0%B8%D0%BA"
+22421,Redmine,Patch,"",Closed,Normal,Updated Korean locale data,Yonghwan SO,"",2016-06-06 05:51,Translations,"","","","",0,2016-04-07 17:16,2016-06-06 01:56,次のチケットと重複 #22506,"","","Here is an updated Korean translation.
+
+* mainly for missing translations
+* shorten some line-wrapped messages on setting for more pretty UI.
+* fix ""?? ??(English Term)"" to ""?? ??"" (without ""English original"")
+
+
+Anyway, How about #22177?"
+22408,Redmine,Defect,"",Closed,Normal,How to get the data of a custom_field from the database,Tushar Garg,"",2016-04-06 15:35,"","","","","",0,2016-04-06 12:55,2016-04-06 15:35,"",Invalid,3.1.3,"Let suppose I create a new custom field (is_addtoapplane) of type bool, if it is true then, at the time of project creartion, i am hitting a webservice and all the data of the project is saved on that webservice,but at the time of project creation, i am checking its value from params.
+But when I want to create a issue and want to add this issue to my another project applane, then I need the data of custom field(is_addtoapplane) for that project in which issue is being created, so that check can be performed."
+22405,Redmine,Defect,"",Closed,Normal,SQL server: non ASCII filter does not work ,Chi Nhan Nguyen,Jean-Philippe Lang,2016-04-24 13:37,Issues filter,3.3.0,"","","",0,2016-04-06 07:08,2016-04-24 13:37,"",Fixed,3.1.3,Filter not work with unicode.
+22404,Redmine,Defect,"",Closed,Normal,Cannot create new issue if proxy has been set up,Hieu Nguyen,"",2016-04-06 06:41,"","","","","",0,2016-04-06 05:54,2016-04-06 06:41,"",Invalid,"","I've set up new Redmine server. And it works perfectly.
+But some of my friends living in Japan cannot create new issue on my Redmine.
+Log-in is OK. But when click New issue, input information and press Save, they get 500 Internal Server Error.
+So I tried to set my proxy as 179.107.182.187:80 (for example), and also get same error.
+
+Environment:
+  Redmine version                3.2.1.stable
+  Ruby version                   2.1.4-p265 (2014-10-27) [x86_64-linux]
+  Rails version                  4.2.5.2
+  Environment                    production
+  Database adapter               Mysql2"
+22402,Redmine,Defect,"",Closed,Normal,Files module does not work  - TypeError (no implicit conversion of nil into String),Slim inbox.lv,"",2016-04-06 08:26,Files,"","","","",0,2016-04-05 17:16,2016-04-06 08:26,"",Invalid,2.6.9,"Files module does not work under Passenger
+
+log/production.log:
+<pre>
+Started GET ""/projects/akvarius-network/files"" for 10.23.12.44 at 2016-04-05 18:08:23 +0300
+Processing by FilesController#index as HTML
+  Parameters: {""project_id""=>""akvarius-network""}
+  Current user: deniss (id=42)
+Completed 500 Internal Server Error in 13.4ms
+
+TypeError (no implicit conversion of nil into String):
+  app/controllers/files_controller.rb:34:in `index'
+</pre>
+
+ruby script/about
+<pre>
+Environment:
+  Redmine version                2.6.9.stable
+  Ruby version                   2.3.0-p0 (2015-12-25) [x86_64-linux]
+  Rails version                  3.2.22
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Git                            2.8.0
+  Filesystem                     
+Redmine plugins:
+  no plugin installed
+</pre>"
+22401,Redmine,Patch,"",Closed,Normal,Notify the user of missing attachments,Jens Kr?mer,Jean-Philippe Lang,2016-05-07 12:32,Attachments,3.3.0,"","","",0,2016-04-05 15:59,2016-05-07 12:32,"","","","Under certain (rare) circumstances it may happen that, when an issue or other
+container is saved, added attachments have already been removed (i.e. by the
+attachments:prune rake task).
+
+Until now these tokens are silently ignored and the user is left in the dark about the missing file. This patch adds a validation error to the container in this case.
+"
+22394,Redmine,Defect,"",Confirmed,Normal,Gantt start of week,Mehrdad Abdi,"",2017-01-11 16:04,Gantt,"","","","",0,2016-04-05 08:01,"","","",3.2.1,"I've changed the start of week to Saturday, Weeks presentation is OK in date pikers, but in Gantt it starts from Monday."
+22392,Redmine,Defect,"",Closed,Normal,403 for redmine.org without www,Vasil Kovalevsky,Jean-Philippe Lang,2016-04-05 08:29,Website (redmine.org),"","","","",0,2016-04-05 06:30,2016-04-05 08:29,次のチケットと重複 #22281,Duplicate,"","Hello.
+So, something was configurated wrong for apache for this server (redmine.org).
+Now impossible to access to redmine.org without www.
+http://www.redmine.org - works, http://redmine.org - 403 Forbidden"
+22376,Redmine,Patch,"",Closed,Normal,Change Japanese translation for label_issue_watchers,Go MAEDA,Jean-Philippe Lang,2016-04-24 17:12,Translations,3.3.0,"","","",0,2016-04-03 06:29,2016-04-24 17:12,"","","","While the definition for label_issue_watchers in en.yml is ""Watchers"", it is translated as ""チケットのウォッチャー"" (Watchers of the issue) in ja.yml.
+
+I think it is verbose, it would be better to change it to ""ウォッチャー""."
+22356,Redmine,Patch,"",Closed,Normal,Add support for updating attachments over REST API,Oliver Luethi,Jean-Philippe Lang,2016-10-01 15:22,REST API,3.4.0,"","","",0,2016-03-31 11:20,2016-10-01 15:22,"","","","Adds the support for updating issue attachments over REST-API
+* granted permissions for update function
+* added format.api response for REST-API calls"
+22355,Redmine,Defect,"",Closed,High,trackers can't be imported on issues,ElMehdi Mahdaoui,"",2016-06-20 18:44,Importers,"","","","",0,2016-03-31 10:28,2016-06-20 18:44,次のチケットと重複 #22951,Duplicate,"","When i import CSV file, trackers can't be imported on issues"
+22354,Redmine,Defect,"",Closed,Normal,Sort criteria defined in custom queries are not applied when exporting to CSV,Go MAEDA,Jean-Philippe Lang,2016-04-09 07:55,Issues,3.2.2,"","","",0,2016-03-31 05:52,2016-04-09 07:55,関連している #26364,Fixed,3.2.1,"How to reproduce:
+
+1. Create a query: name = ""order_by_id_asc"", sort 1 = ""#, ascending""
+2. Click the query name ""order_by_id_asc"" in the side bar of issues list screen. Issues are listed in *ascending* order of id.
+3. Click a ""CSV"" link on the bottom of the screen
+4. Open the CSV file. Ascending order of id is expected, but issues are listed in *descending* order of id.
+"
+22345,Redmine,Patch,"",Closed,Normal,Trackers that have parent_issue_id in their disabled_core_fields should not be selectable for new child issues,Jens Kr?mer,Jean-Philippe Lang,2016-04-24 17:28,Issues,3.3.0,"","","",0,2016-03-30 08:13,2016-04-24 17:28,"関連している #16260, 関連している #27895","","","When the user views an issue and clicks the link to add a new child issue, and the project has some trackers where the @parent_issue_id@ field is disabled, the resulting new issue form for the child issue still presented those trackers for the user to choose from.
+
+In case the tracker of the parent issue has @parent_issue_id@ disabled itself, a new child issue would even have that tracker pre-selected through the @tracker_id@ URL param, which is also fixed by the patch.
+
+Patch extracted from ""Planio"":https://plan.io/redmine-hosting"
+22342,Redmine,Defect,"",Closed,Normal,"When copying issues to a different project, subtasks /w custom fields not copied over",Joe Price,Jean-Philippe Lang,2016-04-28 11:55,Custom fields,3.2.2,"","","",0,2016-03-29 20:37,2016-04-12 18:55,関連している #11315,Fixed,3.2.0,"My environment:
+<pre>
+Environment:
+  Redmine version                3.2.0.stable
+  Ruby version                   2.0.0-p481 (2014-05-08) [x86_64-openbsd]
+  Rails version                  4.2.5
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.8.9
+  Filesystem
+Redmine plugins:
+  no plugin installed
+</pre>
+
+
+Redmine production.log:
+<pre>
+Could not copy subtask #1878 while copying #1874 to #1993 due to validation errors: JobNumber cannot be blank
+Could not copy subtask #1879 while copying #1874 to #1993 due to validation errors: JobNumber cannot be blank
+Could not copy subtask #1884 while copying #1874 to #1993 due to validation errors: JobNumber cannot be blank
+Could not copy subtask #1886 while copying #1874 to #1993 due to validation errors: JobNumber cannot be blank
+Could not copy subtask #1888 while copying #1874 to #1993 due to validation errors: JobNumber cannot be blank
+</pre>
+
+JobNumber _IS_ there in the subtasks. Both the source and target projects have the same fields. 
+
+Copying to the same project works, but copying to a different project has the above error.
+
+
+Originally discussed here: message#49431"
+22337,Redmine,Patch,"",Closed,Normal,Ignore settings.yml in git/hg for cleaner repository updates,Cy topia,"",2016-03-29 14:11,Code cleanup/refactoring,"","","","",0,2016-03-29 13:16,2016-03-29 13:57,"","","","Linked from github: https://github.com/redmine/redmine/pull/77
+
+I have renamed *config/settings.yml* to *config/settings.yml.example* and ignored *config/settings.yml* in *.gitignore* and *.hgignore*.
+
+The main reason I would like to see this included in the repository is to be able to simply update redmine via git/hg.
+
+As an example, I am using ""redmine-like-a-boss"":https://github.com/cytopia/redmine-like-a-boss, which always includes redmine in the last stable version as a submodule. I want to be able to simply *git checkout LATEST_TAG* if a newer version is released and don't worry about that my *settings.yml* file will be overwritten by a pull.
+
+I guess others will probably also want to use redmine update mechanisms via *git pull* or an equivalent for *hg*.
+
+The only drawback of this pull request is that you might need to extend the redmine installation documentation with
+
+<pre>
+cp config/settings.yml.example config/settings.yml
+</pre>
+
+But afterwards, the update management will be easier.
+
+Thanks"
+22336,Redmine,Patch,"",Closed,Normal,Revision Table does not scroll horizontally on small screens,Gregor Schmidt,Jean-Philippe Lang,2016-04-03 14:34,UI - Responsive,3.2.2,"","","",0,2016-03-29 12:31,2016-04-03 14:34,"","","","On small screens: While the directory listing table may be scrolled horizontally, the revision table may not. Therefore the commit message and author is not available on mobile devices.
+
+!before.png!
+
+The attached patch adds an @.autoscroll@ container around the revision graph and table. Additionally it adds @position: relative@ to the @.autoscroll@ CSS ruleset to ensure, that the revision graph scrolls with the table content.
+
+!after.png!
+
+
+The patch was created based on the current trunk r15287."
+22335,Redmine,Defect,"",Closed,Normal,Images with non-ASCII file names are not shown in PDF,Go MAEDA,"",2017-04-09 10:15,PDF export,3.2.6,"","","",0,2016-03-29 07:25,2017-04-09 10:15,"",Fixed,"","Images with non-ASCII file names are not shown in PDF. Please see the following image. There are two embedded image ""shrine.jpg"" and ""神社.jpg"" in a issue description. But ""神社.jpg"" (an image with non-ASCII file name) are not shown in exported PDF.
+
+!defect-description.jpg!"
+22331,Redmine,Defect,"",Closed,Normal,"bundler error: Ruby 1.9.3 = ""mime-types-data requires Ruby version >= 2.0.""",Deoren Moor,"",2016-03-29 05:27,"",3.1.5,"","","",0,2016-03-28 18:36,2016-03-29 03:52,"",Fixed,3.1.0,"Error message encountered when running @bundle update@ from my Redmine installation directory:
+
+<pre>
+Gem::InstallError: mime-types-data requires Ruby version >= 2.0.
+An error occurred while installing mime-types-data (3.2016.0221), and Bundler cannot continue.
+Make sure that `gem install mime-types-data -v '3.2016.0221'` succeeds before bundling.
+</pre>
+
+Redmine installation details (taken once I restored the installation directory from backup):
+
+<pre>
+sh: 1: darcs: not found
+sh: 1: cvs: not found
+sh: 1: bzr: not found
+Environment:
+  Redmine version                3.2.0.stable.14966
+  Ruby version                   1.9.3-p0 (2011-10-30) [i686-linux]
+  Rails version                  4.2.5.1
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.6.17
+  Mercurial                      2.0.2
+  Git                            1.7.9.5
+  Filesystem
+Redmine plugins:
+  no plugin installed
+</pre>
+
+Does Redmine still support Ruby 1.9.3? I looked at the [[RedmineInstall]] page and it is still listed there. From what I can recall you guys don't have a habit of switching requirements in the middle of maintaining a branch, so I figured this was something that folks just haven't reported yet.
+
+P.S.
+
+I use a Subversion tag for the installation. I then just switch tags when it is time to upgrade to a new version and then run the applicable upgrade steps."
+22323,Redmine,Defect,"",New,Normal,Markdown newline rendering broken,Viktor Berke,"",2016-03-27 04:01,Text formatting,"","","","",0,2016-03-26 17:13,"",関連している #22005,"",3.2.1,"As per the ""specs"":https://daringfireball.net/projects/markdown/syntax#p Markdown should not insert <br /> for single line breaks. <br /> should only occur for:
+
+- A line ending with 2 or more spaces, then a line break.
+- One or more blank lines between paragraphs lines. In other words, 2 or more line breaks.
+
+GitHub is consistent with this in wiki formatting. In GitHub issues a single line break also triggers a rendered line break, the reason for this is beyond me but that's also against the specs.
+
+Please fix this. This actually breaks Pandoc conversion from Textile pages because Pandoc occasionally inserts line breaks even within paragraphs and this causes line breaks in the rendered text as well thus breaking the format."
+22320,Redmine,Patch,"",Closed,Normal,Respect user's timezone when comparing / parsing Dates,Jens Kr?mer,Jean-Philippe Lang,2016-05-07 13:07,I18n,3.3.0,"","","",0,2016-03-26 09:25,2016-05-07 13:07,"関連している #16482, 関連している #23189, 次のチケットが重複 #20473, 次のチケットが重複 #19033","","","This patch replaces all occurrences of @Date.today@ with @User.current.today@.
+
+@Date.today@ always returns the date according to the server's local time zone, leading to all sorts of edge cases that occur more or less often depending on how large the offset between a user's timezone and the server timezone is. A test case illustrating the problem using @Issue#overdue?@ as an example is included.
+
+The patch was extracted from ""Planio"":https://plan.io/redmine-hosting and also includes the changes proposed earlier by Holger Just in #20473, with the addition of two test cases to cover the date manipulation changes in @Query#date_clause@."
+22319,Redmine,Patch,"",Closed,Normal,"Fix German ""error_invalid_csv_file_or_settings"" typo",Toshi MARUYAMA,"",2016-03-26 05:54,Translations,3.2.2,"","","",0,2016-03-26 05:25,2016-03-26 05:54,"","","","From #22134:
+
+<pre><code class=""diff"">
+=== (+2,-2) config/locales/de.yml ===
+@@ -1168,7 +1168,7 @@
+   notice_import_finished: Alle %{count} Eintr?ge wurden importiert.
+   notice_import_finished_with_errors: ! '%{count} von %{total} Eintr?gen konnten nicht importiert werden.'
+   error_invalid_file_encoding: Die Datei ist keine g?ltige %{encoding} kodierte Datei
+-  error_invalid_csv_file_or_settings: Die Dartei ist keine CSV-Datei oder entspricht nicht den Einstellungen unten
++  error_invalid_csv_file_or_settings: Die Datei ist keine CSV-Datei oder entspricht nicht den Einstellungen unten
+   error_can_not_read_import_file: Beim Einlesen der Datei ist ein Fehler aufgetreten
+   permission_import_issues: Tickets importieren
+   label_import_issues: Tickets importieren
+</code></pre>"
+22318,Redmine,Defect,"",Closed,High,Redmin Synology NAS docker email configuration,Wim De Vriendt,"",2016-03-26 04:24,Issues,"","","","",0,2016-03-25 18:56,2016-03-26 04:24,"",Invalid,3.1.3,"Hi, where can we put the configuration.yml if redmine is installed on synology nas with dockers?
+can somebody help"
+22316,Redmine,Defect,"",Closed,Normal,Deleteing subtask clears start date in parent task,Marcin Ch.,"",2016-04-22 09:12,Issues,"","","","",0,2016-03-24 14:23,2016-04-22 09:12,"","","","Steps to reproduce:
+1. Create task with start date,
+2. Create subtask with start date,
+3. Remove subtask.
+
+Result: Start date in parent task is deleted.
+
+Expected result: Changing subtask should not affect in clearing any field in parent task.
+
+Checked with the demo, so the issue occurs in all versions."
+22315,Redmine,Patch,"",Closed,Normal,"Change English translation for field_effective_date: ""Date"" to ""Due date""",Go MAEDA,Toshi MARUYAMA,2016-05-10 17:04,Translations,3.3.0,"","","",0,2016-03-24 13:52,2016-05-10 06:06,"関連している #14680, 関連している #15180","","","The word ""Date"" is ambiguous. It requires advance knowledge of Redmine to understand whether the word means start date or due date. It will be clear if the term is changed to ""Due Date"".
+
+Related issues: #14680, #15180#note-5
+"
+22311,Redmine,Defect,"",New,Normal,links to new issues with Tracker Id does not work anymore...,Eitan Har-Shoshanim,"",2016-05-12 05:00,Issues,"","","","",0,2016-03-23 15:18,"","","",3.1.1,"I have historic wiki page that have links to allow users to open new issues on several different trackers.
+I'm not sure since what version of Redmine this occurs, but I'm using @Redmine 3.1.1.stable@ and the links always sends me to new issue the default tracker (""Defect"")
+
+The links are in the following format: http://www.mysite.org/projects/[project]/issues/new?tracker_id=[trackerid]
+
+
+
+
+
+This is my setup info:
+<pre>
+
+Environment:
+  Redmine version                3.1.1.stable
+  Ruby version                   2.0.0-p645 (2015-04-13) [i386-mingw32]
+  Rails version                  4.2.4
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Mercurial                      2.6.3
+  Git                            1.9.5
+  Filesystem                     
+Redmine plugins:
+  a_common_libs                  1.1.6
+  recurring_tasks                2.0.0-pre
+  redmine_category_watchers      0.0.2
+  redmine_highlightjs            1.0.3
+  redmine_image_clipboard_paste  1.0.0
+  redmine_improved_searchbox     0.0.3
+  redmine_issue_checklist        2.0.8
+  redmine_issue_templates        0.1.0
+  redmine_latex_mathjax_macro    0.3.0
+  redmine_ldap_sync              2.0.6
+  redmine_theme_changer          0.2.0
+  redmine_versions_explorer      0.0.1
+  redmine_wiki_extensions        0.7.0
+  redmine_wiki_lists             0.0.6
+  rmp_group_watchers             1.0.0
+  scrum                          0.13.0
+  sidebar_hide                   0.0.7
+  star_item_link                 0.0.1
+  usability                      2.0.0
+</pre>"
+22309,Redmine,Patch,"",Closed,Normal,Add styles for blockquote in email notifications,Go MAEDA,Jean-Philippe Lang,2016-05-09 01:45,Email notifications,3.3.0,"","","",0,2016-03-23 14:27,2016-04-24 17:07,"","","","This patch adds styles for blockquote element of email notifications.
+blockquote in issues and issue journals have styles like the following. To improve readability, blockquote in email notifications should also be styled.
+
+> blockquote styling example. Vertical border at left and italic font.
+
+---
+
+*Before (mailer's default style is applied for blockquote):*
+!mail-notification-before.png!
+
+*After (styles like issues are applied):*
+!mail-notification-after.png!"

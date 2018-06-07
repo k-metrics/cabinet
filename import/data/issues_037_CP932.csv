@@ -1,0 +1,690 @@
+#,プロジェクト,トラッカー,親チケット,ステータス,優先度,題名,作成者,担当者,更新日,カテゴリ,対象バージョン,開始日,期日,予定工数,進捗率,作成日,終了日,関連するチケット,Resolution,Affected version,説明
+21024,Redmine,Defect,"",Needs feedback,Normal,"can't upload file with ""["" in name",stephane pham,"",2015-11-06 05:30,Attachments,"","","","",0,2015-10-19 14:06,"","","","","Hi,
+
+I work on redmine version 3.1.1 and i can't upload file with ""["" in name.
+
+Thanks."
+21023,Redmine,Defect,"",Closed,Normal,Data inconsistency when inserting time entry after editing activities list (no check for enumerator present in database),Sergey Startsev,"",2015-10-29 15:07,Issues,"","","","",0,2015-10-19 13:59,2015-10-29 15:07,"",Fixed,3.0.3,"steps:
+open 2 browser windows (user and admin actions emulation):
+window 1 (W1) - issue page
+window 2 (W2) - enumerators administration page or project actions settings
+
+# W1: open an issue page end press edit button to insert spent time
+# W2: delete global action (in administration) or set project actions to default list
+# W1: input and save workhours (choosing a deleted / reseted time entry action)
+# W1: in time entries table the action cell of created report will be empty, but in DB there will be an ID of deleted action in action_id field"
+21021,Redmine,Defect,"",Closed,Normal,Copying a Redmine issue does not allow change of Status,Roger Noble,"",2017-05-27 06:05,Issues,"","","","",0,2015-10-19 12:03,2017-05-27 06:05,関連している #23610,Fixed,3.0.1,"Although the form presented allows selection between existing status and default status, if the existing status is ""Closed"", the change is not accepted.  As a result, the new Issue is created with the Status = Closed and the changes to Subject and Description not done."
+21019,Redmine,Patch,"",Closed,Normal,Traditional Chinese translation (to r14689),ChunChang Lo,"",2015-10-31 14:09,Translations,3.1.2,"","","",0,2015-10-19 06:29,2015-10-31 14:09,"","","",""
+21013,Redmine,Defect,"",Needs feedback,Normal,Links not formatted in documents,Kai B?se,"",2015-11-02 15:38,Text formatting,"","","","",0,2015-10-17 22:37,"","","",3.1.1,"Using Documents, links with different display text get not formatted.
+
+Text Used:
+<pre>
+**Technische Dokumentation**
+
+1. Server und Enviroment
+ * document#2
+ * document#3
+2. Extensions
+ * ""Extension Builder"":https://docs.typo3.org/typo3cms/extensions/extension_builder
+
+""Redmine web site"":http://www.redmine.org
+</pre>
+
+Please find attached screenshot.
+
+Env Informarmation:
+<pre>
+Environment:
+  Redmine version                3.1.1.stable
+  Ruby version                   2.1.5-p273 (2014-11-13) [i386-linux-gnu]
+  Rails version                  4.2.4
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Git                            2.1.4
+  Filesystem                     
+Redmine plugins:
+  no plugin installed
+</pre>"
+21012,Redmine,Defect,"",Closed,Normal,Link custom fields with long URLs are distorting issue detail view,Maxim Kru?ina,Jean-Philippe Lang,2015-10-21 18:32,UI,3.2.0,"","","",0,2015-10-17 19:07,2015-10-21 18:22,"",Fixed,"","As you can see on screenshot, when using custom field , format Link, then when there is a long URL (can happen very often), layout of page is broken.
+I believe, this can be solved by simply via CSS, also (for me) I think there can be visible only shortened part of URL, with full link in a href."
+21011,Redmine,Defect,"",Closed,Normal,Watchers can not be deleted from a ticket,Thorsten H.,"",2016-08-30 06:20,Issues,"","","","",0,2015-10-17 01:05,2016-08-30 06:20,関連している #14325,Invalid,3.1.1,"Watchers can not be deleted from a ticket if Redmine 3.1.1 on Apache (mod_fcgi)/Passenger runs;
+Over @/usr/bin/ruby bin/rails server webrick -e production@ watchers can be delete from a ticket
+"
+21010,Redmine,Defect,"",Closed,Normal,Beobachter k?nnen nicht gel?scht werden,Thorsten H.,"",2015-10-17 00:54,"","","","","",0,2015-10-17 00:37,2015-10-17 00:54,"",Invalid,3.1.1,"Beobachter k?nnen aus einem Ticket nicht gel?scht werden, wenn Redmine 3.1.1 ?ber Apache (mod_fcgi)/Passenger l?uft;
+?ber /usr/bin/ruby bin/rails server webrick -e production klappt das problemlos
+
+Environment:
+  Redmine version                3.1.1.stable.14669
+  Ruby version                   2.0.0-p598 (2014-11-13) [x86_64-linux]
+  Rails version                  4.2.4
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.7.14
+  Git                            1.8.3.1
+  Filesystem
+Redmine plugins:
+  no plugin installed"
+21000,Redmine,Defect,"",Closed,High,An unbalanced closing pre or code tag results in undefined method `casecmp' for nil:NilClass,Ricardo S,Jean-Philippe Lang,2015-11-12 04:39,Text formatting,"","","","",0,2015-10-15 19:19,2015-10-15 20:32,"",Fixed,"","After r14484, starting a wiki text with &lt;/code> or &lt;/pre> results in the error:
+<pre>
+An ActionView::Template::Error occurred in wiki#show: undefined method `casecmp' for nil:NilClass
+app/helpers/application_helper.rb:612:in `parse_non_pre_blocks'
+app/helpers/application_helper.rb:582:in `textilizable'
+app/views/wiki/_content.html.erb:2:in `_app_views_wiki__content_html_erb___1050873637_98682770'
+app/views/wiki/show.html.erb:44:in `_app_views_wiki_show_html_erb___219731868__628886978'
+app/controllers/wiki_controller.rb:97:in `show'
+lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+</pre>
+
+My redmine environment:
+<pre>
+Environment:
+  Redmine version                3.1.0.devel
+  Ruby version                   2.2.3-p173 (2015-08-18) [i386-linux-gnu]
+  Rails version                  4.2.3
+  Environment                    production
+  Database adapter               SQLServer
+</pre>"
+20997,Redmine,Defect,"",Closed,Normal,Redmine 3.1.1 API Rest and my account page,Franck Samson,Jean-Philippe Lang,2015-11-30 16:27,Accounts / authentication,"","","","",0,2015-10-15 10:53,2015-10-17 11:25,"","",3.1.1,"Hello, 
+I use the latest version of redmine and when the API Rest is activated, I can't go to my account page I ve got this error : 
+
+<pre>
+Started GET ""/redmine/my/account"" for  at 2015-10-15 10:43:30 +0200
+Processing by MyController#account as HTML
+  Current user: ccc (id=5)
+  Rendered users/_mail_notifications.html.erb (17.4ms)
+  Rendered users/_preferences.html.erb (5.3ms)
+  Rendered my/_sidebar.html.erb (4.7ms)
+  Rendered my/account.html.erb within layouts/base (39.3ms)
+Completed 500 Internal Server Error in 51ms (ActiveRecord: 4.5ms)
+
+ActionView::Template::Error (No route matches {:action=>""show_api_key"", :controller=>""my""}):
+    21: <% if Setting.rest_api_enabled? %>
+    22: <h4><%= l(:label_api_access_key) %></h4>
+    23: <div>
+    24:   <%= link_to l(:button_show), {:action => 'show_api_key'}, :remote => true %>
+    25:   <pre id='api-access-key' class='autoscroll'></pre>
+    26: </div>
+    27: <%= javascript_tag(""$('#api-access-key').hide();"") %>
+  app/views/my/_sidebar.html.erb:24:in `_app_views_my__sidebar_html_erb___3604902527302737899_70242405852180'
+  app/views/my/account.html.erb:56:in `block in _app_views_my_account_html_erb__883336876389597527_70242404894200'
+  app/views/my/account.html.erb:55:in `_app_views_my_account_html_erb__883336876389597527_70242404894200'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+</pre>
+
+If the Rest Api is deactivated there is no probleme... 
+
+Thank for help
+ 
+"
+20995,Redmine,Defect,"",Closed,Normal,Automatic done ratio calculation in issue tree is wrong in some cases,Felix Sch?fer,Jean-Philippe Lang,2015-11-14 10:59,Issues,3.2.0,"","","",0,2015-10-15 09:34,2015-11-14 10:59,関連している #23511,Fixed,"","Currently the done ratio of parent issues in an issue tree is calculated based on the average of done ratios of the _leaves_ bellow that issue source:/tags/3.1.1/app/models/issue.rb#L1491. This however can lead to inconsistencies in the automatically calculated done ratios.
+
+For example: issue C with a done ratio of 50% and an open status, which is a subtask of issue B with a done ratio of 70% automatically set by its (open) status, which itself is a subtask of issue A, with a status that doesn't automatically set the done ratio. In that case, A will have an automatically calculated done ratio of 50% because it will be calculated based on the leaf's done ratios, i.e. from C, although its only direct child has a done ratio of 70%.
+
+Is there any rationale to keeping the calculation of the done ratio based on the leaves? I would like to change it to be calculated based on the done ratios of the direct children. If this is an acceptable change I can work on a patch."
+20994,Redmine,Defect,"",Closed,High, You can not change the priority of the parent issue,n endo,"",2017-12-11 17:36,Issues,"","","","",0,2015-10-15 03:25,2015-10-15 20:20,次のチケットと重複 #20992,Duplicate,3.1.1,"We're using Redmine3.1
+Priority setting it is in the ""Independent of subtasks.""
+
+It is no longer automatically calculated from the subtasks, but it can not be changed manually.
+it read-only.
+
+Is this would be specifications? What bugs?"
+20993,Redmine,Defect,"",Closed,Low,auto-importing GPG signature file,Monty Cantsin,"",2015-10-15 04:31,Email receiving,"","","","",0,2015-10-15 01:31,2015-10-15 04:27,次のチケットと重複 #3413,Duplicate,"","When replying to a Redmine mail by e-mail, with a GPG signed mail, redmine automatically adds the attached signature file (siganture.asc) to the respective issue/task of the project.
+
+For users using GPG signed e-mails by default, this ads a lot of unnecessary editing, - deleting of signature.asc files, - in Redmine.
+
+Would be nice to have a filter within redmine that recognizes such files."
+20992,Redmine,Defect,"",Closed,Normal,"Parent priority ""Independent of subtasks"" setting doesn't work",Ismael Barros?,Jean-Philippe Lang,2015-11-07 09:19,Issues,3.1.2,"","","",0,2015-10-14 17:31,2015-11-07 09:19,"関連している #27533, 次のチケットが重複 #20984, 次のチケットが重複 #20994",Fixed,3.1.1,">(Comes from #5490-97)
+
+I've just updated from Redmine 3.0 to Redmine 3.1 just to get the fix for #5490, but it doesn't seem to be working for me.
+
+I've configured ""Parent task attributes > Priority"" to ""Independent of subtasks"" (see attachment:""Screenshot from 2015-10-14 11-59-18.png""), but when I want to change the priority of a parent, the field is still grayed out (see attachment:""Screenshot from 2015-10-14 11-59-28.png""). Am I missing something?
+
+Versions and stuff: {{collapse(unfold)
+<pre>
+Environment:
+  Redmine version                3.1.1.stable
+  Ruby version                   1.9.3-p0 (2011-10-30) [x86_64-linux]
+  Rails version                  4.2.4
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Mercurial                      2.0.2
+  Git                            1.7.9.5
+  Filesystem                     
+Redmine plugins:
+  clipboard_image_paste          1.10
+  redmine_embedded_video         0.0.3.1
+  redmine_inline_note_images_plugin 0.0.1
+  redmine_ldap_sync              2.0.7.devel.g202f7c74b9
+  redmine_lightbox               0.0.1
+  redmine_my_page_queries        2.1.6
+  redmine_zenedit                0.0.2
+  sidebar_hide                   0.0.7
+  time_logger                    0.5.1
+</pre>
+}}"
+20988,Redmine,Defect,"",Closed,Normal,% done field shown on issue show subtree even if deactivated for that tracker,Felix Sch?fer,Jean-Philippe Lang,2016-03-12 11:02,UI,3.2.1,"","","",0,2015-10-14 12:16,2016-03-12 11:02,"",Fixed,"","The issue subtasks, i.e. the list of subtasks shown below the description on a single issue view, will show the progress bar even in the %-done is deactivated for the tracker of that subtask."
+20987,Redmine,Defect,"",Closed,Normal,"""h3(#my_anchor). My title"" does not work",Stefan Lindner,"",2018-01-03 11:55,Text formatting,"","","","",0,2015-10-14 10:01,2015-11-02 13:11,"","",3.1.1,"The wiki for """" at http://www.redmine.org/projects/redmine/wiki/RedmineTextFormatting#Headings says:
+<pre>
+Redmine assigns an anchor to each of those headings thus you can link to them with ""#Heading"", ""#Subheading"" and so forth.
+You can add another anchor to a title : h3(#my_anchor). My title
+</pre>
+
+But this leads to
+<pre>
+<h3 id=""my_anchor"">My title<a href=""#My_title"">...</a>
+</pre>
+
+and not to
+
+<pre>
+<h3>My title<a href=""#my_anchor"">...</a>
+</pre>
+
+It generates an id  property not a link anchor."
+20984,Redmine,Defect,"",Closed,Normal,"Unable to update priority on parent task even when ""independent of subtasks"" is selected",Calvin D,"",2015-11-05 06:55,Issues,"","","","",0,2015-10-14 00:41,2015-11-05 06:55,次のチケットと重複 #20992,Duplicate,3.1.0,"Hi,
+
+My system settings:
+
+<pre>
+Environment:
+  Redmine version                3.1.0.stable.14520
+  Ruby version                   2.2.3-p173 (2015-08-18) [x86_64-linux]
+  Rails version                  4.2.3
+  Environment                    production
+  Database adapter               PostgreSQL
+SCM:
+  Subversion                     1.8.10
+  Git                            2.1.4
+  Filesystem
+Redmine plugins:
+  redmine_checklists             3.1.1
+  redmine_contacts               4.0.2
+</pre>
+
+When I create a task, then assign a subtask to it, I immediately lose the ability to change the priority of the parent task, even when I have priority set to being ""independent of subtasks"".
+
+Should I not be able to modify the priority?
+"
+20968,Redmine,Defect,"",Closed,Normal,redmine_for_svn,欣洋 曹,"",2015-10-13 04:41,"","","","","",0,2015-10-13 04:30,2015-10-13 04:41,"",Invalid,2.6.7,"Hello, I'm just the SVN, page 404 mistakes, then I see the background log is the use of the SVN. I found that I didn't start the apache, then start the apache error, and the tip I have problems with apache added this passage. I added this sentence is to look at the document
+As follows:
+LoadModule dav_svn_module modules/mod_dav_svn. So
+LoadModule authz_svn_module modules/mod_authz_svn. So
+< the Location/SVN >
+DAV SVN
+SVNParentPath/var/WWW/SVN
+SVNListParentPath on
+The Order deny, allow
+Allow the from all
+< Location >
+For help!"
+20950,Redmine,Defect,"",Closed,Normal,Ldap User not able to login.,Vijay Kumar,"",2015-10-09 14:43,LDAP,"","","","",0,2015-10-09 12:08,2015-10-09 14:43,"","",2.4.2,"Hi Team,
+
+I have a running redmine server on aws. Redmine is integrated with AD all the users are able to login where as one user is not able to login.
+he gets a message either username or password is incorrect.
+
+Started POST ""/login"" for 212.118.209.196 at 2015-10-09 07:40:22 +0000
+Processing by AccountController#login as HTML
+$=>""https://redmine.weh.com/"", ""username""=>""burkhart-michael"", ""password""=>""[FILTERED]"", ""login""=>""Anmelden ?""}
+  Current user: anonymous
+Failed login for 'burkhart-michael' from 212.118.209.196 at 2015-10-09 07:40:22 UTC
+  Rendered account/login.html.erb within layouts/base (1.7ms)
+  Rendered plugins/scrum/app/views/scrum_hooks/_head.html.erb (0.7ms)
+Completed 200 OK in 284.4ms (Views: 9.0ms | ActiveRecord: 1.0ms)
+Started GET ""/plugin_assets/scrum/javascripts/scrum.js"" for 212.118.209.196 at 2015-10-09 07:40:22 +0000
+
+This is the error message in the production.log 
+
+I am not sure why he is not able to login where as rest of the users are able to login.
+
+Regards,
+Vijay"
+20943,Redmine,Defect,"",Resolved,Normal,migrate_from_trac.rake dont work,Karel Blumentrit,"",2017-08-01 13:32,Importers,"","","","",0,2015-10-08 15:20,"","関連している #14567, 関連している #19173, 関連している #23268","",3.1.1,"Hello,
+
+I have encountered several issues with the migrate_from_trac.rake script, trying to import a Trac(V 1.0.2) Project with SQLite (V. 3.8.7.1) Database.
+
+My Enviroment:
+
+<pre>
+cat /etc/debian_version 
+8.2
+</pre>
+
+<pre>
+Environment:
+  Redmine version                3.1.1.stable
+  Ruby version                   2.1.5-p273 (2014-11-13) [x86_64-linux-gnu]
+  Rails version                  4.2.4
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Git                            2.1.4
+  Filesystem                     
+Redmine plugins:
+  no plugin installed
+</pre>
+
+After applying the Patches from #19173-6 and overcomming that issue, I also applied the patch from #14567 to overcome the timestamp conversion issue.
+
+However I now encountered a new Issue:
+
+<pre>
+rake redmine:migrate_from_trac RAILS_ENV=""production"" --trace
+(in /opt/redmine/redmine-3.1.1)
+** Invoke redmine:migrate_from_trac (first_time)
+** Invoke environment (first_time)
+** Execute environment
+** Execute redmine:migrate_from_trac
+
+WARNING: a new project will be added to Redmine during this process.
+Are you sure you want to continue ? [y/N] y
+
+Trac directory []: /tmp/project
+Trac database adapter (sqlite3, mysql2, postgresql) [sqlite3]: 
+Trac database encoding [UTF-8]: 
+Target project identifier []: project
+
+Trac database version is: 29
+Migrating components......................
+Migrating milestones................
+Migrating custom fields
+Migrating tickets.rake aborted!
+ArgumentError: wrong number of arguments (1 for 0)
+/var/lib/gems/2.1.0/gems/activerecord-4.2.4/lib/active_record/scoping/named.rb:24:in `all'
+/opt/redmine/redmine-3.1.1/lib/tasks/migrate_from_trac.rake:180:in `attachments'
+/opt/redmine/redmine-3.1.1/lib/tasks/migrate_from_trac.rake:539:in `block in migrate'
+/var/lib/gems/2.1.0/gems/activerecord-4.2.4/lib/active_record/relation/batches.rb:51:in `block (2 levels) in find_each'
+/var/lib/gems/2.1.0/gems/activerecord-4.2.4/lib/active_record/relation/batches.rb:51:in `each'
+/var/lib/gems/2.1.0/gems/activerecord-4.2.4/lib/active_record/relation/batches.rb:51:in `block in find_each'
+/var/lib/gems/2.1.0/gems/activerecord-4.2.4/lib/active_record/relation/batches.rb:124:in `find_in_batches'
+/var/lib/gems/2.1.0/gems/activerecord-4.2.4/lib/active_record/relation/batches.rb:50:in `find_each'
+/var/lib/gems/2.1.0/gems/activerecord-4.2.4/lib/active_record/querying.rb:9:in `find_each'
+/opt/redmine/redmine-3.1.1/lib/tasks/migrate_from_trac.rake:486:in `migrate'
+/opt/redmine/redmine-3.1.1/lib/tasks/migrate_from_trac.rake:797:in `block (2 levels) in <top (required)>'
+/var/lib/gems/2.1.0/gems/rake-10.4.2/lib/rake/task.rb:240:in `call'
+/var/lib/gems/2.1.0/gems/rake-10.4.2/lib/rake/task.rb:240:in `block in execute'
+/var/lib/gems/2.1.0/gems/rake-10.4.2/lib/rake/task.rb:235:in `each'
+/var/lib/gems/2.1.0/gems/rake-10.4.2/lib/rake/task.rb:235:in `execute'
+/var/lib/gems/2.1.0/gems/rake-10.4.2/lib/rake/task.rb:179:in `block in invoke_with_call_chain'
+/usr/lib/ruby/2.1.0/monitor.rb:211:in `mon_synchronize'
+/var/lib/gems/2.1.0/gems/rake-10.4.2/lib/rake/task.rb:172:in `invoke_with_call_chain'
+/var/lib/gems/2.1.0/gems/rake-10.4.2/lib/rake/task.rb:165:in `invoke'
+/var/lib/gems/2.1.0/gems/rake-10.4.2/lib/rake/application.rb:150:in `invoke_task'
+/var/lib/gems/2.1.0/gems/rake-10.4.2/lib/rake/application.rb:106:in `block (2 levels) in top_level'
+/var/lib/gems/2.1.0/gems/rake-10.4.2/lib/rake/application.rb:106:in `each'
+/var/lib/gems/2.1.0/gems/rake-10.4.2/lib/rake/application.rb:106:in `block in top_level'
+/var/lib/gems/2.1.0/gems/rake-10.4.2/lib/rake/application.rb:115:in `run_with_threads'
+/var/lib/gems/2.1.0/gems/rake-10.4.2/lib/rake/application.rb:100:in `top_level'
+/var/lib/gems/2.1.0/gems/rake-10.4.2/lib/rake/application.rb:78:in `block in run'
+/var/lib/gems/2.1.0/gems/rake-10.4.2/lib/rake/application.rb:176:in `standard_exception_handling'
+/var/lib/gems/2.1.0/gems/rake-10.4.2/lib/rake/application.rb:75:in `run'
+/var/lib/gems/2.1.0/gems/rake-10.4.2/bin/rake:33:in `<top (required)>'
+/usr/local/bin/rake:23:in `load'
+/usr/local/bin/rake:23:in `<main>'
+Tasks: TOP => redmine:migrate_from_trac
+</pre>
+
+Please correct me if I am wrong, as I have absolutely no idea about ruby on rails programming, but (after reading throught this issue, which really ha nothing to do with the migration script: https://github.com/arkhitech/redmine_timesheet_plugin/issues/49) I assume that the Problem are those two lines:
+
+<pre>
+180           TracMigrate::TracAttachment.all(:conditions => [""type = 'ticket' AND id = ?"", self.id.to_s])
+</pre>
+
+<pre>
+235           TracMigrate::TracAttachment.all(:conditions => [""type = 'wiki' AND id = ?"", self.id.to_s])
+</pre>
+
+which passes arguments to the all() function, which doesnt accept any arguments anymore. This seems to have changed in some Ruby on Rails Version. Maybe someone knows how to fix this and could provide a patch I could test? I tried myself, but with litteraly no knowledge about Ruby on Rails programming I failed =P
+
+I attached the migrate_from_trac.rake with all the patches included."
+20939,Redmine,Defect,"",Closed,Normal,redmine importer,欣洋 曹,"",2015-10-08 05:28,"","","","","",0,2015-10-08 05:09,2015-10-08 05:28,"",Invalid,"","Hi, I am installing redmine version is 3.1.0, ruby is 2.0.0, installation operation is no problem. I installed the importer plugin, no problem, but when a submission to upload to 500 mistakes, and then prompt sudo_mode is wrong, but can't find what reason, who can help me. Thank you very much"
+20926,Redmine,Defect,"",Closed,Normal,Changing Version Data from One Server to another server with different Version,Eswaran Arumugam,"",2015-10-07 19:24,Forums,"","","","",0,2015-10-07 09:07,2015-10-07 19:24,"",Invalid,"","Hi, 
+I have installed version 2.3 from one server. Now i want to move all datas from 2.3 version to 3.0. The 3.0 Version installed in different server. I have downloaded all files from version 2.3 including database and i imported database into new version 3.0. Imported successfully with no error but it is not working. 
+
+
+Thanks"
+20925,Redmine,Defect,"",Needs feedback,Normal,Tracker selection combo is not visible,Deepak P,"",2015-11-03 06:48,Issues permissions,"","","","",0,2015-10-07 07:57,"","","",2.5.1,"Environment:
+  Redmine version                2.5.1.stable
+  Ruby version                   1.9.3-p231 (2012-05-25) [i386-mingw32]
+  Rails version                  3.2.17
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.8.5
+  Git                            1.9.0
+  Filesystem                     
+Redmine plugins:
+  redmine_archive_issue_categories 0.1.1
+  redmine_custom_values_projects 0.0.1
+  redmine_custom_workflows       0.1.1
+
+Precondition:
+1. There are multiple trackers defined ( Requirements, Clarifications, Issues, etc)
+2. There are multiple roles defined ( Lead, Developer, Tester, etc)
+3. Not all trackers are accessible by Developer role (It is set as read only for all fields in workflow admin page including ""Trackers"" field for particular tracker, say Requirements)
+4. Trackers are displayed in the following order in ""Trackers"" page in admin section
+> a. Requirments
+> b. Clarifications
+> c. Issues
+5. All trackers are added in a project.
+
+Steps:
+Add a user with developer role in a project which is having all the above trackers.
+Try to create a new issue with developer role
+
+Actual:
+Only ""Status"" combo box will be visible.
+
+Expected:
+All fields that are to be visible for the particular role should be visible in the new issue report page. in this case the ""clarifications"" tracker shall be shown for developer role.
+
+Workaround:
+Set the Tracker visibility 'view-able' for all trackers regardless of roles defined in ""Workflow"" admin page."
+20915,Redmine,Defect,"",Needs feedback,Normal, email notification isn't send to ,nikhil singh,"",2015-10-29 06:47,Email notifications,"","","","",0,2015-10-06 18:12,"","","","", email notification isn't send to 
+20912,Redmine,Defect,"",Closed,Normal,First email notification isn't send to user,eric c,"",2015-11-03 06:25,Email notifications,"","","","",0,2015-10-06 12:37,2015-11-03 06:25,次のチケットと重複 #8157,Duplicate,"","Hi,
+
+We have a strange issue with Redmine. Hope you guys can help us or give a little hint where to look for the solution. The problem that we encounter is that the first reaction assigned to a user in an issue isn't send by email to the person. When you create a second reaction it will be send. 
+
+This is what we do:
+
+* User A sends an email to Redmine (or adds one using the GUI) that will be assigned to another user in the system
+* As expected the new message is visible at the project
+* User B opens the issue and adds a reaction and at the same time he assigns the issue back to user A
+* User B stores the update ;)
+* You would expect that user A receives a notification by email since the account setting is configured with the option ""mail notification for all issues assigned to me"". User A does not receive the reaction by email.
+* Now... User B adds a new reaction. The message is still assigned to user A. No the strange thing happens, user A received a email notification!
+
+The SMTP server is allowed to send all emails from the Redmine machine without any restrictions. Looking at the mail server log. The first message is never delivered at the server, the second is.
+
+We've also tested the same procedure with external email accounts and SMTP servers. Same problem :(
+
+At the moment we are running version 3.1.1. We've migrated from a 2.x version, in both situations we had the same problem. We've also tested this with other accounts in Redmine, some account have the same issue. Others work like a sunshine...
+
+Do you have a clue where we need to look so we can solve this strange thing? Strange it is since the behaviour (as said) isn't happening with all accounts although the notification settings are the same.
+
+Thanks for your reaction!"
+20911,Redmine,Patch,"",Closed,Normal,Japanese wiki_syntax_detailed_textile.html translation update,Go MAEDA,"",2015-10-29 18:03,Translations,"","","","",0,2015-10-06 12:31,2015-10-29 18:03,"","","","Updated wiki_syntax_detailed_textile.html (r14492, r14491, r14490, r14489)."
+20910,Redmine,Defect,"",New,Normal,Wiki HTML export bugs,Serguei Tarassov,"",2015-10-06 12:15,Wiki,"","","","",0,2015-10-06 12:13,"",関連している #550,"",2.4.2,"When exporting HTM from Wiki (from index page) the resulting document has following errors :
+* TOC items hierarchy is not supported, only one-level list is exported
+* images links are incomplete with ""/redmine/xxx"". Full path to images is expected to see them."
+20908,Redmine,Defect,"",Closed,Normal,rails dependency is too strict,Antonio Terceiro,"",2015-10-06 01:24,"","","","","",0,2015-10-05 22:27,2015-10-06 01:24,"",Wont fix,3.1.1,"I maintain Redmine in Debian. Currently the Gemfile specifies a specific rails version, instead of a minimum required version. This makes it really hard to maintain packages. Please consider the attached patch, which specifies a minimum required version (4.2.4), but will also work with anything newer than that."
+20906,Redmine,Patch,"",Closed,Normal,Fix mulitple tab navigation highlighting and content hiding,Felix Gliesche,Jean-Philippe Lang,2015-11-07 09:20,Code cleanup/refactoring,3.1.2,"","","",0,2015-10-05 19:07,2015-11-07 09:20,関連している #20271,"","","Assuming you have multiple tab navigations on one page, clicking on a tab leads to the false behaviour that highlighted tabs in another tab navigation lose their highlighting. This is caused by the current implementation of showTab in application.js, because it only assumes the case of having only one tab navigation on one page (see source:trunk/public/javascripts/application.js#L319). This assumption also causes the behaviour, that all elements that match the selector 
+
+<pre>
+div#content .tab-content
+</pre>
+
+will be hidden if one tab is clicked (see source:trunk/public/javascripts/application.js#L318).
+
+The attached patch takes the possibility of having several tab navigations into consideration. It does not remove the highlighting for other tab navigations and hides the tab content of the corresponding tab context.
+"
+20904,Redmine,Defect,"",Closed,Normal,does not work issue statuses,alexandr al,"",2015-10-25 06:12,Issues,"","","","",0,2015-10-05 15:00,2015-10-25 06:12,"",Invalid,3.1.1,"Hello friends!
+
+Мy problem:
+1.) I create a new issue statuses ""my_status""  -  ОК
+2.) I create a new task. no status ""my_status""
+
+
+Environment:
+  Redmine version                3.1.1.stable
+  Ruby version                   2.1.5-p273 (2014-11-13) [x86_64-linux]
+  Rails version                  4.2.4
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.6.17
+  Git                            1.7.10.4
+  Filesystem                     
+Redmine plugins:
+  a_common_libs                  1.1.5
+  redmine_agile                  1.3.11
+  redmine_checklists             3.1.2
+  redmine_ckeditor               1.1.2
+  redmine_create_wiki_page       0.1
+  redmine_issues_tree            0.0.3
+  redmine_people                 1.0.0
+  unread_issues                  1.5.0"
+20902,Redmine,Patch,"",Closed,Normal,Japanese translation update (r14643),Go MAEDA,"",2015-10-31 12:14,Translations,"","","","",0,2015-10-05 05:32,2015-10-31 12:14,"","","",Translated label_total_plural.
+20900,Redmine,Defect,"",Closed,Normal,Email not truncated when use deleted,Ivan Yiu,"",2017-09-21 15:29,Accounts / authentication,"","","","",0,2015-10-05 04:16,2017-09-21 15:29,"",Invalid,"","I have some user deleted before. Try to create user with previously entered user's email and got the error ""Email has already been taken"".
+
+Checked that the email_addresses table still have the old mail and id info. but the ID is already deleted from the users table."
+20892,Redmine,Patch,"",Closed,Normal,Spanish translation for r14637,Leonel Iturralde,"",2015-10-29 14:54,Translations,3.1.2,"","","",0,2015-10-02 14:49,2015-10-29 14:54,"","","",Updated for both Spanish and Spanish Panama. r14637
+20888,Redmine,Patch,"",New,Normal,Add a button in the textile formatting toolbar to convert tabulated text into a table,Olivier Houdas,"",2015-10-01 12:09,Text formatting,"","","","",0,2015-10-01 12:09,"","","","","When pasting from Google sheets or Microsoft Excel or Open Office ODS into the Description or Notes area of issues, the values are automatically converted to text, and cell limits to tabulations, in Firefox, Internet Explorer, or Chrome.
+
+Based on this observation, a Table button in the Textile toolbar which would replace tabulations with pipes and add pipes at lines start and ends would be very useful.
+
+Attached is a patch for Redmine 3.1.1 which adds this feature.
+
+The patch includes the tooltip text only for English and French, other languages require to be updated.
+
+!TextileTableButton-1.png!
+
+!TextileTableButton-2.png!"
+20884,Redmine,Defect,"",Closed,Normal,can't see redmine system log,tae young kim,"",2015-10-01 08:46,"","","","","",0,2015-10-01 07:45,2015-10-01 08:46,"",Invalid,3.1.0,"Hello 
+
+I already check this link ( https://www.redmine.org/projects/redmine/repository/revisions/14155 )
+
+but when i faced system error code 500 , log didn't written to log file ( $PATH/log/production.log )
+
+thx
+
+our system below
+
+Environment:
+  Redmine version                3.1.0.stable
+  Ruby version                   1.9.3-p0 (2011-10-30) [x86_64-linux]
+  Rails version                  4.2.3
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.8.13
+  Git                            1.7.1
+  Filesystem                     
+Redmine plugins:
+  clipboard_image_paste          1.10
+  progressive_projects_list      2.0.1
+  redmine_ckeditor               1.1.2
+  redmine_issue_checklist        2.0.5
+  redmine_issue_templates        0.1.0"
+20882,Redmine,Defect,"",Closed,Normal,% done: progress bar blocked at 80 in the issue list,J?r?me BATAILLE,Jean-Philippe Lang,2016-04-04 14:38,UI,3.3.0,"","","",0,2015-09-30 17:46,2016-04-03 13:54,"",Fixed,"","It's because of a css right padding in /public/stylesheets/rtl.css :
+
+<pre><code class=""css"">
+/***** Tables *****/
+table.list td {padding-left:0px; padding-right:10px;}
+</code></pre>
+
+A fix :
+<pre><code class=""css"">
+table.list table.progress td {
+	padding-right:0px;
+}
+</code></pre>
+
+
+"
+20879,Redmine,Defect,"",Closed,Normal,Database slowdowns without indexes,Sean Hagen,"",2015-09-30 00:35,Database,"","","","",0,2015-09-29 21:51,2015-09-30 00:34,"",Invalid,2.5.2,"We're using Redmine for our internal issue tracking system.
+
+Yesterday the site started to get super slow, until it just stopped responding. The CPU on the server was pegged at 100%, and eventually the server would run out of memory and crash.
+
+I created an index on 'enabled_modules' 
+
+<pre>create index em_name on enabled_modules (name(255));</pre>
+
+ and on 'issue_reads' 
+
+<pre>create index ir_issues_users on issue_reads (issue_id,user_id);</pre>
+
+Now the same query that was killing the server completes in 1.3 seconds.
+
+I also noticed that the query joins the same table (issue_reads) twice, once with a LEFT OUTER JOIN and once with a LEFT JOIN -- each time with the exact same ON conditions. Not sure if that's intentional.
+
+I've attached the MySQL describe output from before the indexes and after.
+
+Redmine version: v2.5.2
+MySQL version ( mysql --version ): Ver 14.14 Distrib 5.1.73, for redhat-linux-gnu (x86_64) using readline 5.1
+"
+20874,Redmine,Defect,"",Closed,Normal,"I had set ""only for things i am assigned to""  for my account in Email notifications , why i still receivec the email ?",go rauz,"",2015-09-29 09:35,Email notifications,"","","","",0,2015-09-29 06:42,2015-09-29 09:35,次のチケットと重複 #10656,Duplicate,3.0.3,"Hi,
+
+I installed the Redmine 3.0.3.
+
+I had set ""only for things i am assigned to""  for my account in Email notifications. When somebody add me to a watchers list, then update the task,  why i still receive the email notification about the task had been updated?
+
+
+Can any help me? Thanks.
+"
+20871,Redmine,Defect,"",New,Low,"CHROME, Using Scroll Wheel for Multi-select List Custom Fields is not User-Friendly",James H,"",2015-09-28 22:41,UI,"","","","",0,2015-09-28 22:41,"","","",3.0.3,"h2. General Background:
+
+I have created several custom fields that are of the ""List"" type. I have enabled multiple selections for them and so when I use them in an issue, they look like a scroll-able box with a list of options.
+The box does not behave in a user-friendly way when using Chrome. This applies to Chrome Browser only, Firefox and IE seems to be okay...
+
+h2. Problem Description:
+
+The box itself shows 4 options at a time with a vertical scrollbar to the right. When there are a lot more than 4 available options, you are required to scroll through the list.
+Currently, when you *click on the scrollbar arrows* (up or down) it scrolls through about *2 lines at a time*. This is okay.
+On the other hand, when you use the *mousewheel* to scroll through the list, it looks like it scrolls through about *6 lines at a time*. This is NOT OKAY because it tends to completely skip through 2 of the options and I never see them until I click on the arrows to scroll.
+
+On other browsers, the scrollwheel scrolls through 3 lines at a time (the normal default for mouse wheel) as expected, which is Okay."
+20859,Redmine,Defect,"",Closed,Normal,bundle install fails on redmine 3.1.1 on Amazon EC2 linux,ikuru k,"",2015-09-30 22:29,Ruby support,"","","","",0,2015-09-26 16:43,2015-09-30 22:29,"",Invalid,3.1.1,"So I was trying to install redmine on a AMazon EC2 instance, and noticed that bundle install threw an error.
+
+Had to
+@$ sudo gem install io-console@
+to resolve the issue. ANd everything was fine afterwards.
+
+First time even touching ruby and rails,
+but this should be listed on the Gemfile if it is a pre-requisite, right?"
+20841,Redmine,Defect,"",New,Normal,"No ""external"" class when bare url is used in Markdown formatter",Go MAEDA,"",2015-09-26 05:49,Text formatting,"","","","",0,2015-09-26 05:49,"",ブロックしている #1151,"","","*expected:*
+@http://www.redmine.org/@ =>
+@<a href=""http://www.redmine.org/"" class=""external"">http://www.redmine.org/</a>@
+
+
+*actual:*
+@http://www.redmine.org/@ =>
+@<a href=""http://www.redmine.org/"">http://www.redmine.org/</a>@
+
+No problem in Textile formatter. Probably all versions that support Markdown are affected."
+20837,Redmine,Patch,"",Closed,Normal,Bulgarian translation,Ivan Cenov,"",2015-10-24 13:56,Translations,3.1.2,"","","",0,2015-09-25 07:49,2015-10-24 13:56,"","","",Bulgarian translation of various labels.
+20831,Redmine,Defect,"",Closed,Normal,journal_details table reverted value and old_value back to String on update from 2.6.0 to 3.1.1,John Janus,"",2016-01-12 13:01,Database,"","","","",0,2015-09-24 16:00,2015-10-22 07:14,"関連している #15483, 次のチケットが重複 #23741",Invalid,3.1.1,"I recently upgraded our redmine installation from 2.6.0 to 3.1.1.
+Since then it has not been possible to edit descriptions.
+The log shows the following error:
+
+Mysql2::Error: Data too long for column 'value' at row 1: INSERT INTO `journal_details` (`property`, `prop_key`, `old_value`, `value`, `journal_id`) VALUES ('attr', 'description', '<long description here>',2068)
+The same error message appears for old_value.
+
+I found Defect #15483, which describes a similar problem.
+A quick check in the database shows, that the type for old_value and value is indeed varchar(255).
+BUT in the database for the 2.6.0 version, those columns had varchar(255) as type as well, though editing a description was possible there.
+
+Version 2.6.0 was installed without prior data on a windows server with the bitnami stack (mysql as database).
+3.1.1 was installed on a linux server with mariadb 10.0.20. the database was dumped from the windows mysql server and read into the mariadb without problems.
+"
+20826,Redmine,Defect,"",Closed,Normal,redmine for mysql error,欣洋 曹,"",2015-09-25 03:50,"","","","","",0,2015-09-24 04:28,2015-09-24 11:01,"",Invalid,"","I reinstalled mysql and mysql2, mysql - client database is created, but once I start redmine error, the question is what meaning, for help."
+20811,Redmine,Defect,"",Closed,Normal,long <pre> lines are missing from PDF export of wiki pages,Simon Deziel,"",2015-11-07 14:09,PDF export,2.6.8,"","","",0,2015-09-22 18:41,2015-11-07 14:09,"",Fixed,3.1.1,"Put the following pre block in a wiki page:
+
+<pre>
+mkdir -m 0700 ~root/.ssh
+cat << EOF >> ~root/.ssh/authorized_keys
+ssh-rsa AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA= jdoe@example.com
+EOF
+</pre>
+
+Export it as a PDF and notice it skipped the ""AAAA... jdoe@example.com"" part leaving only this:
+
+<pre>
+mkdir -m 0700 ~root/.ssh
+cat << EOF >> ~root/.ssh/authorized_keys
+ssh-rsa
+
+
+
+EOF
+</pre>
+
+The ssh-rsa key is a 4096 bit one so it results in a long string of 739 chars total."
+20809,Redmine,Defect,"",Closed,Normal,database definition,christina ba,"",2015-09-27 13:41,Database,"","","","",0,2015-09-22 17:44,2015-09-27 13:41,"",Invalid,3.0.3,where may i find some database documentation and data definition for redmine?
+20799,Redmine,Defect,"",Needs feedback,Normal,Incorrect language when set to Portuguese Brazilian,Fernando Possebon,"",2015-10-20 04:13,I18n,"","","","",0,2015-09-21 17:53,"","","",3.1.1,"I'm using the Redmine 3.1.1 version and when I set the default language or the user language preference to Portuguese Brazilian, the Redmine loads the Portuguese language.
+
+I looked at database on settings table, to check if the information was written correct there, and there is stored the value pt-BR.
+
+I looked at config/locales folders and there is a pt-BR.yml file there, with all values.
+
+I did a test: renamed the pt.yml (Portuguese Portugal) and restarted the Redmine application. After the rename, Redmine starts in English. 
+
+That's means that even the language is set to pt-BR, Redmine looks for the pt.yml file."
+20795,Redmine,Defect,"",New,Normal,CSS style gets stripped from the tag,Nikolay Epifanov,"",2015-10-21 04:16,Text formatting,"","","","",0,2015-09-21 10:58,"","","","","Hi,
+
+""word-wrap:break-word"" CSS style gets stripped from the tag.
+See example below.
+
+p{color:blue;word-wrap:break-word;width:13em;}. verylonglinezzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz"
+20793,Redmine,Defect,"",Closed,Normal,Perl authentication is not working,Daniel M?ller,"",2015-10-19 12:29,"","","","","",0,2015-09-21 10:36,2015-10-16 06:41,"",Invalid,3.1.1,"I was able to install Redmine 3.1.0 on an Ubuntu server (15.04). Now, I want to integrate hgweb (Mercurial). the configuration of Apache is easy:
+<pre>
+        PerlLoadModule Apache::Redmine
+        ScriptAlias /hg  ""/var/www/html/hg/hgweb.cgi""
+        <Location /hg >
+            AuthType Basic
+            AuthName ""Redmine Mercurial Repository""
+            AuthUserFile /dev/null
+            Require valid-user
+            #Redmine auth
+            PerlAccessHandler Apache::Authn::Redmine::access_handler
+            PerlAuthenHandler Apache::Authn::Redmine::authen_handler
+            RedmineDSN ""DBI:mysql:database=redmine;host=localhost""
+            RedmineDbUser ""redmine""
+            RedmineDbPass ""redmine""
+            #RedmineCacheCredsMax 10
+        </Location>
+</pre>
+hgweb is working well if I comment out the redmine auth parts. If I try to authenticate with redmine I always get an _401 Unauthorized_ message.
+Apache error.log:
+<pre>
+[Wed Sep 16 17:23:47.447109 2015] [auth_basic:error] [pid 14574:tid 139847437932288] [client x.x.x.x:45706] AH01618: user transporter not found: /hg/
+[Wed Sep 16 17:23:53.075982 2015] [auth_basic:error] [pid 14574:tid 139847446324992] [client x.x.x.x:45712] AH01618: user transporter not found: /hg/
+[Wed Sep 16 17:23:57.296066 2015] [auth_basic:error] [pid 14574:tid 139847356380928] [client x.x.x.x:45712] AH01618: user transporter not found: /hg/
+[Wed Sep 16 17:24:01.422917 2015] [auth_basic:error] [pid 14574:tid 139847347988224] [client x.x.x.x:45712] AH01618: user transporter not found: /hg/
+</pre>
+
+I can login into my redmine installation with the used username and password, but it's not working over the pearl module.
+
+I also checked a test directory with simple html files <pre>Alias /test/ ""/var/www/html/test/""
+<Directory "" /var/www/html/test/"">
+    Order allow,deny
+    Allow from all
+    Require all granted
+</Directory>
+<Location /test >
+    AuthType Basic
+    AuthName ""Redmine Test Portal""
+    AuthUserFile /dev/null
+    Require valid-user
+    PerlAccessHandler Apache::Authn::Redmine::access_handler
+    PerlAuthenHandler Apache::Authn::Redmine::authen_handler
+    RedmineDSN ""DBI:mysql:database=redmine;host=localhost""
+    RedmineDbUser ""redmine""
+    RedmineDbPass ""redmine""
+    #RedmineCacheCredsMax 10
+</Location>
+</pre>
+
+
+<pre>Environment:
+  Redmine version                3.1.1.stable
+  Ruby version                   2.2.1-p85 (2015-02-26) [x86_64-linux]
+  Rails version                  4.2.4
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.8.10
+  Mercurial                      3.1.2
+  Git                            2.1.4
+  Filesystem                     
+Redmine plugins:
+  no plugin installed</pre>
+
+See: message#48315"
+20791,Redmine,Patch,"",Closed,Normal,Traditional Chinese translation (to r14618),ChunChang Lo,"",2015-10-31 12:41,Translations,"","","","",0,2015-09-21 09:00,2015-10-20 13:42,コピー元 #20147,"","","* New
+** field_total_estimated_hours
+* Changed
+** label_total_spent_time
+"

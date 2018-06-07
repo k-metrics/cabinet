@@ -1,0 +1,754 @@
+#,プロジェクト,トラッカー,親チケット,ステータス,優先度,題名,作成者,担当者,更新日,カテゴリ,対象バージョン,開始日,期日,予定工数,進捗率,作成日,終了日,関連するチケット,Resolution,Affected version,説明
+14003,Redmine,Patch,"",Closed,Normal,Swedish Translation for r11797,Nicklas Holm,"",2013-05-08 05:11,Translations,"","","","",0,2013-05-07 21:41,2013-05-08 05:11,"","","",""
+13995,Redmine,Defect,"",Resolved,Normal,Custom Field (User) - Changes were not correct journalized,Martin G,"",2016-10-14 09:01,Custom fields,"","","","",0,2013-05-07 13:28,"","","",2.2.4,"I have a custom field of type ""user"" with multiple values and I create a new issue with some selected users.
+During a change of the issue I delete some selected users and this action were not journalized. The only change that i see is when I add some additional users.
+
+See also the attached screenshot."
+13992,Redmine,Defect,"",Closed,Normal,Date and Month is misplaced (from dd/mm/yyyy to mm/dd/yyyy) for Due Date field,Hue Nguyen,"",2015-08-23 17:24,Issues,"","","","",0,2013-05-07 10:05,2015-08-23 17:24,"",No feedback,"","Date and Month is misplaced it's order from dd/mm/yyyy to mm/dd/yyyy for Due Date field everytime issue is updated.
+
+I am using Redmine version 2.3, Ruby 1.9 and Rail 2.3.13
+
+Everytime i go and update an issue, the date and month is changing, there should be a javascript is running behind that changing the date format from dd/mm to mm/dd. pls let me know if u are facing the same issue"
+13990,Redmine,Defect,"",Closed,Normal,Trac importer breaks on exotic filenames and ruby 1.9+,Jean-Baptiste Barth,Jean-Baptiste Barth,2013-05-07 00:22,Importers,2.4.0,"","","",0,2013-05-07 00:16,2013-05-07 00:22,"",Fixed,"","See:  http://www.redmine.org/boards/2/topics/31188, also reported in other forum threads and ""here"":https://github.com/redmine/redmine/pull/6.
+
+The problem is due to the fact that @String#[]@ changed between ruby 1.8 and 1.9. In 1.8 @x[0]@ would return a fixnum representing the character, while it returned the character itself in 1.9 (""1.8 doc"":http://ruby-doc.org/core-1.8.7/String.html#method-i-5B-5D, ""1.9 doc"":http://www.ruby-doc.org/core-1.9.3/String.html#method-i-5B-5D). It's easily explained by the unicode support improvements in 1.9 and the fact that a single 1.9 character can map to multiple codepoints.
+
+The easiest workaround is to let the code as is for 1.8 but only take the first codepoint above (unicode strings can have multiple codepoints per character...)."
+13989,Redmine,Defect,"",Closed,Normal,Trac and Mantis importers reset global notification settings,Jean-Baptiste Barth,Jean-Baptiste Barth,2013-05-06 22:43,Importers,2.4.0,"","","",0,2013-05-06 22:35,2013-05-06 22:43,"",Fixed,"","As reported by brandonvalentine ""here"":https://github.com/redmine/redmine/pull/6 (""fix"":https://github.com/brandonvalentine/redmine/commit/1e4be672c9dab48ecb158f780768d59849eb16bd), notification settings are reset when you use the Trac importer, which is obviously bad. As the structure is really identical, it happens also on the Mantis importer."
+13988,Redmine,Patch,"",Closed,Normal,Enhanced Arabic translation,Amr Noaman,"",2013-07-13 12:50,Translations,2.4.0,"","","",80,2013-05-06 20:31,2013-07-13 12:50,"","","","I have adjusted the arabic translation to match the majority of arabic speakers in Egypt, the gulf area, and the Middle East. Also, I have fixed many incorrect translations. 
+
+Attached are the new changed files."
+13986,Redmine,Defect,"",Needs feedback,Normal,db:migrate on MSSQL 2012 fails with error,Kyle Butler,"",2013-05-07 19:09,Database,"","",2013-05-19,"",0,2013-05-06 19:41,"","","",2.3.1,"<pre>
+==  CreateJournals: migrating =================================================
+-- create_table(:journals, {:force=>true})
+   -> 0.2627s
+   -> -1 rows
+-- create_table(:journal_details, {:force=>true})
+   -> 0.2675s
+   -> -1 rows
+-- add_index(""journals"", [""journalized_id"", ""journalized_type""], {:name=>""journals_journalized_id""})
+   -> 0.1291s
+   -> -1 rows
+-- add_index(""journal_details"", [""journal_id""], {:name=>""journal_details_journal_id""})
+   -> 0.1290s
+   -> -1 rows
+rake aborted!
+An error has occurred, this and all later migrations canceled:
+
+TinyTds::Error: Unicode data in a Unicode-only collation or ntext data cannot be sent to clients using DB-Library (such as ISQL) or ODBC version 3.7 or earlier.: EXEC sp_executesql N'SELECT [issue_histories].* FROM [issue_histories]'/opt/redmine-2.3.1/db/migrate/007_create_journals.rb:31:in `up'
+Tasks: TOP => db:migrate
+(See full trace by running task with --trace)
+
+</pre>"
+13982,Redmine,Defect,"",Closed,Normal,Re-send account confirmation e-mail,Francesco V,"",2013-12-04 05:51,Email notifications,"","","","",0,2013-05-06 15:24,2013-12-04 05:51,"関連している #10691, 次のチケットと重複 #14228",Duplicate,2.3.0,"When new user is created if a confirmation e-mail is lost there is no way to re-send a new confirmation token.
+User must create a new account using new credentials and e-mail.
+
+""Lost password"" should generate a new confirmation mail."
+13980,Redmine,Defect,"",Closed,Normal,Custom field permissions not applying ,sadhanandavel ramdoss,"",2013-05-08 18:08,Custom fields,"","","","",0,2013-05-06 09:16,2013-05-08 18:08,次のチケットと重複 #11887,Duplicate,2.2.3,"Hi, I have created a couple of custom fields and want to set the field permissions to them based on the status of the issue. For example, the custom field ""Actual start"" should be 'required' only when the issue status is 'In progress'. Like wise, the custom field 'Actual end' is 'required' only when the issue status is 'Resolved'. I set these permissions in the Workflow module, but they are not working when I create/update the issue."
+13950,Redmine,Defect,"",Closed,Normal,"Duplicate Lithuanian ""error_attachment_too_big"" translation keys",Toshi MARUYAMA,"",2013-05-06 04:51,Translations,2.3.2,"","","",0,2013-05-05 11:17,2013-05-06 04:51,"",Fixed,2.3.1,"source:tags/2.3.1/config/locales/lt.yml#L255
+
+<pre><code class=""yaml"">
+  error_attachment_too_big: ""?i byla negali b?ti ?kelta, nes vir?ija maksimali? (%{max_size}) leistin? bylos apimt?""
+  error_attachment_too_big: ""This file cannot be uploaded because it exceeds the maximum allowed file size (%{max_size})""
+</code></pre>"
+13949,Redmine,Defect,"",Closed,Normal,Handling of attachment uploads when 'Maximum attachment size' is set to 0,Hongjoo Lee,Jean-Philippe Lang,2013-07-11 20:58,Attachments,2.4.0,"","","",0,2013-05-05 10:45,2013-07-11 20:58,関連している #14022,Fixed,2.3.0,"After setting maximum attachment size to 0, 
+
+with expecting unlimited size of attachment, (expected behavior)
+
+updating issue with attachment seems to upload file, but actually it doesn't make a link to the file.
+
+Here's steps to reproduce.
+
+# Administration > Settings > General > Maximum Attachment Size : set to 0 
+# Issue > Update (or New Issue) > choose files
+# choose any file and click 'choose'
+# progress bar shows for awhile (seems file is uploaded)
+# after all, ""not found"" message comes out other than description input field.
+
+!redmine1.png!
+
+!redmine2.png!"
+13948,Redmine,Patch,"",Closed,Low,REST API should return user.status,Kambiz Darabi,Jean-Baptiste Barth,2013-07-11 21:14,REST API,2.4.0,"","","",0,2013-05-05 08:22,2013-07-11 21:14,"","","","Currently, the REST API /users [1] does not return the status of the requested user.
+
+As I needed this information, I made a tiny modification to @show.api.rsb@.
+
+Find attached a patch which returns the user.status to the caller, iff the caller is either an admin user or the user who is being returned.
+
+
+[1] http://www.redmine.org/projects/redmine/wiki/Rest_Users
+"
+13938,Redmine,Defect,"",Closed,Normal,Work slowly,Samir Suleymanov,"",2016-01-04 11:57,Issues,"","","","",0,2013-05-03 12:48,2016-01-04 11:57,"",Invalid,2.3.0,"Everything works fine but one thing.
+When I creating new issue and click Create - it takes for about 10-15 seconds to add new issue.
+
+How can I solve the problem please?"
+13937,Redmine,Defect,"",Closed,Normal,How to solve this ?,mahendran bupathi,"",2013-05-05 23:06,Email notifications,"","","","",0,2013-05-03 12:25,2013-05-05 23:06,"",Invalid,1.3.3,"Email delivery is not configured, and notifications are disabled. 
+Configure your SMTP server in /etc/redmine/<instance>/email.yml and restart the application to enable them."
+13934,Redmine,Defect,"",Closed,High,Fax machine Samsung SCX-4521F.....,John  Granat,"",2013-05-03 01:51,"","","","","",0,2013-05-03 01:30,2013-05-03 01:51,"",Invalid,"","Our fax machine is in constant warm up cycle. No command to stop works. Unable to receive any faxed orders. I have tried switching off and powering on several times. Same result. Last attempt 1 minute ago now results in a rapid repeating clicking sound and a whining motor noise. No clear LCD display.
+
+Qld John Granat."
+13933,Redmine,Defect,"",New,Normal,Internal Server Errors when bulk updating issues,Peter Sanchez,"",2013-05-05 09:15,Issues,"","","","",0,2013-05-02 21:16,"","","",2.3.1,"Whenever I update from the issue list (ie, right click, change Status) I get an ISE. This didn't used to happen. I noticed it started around the 2.3.0 upgrade. I just upgraded to 2.3.1, and the same thing. Here's my info from rake about:
+
+About your application's environment
+Ruby version              1.8.7 (amd64-freebsd8)
+RubyGems version          1.8.25
+Rack version              1.4
+Rails version             3.2.13
+Active Record version     3.2.13
+Action Pack version       3.2.13
+Active Resource version   3.2.13
+Action Mailer version     3.2.13
+Active Support version    3.2.13
+Middleware                Rack::Cache, ActionDispatch::Static, Rack::Lock, #<ActiveSupport::Cache::Strategy::LocalCache::Middleware:0x8049f48c0>, Rack::Runtime, Rack::MethodOverride, ActionDispatch::RequestId, Rails::Rack::Logger, ActionDispatch::ShowExceptions, ActionDispatch::DebugExceptions, ActionDispatch::RemoteIp, ActionDispatch::Callbacks, ActiveRecord::ConnectionAdapters::ConnectionManagement, ActiveRecord::QueryCache, ActionDispatch::Cookies, ActionDispatch::Session::CookieStore, ActionDispatch::Flash, ActionDispatch::ParamsParser, ActionDispatch::Head, Rack::ConditionalGet, Rack::ETag, ActionDispatch::BestStandardsSupport, OpenIdAuthentication
+Application root          /usr/local/www/redmine
+Environment               production
+Database adapter          postgresql
+Database schema version   20130217094251
+
+Here's the log errors:
+
+Started POST ""/issues/bulk_update?back_url=%2Fprojects%2Fhouselogic%2Fissues%3Fc%255B%255D%3D
+tracker%26c%255B%255D%3Dstatus%26c%255B%255D%3Dpriority%26c%255B%255D%3Dsubject%26c%255B%255D
+%3Dassigned_to%26c%255B%255D%3Dupdated_on%26c%255B%255D%3Dcategory%26c%255B%255D%3Dfixed_vers
+ion%26f%255B%255D%3Dstatus_id%26f%255B%255D%3D%26group_by%3D%26op%255Bstatus_id%255D%3D%253D%
+26set_filter%3D1%26utf8%3D%25E2%259C%2593%26v%255Bstatus_id%255D%255B%255D%3D1%26v%255Bstatus
+_id%255D%255B%255D%3D2&ids%5B%5D=240&issue%5Bstatus_id%5D=7"" for 216.240.40.204 at Thu May 02
+ 11:41:28 -0700 2013
+
+Processing by IssuesController#bulk_update as HTML
+  Parameters: {""back_url""=>""/projects/houselogic/issues?c%5B%5D=tracker&c%5B%5D=status&c%5B%5
+D=priority&c%5B%5D=subject&c%5B%5D=assigned_to&c%5B%5D=updated_on&c%5B%5D=category&c%5B%5D=fi
+xed_version&f%5B%5D=status_id&f%5B%5D=&group_by=&op%5Bstatus_id%5D=%3D&set_filter=1&utf8=%E2%
+9C%93&v%5Bstatus_id%5D%5B%5D=1&v%5Bstatus_id%5D%5B%5D=2"", ""ids""=>[""240""], ""authenticity_token
+""=>""8uEilOFVLewsDh/5pBD31azWv3GC/Ao8jbt+Ip+v648="", ""issue""=>{""status_id""=>""7""}}
+  Current user: pjs (id=1)
+  Rendered mailer/_issue.text.erb (19.5ms)
+  Rendered mailer/issue_edit.text.erb within layouts/mailer (28.2ms)
+  Rendered mailer/_issue.html.erb (20.7ms)
+  Rendered mailer/issue_edit.html.erb within layouts/mailer (26.5ms)
+Redirected to http://support.netlandish.com/projects/houselogic/issues?c%5B%5D=tracker&c%5B%5
+D=status&c%5B%5D=priority&c%5B%5D=subject&c%5B%5D=assigned_to&c%5B%5D=updated_on&c%5B%5D=cate
+gory&c%5B%5D=fixed_version&f%5B%5D=status_id&f%5B%5D=&group_by=&op%5Bstatus_id%5D=%3D&set_fil
+ter=1&utf8=%E2%9C%93&v%5Bstatus_id%5D%5B%5D=1&v%5Bstatus_id%5D%5B%5D=2
+Completed 302 Found in 1098ms (ActiveRecord: 236.8ms)
+
+Redirected to http://support.netlandish.com/projects/houselogic/issues?c%5B%5D=tracker&c%5B%5
+D=status&c%5B%5D=priority&c%5B%5D=subject&c%5B%5D=assigned_to&c%5B%5D=updated_on&c%5B%5D=cate
+gory&c%5B%5D=fixed_version&f%5B%5D=status_id&f%5B%5D=&group_by=&op%5Bstatus_id%5D=%3D&set_fil
+ter=1&utf8=%E2%9C%93&v%5Bstatus_id%5D%5B%5D=1&v%5Bstatus_id%5D%5B%5D=2
+Completed 302 Found in 1098ms (ActiveRecord: 236.8ms)
+
+Started GET ""/projects/houselogic/issues?c%5B%5D=tracker&c%5B%5D=status&c%5B%5D=priority&c%5B
+%5D=subject&c%5B%5D=assigned_to&c%5B%5D=updated_on&c%5B%5D=category&c%5B%5D=fixed_version&f%5
+B%5D=status_id&f%5B%5D=&group_by=&op%5Bstatus_id%5D=%3D&set_filter=1&utf8=%E2%9C%93&v%5Bstatu
+s_id%5D%5B%5D=1&v%5Bstatus_id%5D%5B%5D=2?c%5B%5D=tracker&c%5B%5D=status&c%5B%5D=priority&c%5B
+%5D=subject&c%5B%5D=assigned_to&c%5B%5D=updated_on&c%5B%5D=category&c%5B%5D=fixed_version&f%5
+B%5D=status_id&f%5B%5D=&group_by=&op%5Bstatus_id%5D=%3D&set_filter=1&utf8=%E2%9C%93&v%5Bstatu
+s_id%5D%5B%5D=1&v%5Bstatus_id%5D%5B%5D=2"" for 216.240.40.204 at Thu May 02 11:41:30 -0700 2013
+
+Processing by IssuesController#index as HTML
+  Parameters: {""v""=>{""status_id""=>[""1"", ""2?c[]=tracker"", ""1"", ""2""]}, ""op""=>{""status_id""=>""=""}
+, ""group_by""=>"""", ""set_filter""=>""1"", ""c""=>[""tracker"", ""status"", ""priority"", ""subject"", ""assig
+ned_to"", ""updated_on"", ""category"", ""fixed_version"", ""status"", ""priority"", ""subject"", ""assigne
+d_to"", ""updated_on"", ""category"", ""fixed_version""], ""project_id""=>""houselogic"", ""utf8""=>""<E2>
+<9C><93>"", ""f""=>[""status_id"", """", ""status_id"", """"]}
+  Current user: pjs (id=1)
+Query::StatementInvalid: PG::Error: ERROR:  invalid input syntax for integer: ""2?c[]=tracker""
+LINE 1: ...'issue_tracking')) AND ((issues.status_id IN ('1','2?c[]=tra...
+                                                             ^
+: SELECT COUNT(DISTINCT ""issues"".""id"") FROM ""issues"" LEFT OUTER JOIN ""projects"" ON ""projects""
+.""id"" = ""issues"".""project_id"" LEFT OUTER JOIN ""issue_statuses"" ON ""issue_statuses"".""id"" = ""is
+sues"".""status_id"" WHERE (projects.status <> 9 AND projects.id IN (SELECT em.project_id FROM e
+nabled_modules em WHERE em.name='issue_tracking')) AND ((issues.status_id IN ('1','2?c[]=trac
+ker','1','2')) AND projects.id = 6)
+  Rendered common/error.html.erb within layouts/base (0.9ms)
+
+Completed 500 Internal Server Error in 118ms (Views: 42.2ms | ActiveRecord: 27.9ms)
+
+Looks like the error is AFTER the update because the required change is saved. From the error, obviously a non-int is being passed into PostgreSQL.
+
+PostgreSQL 9.2.4"
+13932,Redmine,Defect,"",Closed,Normal,File upload does not work with Safari,Frank Schwarz,"",2014-07-15 01:48,Attachments,2.4.6,"","","",0,2013-05-02 20:57,2014-06-26 05:42,"関連している #17151, 関連している #17581",Fixed,2.3.1,"Tested with Safari 5.1.7 (Windows), but does also not work with -Safari 6 (MacOS)- Safari 5.1.9 (MacOS 10.6)
+
+When you attach a file to an issue, a file with content
+<pre>
+[object Object]
+</pre>
+is created. The actual file is not uploaded."
+13931,Redmine,Patch,"",Closed,Normal,Error and inconsistencies in Croatian translation,Jadranko Stjepanovi?,"",2013-05-03 05:15,Translations,2.4.0,"","","",0,2013-05-02 20:47,2013-05-03 05:15,関連している #14265,"","","Attached patch fixes three issues in Croatian translation of names of months and days of week.
+
+*1: Error*
+Long form of day of week names (day_names in hr.yml) are in incorrect order, and thus wrongly displayed on project calendar.
+Sunday is translated as Monday, Monday as Tuesday, and so on...
+Short form is OK.
+
+*2: Inconsistency*
+Diacritical marks are omitted from translation of long form of months (month_names in hr.yml) for January and February, while used everywhere else.
+
+*3: Inconsistency*
+Short form of month name (abbr_month_names) for October is four characters long, while others are shortened to three.
+Although February seems too long as well, it should be left as it is; in Croatian *lj* is considered one letter written with two characters. 
+Yeah, sounds crazy, we have a lot of stuff like that. :o)
+
+Proposed patch corrects the described issues, so I'm setting this to Resolved. Pardon me if I'm not supposed to. I'm new here."
+13929,Redmine,Defect,"",Closed,Normal,LDAP: Unable to connect (no connection to server),Michael Holler,"",2013-05-05 01:07,LDAP,"","","","",0,2013-05-02 16:48,2013-05-05 01:07,"",Invalid,2.3.0,"I'm trying to configure LDAP in Redmine 2.3. We have a Redmine server already, but we're migrating machines and wanted to update in the process. The server Redmine is running on is also our LDAP host. When logged in as the Redmine user, running this command is successful and displays all of the users in the system.
+
+<pre>
+ldapsearch -H ldaps://10.31.14.112 -b ""dc=company,dc=com"" -x -D ""cn=admin,dc=company,dc=com"" -W
+</pre>
+
+Here is how LDAP is set up on both our Redmine servers (configurations are identical):
+
+!configuration.png!
+
+Hitting the test option below on the old machine returns a ""Successful connection"" message, but on the new Redmine server I get ""Unable to connect (no connection to server)"".
+
+!redminetest.png!
+
+I don't understand why it's not working, and I'm suspecting this is a bug in redmine somehow. The old Redmine server is running version v2.1.2, while the new Redmine server is (as said before) v2.3.0. I've looked everywhere to figure out what's wrong and how I can fix it, but I can find no information anywhere.
+
+<pre>
+$ RAILS_ENV=production rake about
+About your application's environment
+Ruby version              1.9.3 (x86_64-linux)
+RubyGems version          1.8.11
+Rack version              1.4
+Rails version             3.2.13
+Active Record version     3.2.13
+Action Pack version       3.2.13
+Active Resource version   3.2.13
+Action Mailer version     3.2.13
+Active Support version    3.2.13
+Middleware                Rack::Cache, ActionDispatch::Static, Rack::Lock, #<ActiveSupport::Cache::Strategy::LocalCache::Middleware:0x00000003a74c40>, Rack::Runtime, Rack::MethodOverride, ActionDispatch::RequestId, Rails::Rack::Logger, ActionDispatch::ShowExceptions, ActionDispatch::DebugExceptions, ActionDispatch::RemoteIp, ActionDispatch::Callbacks, ActiveRecord::ConnectionAdapters::ConnectionManagement, ActiveRecord::QueryCache, ActionDispatch::Cookies, ActionDispatch::Session::CookieStore, ActionDispatch::Flash, ActionDispatch::ParamsParser, ActionDispatch::Head, Rack::ConditionalGet, Rack::ETag, ActionDispatch::BestStandardsSupport, OpenIdAuthentication
+Application root          /home/redmine/redmine-2.3
+Environment               production
+Database adapter          mysql2
+Database schema version   20130217094251
+</pre>"
+13928,Redmine,Defect,"",New,Normal,Issue URLs in emails have duplicated context path,Raman Gupta,"",2013-05-02 15:05,Email notifications,"","","","",0,2013-05-02 15:05,"","","",2.3.0,"Redmine installation Settings/General/Host name and path: my.server/redmine
+
+In Redmine 2.x, the path above would be used in the issue URL, resulting in:
+
+https://my.server/redmine/issues/xxx
+
+However, in 2.3.x the context path seems to be (incorrectly) duplicated in the notification:
+
+https://my.server/redmine/redmine/issues/xxx
+
+I can't change the general host name and path settings since other plugins use it as well, and they continue to assume the old behavior. Is this a bug in the Redmine email notification logic, or has the meaning of this field changed and so plugins should be modified instead?"
+13927,Redmine,Patch,"",New,Normal,"Reduce coupling between plugins and the ""plugins/"" directory",Jean-Baptiste Barth,Jean-Baptiste Barth,2015-07-20 17:35,Plugin API,Unplanned,"","","",0,2013-05-02 12:54,"","関連している #14402, 関連している #24007, 関連している #26139","","","Today plugins are just directories in @<redmine root>/plugins/@ directory. There are a few implicit assumptions in Redmine code that this is the case, which doesn't add much benefit I think. This reference is needed in the plugin discovery mechanism, but I can see obvious reasons why it may appear anywhere else.
+
+It has at least one disadvantage: it prevents from easily distributing plugins as gems or via an other mechanism (which I think has a long list of advantages that I could enumerate an other day).
+
+An other motivation is that removing this would lead to clearer code I think, we could remove some @Dir.glob@ and @File.xxx@ calls in favor of new, clear methods in @Redmine::Plugin@.
+
+I'll try to work on that and link commit to this issue."
+13926,Redmine,Defect,"",Closed,Normal,Changing field permissions doesn't affect all users,Dzianis Frydliand,"",2013-05-15 20:01,Permissions and roles,"","","","",0,2013-05-02 10:07,2013-05-15 13:55,次のチケットと重複 #11887,Duplicate,"","Hi everyone!
+
+We've been using Redmine for half a year and a little time ago have decided to change some workflow stuff.
+At the 'Field Permissions' tab we have made some fields required for certain roles. But we've noticed that the changes didn't apply to all users of this role.
+
+After investigating we've found out that this issue applies only for administrators accounts. Is that correct that administrators can leave required fields blank?
+
+We don't have an administrator in our team, so project manager has administrator access to Redmine. And also this PM creates tasks so it's crucial for us that workflow should also apply to PM's account discarding it's administrator's status.
+
+
+Versions info:
+<pre>
+Environment:
+  Redmine version                          2.3.0.stable.11715
+  Ruby version                             2.0.0 (x86_64-linux)
+  Rails version                            3.2.13
+  Environment                              production
+  Database adapter                         Mysql2
+Redmine plugins:
+  redmine_mylyn_connector                  2.8.2.stable
+</pre>"
+13925,Redmine,Defect,"",Closed,Low,Repository password stored in clear text in DB,Peter Berkman,"",2013-05-01 23:40,SCM,"","","","",0,2013-05-01 20:47,2013-05-01 23:40,"",Invalid,2.2.4,"I use SVN and enabled a Repository in one of my projects.  Everything works GREAT!!!
+
+So, this is just a ""nit"".  Other passwords that Redmine stores in the DB are encrypted/mangled however not the Repository user password.
+
+within the ""repositories"" table, column ""password"" is stored in plain text.
+
+I think this should be encrypted/mangled like the others."
+13924,Redmine,Defect,"",Closed,Normal,Error when using views/issues/index.api.rsb in a plugin,Dominique Lederer,Jean-Philippe Lang,2015-11-03 08:15,REST API,3.1.0,"","","",0,2013-05-01 14:25,2015-06-27 10:04,"",Fixed,2.3.0,"when i overwrite index.api.rsb in a plugin (just copied the original file to the plugin), visiting /issues via web browser causes an error:
+
+<pre>
+ActionView::Template::Error (No builder for format ):
+    1: api.array :issues, api_meta(:total_count => @issue_count, :offset => @offset, :limit => @limit) do
+    2:   @issues.each do |issue|
+    3:     api.issue do
+    4:       api.id issue.id
+  lib/redmine/views/builders.rb:29:in `for'
+  app/controllers/issues_controller.rb:83:in `block (2 levels) in index'
+  app/controllers/issues_controller.rb:82:in `index'
+</pre>
+
+<pre>
+Ruby version              1.9.3 (x86_64-linux)
+RubyGems version          1.8.24
+Rack version              1.4
+Rails version             3.2.13
+Active Record version     3.2.13
+Action Pack version       3.2.13
+Active Resource version   3.2.13
+Action Mailer version     3.2.13
+Active Support version    3.2.13
+Middleware                Rack::Cache, ActionDispatch::Static, Rack::Lock, #<ActiveSupport::Cache::Strategy::LocalCache::Middleware:0x00000003200168>, Rack::Runtime, Rack::MethodOverride, ActionDispatch::RequestId, Rails::Rack::Logger, ActionDispatch::ShowExceptions, ActionDispatch::DebugExceptions, ActionDispatch::RemoteIp, ActionDispatch::Callbacks, ActiveRecord::ConnectionAdapters::ConnectionManagement, ActiveRecord::QueryCache, ActionDispatch::Cookies, ActionDispatch::Session::CookieStore, ActionDispatch::Flash, ActionDispatch::ParamsParser, ActionDispatch::Head, Rack::ConditionalGet, Rack::ETag, ActionDispatch::BestStandardsSupport, OpenIdAuthentication
+Application root          /opt/bitnami/apps/redmine/htdocs
+Environment               production
+Database adapter          mysql2
+Database schema version   20130217094251
+</pre>"
+13914,Redmine,Defect,"",Closed,Normal,Circular dependency issue when issue dependency is set,sadhanandavel ramdoss,"",2014-06-30 06:59,Issues,"","","","",0,2013-04-30 14:10,2014-06-30 06:59,"関連している #14015, 次のチケットと重複 #8628",Duplicate,2.3.0,"Hi, I rearranged one of the recently created task as parent to the existing tasks. After this when I started setting relationships among issues, I am getting an error ""this relation would create a circular dependency"". 
+
+The details are: 
+
+- Issue 1 precedes issue 2
+- Issue 2 precedes issue 3
+
+This relationship is throwing the above mentioned error. Is it because I moved the existing issues as child tasks of a new one? The relationship I set between 2 issues (precedes or follows) is very simple and noway it can cause a circular dependency."
+13910,Redmine,Defect,"",Closed,Normal,Values of custom fields are not kept in issues when copying a project,David Mar?n Carre?o,Jean-Philippe Lang,2013-05-18 21:33,Projects,2.3.2,"","","",0,2013-04-30 09:56,2013-05-18 21:33,"",Fixed,2.2.2,"In Redmine 2.2.2, when copying a project from source->destination, the value of custom fields in copied issues is not kept, even if the source project had values in those fields."
+13905,Redmine,Defect,"",New,Normal,Copy Subtasks does not copy subtasks into their current project,Adrian Wilkins,"",2014-06-02 19:47,Issues,"","","","",0,2013-04-29 12:25,"",関連している #15742,"",2.3.0,"When copying issues which have subtasks in other (sub) projects not the same as master issue, the subtask issues are copied into the project of the master issue, instead of the project they are currently inside.
+
+e.g.
+
+Projects
+
+<pre>
+Horse
+|- Foal
+|- Pony
+</pre>
+
+Issues
+
+<pre>
+Horse - #1 Hooves
+Foal    |- #2 Tail
+Pony    |- #3 Fetlock
+</pre>
+
+Copy @#1 - Hooves@ with subtasks and you get
+
+<pre>
+Horse   #4 Copy of Hooves
+Horse   |- #5 Tail
+Horse   |- #6 Fetlock
+</pre>
+
+Expected
+
+<pre>
+Horse   #4 Copy of Hooves
+Foal    |- #5 Tail
+Pony    |- #6 Fetlock
+</pre>
+
+(in addition, the copied subtasks have identical titles, but that's another issue)"
+13904,Redmine,Defect,"",New,Low,Redmine does not send e-mails if ssmtp is installed,Perico Os Palotes,"",2013-09-21 16:01,Email notifications,"","","","",0,2013-04-29 12:22,"","","",2.3.0,"Hi there.
+
+Looks like redmine 2.3.0 is not able to send e-mails if ssmtp is installed rather than, for instance, postfix.
+
+My settings:
+
+/srv/www/redmine/config/configuration.yml
+production:
+  email_delivery:
+    delivery_method: :sendmail
+
+a) With postfix installed -> it works
+b) With ssmtp installed -> it doesn't work
+
+It doesn't prints nothing on /var/log/mail.log.
+
+My guess is that /usr/sbin/sendmail binary installed with ssmtp has different parameters than the one installed by postfix"
+13903,Redmine,Defect,"",Closed,High,undefined method `jsonp_enabled?' for,Marco Tralles,"",2013-06-03 23:16,Administration,"","","","",0,2013-04-29 10:23,2013-05-01 17:31,関連している #14205,Invalid,2.3.0,"i upgraded from redmine-2.2.1 to redmine-2.3.0 by folowing the ""upgrade-instruction"":http://www.redmine.org/projects/redmine/wiki/RedmineUpgrade but since then i'm unable to edit the settings …
+
+---
+
+<pre>
+Started GET ""/settings"" for 79.230.95.56 at Mon Apr 29 10:20:35 +0200 2013
+Processing by SettingsController#index as HTML
+  Current user: marco.tralles (id=1)
+  Rendered settings/_general.html.erb (6.4ms)
+  Rendered settings/_display.html.erb (9.1ms)
+  Rendered settings/_authentication.html.erb (5.1ms)
+  Rendered common/_tabs.html.erb (25.0ms)
+  Rendered settings/edit.html.erb within layouts/admin (25.5ms)
+Completed 500 Internal Server Error in 39ms
+
+ActionView::Template::Error (undefined method `jsonp_enabled?' for #<Class:0x7f5e510eadd8>):
+    20: 
+    21: <p><%= setting_check_box :rest_api_enabled %></p>
+    22: 
+    23: <p><%= setting_check_box :jsonp_enabled %></p>
+    24: </div>
+    25: 
+    26: <fieldset class=""box"">
+  app/helpers/settings_helper.rb:77:in `send'
+  app/helpers/settings_helper.rb:77:in `setting_check_box'
+  app/views/settings/_authentication.html.erb:23:in `_app_views_settings__authentication_html_erb__1288271338_70021525672740'
+  app/views/settings/_authentication.html.erb:1:in `_app_views_settings__authentication_html_erb__1288271338_70021525672740'
+  app/views/common/_tabs.html.erb:24:in `_app_views_common__tabs_html_erb___2143840881_70021529800140'
+  app/views/common/_tabs.html.erb:23:in `each'
+  app/views/common/_tabs.html.erb:23:in `_app_views_common__tabs_html_erb___2143840881_70021529800140'
+  app/helpers/application_helper.rb:271:in `render_tabs'
+  app/views/settings/edit.html.erb:3:in `_app_views_settings_edit_html_erb___34582695_70021529858860'
+  app/controllers/settings_controller.rb:28:in `index'
+
+</pre>"
+13900,Redmine,Patch,"",Closed,Normal,Update URL when changing tab,Jean-Baptiste Barth,Jean-Baptiste Barth,2013-07-11 21:38,UI,2.4.0,"","","",0,2013-04-28 22:09,2013-07-11 21:38,"","","","Redmine tabs (in Settings or Administration for instance) are all loaded at once when the page is loaded. When changing tab, the URL is not updated, hence it breaks navigation in some minor ways, which I find annoying on a daily basis.. :
+* if the user reloads the page he's sent back to the default tab, not the one he was viewing
+* previous/next buttons behave counterintuitively : only the default tab remains in the history, and once you leave a tab, you never go back to it without having to re-click on the tab
+
+The simplest solution to that is to use the History API introduced a couple years ago in most browsers, so that URL is updated whenever a click on a new tab occurs. Basically it boils down to this: <pre><code class=""javascript"">
+/* better handling of history in redmine tabs */
+$(function() {
+  $("".tabs a"").on(""click"", function() {
+    //only trigger history API if supported
+    if (""replaceState"" in window.history) {
+      //replace current URL with the ""href"" attribute of the current link
+      window.history.replaceState(null, document.title, this.href);
+    }
+  })
+})
+</code></pre>
+
+Any opinion on that is welcome. If none I'll add it in the next few days, I think I'll integrate it directly in the @showTab()@ function."
+13898,Redmine,Defect,"",Closed,Normal,Users with roles of the assigned group are not able to view private issues,S.J. Bzek,"",2013-05-03 08:23,Issues permissions,"","","","",0,2013-04-27 15:19,2013-05-03 08:23,"",Invalid,"","Let me provide an example.
+
+Group ""Developers"" are exist. This group configuration:
+Users: 0
+Projects: 
+  Project: ""Project1""
+  Roles: ""Developer""
+
+So as I suppose all users with ""Developer"" role are belong to this group
+""Developers"".
+
+Manager creates a *private* issue and assigned it to ""Developers"" group.
+But ""Developer"" do not see this issue.
+
+When user is added to ""Developers"" group directly (not by project and role),
+it's available to this user.
+
+So is it a bug or feature? Let me know.
+
+Thanks in advance."
+13893,Redmine,Defect,"",Confirmed,Normal,Unable to load default configuration data on m.redmine.org,匿名ユーザー,"",2013-05-04 04:09,Website (redmine.org),"","","","",0,2013-04-26 18:15,"","関連している #12950, 関連している #13424","",2.2.3,"Hi,
+
+I just registered to have my own online testing system but getting the following error message with trying to load default configuration after first login.
+
+<pre>Default configuration could not be loaded: SQLite3::SQLException: table enumerations has no column named position_name: INSERT INTO ""enumerations"" (""active"", ""is_default"", ""name"", ""parent_id"", ""position"", ""position_name"", ""project_id"", ""type"") VALUES (?, ?, ?, ?, ?, ?, ?, ?)</pre>"
+13892,Redmine,Patch,"",Closed,Normal,Wraping Mainmenu on long menus,Daniel Felix,"",2016-01-17 01:59,UI,"","","","",0,2013-04-26 16:10,2016-01-17 01:59,"関連している #6624, 関連している #20632","","","Hi there,
+
+I created a small CSS patch, which aims to fix the wrap of the main-menu if there are many plugin menu items which disturb the normal display of the menu.
+
+Maybe you can give it a try. I tried it in IE and Chrome and Firefox (always latest releases).
+
+Best regards,
+Daniel"
+13889,Redmine,Defect,"",Closed,Normal,Redmine scroll Issue,zam kp,"",2013-04-27 18:30,"","","","","",0,2013-04-26 11:52,2013-04-27 18:30,"",Invalid,1.3.3,"Hi
+
+We had a client ""complaint"" :)  that they have to always scroll to see latest comments on tickets. on smaller tickets, it's not an issue as much but when tickets have 20+ comments, etc. it can be very annoying.Can you please suggest a solution for this ?
+
+Thanks
+Zam
+
+"
+13888,Redmine,Patch,"",New,Normal,Fix message-id mail header to be invariant respect  daylight savings,pasquale [:dedalus],"",2017-07-17 16:16,Email receiving,"","","","",0,2013-04-26 08:42,"",関連している #13851,"","","This to maintained threaded messages that are referred to same bug but are posted before and after daylight savings off\on
+
+For me this is urgent because messed up my threaded bug mail.
+
+xref bug #13851"
+13877,Redmine,Defect,"",Closed,Normal,Error after upgradation from ,Sri Ramadoss M,"",2013-05-02 10:05,My page,"","","","",0,2013-04-25 20:03,2013-05-02 10:05,"",Invalid,2.3.0,"I recently upgraded my Redmine project management system from version 2.0 to 2.3
+
+While all features appear to work good, I am unable to get onto the *My account* & *Settings*.
+
+Here is the error message that I get when I click the _My account_ link,
+
+<pre>
+[ 2013-04-25 21:55:31.9684 690/7f36044d2700 Pool2/Implementation.cpp:1137 ]: [App 28208 stderr] 
+[ 2013-04-25 21:55:31.9684 690/7f36044d2700 Pool2/Implementation.cpp:1137 ]: [App 28208 stderr] ActionView::Template::Error (Permission denied - /opt/redmine-2.3/tmp/cache/900):
+[ 2013-04-25 21:55:31.9685 690/7f36044d2700 Pool2/Implementation.cpp:1137 ]: [App 28208 stderr]     16:   <p><%= f.text_field :firstname, :required => true %></p>
+[ 2013-04-25 21:55:31.9685 690/7f36044d2700 Pool2/Implementation.cpp:1137 ]: [App 28208 stderr]     17:   <p><%= f.text_field :lastname, :required => true %></p>
+[ 2013-04-25 21:55:31.9685 690/7f36044d2700 Pool2/Implementation.cpp:1137 ]: [App 28208 stderr]     18:   <p><%= f.text_field :mail, :required => true %></p>
+[ 2013-04-25 21:55:31.9685 690/7f36044d2700 Pool2/Implementation.cpp:1137 ]: [App 28208 stderr]     19:   <p><%= f.select :language, lang_options_for_select %></p>
+[ 2013-04-25 21:55:31.9685 690/7f36044d2700 Pool2/Implementation.cpp:1137 ]: [App 28208 stderr]     20:   <% if Setting.openid? %>
+[ 2013-04-25 21:55:31.9685 690/7f36044d2700 Pool2/Implementation.cpp:1137 ]: [App 28208 stderr]     21:   <p><%= f.text_field :identity_url  %></p>
+[ 2013-04-25 21:55:31.9686 690/7f36044d2700 Pool2/Implementation.cpp:1137 ]: [App 28208 stderr]     22:   <% end %>
+[ 2013-04-25 21:55:31.9686 690/7f36044d2700 Pool2/Implementation.cpp:1137 ]: [App 28208 stderr]   lib/redmine/i18n.rb:95:in `languages_options'
+[ 2013-04-25 21:55:31.9686 690/7f36044d2700 Pool2/Implementation.cpp:1137 ]: [App 28208 stderr]   app/helpers/application_helper.rb:929:in `lang_options_for_select'
+[ 2013-04-25 21:55:31.9686 690/7f36044d2700 Pool2/Implementation.cpp:1137 ]: [App 28208 stderr]   app/views/my/account.html.erb:19:in `block in _app_views_my_account_html_erb___1141987887325908415_69999284087820'
+[ 2013-04-25 21:55:31.9686 690/7f36044d2700 Pool2/Implementation.cpp:1137 ]: [App 28208 stderr]   app/helpers/application_helper.rb:944:in `labelled_form_for'
+[ 2013-04-25 21:55:31.9686 690/7f36044d2700 Pool2/Implementation.cpp:1137 ]: [App 28208 stderr]   app/views/my/account.html.erb:9:in `_app_views_my_account_html_erb___1141987887325908415_69999284087820'
+[ 2013-04-25 21:55:31.9687 690/7f36044d2700 Pool2/Implementation.cpp:1137 ]: [App 28208 stderr] 
+[ 2013-04-25 21:55:31.9687 690/7f36044d2700 Pool2/Implementation.cpp:1137 ]: [App 28208 stderr]
+</pre>
+
+Here is the error that I get when I click on _Settings_ under *Administration*.
+
+<pre>
+[ 2013-04-25 21:56:51.7664 690/7f36044d2700 Pool2/Implementation.cpp:1137 ]: [App 28208 stderr] 
+[ 2013-04-25 21:56:51.7665 690/7f36044d2700 Pool2/Implementation.cpp:1137 ]: [App 28208 stderr] ActionView::Template::Error (Permission denied - /opt/redmine-2.3/tmp/cache/900):
+[ 2013-04-25 21:56:51.7665 690/7f36044d2700 Pool2/Implementation.cpp:1137 ]: [App 28208 stderr]     3: <div class=""box tabular settings"">
+[ 2013-04-25 21:56:51.7666 690/7f36044d2700 Pool2/Implementation.cpp:1137 ]: [App 28208 stderr]     4: <p><%= setting_select :ui_theme, Redmine::Themes.themes.collect {|t| [t.name, t.id]}, :blank => :label_default, :label => :label_theme %></p>
+[ 2013-04-25 21:56:51.7666 690/7f36044d2700 Pool2/Implementation.cpp:1137 ]: [App 28208 stderr]     5: 
+[ 2013-04-25 21:56:51.7666 690/7f36044d2700 Pool2/Implementation.cpp:1137 ]: [App 28208 stderr]     6: <p><%= setting_select :default_language, lang_options_for_select(false) %></p>
+[ 2013-04-25 21:56:51.7667 690/7f36044d2700 Pool2/Implementation.cpp:1137 ]: [App 28208 stderr]     7: 
+[ 2013-04-25 21:56:51.7667 690/7f36044d2700 Pool2/Implementation.cpp:1137 ]: [App 28208 stderr]     8: <p><%= setting_select :start_of_week, [[day_name(1),'1'], [day_name(6),'6'], [day_name(7),'7']], :blank => :label_language_based %></p>
+[ 2013-04-25 21:56:51.7667 690/7f36044d2700 Pool2/Implementation.cpp:1137 ]: [App 28208 stderr]     9: <% locale = User.current.language.blank? ? ::I18n.locale : User.current.language %>
+[ 2013-04-25 21:56:51.7668 690/7f36044d2700 Pool2/Implementation.cpp:1137 ]: [App 28208 stderr]   lib/redmine/i18n.rb:95:in `languages_options'
+[ 2013-04-25 21:56:51.7668 690/7f36044d2700 Pool2/Implementation.cpp:1137 ]: [App 28208 stderr]   app/helpers/application_helper.rb:929:in `lang_options_for_select'
+[ 2013-04-25 21:56:51.7669 690/7f36044d2700 Pool2/Implementation.cpp:1137 ]: [App 28208 stderr]   app/views/settings/_display.html.erb:6:in `block in _app_views_settings__display_html_erb___3366814545991254811_59076160'
+[ 2013-04-25 21:56:51.7669 690/7f36044d2700 Pool2/Implementation.cpp:1137 ]: [App 28208 stderr]   app/views/settings/_display.html.erb:1:in `_app_views_settings__display_html_erb___3366814545991254811_59076160'
+[ 2013-04-25 21:56:51.7670 690/7f36044d2700 Pool2/Implementation.cpp:1137 ]: [App 28208 stderr]   app/views/common/_tabs.html.erb:24:in `block in _app_views_common__tabs_html_erb___3692719548756668757_57720620'
+[ 2013-04-25 21:56:51.7670 690/7f36044d2700 Pool2/Implementation.cpp:1137 ]: [App 28208 stderr]   app/views/common/_tabs.html.erb:23:in `each'
+[ 2013-04-25 21:56:51.7670 690/7f36044d2700 Pool2/Implementation.cpp:1137 ]: [App 28208 stderr]   app/views/common/_tabs.html.erb:23:in `_app_views_common__tabs_html_erb___3692719548756668757_57720620'
+[ 2013-04-25 21:56:51.7671 690/7f36044d2700 Pool2/Implementation.cpp:1137 ]: [App 28208 stderr]   app/helpers/application_helper.rb:271:in `render_tabs'
+[ 2013-04-25 21:56:51.7671 690/7f36044d2700 Pool2/Implementation.cpp:1137 ]: [App 28208 stderr]   app/views/settings/edit.html.erb:3:in `_app_views_settings_edit_html_erb__4272321134920229542_57630980'
+[ 2013-04-25 21:56:51.7671 690/7f36044d2700 Pool2/Implementation.cpp:1137 ]: [App 28208 stderr]   app/controllers/settings_controller.rb:28:in `index'
+[ 2013-04-25 21:56:51.7672 690/7f36044d2700 Pool2/Implementation.cpp:1137 ]: [App 28208 stderr] 
+[ 2013-04-25 21:56:51.7672 690/7f36044d2700 Pool2/Implementation.cpp:1137 ]: [App 28208 stderr] 
+</pre>
+
+"
+13875,Redmine,Patch,"",Closed,Normal,Fetching emails via rake task does not support --no-account-notice and --default-group options,Julian Faude,"",2013-05-01 14:37,Email receiving,"","","","",0,2013-04-25 18:40,2013-05-01 14:37,関連している #13712,"","","MailHandler supports options no_account_notice and default_group for suppressing account generation notification as well as automatically adding new users to some group(s). However the rake tasks in email.rake used to fetch emails for example via imap do not pass those options to MailHandler. Is that on purpose?
+
+I added those two options in my installation and attached a patch against HEAD."
+13872,Redmine,Defect,"",Closed,Low,CJK(Chinese/Japanese/Korean) pdf export error on other CJK locales,huang leo,"",2013-05-21 09:56,PDF export,"","","","",0,2013-04-25 06:24,2013-05-21 09:21,"",Invalid,"","*only simple Chinese can NOT export pdf. Big5 is fine.
+
+once click pdf export, Internal error will be show. Following is the error log from server:*
+
+<pre>
+Iconv::InvalidEncoding (invalid encoding (""gb18030"", ""UTF-8"")):
+  lib/redmine/codeset_util.rb:146:in `initialize'
+  lib/redmine/codeset_util.rb:146:in `new'
+  lib/redmine/codeset_util.rb:146:in `from_utf8'
+  lib/redmine/export/pdf.rb:788:in `rdm_from_utf8'
+  lib/redmine/export/pdf.rb:112:in `fix_text_encoding'
+  lib/redmine/export/pdf.rb:132:in `RDMCell'
+  lib/redmine/export/pdf.rb:441:in `issues_to_pdf'
+  app/controllers/issues_controller.rb:89:in `index'
+  app/controllers/issues_controller.rb:82:in `index'
+</pre>
+
+Environment:
+  Redmine version                          2.3.0.stable
+  Ruby version                             1.8.7 (x86_64-linux)
+  Rails version                            3.2.13
+  Environment                              production
+  Database adapter                         MySQL
+Redmine plugins:
+  piwik_plugin                             0.1.1
+  redmine_issue_checklist                  2.0.5"
+13863,Redmine,Defect,"",Closed,Normal,"Cannot link two subtasks of same task with ""linked"" relation",Kirill Artamonov,"",2013-04-24 17:59,Issues,"","","","",0,2013-04-24 15:09,2013-04-24 17:59,次のチケットと重複 #13586,Duplicate,2.3.0,"Create 3 tasks: A, B, C.
+A
+- B
+- C
+(B and C are subtasks to A).
+
+When creating a relation like ""B linked to C"" or ""B blocks C"" (if A is usecase, B is a bug and C is a test scenario), the cyclic relation error is shown."
+13861,Redmine,Defect,"",Closed,Normal,setting_multiselect function returns HTML escaped code,Nils Linde,"",2013-04-24 12:22,Administration,"","","","",0,2013-04-24 11:19,2013-04-24 12:22,"","",1.0.1,"I installed a Redmine through Debian package and it accoured, that many settings inside ""Settings"" section are unavilable - they were HTML inputs code, but with special chars escaped. As I don't know ruby very much, I used workaround, to deal with that bug:
+
+# Open file @\usr\share\redmine\app\helpers\settings_helper.rb@
+# Prepend @require 'cgi'@
+# Search for @def setting_multiselect()@ (line 39 in my case) and encase last part inside @CGI.unescapeHTML()@ function like this:
+
+<pre>
+  def setting_multiselect(setting, choices, options={})
+    setting_values = Setting.send(setting)
+    setting_values = [] unless setting_values.is_a?(Array)
+    
+    CGI.unescapeHTML(setting_label(setting, options) +
+      hidden_field_tag(""settings[#{setting}][]"", '') +
+      choices.collect do |choice|
+        text, value = (choice.is_a?(Array) ? choice : [choice, choice]) 
+        content_tag('label',
+          check_box_tag(""settings[#{setting}][]"", value, Setting.send(setting).include?(value)) + text.to_s,
+          :class => 'block'
+        )
+      end.join)
+  end
+</pre>
+
+I dunno why that function outputs html escaped string, but my workaround currently works, but I'm sure, there is deeper problem. Sorry, I currently have no resources to write down problem reproduction guide.
+
+Debian Linux 2.6.32-5-amd64 x86_64 GNU/Linux
+mysql  Ver 14.14 Distrib 5.1.66, for debian-linux-gnu (x86_64) using readline 6.1
+ruby 1.8.7 (2010-08-16 patchlevel 302) [x86_64-linux]
+Rails 2.3.5
+"
+13860,Redmine,Defect,"",Closed,Normal,Text of custom fields is not wrapped in PDF exports of issues,J?rgen Diez,"",2014-10-18 13:06,PDF export,2.6.0,"","","",0,2013-04-24 10:26,2014-10-18 13:06,関連している #11839,Fixed,2.2.0,"The text of custom text fields is not wrapped in PDF exports of a single issue. They are printed in a single line.
+Therefore the PDF export, which whould be a very helpful feature, is useless for me.
+
+I'm using the Bitnami Redmine 2.2.0.
+My language is set to German.
+
+
+ About your application's environment
+Ruby version              1.9.3 (i386-mingw32)
+RubyGems version          1.8.23
+Rack version              1.4
+Rails version             3.2.11
+Active Record version     3.2.11
+Action Pack version       3.2.11
+Active Resource version   3.2.11
+Action Mailer version     3.2.11
+Active Support version    3.2.11
+Middleware                ActionDispatch::Static, Rack::Lock, #<ActiveSupport::Cache::Strategy::LocalCache::Middleware:0x1a53320>, Rack::Runtime, Rack::MethodOverride, ActionDispatch::RequestId, Rails::Rack::Logger, ActionDispatch::ShowExceptions, ActionDispatch::DebugExceptions, ActionDispatch::RemoteIp, ActionDispatch::Reloader, ActionDispatch::Callbacks, ActiveRecord::ConnectionAdapters::ConnectionManagement, ActiveRecord::QueryCache, ActionDispatch::Cookies, ActionDispatch::Session::CookieStore, ActionDispatch::Flash, ActionDispatch::ParamsParser, ActionDispatch::Head, Rack::ConditionalGet, Rack::ETag, ActionDispatch::BestStandardsSupport, OpenIdAuthentication
+Application root          C:/BitNami/redmine-2.2.2-0/apps/redmine/htdocs
+Environment               development
+Database adapter          mysql2
+Database schema version   20121026003537
+
+Thanks for your great work.
+Let me know if you need more information."
+13854,Redmine,Defect,"",New,Normal,Unable to raise new issue,Jeremy Hanoun,"",2017-01-10 14:47,Email notifications,"","","","",0,2013-04-23 16:33,"",関連している #5703,"",2.3.0,"Hi,
+
+when I try to create a new issue for a project, I get an Internal Error :
+
++WebPage :+
+Internal error
+
+An error occurred on the page you were trying to access.
+If you continue to experience problems please contact your Redmine administrator for assistance.
+
+If you are the Redmine administrator, check your log files for details about the error.
+
+
+
++From the logs :+
+Started POST ""/projects/dataprocessor-v2/issues"" for 127.0.0.1 at 2013-04-23 16:24:26 +0200
+Processing by IssuesController#create as HTML
+  Parameters: {""utf8""=>""??“"", ""authenticity_token""=>""3nLQOJlCHHWT+0LFJS701kjLntvcnbxDNGMVlTk2Y08="", ""issue""=>{""is_private""=>""0"", ""tracker_id""=>""1"", ""subject""=>""test"", ""description""=>""test"", ""status_id""=>""1"", ""priority_id""=>""2"", ""assigned_to_id""=>"""", ""fixed_version_id""=>""1"", ""parent_issue_id""=>"""", ""start_date""=>""2013-04-23"", ""due_date""=>"""", ""estimated_hours""=>"""", ""done_ratio""=>""0""}, ""commit""=>""Create"", ""project_id""=>""dataprocessor-v2""}
+  Current user: jhanoun (id=4)
+  Rendered mailer/_issue.text.erb (1.0ms)
+  Rendered mailer/issue_add.text.erb within layouts/mailer (3.0ms)
+  Rendered mailer/_issue.html.erb (5.0ms)
+  Rendered mailer/issue_add.html.erb within layouts/mailer (7.0ms)
+Completed 500 Internal Server Error in 3185ms
+
+NoMethodError (undefined method `error' for :smtp:Symbol):
+  app/models/mailer.rb:432:in `deliver_mail'
+  app/models/issue_observer.rb:20:in `after_create'
+  app/models/issue.rb:159:in `create_or_update'
+  app/controllers/issues_controller.rb:141:in `create'
+
+=========================================================
+
+FYI, I received the mail even if I see NoMethodError
+
+
+Config : Win 7 Pro / 64 bits / MySQL 5.5 64bits
+Environment:
+  Redmine version                          2.3.0.stable
+  Ruby version                             1.9.3 (i386-mingw32)
+  Rails version                            3.2.13
+  Environment                              production
+  Database adapter                         Mysql2
+Redmine plugins:
+  no plugin installed
+
+Thanks
+
+
+"
+13852,Redmine,Defect,"",Closed,Normal,ActionView::Template::Error (incompatible character encodings: UTF-8 and ASCII-8BIT):,Dave C,"",2013-11-28 17:38,"","","","","",0,2013-04-23 14:22,2013-04-23 14:33,"",Invalid,2.3.0,"I'm getting the following trying to open certain issues - it seems to happen more often if there is a euro sign in the description
+
+<pre>
+ActionView::Template::Error (incompatible character encodings: UTF-8 and ASCII-8BIT):
+    55:         <%= yield :sidebar %>
+    56:         <%= view_layouts_base_sidebar_hook_response %>
+    57:     </div>
+    58:
+    59:     <div id=""content"">
+    60:         <%= render_flash_messages %>
+    61:         <%= yield %>
+  app/views/layouts/base.html.erb:58:in `_app_views_layouts_base_html_erb__3047165055450172641_66897220'
+  app/controllers/issues_controller.rb:119:in `block (2 levels) in show'
+  app/controllers/issues_controller.rb:116:in `show'
+
+</pre>
+
+About your application's environment
+Ruby version              1.9.2 (x86_64-linux)
+RubyGems version          1.3.7
+Rack version              1.4
+Rails version             3.2.13
+Active Record version     3.2.13
+Action Pack version       3.2.13
+Active Resource version   3.2.13
+Action Mailer version     3.2.13
+Active Support version    3.2.13
+Middleware                Rack::Cache, ActionDispatch::Static, Rack::Lock, #<ActiveSupport::Cache::Strategy::LocalCache::Middleware:0x00000004f2cc28>, Rack::Runtime, Rack::MethodOverride, ActionDispatch::RequestId, Rails::Rack::Logger, ActionDispatch::ShowExceptions, ActionDispatch::DebugExceptions, ActionDispatch::RemoteIp, ActionDispatch::Callbacks, ActiveRecord::ConnectionAdapters::ConnectionManagement, ActiveRecord::QueryCache, ActionDispatch::Cookies, ActionDispatch::Session::CookieStore, ActionDispatch::Flash, ActionDispatch::ParamsParser, ActionDispatch::Head, Rack::ConditionalGet, Rack::ETag, ActionDispatch::BestStandardsSupport, OpenIdAuthentication
+Application root          /srv/redmine.fwm.cx
+Environment               production
+Database adapter          mysql
+Database schema version   20130217094251
+"
+13851,Redmine,Defect,"",New,High,Unthreade new mail message,pasquale [:dedalus],"",2013-05-06 09:05,Email receiving,"","","","",0,2013-04-23 12:36,"",関連している #13888,"",2.3.0,"I have updated redmine from previous (old) 1.4.0  to new 2.3.0.
+With new release, I have a problem with emails thread view: if I have old mail threaded (for example per bug [A]) and now someone update the bug [A], the new mail is orphaned and not threaded with others (old mails).
+
+This happens per a changed creation of message-id in email source.
+For the previous redmine release, when the bts send a mail for example from
+Date: Tue, 23 Apr 2013 11:23:09 +0200, 
+I see that message-id is created as
+<redmine.journal-22140.20130423112308@XXX.it>
+
+Now message-id is created as 22140.20130423092308 (-2 hours)
+and also references is created as 22140.20130423092308 (-2 hours) and cannot find originale message-id that is 22140.20130423112308 (+ 2 hours)
+
+Is this intentional or is a new behavior of timestamp.strftime routine?
+"
+13850,Redmine,Defect,"",Closed,Normal,Unable to set custom fields for versions using the REST API,J?rgen Diez,Jean-Philippe Lang,2013-05-12 11:46,REST API,2.3.2,"","","",0,2013-04-23 11:45,2013-05-12 11:46,"",Fixed,2.2.0,"When uusing the REST API to update the versions (using the xml format), the custom fields are ignored if the syntax is used as described on http://www.redmine.org/projects/redmine/wiki/Rest_api
+
+After modifying the @app/model/version.rb@ similar to r9783 it worked. The solution is therefore pretty simple.
+
+I only checked to update the versions. Maybe this bug is also present for other models.
+
+"
+13841,Redmine,Defect,"",Closed,Normal,Today button in date picker does not work,Regis Tremblay,"",2014-04-07 17:38,Issues,"","","","",0,2013-04-22 18:50,2013-04-24 21:18,"",Invalid,2.3.0,"The today button in the date picker doesn't work in redmine 2.3.0 stable.
+It is greyed out and nothing happen when clicking on it.
+
+Am I the only one with that problem.
+I use Bitnami Redmine stack 2.3.0.
+
+<pre>
+Environment:
+  Redmine version                          2.3.0.stable
+  Ruby version                             1.9.3 (x86_64-linux)
+  Rails version                            3.2.13
+  Environment                              production
+  Database adapter                         Mysql2
+Redmine plugins:
+  redmine_knowledgebase                    2.2.0
+  redmine_people                           0.1.6
+</pre>"
+13840,Redmine,Defect,"",Closed,Normal,"Style issues by priority position, not id",Rocco Stanzione,"",2013-09-30 01:34,Issues,"","","","",0,2013-04-22 17:37,2013-09-30 01:34,次のチケットと重複 #11880,Duplicate,"","This probably gets overlooked because people create priorities in the right order the first time, or use themes that leverage position_name, so it always looks right. If you reorder them, themes that style according to classes like priority-n have a bad time. In the IssuePriority model can we change this method definition like so?
+
+<pre><code class=""ruby"">
+  def css_classes
+    ""priority-#{position} priority-#{position_name}""
+  end
+</code></pre>
+
+I'd submit a patch, but... for bonus points could we maybe move that process to github, where I can easily fork and submit pull requests?"
+13835,Redmine,Defect,"",Closed,Normal,Disappearing inline images,Jethro Yu,"",2013-05-01 12:37,Attachments,"","","","",0,2013-04-22 14:24,2013-05-01 12:37,"",Invalid,2.3.0,"It seems in google chrome, 'some' inline image can show up during loading page, but will disappear after the page loading finishes.
+
+I have upload a video for this: http://youtu.be/kjdzMaYE_Sk . In video, the image of fish disappeared when page is loaded."
+13829,Redmine,Defect,"",Closed,Normal,Favicon bug in IE8,Filou Centrinov,"",2013-04-22 08:18,UI,2.4.0,"","","",0,2013-04-21 18:16,2013-04-22 08:18,関連している #13687,Fixed,"","The favicon is not display very well with IE8. This bug existed also before the fix of #13687. IE6 is not affeced. Other IE versions I couldn't check.
+
+I fixed this problem by saving icon with ""VariIcon Revolve"".
+
+IE8 now:
+!IE8_before.png!
+
+IE8 with updated favicon:
+!IE8_after.png!
+
+Updated favicon was also tested in Firefox, Safari and Opera.
+"
+13826,Redmine,Patch,"",Closed,Normal,application.js: randomKey function optimization,Filou Centrinov,"",2013-04-22 10:11,Code cleanup/refactoring,"","","","",0,2013-04-21 03:47,2013-04-22 10:11,関連している #1110,"","","Optimization:
+* local iteration variable i
+* string instead long array of characters"

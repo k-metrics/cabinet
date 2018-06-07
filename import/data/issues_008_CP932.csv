@@ -1,0 +1,825 @@
+#,プロジェクト,トラッカー,親チケット,ステータス,優先度,題名,作成者,担当者,更新日,カテゴリ,対象バージョン,開始日,期日,予定工数,進捗率,作成日,終了日,関連するチケット,Resolution,Affected version,説明
+27336,Redmine,Patch,"",New,Normal,Render previews for audio and video files,Jens Kr?mer,"",2017-11-20 13:52,Attachments,4.1.0,"","","",0,2017-10-31 10:58,"","関連している #22483, 関連している #10138, 関連している #22112","","","This patch which we recently introduced at ""Planio"":https://plan.io/redmine-hosting uses the HTML 5 @audio@ and @video@ tags to render recognized audio and video files on the attachment preview page. As fallback content (for browsers not supporting these tags yet, the previously shown 'no preview available' view is rendered.
+"
+27334,Redmine,Defect,"",Closed,Normal,How to show a date_time input control on 'start_date' and 'due_date' field in redmine3.3.3-1H,Di Yao,"",2017-10-31 11:35,"","","","","",0,2017-10-31 09:44,2017-10-31 11:35,"",Invalid,"","When I create a task useing the redmine3.3.3-1, the start date and due date didn't popup a control for input.
+How can I resolve it?"
+27333,Redmine,Defect,"",Closed,Normal,"Switching SCM fails after validation error in ""New repository"" page",Mizuki ISHIKAWA,Go MAEDA,2017-12-10 16:50,SCM,3.3.6,"","","",0,2017-10-31 08:04,2017-12-10 16:50,"",Fixed,"","Steps to reproduce:
+
+# Open “New repository” ( /projects/:project_name/repositories/new )
+# Click the Create button without making any changes.
+# Change SCM (e.g. ""Subversion"" to ""Git"") 
+==> The input form does not change at all. As below.
+
+|Incorrect form for 'Git'|Correct form for 'Git'|
+|!incorrect_git.png!|!correct_git.png!|
+
+development.log:
+There is an error ""ActionController::RoutingError (No route matches [GET] ""/projects/:project_name/repositories""):"".
+
+You can solve the problem by making the following changes.
+
+<pre><code class=""diff"">
+diff --git a/app/helpers/repositories_helper.rb b/app/helpers/repositories_helper.rb
+index 314c0b29b..435041b72 100644
+--- a/app/helpers/repositories_helper.rb
++++ b/app/helpers/repositories_helper.rb
+@@ -138,7 +138,7 @@ module RepositoriesHelper
+     select_tag('repository_scm',
+                options_for_select(scm_options, repository.class.name.demodulize),
+                :disabled => (repository && !repository.new_record?),
+-               :data => {:remote => true, :method => 'get'})
++               :data => {:remote => true, :method => 'get', :url => new_project_repository_path(repository.project)})
+   end
+ 
+   def with_leading_slash(path)
+</code></pre>
+
+"
+27330,Redmine,Defect,"",New,Normal,"""Name"" field in the 'edit version' form has no ""maxlength""",Vasili Korol,"",2017-11-28 17:59,UI,4.1.0,"","","",0,2017-10-30 16:06,"","","",3.4.3,"# Edit a version (project settings -> versions -> ""Edit"" some version in the list)
+# try to input a long ""name"" in the form (>60 characters)
+# click ""Save""
+# A request is sent to the server; as the result, the form complains about ""Name is too long (maximum is 60 characters)"".
+
+The @<input>@ tag for version name should have attribute @maxlength@ set to ""60"". Then the content of that field will naturally be limited to 60 characters.
+
+I attach a patch for this (created on trunk r17016)."
+27320,Redmine,Defect,"",Closed,Normal,How can i create project in redmine ,RAJESH RADHAKRISHNAN,"",2017-10-30 08:36,"","","","","",0,2017-10-30 08:28,2017-10-30 08:36,"",Invalid,"","How can i create project in redmine - Just now i created account in redmine
+
+If i want to be admin to create project then what i have to do? can u pls help me in this."
+27319,Redmine,Defect,"",Needs feedback,Normal,Impossible to create a new version,Yohann Prigent,"",2017-12-22 07:39,Projects,"","","","",0,2017-10-30 01:34,"","","",3.4.3,"Hello,
+
+I recently upgraded to Redmine 3.4.3, and I can't create new versions in projects. I have this error : 
+
+*Status is not included in the list*
+
+Nothing in the log..."
+27310,Redmine,Defect,"",Closed,Normal,mail on SSL 465 not working,Mohammed Ibrahim,"",2017-10-27 04:18,Email notifications,"","","","",0,2017-10-26 20:04,2017-10-27 04:18,"",Invalid,2.4.1,"Hello
+Redmine was working greate on port 25 on sending mails, but this port is closed for security, now the only available port is 465, i configured as:
+
+<pre><code class=""yaml"">
+production:
+  delivery_method: :smtp
+  smtp_settings:
+    address: mail.mailserver.com
+    port: 465
+    ssl: true
+    enable_starttls_auto: true
+    domain: mail.mailserver.com
+    user_name: redmine@mail.com
+    password: PASS
+</code></pre>
+
+I tried with ""quotes"" and without,
+I tried to empty the file ""config/configuration.yml"", and make only the production config
+
+It keeps giving me the ""An error occurred while sending mail (Timeout::Error)"" on both testing mail and when i try to send to any user
+
+redmine version 2.4
+ruby 1.9
+gem 1.8.23
+
+Any help please?
+"
+27304,Redmine,Defect,"",Closed,Low,Internal error,Phung Minh Duong,"",2017-10-26 12:29,"","","","","",0,2017-10-26 05:55,2017-10-26 11:33,"",Invalid,"","Hi all,
+
+I have a problem when I login to redmine.
+
+Internal error
+
+An error occurred on the page you were trying to access.
+If you continue to experience problems please contact your Redmine administrator for assistance.
+
+If you are the Redmine administrator, check your log files for details about the error.
+
+Back
+
+Log in the server:
+Started POST ""/login"" for 172.17.42.1 at 2017-10-26 10:52:55 +0700
+Processing by AccountController#login as HTML
+  Parameters: {""utf8""=>""?~\~S"", ""authenticity_token""=>""6f7MFcaJDWt4nLidL3iacpuHof4EBIwUpqI283fplyWDYyLFlNYaeF46LB1Ja5f/GeWXNXdWnH/viDhHtW6vuQ=="", ""back_url""=>""http://redmine.tctav.com/"", ""username""=>""duong.pm"", ""password""=>""[FILTERED]"", ""login""=>""Login ?""}
+  Current user: anonymous
+SQLite3::CorruptException: database disk image is malformed: SELECT ""users"".* FROM ""users"" WHERE ""users"".""type"" IN ('User', 'AnonymousUser') AND ""users"".""login"" = ?
+Completed 500 Internal Server Error in 2ms (ActiveRecord: 0.6ms)
+
+ActiveRecord::StatementInvalid (SQLite3::CorruptException: database disk image is malformed: SELECT ""users"".* FROM ""users"" WHERE ""users"".""type"" IN ('User', 'AnonymousUser') AND ""users"".""login"" = ?):
+  app/models/user.rb:426:in `find_by_login'
+  app/models/user.rb:209:in `try_to_login'
+  app/controllers/account_controller.rb:194:in `password_authentication'
+  app/controllers/account_controller.rb:189:in `authenticate_user'
+  app/controllers/account_controller.rb:40:in `login'
+
+Please help me, thanks!"
+27300,Redmine,Defect,"",New,Normal,Annoying login prompt when accessing content on redmine.org,Martin von Wittich,Jean-Philippe Lang,2017-11-02 13:22,Website (redmine.org),"","","","",0,2017-10-25 15:17,"","","","","Hi,
+
+I often google for something redmine-related, e.g. ""redmine plugins"", and I then I follow one of the links, e.g. to http://www.redmine.org/plugins .
+
+Unfortunately, many times I get a login form instead of the requested page although the page in question could be easily served without me being logged in. My browser automatically fills the form fields with my login data so all I have to do is to click on ""Login"", but the login form then unfortunately redirects me to http://www.redmine.org/my/page instead of the requested site which makes this issue very annoying.
+
+I don't know what exactly is triggering this; I tried to reproduce it by manually removing my session cookie, but I was unable to manually reproduce this issue. Maybe the session has to expire on the server side to cause it?"
+27296,Redmine,Defect,"",Needs feedback,Normal,Custom Query roles aren't per project,Jon Schell,"",2017-11-24 02:34,Issues,"","","","",0,2017-10-25 01:02,"","","",3.0.3,"When creating a custom query, and it's set to only be visible to certain roles, as long as a user has that role on any project then the query is visible, even if they don't have that role in the particular project the user is looking at."
+27283,Redmine,Patch,"",New,Normal,"Failed to run “rake db:migrate"" command against clean database on MySQL5.7 under Redmine4.0 / Rails5 ",Akiko Takano,"",2017-12-29 05:09,Database,"","","","",0,2017-10-24 18:08,"","","","","I’m not sure if this is a defect or not, but I hope to feedback this situation.
+
+h2. Summary
+
+Failed to run “rake db:migrate"" command against clean database on MySQL5.7 under Redmine4.0 / Rails5.
+
+h2. Description
+
+I always fail to migrate against clean (blank) database on MySQL 5.7 under Redmine4.0 (trunk).
+
+
+h2. Environment
+
+- MySQL5.7 / Default setup, without any custom configurations
+- Redmine trunk (SVN: trunk, Mercurial: default, GitHib: master branch)
+- Without plugins
+- Database and Redmine under Docker container and VirtualBox VM CentOS7
+
+h2. Visual Proof
+
+
+Here is an excerpt from the log.
+
+<pre>
+== 20150113194759 CreateEmailAddresses: migrating =============================
+-- adapter_name()
+   -> 0.0005s
+-- adapter_name()
+   -> 0.0003s
+-- create_table(:email_addresses, {:id=>:integer})
+rake aborted!
+StandardError: An error has occurred, all later migrations canceled:
+
+Mysql2::Error: Invalid default value for 'updated_on': 
+
+.......
+
+ActiveRecord::StatementInvalid: Mysql2::Error: Invalid default value for ‘updated_on’
+</pre>
+
+h2. Steps to reproduce
+
+# Install Redmine and MySQL  like above. (Especially, run MySQL5.7 default with settings)
+# Create database.yml for mysql.
+# Run migration task: rake db:create &&  rake db:migrate
+
+At first, migration process proceeds normally, but an error occurs in the middle, at ""20150113194759 CreateEmailAddresses”.
+
+h2. Expected Results & Actual Results
+
+* Expected: Migration completed successfully
+* Result: Failed
+
+h2. Workaround
+
+As error message says, this may caused, ""Changed the default null value for timestamps to false"".
+Ref. http://guides.rubyonrails.org/5_0_release_notes.html
+
+h4. A. Change migration file
+
+<pre><code class=""diff"">
+diff --git a/db/migrate/20150113194759_create_email_addresses.rb b/db/migrate/20150113194759_create_email_addresses.rb
+index 22ad19e..fd49722 100644
+--- a/db/migrate/20150113194759_create_email_addresses.rb
++++ b/db/migrate/20150113194759_create_email_addresses.rb
+@@ -6,7 +6,7 @@ class CreateEmailAddresses < ActiveRecord::Migration[4.2]
+       t.column :is_default, :boolean, :null => false, :default => false
+       t.column :notify, :boolean, :null => false, :default => true
+       t.column :created_on, :timestamp, :null => false
+-      t.column :updated_on, :timestamp, :null => false
++      t.column :updated_on, :timestamp
+     end
+   end
+ end
+</code></pre>
+
+If applied above, the result of “show create table email_addresses;” is following:
+
+<pre><code class=""sql"">
+| email_addresses | CREATE TABLE `email_addresses` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `address` varchar(255) NOT NULL,
+  `is_default` tinyint(1) NOT NULL DEFAULT '0',
+  `notify` tinyint(1) NOT NULL DEFAULT '1',
+  `created_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_on` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `index_email_addresses_on_user_id` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 |
+</code></pre>
+
+After migration finished, I confirmed EmailAddress model’s behavior.
+(Exp. e = EmailAddress.create(..), e.update(address: xxxxx))
+It seems works correctly.
+
+
+h4. B. Change MySQL's sql-mode
+
+Change MySQL sql-mode  to “”,  or remove “STRICT_ALL_TABLES” statement from sql-mode.
+If applied above, migration completed without any change to migration files.
+
+But I’m not sure which is the best way because I have not try some other database engines...
+
+------
+
+My report is as above.
+
+I hope this would be any help."
+27278,Redmine,Defect,"",Needs feedback,Normal,Redmine 3.3.5 error,Julien Pornet,"",2017-10-24 16:38,"","","","","",0,2017-10-24 15:48,"","","",3.3.5,"Hello,
+
+We have an problem with redmine 3.3.5 version. 
+
+if we write an emoticon in a text box, we have this message in production.log
+
+Processing by IssuesController#update as HTML
+  Parameters: {""utf8""=>""?"", ""authenticity_token""=>""J4p5wmYUWWRdxeZfBzQ5iN29/fCvV30NSVOR5cm5LFtn4OIZif6V0yjbF2Bb9o3F/Dg8D+9EBsa5EpCu1t/qZg=="", ""form_update_triggered_by""=>"""", ""issue""=>{""is_private""=>""0"", ""project_id""=>""4"", ""tracker_id""=>""3"", ""subject""=>""TEST DELETE REDMINE TICKET"", ""description""=>"""", ""status_id""=>""1"", ""priority_id""=>""3"", ""assigned_to_id""=>""601"", ""parent_issue_id""=>"""", ""start_date""=>""2017-10-24"", ""due_date""=>"""", ""estimated_hours""=>"""", ""done_ratio""=>""0"", ""custom_field_values""=>{""11""=>""""}, ""notes""=>""Bonjour ?milie,\r\n \r\nOui tr?s bien, merci ! "
+27246,Redmine,Defect,"",Needs feedback,Low,UI bug on the main category page- comment area,karina demyanenko,"",2017-10-23 06:10,UI - Responsive,"","","","",0,2017-10-22 23:16,"","","",2.3.1,when i click on some comment it opens and all the paragraph jumps. the paragraph shouldn't jump at clicking on it. 
+27243,Redmine,Defect,"",Needs feedback,Normal,Permission problem with share versions,Amir Sepahram,"",2017-11-20 17:00,"","","","","",0,2017-10-21 14:07,"","","","","Hi,
+
+I've added a version in a project and shared it with project tree. Then I assigned some issues to it in both projects.
+
+It's supposed to work all right, though when I click on any of the issue links on Roadmap page, I get this error:
+
+""403 - You are not authorized to access this page.""
+
+I am both Manager role holder - with permission to ""manage version"" - and redmine admin. Still I get the error, so that I have to go to issue list and use filters."
+27242,Redmine,Defect,"",Closed,Normal,issue creation failed if email notification fail,Slim BENHAMMOUDA,"",2017-11-05 18:05,Email notifications,"","","","",0,2017-10-20 22:07,2017-10-29 05:03,関連している #26791,Invalid,3.3.3,"Hello,
+I have a redmine instance installed on a vps:
+* redmine 3.3.3
+* mySQL
+* Apache+passenger
+
+I created an issue, assigned it to a developer and saved the issue. the page keep loading and I finally received an internal error.
+I checked the redmine log file (production.log) and I found that there is an issue with mail notification. In fact, my email server was down during my issue creation, so redmine failed to send the email and a rollback occurred on my issue creation!!!
+Isn't this a strange behaviour, why issue creation should fail if notification email fails. For me, notification should be a separate module from issue tracking module!!!
+What do you think?
+
+Cheers,
+Slim"
+27240,Redmine,Patch,"",Closed,Normal,"Render the activities block on the UsersController#show view grouped, with event_type icon and with the 'me' indication",Mischa The Evil,Go MAEDA,2017-12-25 05:39,UI,4.0.0,"","","",0,2017-10-20 16:19,2017-12-25 05:39,関連している #12542,"","","The activities block on the @UsersController#show@ view is currently missing three things:
+* the grouping as introduced via #12542 for the general activities view(s);
+* the event_type icon, as it is used for the general activities view(s);
+* the indication of events that were authored by 'me', as it is used for the general activities view(s).
+
+The attached patch fixes these inconsistencies and makes the rendering of the activities block on the @UsersController#show@ view the same as it is for the general activities view(s). See the following screenshots:
+
+|\2=.Screenshots:|
+|Before: |!before.png! |
+|After:  |!after.png!  |
+
+The patch, against source:/trunk@16967, is produced using @git format-patch@ which makes it apply-able using ""@patch -p1 < 0001-...@"".
+
+Environment:
+<pre>
+Environment:
+  Redmine version                3.4.2.devel@r16967
+  Ruby version                   2.3.3-p222 (2016-11-21) [x86_64-linux]
+  Rails version                  5.1.2
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.8.8
+  Git                            1.9.1
+  Filesystem                     
+Redmine plugins:
+  no plugin installed
+</pre>
+"
+27238,Redmine,Defect,"",Closed,Normal,Mysql Error after upgrading Redmine from 2.5 to 3.*,Wojciech Szychta,"",2017-10-20 14:01,"","","","","",0,2017-10-20 12:35,2017-10-20 13:56,"",Invalid,3.0.7,"Hi,
+
+I wanted to upgrade redmine directly from 2.5.2 to 3.4. After successfully upgrade I discovered errors while creating and editing new issues.
+I have also tried upgrade my redmine instalation from 2.5.2 to svn 2.6 and later to svn 3.0.
+After second upgrade I have discovered that I can't modify any issue in redmine.
+
+With Ruby 2.4.0 errors are the same.
+
+Mysql errors looks like this:
+
+@Completed 500 Internal Server Error in 129ms (ActiveRecord: 107.5ms)
+ActiveRecord::StatementInvalid (Mysql2::Error: Result consisted of more than one row: UPDATE `issues` SET lft = CASE WHEN lft > 1 THEN lft - 2 ELSE lft END, rgt = CASE WHEN rgt > 1 THEN rgt - 2 ELSE rgt END WHERE `issues`.`root_id` = 7158 AND (lft > 1 OR rgt > 1)):
+  lib/redmine/nested_set/issue_nested_set.rb:126:in `destroy_children'
+  app/models/issue.rb:226:in `destroy'
+  app/controllers/issues_controller.rb:389:in `block in destroy'
+  app/controllers/issues_controller.rb:387:in `each'
+  app/controllers/issues_controller.rb:387:in `destroy'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+@
+
+I also see errors when I create new issue and add polish letters in any field:
+
+@Completed 500 Internal Server Error in 117ms (ActiveRecord: 67.8ms)
+ActiveRecord::StatementInvalid (Mysql2::Error: Incorrect string value: '\xC4\x85\xC4\x87\xC4\x87' for column 'subject' at row 1: INSERT INTO `issues` (`project_id`, `author_id`, `tracker_id`, `status_id`, `subject`, `description`, `priority_id`, `updated_on`, `created_on`, `lock_version`) VALUES (75, 95, 2, 1, '???', '???', 2, '2017-10-20 12:05:53', '2017-10-20 12:05:53', 0)):
+  app/models/issue.rb:212:in `create_or_update'
+  app/controllers/issues_controller.rb:129:in `create'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+@
+
+My enviroment:
+* Redmine version 3.0.7 (upgraded from 2.5.2)
+* Ruby 1.9.3 from RVM
+* Ruby Passanger 5.1.10
+* HTTPD 2.4.6-67.el7.centos.5
+* CentOS 7
+* mysql-community-server 5.5.57-2.el7
+
+Environment:
+* Redmine version                3.0.7.stable.17016
+* Ruby version                   1.9.3-p551 (2014-11-13) [x86_64-linux]
+* Rails version                  4.2.3
+* Environment                    production
+* Database adapter               Mysql2
+* Ruby Passanger 5.1.10
+* HTTPD 2.4.6-67.el7.centos.5
+* CentOS 7
+* mysql-community-server 5.5.57-2.el7
+
+SCM:
+* Subversion                     1.7.14
+* Git                            1.8.3.1
+* Filesystem                     
+
+Redmine plugins:
+* redmine_bootstrap_kit          0.2-devel
+* redmine_issue_templates        0.1.8
+* redmine_spent_time             3.1.2
+"
+27230,Redmine,Defect,"",Closed,Normal,office 365 email error,alec yu,"",2017-10-19 17:37,"","","","","",0,2017-10-19 15:40,2017-10-19 17:37,"",Invalid,"","Hi all,
+
+My redmine version is 3.3.3.stable. when I test email function, I get following error:""(550 5.7.60 SMTP; Client does not have permissions to send as this sender [AM6PR0202MB3447.eurprd02.prod.outlook.com] )"".
+How can I fix this error?
+Thanks very much.
+
+Best Regards,
+Alec"
+27229,Redmine,Defect,"",Closed,Normal,public_suffix requires Ruby version >= 2.0,Pavel Potcheptsov,"",2017-10-19 17:54,Gems support,"","","","",0,2017-10-19 14:34,2017-10-19 17:54,関連している #27206,Fixed,3.4.3,"There is ""table"":https://www.redmine.org/projects/redmine/wiki/RedmineInstall#Ruby-interpreter which states that ruby 1.9.3 is compatible with redmine 3.4.
+However 3.4.3 has in Gemfile:
+<pre>
+gem ""public_suffix"", ""~> 2.0.5"" if RUBY_VERSION < ""2.1""
+</pre>
+But
+<pre>
+gem install public_suffix -v '2.0.5'
+ERROR:  Error installing public_suffix:
+        public_suffix requires Ruby version >= 2.0.
+</pre>
+So 3.4.3 is no longer works with Ruby 1.9.3 or is it possible to use older ""version"":https://rubygems.org/gems/public_suffix/versions/1.4.6 of this gem with support of Ruby 1.9.3?"
+27228,Redmine,Defect,"",Closed,Normal,outgoing email doesn't work after 3.4.3 upgrade,Laurent GILBERT,"",2017-10-19 18:29,Email notifications,"","","","",0,2017-10-19 12:15,2017-10-19 18:29,"",Invalid,3.4.3,"I use REDMINE for many years. Yesterday, I upgraded my REDMINE from 3.3.1 to 3.4.3 after switching to FREEBSD 11.1 (prev 11.0). I upgraded ruby too.
+
+Everything seems to be ok : Yesterday, I created a new version of my project, added new files and created a news.
+
+Today, I see I didn't receive any email notifications... 
+
+I try to send an email from the console : ok (@mail x@x.com@ , @echo ""Subject: test 3"" | sendmail -i -v x@x.com@ ) .
+I try to send a test email from redmine : it says ok but nothing is done. No error, no log...
+
+I use msmtp and mstmp log is enabled.
+
+my configuration parameters :
+> production:
+> > email_delivery:
+> > delivery_method: :async_sendmail
+> > async_sendmail_settings:
+> > arguments: -i
+
+
+
+
+
+"
+27219,Redmine,Patch,"",Closed,Normal,Show default status on the trackers list,Tomomi Yuzuriha,Go MAEDA,2018-01-02 01:29,UI,4.0.0,"","","",0,2017-10-18 06:43,2018-01-02 01:29,"","","","I noticed a problem when trying to delete a status.
+
+An user cannot delete a status if the status is set to 'Default status' of some tracker. 
+Nevertheless, there is no way to know which tracker uses the status as a default status except for each tracker's edit page. 
+ if you register a lot of trackers, it is very hard to check the default status.
+
+To resolve the problem, I suggest showing the default status on the trackers list.
+With this small improvement, users can see the default status of all trackers at a glance.
+
+Please see the screenshot below for the details.
+
+!trackers_list.png!
+
+Patch: attachment:trackers_index_trunk_r16967.patch
+(Compatible the latest trunk r16967.)"
+27213,Redmine,Defect,"",Closed,Normal,Euro symbol (?) is replaced by ? when performing a CSV export,Stephane Evr,"",2017-10-17 19:21,"","","","","",0,2017-10-17 14:02,2017-10-17 16:14,関連している #26279,Invalid,"","Tested on Vanilla redmine, versions 3.3.0 and 3.4.2, for languages French and English
+
+Any ? symbol is replaced by ? on csv export. Should the exports be in UTF8 format ? "
+27212,Redmine,Patch,"",New,Normal,"When deleting the projects category, its name should be represented in the confirmation dialog.",Uro? Malen?ek,"",2017-10-17 13:28,Project settings,"","","","",0,2017-10-17 13:28,"","","","","*Now*
+When deleting a category from a table in redmine-url/projects/myproject/settings/categories an popup is triggered:
+
+* Are you sure? [Ok | Cancle]
+
+*Expected*
+It would be nice if the name of category is named, to be sure that the right line of the cathegory was selected:
+
+* Are you sure to remove <category-name>? [Ok | Cancle]
+
+This could be werry handy on the large hdpi screens where category name and delete are far a way."
+27209,Redmine,Defect,"",Closed,Normal,"Redmine version V3.4  also have the prolem Defect #26072,but bug fix just Redmine version V3.3 not V3.4",zhangzhi liao,"",2017-10-31 16:45,"","","","","",0,2017-10-17 04:02,2017-10-17 05:40,"",Invalid,"","Redmine version V3.4  have the prolem Defect #26072,but bug fix just  Redmine version V3.3.
+I see the Changelog 3.3.4 (2017-07-02)
+[Issues]
+Defect #26072: Set default assignee before validation
+
+But Changelog 3.4 not the bug or problem fix."
+27206,Redmine,Defect,"",Closed,Normal,cannot install public_suffix if ruby < 2.1,Gena Makhomed,"",2017-10-19 17:48,"",3.3.6,"","","",0,2017-10-16 23:00,2017-10-17 17:12,関連している #27229,Fixed,"","it don't work:
+<pre>
+# bundle install --without development test
+[...]
+
+Gem::InstallError: public_suffix requires Ruby version >= 2.1.
+An error occurred while installing public_suffix (3.0.0), and Bundler cannot continue.
+Make sure that `gem install public_suffix -v '3.0.0'` succeeds before bundling.
+
+# gem install public_suffix -v '3.0.0'
+ERROR:  Error installing public_suffix:
+        public_suffix requires Ruby version >= 2.1.
+</pre>
+
+So, I can't upgrade Redmine to new version on latest CentOS 7.4 server. 
+
+Can you please fix this bug?
+
+<pre>
+# cat /etc/redhat-release
+CentOS Linux release 7.4.1708 (Core)
+
+# ruby -v
+ruby 2.0.0p648 (2015-12-16) [x86_64-linux]
+
+# yum update ruby
+No packages marked for update
+</pre>
+"
+27202,Redmine,Defect,"",New,Normal,"if attachment filename contain semicolon "";"" we get RecodNotFound error on web server puma",Vladimir Kh,"",2017-10-23 09:55,Attachments,"","","","",0,2017-10-16 15:29,"","","","","AttachmentController raise RecordNotFound if attachment filename does not match with http request parameter ""filename""
+
+<pre><code class=""ruby"">
+  def find_attachment                                                                                                                                                                      
+    @attachment = Attachment.find(params[:id])                                                                                                                                             
+    # Show 404 if the filename in the url is wrong                                                                                                                                         
+    raise ActiveRecord::RecordNotFound if params[:filename] && params[:filename] != @attachment.filename                                                                                   
+    @project = @attachment.project                                                                                                                                                         
+  rescue ActiveRecord::RecordNotFound                                                                                                                                                      
+    render_404                                                                                                                                                                             
+  end    
+</code></pre>
+
+if http parameter contain semicolon, webserver puma - drop it and characters after.
+
+According to rfc1738 (https://tools.ietf.org/html/rfc1738#section-3.3) such behavior is correct, because semicolon is reserved symbol, and must be encoded in %3B (in url)
+
+Puma issue (https://github.com/puma/puma/issues/1122) - here is little bit more information about trouble.
+
+I try use attachment_path helper in app/views/attachments/_links.html.erb (instead hash in link_to), and it seems to be improve situation, url was encoded right, with %3B instead "";"""
+27195,Redmine,Defect,"",Closed,Low,Sir When i am installing redmine3.4 i am  Getting Web application could not be started undefined method ,ram ram,"",2017-10-14 18:27,"","","","","",0,2017-10-14 09:29,2017-10-14 18:27,"",Invalid,3.4.2,"Sir redmine:3.4  again getting same error after installation completed 
+i am able access  apache page 
+but i am't able to access redmine page it's getting this error Sir
+Web application could not be started
+undefined method `main_menu=' for CustomFieldEnumerationsController:Class (NoMethodError)
+i am trying to resolve
+first i am installed dependency packages 
+https://gorails.com/setup/ubuntu/14.10
+i am not getting any error in installation process 
+after getting this error sir
+<img src=""/uploads/default/or
+
+please give me replay to this issue "
+27174,Redmine,Defect,"",Closed,Normal,Projects page show incorrect format when I use firefox and use bitnami Version 3.4.2-4 redmine setup.,zhangzhi liao,"",2017-10-13 03:44,Projects,"","","","",0,2017-10-12 13:19,2017-10-13 03:44,次のチケットと重複 #26853,Duplicate,"","Projects page show incorrect format when I use firefox.
+I use Redmine 3.4.2-4 (64-bit) on linux setup. The problem use internet explorer(IE) have not the problem,but have the problem when I use firefox.
+The page show like this picture!
+!redmine_firefox.png!
+The page I want this display.
+!redmine_i want like this.png!
+
+I konw the problem with the version 3.3 not have.
+I'm not sure the problem is just the bitnami on linux setup environment *or* the original redmine 3.4.2 version.
+If just the bitnami on linux environment problem ,How can I solve the problem?
+"
+27173,Redmine,Defect,"",Closed,Low,when i installed redmine on ubuntu it's not working i am facing permission to access /redmine/ on this server ,ram ram,"",2017-10-12 12:33,"","","","","",0,2017-10-12 11:31,2017-10-12 12:33,"",Invalid,3.4.0,"i am flowing this one 
+http://martin-denizet.com/30-minutes-to-redmine-an-express-installation-guide/
+
+Forbidden
+
+You don't have permission to access /redmine/ on this server.
+
+Apache/2.4.7 (Ubuntu) Server at 192.168.12.139 Port 80
+
+can any one  help me "
+27168,Redmine,Defect,"",Closed,Normal,Delete wiki pages,Mischa The Evil,"",2017-10-12 04:33,Website (redmine.org),"","","","",0,2017-10-11 22:29,2017-10-12 04:33,"","","","Please delete the following two wiki pages, created by anonymous:
+* [[H1_Documentacion_]]
+* [[Redmine_Info_]]
+
+I've already reverted the edits of [[Overview]] (v.69 & v.70)."
+27165,Redmine,Defect,"",New,Normal,Delete_all_members,Enrique Vera,"",2017-10-29 11:25,Projects,"","","","",0,2017-10-11 11:53,"","","","","The method delete_all_members in the model Project is the next:
+
+<pre><code class=""ruby"">
+def delete_all_members
+    me, mr = Member.table_name, MemberRole.table_name
+    self.class.connection.delete(""DELETE FROM #{mr} WHERE #{mr}.member_id IN (SELECT #{me}.id FROM #{me} WHERE #{me}.project_id = #{id})"")
+    Member.delete_all(['project_id = ?', id])
+end
+</code></pre>
+
+I was doing some test capturing the destroy event on a member patch and I realized that the event on this patch was only ran in some members. 
+
+The question is, why we have to do a class.connection to delete the member_roles and then run a member.delete_all if we have connected the models correctly.
+
+I proved with this:
+
+<pre><code class=""ruby"">
+def delete_all_members
+    me, mr = Member.table_name, MemberRole.table_name
+    Member.destroy_all(['project_id = ?', id])
+end
+</code></pre>
+
+and the results were ok. Is there something that I don't know of it's a defect?
+
+Thanks!
+"
+27153,Redmine,Defect,"",Confirmed,Normal,Custom query breaks calendar view with error 500,Bernhard Rohloff,"",2017-10-31 11:14,Calendar,3.4.4,"","","",0,2017-10-10 10:44,"",次のチケットが重複 #26544,"",3.4.2,"When the custom query includes a second sort criteria the calendar view breaks with an error 500.
+
+Steps to reproduction:
+
+# Create a custom query with a second sort criteria
+# Select the custom query in the calendar view
+
+This results into:
+
+!Screenshot-2017-10-10 500 - Redmine.png!"
+27139,Redmine,Patch,"",Closed,Normal,Fix for project link background in calendar tooltips,Bernhard Rohloff,Go MAEDA,2017-11-27 14:21,Calendar,3.3.6,"","","",0,2017-10-08 11:24,2017-11-27 14:21,"","","","The project link in the calendar tooltip shows the same background image (starting, ending) as the related issue number.
+The patch adds a @:first-child@ selector in the default @application.css@ file.
+
+Before patch:
+!calendar_tooltip_issue.png!
+
+After patch:
+!calendar_tooltip_fixed.png!"
+27132,Redmine,Defect,"",Closed,Normal,Arabic issue when I export to csv,Elias Gabbour,"",2017-10-06 04:35,"","","","","",0,2017-10-05 22:01,2017-10-06 04:35,"",Invalid,3.4.2,"Dear Support Team,
+I try to export my Arabic issues on my windows windows machine installed locally with no effect Arabic  "
+27126,Redmine,Defect,"",Needs feedback,Normal,Breadcrumbs and Drop-down List corrupted,Robin Corba,"",2017-12-01 13:30,"","","","","",0,2017-10-05 05:34,"","","",3.3.2,"Dear Redmine,
+
+We have an issue with our current version of Redmine. We have about 50 different projects in our location installation, including some plugins:
+
+<pre>
+Environment:
+  Redmine version                3.3.2.stable
+  Ruby version                   2.1.2-p95 (2014-05-08) [x86_64-linux]
+  Rails version                  4.2.7.1
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.8.11
+  Mercurial                      1.4
+  Git                            2.3.1
+  Filesystem                     
+Redmine plugins:
+  plantuml_macro                 0.0.1
+  redmine_wiki_extensions        0.7.0
+  redmine_wiki_lists             0.0.8
+  scrum                          0.16.2
+</pre>
+
+Since a day ago, we are having problems with our (sub)projects being re-arranged incorrectly in the breadcrumbs (top left corner) and the drop-down list for project selection in the top-right corner. Please see attached file attachment:redmine-bug-breadcrumbs.png).
+
+Even though in the settings page of ""Project A"" the information is correct (Project A is a subject of Projects, which is a subproject of Development), in the breadcrumbs and drop-down list it shows that Project A is subproject of Development.
+
+It also seems that when we want to move one (sub)project to a different level, many other projects get ""moved"" unwanted. Is there some cache that needs to be cleared, or do we have some corrupted data in the database?
+
+Thanks!"
+27124,Redmine,Patch,"",New,Normal,Remove mutation tracker for Rails 5.2,Pavel Rosick?,"",2017-10-31 04:59,Issues,"","","","",0,2017-10-05 03:14,"","","","","@mutation_tracker will be removed
+https://github.com/rails/rails/pull/30471
+
+maybe there's a better way to check this?"
+27123,Redmine,Defect,"",Closed,Normal,"Issue filter ""watcher"" dosn't show any users",Thorsten V.,"",2017-10-31 11:50,Issues filter,"","","","",0,2017-10-04 19:58,2017-10-05 13:43,次のチケットと重複 #8160,Duplicate,3.4.2,"(After updating from V3.2 to 3.4.2.) the issues filter ""watcher"" doesn't show any users except me.
+
+<pre>
+Environment:
+  Redmine version                3.4.2.stable
+  Ruby version                   2.3.0-p0 (2015-12-25) [x86_64-linux]
+  Rails version                  4.2.8
+  Environment                    production
+  Database adapter               Mysql2
+</pre>"
+27122,Redmine,Patch,"",New,Normal,Case insensitive filter for version name,Nastya Fedorova,"",2017-10-31 05:06,Roadmap,4.1.0,"","","",0,2017-10-04 15:22,"","","","",Search for version name does not work for case sensitive names
+27117,Redmine,Defect,"",Closed,Urgent,Cannot select versions in Spent time report,Maxim Kru?ina,"",2017-10-03 22:46,"","","","","",0,2017-10-03 22:32,2017-10-03 22:46,次のチケットと重複 #26667,Duplicate,3.4.2,"We're using a bit complicated project structure (ie 5-level tree) with versions defined on each levels and shared in a different ways.
+Anyway, now when I'm in parent project (not the topmost but very high in structure) I'm unable to choose Target versions in filter
+URL is: https://ourredmineinstance.xyz/projects/project-name/time_entries/report
+I tried it in a different projects but select box is always empty."
+27114,Redmine,Patch,"",Closed,Normal,Make robust Redmine::Helpers::URL#uri_with_safe_scheme?,okkez _,Go MAEDA,2017-11-26 04:47,Text formatting,4.0.0,"","","",0,2017-10-03 03:04,2017-11-26 04:47,"","","","I'm developing new formatter for CommonMark.
+
+commonmarker gem will create wrong autolink like https://github.com/github/cmark/issues/57 .
+
+<pre>
+n@.  b
+</pre>
+
+will convert to
+
+<pre>
+<p><a href=""mailto:n@"">n@</a>. b</p>
+</pre>
+
+
+This causes `URI::InvalidComponentError`.
+
+And I test with Redmine 3.4.2's Markdown formatter with following text.
+
+<pre>
+[a@](a@)
+</pre>
+
+This also causes `URI::InvalidComponentError`.
+
+
+I wrote some patches to avoid these errors."
+27110,Redmine,Defect,"",Closed,Normal,Changing the tracker to a tracker with the tracker field set to read-only won't work,Felix Sch?fer,Go MAEDA,2017-11-26 03:33,Issues,3.3.6,"","","",0,2017-10-02 11:30,2017-11-26 03:33,"",Fixed,3.3.5,"When a tracker has the tracker field set to read-only in the workflow permissions, it is not possible to change to that tracker. When in the issue edit form the tracker field is changed to the tracker with the tracker field set to read-only, the form is reloaded but without the tracker field (as it is read-only). Submitting this form doesn't include the tracker, thus the tracker is not changed.
+
+Additionally, when the issue edit form is reloaded again, for example for a status change, the form is reloaded to the original tracker and changes in fields active in the target tracker but not active in the original tracker will be lost."
+27108,Redmine,Defect,"",Needs feedback,Normal,"Bug in creation of ""custom queries"" to view issues in a given way",LI AR,"",2017-10-15 14:21,"","","","","",0,2017-10-02 09:49,"","","","","In redmine 2.5.2.devel (Debian 8 latest)
+
+1. Go in Issues
+2. Open/Unfold the ""Options"" item
+3. Select ""%DONE"" on the left (""available columns"") and add it on the right (""selected columns"")
+4. If it is not already the case, Select ""%DONE"" in the ""selected columns"" and Move it upwards 2 or 3 times 
+5. Select ""Apply""
+
+Either the ""%DONE"" column alone or only all the columns above ""%DONE"" will be shown. 
+
+In fact, only the selected/highlighted columns of the pane ""selected columns"" are taken into account when you click on ""apply"""
+27107,Redmine,Defect,"",Closed,Normal,Issue statuses not taken into account,LI AR,"",2017-10-20 12:29,"","","","","",0,2017-10-02 09:41,2017-10-20 12:29,"",Invalid,2.5.2,"Hi,
+
+In Redmine 2.5.2.devel (debian 8 lastest package), in Administration > Issue statuses, I set up a few different ways to close an issue (e.g. ""Won't fix"", ""Completed""), these new ""Issue statuses"" cannot be selected either when I create a new issue or when I edit a previous issue."
+27102,Redmine,Defect,"",Closed,Normal,Internal Error when deleting user - Redmine 3.4.2,Chris D,"",2017-09-30 01:22,Accounts / authentication,"","","","",0,2017-09-29 21:34,2017-09-30 01:22,"",Invalid,3.4.2,"Hi, just upgraded to Redmine 3.4.2.  When doing some initial testing tried deleting a user and got 
+<pre>
+Internal error
+
+An error occurred on the page you were trying to access.
+If you continue to experience problems please contact your Redmine administrator for assistance.
+
+If you are the Redmine administrator, check your log files for details about the error.
+</pre>
+
+Checked the production.log and see this error:
+
+ActiveRecord::StatementInvalid (Mysql2::Error: Unknown column 'projects.default_assigned_to_id' in 'where clause': UPDATE `projects` SET `projects`.`default_assigned_to_id` = NULL WHERE `projects`.`default_assigned_to_id` = 9):
+  app/models/principal.rb:185:in `nullify_projects_default_assigned_to'
+  app/controllers/users_controller.rb:169:in `destroy'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+
+
+Any ideas what the issue is?  Fixes?
+
+TIA,
+Chris"
+27101,Redmine,Defect,"",New,Normal,Project identifier model constraint doesn't match with text_project_identifier_info and JS-generated identifiers,Mischa The Evil,"",2017-10-29 12:05,Project settings,4.1.0,"","","",0,2017-09-29 17:17,"",関連している #9225,"","","I was looking at the project identifier constraint today and noticed a discrepancy between:
+* the text of @text_project_identifier_info@ (_Only lower case letters (a-z), numbers, dashes and underscores are allowed, *must start with a lower case letter*.<br />Once saved, the identifier cannot be changed._)
+* the auto-generated identifiers from #9225
+
+and the actual enforced model constraint for the project identifier (@/\A(?!\d+$)[a-z0-9\-_]*\z/@).
+
+Based on the model constraint, project identifiers starting with a:
+* number
+* dash
+* underscore
+
+are allowed and seem to work properly. This can be tested by adding the following test assertions to @ProjectTest#test_validate_identifier@:
+<pre><code class=""diff"">
+diff --git a/test/unit/project_test.rb b/test/unit/project_test.rb
+index 24f6958..a0bd95f 100644
+--- a/test/unit/project_test.rb
++++ b/test/unit/project_test.rb
+@@ -116,7 +116,10 @@ class ProjectTest < ActiveSupport::TestCase
+                ""ab-12"" => true,
+                ""ab_12"" => true,
+                ""12"" => false,
+-               ""new"" => false}
++               ""new"" => false,
++               ""12ab"" => true,
++               ""-12ab"" => true,
++               ""_12ab"" => true}
+
+     to_test.each do |identifier, valid|
+       p = Project.new
+</code></pre>
+
+Despite the textual hint and the auto-generated project identifiers, the above given test assertions succeed without any problems.
+
+IMO there are two ways of solving this:
+# change the model constraint to match the textual hint and JS-project identifier generation script ? that is to not allow project identifiers starting with a number, dash or underscore;
+# change the textual hint and JS-project identifier generation script to match the actual model constraint ? which is to allow project identifiers starting with a number, dash or underscore.
+
+I think that the second solution is the best, because that won't affect already existing projects with identifiers starting with these characters. I'd like to get some feedback on this matter before we make a change either way.
+"
+27090,Redmine,Patch,"",New,Normal,"Show attachments count in ""Files” section of the Wiki page",Tomomi Yuzuriha,"",2017-11-07 01:03,Wiki,Unplanned,"","","",0,2017-09-28 04:54,"",関連している #27085,"","","I noticed the problem that users cannot know whether there are any attachments unless users expand the ""File"" section by clicking it.
+
+To resolve the problem, I suggest showing attachments count on ""Files” section.
+Please see the screenshots below for the details.
+
+h2. before
+!before.png!
+
+h2. after
+!after.png!
+
+Patch: attachment:show_attachments_count_of_wiki_page_trunk_r16963.patch
+(Compatible the latest trunk r16963.)"
+27079,Redmine,Defect,"",Closed,Normal,cannot chose multiple value for a custom field,Randa Bustami,"",2017-09-27 16:04,Custom fields,"","","","",0,2017-09-26 13:48,2017-09-27 16:04,"",Invalid,"","i had added custom field type"" list""  and activate multiple values check box but when i tried to chose 2 values it display server error
+but when i chose one value it  save the setting 
+attached the custom field setting
+
+"
+27076,Redmine,Defect,"",Closed,Normal,Cannot open attachements with special characters in filename,Markus Schenk,"",2017-09-26 16:27,Attachments,"","","","",0,2017-09-26 09:30,2017-09-26 12:45,次のチケットと重複 #26337,Duplicate,3.4.2,"When an attachment is added to a new entry with a special character in the filename, it is not possible to open the attachment after saving (404 - document not found).
+After some investigating I found that the attachment in the database uses two columns to determine the matching between displayname and actual file on disk - 'filename' and 'disk_filename'.
+An attachment with a special character in the filename (eg. t?st.txt) is saved in the database like that: 'filename' => 't?st.txt', 'disk_filename' => '170926091327_3de45324.....txt'. 
+In redmine, the attachment name is shown as t?st.txt but the underlying href link points to t%C3%C4st.txt and on open leads - as mentioned before - to an error 404. 
+
+Now, when I update the corresponding database entry to 'filename' => 't%C3%C4st.txt' the link then works. Unfortunately redmine then displays the name as 't%C3%A4st.txt'. "
+27072,Redmine,Defect,"",Closed,Normal,Can't update Redmine : [...] activesupport [...] `require': No such file to load -- ../lib/redmine/Pagination (LoadError),David BOUCHE,"",2017-09-27 12:29,"","","","","",0,2017-09-25 15:47,2017-09-27 12:29,"",Invalid,3.4.2,"Can update Redmine, here's the error : 
+
+<pre>
+2017-09-25T13:14:29.065Z: /home/************/vendor/bundle/ruby/2.3.0/gems/activesupport-4.2.7.1/lib/active_support/dependencies.rb:274:in `require': No such file to load -- ../lib/redmine/Pagination (LoadError)
+</pre>
+
+It seems that I'm not the only person to have this problem : https://stackoverflow.com/questions/46194782/redmine-erpmine-plug-in-error
+
+My redmine installation : 
+
+<pre>
+Environment:
+  Redmine version                3.3.3.stable
+  Ruby version                   2.3.3-p222 (2016-11-21) [x86_64-linux]
+  Rails version                  4.2.7.1
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.8.16
+  Git                            2.13.3
+  Filesystem                     
+Redmine plugins:
+  redmine_agile                  1.4.4
+  redmine_contacts               4.1.1
+  redmine_contacts_helpdesk      3.0.8
+  redmine_wktime                 2.8
+</pre>
+
+
+
+How can we solve this and update our Redmine instances ?
+
+Thanks for your support,
+David"
+27071,Redmine,Defect,"",New,High,"Error testing LDAPS Connection: ""Unable to connect (hostname X.X.X.X does not match the server certificate)""",Carlos Sim?,"",2017-10-20 09:59,LDAP,"","","","",0,2017-09-25 15:46,"","","",3.2.1,"I've migrated from a 2.4.2 Redmine server to a new 3.2.1. 
+Everything is working OK but failing to test LDAPS (LDAP + SSL) connections (LDAP connections -without SSL- are working OK). 
+I've tested with different users and different LDAP servers and always get the same result: auth_source form shows an error message: ""Unable to connect (hostname X.X.X.X does not match the server certificate)"".
+I've not found relevant info in production.log file:
+
+<pre>
+Started PATCH ""/auth_sources/8"" for 172.19.12.124 at 2017-09-25 12:46:16 +0200
+Processing by AuthSourcesController#update as HTML
+  Parameters: {""utf8""=>""?"", ""authenticity_token""=>""Fa1QoVLFef+zngYYwypUipDda1/c0Yh0mqqGmtWThvA0D2zNmqqeDLiGUwN0pwgTWfklBjrZ73G4KpDo/53qTA=="", ""auth_source""=>{""name""=>""OpenLdap"", ""host""=>""X.X.X.X"", ""port""=>""636"", ""tls""=>""1"", ""account""=>""uid=xxxxxxx,ou=xxxxxx,dc=xxxxx,dc=xx"", ""base_dn""=>""ou=xxxxxx,dc=xxxxxx,dc=xx"", ""filter""=>"""", ""timeout""=>"""", ""onthefly_register""=>""0"", ""attr_login""=>""sAMAccountName"", ""attr_firstname""=>"""", ""attr_lastname""=>"""", ""attr_mail""=>""""}, ""dummy_password""=>""[FILTERED]"", ""commit""=>""Save"", ""id""=>""8""}
+  SQL (4.3ms)  UPDATE `tokens` SET `tokens`.`updated_on` = '2017-09-25 12:46:16' WHERE `tokens`.`user_id` = 1 AND `tokens`.`value` = '932b09e00f3e76cd17f3b9b92f4dfacc77b0b3c2' AND `tokens`.`action` = 'session' AND (created_on > '2017-09-24 12:46:16.911570') AND (updated_on > '2017-09-25 00:46:16.911805')
+   (0.3ms)  SELECT MAX(`settings`.`updated_on`) FROM `settings`
+  User Load (0.3ms)  SELECT  `users`.* FROM `users` WHERE `users`.`type` IN ('User', 'AnonymousUser') AND `users`.`status` = 1 AND `users`.`id` = 1 LIMIT 1
+  Current user: admin (id=1)
+  AuthSource Load (0.2ms)  SELECT  `auth_sources`.* FROM `auth_sources` WHERE `auth_sources`.`id` = 8 LIMIT 1
+   (0.1ms)  BEGIN
+  AuthSource Exists (0.3ms)  SELECT  1 AS one FROM `auth_sources` WHERE (`auth_sources`.`name` = BINARY 'OpenLdap' AND `auth_sources`.`id` != 8) LIMIT 1
+  SQL (0.2ms)  UPDATE `auth_sources` SET `port` = 636, `tls` = 1 WHERE `auth_sources`.`id` = 8
+   (1.2ms)  COMMIT
+Redirected to https://<my_server>/auth_sources
+Completed 302 Found in 15ms (ActiveRecord: 6.8ms).
+</pre>
+
+I've tested from SSL connections with openssl to LDAP connection with ldapsearch, and it not seems to be anything wrong. 
+Using the same users credentials and the same server connections (early configured into Redmine), with ldapseach goes everything OK.
+
+
+
+Data about my environment:
+
+root@asscc111s:/usr/share/redmine# ruby bin/about
+
+<pre>
+Environment:
+  Redmine version                3.2.1.stable
+  Ruby version                   2.3.1-p112 (2016-04-26) [x86_64-linux-gnu]
+  Rails version                  4.2.6
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Git                            2.7.4
+  Filesystem
+Redmine plugins:
+  no plugin installed
+</pre>
+
+root@asscc111s:/usr/share/redmine# mysql -V
+mysql  Ver 14.14 Distrib 5.7.19, for Linux (x86_64) using  EditLine wrapper
+
+
+Finally, all installed over a Ubuntu Server 16.04.
+
+
+
+"

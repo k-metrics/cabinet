@@ -1,0 +1,740 @@
+#,プロジェクト,トラッカー,親チケット,ステータス,優先度,題名,作成者,担当者,更新日,カテゴリ,対象バージョン,開始日,期日,予定工数,進捗率,作成日,終了日,関連するチケット,Resolution,Affected version,説明
+18032,Redmine,Defect,"",New,Normal,Continued numbered lists (#_) are not working as the textile syntax expects,Michel Behr,"",2015-08-07 19:00,Text formatting,"","","","",0,2014-10-04 23:06,"","関連している #6992, 関連している #18397, 関連している #24396","",2.5.2,"# Item 1
+
+Some text
+
+#_ Item 2 (counting continued from the last Item, with the #_ marker)
+
+Some text
+
+#_ Item 3 (counting continued from the last Item, with the #_ marker)
+
+Each item should be rendered as 1, 2, 3, but this is not happening."
+18018,Redmine,Defect,"",Closed,Normal,Project Sorting by Name broken (for large project lists) in v2.x,@ go2null,"",2015-04-29 21:56,Projects,"","","","",0,2014-10-02 20:30,2015-04-29 19:42,"",Wont fix,2.6.1,"Apparently, this is due to the removal, in v2.5, of the patched @awesome_nested_set@ plugin from the Redmine @lib/plugins@ directory.
+http://www.redmine.org/projects/redmine/repository/show/tags/2.4.6/lib/plugins
+http://www.redmine.org/projects/redmine/repository/show/tags/2.5.0/lib/plugins
+http://www.redmine.org/projects/redmine/repository/show/branches/2.4-stable/lib/plugins
+http://www.redmine.org/projects/redmine/repository/show/branches/2.5-stable/lib/plugins
+
+The patched @awesome_nested_set@ is still available in @trunk@.
+http://www.redmine.org/projects/redmine/repository/show/trunk/lib/plugins
+
+*Note* that this either only affects large project lists (my Redmine has several hundreds) or old Redmine instances that were upgraded from pre-V2.5 and the @Project.rebuild_tree""!@ method fix was not applied.
+
+*Workaround* (#6836#note-12) per ""Ken Zalewski"":/users/65030 still works.
+<pre><code class=""diff"">
+ set_left_and_rights = lambda do |node|
+   # set left
+   node[left_column_name] = indices[scope.call(node)] += 1
+   # find
+-  where([""#{quoted_parent_column_full_name} = ? #{scope.call(node)}"", node]).order(""#{quoted_left_column_full_name}, #{quoted_right_column_full_name}, id"").each{|n| set_left_and_rights.call(n) }
++  where([""#{quoted_parent_column_full_name} = ? #{scope.call(node)}"", node]).order(""#{quoted_left_column_full_name}, #{quoted_right_column_full_name}, name"").each{|n| set_left_and_rights.call(n) }
+   # set right
+   node[right_column_name] = indices[scope.call(node)] += 1
+   node.save!(:validate => validate_nodes)
+ end
+
+ # Find root node(s)
+-  root_nodes = where(""#{quoted_parent_column_full_name} IS NULL"").order(""#{quoted_left_column_full_name}, #{quoted_right_column_full_name}, id"").each do |root_node|
++  root_nodes = where(""#{quoted_parent_column_full_name} IS NULL"").order(""#{quoted_left_column_full_name}, #{quoted_right_column_full_name}, name"").each do |root_node|
+   # setup index for this scope
+   indices[scope.call(root_node)] ||= 0
+   set_left_and_rights.call(root_node)
+ end
+</code></pre>
+
+*Related issues* are:
+* Feature #6836 _Sort project list by Name instead of identifier_
+* Defect #12431 _Project.rebuild! sorts root projects by id instead of name_
+* Defect #11508 _Projects not ordered alphabetically after renaming project_
+
+"
+18011,Redmine,Defect,"",Closed,Normal,Firefox: Value of a field not updated properly when hitting F5,Daniel Hger,"",2014-10-31 06:09,Issues,"","","","",0,2014-10-02 01:08,2014-10-31 06:09,次のチケットと重複 #15125,Duplicate,2.5.2,"This description was written by one of my redmine users. I was able to reproduce the issue and i think its a bug in redmine (or firefox, im not absolutly sure): 
+
+I encountered a problem when using Firefox, in Opera it works properly. Because I know that some of you are using Firefox and some of you will work the same way as me (relying on many tabs when browsing) I will describe the issue here in order to inform about it.
+The problem is that when you hit F5 or click the Reload button Firefox seems to update values of certain fields (see below which ones are affected) but when you click on the Update button in Redmine you still got old values to work with. Consequently when you are not careful you submit those old values to the system and overwriting newer values.
+
+Steps to reproduce:
+Computer A:
+1. Open an existing ticket in Redmine.
+
+Computer B:
+2. Open the same ticket in Redmine.
+3. Click on the Update button.
+3. Change a value that is affected by the bug, e.g. Status and click the Submit button in order to send the changes to Redmine. In my example I changed the status from accepted to in progress.
+
+Computer A:
+4. Press F5 or click the Reload button in order to refresh the website.
+5. Now in order to change something yourself you click on the Update button and as in my case suddenly the field Status retains the old value ""accepted"". Because not all values are affected you will see the notification
+
+The following fields are affected by this behavior:
+Status
+Priority
+Assignee
+% Done
+Category
+Estimated time
+Target version
+Notes
+Tracker
+
+Not affected are:
+Project
+Subject
+Description Edit
+Parent Task
+Start Date
+Due Date
+
+Workaround: 
+Press Shift + Reload button (F5) or reenter the URL in the browser in Firefox
+OR use the Opera web browser"
+18009,Redmine,Defect,"",Closed,Low,model .rb file not matching model's class name in Alternativecustom_authentication_HowTo,Sylvain V,"",2014-10-04 09:51,Documentation,"","","","",0,2014-10-01 17:27,2014-10-04 09:51,"",Fixed,"","here: http://www.redmine.org/projects/redmine/wiki/Alternativecustom_authentication_HowTo
+
+The doc said:
+
+> Implement Your AuthSource Subclass
+> Create a new file for your AuthSource subclass in app/models/, following the naming scheme of the existing auth_source.rb and auth_source_ldap.rb.
+> 
+> * Here we'll use -app/models/auth_source_myApp.rb-
+
+The exact filename should match the Class name: AuthSourceMyCustomApp
+
+Correct filename is: app/models/auth_source_my_custom_app.rb"
+18002,Redmine,Patch,"",Closed,Normal,Traditional Chinese translation (to r13420),ChunChang Lo,"",2014-10-01 09:23,Translations,"","","","",0,2014-10-01 08:00,2014-10-01 09:23,"コピー元 #17421, コピー先 #18200","","","* New
+** label_group_anonymous, label_group_non_member
+"
+18001,Redmine,Patch,"",New,Normal,Migration from highly customized Mantis 1.2.11 with inheritable categories in redmine,Konstantin Tkachenko,"",2014-09-30 12:12,Importers,"","","","",0,2014-09-30 12:12,"","","","","We are using Mantis in version 1.2.11 with inheritable versions and categories. 
+
+I've experienced a number of issues during migration to remine.
+
+First I had to modify the script a bit, to be able to migrate from our Mantis version (some small schema changes).
+Second I had to find out, why a bunch of bugs from Mantis were not migrated to the redmine.
+
+Thanks to Aaron Schroeder I've got some ideas where to search for reasons [[http://www.redmine.org/boards/2/topics/41796]].
+
+Then I've modified the script to preserve project inheritance, to take over the inheritable versions, inheritable categories and versions closed status.
+
+After all I've decided to add due_date to the redmine issues automatically based on the the last modification of the closed mantis bugs, because we haven't used due_date in mantis at all.
+
+The Mantis knows three version fields (version, target_version and fixed_in_version) and I've modified the migration script to consider both fixed_in_version and target_version (to take the target_version if fixed_in_version is not set).
+
+To be able to use inheritable categories I've applied a slightly modified patch #11898 to the 2.5-stable branch of redmine.
+I've tried to modify the migration script to take over the inheritable categories in the way, that if you haven't applied a patch for inheritable categories, then the script should works as if it hasn't considered inheritable categories, but I haven't tested it appropriately.
+
+I had to change a migration script to stay on the last failed saving of the issue and to output the occured errors to be able to find a reason of the failure. But I've reverted a change in the patch to not irritate an unexperienced users.
+If I'll find a time to implement error logging in a smart way, then I'll add an updated patch to this post.
+
+So here is my patch to the migration script:
+"
+17992,Redmine,Patch,"",Closed,Normal,Bulgarian translation (r13418),Ivan Cenov,"",2014-09-29 13:16,Translations,"","","","",0,2014-09-29 07:59,2014-09-29 13:16,"","","","Bulgarian translation of
+* label_group_anonymous
+* label_group_non_member
+
+(related to #17976)"
+17973,Redmine,Patch,"",Needs feedback,Normal,Portuguese jQuery Datepicker translation file,Rui Rebelo,"",2014-09-27 08:38,Translations,"","","","",0,2014-09-27 01:11,"",関連している #13584,"","",Portuguese Translation (pt-PT) file for the Date Picker.
+17971,Redmine,Patch,"",New,Normal,Issue tables : highlight issues of level 0,J?r?me BATAILLE,"",2016-05-06 12:18,UI,"","","","",0,2014-09-26 16:57,"","","","","Make the font of the subkect bigger
+
+Css :
+
+<pre><code class=""css"">
+.issues td.subject {
+        font-weight:bold;
+}
+
+.issues tr[class*='idnt-'] td.subject {
+        font-weight:normal;
+}
+</code></pre>"
+17970,Redmine,Defect,"",Closed,Normal,Wiki PDF export doesn't render macros,Fabian Strasser,"",2014-09-26 12:05,PDF export,"","","","",0,2014-09-26 11:34,2014-09-26 12:05,次のチケットと重複 #13051,Duplicate,2.5.1,"This is something bugging me for quite some time now, but so far I haven't found a solution:
+
+When you export a wiki site that uses macros to PDF the output doesn't show the rendered/parsed state but only the source-code which isn't useful at all (see attached images). The page should be rendered first, then be converted to PDF.
+
+
+This is also related to another issue/feature request I have: #17238. There the same problems bugs me, but not for the PDF export, but for the search function."
+17959,Redmine,Defect,"",Closed,Normal,Issue notes not previewed when project is changed,Daniel Felix,Jean-Philippe Lang,2014-10-05 15:19,Issues,2.6.0,"","","",0,2014-09-25 11:37,2014-10-05 15:19,"",Fixed,"","Hi there,
+
+I've tested a bug which seems reproducable.
+
+The preview shows up the ticket description instead of the comment text.
+
+Ways to reproduce:
+* create 2 projects, allow a user to switch an issue between both projects
+* create a ticket in project 1 with a description.
+* edit this ticket, add a comment. show preview -> works
+* edit this ticket, add a comment, change the project to project 2. show preview -> you won't see the preview of the comment, just the original description.
+
+Tested on current trunk and on Redmine 2.4.2 and 2.5.2.
+
+Best regards,
+Daniel
+
+Best regards,
+Daniel"
+17957,Redmine,Defect,"",Closed,Normal,Update of issue checklist delete and insert data again,Asif Noor,"",2014-10-05 15:20,Issues,"","","","",0,2014-09-25 09:31,2014-10-05 15:20,"",Invalid,2.4.2,"Hi,
+
+I have started using issue_checklists plugin and it is simple and great feature addition to Issue.
+
+While testing i noticed that, while updating the issue, when i check/uncheck the checklist item, it is deleting all checklists for that issue and reinserting again. Why is this so?
+
+"
+17954,Redmine,Defect,"",Closed,Normal,/time_entries/new can't derive project from issue,Roger Hunwicks,Jean-Philippe Lang,2014-10-04 09:25,Time tracking,2.6.0,"","","",0,2014-09-25 06:28,2014-10-04 09:25,"",Fixed,2.5.1,"If you use the /time_entries/new link to log a new time entry from outside the context of a project the form displays with both a Project field and an Issue field.
+
+The Project field defaults to the first Project in the database, regardless of whether the current user is a member of that Project.
+
+If the use enters an Issue Number belonging to a different Project and press Create they get an ""Issue is invalid"" error message. The user needs to change the Project to the correct value for the Issue in order for the time entry to be saved successfully.
+
+It would be better if:
+
+* the Project select list didn't have a default value
+* if a valid Issue is chosed (and if the previous item has been implemented then the Project is blank) the Project is derived from the Issue automatically
+* ideally, the Project select list shouldn't show Projects the user isn't a member of
+"
+17947,Redmine,Patch,"",New,Normal,Mirror relation,Damien Viennot,"",2014-09-24 17:50,Issues,"","","","",0,2014-09-24 17:49,"",関連している #11316,"","","Several posts on the forum are about the need of mirroring issues, ie auto updating the status of related issue.
+This is an attempt to achieve this result by creating a new relation (two in fact...) called mirror.
+
+The drawback is that callbacks are not properly handled : these patch are not a finished product.
+
+
+Provided patchs are for the 2.3.0 version, but can easily be transposed for the 2.4 or 2.5 series.
+Files to be patched : app/models/issue.rb 
+                      app/models/issue_relation.rb
+                      config/locales/fr.yml (ok, for french people....)
+
+"
+17944,Redmine,Defect,"",Closed,Normal,Helper hook doesn't change object attributes,Ilya S,"",2014-10-04 09:34,Plugin API,"","","","",0,2014-09-24 14:41,2014-10-04 09:34,"",Invalid,2.5.2,"<pre>
+module RedmineIssueChecklist::Hooks
+  class Hooks < Redmine::Hook::ViewListener
+    def helper_issues_show_detail_after_setting(context={})
+      context[:value] = 'test'
+    end
+  end
+end
+</pre>
+
+then check *value* in issues_helper.rb and get nil or something other, but not *'test'*"
+17931,Redmine,Defect,"",Closed,Normal,"note ""Applied in changeset"" generated multiple times for the same repo",Sergiy Zuban,Jean-Philippe Lang,2014-10-05 14:12,SCM,2.6.0,"","","",0,2014-09-23 01:25,2014-10-05 14:12,次のチケットが重複 #18850,Fixed,2.5.2,"I have couple sub-projects, but all of them uses the same GIT ""Main"" repository.
+After recent upgrade to 2.5.2 scan_changesets_for_issue_ids() treats one changeset as independent changesets in sub-projects and as a result adds ""Applied in changeset SUBPROJECT:XXXXXXX"" notes as well as note without prefix ""Applied in changeset XXXXXXX"".
+
+""Associated revisions"" section points to the same revision multiple times making this feature annoying/useless.
+"
+17928,Redmine,Defect,"",Closed,Normal,Redmine Limitations (too many groups?),Jonathan Heng,Jean-Philippe Lang,2015-04-14 19:32,"","","","","",0,2014-09-22 15:44,2015-04-14 19:32,"",No feedback,2.5.2,"When trying to access the groups page (http://servername/redmine/groups), the page would take about a minute to load.  Thereafter we would receive the following error:
+<pre>
+Proxy Error
+
+The proxy server received an invalid response from an upstream server.
+The proxy server could not handle the request GET /redmine/groups.
+
+Reason: Error reading from remote server
+
+</pre>
+
+We increased the keep-alive/timeout values in Apache (we assumed this was related to timeouts occurring because of the considerable amount of groups we have).  Now we receive a different error:
+
+<pre>
+Internal error
+
+An error occurred on the page you were trying to access.
+If you continue to experience problems please contact your Redmine administrator for assistance.
+
+If you are the Redmine administrator, check your log files for details about the error.
+
+Back
+</pre>
+
+I've attached an excerpt from our error log.
+
+Please note we have a considerable number of groups in Redmine (over 30,000).  Is the page failing to load because of an application or database limitation?  
+
+
+
+
+"
+17924,Redmine,Patch,"",New,Normal,Structured Document list for more flexible UI design with CSS,Yonghwan SO,"",2014-09-22 05:22,UI,"","","","",0,2014-09-22 05:15,"","","","","Current version of Document list is built with h4, p, and div for title, updated date and description on same depth with parent h3 in HTML structure.
+
+<pre>
+h2. Document
+h3. Technical documentation
+h4. My First Document
+p. updated time
+div. description
+h4. My Second Document
+p. updated time
+div. description
+</pre>
+
+In this structure, page customizing is not easy and list scroll is heavy if there is so many documents. and someone like me want to see more structured view like:
+
+<pre>
+h2. Document
+` h3. Technical documentation
+  | h4. My First Document
+  | | p. updated time
+  | ` div. description
+  ` h4. My Second Document
+    | p. updated time
+    ` div. description
+</pre>
+
+I Think, sometimes table view is more fit to document list and sometimes current Page-like view with indents is more fit for some project. so using div is more flexible for customizing the view per usage.
+
+Attached patch includes view patch to add hirerachy for document elements and example css for alternate style is for table like inline view.
+
+please consider this patch. I will make pull request on github too."
+17916,Redmine,Defect,"",Closed,Normal,Activity page not showing proper bullet points of content,Lajish Lakshmanan,"",2014-09-19 14:21,Activity view,"","","","",0,2014-09-19 13:58,2014-09-19 14:21,関連している #3114,Duplicate,2.5.2,"Bullet numbering options being provided in tracker description is shown in improper way on Activity page.
+Do these steps...
+# Create a tracker
+# Put content for description field with bullets(using #)
+# Submit that tracker
+# Now go to Activity page"
+17914,Redmine,Defect,"",Closed,Normal,Child task due date change does not affect Parent Task Due Date change,ami desai,"",2016-12-25 10:08,Issues,"","","","",0,2014-09-19 06:45,2016-12-25 10:08,"",Invalid,2.4.2,"Hello!
+
+When i change the due date of my child task, the due date of parent task does not changes.
+
+This creates problem for us.
+
+Please kindly help!"
+17904,Redmine,Defect,"",Closed,Normal,group membership cannot be added to a project via REST API,Alex Last,Jean-Philippe Lang,2014-10-04 19:02,REST API,"","","","",0,2014-09-18 06:07,2014-10-04 11:50,"",Wont fix,2.5.2,"environment: Redmine 2.5.2
+
+adding a user with some roles works fine:
+
+>Started POST ""/redmine/projects/524/memberships.json"" for 76.126.10.142 at 2014-09-17 21:04:51 -0700
+>Processing by MembersController#create as JSON
+>  Parameters: {""membership""=>{""user_id""=>276, ""role_ids""=>[3, 4, 5]}, ""project_id""=>""524""}
+>  Current user: user (id=1)
+>  Rendered members/show.api.rsb (0.5ms)
+>Completed 201 Created in 33.9ms (Views: 1.1ms | ActiveRecord: 15.4ms)
+
+
+but Redmine throws an error when I send a membership object with *group_id* instead of *user_id*:
+    {""membership""=>{""group_id""=>275, ""role_ids""=>[3]}, ""project_id""=>""523""}
+
+log:
+
+> Started POST ""/redmine/projects/523/memberships.json"" for 76.126.10.142 at 2014-09-17 21:02:48 -0700
+> Processing by MembersController#create as JSON
+>   Parameters: {""membership""=>{""group_id""=>275, ""role_ids""=>[3]}, ""project_id""=>""523""}
+>   Current user: user (id=1)
+>   Rendered common/error_messages.api.rsb (0.3ms)
+> Completed 422 Unprocessable Entity in 23.1ms (Views: 1.2ms | ActiveRecord: 4.7ms)
+
+
+I looked at members_controller.rb file:
+
+    def create
+    members = []
+    if params[:membership]
+      if params[:membership][:user_ids]
+        attrs = params[:membership].dup
+        user_ids = attrs.delete(:user_ids)
+        user_ids.each do |user_id|
+          members << Member.new(:role_ids => params[:membership][:role_ids], :user_id => user_id)
+        end
+      else
+        members << Member.new(:role_ids => params[:membership][:role_ids], :user_id => params[:membership]  [:user_id])
+      end
+      @project.members << members
+    end
+
+- there is nothing there to support adding group memberships.
+"
+17902,Redmine,Patch,"",Closed,Normal,CSV encoding should be UTF-8 in French locale,Vincent Robert,Jean-Philippe Lang,2017-10-17 19:22,I18n,"","","","",0,2014-09-17 17:29,2016-01-23 09:20,"関連している #7037, 関連している #26279","","","Default csv encoding is currently set to ISO-8859-1 in the French localization file. That's probably why the generated csv files do not show *accented* characters properly.
+
+Don't you think the general_csv_encoding variable should be set to UTF-8 in locales/fr.yml?
+Thank you!"
+17900,Redmine,Patch,"",New,Normal,Allow change value of the time_entry object via controller_issues_edit_before_save hook from a plugin,Tieu-Philippe Khim,"",2017-06-22 17:47,Issues,"","","","",0,2014-09-17 16:34,"","","","","At the moment we could not made some modification on time_entry from @controller_issues_edit_before_save@ hook.
+Because the object created is push in @time_entries@ attribute, so a plugin using the @controller_issues_edit_before_save@ hook could not access to the latest entry and change the value if needed.
+
+The attached patch make that possible.
+"
+17898,Redmine,Defect,"",Closed,Normal,Exception in Migration from Trac to Redmine (incl. solution),Marc Waeckerlin,"",2014-10-16 13:02,Importers,"","","","",0,2014-09-17 14:00,2014-10-16 13:02,次のチケットと重複 #14567,Duplicate,2.4.2,"h1. Problem
+
+I tried to migrate a project from trac to redmine, as described in [[RedmineMigrate]].
+
+It ends with the following exception:
+<pre>
+marc@dev0101:/usr/share/redmine$ sudo rake --trace redmine:migrate_from_trac RAILS_ENV=""production""      
+** Invoke redmine:migrate_from_trac (first_time)                                                         
+** Invoke environment (first_time)                                                                       
+** Execute environment                                                                                   
+** Execute redmine:migrate_from_trac                                                                     
+                                                                                                         
+WARNING: a new project will be added to Redmine during this process.                                     
+Are you sure you want to continue ? [y/N] y                                                              
+                                                                                                         
+Trac directory []: /home/marc/trac/ca                                                                    
+Trac database adapter (sqlite3, mysql2, postgresql) [sqlite3]:                                           
+Trac database encoding [UTF-8]:                                                                          
+Target project identifier []: certficates                                                                
+                                                                                                         
+Migrating components...........                                                                          
+Migrating milestones..................                                                                   
+Migrating custom fields..........                                                                        
+Migrating tickets.......................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................                       
+Migrating wiki...............................................................................................................................................................................................................................................................................................................rake aborted!                                                                                          
+can't convert nil into an exact number                                                                   
+/usr/lib/ruby/vendor_ruby/active_support/core_ext/time/calculations.rb:339:in `-'                        
+/usr/lib/ruby/vendor_ruby/active_support/core_ext/time/calculations.rb:339:in `minus_with_duration'
+/usr/lib/ruby/vendor_ruby/active_support/core_ext/time/calculations.rb:350:in `minus_with_coercion'
+/usr/share/redmine/lib/tasks/migrate_from_trac.rake:79:in `fake'
+/usr/share/redmine/lib/tasks/migrate_from_trac.rake:590:in `block in migrate'
+/usr/lib/ruby/vendor_ruby/active_record/associations/collection_proxy.rb:91:in `each'
+/usr/lib/ruby/vendor_ruby/active_record/associations/collection_proxy.rb:91:in `method_missing'
+/usr/share/redmine/lib/tasks/migrate_from_trac.rake:588:in `migrate'
+/usr/share/redmine/lib/tasks/migrate_from_trac.rake:776:in `block (2 levels) in <top (required)>'
+/usr/lib/ruby/vendor_ruby/rake/task.rb:246:in `call'
+/usr/lib/ruby/vendor_ruby/rake/task.rb:246:in `block in execute'
+/usr/lib/ruby/vendor_ruby/rake/task.rb:241:in `each'
+/usr/lib/ruby/vendor_ruby/rake/task.rb:241:in `execute'
+/usr/lib/ruby/vendor_ruby/rake/task.rb:184:in `block in invoke_with_call_chain'
+/usr/lib/ruby/1.9.1/monitor.rb:211:in `mon_synchronize'
+/usr/lib/ruby/vendor_ruby/rake/task.rb:177:in `invoke_with_call_chain'
+/usr/lib/ruby/vendor_ruby/rake/task.rb:170:in `invoke'
+/usr/lib/ruby/vendor_ruby/rake/application.rb:143:in `invoke_task'
+/usr/lib/ruby/vendor_ruby/rake/application.rb:101:in `block (2 levels) in top_level'
+/usr/lib/ruby/vendor_ruby/rake/application.rb:101:in `each'
+/usr/lib/ruby/vendor_ruby/rake/application.rb:101:in `block in top_level'
+/usr/lib/ruby/vendor_ruby/rake/application.rb:110:in `run_with_threads'
+/usr/lib/ruby/vendor_ruby/rake/application.rb:95:in `top_level'
+/usr/lib/ruby/vendor_ruby/rake/application.rb:73:in `block in run'
+/usr/lib/ruby/vendor_ruby/rake/application.rb:160:in `standard_exception_handling'
+/usr/lib/ruby/vendor_ruby/rake/application.rb:70:in `run'
+/usr/bin/rake:27:in `<main>'
+Tasks: TOP => redmine:migrate_from_trac
+marc@dev0101:/usr/share/redmine$ sudo emacs +339 /usr/lib/ruby/vendor_ruby/active_support/core_ext/time/calculations.rb
+marc@dev0101:/usr/share/redmine$ sudo emacs +339 /usr/lib/ruby/vendor_ruby/active_support/core_ext/time/calculations.rb +79 /usr/share/redmine/lib/tasks/migrate_from_trac.rake
+</pre>
+
+h1. Solution
+
+Obviousely, a time-object is undefined (@nil@). Although I have no idea of Ruby, after some analysis, I changed function @minus_with_coercion@ in file @/usr/lib/ruby/vendor_ruby/active_support/core_ext/time/calculations.rb@ around line @350@ as follows:
+
+<pre>
+  def minus_with_coercion(other)
+    other = other.comparable_time if other.respond_to?(:comparable_time)
+    if other === nil
+      to_f
+    else
+      other.is_a?(DateTime) ? to_f - other.to_f : minus_without_coercion(other)
+    end
+  end
+</pre>
+
+So if @other@ is @nil@, @to_f@ is returned.
+
+Please adapt this bugfix for next release."
+17897,Redmine,Defect,"",Closed,Normal,Emails does not send to assignee if issue's author doesn't have permission to change assignee field,Andrey Kunitsyn,"",2014-10-16 08:54,Issues permissions,"","","","",0,2014-09-17 13:41,2014-10-16 08:54,"",Invalid,2.5.2,"I have issue assignments based on category. (Project - Settings - Issues categories)
+Because of that i forbided users to change assignee in New Issue: Workflow - Fields permissions - Issue status - New; Assignee = Read-only and Category maded Requered.
+Then user create new issue it gets assignee according to category. That's good. BUT assignee doesn't get email about that.
+
+If Workflow - Fields permissions - Issue status - New; Assignee I leave blank and User leave blank ""Assignee"" field in new issue evrything is OK. Issue gets assignee automaticaly and assignee gets email.
+
+But it's not good because category's assignee doesn't have priority before author's choice and issue may go to wrong user.
+"
+17890,Redmine,Defect,"",Closed,Normal,Making group - add project - subprojects not visible,George H,"",2015-04-14 19:33,Groups,"","","","",0,2014-09-16 23:45,2015-04-14 19:33,"",No feedback,"","I got the following issue which I cant seem to solve with our redmine. Under administrator sections of ""groups"" I have made a new group, too this new group i have add a certain project. After saving etc. checking the group settings. I see the project but only the main stuff etc. I cant see the subprojects of this projects. I have look through all the parameters settings, rolls etc but can't find anything why this is happening and how to resolved it. "
+17888,Redmine,Defect,"",Closed,Normal,Redmine API :: uploadAttachment issue,NISSAR PULIKKIL,"",2014-09-17 07:14,Attachments,"","","","",0,2014-09-16 15:11,2014-09-17 07:14,"",Invalid,2.3.1,"Hi,
+
+I am trying to use upload attachment API feature provided with redmine API using JAVA. 
+Its all working good with some small size files (say less than 20KB); its successfully attaching and returning the token as ""7354.9973a76e40ba705f59f8a091ee778d48"". All fine.
+
+But when I try to attach an image of around 100KB or more, its not attaching. It returns the token as ""7345."" and no file is been uploaded. No error was returned too.
+
+I can manually attach the same file in redmine without any issues as my attachment file limit is 20MB.
+
+Can anyone gives some clue on this?
+
+My redmine  version is: 2.3.1.stable
+
+Thanks
+Nissar"
+17887,Redmine,Defect,"",Needs feedback,Normal,NoMethodError (undefined method `downcase' for nil:NilClass):,Tristan S.,"",2015-08-23 17:03,SCM,"","","","",0,2014-09-16 14:10,"","",No feedback,2.5.2,"When I follow the instructions at http://www.redmine.org/projects/redmine/wiki/HowTo_keep_in_sync_your_git_repository_for_redmine and point the repository to the just mirrored git repo, I get a Redmine 500 error, with the following in the production log:
+
+@NoMethodError (undefined method `downcase' for nil:NilClass):
+  app/models/changeset.rb:100:in `scan_for_issues'
+  app/models/repository/git.rb:218:in `save_revision'
+  app/models/repository/git.rb:207:in `block (2 levels) in save_revisions'
+  app/models/repository/git.rb:204:in `block in save_revisions'
+  app/models/repository/git.rb:203:in `each'
+  app/models/repository/git.rb:203:in `save_revisions'
+  app/models/repository/git.rb:153:in `fetch_changesets'
+  app/controllers/repositories_controller.rb:114:in `show'@"
+17885,Redmine,Defect,"",Closed,Normal,Need to send email to watchers when a new issue created,Gulshan Bhatia,"",2014-11-24 09:40,Email notifications,"","","","",0,2014-09-16 11:38,2014-11-24 09:40,"",Invalid,"",Need to send email to watchers when a new issue created
+17882,Redmine,Defect,"",New,Normal,Subversion: French character filename causes error 404,Jean-Yves Garneau,"",2014-09-17 13:31,SCM,"","","","",0,2014-09-15 20:12,"","関連している #7505, 関連している #2532","",2.5.0,"The file name is ""AnalyseOpportunit?.docx"" and is converted to ""AnalyseOpportunit%C3%A9.docx"" so cannot be found by SVN.
+
+I'm using Bitnami Redmine Stack :
+Version 2.5.0-0      2014-03-03
+* Updated Redmine to 2.5.0
+* Updated MySQL to 5.5.36
+* Updated Ruby to 1.9.3-p545
+* Updated Rails to 3.2.16
+
+Subversion 1.8.5 is on the local network on Linux machine and my redmine stack is on Windows 7.
+
+The production.log file include theses lines :
+Started GET ""/redmine/projects/voilure/repository/entry/gestion/48586/AnalyseOpportunit%C3%A9.docx"" for 127.0.0.1 at 2014-09-15 12:48:35 -0400
+Processing by RepositoriesController#entry as HTML
+  Parameters: {""id""=>""voilure"", ""path""=>""gestion/48586/AnalyseOpportunit?.docx""}
+  Current user: admin (id=1)
+  Rendered common/error.html.erb within layouts/base (0.0ms)
+Completed 404 Not Found in 312.0ms (Views: 31.2ms | ActiveRecord: 46.8ms)
+"
+17881,Redmine,Defect,"",Closed,Normal,Javascript error when displaying a saved query with some defined filters omitted from the available_filters,Holger Just,Jean-Baptiste Barth,2014-09-17 16:57,Issues,"","","","",0,2014-09-15 14:12,2014-09-17 16:57,"",Duplicate,"","Attached to this issue, there is a fix for an issue that can occur if a users defines a query in another scope than where it is ultimately displayed. If the query define a filter which is not available in the current scope, rendering the filters form will throw a Javascript error resulting in a halt of Javascript execution on the respective page.
+
+In our case at ""Planio"":https://plan.io/redmine-hosting, we had a query that was defined on all projects. The query had a filter of @project_id@. Now, the @project_id@ is only valid outside of a project. If the query is run inside of a project, the @project_id@ filter will not be added to the @available_filters@. However, the defined filter is still attempted to be rendered, as the view just loops over all defined filters in the query. This results in a javascript error as during rendering in the browser, the filter can not be added as it is not included in available filters.
+
+The attached patch fixes this issue. It ensures that only those filters are attempted to be rendered that are actually available in the current scope. This fixes the Javascript error."
+17880,Redmine,Patch,"",Closed,Normal,Performance issues on Issue model,Ond?ej Ezr,"",2016-01-10 07:32,Performance,"","","","",0,2014-09-15 04:17,2016-01-10 07:32,次のチケットと重複 #18290,"","","Issue safe_attribute 'is_private' cause a author loading if not necessary in some situations, and status_id_was is same as status_id, cuz is not prevent loading if not changed."
+17853,Redmine,Patch,"",Closed,Normal,Portuguese translation file,Rui Rebelo,"",2014-09-27 00:59,Translations,2.6.0,"","","",0,2014-09-12 11:57,2014-09-12 15:20,"","","",PT-pt translation files reviewed.
+17852,Redmine,Defect,"",Closed,Normal,"Issue journals should be ordered by created_on, not id",name zero,"",2014-12-01 23:09,Issues,"","","","",0,2014-09-12 08:35,2014-12-01 23:09,次のチケットと重複 #14881,Duplicate,2.5.2,"After migration to Redmine form another system, I noticed issue journals were not in the right order.
+Our migration added file attachment journals last, so the ID was higher than the rest of the journals.
+
+While this was incidental to the way we migrated and would probably nor occur in most Redmine installations, this issue could also occur under certain circumstances if, for example, Redmine was backed by a multimaster replicated database.
+
+The correct(er) way to get the journals would be to sort them by the created_on column
+
+--------------------------------
+--- issues_controller.rb.ori	Sun Jul  6 14:44:08 2014
++++ issues_controller.rb	Fri Sep 12 08:05:33 2014
+@@ -104,7 +104,7 @@ class IssuesController < ApplicationController
+   end
+ 
+   def show
+-    @journals = @issue.journals.includes(:user, :details).reorder(""#{Journal.table_name}.id ASC"").all
++    @journals = @issue.journals.includes(:user, :details).reorder(""#{Journal.table_name}.created_on ASC"").all
+     @journals.each_with_index {|j,i| j.indice = i+1}
+     @journals.reject!(&:private_notes?) unless User.current.allowed_to?(:view_private_notes, @issue.project)
+     Journal.preload_journals_details_custom_fields(@journals)
+
+--------------------------------
+
+Please find the diff attached, as well as the migration diff to add the index.
+
+
+"
+17847,Redmine,Patch,"",Closed,Normal,Wiki extended help macros do not reflect basic Redmine macros,Felix Sch?fer,Jean-Baptiste Barth,2014-09-11 23:26,Wiki,2.6.0,"","","",0,2014-09-11 20:02,2014-09-11 23:26,"","","","The wiki extended help only lists the @hello_world@, @macro_list@ and @include@ macros, and the help for @include@ is incomplete.
+
+The currently available macros in vanilla Redmine are @hello_world@, @macro_list@, @child_pages@, @include@, @collapse@, and @thumbnail@."
+17845,Redmine,Defect,"",Closed,High,Assigning parent task fails when a related issue is yet a sub issue of the new parent task,Tobias Fischer,"",2014-10-10 09:51,Issues,"","","","",0,2014-09-11 18:23,2014-10-10 09:51,次のチケットと重複 #13654,Duplicate,2.5.2,"We're working with parent issues a lot and we're facing an odd bug:
+
+Let's imagine the following situation:
+
+* Issue @#1@ is the main issue for a feature
+* Issue @#2@ and @#3@ shall be sub-issues of issue @#1@
+* Issue @#2@ and @#3@ shall have a relation to each other (don't question that ;-)
+
+Open up issue @#2@ and assign issue @#1@ as parent task.
+Then add ticket @#3@ as normal ticket relation to ticket @#2@.
+
+Then open up ticket @#3@ and try to assign issue @#1@ as parent task.
+*This won't work unless I remove the relation between issues @#2@ and @#3@*
+*Action fails with error _""Parent task is invalid""_*
+
+After removing the relation between issues @#2@ and @#3@ I can assign issue @#1@ as parent task to @#3@.
+*I would expect redmine to be able to also assign @#1@ as parent task to @#3@ also if @#3@ yet has a relation to @#2@ which is yet a sub issue of @#1@*
+
+Then, after having figured out that behaviour I would have expected that I can't re-add the relation between issues @#2@ and @#3@ ? but yes, that's possible.
+
+Wow - this sounds weird, but it's reproducable!
+Tested with 2.5.2 and current trunk."
+17843,Redmine,Defect,"",Closed,Normal,Possible to delete issue even it is disabled in permissions,wojtek monka,"",2014-10-04 09:33,Issues permissions,"","","","",0,2014-09-11 11:09,2014-10-04 09:33,"",Invalid,2.4.6,"I disabled delete persmissions in Redmine Permissions for all Roles but users are still able to delete them 
+
+Permissions > Issue tracking > Delete issues - unmarked
+
+I tested with Developer and Manager.
+
+
+<pre>
+Environment:
+  Redmine version                2.4.6.stable
+  Ruby version                   1.9.3-p0 (2011-10-30) [i686-linux]
+  Rails version                  3.2.19
+  Environment                    production
+  Database adapter               PostgreSQL
+SCM:
+  Subversion                     1.6.17
+  Cvs                            1.12.13
+  Bazaar                         2.5.1
+  Git                            1.7.9.5
+  Filesystem                     
+Redmine plugins:
+  a_common_libs                  0.0.1
+  single_auth                    1.0
+</pre>"
+17839,Redmine,Defect,"",Closed,Low,what's the problem? C:\>gem install bundler,Руслан Калменов,"",2014-09-11 09:34,"","","","","",0,2014-09-11 08:06,2014-09-11 09:34,"",Invalid,"","C:\>gem install bundler
+ERROR:  Could not find a valid gem 'bundler' (>= 0), here is why:
+          Unable to download data from https://rubygems.org/ - no such name (htt
+ps://rubygems.org/latest_specs.4.8.gz)"
+17835,Redmine,Defect,"",New,Normal,Issue Properties revert to previously set value when submitting ticket update,Oscar Santos,"",2016-03-27 13:25,Issues,"","","","",0,2014-09-11 01:58,"","","","","At times, when an Issue is updated and the Issue Properties (e.g. Priority, % Done, etc.) are changed then submitted, a following update will revert those changes. I have been able to replicate it only a handful of times. When I am able to replicate it, I can see the Issue Properties set to the old value and refreshing the page does not update them. It is only when I back out of the page then return to that issue it updates properly.
+
+I suspect a browser/cache issue but I am uncertain of what changes to adjust that will play nicely with Redmine to avoid this. Has anyone else experienced this issues? 
+
+My environment details is below:
+
+<pre>
+Environment:
+  Redmine version                2.5.2.stable
+  Ruby version                   2.0.0-p353 (2013-11-22) [x86_64-linux]
+  Rails version                  3.2.19
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.8.10
+  Filesystem                     
+Redmine plugins:
+  AgileDwarf                     0.0.3
+  issue_repo_history_merge       0.0.2
+  redmine_auto_watch             1.0.0
+  redmine_banner                 0.0.9
+  redmine_issue_checklist        2.0.5
+  redmine_issue_templates        0.0.5
+  redmine_landing_page           0.1.0
+  redmine_pdf_export_backports   0.0.1
+  redmine_reminder               0.4
+  redmine_wiki_extensions        0.6.4
+  redmine_wiki_sql               0.0.1
+</pre>"
+17830,Redmine,Defect,"",New,Normal,User creation: clear/plaintext password sent via unencrypted email,Hendrik Jaeger,Jean-Baptiste Barth,2014-09-20 00:06,Security,Candidate for next major release,"","","",0,2014-09-10 13:44,"","","",1.4.4,"<pre>
+  henk | I just received an unencrypted mail from redmine containing my password in plaintext. Is that fixed in more recent versions? Is there a way to fix it in 1.4.4?
+  henk | https://twitter.com/RamsayDev/status/460048737994551296 hehe, yeah, kinda my thoughts …
+salvor | henk: no.
+salvor | henk: that's only on user creation, and it's up to the administrator to send this password or not
+salvor | after that everything happen through tokens
+  henk | salvor: hm, ok, that’s not too bad then, but I still wonder why that’s not done through tokens as well?!
+salvor | I guess we could do that even on user creation (= send a unique link to reset the password) ; or force password change on first connection (which is the same security wise I think)
+salvor | do you see a legitimate case where an administrator would want to set a password manually for a user ?
+  henk | salvor: No, not really. IMHO it’s nice to have that feature and I wouldn’t want it to go away, but it’s not a good default way to handle things.
+salvor | I totally agree
+</pre>
+
+Another idea:
+allow specifying a pgp-key and send the mail encrypted
+"
+17828,Redmine,Defect,"",Closed,Normal,Could not find gem 'mocha (~> 1.0.0) ruby',Tomasz Zieleniewski,Jean-Baptiste Barth,2014-09-16 23:18,Gems support,2.6.0,"","","",0,2014-09-10 12:02,2014-09-16 23:18,"",Fixed,2.5.2,"Hi everybody,
+
+I have a fresh copy of the 2.5 version, checkout from SVN.
+As stated in the [[RedmineInstall]] I run bundler to manage gems dependencies
+<pre>
+bundle install --without development test
+</pre>
+I get the following error
+<pre>
+Resolving dependencies...
+Could not find gem 'mocha (~> 1.0.0) ruby' in the gems available on this machine.
+</pre>
+
+It seems for me that somehow bundler is not excluding test group which introduces higher mocha version.
+<pre>
+group :test do
+  gem ""shoulda"", ""~> 3.3.2""
+  gem ""mocha"", ""~> 1.0.0"", :require => 'mocha/api'
+  if RUBY_VERSION >= '1.9.3'
+    gem ""capybara"", ""~> 2.1.0""
+    gem ""selenium-webdriver""
+  end
+end
+</pre>
+
+Installing mocha 1.0.0 leads to versions conflict between 0.10.5 and 1.0.0.
+<pre>
+Resolving dependencies...
+Bundler could not find compatible versions for gem ""mocha"":
+  In Gemfile:
+    shoulda (~> 3.3.2) ruby depends on
+      shoulda-matchers (~> 1.4.1) ruby depends on
+        bourne (~> 1.1.2) ruby depends on
+          mocha (= 0.10.5) ruby
+
+    mocha (1.0.0)
+</pre>
+
+*Information*
+<pre>
+Environment:
+  Redmine version                2.5.2.stable.13367
+  Ruby version                   1.9.3-p194 (2012-04-20) [x86_64-linux]
+  Rails version                  3.2.19
+  Bundler version                1.7.2
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.6.17
+  Git                            1.7.10.4
+  Filesystem                     
+Redmine plugins:
+  no plugin installed
+</pre>"
+17826,Redmine,Defect,"",Closed,Normal,PDF export fails if there is U+FFFD in issue data or journals,Vincent Robert,Toshi MARUYAMA,2014-09-11 19:46,PDF export,2.4.7,"","","",0,2014-09-10 09:58,2014-09-11 19:46,"",Fixed,2.5.2,"When users add special characters to issues (often by copy/pasting text from terminals to issue journals), they cannot export these issues to PDF and get an error (invalid byte sequence in UTF-8).
+
+Here is an example. With these special characters in it, an error should occur when we try to export this issue to PDF.
+
+    Archivage automatique		  D?sactiv
+S?quence de journal en ligne
+S?quence de journal courante"
+17823,Redmine,Defect,"",Closed,Normal,Internal Error - An error occurred on the page you were trying to access,Stefan Rieder,"",2014-09-29 04:21,Accounts / authentication,"","","","",0,2014-09-09 13:46,2014-09-29 04:21,"",No feedback,"","When i am on http://10.10.20.51/users, and i wan to create a new user, the link to http://10.10.20.51/users/new is an ""Internal Error"".
+When i want to go to http://10.10.20.51/my/account it also ends in ""Internal Error"".
+"
+17809,Redmine,Defect,"",New,Normal,"rendering extra ""---"" header and ""--"" footer of git patch",Tobias Fischer,"",2014-09-06 14:48,Attachments,"","","","",0,2014-09-06 12:37,"","","",2.5.2,"Rendering of patches adds an additional ""deletion"" line for the following (standard) diff syntax:
+!patch_screenshot.png!
+
+Whereas the ""deletion"" of line 22 in the screenshot isn't part of the changeset at all:
+
+<pre><code class=""diff"">
+From 9b1992fe9db52e1df90a6a963a686cd2cf20e706 Mon Sep 17 00:00:00 2001
+From: Tobias Fischer
+Date: Sat, 6 Sep 2014 12:22:02 +0200
+Subject: [PATCH]  Additional view hook ""body_top""
+
+In the same way as ""view_layouts_base_body_bottom"" exists...
+---
+ app/views/layouts/base.html.erb | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/app/views/layouts/base.html.erb b/app/views/layouts/base.html.erb
+index 99ad13f..45ef5bd 100644
+--- a/app/views/layouts/base.html.erb
++++ b/app/views/layouts/base.html.erb
+@@ -16,6 +16,7 @@
+ <%= yield :header_tags -%>
+ </head>
+ <body class=""<%=h body_css_classes %>"">
++<%= call_hook :view_layouts_base_body_top %>
+ <div id=""wrapper"">
+ <div id=""wrapper2"">
+ <div id=""wrapper3"">
+-- 
+1.8.5.2 (Apple Git-48)
+
+</code></pre>
+
+And also this diff gets wrong syntax highlighting for the meta-lines ""---"" and ""-- ""
+
+So I would expect the line 22 not to be rendered at all and an the syntax highlighting, there should be no highlighting for ""---"" and ""-- """
+17808,Redmine,Defect,"",Closed,Normal,Internal error when creating projects having a List format custom field,Victor Costache,Jean-Baptiste Barth,2014-09-07 13:05,"","","","","",0,2014-09-06 09:54,2014-09-07 13:05,"",Cant reproduce,2.5.2,"Here is the relevant section from the log file:
+
+<pre>
+Completed 500 Internal Server Error in 482.5ms
+
+TypeError (can't convert Array into String):
+  app/controllers/projects_controller.rb:83:in `create'
+</pre>
+
+Sequence to reproduce:
+# Go to Administration -> Costom fields and create a new custom field in Projects of type (format) List.
+# Go to Projects and create a new project.
+# Clicking on Create raises the above error."
+17800,Redmine,Defect,"",Closed,Normal,Redmine redirection issue,vijay krishna,"",2014-09-05 16:42,Security,"","","","",0,2014-09-05 08:11,2014-09-05 16:42,"",Invalid,2.5.1,"When we try to apply filters for the issues under ""Issues"" tab in redmine, some security exception is throwing.
+we are using https. we just find out some primary cause is due to some special character ""utf8=%E2%9C%93"" is appending to the url when we apply filter from ""issues"" page. Can anyone help on this please?"
+17796,Redmine,Patch,"",Closed,Normal,Expire all other sessions on password change,Jan from Planio www.plan.io,Jean-Baptiste Barth,2014-09-16 23:39,Security,2.6.0,"","","",90,2014-09-04 19:02,2014-09-16 23:39,"","","","To improve user account security, we believe it is a good practice to expire all other active user sessions (on other computers or browsers) once a user changes their password.
+
+Please find attached a patch that implements this feature against current trunk; tests included."
+17795,Redmine,Defect,"",Closed,Normal,No notification when failing to create issue from email,Andre Oliveira,"",2015-11-16 04:55,Email receiving,"","","","",0,2014-09-04 15:20,2015-11-16 04:55,次のチケットと重複 #12869,Duplicate,2.5.2,"When sending an Issue to redmine from email without project for example, redmine should send an email notifying the user that the issue was not created."
+17794,Redmine,Defect,"",Closed,Normal,Redmine integration with Testlink ? showing error Bug ID does not exist on BTS!,Ankit Singh,"",2014-09-04 14:03,REST API,"","","","",0,2014-09-04 09:26,2014-09-04 14:03,"",Invalid,"","Redmine integration with Testlink ? showing error Bug ID does not exist on BTS!
+I itergrated remine with testlink. When I try to map bug id in failed test case then it is showing an error - Bug ID does not exist on BTS! 
+"
+17788,Redmine,Defect,"",Closed,Normal,I can install DMSF plugin in Redmine 2.3.3,vimalraj velumani,"",2014-09-03 13:40,"","","","","",0,2014-09-03 11:56,2014-09-03 13:40,"",Invalid,"","rake aborted!
+Gem::LoadError: You have already activated rake 10.3.2, but your Gemfile requires rake 10.1.0. Using bundle exec may solve this.
+
+
+When I am trying to install DMSF plugin for redmine.
+
+I need help from you guys!"

@@ -1,0 +1,788 @@
+#,ÉvÉçÉWÉFÉNÉg,ÉgÉâÉbÉJÅ[,êeÉ`ÉPÉbÉg,ÉXÉeÅ[É^ÉX,óDêÊìx,ëËñº,çÏê¨é“,íSìñé“,çXêVì˙,ÉJÉeÉSÉä,ëŒè€ÉoÅ[ÉWÉáÉì,äJénì˙,ä˙ì˙,ó\íËçHêî,êiíªó¶,çÏê¨ì˙,èIóπì˙,ä÷òAÇ∑ÇÈÉ`ÉPÉbÉg,Resolution,Affected version,ê‡ñæ
+16700,Redmine,Patch,"",Closed,Normal,Blank content type for attachments attached via Ajax file upload,Jens Kr?mer,Jean-Philippe Lang,2014-05-24 18:39,Attachments,2.5.2,"","","",0,2014-04-16 12:59,2014-05-24 18:39,"","","","We recently discovered a bug her at ""Planio"":https://plan.io which pretty much affects all attachments created via the Ajax file upload: Attachments are initially created with the correct content type, but later when retrieved via their tokens and attached to their container this gets overwritten with nil.
+
+Please see the patch attached. Testcase included."
+16685,Redmine,Patch,"",Closed,Normal,Introduce the request_store gem to hold User.current and prevent data leakage in error messages,Holger Just,"",2014-09-14 13:33,Accounts / authentication,2.6.0,"","","",100,2014-04-15 15:21,2014-09-14 13:33,"","","","Recently, there were several issues where the User.current was not properly initialized and thus the setting from the request before it was used, e.g. #16511 with r13041 which can lead to data disclosure. This issue and all similar ones can be fully circumvented by ensuring that the current user is reset before the request even reaches our rails code.
+
+This patch which was extracted from ""Planio"":https://plan.io proposes the introduction of the ""request_store gem"":https://github.com/steveklabnik/request_store. It adds a middleware to provide a true request-local data store based on @Thread.current@. This ensures that the current user always needs to be set explicitly and can't be taken from previous requests, even if the logic to setup the user somehow fails or is circumvented due to early error handlers. The fail-safe default is always @User.anonymous@ which should be sufficient even in the face of an auth error.
+
+This patch is against the current master branch on ""Github"":https://github.com/redmine/redmine."
+16669,Redmine,Defect,"",Closed,Normal,Markdown formatter should use the :no_intra_emphasis extension,Sam Rawlins,Jean-Philippe Lang,2014-05-24 18:33,Text formatting,2.5.2,"","","",0,2014-04-14 18:50,2014-05-24 18:33,"",Fixed,2.5.1,"I'm so excited to see Redmine supporting markdown with Redcarpet (#15520)! However, this is causing a lot of unintended emphasis rendering, e.g. at ruby-lang.org [1]. I think the `:no_intra_emphasis` extension should be enabled when creating the Redcarpet::Markdown formatter. From the Redcarpet docs [2]:
+
+> `:no_intra_emphasis:` do not parse emphasis inside of words.
+> Strings such as `foo_bar_baz` will not generate `<em>` tags.
+
+The fix is just to add `:no_intra_emphasis => true` to [Redmine::WikiFormatting::Markdown::Formatter#formatter](http://www.redmine.org/projects/redmine/repository/entry/trunk/lib/redmine/wiki_formatting/markdown/formatter.rb#L125)
+
+[1] https://bugs.ruby-lang.org/issues/9726, https://bugs.ruby-lang.org/issues/9724, https://bugs.ruby-lang.org/issues/9719, https://bugs.ruby-lang.org/issues/9683, https://bugs.ruby-lang.org/issues/9679 are just the 5 most recent.
+[2] https://github.com/vmg/redcarpet#and-its-like-really-simple-to-use"
+16668,Redmine,Defect,"",Closed,Normal,Redmine links broken when object name contains special characters,Darth Vader,Jean-Philippe Lang,2014-05-24 18:32,Text formatting,2.5.2,"","","",0,2014-04-14 17:31,2014-05-24 18:32,"",Fixed,2.5.0,"When attaching files with special characters (ampersand is an example), the attachment link does not work:
+<pre>
+attachment:""Test & Show.txt""
+</pre>
+attachment:""Test & Show.txt""
+
+The regular expression in application_helper.rb, parse_redmine_links does parse the filename correctly but it seems that the code that compares attachments to the filename fails to match the two.
+
+<pre>
+Environment:
+  Redmine version                2.5.0.stable
+  Ruby version                   1.9.3-p231 (2012-05-25) [i386-mingw32]
+  Rails version                  3.2.17
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.8.4
+  Perforce                       2013.1
+  Git                            1.8.5.2
+</pre>"
+16667,Redmine,Defect,"",Closed,Normal,Subtask defect,Felix Muster,"",2014-04-14 22:48,"","","","","",0,2014-04-14 15:43,2014-04-14 22:48,"",Invalid,2.5.0,"Hello,
+when I create a subtask.
+It don't get any relation to the parents issue.
+
+It isn't shown under Subtasks on the parent issue.
+
+It is created like a normal issue.
+
+I don't know if this is a defect or I forgot to configure somethin.
+
+Thank You"
+16661,Redmine,Defect,"",New,Normal,Different users sharing same role have rights in projects in which user is not a member,Lajish Lakshmanan,"",2014-04-30 11:31,Administration,"","","","",0,2014-04-14 11:50,"","ä÷òAÇµÇƒÇ¢ÇÈ #850, éüÇÃÉ`ÉPÉbÉgÇ™èdï° #17213","","","Since different projects have different project managers and development managers. Providing admin rights to such users create confusion and a threat to redmine integrity.
+
+In my organisation, we are using Redmine for different projects, so different users can have same role. Due to this an user in one project get same rights as that of other user in another project. Somehow I can manage this situation by making project as private but there is a need to see issues of other projects in order to get information from those trackers.
+
+Don't we need a logic for assigning roles permissions based on project instead of globally. Here *Administrator* should be able to set Roles permission in project itself and of course local admin for each project. "
+16660,Redmine,Defect,"",Closed,Normal,issues relations,ä£? ìÇ,"",2014-04-15 02:54,Issues,"","","","",0,2014-04-14 11:49,2014-04-15 02:54,"",Cant reproduce,2.5.1,"is there ""copies from"" and ""copies to"" have no significance in issues relates?
+i create two issues,and set related to copies from,but i see no filed changed."
+16659,Redmine,Defect,"",New,Normal,subtasks in corss-project views,ä£? ìÇ,"",2014-05-13 09:58,Gantt,"","","","",0,2014-04-14 11:30,"","","",2.5.1,"a project create a issue,and include a subtask in another project,but view issues list do not display subtask,and the gantt can't display the subtask's progress bar.
+"
+16655,Redmine,Defect,"",Closed,Normal,start_date not set despite settings[default_issue_start_date_to_creation_date] being set.,Christoffer L,Jean-Philippe Lang,2014-05-24 18:30,Email receiving,2.5.2,"","","",0,2014-04-14 08:38,2014-05-24 18:30,"",Fixed,2.5.1,"I'm using rdm-mailhandler.rb with a postfix virtual mailbox-handler.
+
+And as subject says start_date is not being set when an issue is created from mail.
+I am unsure on where to apply a patch, and how exactly it should be applied.
+
+I think that the setting[default_issue_start_date_to_creation_date] should be applied to an issue that is created via rdm-mailhandler.rb.
+
+<pre>
+Environment:
+  Redmine version                2.5.1.stable
+  Ruby version                   1.9.3-p0 (2011-10-30) [x86_64-linux]
+  Rails version                  3.2.17
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Git                            1.7.9.5
+  Filesystem
+</pre>
+"
+16654,Redmine,Defect,"",New,Normal,Rest API custom field not working ,olivier musse,"",2014-04-14 08:13,REST API,"","","","",0,2014-04-14 08:13,"","","",2.5.1,"Upgrade to 2.5.1-stable version to have the custom_fields.json API feature available. 
+Any of the other API feature (issues,trackers,users, news....) is working but the /custom_fiels.json is empty while having custom fields defined in my database. 
+Missed something or bug ?"
+16652,Redmine,Defect,"",Closed,Low,Missing menu ÅgmoveÅh multiple tickets,illuminate33 illuminate33,"",2014-04-26 08:42,Issues,"","","","",0,2014-04-14 02:55,2014-04-26 08:42,"",Invalid,2.5.1,"Probably your answer is ""The behavior is by design. ""
+But I want to consult with my boss after a confirmation.
+
+http://community.bitnami.com/t/missing-menu-move-multiple-tickets/23598
+
+
+
+"
+16649,Redmine,Defect,"",New,Normal,Trimming the project description on projects list can break the text formatting,Pascal K?nig,"",2014-04-13 21:08,Text formatting,"","","","",0,2014-04-13 21:08,"","","","","Hello everyone,
+
+i've encountered a rather annoying bug:
+
+I'm hosting a redmine installation where i've got a project with a table in the project description. When i go to the /projects page, the project description is displayed cut off and the table in the description is not parsed correctly.
+
+I think the reason for this behaviour are the three dots (...) at the end of the line of the description. The textile parser expects a table row to end with a pipe ( | ), gets three dots instead and kinda breaks.
+
+*For example:*
+
+This is what the table should look like:
+| col 1 | col 2|
+
+This is what the table actually looks like because of the trimmed description:
+
+| col 1 | col 2|...
+
+I hope you guys get my explanation. :)
+
+
+---
+
+*Additional information*
+Database version: MySQL 5.5.35
+Ruby version: 1.9.3-p194
+Rails version: 3.2.17
+Redmine version: 2.5.0.stable"
+16645,Redmine,Defect,"",Closed,Normal,undefined method `>' for nil:NilClass,Alexander Klevtsov,"",2014-06-18 11:43,Custom fields,"","","","",0,2014-04-12 01:42,2014-04-12 05:39,"",Cant reproduce,2.4.5,"After upgrade from 2.4-dev to 2.4.5 started in +some projects+ encounter errors:
+*undefined method `>' for nil:NilClass*
+
+<pre>
+  [1m[35m (0.1ms)[0m  SELECT MAX(`settings`.`updated_on`) AS max_id FROM `settings` 
+  [1m[36mUser Load (0.1ms)[0m  [1mSELECT `users`.* FROM `users` WHERE `users`.`type` IN ('User', 'AnonymousUser') AND `users`.`status` = 1 AND `users`.`id` = 1 LIMIT 1[0m
+  Current user: kaa (id=1)
+  [1m[35mProject Load (0.1ms)[0m  SELECT `projects`.* FROM `projects` WHERE `projects`.`identifier` = 'olis-lxg-travel' LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mSELECT `enabled_modules`.`name` FROM `enabled_modules` WHERE `enabled_modules`.`project_id` = 39[0m
+  [1m[35mIssueStatus Load (0.1ms)[0m  SELECT `issue_statuses`.* FROM `issue_statuses` WHERE `issue_statuses`.`is_default` = 1 LIMIT 1
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT `issue_statuses`.* FROM `issue_statuses` WHERE `issue_statuses`.`is_default` = 1 LIMIT 1[0m
+  [1m[35mIssuePriority Load (0.1ms)[0m  SELECT `enumerations`.* FROM `enumerations` WHERE `enumerations`.`type` IN ('IssuePriority') AND `enumerations`.`is_default` = 1 ORDER BY enumerations.position ASC LIMIT 1
+  [1m[36mProject Load (0.1ms)[0m  [1mSELECT `projects`.* FROM `projects` WHERE `projects`.`id` = 39 LIMIT 1[0m
+  [1m[35mTracker Load (0.2ms)[0m  SELECT `trackers`.* FROM `trackers` INNER JOIN `projects_trackers` ON `trackers`.`id` = `projects_trackers`.`tracker_id` WHERE `projects_trackers`.`project_id` = 39 AND `trackers`.`id` = 1 ORDER BY trackers.position LIMIT 1
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT `issue_statuses`.* FROM `issue_statuses` WHERE `issue_statuses`.`is_default` = 1 LIMIT 1[0m
+  [1m[35mRole Load (0.1ms)[0m  SELECT `roles`.* FROM `roles` 
+  [1m[36mWorkflowTransition Load (0.1ms)[0m  [1mSELECT `workflows`.* FROM `workflows` WHERE `workflows`.`type` IN ('WorkflowTransition') AND `workflows`.`old_status_id` = 1 AND (role_id IN (1,2,3,4,5,6,7,8) AND tracker_id = 1 AND ((author = 0 AND assignee = 0) OR author = 1))[0m
+  [1m[35mIssueStatus Load (0.1ms)[0m  SELECT `issue_statuses`.* FROM `issue_statuses` WHERE `issue_statuses`.`id` IN (5, 4, 3, 2, 6)
+  [1m[36mSQL (0.1ms)[0m  [1mSELECT `enabled_modules`.`name` FROM `enabled_modules` WHERE `enabled_modules`.`project_id` = 39[0m
+  [1m[35mCACHE (0.0ms)[0m  SELECT `roles`.* FROM `roles` 
+  [1m[36mWorkflowPermission Load (0.1ms)[0m  [1mSELECT `workflows`.* FROM `workflows` WHERE `workflows`.`type` IN ('WorkflowPermission') AND `workflows`.`tracker_id` = 1 AND `workflows`.`old_status_id` = 1 AND `workflows`.`role_id` IN (1, 2, 3, 4, 5, 6, 7, 8)[0m
+  [1m[35mTracker Load (0.2ms)[0m  SELECT `trackers`.* FROM `trackers` WHERE `trackers`.`id` = 1 LIMIT 1
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT `roles`.* FROM `roles` [0m
+  [1m[35mCACHE (0.0ms)[0m  SELECT `workflows`.* FROM `workflows` WHERE `workflows`.`type` IN ('WorkflowPermission') AND `workflows`.`tracker_id` = 1 AND `workflows`.`old_status_id` = 1 AND `workflows`.`role_id` IN (1, 2, 3, 4, 5, 6, 7, 8)
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT `issue_statuses`.* FROM `issue_statuses` WHERE `issue_statuses`.`is_default` = 1 LIMIT 1[0m
+  [1m[35mCACHE (0.0ms)[0m  SELECT `roles`.* FROM `roles` 
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT `workflows`.* FROM `workflows` WHERE `workflows`.`type` IN ('WorkflowTransition') AND `workflows`.`old_status_id` = 1 AND (role_id IN (1,2,3,4,5,6,7,8) AND tracker_id = 1 AND ((author = 0 AND assignee = 0) OR author = 1))[0m
+  [1m[35mCACHE (0.0ms)[0m  SELECT `issue_statuses`.* FROM `issue_statuses` WHERE `issue_statuses`.`id` IN (5, 4, 3, 2, 6)
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT `issue_statuses`.* FROM `issue_statuses` WHERE `issue_statuses`.`is_default` = 1 LIMIT 1[0m
+  [1m[35mCACHE (0.0ms)[0m  SELECT `roles`.* FROM `roles` 
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT `workflows`.* FROM `workflows` WHERE `workflows`.`type` IN ('WorkflowTransition') AND `workflows`.`old_status_id` = 1 AND (role_id IN (1,2,3,4,5,6,7,8) AND tracker_id = 1 AND ((author = 0 AND assignee = 0) OR author = 1))[0m
+  [1m[35mCACHE (0.0ms)[0m  SELECT `issue_statuses`.* FROM `issue_statuses` WHERE `issue_statuses`.`id` IN (5, 4, 3, 2, 6)
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT `roles`.* FROM `roles` [0m
+  [1m[35mCACHE (0.0ms)[0m  SELECT `workflows`.* FROM `workflows` WHERE `workflows`.`type` IN ('WorkflowPermission') AND `workflows`.`tracker_id` = 1 AND `workflows`.`old_status_id` = 1 AND `workflows`.`role_id` IN (1, 2, 3, 4, 5, 6, 7, 8)
+  [1m[36mIssueCustomField Load (0.2ms)[0m  [1mSELECT `custom_fields`.* FROM `custom_fields` INNER JOIN `custom_fields_trackers` ON `custom_fields`.`id` = `custom_fields_trackers`.`custom_field_id` WHERE `custom_fields`.`type` IN ('IssueCustomField') AND `custom_fields_trackers`.`tracker_id` = 1[0m
+  [1m[35mIssueCustomField Load (0.1ms)[0m  SELECT `custom_fields`.* FROM `custom_fields` WHERE `custom_fields`.`type` IN ('IssueCustomField') AND (is_for_all = 1 OR id IN (SELECT DISTINCT cfp.custom_field_id FROM custom_fields_projects cfp WHERE cfp.project_id = 39)) ORDER BY custom_fields.position ASC
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT `roles`.* FROM `roles` [0m
+  [1m[35mCACHE (0.0ms)[0m  SELECT `workflows`.* FROM `workflows` WHERE `workflows`.`type` IN ('WorkflowPermission') AND `workflows`.`tracker_id` = 1 AND `workflows`.`old_status_id` = 1 AND `workflows`.`role_id` IN (1, 2, 3, 4, 5, 6, 7, 8)
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT `roles`.* FROM `roles` [0m
+  [1m[35mCACHE (0.0ms)[0m  SELECT `workflows`.* FROM `workflows` WHERE `workflows`.`type` IN ('WorkflowPermission') AND `workflows`.`tracker_id` = 1 AND `workflows`.`old_status_id` = 1 AND `workflows`.`role_id` IN (1, 2, 3, 4, 5, 6, 7, 8)
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT `issue_statuses`.* FROM `issue_statuses` WHERE `issue_statuses`.`is_default` = 1 LIMIT 1[0m
+  [1m[35mCACHE (0.0ms)[0m  SELECT `roles`.* FROM `roles` 
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT `workflows`.* FROM `workflows` WHERE `workflows`.`type` IN ('WorkflowTransition') AND `workflows`.`old_status_id` = 1 AND (role_id IN (1,2,3,4,5,6,7,8) AND tracker_id = 1 AND ((author = 0 AND assignee = 0) OR author = 1))[0m
+  [1m[35mCACHE (0.0ms)[0m  SELECT `issue_statuses`.* FROM `issue_statuses` WHERE `issue_statuses`.`id` IN (5, 4, 3, 2, 6)
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT `issue_statuses`.* FROM `issue_statuses` WHERE `issue_statuses`.`is_default` = 1 LIMIT 1[0m
+  [1m[35mUser Load (0.2ms)[0m  SELECT DISTINCT `users`.* FROM `users` INNER JOIN `members` ON `members`.`user_id` = `users`.`id` WHERE `users`.`type` IN ('User', 'AnonymousUser') AND `users`.`status` = 1 AND (members.project_id = 39)
+  [1m[36m (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35m (0.0ms)[0m  ROLLBACK
+Completed 500 Internal Server Error in 273.3ms
+
+NoMethodError (undefined method `>' for nil:NilClass):
+  app/models/custom_field.rb:355:in `validate_field_value_format'
+  app/models/custom_field.rb:334:in `validate_field_value'
+  app/models/custom_field_value.rb:46:in `validate_value'
+  lib/plugins/acts_as_customizable/lib/acts_as_customizable.rb:126:in `each'
+  lib/plugins/acts_as_customizable/lib/acts_as_customizable.rb:126:in `validate_custom_field_values'
+  app/controllers/issues_controller.rb:146:in `create'
+
+</pre>
+
+<pre>
+Environment:
+  Redmine version                2.4.5.stable
+  Ruby version                   2.0.0-p451 (2014-02-24) [i686-linux]
+  Rails version                  3.2.17
+  Environment                    development
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.6.12
+  Cvs                            1.12.13
+  Git                            1.7.2.5
+  Filesystem                     
+Redmine plugins:
+  recaptcha                      1.0.0
+  redmine_agile                  1.1.2-light
+  redmine_people                 0.1.8
+  redmine_questions              0.0.5
+</pre>"
+16640,Redmine,Defect,"",Closed,Normal,Emails are not being sent to recipients for redmine events,Ryan Sparkes,"",2014-04-14 07:40,Email receiving,"","","","",0,2014-04-11 17:39,2014-04-12 12:15,"",Cant reproduce,2.5.0,"We are having issues with Redmine email not being sent.
+
+We have found that a workaround to our issue is to update mailer.rb to explicitly state who the mail is from. For example, we have added the highlighted lines below:
+
+@  def account_information(user, password)@
+@    set_language_if_valid user.language@
+@    @user = user@
+@    @password = password@
+@    @login_url = url_for(:controller => 'account', :action => 'login')@
+*%{background-color:pink}@    f = ""Redmine <#{Setting.mail_from}>"" @%*
+@    mail :to => user.mail,@
+*%{background-color:pink}@      :from => f,@%*
+@      :subject => l(:mail_subject_register, Setting.app_title)@
+  end
+</pre>
+
+We needed to make a similar change in all methods that send out an email. It's not clear to us that this is the correct fix - perhaps there is a setting somewhere that we have missed?
+
+We did not see this problem in redmine 2.3.1, but it appeared after upgrading to 2.5.0.
+
+Environment:
+|Redmine version|2.5.0.stable|
+|Ruby version|1.9.3-p231 (2012-05-25) [i386-mingw32]|
+|Rails version|3.2.17|
+|Environment|production|
+|Database adapter|Mysql2|
+"
+16623,Redmine,Defect,"",Closed,Normal,Incorrect task status on activity page,Gennady Grechin,"",2014-04-11 04:48,Activity view,"","","","",0,2014-04-10 19:36,2014-04-11 04:48,"",Duplicate,2.5.1,"I create new task. If I open activity page I'll see corresponding record with status ""New"" (I'll name this record as ""1"" below)
+
+Ok, I change status of the task to ""Opened"". If I open activity page I'll see corresponding record with status ""Opened"" (record ""2""). But record ""1"" has also status ""Opened"".
+
+Next changing status of task to ""Resolved"" will add new record to activity page with status ""Resolved"". Also, record ""2"" remain ""Opened"", but record ""1"" will be ""Resolved"".
+
+It seems the first record (of task creation) refers to the same variable with last status.
+
+P.S. Icons of the records are correct."
+16619,Redmine,Defect,"",Closed,Normal,Mailer.token_for generates invalid message_id when using from address with full name,David Robinson,Jean-Philippe Lang,2014-05-24 18:29,Email notifications,2.5.2,"","","",0,2014-04-10 13:34,2014-05-24 18:29,"",Fixed,2.4.4,"The token generator in Mailer.rb (Mailer.token_for) has the following code:
+<pre>
+host = Setting.mail_from.to_s.gsub(%r{^.*@}, '')
+</pre>
+If you have configured Redmine to send from an address with both name and email, (f.ex. ""Redmine Mailer<no-reply@redmine.org>"") this results in a Message-id like the following being created:
+<pre>
+<redmine.journal-2421.20140408113649@redmine.org>>
+</pre>
+the double "">"" at the end is considered illegal by some mail servers, and results in them rejecting it.
+
+A possible solution could be the following:
+<pre>
+host = Setting.mail_from.to_s.gsub(%r{(^.*@)|>}, '')
+</pre>
+"
+16613,Redmine,Defect,"",New,Normal,Not proper scanned Markup with point notation,Daniel Felix,"",2018-02-16 16:07,Text formatting,"","","","",0,2014-04-10 10:59,"","","","","Hi there,
+
+I encountered a little misbehaviour regarding textile markup und . notations.
+
+Example:
+@*test.argh*@
+*test.argh*
+gets proper parsed (bold test.argh)
+@*[test].argh*@
+*[test].argh*
+gets wrong parsed to (bold .argh - [test] is striped)
+@*{test}.argh*@ 
+*{test}.argh*
+is parsed to (bold .argh - {test} is striped, as this is the notation for passing css to the markup, which is correct.)
+
+Is the regular expression maybe wrong and it only parses for @*[something in brackets].Text@?"
+16594,Redmine,Defect,"",Closed,Normal,"Application Error: ""Rails Application failed to start properly"" ",peng zhang,"",2014-04-24 12:18,"","","","","",0,2014-04-10 08:46,2014-04-24 12:18,"",Invalid,2.5.0,"Apache log:
+FastCGI: (dynamic) server ""/var/www/redmine/public/dispatch.fcgi"" (pid 2857) terminated by calling exit with status '127'
+FastCGI: (dynamic) server ""/var/www/redmine/public/dispatch.fcgi"" has failed to remain running for 30 seconds given 3 attempts, its restart interval has been backed off to 600 seconds
+
+redmine_error_log:
+FastCGI: incomplete headers (0 bytes) received from server ""/var/www/redmine/public/dispatch.fcgi""nds
+
+"
+16593,Redmine,Defect,"",Closed,Normal,Unable to change issue status while updating issue in version 2.4.2,vinuthna g,"",2015-04-14 19:36,Issues,"","","","",0,2014-04-10 08:42,2015-04-14 19:36,"",No feedback,2.4.2,"I have created an issue and while trying to update that issue I'm unable change the status of the issue, I have verified workflow under Administration. I have admin access and also my role is project leader in that project,attaching screenshot for reference."
+16587,Redmine,Defect,"",Closed,Normal,Using similar accounts for svn:// access and LDAP results in both not working,Matthias Bendewald,"",2014-04-10 14:20,Accounts / authentication,"","","","",0,2014-04-09 16:51,2014-04-09 23:44,"",Invalid,2.5.1,"We have an environment where my username for svn:// access is ""Surname"" 
+while my LDAP account is ""surname"", with different passwords.
+As soon as I configure the access to svn:// with my username and password 
+while my Redmine account is configured as LDAP account, noone is able to 
+login with LDAP accounts anymore and all repositories that use my useraccount 
+to gather the revisions do not work anymore.
+I am not sure if using both with the same casing works better, should I test
+that? What else can I do to help?
+
+
+Environment:
+Everything is windows here, using the Bitnami Redmine stack (Version 2.5.1)
+
+  MySQL Version                  5.5.36
+  Redmine version                2.5.1.stable
+  Ruby version                   1.9.3-p231 (2012-05-25) [i386-mingw32]
+  Rails version                  3.2.17
+  Environment                    production
+  Database adapter               Mysql2
+
+SCM:
+  Subversion                     1.8.5
+  Git                            1.9.0
+  Filesystem                     
+
+Redmine plugins:
+  redmine_code_review            0.6.3
+"
+16585,Redmine,Defect,"",Closed,High,"REST API: ?include=memberships,groups does not deliver values",Marco Descher,"",2014-05-02 10:08,REST API,"","","","",0,2014-04-09 10:04,2014-05-02 10:08,"",Invalid,2.4.5,"A call on @https://foo.bar.at/users/3.xml?include=memberships,groups@ does deliver the following response; while the requested user is granted ADMIN rights. Clearly the values are not populated, as described on http://www.redmine.org/projects/redmine/wiki/Rest_Users
+
+<pre>
+<user>
+<id>3</id>
+<login>mdescher</login>
+<firstname>Marco</firstname>
+<lastname>Descher</lastname>
+<mail>dfoo@bar.at</mail>
+<created_on>2013-09-26T08:19:28Z</created_on>
+<last_login_on>2014-04-09T08:00:21Z</last_login_on>
+<api_key>asdf</api_key>
+<status>1</status><groups type=""array""/>
+<memberships type=""array""/></user>
+</pre>
+
+System information:
+
+<pre>
+Environment:
+  Redmine version                2.4.5.stable
+  Ruby version                   1.9.3-p194 (2012-04-20) [x86_64-linux]
+  Rails version                  3.2.17
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Mercurial                      2.2.2
+  Git                            1.7.10.4
+  Filesystem                     
+Redmine plugins:
+  redmine_contacts               3.2.15-pro
+  redmine_contacts_helpdesk      2.2.9-pro
+  redmine_contacts_invoices      3.1.2-pro
+  redmine_issue_checklist        2.0.5
+  redmine_medelexis              0.0.3
+  redmine_products               1.0.2-pro
+</pre>"
+16569,Redmine,Defect,"",Closed,Urgent,watchlist search displays users that are not members to the current project,Herv? Brelay,"",2014-04-09 02:32,"","","","","",0,2014-04-09 02:18,2014-04-09 02:32,"",Duplicate,"","Assuming the following:
+
+- User1 has access to Project1 (regular developper)
+- User2 has access to Project2 (regular developper)
+
+When User1 wants to add a watcher on an issue in Project1, it gets a list of users that can be one by one selected, as well as a ""search"" box on top.
+
+When typing any letter on the search box, the selectable list is refreshed, but now shows names of users that are not in the Project (i.e. typing ""u"" would show User2), backspace then shows the whole list of Redmine users.
+
+This is quite un-desirable as in most installations, some projects are not public, hence their members should not show up in some other project's UI screen.
+
+This has been found on 2.3.2.
+It is still present in a test install of 2.5.0
+
+This is quite serious as it violates privacy settings "
+16568,Redmine,Defect,"",Needs feedback,Normal,Referensing commits to issues across all projects,Pavel Potcheptsov,"",2014-05-14 15:54,SCM,"","","","",0,2014-04-08 16:04,"","","",2.4.0,"I have situation when referencing works in one case and doesn't work in other.
+Settings:
+!rm_refer1.png!
+
+It works when referencing issue is in parent project for repository's project: !rm_refer4.png!
+!rm_refer5.png!
+
+It doesn't work when referencing issue isn't in parent project for repository's project:
+!rm_refer2.png!
+!rm_refer3.png!
+
+I execute this manually after commit:
+<pre>
+# cd /var/www/rm2.4.0/ && ruby ./script/rails runner ""Repository.fetch_changesets"" -e production
+</pre>
+
+<pre>
+Environment:
+  Redmine version                2.4.0.stable.12309
+  Ruby version                   1.9.3-p327 (2012-11-10) [i686-linux]
+  Rails version                  3.2.15
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.8.8
+  Git                            1.7.1
+  Filesystem                     
+Redmine plugins:
+  multi_time_tracker             0.1.1
+  projects_table                 0.0.4
+  redmine_better_gantt_chart     0.9.0
+  redmine_drafts                 0.2.0
+  redmine_equipment_status_viewer 1.0.1
+  redmine_fields_permissions     1.0.0
+  redmine_hide_estimated_hours   1.0.5
+  redmine_lightbox               0.0.1
+  redmine_monitoring_controlling 0.1.1
+  redmine_plugin_views_revisions 0.0.1
+  redmine_timesheet_plugin       0.7.0
+  redmine_xls_export             0.2.1.t4
+</pre>"
+16566,Redmine,Patch,"",Closed,Normal,"French ""text_git_repository_note"" translation",Toshi MARUYAMA,"",2014-04-08 18:17,Translations,2.5.2,"","","",0,2014-04-08 13:13,2014-04-08 18:17,"","","","From #16553.
+
+<pre><code class=""diff"">
+diff --git a/config/locales/fr.yml b/config/locales/fr.yml
+--- a/config/locales/fr.yml
++++ b/config/locales/fr.yml
+@@ -1098,7 +1098,7 @@ fr:
+   text_scm_config: Vous pouvez configurer les commandes des SCM dans config/configuration.yml. Red?marrer l'application apr?s modification.
+   text_scm_command_not_available: Ce SCM n'est pas disponible. V?rifier les param?tres dans la section administration.
+   label_diff: diff
+-  text_git_repository_note: Repository is bare and local (e.g. /gitrepo, c:\gitrepo)
++  text_git_repository_note: ""Le d?p?t est vide et local (exemples : /gitrepo, c:\\gitrepo)""
+   description_query_sort_criteria_direction: Ordre de tri
+   description_project_scope: P?rim?tre de recherche
+   description_filter: Filtre
+</code></pre>"
+16564,Redmine,Defect,"",Closed,Normal,Repository identifiers can be reserved words,Felix Sch?fer,Jean-Philippe Lang,2014-05-24 18:28,SCM,2.5.2,"","","",0,2014-04-08 11:32,2014-05-24 18:28,"",Fixed,2.5.1,"A client of ""Planio"":https://plan.io has created a repository with the identifier @statistics@ and was unable to access that repository via the web UI. While investigating this issue, we discovered that the reserved words list for repository identifiers (source:/tags/2.5.1/app/models/repository.rb#L43) is incomplete (@browse@ and others are missing) or wrong (@stats@ should be @statistics@, @show@ is double)."
+16559,Redmine,Defect,"",New,Normal,Project custom fields (boolean) doesn't update correctly,Daniel Felix,"",2014-05-02 10:15,Custom fields,"","","","",0,2014-04-08 09:55,"",ä÷òAÇµÇƒÇ¢ÇÈ #5722,Cant reproduce,2.5.1,"Hi there,
+
+I'm not sure if this is a misbehavior on our systems, but I tested it without any plugins and I'm able to reproduce it.
+
+I used a Boolean project custom field. After creating it, I try to update it from NULL to TRUE. The update form raised the success message, even the field value is transmitted to the server (as seen in the log), but the field still shows up as NULL. Is this a misbehavior a bug from the new custom fields in 2.5?
+
+Best regards,
+Daniel"
+16558,Redmine,Defect,"",Closed,Normal,Unable to change issue status,Steven Jones,"",2014-04-08 18:16,Issues,"","","","",0,2014-04-08 09:26,2014-04-08 18:16,"",Invalid,2.5.1,"When upgrading to 2.5.1 from 2.5.0 I am unable to change the status of issues!
+
+Steps to reproduce:
+
+1. Visit an issue.
+2. Click edit to edit the issue.
+3. Change the status of the issue.
+4. Ajax request happens, and the form gets replaced out.
+5. The issue status is now 'New'.
+
+I'm using chrome.
+
+I can believe that it's something about my setup, I don't have time at the moment to diagnose fully, but will perform a git bisect in a bit and work out the exact commit that introduced this issue.
+
+<pre><code>
+Environment:
+  Redmine version                2.5.0.stable
+  Ruby version                   1.9.3-p0 (2011-10-30) [x86_64-linux]
+  Rails version                  3.2.17
+  Environment                    production
+  Database adapter               Mysql2
+</code></pre>"
+16556,Redmine,Patch,"",Closed,Normal,"Traditional Chinese ""field_assigned_to"" translation change",Toshi MARUYAMA,"",2014-04-08 04:28,Translations,2.6.0,"","","",0,2014-04-08 04:20,2014-04-08 04:28,"","","","From #16545.
+
+<pre><code class=""diff"">
+diff --git a/config/locales/zh-TW.yml b/config/locales/zh-TW.yml
+--- a/config/locales/zh-TW.yml
++++ b/config/locales/zh-TW.yml
+@@ -337,7 +337,7 @@
+   field_tracker: í«ÁFïW‚‹
+   field_subject: éÂé|
+   field_due_date: äÆê¨ì˙ä˙
+-  field_assigned_to: ï™îhãã
++  field_assigned_to: îÌï™îhé“
+   field_priority: óDêÊû‹
+   field_fixed_version: î≈ñ{
+   field_user: óp?
+</code></pre>"
+16553,Redmine,Patch,"",Closed,Normal,Reorder French translation,Darth Vader,"",2014-04-08 18:18,Translations,"","","","",0,2014-04-08 00:36,2014-04-08 18:18,"","","","Reordered the fields so they match the English version to make identification of new fields easier.
+Translated one additional field.
+"
+16548,Redmine,Defect,"",Closed,Normal,"Issue Start Date, Due Date problem",lee han,"",2014-04-09 04:51,Issues,"","","","",0,2014-04-07 13:41,2014-04-09 04:51,"",Invalid,"","I attached screen shot.
+
+"
+16545,Redmine,Patch,"",Closed,Normal,Traditional Chinese translation (to r13067),ChunChang Lo,"",2014-04-08 04:47,Translations,"","","","",0,2014-04-07 10:49,2014-04-08 04:47,ÉRÉsÅ[êÊ #17421,"","","* New
+** label_check_for_updates, label_latest_compatible_version, label_unknown_plugin
+* Changed
+** field_assigned_to, label_plugins, text_plugin_assets_writable
+"
+16542,Redmine,Patch,"",Closed,Normal,German Translation for r13042,Daniel Felix,"",2014-04-07 10:03,Translations,"","","","",0,2014-04-07 08:47,2014-04-07 10:03,éüÇÃÉ`ÉPÉbÉgÇ™èdï° #17405,"","","Change: 
+@label_check_for_updates: Check for updates	
+label_latest_compatible_version: Latest compatible version
+label_unknown_plugin: Unknown plugin@
+
+To:
+@label_check_for_updates: Auf Updates pr?fen
+label_latest_compatible_version: Letzte kompatible Version
+label_unknown_plugin: Unbekanntes Plugin@"
+16536,Redmine,Patch,"",Closed,Normal,Japanese translation update (email notification),Go MAEDA,"",2014-04-07 02:23,Translations,2.6.0,"","","",0,2014-04-06 16:41,2014-04-07 02:23,"","","",Translated label_issue_assigned_to_updated and improved some existing translations about email notification.
+16532,Redmine,Patch,"",Closed,Normal,Bulgarian translation (r13044),Ivan Cenov,"",2014-04-06 09:27,Translations,"","","","",0,2014-04-05 18:02,2014-04-06 09:27,"","","","Translated:
+* label_check_for_updates
+* label_latest_compatible_version
+* label_unknown_plugin
+"
+16519,Redmine,Defect,"",Closed,Normal,Generating a spent time report on a list type custom field with multiple values causes an invalid SQL error,Chris Cardwell,Jean-Philippe Lang,2014-06-26 21:36,Custom fields,2.5.2,"","","",0,2014-04-03 19:45,2014-06-26 21:36,"ä÷òAÇµÇƒÇ¢ÇÈ #16963, éüÇÃÉ`ÉPÉbÉgÇ™èdï° #17091",Fixed,2.5.1,"When on the Spent Time report page @(example: http://localhost/redmine/projects/<project name>/time_entries/report)@, trying to generate a report by adding a custom field of list type, that has the ability to select multiple values, will cause an internal error. 
+
+The error from the production log is:
+
+@ActiveRecord::StatementInvalid (Mysql2::Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'AS , tyear AS tyear, tmonth AS tmonth, tweek AS tweek, spent_on AS spent_on FROM' at line 1: SELECT SUM(`time_entries`.`hours`) AS sum_hours,  AS , tyear AS tyear, tmonth AS tmonth, tweek AS tweek, spent_on AS spent_on FROM `time_entries` LEFT OUTER JOIN `projects` ON `projects`.`id` = `time_entries`.`project_id` LEFT OUTER JOIN `enumerations` ON `enumerations`.`id` = `time_entries`.`activity_id` AND `enumerations`.`type` IN ('TimeEntryActivity') LEFT OUTER JOIN `issues` ON `issues`.`id` = `time_entries`.`issue_id` LEFT OUTER JOIN custom_values cf_41 ON cf_41.customized_type = 'Issue' AND cf_41.customized_id = issues.id AND cf_41.custom_field_id = 41 AND (((1=1) AND (issues.tracker_id IN (SELECT tracker_id FROM custom_fields_trackers WHERE custom_field_id = 41)) AND (EXISTS (SELECT 1 FROM custom_fields ifa WHERE ifa.is_for_all = 1 AND ifa.id = 41) OR issues.project_id IN (SELECT project_id FROM custom_fields_projects WHERE custom_field_id = 41)))) AND cf_41.value <> '' AND cf_41.id = (SELECT max(cf_41_2.id) FROM custom_values cf_41_2 WHERE cf_41_2.customized_type = cf_41.customized_type AND cf_41_2.customized_id = cf_41.customized_id AND cf_41_2.custom_field_id = cf_41.custom_field_id) WHERE (projects.status <> 9 AND projects.id IN (SELECT em.project_id FROM enabled_modules em WHERE em.name='time_tracking')) AND ((time_entries.spent_on IS NOT NULL) AND projects.id = 4) GROUP BY tyear, tmonth, tweek, spent_on):@
+@lib/redmine/helpers/time_report.rb:48:in `run'@
+@lib/redmine/helpers/time_report.rb:35:in `initialize'@
+@app/controllers/timelog_controller.rb:83:in `new'@
+@app/controllers/timelog_controller.rb:83:in `report'@
+
+
+The error seems to come from the SELECT statement, where the second column to be selected is @"" AS ,""@. When looking at the query of a report that was generated correctly, that spot instead has something like @""COALESCE(cf_41.value, '') AS coalesce_cf_41_value,""@ where 41 is the id of the custom field in the custom_fields table. 
+
+We noticed that in the custom_field.rb file, located at @C:\Bitnami\redmine-2.5.0-0\apps\redmine\htdocs\app\models\@, there is this code:
+
+@   def order_statement@
+@    return nil if multiple?@
+@    format.order_statement(self)@
+@  end@
+
+@  # Returns a GROUP BY clause that can used to group by custom value@
+@  # Returns nil if the custom field can not be used for grouping.@
+@  def group_statement@
+@    return nil if multiple?@
+@    format.group_statement(self)@
+@  end@
+
+Commenting out both instances of @return nil if multiple?@ has resolved the internal error, however the generated report will show time spent in the bottom most selected value of the custom field list (if multiple values are selected). 
+
+A possible solution would be to not allow multiple value list custom fields to be added to reports at all. Another solution could be creating a row for each combination of selected values from the list (if that combination has time spent on it), however for large lists with many values, this could potentially become chaotic. Realistically, any solution that doesn't result in the internal error page would be preferred."
+16497,Redmine,Defect,"",Closed,Normal,My user URL is not accessible for non logged in users,Systango Ltd,"",2014-07-02 10:18,Accounts / authentication,"","","","",0,2014-04-02 19:05,2014-07-02 10:18,"","","","User URL - http://www.redmine.org/users/98848
+Page is accessible when one is logged in but for non logged in users 
+404 - with following message is rendered - 
+The page you were trying to access doesn't exist or has been removed.
+
+Though I am able to access to other user's url without logging in. Is this a bug or setting issue? "
+16496,Redmine,Defect,"",Closed,Normal,Link custom field are not displayed as links on the issue list,wakanda tchalla,Jean-Philippe Lang,2014-04-06 13:12,Custom fields,2.6.0,"","","",0,2014-04-02 18:04,2014-04-06 13:12,"",Fixed,"","I am using 2.5.0, but I see the Custom Field of ""LINK"" doesn't work in issue/ticket list.
+
+but it really works in ticket page. 
+
+in the issue page, I see there is a URL link after I move the mouse on. and it works when I clicked.
+
+but in the issue list page, I just see text of the custom field. no URL link, no response for mouse moving on and click.
+
+Plus that will be great to keep using the %value%...
+
+Thanks!"
+16495,Redmine,Defect,"",Closed,High,Redmine install,Muki Pelda,"",2014-04-03 05:20,"","","","","",0,2014-04-02 17:58,2014-04-03 05:20,"",Invalid,"",Can't install redmine because of some gem install error
+16493,Redmine,Defect,"",Closed,Normal,Error when trying to add a custom field,Howard Bertolo,"",2014-04-06 09:19,Custom fields,"","","","",0,2014-04-02 15:49,2014-04-06 09:19,"",Invalid,2.5.1,"h2. We get the following error when trying to create a custom field of any type:
+
+!capture.png!
+
+h2. Our Redmine log file:
+
+Started GET ""/custom_fields/new?utf8=%E2%9C%93&type=TimeEntryCustomField"" for 99.250.151.91 at 2014-03-31 15:45:43 -0400
+Processing by CustomFieldsController#new as HTML
+  Parameters: {""utf8""=>""?? ""type""=>""TimeEntryCustomField""}
+  Current user: tlaskows (id=1)
+  Rendered custom_fields/_form.html.erb (2.3ms)
+  Rendered custom_fields/new.html.erb within layouts/admin (3.5ms)
+Completed 500 Internal Server Error in 25.3ms
+
+ActionView::Template::Error (undefined method `description' for #<TimeEntryCustomField:0x00000005d44888>):
+    4: <div class=""box tabular"">
+    5: <p><%= f.select :field_format, custom_field_formats_for_select(@custom_field), {}, :disabled => !@custom_field.new_record? %></p>
+    6: <p><%= f.text_field :name, :required => true %></p>
+    7: <p><%= f.text_area :description, :rows => 7 %></p>
+    8:
+    9: <% if @custom_field.format.multiple_supported %>
+    10: <p>
+  lib/redmine/views/labelled_form_builder.rb:31:in `text_area'
+  app/views/custom_fields/_form.html.erb:7:in `_app_views_custom_fields__form_html_erb__3906873885509551619_58379560'
+  app/views/custom_fields/new.html.erb:6:in `block in _app_views_custom_fields_new_html_erb__317743637556521852_58318580'
+  app/helpers/application_helper.rb:1042:in `labelled_form_for'
+  app/views/custom_fields/new.html.erb:5:in `_app_views_custom_fields_new_html_erb__317743637556521852_58318580'
+
+h2. Our Redmine Installation Info:
+
+*Environment:*
+
+<pre>
+Redmine version                2.5.1.stable
+Ruby version                   1.9.3-p545 (2014-02-24) [x86_64-linux]
+Rails version                  3.2.17
+Environment                    production
+Database adapter               Mysql2
+</pre>
+
+*SCM:*
+
+<pre>
+Subversion                     1.8.8
+Git                            1.9.0
+Filesystem
+</pre> 
+ 
+*Redmine plugins:*
+
+<pre>
+contracts                      1.2.0
+progressive_projects_list      1.0.0
+redmine_contacts               3.2.14-light
+redmine_issue_checklist        2.0.5
+redmine_people                 0.1.6
+redmine_questions              0.0.5
+</pre>
+"
+16492,Redmine,Defect,"",Closed,Normal,URL of custom field in email: HTML-Tags are wrong,Robert Schneider,"",2015-07-11 06:38,Email notifications,"","","","",0,2014-04-02 14:53,2015-07-11 06:38,"","",2.5.1,"The email contains a custom field like this:
+
+<li>Bla: &lt;a href=&quot;http://redmine.colop.org&quot;&gt;something&lt;/a&gt;</li>
+
+instead of:
+
+<li>Bla: <a href=""http://redmine.org"">something</a></li>
+"
+16489,Redmine,Defect,"",Closed,Normal,Autologin Cookie doesn't differentiate between different Redmine systems within the same browser,Kevin Brand,"",2015-11-14 11:35,Security,"","","","",0,2014-04-02 08:01,2015-11-14 11:35,ä÷òAÇµÇƒÇ¢ÇÈ #21169,No feedback,2.2.4,"When I'm using two different Redmine systems (for example a working system and a testing system) within the same browser (tested with Chrome an IE), the autologin cookie registers everytime automatically the two users of each system with the same ID on the databases. 
+
+An example: I'm logged in on the working system with my work account. Now I open a new tab, go to the testing system and register myself with a test account.
+When I'm now going back to the working system and refresh the side, I'm no longer logged in with my work account, but with the account of another workmate, which got the same ID on the working system database as the test account on the testing system database.
+
+There is no authentification (password) needed, which effects that I am able to login with each user of the working system, as long as I got a user on my testing system with the same ID.
+
+"
+16487,Redmine,Defect,"",New,Normal,REST Custom Field Filter requires project_id but not documented,Tyghe Vallard,"",2014-04-01 17:46,REST API,"","","","",0,2014-04-01 17:46,"","","",2.2.2,"It seems that this effects both 2.2.2-stable and 2.4-stable
+
+# Create Custom Field
+# Set as both searchable and filter
+# Assign to tracker and project
+
+This returns only the issues with Custom Field ID 1 and value <value>
+/issues.json?project_id=<projectid>&cf_x=<value>
+
+This returns all issues
+/issues.json?cf_x=<value>
+
+The Wiki from what I can see does not indicate that the project_id is required, but it seems to be. Not sure if that is intended or not, but needs to be fixed or documented as such.
+
+<pre>
+Environment:
+  Redmine version                          2.2.2.stable
+  Ruby version                             1.9.2 (x86_64-linux)
+  Rails version                            3.2.11
+  Environment                              production
+  Database adapter                         PostgreSQL
+</pre>
+
+Not sure if it matters or not, but I have 2.2.2-stable and 2.4-stable both installed on Heroku and both have the same issue."
+16485,Redmine,Defect,"",New,Normal,Custom Fields REST API for JSON is not the same as XML,Loyce Lorenzo,"",2014-04-01 11:24,REST API,"","","","",0,2014-04-01 11:24,"","","",2.5.0,"Hi,
+  Attached are sample output of custom fields REST API request for JSON and XML format. The JSON output has less information about trackers compared to XML output.
+
+
+<pre>
+Environment:
+  Redmine version                2.5.0.stable
+  Ruby version                   1.9.3-p545 (2014-02-24) [x86_64-linux]
+  Rails version                  3.2.17
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.8.5
+  Git                            1.8.5.2
+  Filesystem                     
+Redmine plugins:
+  no plugin installed
+
+</pre>"
+16482,Redmine,Defect,"",New,Normal,"Wrong search query for timelog, when timezone not UTC",Alexander Maslov,"",2017-12-18 19:34,Time tracking,"","","","",0,2014-03-31 23:38,"","ä÷òAÇµÇƒÇ¢ÇÈ #22320, ä÷òAÇµÇƒÇ¢ÇÈ #19033, ä÷òAÇµÇƒÇ¢ÇÈ #23189, ä÷òAÇµÇƒÇ¢ÇÈ #23630, éüÇÃÉ`ÉPÉbÉgÇ™èdï° #25822, éüÇÃÉ`ÉPÉbÉgÇ™èdï° #26156","",2.5.1,"How to reproduce:
+
+0. You are need to have server/devbox timezone set to UTC+X, where X is positive.
+1. At 00:30 I'm create a timelog entry.
+2. Right after this at a timelog reports page I'm select option to show only today timelog entries.
+3. After pressing the search button, I'm can't see the timelog entry.
+4. After the X time after 00:00, I'm can press the search button and can see the timelog entry as it need to be.
+
+How to fix:
+
+1. Replace all Date.today to Time.zone.today.
+
+Patch: WIP, writing tests, investigating side effects."
+16476,Redmine,Defect,"",Closed,Normal,Custom checkbox visibility formating,Sebastian Wac?awski,"",2014-07-08 08:34,Custom fields,"","","","",0,2014-03-31 13:10,2014-07-08 08:34,ä÷òAÇµÇƒÇ¢ÇÈ #17003,Fixed,2.5.0,"Hi,
+
+After migrating to 2.5.0 my custom fields (with type boolean, checkbox) no longer look like checkboxes (rather it's selectbox)
+
+I have added a printscreen to show what I mean.
+
+Is it possible to restore the view so it looks like checkbox?"
+16472,Redmine,Defect,"",Closed,Normal,Browser translation missing public area under Linux,Rob Jens,"",2014-04-23 06:02,Translations,"","","","",0,2014-03-31 10:56,2014-04-23 06:02,éüÇÃÉ`ÉPÉbÉgÇ∆èdï° #12900,Duplicate,"","$ ruby script/about
+
+Environment:
+  Redmine version                2.3.4.stable
+  Ruby version                   2.1.0-p0 (2013-12-25) [x86_64-linux]
+  Rails version                  3.2.13
+  Environment                    production
+  Database adapter               Mysql2
+
+The problem is best illustrated by the provided screenshot. I've found no reference only about this particular problem, besides that there is 1 site which also displays this particular way for me.
+
+Do note that this *does not* happen on any windows browser that is viewing the login portal: the problem is *exclusively* Linux and the way Linux browsers (Chrome/Firefox) probably ""tell"" which language they are using.
+
+Obviously (since displayed correctly under Windows) there is nothing wrong with the translation files."
+16460,Redmine,Defect,"",Closed,Normal,"Missing ""Add Watchers"" in edit issue",Andrea Ludin,"",2014-03-29 15:56,Issues,"","","","",0,2014-03-28 12:07,2014-03-29 15:56,"",Invalid,2.5.0,"In 2.5.0 there seems to be no way to add watcher to an already +existing+ issues.
+
+In 2.5.0 is it is possible to add watcher to a +new+ issue with:
+
+Watchers _Search for watchers to add_ 
+
+This link seems to be missing for editing issues.
+
+
+
+<pre>
+# ruby script/about
+
+sh: 1: darcs: not found
+sh: 1: hg: not found
+sh: 1: cvs: not found
+sh: 1: bzr: not found
+Environment:
+  Redmine version                2.5.0.stable
+  Ruby version                   1.9.3-p327 (2012-11-10) [x86_64-linux]
+  Rails version                  3.2.17
+  Environment                    production
+  Database adapter               PostgreSQL
+SCM:
+  Subversion                     1.6.17
+  Git                            1.7.9.5
+  Filesystem                     
+Redmine plugins:
+  redmine_issue_templates        0.0.6
+
+</pre>
+
+(""Roles and permissions"" are set for ""Add watchers"".)"
+16457,Redmine,Defect,"",Closed,Normal,Can't uninstall the plugin CRM,ilhami visne,"",2014-03-29 16:32,"","","","","",0,2014-03-28 11:11,2014-03-29 16:32,"",Invalid,2.5.0,"Hi,
+
+I could successfully installed the plugin CRM (http://www.redmine.org/plugins/contacts). After i played a little with it, i have wanted to uninstall it.
+
+
+My system: Ruby 2.0, Redmine 2.5, Rails 3.2, Ubuntu 12.04
+
+<pre>
+>rake redmine:plugins:migrate NAME=redmine_contacts VERSION=0 RAILS_ENV=production --trace
+
+** Invoke redmine:plugins:migrate (first_time)
+** Invoke environment (first_time)
+** Execute environment
+** Execute redmine:plugins:migrate
+Migrating redmine_contacts (Redmine CRM plugin)...
+==  CreateAddresses: reverting ================================================
+rake aborted!
+An error has occurred, all later migrations canceled:
+
+ActiveRecord::IrreversibleMigration/usr/local/lib/ruby/gems/2.0.0/gems/activerecord-3.2.17/lib/active_record/migration/command_recorder.rb:42:in `block in inverse'
+/usr/local/lib/ruby/gems/2.0.0/gems/activerecord-3.2.17/lib/active_record/migration/command_recorder.rb:40:in `map'
+/usr/local/lib/ruby/gems/2.0.0/gems/activerecord-3.2.17/lib/active_record/migration/command_recorder.rb:40:in `inverse'
+/usr/local/lib/ruby/gems/2.0.0/gems/activerecord-3.2.17/lib/active_record/migration.rb:401:in `block (3 levels) in migrate'
+/usr/local/lib/ruby/gems/2.0.0/gems/activerecord-3.2.17/lib/active_record/migration.rb:358:in `revert'
+/usr/local/lib/ruby/gems/2.0.0/gems/activerecord-3.2.17/lib/active_record/migration.rb:400:in `block (2 levels) in migrate'
+/usr/local/lib/ruby/2.0.0/benchmark.rb:281:in `measure'
+/usr/local/lib/ruby/gems/2.0.0/gems/activerecord-3.2.17/lib/active_record/migration.rb:399:in `block in migrate'
+/usr/local/lib/ruby/gems/2.0.0/gems/activerecord-3.2.17/lib/active_record/connection_adapters/abstract/connection_pool.rb:129:in `with_connection'
+/usr/local/lib/ruby/gems/2.0.0/gems/activerecord-3.2.17/lib/active_record/migration.rb:389:in `migrate'
+/usr/local/lib/ruby/gems/2.0.0/gems/activerecord-3.2.17/lib/active_record/migration.rb:528:in `migrate'
+/usr/local/lib/ruby/gems/2.0.0/gems/activerecord-3.2.17/lib/active_record/migration.rb:720:in `block (2 levels) in migrate'
+/usr/local/lib/ruby/gems/2.0.0/gems/activerecord-3.2.17/lib/active_record/migration.rb:777:in `call'
+/usr/local/lib/ruby/gems/2.0.0/gems/activerecord-3.2.17/lib/active_record/migration.rb:777:in `ddl_transaction'
+/usr/local/lib/ruby/gems/2.0.0/gems/activerecord-3.2.17/lib/active_record/migration.rb:719:in `block in migrate'
+/usr/local/lib/ruby/gems/2.0.0/gems/activerecord-3.2.17/lib/active_record/migration.rb:700:in `each'
+/usr/local/lib/ruby/gems/2.0.0/gems/activerecord-3.2.17/lib/active_record/migration.rb:700:in `migrate'
+/usr/local/lib/ruby/gems/2.0.0/gems/activerecord-3.2.17/lib/active_record/migration.rb:574:in `down'
+/usr/local/lib/ruby/gems/2.0.0/gems/activerecord-3.2.17/lib/active_record/migration.rb:555:in `migrate'
+/opt/redmine-all/lib/redmine/plugin.rb:452:in `migrate_plugin'
+/opt/redmine-all/lib/redmine/plugin.rb:424:in `migrate'
+/opt/redmine-all/lib/redmine/plugin.rb:435:in `migrate'
+/opt/redmine-all/lib/tasks/redmine.rake:126:in `block (3 levels) in <top (required)>'
+/usr/local/lib/ruby/gems/2.0.0/gems/rake-10.1.1/lib/rake/task.rb:236:in `call'
+/usr/local/lib/ruby/gems/2.0.0/gems/rake-10.1.1/lib/rake/task.rb:236:in `block in execute'
+/usr/local/lib/ruby/gems/2.0.0/gems/rake-10.1.1/lib/rake/task.rb:231:in `each'
+/usr/local/lib/ruby/gems/2.0.0/gems/rake-10.1.1/lib/rake/task.rb:231:in `execute'
+/usr/local/lib/ruby/gems/2.0.0/gems/rake-10.1.1/lib/rake/task.rb:175:in `block in invoke_with_call_chain'
+/usr/local/lib/ruby/2.0.0/monitor.rb:211:in `mon_synchronize'
+/usr/local/lib/ruby/gems/2.0.0/gems/rake-10.1.1/lib/rake/task.rb:168:in `invoke_with_call_chain'
+/usr/local/lib/ruby/gems/2.0.0/gems/rake-10.1.1/lib/rake/task.rb:161:in `invoke'
+/usr/local/lib/ruby/gems/2.0.0/gems/rake-10.1.1/lib/rake/application.rb:149:in `invoke_task'
+/usr/local/lib/ruby/gems/2.0.0/gems/rake-10.1.1/lib/rake/application.rb:106:in `block (2 levels) in top_level'
+/usr/local/lib/ruby/gems/2.0.0/gems/rake-10.1.1/lib/rake/application.rb:106:in `each'
+/usr/local/lib/ruby/gems/2.0.0/gems/rake-10.1.1/lib/rake/application.rb:106:in `block in top_level'
+/usr/local/lib/ruby/gems/2.0.0/gems/rake-10.1.1/lib/rake/application.rb:115:in `run_with_threads'
+/usr/local/lib/ruby/gems/2.0.0/gems/rake-10.1.1/lib/rake/application.rb:100:in `top_level'
+/usr/local/lib/ruby/gems/2.0.0/gems/rake-10.1.1/lib/rake/application.rb:78:in `block in run'
+/usr/local/lib/ruby/gems/2.0.0/gems/rake-10.1.1/lib/rake/application.rb:165:in `standard_exception_handling'
+/usr/local/lib/ruby/gems/2.0.0/gems/rake-10.1.1/lib/rake/application.rb:75:in `run'
+/usr/local/lib/ruby/gems/2.0.0/gems/rake-10.1.1/bin/rake:33:in `<top (required)>'
+/usr/local/bin/rake:23:in `load'
+/usr/local/bin/rake:23:in `<main>'
+Tasks: TOP => redmine:plugins:migrate
+</pre>
+
+Thanks,Ilhami
+
+P.S.: I'm not sure if this is the right place about 3rd party plugins issues."
+16453,Redmine,Patch,"",Closed,Normal,Czech localisation,Karel Pi?man,"",2014-03-28 15:39,Translations,2.5.1,"","","",0,2014-03-28 09:39,2014-03-28 15:39,"","","",Czech localisation of the new not yet translated texts of the version 2.5.
+16451,Redmine,Defect,"",Closed,Normal,Incomprehensible number of issues returned from REST API (issues.json),TipTop Labs,"",2014-03-29 15:42,REST API,"","","","",0,2014-03-28 06:17,2014-03-29 15:42,"",Invalid,"","I am looking at a public Redmine project at http://www.hostedredmine.com/projects/hosted-redmine/roadmap
+
+It currently lists 2 versions and 59 + 77 = 156 issues.
+
+When I query issues at http://www.hostedredmine.com/projects/hosted-redmine/issues.json I get only 32 (i.e. total_count with limit 25) and it is unclear to me how the selection is made.
+
+Is this a feature or a bug? How can one retrieve all issues in a project with multiple versions?"

@@ -1,0 +1,568 @@
+#,プロジェクト,トラッカー,親チケット,ステータス,優先度,題名,作成者,担当者,更新日,カテゴリ,対象バージョン,開始日,期日,予定工数,進捗率,作成日,終了日,関連するチケット,Resolution,Affected version,説明
+24592,Redmine,Defect,"",Closed,High,Cannot create new project,Paul C.,"",2016-12-16 01:25,Projects,"","","","",0,2016-12-12 19:42,2016-12-16 01:25,"",Invalid,3.3.1,"I can't create any new project or subproject in my redmine instance. 
+
+When I insert all necessary data in the form and submit, nothing happens. No error is shown, only the ""new project page"" is loaded again, with empty fields. I can't find anything useful in the log-files. The same applies for creating subprojects or copying projects.
+
+The configuration:
+
+Environment:
+  Redmine version                3.3.1.stable
+  Ruby version                   2.2.3-p173 (2015-08-18) [x86_64-linux]
+  Rails version                  4.2.7.1
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.8.8
+  Git                            1.9.1
+  Filesystem                     
+Redmine plugins:
+  redmine_dmsf                   1.5.7
+
+All other functions of redmine are working fine! This is the only issue I have (but unfortunately a severe one). 
+
+Is this a Redmine bug, a DMSF plugin bug or misconfiguration?
+
+Thank you!!"
+24587,Redmine,Patch,"",Closed,Normal,Improve custom fields list performance,Thomas L?ber,Jean-Philippe Lang,2016-12-13 20:50,Performance,3.4.0,"","","",0,2016-12-12 13:58,2016-12-13 20:50,"","","","The custom fields list displays the number of projects the issue custom field is used in by doing a database query for each custom field:
+
+ custom_field.projects.count
+
+To improve the performance dramatically when there are really lots of issue custom fields the counts should be pre-loaded with a single database query:
+
+ @custom_fields_projects_count = IssueCustomField.where(is_for_all: false).joins(:projects).group(:custom_field_id).count
+
+In the view the counts can then be accessed by:
+
+ @custom_fields_projects_count[custom_field.id]
+
+A patch file is attached.
+
+Regards,
+Thomas
+"
+24582,Redmine,Defect,"",Closed,Low,Time Report Week does not honor Start day in Settings,Matthew Paul,"",2016-12-11 22:54,Time tracking,"","","","",0,2016-12-11 20:32,2016-12-11 22:54,次のチケットと重複 #13547,Duplicate,3.2.0,"Administration>Settings>Display>Start Calendar on>Monday
+Project>Overview>Spent Time>Report
+Date>Last Week
+Report>Details>Days>Add>Issue
+Should display Mon-Sun. Instead Displays Mon-Sat
+Same for if you do This Week on a sunday - should display Mon-Sun but instead displays a single day - today - because it uses today (sun) as day 1 of new week instead of correctly calculating today as the day 7 of this week.
+
+Environment:
+  Redmine version                3.2.0.stable
+  Ruby version                   2.1.8-p440 (2015-12-16) [x86_64-linux]
+  Rails version                  4.2.5
+  Environment                    production
+  Database adapter               Mysql2
+
+"
+24581,Redmine,Patch,"",New,Normal,Save spent time filters in session in order to have the same behaviour as for issue filters,Marius BALTEANU,"",2016-12-16 09:23,Time tracking,"","","","",0,2016-12-11 11:43,"","","","","The issue filters are persistent between the Redmine pages until your session expires.  I think that It'll be very useful to have the same behaviour also for time entries filters (especially starting with version 3.4.0 where a new tab named ""Spent time"" was added) .
+
+Currently, the filters are cleared after you leave the tab.
+
+To reproduce:
+* Go to the spent time tab
+* Create a filter
+* Navigate to issues tab
+* Return to the spent time tab
+* Observe that the filters are reseted.
+"
+24578,Redmine,Patch,"",Closed,Normal,"Remove unused CSS class "".icon-details""",Go MAEDA,Jean-Philippe Lang,2016-12-16 09:02,Code cleanup/refactoring,3.4.0,"","","",0,2016-12-11 08:30,2016-12-16 09:02,関連している #23031,"","","Related to #23031#note-1.
+
+<pre><code class=""diff"">
+Index: public/stylesheets/application.css
+===================================================================
+--- public/stylesheets/application.css	(revision 16055)
++++ public/stylesheets/application.css	(working copy)
+@@ -1230,7 +1230,6 @@
+ .icon-lock, .icon-locked  { background-image: url(../images/locked.png); }
+ .icon-unlock  { background-image: url(../images/unlock.png); }
+ .icon-checked  { background-image: url(../images/toggle_check.png); }
+-.icon-details  { background-image: url(../images/zoom_in.png); }
+ .icon-report  { background-image: url(../images/report.png); }
+ .icon-comment, .icon-comments  { background-image: url(../images/comment.png); }
+ .icon-summary  { background-image: url(../images/lightning.png); }
+</pre><code>"
+24575,Redmine,Defect,"",Closed,Normal,Inconsistent date format in Date pickers,Thierry Ruffier-Lanche,"",2016-12-10 10:53,UI,"","","","",0,2016-12-09 18:22,2016-12-10 10:53,次のチケットと重複 #23224,Duplicate,3.3.1,"Date pickers should use user locale settings (or global redmine setting if forced)
+
+Actually, they use user browser locale settings."
+24572,Redmine,Patch,"",Closed,Normal,Spanish label_search_open_issues_only: translation change,Javier Men?ndez Rizo,"",2017-01-20 04:21,Translations,3.4.0,"","","",0,2016-12-09 13:56,2017-01-20 04:21,"","","","Changing label_search_open_issues_only, for a correct translation in Spanish"
+24570,Redmine,Defect,"",New,Normal,Migrating from Trac to Redmine [Trac2Redmine],F B,"",2017-01-02 17:47,Importers,"","","","",0,2016-12-09 12:49,"","","",3.3.1,"Hello everyone, I used to work on a project about migrating our system from trac to redmine.
+
+This summer at my first attempt I was able to migrate some parts of our bug tracking database.
+
+!http://imgur.com/a/jIXOU!
+
+But, know I see that there is a new stable releases, I want to migrate completely this time.
+
+Is there anyone who accomplished migration completely?
+
+*at the attachment you can see my migrate_from_trac.rake file, which is edited due to:
+-self.inheritance_column = :none instead of set_inheritance_column :none
+-self.primary_key = 'name' instead of #set_primary_key :name
+-correcting the rake file according to *timestamps patch"
+24557,Redmine,Defect,"",New,Normal,Update time zones databese on the web site http://www.redmine.org,VVD VVD,Jean-Philippe Lang,2016-12-08 00:36,Website (redmine.org),"","","","",0,2016-12-07 22:57,"","","","","Time zones databese on the web site http://www.redmine.org is old and incorrect.
+
+2 years ago Moscow time zone was changed to UTC+3 (without summer/winter), but on the web site http://www.redmine.org Moscow time is UTC+4 (without summer/winter)."
+24548,Redmine,Defect,"",Closed,Normal,Detailed steps required to install redcase plugin ,Yogesh Lele,"",2017-01-03 16:18,"","","","","",0,2016-12-07 07:28,2016-12-13 21:20,"",Invalid,3.3.1,"I have followed the steps to install plugin for redmine from redmine official site. The information is available in brief  for a user like me ( who has no knowledge of programming) I am finding difficulties in installing redcase plugin. I could install the plugin but not able to see the 'test case' tab on the UI though redcase plugin gets listed under plugin section.
+
+It will be great if  the steps to install the plugin is descriptive. if sample example issadded in the document is highly appriciated. I have used redmine ova published by turnkey and I am trying to install redcase 1.0 plugin on the same vm. My default redmine folder is located under  /var/www/redmine
+
+thanks,
+Yogesh"
+24547,Redmine,Defect,"",Closed,Normal,Spent Time Date Filter Off by 1 Day,Charlie Savage,"",2016-12-11 01:50,Time tracking,"","","","",0,2016-12-07 05:28,2016-12-11 01:50,次のチケットと重複 #23189,"",3.3.1,"In version 3.3.0 and 3.3.1, a bug was introduced in date filtering.  If you filter by Date ""is"" or ""between"" the start date if off by one day.
+
+In the attached screenshot note that the filtered date is august 31, 2016 but the results show September 1, 2016."
+24546,Redmine,Defect,"",New,Normal,Unable to edit Workflows (POST limit),Ewan Makepeace,"",2017-02-09 08:28,Issues workflow,"","","","",0,2016-12-07 01:44,"","","",2.6.1,"I now have 35 issue statuses in one of my Redmines. Before you criticise this is because I had two and was adding a third completely separate workflows for different trackers:
+
+Trackers Bug, Feature, Support, Design all use a fairly standard development pipeline with 13 steps from design through final acceptance on live server.
+Tracker Recruit also has 13 steps from Invite to Interview to Acceptance or Rejection.
+
+My new tracker for Failure Analysis adds 10 new statuses to the list. However when I try to edit the Workflow with ""Only display statuses that are used in this tracker"" *unchecked* (so that I can add in my new statuses) I get the following exception:
+
+<pre>
+Request Entity Too Large
+
+The requested resource
+/workflows/edit
+does not allow request data with POST requests, or the amount of data provided in the request exceeds the capacity limit.
+Apache/2.2.31 (Amazon) Server at redmine.jawasoft.com Port 443
+</pre>
+
+I guess the grid of 35 x 35 ?= 1225 posted values is too many for HTTP? I did some research and PHP typically limits to 1000, other servers to other values.
+
+# Is there a quick fix - a server setting I can change?
+# I dont feel I am using Redmine unreasonably here - but the whole Workflow UX becomes almost unmanageable when you have more than 10 or 15 statuses."
+24537,Redmine,Patch,"",Closed,Normal,Czech localisation,Karel Pi?man,"",2017-01-09 02:06,Translations,"","","","",0,2016-12-06 09:58,2017-01-09 02:06,"","","",Missing Czech localization in the trunk.
+24536,Redmine,Defect,"",Closed,Normal,View differences not showing any results,Akan Tortz,"",2016-12-21 05:27,"","","","","",0,2016-12-05 20:10,2016-12-21 05:27,"",Invalid,"","Hi,
+
+I'm new to Redmine.
+
+Everything is working except 'View differences' when browsing SVN repository. The result is always empty.
+Tried with latest stable 3.3.1 and latest from trunk - same result.
+But when I try to download a Unified diff it works. I get the file and I see the data.
+I don't see any errors in the log.
+"
+24535,Redmine,Patch,"",Closed,Normal,Flash messages on Board destroy,Javier Men?ndez Rizo,Jean-Philippe Lang,2017-01-08 23:51,Forums,3.4.0,"","","",0,2016-12-05 19:54,2017-01-08 23:51,"","","",Changes to add flash message confirmation when deleting a board.
+24530,Redmine,Defect,"",Closed,Normal,Max Length issue in patch file,Nishchal Jain,"",2017-01-03 05:16,"","","","","",0,2016-12-05 07:31,2017-01-03 05:16,"",Invalid,"","Steps:
+1. Redmine already provides/validates Trackers name max length in Trackers model which is:
+trackers.rb : validates_length_of :name, :maximum => 30
+2. I need to change max length for name from 30 to 50 in patch file so that main model file should not impact.
+3. I created tracker_patch file and used validation in that but it doesn't impact.
+
+Please let me know how I will change that validation in patch file.
+
+Regards
+Nishchal"
+24524,Redmine,Defect,"",Closed,Normal,No API key on User Page,Bart?omiej Ekiert,"",2017-01-06 01:57,REST API,"","","","",0,2016-12-02 15:42,2017-01-06 01:56,"",Invalid,3.3.1,"Hi.
+
+I enabled REST API in my Redmine installation (3.3.1). When i go to my account page i don't see an API key.
+
+Where can i Find this key? I need it to create a flow in Microsoft Flow.
+
+Please resolve this problem.
+
+Thanks
+Bartek"
+24523,Redmine,Patch,"",Closed,Normal,Source: ignore .idea,Javier Men?ndez Rizo,Jean-Philippe Lang,2017-07-02 07:30,Code cleanup/refactoring,3.4.0,"","","",0,2016-12-02 15:19,2017-01-15 17:31,"","","",It would be really helpful to add this to the ignores for the people using Rubymine.
+24518,Redmine,Patch,"",Closed,Normal,Spanish translation change (adding accent mark and caps),Javier Men?ndez Rizo,"",2016-12-02 05:37,Translations,3.4.0,"","","",0,2016-12-01 19:37,2016-12-02 05:37,"","","",Adding accent mark and caps for two translations
+24517,Redmine,Defect,"",Closed,Normal,Database Link from Versions to custom_field,daniel gawenda,"",2016-12-01 16:44,Database,"","","","",0,2016-12-01 16:32,2016-12-01 16:44,"",Invalid,"","Hello,
+
+I am looking for the internal database connection between the custom_fields and the versions table.
+How ist this connection established?
+I created a join from versions to projects to custom_fields_projects to custom_field, but I can not find my custom fields dedicated to my version in the database."
+24512,Redmine,Patch,"",Closed,Normal,"Japanese translation update (r15741, r15966, r15993)",Go MAEDA,"",2016-12-02 05:37,Translations,"","","","",0,2016-12-01 12:24,2016-12-02 05:37,"","","","Translated 3 strings introduced in r15741, r15966 and r15993.
+
+* error_no_projects_with_tracker_allowed_for_new_issue
+* setting_timespan_format
+* label_table_of_contents"
+24509,Redmine,Defect,"",Closed,High,SSL Certificate expired for svn.redmine.org,Roger Lehmann,Jean-Philippe Lang,2017-01-08 21:25,Website (redmine.org),"","","","",0,2016-11-30 22:09,2017-01-08 21:25,関連している #24864,Fixed,"","I can't checkout/update from https://svn.redmine.org because the SSL certificate is expired since 10.11.2016 00:59.
+
+Please exchange it for a valid one."
+24506,Redmine,Defect,"",Needs feedback,Normal,"On changing many issues to project with custom required fields, fields doesn't show, transfer doesn't work ",Mikhail Fesenko,"",2017-02-16 05:33,Custom fields,"","","","",0,2016-11-30 19:39,"","","",3.3.1,"If one project have some custom required fields and you want to change project of many issues to another, you should change one by one.
+I tryed it on 3.2.3 and 3.3.1.
+If you try to change one issue, custom fields always shows and you can transfer.
+If many, when you select another project with custom fields on edit page, fields doesn't shown. "
+24503,Redmine,Defect,"",New,Normal,IMAP fetch ignores ssl switch,Ragnar Nevries,"",2016-11-30 17:48,Email receiving,"","","","",0,2016-11-30 17:48,"","","",3.3.1,"In lib/redmine/imap.rb the line
+
+  ssl = !imap_options[:ssl].nil?
+
+sets ssl to true whenever imap_options[:ssl] has any value.
+
+So, if we call rake task redmine:email:receive_imap with argument ""ssl=false"" oder ""ssl=0"" or whatever, SSL is used anyway. The only way to disable SSL is to omit the ""ssl="" argument, which is not very convenient if the command line for the task is generated by a script."
+24494,Redmine,Patch,"",Closed,Normal,"Spanish Panama ""label_issue_new"" translation change",Toshi MARUYAMA,"",2016-11-30 11:52,Translations,3.4.0,"","","",0,2016-11-30 07:42,2016-11-30 11:52,"","","","From #24004:
+
+<pre><code class=""diff"">
+=== (+2,-2) config/locales/es-PA.yml ===
+@@ -479,7 +479,7 @@
+   label_issue_category: Categor?a de las incidencias
+   label_issue_category_new: Nueva categor?a
+   label_issue_category_plural: Categor?as de las incidencias
+-  label_issue_new: Nueva incidencias
++  label_issue_new: Nueva incidencia
+   label_issue_plural: Incidencias
+   label_issue_status: Estado de la incidencias
+   label_issue_status_new: Nuevo estado
+</code></pre>"
+24484,Redmine,Defect,"",New,Normal,Wrong order of rows with empty custom fields,Ivan Zabrovskiy,"",2016-11-29 09:43,Custom fields,"","","","",0,2016-11-29 09:43,"","","","","Issues, sorted by custom field, appears in a countr-intuitive order. Issues with empty custom field goes before issues with any value.
+
+Example (PostgreSQL, descending order):
+
+Current result:
+
+|=. *id*|=. *Integer custom field* (desc order)|
+|143|<empty>|
+|112|<empty>|
+|95|2000|
+|456|1900|
+|73|1400|
+
+Expected result: 
+
+|=. *id*|=. *Integer custom field* (desc order)|
+|95|2000|
+|456|1900|
+|73|1400|
+|143|<empty>|
+|112|<empty>|
+
+Solution: in Redmine::FieldFormat::Base in method join_for_order_statement (lib/redmine/field_format.rb line 279) remove row
+<pre>
+"" AND #{alias_name}.value <> ''"" +
+</pre>
+
+In this case, rows with empty custom field will be invoved in sorting and appear on proper places."
+24480,Redmine,Patch,"",Closed,Normal,Traditional Chinese translation (to r16009),ChunChang Lo,"",2016-11-30 15:02,Translations,"","","","",0,2016-11-29 05:09,2016-11-30 15:02,"コピー元 #23740, コピー先 #24607","","","* New
+** setting_timespan_format, label_table_of_contents
+"
+24479,Redmine,Defect,"",Closed,Normal,Settings > Forums page is broken on and after r15647,Go MAEDA,"",2016-12-01 16:34,UI,"","","","",0,2016-11-29 04:55,2016-11-30 03:55,"",Invalid,"","Please see screenshots below.
+
+*r15646 - no problem:*
+!r15646.png!
+
+*r15647 - broken:*
+!r15647.png!"
+24473,Redmine,Defect,"",New,Normal,CSV Export Very slow for issues with lots of Custom Fields,Stephane Evr,"",2017-11-04 07:01,Performance,"","","","",0,2016-11-28 12:23,"","関連している #24477, 次のチケットが重複 #24755","","","<pre>
+Environment:
+  Redmine version                3.3.0.stable
+  Ruby version                   2.2.1-p85 (2015-02-26) [x86_64-linux]
+  Rails version                  4.2.6
+  Environment                    production
+  Database adapter               Mysql2
+</pre>
+
+So I tried to investigate why, when exporting an issue with lots of custom fields, my log file would look like this:
+
+<pre>
+CACHE (0.0ms)  SELECT  `issues`.* FROM `issues` WHERE `issues`.`id` = 94261 LIMIT 1  [[""id"", 94261]]
+  CACHE (0.0ms)  SELECT  `issues`.* FROM `issues` WHERE `issues`.`id` = 94261 LIMIT 1  [[""id"", 94261]]
+  CACHE (0.0ms)  SELECT  `issues`.* FROM `issues` WHERE `issues`.`id` = 94261 LIMIT 1  [[""id"", 94261]]
+  CACHE (0.0ms)  SELECT  `issues`.* FROM `issues` WHERE `issues`.`id` = 94261 LIMIT 1  [[""id"", 94261]]
+  CACHE (0.0ms)  SELECT  `issues`.* FROM `issues` WHERE `issues`.`id` = 94261 LIMIT 1  [[""id"", 94261]]
+  CACHE (0.0ms)  SELECT  `issues`.* FROM `issues` WHERE `issues`.`id` = 94261 LIMIT 1  [[""id"", 94261]]
+  CACHE (0.0ms)  SELECT  `issues`.* FROM `issues` WHERE `issues`.`id` = 94261 LIMIT 1  [[""id"", 94261]]
+  CACHE (0.0ms)  SELECT  `issues`.* FROM `issues` WHERE `issues`.`id` = 94261 LIMIT 1  [[""id"", 94261]]
+  CACHE (0.0ms)  SELECT  `issues`.* FROM `issues` WHERE `issues`.`id` = 94261 LIMIT 1  [[""id"", 94261]]
+  CACHE (0.0ms)  SELECT  `issues`.* FROM `issues` WHERE `issues`.`id` = 94261 LIMIT 1  [[""id"", 94261]]
+  CACHE (0.0ms)  SELECT  `issues`.* FROM `issues` WHERE `issues`.`id` = 94261 LIMIT 1  [[""id"", 94261]]
+  CACHE (0.0ms)  SELECT  `issues`.* FROM `issues` WHERE `issues`.`id` = 94261 LIMIT 1  [[""id"", 94261]]
+  CACHE (0.0ms)  SELECT  `issues`.* FROM `issues` WHERE `issues`.`id` = 94261 LIMIT 1  [[""id"", 94261]]
+  CACHE (0.0ms)  SELECT  `issues`.* FROM `issues` WHERE `issues`.`id` = 94261 LIMIT 1  [[""id"", 94261]]
+  CACHE (0.0ms)  SELECT  `issues`.* FROM `issues` WHERE `issues`.`id` = 94261 LIMIT 1  [[""id"", 94261]]
+  CACHE (0.0ms)  SELECT  `issues`.* FROM `issues` WHERE `issues`.`id` = 94261 LIMIT 1  [[""id"", 94261]]
+  CACHE (0.0ms)  SELECT  `issues`.* FROM `issues` WHERE `issues`.`id` = 94261 LIMIT 1  [[""id"", 94261]]
+  CACHE (0.0ms)  SELECT  `issues`.* FROM `issues` WHERE `issues`.`id` = 94261 LIMIT 1  [[""id"", 94261]]
+  CACHE (0.0ms)  SELECT  `issues`.* FROM `issues` WHERE `issues`.`id` = 94261 LIMIT 1  [[""id"", 94261]]
+  CACHE (0.0ms)  SELECT  `issues`.* FROM `issues` WHERE `issues`.`id` = 94261 LIMIT 1  [[""id"", 94261]]
+  CACHE (0.0ms)  SELECT  `issues`.* FROM `issues` WHERE `issues`.`id` = 94261 LIMIT 1  [[""id"", 94261]]
+  CACHE (0.0ms)  SELECT  `issues`.* FROM `issues` WHERE `issues`.`id` = 94261 LIMIT 1  [[""id"", 94261]]
+  CACHE (0.0ms)  SELECT  `issues`.* FROM `issues` WHERE `issues`.`id` = 94261 LIMIT 1  [[""id"", 94261]]
+  CACHE (0.0ms)  SELECT  `issues`.* FROM `issues` WHERE `issues`.`id` = 94261 LIMIT 1  [[""id"", 94261]]
+  CACHE (0.0ms)  SELECT  `issues`.* FROM `issues` WHERE `issues`.`id` = 94261 LIMIT 1  [[""id"", 94261]]
+</pre>
+
+There is one line per custom field apparently.
+
+My investigation led this method (in lib/redmine/field_format.rb):
+
+<pre><code class=""ruby"">
+def formatted_custom_value(view, custom_value, html=false)
+  formatted_value(view, custom_value.custom_field, custom_value.value, custom_value.customized, html)
+                                                                               #   |
+                                                                               #THIS CALL
+end
+</pre>
+
+When *custom_value.customized* is called, this leads to the Customized object being loaded. Here, Customized is an issue, and it would be reloaded *once per custom field*.
+
+Some caching would be needed here, where we directly provide the customized object to this method, although I am not sure what's best to do...
+"
+24470,Redmine,Defect,"",Closed,Normal,How to add header and footer in issue pdf report,Tsogtoo Redmine,"",2016-11-28 11:23,PDF export,"","","","",0,2016-11-28 10:11,2016-11-28 11:23,"",Invalid,3.3.0,""
+24457,Redmine,Defect,"",New,Normal,Progress of version should be calculated the same way as parent tasks,C-O L,"",2016-11-29 11:37,Roadmap,"","","","",0,2016-11-25 14:59,"",関連している #23511,"","","The progress of a version should be calculated the same ways as the progress of parent tasks are calculated in #23511.
+
+"
+24456,Redmine,Defect,"",Closed,Normal,Extremly long duration of POST requests,Josef Boeck,"",2016-12-26 22:32,Performance,"","","","",0,2016-11-25 12:19,2016-11-25 13:47,"",Invalid,"","Since a few days we have extremly long duration on POST requests. I have a production.log at :INFO - level and cannot find a reason why. GET requests are fast (< 1 sec).
+
+I enclose the trace to an update to a ticket. Duration 17 sec. But we have even duration up to 30 sec recorded. Since a year nothing changed. I did alread Unload - reload, restart the webserver and the ""normal"" stuff.
+
+"
+24451,Redmine,Defect,"",Closed,Normal, Migrate multiple trac to a redmine,Ariel  Fellay,"",2016-12-18 04:19,Importers,"","","","",0,2016-11-24 20:16,2016-12-18 04:19,"",Invalid,2.5.2,"First of all, sorry for my English.
+I am using migrate_from_trac.rake for migration and my situation is as follows.
+I have to migrate 5 or more trac to a redmine.
+My problem arises when I am going to migrate the second trac.
+I can see the second issues but not the first ones.
+I have noticed that the states of the issues of the first trac are erased and those of the second are inserted.
+
+Is that already solved?
+From already thank you very much for your time"
+24446,Redmine,Patch,"",New,Normal,Call `view_issues_timelog_form_bottom` hook,Arthur Andersen,"",2016-11-24 11:24,Hook requests,"","","","",0,2016-11-24 11:20,"","","","","I am writing a plugin, that needs to add additional form fields to a time entry."
+24442,Redmine,Defect,"",New,Normal,"When exporting Wiki to PDF, monospaced fonts are not rendered correctly in PDF",T H,"",2016-11-24 08:36,PDF export,"","","","",0,2016-11-24 08:36,"","","",3.2.3,"When I write a Wiki page that contains inline code snippets (@like this@), the resulting PDF does not have monospaced font for the snippet.  It works for entire code blocks.
+
+"
+24440,Redmine,Defect,"",Closed,Normal,502 proxy error with exporting,yan wu,"",2016-11-24 04:27,Issues list,"","","","",0,2016-11-24 02:45,2016-11-24 04:27,"",Invalid,"","My server is bitnami redmine stack. 
+when export 2000 issues to csv file, 502 proxy error occured. But i can export csv file with accessing 127.0.0.1:3001.
+Sometimes the query will occure 502 proxy error .
+
+"
+24439,Redmine,Defect,"",Closed,Normal,Uable to add module on My Page,Dave Holyfield,"",2017-04-09 11:00,My page,"","","","",0,2016-11-23 23:50,2017-04-09 11:00,"","",3.3.1,"
+Bale to add any module to My Page. When I select module form selection ""My page block"" and press Add, ('m redirected to the homepage.
+
+h2. Information
+> Redmine 3.3.1.stable
+> 
+> Default administrator account changed	
+> Attachments directory writable	
+> Plugin assets directory writable (./public/plugin_assets)	
+> RMagick available (optional)	
+> ImageMagick convert available (optional)	
+> System info:	Linux
+> 
+> Environment:
+> Redmine version                3.3.1.stable
+> Ruby version                   2.3.0-p0 (2015-12-25) [x86_64-linux]
+> Rails version                  4.2.7.1
+> Environment                    production
+> Database adapter               Mysql2
+> SCM:
+> Subversion                     1.7.14
+> Git                            1.8.3.1
+> Filesystem                     
+> Redmine plugins:
+> redmine_checklists             3.1.5
+> redmine_favorite_projects      2.0.3
+> redmine_lightbox2              0.3.1
+> redmine_people                 1.2.0
+> redmine_tweaks                 0.5.9-dev
+> redmine_zenedit                0.0.2"
+24435,Redmine,Patch,"",New,Normal,Add `view_account_contextual` and `view_account_list_buttons` hooks,Arthur Andersen,"",2016-11-23 15:25,Hook requests,"","","","",0,2016-11-23 12:40,"","","","","This patch adds two view hooks:
+
+* `view_account_contextual`
+* `view_account_list_buttons`
+
+to be able to let plugins add user specific links to the user profile and the userlist in the admin interface."
+24434,Redmine,Patch,"",New,Normal,Link Redmine Issues to Mercurial Branch name,Ewan Makepeace,"",2016-11-23 05:37,SCM,"","","","",0,2016-11-23 05:23,"","","","","In our company we start a new Mercurial branch for every feature request. Our branch naming looks like ""RM1234"" where 1234  is the issue concerned.
+
+Rather rely on issue numbers embedded in commit messages which relies on developer discipline and I find is not always relable we made the attached patch to take the issue number directly from the branch name.
+
+I hope this may be of interest to others.
+
+RELATED NOTES
+# It is unfortunate that Reedmen does not feature branch names anywhere. Neither in the summary of change sets on the issue page nor even on the changes detail page is the name of the branch specified. For us this is highly desirable (much more so than the changes ID).
+# I could see no Category in this Redmine related to Version Control, Repository support or Mercurial but am assuming SCM is the correct category?"
+24433,Redmine,Defect,"",Closed,Normal,The changeset display is slow when changeset_issues has very many records,Hirokazu Onozato,Jean-Philippe Lang,2016-12-03 09:43,Performance,3.4.0,"","","",0,2016-11-22 14:27,2016-12-03 09:43,"",Fixed,3.3.0,"In issue page, the changeset display is slow when changeset_issues has very many records.
+
+The following query is executed.
+<pre><code class=""sql"">
+SELECT
+  `changesets`.*
+FROM
+  `changesets`
+  INNER JOIN `repositories`
+    ON `repositories`.`id` = `changesets`.`repository_id`
+  INNER JOIN `projects`
+    ON `projects`.`id` = `repositories`.`project_id`
+  INNER JOIN `changesets_issues`
+    ON `changesets`.`id` = `changesets_issues`.`changeset_id`
+WHERE
+  `changesets_issues`.`issue_id` = 1
+  ...
+</code></pre>
+
+There is no INDEX in issue_id of changesets_issues table.
+
+* db/schema.rb
+<pre><code class=""ruby"">
+  create_table ""changesets_issues"", id: false, force: :cascade do |t|
+    t.integer ""changeset_id"", null: false
+    t.integer ""issue_id"",     null: false
+  end
+
+  add_index ""changesets_issues"", [""changeset_id"", ""issue_id""], name: ""changesets_issues_ids"", unique: true, using: :btree
+</code></pre>
+
+As a result, this query may be slow if there are a very many records in the changesets_issues table.
+
+When the number of records in the changesets_issues table was about 1 million, it took 2 or 3 seconds to execute this query.
+Adding INDEX to issue_id improved the performance of this query to a few milliseconds.
+
+
+"
+24429,Redmine,Defect,"",Closed,Normal,Redmine 500 error,selvan p,"",2016-11-22 15:18,"","","","","",0,2016-11-22 13:07,2016-11-22 15:18,"",Invalid,3.3.0,"Below Error message is displayed when tried to access Redmine. Redmine was working fine still now but suddenly below error message is displayed.
+
+""Internal error
+
+An error occurred on the page you were trying to access.
+If you continue to experience problems please contact your Redmine administrator for assistance.
+
+If you are the Redmine administrator, check your log files for details about the error.
+
+Back""
+
+
+
+
+Error Log:
+
+[Fri Nov 11 17:14:54.926083 2016] [proxy:error] [pid 2832:tid 984] AH00959: ap_proxy_connect_backend disabling worker for (127.0.0.1) for 60s
+[Fri Nov 11 17:14:54.926083 2016] [proxy_http:error] [pid 2832:tid 984] [client 192.168.2.151:51319] AH01114: HTTP: failed to make connection to backend: 127.0.0.1
+[Fri Nov 11 17:14:55.924485 2016] [proxy:error] [pid 2832:tid 984] (OS 10061)No connection could be made because the target machine actively refused it.  : AH00957: HTTP: attempt to connect to 127.0.0.1:3001 (127.0.0.1) failed
+[Fri Nov 11 17:14:55.924485 2016] [proxy:error] [pid 2832:tid 984] AH00959: ap_proxy_connect_backend disabling worker for (127.0.0.1) for 60s
+[Fri Nov 11 17:14:55.924485 2016] [proxy_http:error] [pid 2832:tid 984] [client 192.168.2.151:51319] AH01114: HTTP: failed to make connection to backend: 127.0.0.1
+[Fri Nov 11 17:14:56.860486 2016] [proxy:error] [pid 2832:tid 976] (OS 10061)No connection could be made because the target machine actively refused it.  : AH00957: HTTP: attempt to connect to 127.0.0.1:3001 (127.0.0.1) failed
+[Fri Nov 11 17:14:56.860486 2016] [proxy_http:error] [pid 2832:tid 976] [client 192.168.2.168:54049] AH01114: HTTP: failed to make connection to backend: 127.0.0.1
+[Fri Nov 11 17:14:57.874488 2016] [proxy:error] [pid 2832:tid 976] (OS 10061)No connection could be made because the target machine actively refused it.  : AH00957: HTTP: attempt to connect to 127.0.0.1:3001 (127.0.0.1) failed
+[Fri Nov 11 17:14:57.874488 2016] [proxy:error] [pid 2832:tid 976] AH00959: ap_proxy_connect_backend disabling worker for (127.0.0.1) for 60s
+[Fri Nov 11 17:14:57.874488 2016] [proxy_http:error] [pid 2832:tid 976] [client 192.168.2.168:54049] AH01114: HTTP: failed to make connection to backend: 127.0.0.1
+[Fri Nov 11 17:15:11.961313 2016] [proxy:error] [pid 2832:tid 948] (OS 10061)No connection could be made because the target machine actively refused it.  : AH00957: HTTP: attempt to connect to 127.0.0.1:3002 (127.0.0.1) failed
+[Fri Nov 11 17:15:11.961313 2016] [proxy:error] [pid 2832:tid 948] AH00959: ap_proxy_connect_backend disabling worker for (127.0.0.1) for 60s
+[Fri Nov 11 17:15:11.961313 2016] [proxy_http:error] [pid 2832:tid 948] [client 192.168.2.151:51320] AH01114: HTTP: failed to make connection to backend: 127.0.0.1
+[Fri Nov 11 17:15:12.975315 2016] [proxy:error] [pid 2832:tid 948] (OS 10061)No connection could be made because the target machine actively refused it.  : AH00957: HTTP: attempt to connect to 127.0.0.1:3002 (127.0.0.1) failed
+[Fri Nov 11 17:15:12.975315 2016] [proxy:error] [pid 2832:tid 948] AH00959: ap_proxy_connect_backend disabling worker for (127.0.0.1) for 60s
+[Fri Nov 11 17:15:12.975315 2016] [proxy_http:error] [pid 2832:tid 948] [client 192.168.2.151:51320] AH01114: HTTP: failed to make connection to backend: 127.0.0.1
+[Fri Nov 11 17:15:15.081318 2016] [proxy:error] [pid 2832:tid 968] (OS 10061)No connection could be made because the target machine actively refused it.  : AH00957: HTTP: attempt to connect to 127.0.0.1:3001 (127.0.0.1) failed
+[Fri Nov 11 17:15:15.081318 2016] [proxy:error] [pid 2832:tid 968] AH00959: ap_proxy_connect_backend disabling worker for (127.0.0.1) for 60s
+[Fri Nov 11 17:15:15.081318 2016] [proxy_http:error] [pid 2832:tid 968] [client 192.168.2.168:54056] AH01114: HTTP: failed to make connection to backend: 127.0.0.1, referer: http://192.168.2.44:8089/redmine/projects/dcms/issues
+[Fri Nov 11 17:15:16.095320 2016] [proxy:error] [pid 2832:tid 968] (OS 10061)No connection could be made because the target machine actively refused it.  : AH00957: HTTP: attempt to connect to 127.0.0.1:3001 (127.0.0.1) failed
+[Fri Nov 11 17:15:16.095320 2016] [proxy:error] [pid 2832:tid 968] AH00959: ap_proxy_connect_backend disabling worker for (127.0.0.1) for 60s
+[Fri Nov 11 17:15:16.095320 2016] [proxy_http:error] [pid 2832:tid 968] [client 192.168.2.168:54056] AH01114: HTTP: failed to make connection to backend: 127.0.0.1, referer: http://192.168.2.44:8089/redmine/projects/dcms/issues
+[Mon Nov 14 21:32:47.050187 2016] [mpm_winnt:notice] [pid 432:tid 336] AH00422: Parent: Received shutdown signal -- Shutting down the server.
+[Mon Nov 14 21:32:50.435393 2016] [mpm_winnt:notice] [pid 2832:tid 228] AH00364: Child: All worker threads have exited.
+[Mon Nov 14 21:33:27.538828 2016] [ssl:warn] [pid 1976:tid 336] AH01909: localhost:443:0 server certificate does NOT include an ID which matches the server name
+[Mon Nov 14 21:33:27.694828 2016] [core:warn] [pid 1976:tid 336] AH00098: pid file D:/Bitnami/redmine-3.3.0-1/apache2/logs/httpd.pid overwritten -- Unclean shutdown of previous Apache run?
+[Mon Nov 14 21:33:27.882029 2016] [ssl:warn] [pid 1976:tid 336] AH01909: localhost:443:0 server certificate does NOT include an ID which matches the server name
+[Mon Nov 14 21:33:29.114431 2016] [mpm_winnt:notice] [pid 1976:tid 336] AH00455: Apache/2.4.20 (Win32) SVN/1.8.16 OpenSSL/1.0.2g PHP/5.6.23 configured -- resuming normal operations
+[Mon Nov 14 21:33:29.114431 2016] [mpm_winnt:notice] [pid 1976:tid 336] AH00456: Apache Lounge VC11 Server built: Apr  9 2016 11:30:31
+[Mon Nov 14 21:33:29.114431 2016] [core:notice] [pid 1976:tid 336] AH00094: Command line: 'D:\\Bitnami\\REDMIN~1.0-1\\apache2\\bin\\httpd.exe -d D:/Bitnami/redmine-3.3.0-1/apache2 -f D:\\Bitnami\\REDMIN~1.0-1\\apache2\\conf\\httpd.conf'
+[Mon Nov 14 21:33:29.114431 2016] [mpm_winnt:notice] [pid 1976:tid 336] AH00418: Parent: Created child process 2448
+[Mon Nov 14 21:33:29.504431 2016] [ssl:warn] [pid 2448:tid 228] AH01909: localhost:443:0 server certificate does NOT include an ID which matches the server name
+[Mon Nov 14 21:33:29.707232 2016] [ssl:warn] [pid 2448:tid 228] AH01909: localhost:443:0 server certificate does NOT include an ID which matches the server name
+[Mon Nov 14 21:33:29.722832 2016] [mpm_winnt:notice] [pid 2448:tid 228] AH00354: Child: Starting 64 worker threads.
+[Tue Nov 15 13:25:03.965880 2016] [mpm_winnt:notice] [pid 1976:tid 336] AH00422: Parent: Received shutdown signal -- Shutting down the server.
+[Tue Nov 15 13:25:06.493084 2016] [mpm_winnt:notice] [pid 2448:tid 228] AH00364: Child: All worker threads have exited.
+[Tue Nov 15 13:26:36.256566 2016] [ssl:warn] [pid 396:tid 336] AH01909: localhost:443:0 server certificate does NOT include an ID which matches the server name
+[Tue Nov 15 13:26:36.802567 2016] [core:warn] [pid 396:tid 336] AH00098: pid file D:/Bitnami/redmine-3.3.0-1/apache2/logs/httpd.pid overwritten -- Unclean shutdown of previous Apache run?
+[Tue Nov 15 13:26:37.239368 2016] [ssl:warn] [pid 396:tid 336] AH01909: localhost:443:0 server certificate does NOT include an ID which matches the server name
+[Tue Nov 15 13:26:43.448179 2016] [mpm_winnt:notice] [pid 396:tid 336] AH00455: Apache/2.4.20 (Win32) SVN/1.8.16 OpenSSL/1.0.2g PHP/5.6.23 configured -- resuming normal operations
+[Tue Nov 15 13:26:43.448179 2016] [mpm_winnt:notice] [pid 396:tid 336] AH00456: Apache Lounge VC11 Server built: Apr  9 2016 11:30:31
+[Tue Nov 15 13:26:43.448179 2016] [core:notice] [pid 396:tid 336] AH00094: Command line: 'D:\\Bitnami\\REDMIN~1.0-1\\apache2\\bin\\httpd.exe -d D:/Bitnami/redmine-3.3.0-1/apache2 -f D:\\Bitnami\\REDMIN~1.0-1\\apache2\\conf\\httpd.conf'
+[Tue Nov 15 13:26:43.448179 2016] [mpm_winnt:notice] [pid 396:tid 336] AH00418: Parent: Created child process 2860
+[Tue Nov 15 13:26:44.103380 2016] [ssl:warn] [pid 2860:tid 228] AH01909: localhost:443:0 server certificate does NOT include an ID which matches the server name
+[Tue Nov 15 13:26:44.384181 2016] [ssl:warn] [pid 2860:tid 228] AH01909: localhost:443:0 server certificate does NOT include an ID which matches the server name
+[Tue Nov 15 13:26:44.384181 2016] [mpm_winnt:notice] [pid 2860:tid 228] AH00354: Child: Starting 64 worker threads.
+"
+24426,Redmine,Defect,"",New,Normal,sqlserver2014:chang issues parentId success but view is wrong,? ??,"",2016-11-24 07:47,"","","","","",0,2016-11-22 10:15,"","","","","see as flow image:
+I use SSMA for mySQL Client to tranfer redmine database from mysql to sqlserver2014,everything is ok.
+but s few weeks ago ,we find that,if I chang some issues parentId,it works well but the tree view is wrong.like this:
+I change issuess 218947's parentId is 218972.after I promit change,the tree view show it's parentId is 218937.
+for help."
+24407,Redmine,Patch,"",Closed,Normal,Dutch (NL) translation enhancements and complete review (major update),Gregory Van der Steen,"",2016-11-30 16:42,Translations,3.4.0,"","","",0,2016-11-19 18:52,2016-11-30 16:42,関連している #26090,"","","Major review and enhancements for Dutch (NL) translations on revision r15993.
+
+Affected files:
+* @config/locales/nl.yml@
+* @public/javascripts/jstoolbar/lang/jstoolbar-nl.js@
+
+Improvements and common mistakes:
+* Compounds and compounds with proper nouns or abbreviations
+* Imperative vs infinitive
+* Google translated words or terms
+* You, U or you (nl: u of jij) and your (nl: uw)? 
+* Verb placement: at the end of the action (Edit issues => Issues bewerken)
+* ..."
+24402,Redmine,Defect,"",New,Normal,sqlserver2014: db:migrate failed,? ??,"",2016-11-21 04:52,Database,"","","","",0,2016-11-18 09:14,"","","","","Installing Redmine-3.3.1、ruby 2.3.1p112、sqlserver2014.
+run commond：db:migrate
+errors:
+undefine method 'type' for nil:NilClass  in/opt/redmine-3.3.1/db/migrate/20160416072926_remove_position_defaults.rb
+hao to fixed it?
+I'm delete 20160416072926_remove_position_defaults.rb filed from the redmine-3.3.1,db:migrate is success AND It works fine."
+24400,Redmine,Patch,"",Closed,Normal,Bulgarian translation (),Ivan Cenov,"",2016-11-30 12:37,Translations,"","","","",0,2016-11-18 07:15,2016-11-30 12:37,"","","","Translated:
+* error_no_projects_with_tracker_allowed_for_new_issue
+
+Changed:
+* label_font_monospace
+* label_font_proportional"
+24397,Redmine,Defect,"",Closed,Normal,this text in description or note cause an internal server error,St?phane Schoorens,"",2016-11-22 15:50,Issues,"","","","",0,2016-11-17 15:26,2016-11-18 00:19,次のチケットと重複 #20127,Duplicate,3.1.3,tried on http://demo.redmine.org/issues/153401
+24396,Redmine,Defect,"",Closed,Normal,Continuing_a_list_item_after_a_sub-item,Enrico Ricci,"",2016-11-17 16:44,"","","","","",0,2016-11-17 15:09,2016-11-17 16:44,関連している #18032,Invalid,"","How can i solve this issue?
+[[https://en.wikipedia.org/wiki/Help:List#Continuing_a_list_item_after_a_sub-item]]"
+24382,Redmine,Patch,"",Closed,Normal,More readable regex for parse_redmine_links,Dmitry Lisichkin,Jean-Philippe Lang,2017-01-07 13:15,Code cleanup/refactoring,3.4.0,"","","",0,2016-11-16 12:42,2017-01-07 11:53,"","","","In method parse_redmine_links used very long regex that impossible to understand with first look.
+Added names for capture groups."
+24348,Redmine,Defect,"",Closed,Normal,acts_as_versioned use old style (Rails 2.x) of method call for #all,Roman Shipiev,Jean-Philippe Lang,2016-11-26 10:02,Code cleanup/refactoring,3.2.5,"","","",0,2016-11-14 14:00,2016-11-26 10:02,関連している #19957,Fixed,"","@/lib/plugins/acts_as_versioned/lib/acts_as_versioned.rb@
+<pre><code class=""ruby"">
+          # Finds versions of a specific model.  Takes an options hash like <tt>find</tt>
+          def find_versions(id, options = {})
+            versioned_class.all({
+              :conditions => [""#{versioned_foreign_key} = ?"", id],
+              :order      => 'version' }.merge(options))
+          end
+</code></pre>"
+24344,Redmine,Defect,"",Closed,Normal,Cannot upload file on an issue,Aniss El Amrani,"",2016-11-16 01:46,"","","","","",0,2016-11-14 10:58,2016-11-14 11:49,"",Invalid,3.0.7,"I got an error message while trying to upload a file into a redmine issue.
+I had this in the log file:
+
+----------------------------------
+ActionView::Template::Error (5000540775 is out of range for ActiveRecord::Type::Integer with limit 4):
+    1: <%= ""(#{l(:field_private_notes)}) "" if @journal.private_notes? -%><%= l(:text_issue_updated, :id => ""##{@issue.id}"", :author => @journal.user) %>
+    2: 
+    3: <% details_to_strings(@journal_details, true).each do |string| -%>
+    4: <%= string %>
+    5: <% end -%>
+    6: 
+  lib/redmine/hook.rb:61:in `block (2 levels) in call_hook'
+  lib/redmine/hook.rb:61:in `each'
+  lib/redmine/hook.rb:61:in `block in call_hook'
+  lib/redmine/hook.rb:58:in `tap'
+  lib/redmine/hook.rb:58:in `call_hook'
+  lib/redmine/hook.rb:167:in `call_hook'
+  app/helpers/issues_helper.rb:403:in `show_detail'
+  app/helpers/issues_helper.rb:321:in `block in details_to_strings'
+  app/helpers/issues_helper.rb:307:in `each'
+  app/helpers/issues_helper.rb:307:in `details_to_strings'
+  app/views/mailer/issue_edit.text.erb:3:in `_app_views_mailer_issue_edit_text_erb__1167367905_73751580'
+  app/models/mailer.rb:435:in `block in mail'
+  app/models/mailer.rb:434:in `mail'
+  app/models/mailer.rb:83:in `issue_edit'
+  app/models/mailer.rb:447:in `initialize'
+  config/initializers/10-patches.rb:154:in `deliver'
+  app/models/mailer.rb:95:in `block (2 levels) in deliver_issue_edit'
+  app/models/issue.rb:891:in `each_notification'
+  app/models/mailer.rb:94:in `block in deliver_issue_edit'
+  app/models/journal.rb:90:in `block in each_notification'
+  app/models/journal.rb:88:in `each'
+  app/models/journal.rb:88:in `each_notification'
+  app/models/mailer.rb:93:in `deliver_issue_edit'
+  app/models/journal.rb:302:in `send_notification'
+  app/models/journal.rb:67:in `save'
+  app/models/issue.rb:1566:in `create_journal'
+  app/models/issue.rb:175:in `create_or_update'
+  app/controllers/issues_controller.rb:482:in `block in save_issue_with_child_records'
+  app/controllers/issues_controller.rb:470:in `save_issue_with_child_records'
+  app/controllers/issues_controller.rb:180:in `update'
+
+----------------------------------
+
+The file I tried to upload was named *5000540775.HTM*. 
+I had to rename the file to *FILE5000540775.HTM* to be able to upload it.
+
+Thanks in advance.
+
+Regards,
+
+Aniss
+"

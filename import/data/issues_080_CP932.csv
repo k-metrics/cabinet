@@ -1,0 +1,1020 @@
+#,プロジェクト,トラッカー,親チケット,ステータス,優先度,題名,作成者,担当者,更新日,カテゴリ,対象バージョン,開始日,期日,予定工数,進捗率,作成日,終了日,関連するチケット,Resolution,Affected version,説明
+13829,Redmine,Defect,"",Closed,Normal,Favicon bug in IE8,Filou Centrinov,"",2013-04-22 08:18,UI,2.4.0,"","","",0,2013-04-21 18:16,2013-04-22 08:18,関連している #13687,Fixed,"","The favicon is not display very well with IE8. This bug existed also before the fix of #13687. IE6 is not affeced. Other IE versions I couldn't check.
+
+I fixed this problem by saving icon with ""VariIcon Revolve"".
+
+IE8 now:
+!IE8_before.png!
+
+IE8 with updated favicon:
+!IE8_after.png!
+
+Updated favicon was also tested in Firefox, Safari and Opera.
+"
+13826,Redmine,Patch,"",Closed,Normal,application.js: randomKey function optimization,Filou Centrinov,"",2013-04-22 10:11,Code cleanup/refactoring,"","","","",0,2013-04-21 03:47,2013-04-22 10:11,関連している #1110,"","","Optimization:
+* local iteration variable i
+* string instead long array of characters"
+13825,Redmine,Patch,"",Closed,Normal,German translation: jquery.ui.datepicker-de.js,Filou Centrinov,"",2013-04-21 05:52,Translations,2.4.0,"","","",0,2013-04-21 03:39,2013-04-21 05:52,"","","","Capital letter and no ""&#x3c;"" or ""&#x3e;"""
+13823,Redmine,Defect,"",Closed,Normal,Trailing comma in javascript files,Filou Centrinov,"",2013-04-21 14:42,"",2.3.1,"","","",0,2013-04-20 18:49,2013-04-21 14:42,"",Fixed,2.3.0,"Trailing comma in javascript files:
+
+source:trunk/public/javascripts/gantt.js#L96
+source:trunk/public/javascripts/revision_graph.js#L46
+
+"
+13821,Redmine,Defect,"",Closed,Normal,"""obj"" parameter is not defined for macros used in description of documents ",Pierre-Louis Bonicoli,Jean-Philippe Lang,2013-05-12 11:45,Wiki,2.3.2,"","","",0,2013-04-20 05:24,2013-05-12 11:45,"",Fixed,"","Custom macros used in ""description of document"":http://www.redmine.org/projects/redmine/wiki/RedmineDocuments don't receive a defined ""@obj@"" parameter:
+
+# in ""document view"":http://www.redmine.org/projects/redmine/repository/entry/trunk/app/views/documents/show.html.erb#L15, ""@object@"" parameter is not used when ""@textilizable@"" is called, so
+# ""@obj@"" variable is ""not defined"":http://www.redmine.org/projects/redmine/repository/entry/trunk/app/helpers/application_helper.rb#L477 and any macro is called with a not defined ""@obj@""
+# macros can not access to the document that is rendered
+
+For testing, here is a macro:
+<pre>
+Redmine::WikiFormatting::Macros.register do
+  desc ""test macro""
+  macro :viewer do |obj, args|
+    if obj
+      'ok'
+    else
+      'nok'
+    end
+  end
+end
+</pre>"
+13811,Redmine,Defect,"",Closed,High,Broken javascript in IE7 ; recurrence of #12195,Adrian Wilkins,"",2013-04-20 18:01,UI,2.3.1,"","","",0,2013-04-18 18:31,2013-04-20 18:01,関連している #10286,Fixed,2.3.0,"This is a recurrence of #12195 caused by a stray comma in application.js (as detailed below).
+
+In 'public/javascripts/application.js'
+
+<pre><code class=""javascript"">
+
+function observeAutocompleteField(fieldId, url, options) {
+  $(document).ready(function() {
+    $('#'+fieldId).autocomplete($.extend({
+      source: url,
+      minLength: 2,
+      search: function(){$('#'+fieldId).addClass('ajax-loading');},
+      response: function(){$('#'+fieldId).removeClass('ajax-loading');},
+    }, options));                                                      ^ extra comma that IE 7 hates
+    $('#'+fieldId).addClass('autocomplete');
+  });
+}
+
+</code></pre>
+
+This breaks the subsequent loading of all other functions in application.js, which halts most Javascript execution because adding warnLeavingUnsavedMessage to the window.load event is the first thing every page does.
+
+This class of problem is picked up by JSHint, which is available as a standard syntax check in my favoured web editor, Komodo Edit ; have taken liberty of patching away all it's complaints about
+
+* Semicolons
+* Commas
+* Comparison operators
+
+.. attached to issue.
+
+Have not done anything about other warnings ; the one that concerned me most was the warning about a fall-through in a case statement, but without a comment to the contrary and no familiarity with the code, cannot be sure this is not intentional."
+13809,Redmine,Defect,"",Closed,Normal,Issue Summary Screen Not Showing Tickets from Sub Projects,Peter Berkman,"",2018-05-13 03:03,Issues,"","","","",0,2013-04-18 18:16,2018-05-13 03:03,次のチケットと重複 #2529,Duplicate,2.2.3,"with a project hierarchy like:
+
+     Products
+          >> ProductA
+          >> ProductB
+
+where all the versions are declared at the ""Products"" level.
+
+when you click on the ""Products"" project's ""Issues"" tab and select ""Summary"" from the right column, no tickets are shown under ""Tracker"", ""Prority"", or ""Version"".
+
+I would expect all the tickets from the ""Products"" sub-projects to be included.
+
+This seems like the only summary view where they are not included.
+
+Can you change this so that they are included?"
+13808,Redmine,Patch,"",Closed,Normal,"Changed Bulgarian ""label_statistics"" translation",Ivan Cenov,"",2013-04-19 09:19,Translations,2.4.0,"","","",0,2013-04-18 16:53,2013-04-19 09:19,"","","","Changed Bulgarian translations of
+* label_statistics"
+13796,Redmine,Defect,"",Closed,Normal,"describe the application setting ""Allow cross-project subtasks""",Terence Mill,Jean-Baptiste Barth,2013-05-09 00:50,Documentation,"","","","",0,2013-04-17 17:47,2013-05-08 10:51,関連している #13795,Fixed,"","I am not sure how it really works wor all four possible settings.
+
+Shall be documented on site [[RedmineSettings#Issue-tracking]]"
+13795,Redmine,Defect,"",Closed,Normal,"Please describe the switch ""Enable time logging"" in application repository settings",Terence Mill,Jean-Baptiste Barth,2013-05-08 10:38,Documentation,"","","","",0,2013-04-17 17:40,2013-05-08 10:38,関連している #13796,Fixed,"","I' am not sure what it does, else i would do it myself, but the place it shall be written is [[RedmineSettings]] at the very end."
+13794,Redmine,Defect,"",Closed,Normal,Magnifier (New member and related issues),Diego ?lvarez,"",2013-04-23 08:18,Permissions and roles,"","","","",0,2013-04-17 17:33,2013-04-22 16:42,"",Invalid,2.3.0,"If I try to add a new member or a related issue, the magnifier on the left side of the search box maintains its position when you write transparently to the new text, so the first written characters occupy the same position as the magnifier, making visualization difficult.
+
+Thanks in advance.
+
+
+Best regards,
+Diego"
+13793,Redmine,Defect,"",New,Normal,Unable to change user role (due to sub-URI ?)  ,admin cbib,"",2013-04-18 16:43,Permissions and roles,"","","","",0,2013-04-17 16:19,"","","",2.3.0,"
+Changing user role inside a project doesn't work.
+All other parts seems to work, only this button (POST action) failed (nothing happen).
+
+I guess that the problem is around sub-URI.
+
+
++Installation+
+<pre>Environment:
+  Redmine version                          2.3.0.stable.11691
+  Ruby version                             1.9.3 (x86_64-linux)
+  Rails version                            3.2.13
+  Environment                              production
+  Database adapter                         Mysql2
+Redmine plugins:
+  no plugin installed</pre>
+
+I use Apache and Apache passenger module with some special configuration to deal with sub-URI (@www.myserver.fr/redmine@).
+Based on http://www.redmine.org/projects/redmine/wiki/HowTo_Install_Redmine_in_a_sub-URI and http://www.redmine.org/issues/11881
+In @config/environment.rb@:
+<pre>
+[...]
+# SUB-URI
+# http://www.redmine.org/issues/11881
+RedmineApp::Application.routes.default_scope = '/redmine/'
+
+# Initialize the rails application
+RedmineApp::Application.initialize!
+
+# Prendre en compte le SUB-URI
+Redmine::Utils::relative_url_root = ""/redmine/"" 
+</pre>
+
+
+
++Request that failed when i press button ""change"" (tab ""Members"" inside a project)+
+The ""Request URL"" is false. Should be something like ""http://www.myserver.fr/redmine/memberships/1238"", no ?
+<pre>
+Request URL:       http://www.myserver.fr/memberships/1238
+Request Method:    POST
+Status Code:       HTTP/1.1 404 Not Found
+
+Request Headers
+X-Requested-With:XMLHttpRequest
+X-CSRF-Token:ZeR7gqPo/fXMhPJa0IOIJFdWN335/VthcLUwAPaAvDw=
+User-Agent:Mozilla/5.0 (X11; Linux x86_64; rv:20.0) Gecko/20100101 Firefox/20.0 Iceweasel/20.0
+Referer:http://www.myserver.fr/redmine/projects/meta-archeo/settings
+Pragma:no-cache
+Host:www.myserver.fr
+DNT:1
+Content-Type:application/x-www-form-urlencoded; charset=UTF-8
+Content-Length:176
+Connection:keep-alive
+Cache-Control:no-cache
+Accept-Language:fr-fr,fr;q=0.8,en-us;q=0.5,en;q=0.3
+Accept-Encoding:gzip, deflate
+Accept:*/*;q=0.5, text/javascript, application/javascript, application/ecmascript, application/x-ecmascript
+</pre>
+
+
+
+
+
+"
+13790,Redmine,Defect,"",Closed,Urgent,CSV Export problem,Zaq1 Dev,"",2013-04-20 10:56,Time tracking,"","","","",0,2013-04-17 12:31,2013-04-20 10:56,次のチケットと重複 #13618,Duplicate,2.3.0,"I will try and be as explanatory as possible, I have tried to find a solution, but couldnt but when I investigated the issues its missing a key variable, explanation goes below!
+
+I installed the latest redmine version 2.3.0, last week and am onto 2nd week of testing, going successfully and smoothly, except for one thing:
+
+I navigated to http://MY_LOCAL_IP:8000/time_entries/
+
+When I apply any filter, the atom exports fine with filtered results only, but export to csv returns all the results.
+
+Since I am a programmer, but in PHP, I tried to investigate the issue and found following:
+
+ATOM URL: time_entries.atom?c[]=project&c[]=spent_on&c[]=user&c[]=activity&c[]=issue&c[]=comments&c[]=hours&f[]=spent_on&f[]=user_id&f[]=&key=7bd4ae99e59fad79fab2557b444b0845d9d9b720&op[spent_on]=*&op[user_id]==&utf8=?&v[user_id][]=4
+
+CSV URL: time_entries.csv?c[]=project&c[]=spent_on&c[]=user&c[]=activity&c[]=issue&c[]=comments&c[]=hours&f[]=spent_on&f[]=user_id&f[]=&op[spent_on]=*&op[user_id]==&utf8=?&v[user_id][]=4
+
+Difference between the 2 is very minor, CSV URL is missing the KEY variable, when I added the key variable and tested, it gave me correct CSV file with filtered output.
+
+Since I am not vey well versed with Ruby and Rails, It is difficult for me to actually go through the model/views and controller, however I am still trying myself if I come across a solution I will share it with you folks, but if there is someone out there who can point it out to me explicitly on where to make the change it will make my life alot easier.
+
+Thanks & Regards,
+
+ZAQ
+
+
+
+
+"
+13783,Redmine,Defect,"",Closed,Normal,Internal error on time tracking activity enumeration deletion,Florian S.,Jean-Philippe Lang,2013-07-11 19:51,Administration,2.3.2,"","","",0,2013-04-16 13:45,2013-07-11 19:51,"",Fixed,2.3.0,"Whenever I try to delete an enumeration for time tracking as admin I get this error:
+
+
+<pre>
+Internal error
+
+An error occurred on the page you were trying to access.
+If you continue to experience problems please contact your Redmine administrator for assistance.
+
+If you are the Redmine administrator, check your log files for details about the error.
+
+Back
+
+</pre>
+
+
+The log file shows me:
+<pre>
+Started DELETE ""/enumerations/8"" for 172.18.96.2 at 2013-04-16 13:42:24 +0200
+Processing by EnumerationsController#destroy as HTML
+  Parameters: {""authenticity_token""=>""13xnqDY+WCyF0RhSlRRXkgUWUvF10QBPTY5bMXlcZ1c="", ""id""=>""8""}
+  Current user: admin (id=1)
+Completed 500 Internal Server Error in 26ms
+
+RuntimeError (Can't delete enumeration):
+  app/models/enumeration.rb:133:in `check_integrity'
+  app/models/enumeration.rb:88:in `destroy'
+  app/models/enumeration.rb:88:in `destroy'
+  app/controllers/enumerations_controller.rb:70:in `destroy'
+
+</pre>
+
+my settings:
+<pre>
+Environment:
+  Redmine version                          2.3.0.stable
+  Ruby version                             1.9.3 (x86_64-linux)
+  Rails version                            3.2.13
+  Environment                              production
+  Database adapter                         Mysql2
+Redmine plugins:
+  redmine_charts2                          0.2.1
+</pre>
+
+"
+13781,Redmine,Defect,"",Closed,Normal,CJK(Chinese/Japanese/Korean) characters are not shown in PDF on non CJK locales,Toru Haraguchi,"",2014-12-02 10:06,PDF export,2.6.0,"","","",0,2013-04-16 12:34,2014-10-20 08:40,"関連している #10681, 関連している #13575, 関連している #17570, 関連している #4787, 次のチケットが重複 #14701, 次のチケットが重複 #1249, 次のチケットが重複 #19282",Fixed,2.2.2,"When exporting tickets list view to PDF in English personal preference, most of Japanese characters are not shown.
+Attached is an example.
+
+Because when in Japanese personal preference those letters are shown, so far no preblem. But this might be annoying for bilingual (or multilingual) people who prefer English controls of Redmine, but need reading his/her responsible issues written in Japanese.
+"
+13780,Redmine,Defect,"",Closed,Normal,Spent hours have excessive flaction in PDF exported ticket list,Toru Haraguchi,"",2013-04-16 12:56,PDF export,"","","","",0,2013-04-16 12:22,2013-04-16 12:56,関連している #12510,Duplicate,2.2.2,"When exporting tickets list view to PDF and a ticket has a particular spent time value, the PDF exported shows excessive fraction digits. The following should be the point to be patched, but please review and fix this problem.
+
+<pre><code class=""ruby"">
+--- a/redmine/lib/redmine/export/pdf.rb
++++ b/redmine/lib/redmine/export/pdf.rb
+
+@@ -251,6 +251,10 @@
+
+             if column.name == :subject
+               value = ""  "" * level + value
+             end
++            if column.name == :spent_hours
++              value = ""%.2f"" % value.to_f
++            end
+             if value.is_a?(Date)
+               format_date(value)
+             elsif value.is_a?(Time)
+</code></pre>
+
+Attached an example.
+"
+13777,Redmine,Defect,"",New,Normal,REST API for issues with included changesets does not include which repository the revision is from,Cheyenne Wills,"",2016-08-22 12:16,REST API,"","","","",0,2013-04-16 00:45,"","","","","(Not sure if this is a defect or a possible feature request)
+<pre>
+
+Redmine 1.4.5
+=================================================
+Ruby version              1.8.7 (x86_64-linux)
+RubyGems version          1.8.24
+Rack version              1.1.3
+Rails version             2.3.15
+Active Record version     2.3.15
+Active Resource version   2.3.15
+Action Mailer version     2.3.15
+Active Support version    2.3.15
+Application root          /var/lib/redmine
+Environment               production
+Database adapter          mysql
+Database schema version   20120301153455
+
+About your Redmine plugins
+Redmine ChangeAuthor plugin             0.0.2
+Smart issues sort plugin                0.3.1
+Redmine plugin views revisions plugin   0.0.1
+Redmine Vendor Display plugin           1.0
+Extra query operators plugin            0.1.1
+Redmine RPPS customization plugin       0.1.0
+Redmine Groups plugin                   1.0.0
+Mylyn Connector plugin                  2.7.6.stable
+Project Subscription                    0.0.1b
+Redmine hidesidebar plugin              0.1.0
+Redmine Better Gantt Chart plugin       0.6.5
+Issue query operators plugin            0.0.2
+==========================================================
+</pre>
+
+Problem description.
+
+REST API.  
+<pre>
+ GET /issues/[id].xml?include=changesets
+</pre>
+
+The response does not include information identifying the changeset repository, just the revision number.
+
+Looking at app/views/issues/show.api.rsb it appears that the code only returns the revision number (I checked current redmine trunk and it does the same).
+
+The problem was ""discovered"" when a user used the REST API to retrieve an issue that contained a revision reference from another project."
+13776,Redmine,Defect,"",New,Normal,Wiki links that leads to specified paragraph in the same page,Jason E,"",2013-04-16 00:24,Wiki,"","","","",0,2013-04-16 00:24,"","","",2.2.3,I have attempted to use the notation described in issue #4422 many times and have been unsuccessful in getting it to work. Does it still function in Redmine 2.2.3? Are there any special caveats to the paragraph names? What if you are referencing a paragraph on the same wiki page? Thanks.
+13774,Redmine,Patch,"",Closed,Normal,Show warning if CSV-Export exceeds limit,Daniel Felix,Jean-Philippe Lang,2014-01-12 11:42,Issues,2.5.0,"","","",0,2013-04-15 17:10,2014-01-12 11:42,関連している #13770,"","","Hi there,
+
+Filou Centrinov has reported a feature request in #13770. This patch aims to fix this.
+
+Best regards,
+Daniel"
+13773,Redmine,Defect,"",New,Normal,"remove ""main-menu"" div when the project menu is empty",Terence Mill,"",2013-04-15 17:03,UI,"","","","",0,2013-04-15 17:03,"","","","","On some pages, like *Home* or *My page* or plugin using main menu entries the project menu is empty but the div html is still present.
+ 
+It's a problem when you a background image in CSS, because you see the background image without the menu items. Also its a problem if you use contect menu slider as done in plugin ""redmine sidebar hide"":https://github.com/ries-tech/sidebar_hide where additional space is made availaibe if collapsed
+
+Could you remove this div or add a CSS class to identify an empty menu so i am able to unset css main.margin-left property, for view here no project context and aka no project menu entries are available.
+ 
+The fix #3259 doesn't fix the problem, because i still have empty ""main-menu"" divs in my rendered site
+
+<pre>
+<div id=""main-menu"">
+        
+</div>
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+"
+13764,Redmine,Defect,"",Closed,High,Unable to create a new ticket from an email,chris p,"",2015-09-10 14:41,Email receiving,"","","","",0,2013-04-14 16:57,2014-10-29 11:52,"","",2.3.0,"I get the following error when I try and create a new ticket from an email, can any one help? This is a new enviroment and is the latest version 
+
+Validation failed: Assignee can't be blank
+
+I have searched high and low but am unable to find a solution. I can update existing tickets as the assignee is set for them.
+
+This is my env:
+
+About your application's environment
+Ruby version              1.8.7 (x86_64-linux)
+RubyGems version          1.8.15
+Rack version              1.4
+Rails version             3.2.13
+Active Record version     3.2.13
+Action Pack version       3.2.13
+Active Resource version   3.2.13
+Action Mailer version     3.2.13
+Active Support version    3.2.13
+Middleware                Rack::Cache, ActionDispatch::Static, Rack::Lock, #<ActiveSupport::Cache::Strategy::LocalCache::Middleware:0x7ffa5693c738>, Rack::Runtime, Rack::MethodOverride, ActionDispatch::RequestId, Rails::Rack::Logger, ActionDispatch::ShowExceptions, ActionDispatch::DebugExceptions, ActionDispatch::RemoteIp, ActionDispatch::Callbacks, ActiveRecord::ConnectionAdapters::ConnectionManagement, ActiveRecord::QueryCache, ActionDispatch::Cookies, ActionDispatch::Session::CookieStore, ActionDispatch::Flash, ActionDispatch::ParamsParser, ActionDispatch::Head, Rack::ConditionalGet, Rack::ETag, ActionDispatch::BestStandardsSupport, OpenIdAuthentication
+Application root          /usr/share/redmine-2.3
+Environment               production
+Database adapter          mysql
+Database schema version   20130217094251
+
+
+Environment:
+  Redmine version                          2.3.0.stable.11679
+  Ruby version                             1.8.7 (x86_64-linux)
+  Rails version                            3.2.13
+  Environment                              production
+  Database adapter                         MySQL
+Redmine plugins:
+  ekanban                                  0.0.1
+  redmine_default_assign                   0.2.0
+
+
+Thanks in advance..."
+13763,Redmine,Patch,"",New,Normal,Live check of hostname setting,Daniel Felix,"",2013-08-08 16:54,UI,"","","","",0,2013-04-14 15:06,"",関連している #13352,"","","Hi,
+
+this is a small patch, which provides a live check for the hostname setting in the admin menu.
+
+This is just a function, you can attach as many input fields with different regexp as needed.
+
+I defined this to prevent cases like #13352.
+
+Best regards,
+Daniel"
+13762,Redmine,Defect,"",Confirmed,Normal,SCM auto status change bypassses roles and permissions,Marcus Rej?s,"",2013-10-14 00:33,SCM,Candidate for next major release,"","","",0,2013-04-14 08:28,"","関連している #4823, 次のチケットが重複 #14276, 次のチケットが重複 #14826, 次のチケットが重複 #13792","","","Hi,
+
+Encountered unexpected behavior yesterday when i accidentally added a Git archive cloned from another site (buildroot in this case) which contained a lot of commit-messages like 
+
+<pre>
+""Closes #1123""
+</pre>
+
+This ended up in a lot of actions like:
+
+<pre>
+Updated by Anonymous about 9 hours ago
+
+    Status changed from New to Resolved
+    % Done changed from 0 to 100
+
+Comment Edit
+
+Applied in changeset alleatoautomationplatform:buildroot|commit:4f0361ab2ca4f25207c84b557e31319c9a417a76.
+</pre>
+
+This was not only in the project the Repository is in but sitewide.
+
+The user Anonymous have no permissions set.
+
+This differs in two ways from my expected behavior:
+
+1) The anonymous user should not be able to close issues.
+2) A repo commit should only be able to modify issues in the same project as the repo.
+
+This is an old installation that have gone through several upgrades. Unfortunately I don't have time to reproduce it in a clean environment but I thought it might be best reporting it anyway since it is security related.
+
+<pre>
+Ruby version              1.9.3 (x86_64-linux)
+RubyGems version          1.8.23
+Rack version              1.4
+Rails version             3.2.13
+Active Record version     3.2.13
+Action Pack version       3.2.13
+Active Resource version   3.2.13
+Action Mailer version     3.2.13
+Active Support version    3.2.13
+Middleware                Rack::Cache, ActionDispatch::Static, Rack::Lock, #<ActiveSupport::Cache::Strategy::LocalCache::Middleware:0x0000000289ede0>, Rack::Runtime, Rack::MethodOverride, ActionDispatch::RequestId, Rails::Rack::Logger, ActionDispatch::ShowExceptions, ActionDispatch::DebugExceptions, ActionDispatch::RemoteIp, ActionDispatch::Callbacks, ActiveRecord::ConnectionAdapters::ConnectionManagement, ActiveRecord::QueryCache, ActionDispatch::Cookies, ActionDispatch::Session::CookieStore, ActionDispatch::Flash, RedmineDmsf::NoParse, ActionDispatch::ParamsParser, ActionDispatch::Head, Rack::ConditionalGet, Rack::ETag, ActionDispatch::BestStandardsSupport, OpenIdAuthentication
+Application root          /var/www/redmine-2.2
+Environment               production
+Database adapter          mysql2
+Database schema version   20121026003537
+</pre>
+
+Thanks in advance and thank you for a great product. We love it!
+
+Marcus"
+13760,Redmine,Defect,"",Closed,Normal,forward slashes in project name confuses attachment controller and gives 404 when downloading,Hossam Hammady,"",2013-04-13 07:51,Attachments,"","","","",0,2013-04-12 23:53,2013-04-13 07:51,"","",1.3.2,"If the project name contains a forward slash (/) no attachments can be downloaded as it confuses the attachments controller with a subdirectory within the files directory. I wonder why does the URL routing to the attachment download contain the project name and issue number, is it for security? /attachments/id is enough I believe, and the authorization module should take care of the rest.
+
+your database manager version: Mysql 5.5.24-0ubuntu0.12.04.1
+your Ruby version: ruby 1.8.7 (2011-06-30 patchlevel 352) [i686-linux]
+your Rails version: 2.3.14
+Error from Apache2 log:
+HOST:IP- - [12/Apr/2013:21:30:34 +0000] ""GET /attachments/2478/V%2Ff%20Controller%20-%20Test_332_Revision%20version-1.docx HTTP/1.1"" 404 549 ""http://HOST/issues/332"" ""Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/536.28.10 (KHTML, like Gecko) Version/6.0.3 Safari/536.28.10""
+"
+13759,Redmine,Defect,"",New,Normal,"When moving from one tracker to another, with different fields, data is lost.",Nathanael Hansen,"",2013-04-12 23:30,Issues,"","","","",0,2013-04-12 23:30,"","","",2.2.2,"We greatly appreciate that in 2.2.2 you can move issues from one tracker to another, with different fields, sucessfully (we upgraded from 1.0.3).
+
+However, when you move an issue from one tracker to another any information you have in an original field that isn't in the new tracker is lost.  Could that data be added to the comment when the issue is moved?  Although the field isn't necessarily needed in the new tracker, the information is still important.
+
+Thank you!"
+13758,Redmine,Defect,"",New,Normal,"Issue Filtering 'Assignee = <<me>>' shows group issues, but 'Assignee = Bob' does not",Phil Miller,"",2018-04-18 17:41,Issues,"","","","",0,2013-04-12 22:33,"","関連している #13006, 関連している #26078, 関連している #25212","",2.3.0,"<pre>
+Environment:
+  Redmine version                          2.3.0.stable
+  Ruby version                             1.8.7 (i686-linux)
+  Rails version                            3.2.13
+  Environment                              production
+  Database adapter                         PostgreSQL
+Redmine plugins:
+  no plugin installed
+</pre>
+
+Contrast these two different results of what should be an identical search (I am 'Phil Miller'). They should both show issues assigned to groups of which I am a member, but only the 'special' <<me>> search actually does.
+
+!http://charm.cs.illinois.edu/~phil/redmine_filter_me.png!
+
+!http://charm.cs.illinois.edu/~phil/redmine_filter_phil.png!
+
+
+"
+13757,Redmine,Defect,"",Closed,Normal,500 on project's Settings tab or creating new projects.,Juan Perez,"",2013-04-18 05:16,Projects,"","","","",0,2013-04-12 22:05,2013-04-18 05:16,"",Invalid,2.3.0,"Hello,
+
+I just upgraded to 2.3 and can't access any project's Settings tab anymore. I get this error:
+
+ActionView::Template::Error (undefined method `inherit_members' for #<Project:0x7fa5a2f2a2e8>):
+    17: <% end %>
+    18: 
+    19: <% if @project.safe_attribute? 'inherit_members' %>
+    20: <p><%= f.check_box :inherit_members %></p>
+    21: <% end %>
+    22: 
+    23: <%= wikitoolbar_for 'project_description' %>
+  lib/redmine/views/labelled_form_builder.rb:31:in `check_box'
+  app/views/projects/_form.html.erb:20:in `_app_views_projects__form_html_erb__611119149_70174691458280'
+  app/views/projects/_edit.html.erb:2:in `_app_views_projects__edit_html_erb___1355675442_70174691532840'
+  app/helpers/application_helper.rb:944:in `labelled_form_for'
+  app/views/projects/_edit.html.erb:1:in `_app_views_projects__edit_html_erb___1355675442_70174691532840'
+  app/views/common/_tabs.html.erb:24:in `_app_views_common__tabs_html_erb___144001353_70174692368340'
+  app/views/common/_tabs.html.erb:23:in `each'
+  app/views/common/_tabs.html.erb:23:in `_app_views_common__tabs_html_erb___144001353_70174692368340'
+  app/helpers/application_helper.rb:271:in `render_tabs'
+  app/views/projects/settings.html.erb:3:in `_app_views_projects_settings_html_erb___240808740_70174692672940'
+
+I confirmed that the following is in app/models/project.rb:
+
+""safe_attributes 'inherit_members',
+    :if => lambda {|project, user| project.parent.nil? || project.parent.visible?(user)}""
+
+Absolutely no expert on RoR, any ideas of where to look at? Thanks!
+
+-------------------------------------------------------
+ruby 1.8.7 (2011-06-30 patchlevel 352) [x86_64-linux]
+RubyGems version          1.3.7
+Rack version              1.5.2
+Rails version             3.2.13"
+13756,Redmine,Defect,"",Closed,Normal,Internal error on gantt png-link,Filou Centrinov,"",2013-06-08 23:44,Gantt,"","","","",0,2013-04-12 20:13,2013-06-08 23:44,"",Invalid,2.3.0,"Clicking on the png-link at the bottom of the gantt page I receive an internal error.
+
+<pre>
+Started GET ""/projects/projectx/issues/gantt.png?month=4&months=6&year=2013&zoom=2"" for 95.113.214.61 at 2013-04-12 19:33:47 +0200
+Processing by GanttsController#show as PNG
+  Parameters: {""month""=>""4"", ""months""=>""6"", ""year""=>""2013"", ""zoom""=>""2"", ""project_id""=>""projectx""}
+  Current user: centrinov (id=3)
+Completed 500 Internal Server Error in 379ms
+
+Magick::ImageMagickError (no decode delegate for this image format `/tmp/magick-26362OvycamgJPfqW1' @ error/constitute.c/ReadImage/550: `(null)'):
+  lib/redmine/helpers/gantt.rb:521:in `draw'
+  lib/redmine/helpers/gantt.rb:521:in `to_image'
+  app/controllers/gantts_controller.rb:44:in `block (2 levels) in show'
+  app/controllers/gantts_controller.rb:42:in `show'
+</pre>
+
+<pre>
+Ruby version              1.9.2 (x86_64-linux)
+RubyGems version          1.8.24
+Rack version              1.4
+Rails version             3.2.13
+</pre>
+
+No Plugins installed.
+
+Could someone confirm or does this cause by the not correct configured ImageMagick?"
+13754,Redmine,Defect,"",Closed,Normal,Viewing time entries,Dzianis Frydliand,"",2013-04-12 16:42,"","","","","",0,2013-04-12 14:39,2013-04-12 16:42,"",Invalid,"","I have a role defined, which has all time tracking features off.
+
+When user of this role logins and navigates to the Projects page (from the top menu), the user can see link to 'Time Entries' page. 
+
+This bug is important for us because we don't want our customer to see our spent time.
+
+Environment:
+  Redmine version                          2.3.0.stable.11715
+  Ruby version                             1.8.7 (x86_64-linux)
+  Rails version                            3.2.13
+  Environment                              production
+  Database adapter                         MySQL
+Redmine plugins:
+  redmine_mylyn_connector                  2.8.2.stable"
+13753,Redmine,Defect,"",New,Normal,Can't use helper functions in Hooks,Moe H,"",2013-04-13 09:56,Plugin API,"","","","",0,2013-04-12 14:30,"","","",2.3.0,"I've upgraded to Redmine 2.3. But a few of my plugins aren't working proberly. After a little bit of research, i noticed that many of the helpers dont work when called from hook.
+
+For example, the redmine_time_tracker plugin monkey patched the ApplicationHelper and included some view helper functions, so that there always available. worked as expected in redmine 2.2. But in redmine 2.3 i'll get an error that the helper function is not available (while rendering a template).
+The same with helpers like render_404 or flash etc.
+
+I dont have specific error logs right now, but could add them if needed."
+13752,Redmine,Defect,"",Closed,High,Issues update order is broken,Chris Volkert,"",2013-04-12 16:42,Issues,"","","","",0,2013-04-12 11:52,2013-04-12 16:42,"",Invalid,0.8.2,"Since two days, suddenly the order of the issues updates are broken. instead of adding a update at the end of a issue, it startet from the beginning. Further updates are added below this first wrong update.
+
+That means the really order of updates of a issue ist like
+
+Topic-Header
+Update 4
+Update 5
+Update 1
+Update 2
+Update 3
+
+this can only be archieved by checking the time stamp of the updates. The running number on the right side of the Updates looks like it would be right, but that isn't.
+
+Order of running numbers for the example:
+#1
+#2
+#3
+#4
+#5
+
+On the System are more the 2200 Topics and about 40 Users are communication with there customers over the system. I have disabled the system now, but the people need the bugtracker urgently and i cannot stop the production a longer time.
+
+System:
+ubuntu jeos 8.04 und BitNami Redmine Stack 0.8.2-0 running in a VMWare Server VM.
+ 
+  - Redmine 0.8.2
+  - Apache 2.2.11
+  - ImageMagick 6.4.7
+  - MySQL 5.1.30
+  - Subversion 1.4.6
+  - Ruby 1.8.6
+  - Rails 2.1.1
+  - RubyGems 1.2.0
+"
+13749,Redmine,Defect,"",Closed,High,link missing ,匿名ユーザー,"",2013-04-11 21:59,"","","","","",0,2013-04-11 21:28,2013-04-11 21:59,"",Invalid,"","new project link missing.
+i just created new account on redmine
+i click on project and i cannot see on upper right corner for any new project link.
+still finding .
+Don't no where to ack.
+"
+13748,Redmine,Defect,"",Closed,Normal,Unreferenced attachments,Stanislav German-Evtushenko,"",2013-04-12 10:36,Documentation,"","","","",0,2013-04-11 20:55,2013-04-12 09:53,"",Fixed,2.3.0,"If file is uploaded to a wiki or an issue with ajax and then you decide not to update/create a page or an issue, you won't be able to remove uploaded file because there will be no any references to the uploaded file anymore."
+13747,Redmine,Patch,"",New,Normal,Issue Colors Patch for #4967,Daniel Felix,"",2013-08-03 05:20,UI,"","","","",0,2013-04-11 17:58,"","関連している #4967, 関連している #12789, 関連している #13297, 関連している #15021","","","Hi,
+
+here is the first patch for issue #4967. I have some further additions to this but maybe you'll take a look at this.
+
+The needed files where also attached. Please add the credits to http://www.famfamfam.com/lab/icons/silk/
+
+I would appreciate some Feedback.
+
+Best regards,
+Daniel"
+13745,Redmine,Patch,"",Closed,Normal,Correct translation for member save button,Daniel Felix,"",2013-08-09 02:57,UI,2.4.0,"","","",0,2013-04-11 16:28,2013-08-09 02:57,"","","","Hi,
+
+Jan Niggemann has asked me if I could sent a patch for this.
+
+I changed the button-label for the member management. Currently it says ""Change"", but correct would be ""Save"".
+
+Best regards,
+Daniel"
+13744,Redmine,Defect,"",Closed,High,Redmine hangs up with large repo,Antisthens Antisthens,"",2013-04-11 16:57,SCM,"","","","",0,2013-04-11 16:22,2013-04-11 16:49,関連している #2824,"",2.2.3,"Hi
+I have redmine install on my laptop(details in ENV information).
+two git repos are created. 
+one is small, clone from : https://github.com/avikivity/kvm-unit-tests.git, redmine works well on this repo.
+another one is the linux kernel source. clone from : https://github.com/torvalds/linux.git
+
+everytime I click the kernel repo. redmine hangs up, can not stop redmine by Ctrl-C even.
+
+I noticed process ruby and git 'eat' lot of cpu:
+<pre>
+top - 14:10:14 up 55 min,  7 users,  load average: 0.45, 0.35, 0.52
+Tasks: 208 total,   2 running, 206 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 33.7 us,  2.1 sy,  0.0 ni, 63.6 id,  0.0 wa,  0.3 hi,  0.3 si,  0.0 st
+KiB Mem:   7924224 total,  3613880 used,  4310344 free,   136260 buffers
+KiB Swap: 10158076 total,        0 used, 10158076 free,  1819648 cached
+
+  PID USER      PR  NI  VIRT  RES  SHR S  %CPU %MEM    TIME+  COMMAND                                                                                         
+ 4925 antisthe  20   0 1004m 329m 6508 S  99.6  4.3   0:24.28 ruby                                                                                            
+ 5327 antisthe  20   0 1328m 680m 354m S  33.2  8.8   0:08.82 git                                                                                             
+
+
+[antisthens@ ~]$ ps -aef | egrep ""ruby|git""
+1000      4925  4924 11 13:57 pts/1    00:01:34 ruby /home/antisthens/Workspace/redmine-2.2.3/script/rails server webrick -e production
+1000      5327  4925 30 14:09 pts/1    00:00:27 git --git-dir /home/antisthens/Workspace/redmine-2.2.3/repositories/git/linux/.git -c core.quotepath=false -c log.decorate=no log --no-color --encoding=UTF-8 --raw --date=iso --pretty=fuller --parents --stdin --reverse
+</pre>
+
+after about 3 minutes. the git process is gone,but redmine still response-less:
+<pre>
+top - 14:16:00 up  1:01,  7 users,  load average: 1.18, 0.91, 0.73
+Tasks: 207 total,   2 running, 205 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 26.4 us,  0.7 sy,  0.0 ni, 72.2 id,  0.4 wa,  0.2 hi,  0.2 si,  0.0 st
+KiB Mem:   7924224 total,  4071796 used,  3852428 free,   137080 buffers
+KiB Swap: 10158076 total,        0 used, 10158076 free,  1818012 cached
+
+  PID USER      PR  NI  VIRT  RES  SHR S  %CPU %MEM    TIME+  COMMAND                                                                                         
+ 4925 antisthe  20   0 1714m 1.0g 6508 S  96.3 13.6   6:02.62 ruby                                                                                            
+ 1811 mysql     20   0  598m  52m 5116 S   3.3  0.7   0:26.40 mysqld                                                                                          
+ 2101 antisthe  20   0 1997m 201m  35m S   3.0  2.6   2:40.40 gnome-shell                                                                                     
+ 2665 antisthe  20   0 1620m 318m  43m S   2.7  4.1   4:44.72 firefox                                                                                         
+
+[antisthens@ ~]$ ps -aef | egrep ""git|ruby""
+1000      4925  4924 30 13:57 pts/1    00:05:10 ruby /home/antisthens/Workspace/redmine-2.2.3/script/rails server webrick -e production
+</pre> 
+
+by google, seems there is performance issue in git itself,(in my case, the git command take about 3 minutes). wonder if redmine can back to normal status after the git command without restart?
+
+
+Tons of thanks.
+
+<pre>
+========== ENV information ============
+HW Information:
+Dell latitude E6420
+
+OS Information:
+Fedora 18 x86_64
+
+redmine Information:
+Environment:
+  Redmine version                          2.2.3.stable
+  Ruby version                             1.9.3 (x86_64-linux)
+  Rails version                            3.2.12
+  Environment                              production
+  Database adapter                         Mysql2
+Redmine plugins:
+  no plugin installed
+
+git Information
+git-1.8.1.4-2.fc18.x86_64
+</pre>"
+13741,Redmine,Defect,"",Closed,Normal,Not landing on home page on login after visiting lost password page,Filou Centrinov,Jean-Philippe Lang,2017-01-07 11:50,Accounts / authentication,3.4.0,"","","",0,2013-04-10 19:27,2017-01-07 11:49,"",Fixed,2.3.0,"I'm not landing on the home page after login, when I've entered something at the ""lost password""-page before.
+
+How to reproduce:
+1. Click on ""login"" link at the top or just go to www.domain.com/login
+2. Click on ""Lost password""
+3. Enter anything (or a correct/existing email)
+4. Click again on ""login"" link at the top
+5. Enter now your user name and password and click on the login button to login 
+6. *DEFECT* : ""forget password""-page is shown again, instead of home page
+
+You can also reproduce this bug on www.redmine.org.
+"
+13739,Redmine,Defect,"",Closed,Normal,Page not Found  lost_password function,Sebastian  Giancaspro,"",2013-04-11 18:27,Accounts / authentication,"","","","",0,2013-04-10 18:24,2013-04-11 18:27,"",Invalid,2.2.3,"when testing the lost password function, I submit correct email at http://www.redmine.org/account/lost_password
+
+and it returns page not found, with a back button, probably generated by redmine
+
+would be useful to have this funcion"
+13735,Redmine,Defect,"",Closed,Normal,Page not Found,Alain MORGAND,"",2013-04-11 09:43,Projects,"","","","",0,2013-04-10 17:18,2013-04-11 09:43,"",Invalid,2.3.0,"I migrate to Redmine 2.3 and now for some projects I have the following message :
+""_The page you were trying to access doesn't exist or has been removed._""
+When I log out, I can see these projects.
+Can you help me?"
+13734,Redmine,Defect,"",Closed,Urgent,Probl?me Notifications par Mail,julien munoz,"",2013-04-10 19:32,Email notifications,"","","","",0,2013-04-10 15:07,2013-04-10 19:32,"",Invalid,0.9.4,"Bonjour,
+Depuis quelques mois, je rencontre ce probl?me:
+Al?atoirement, certains mails ne sont pas envoy?s depuis Redmine. 
+Je suis sur une version 0.9.4 de Redmine et voici le contenu du fichier email.yml:
+
+production:
+  delivery_method: :async_smtp
+  smtp_settings:
+    address: xxxxxxx
+    port: 25
+    domain: xxxxxxx
+    authentication: :login
+    user_name: xxxxxxx
+    password: xxxxxxx
+
+Dans les logs je n'ai pas de traces de ces emails.
+Voici le contenu du fichier production.rb:
+
+config.cache_classes = true
+config.action_controller.consider_all_requests_local = false
+config.action_controller.perform_caching             = true
+config.action_mailer.raise_delivery_errors = false
+config.action_mailer.logger = nil
+
+Merci d'avance pour votre aide.
+"
+13728,Redmine,Defect,"",New,High,Cannot logon using LDAP with the Russian password,Ivan Zag,"",2013-04-09 22:28,LDAP,"","","","",0,2013-04-09 22:28,"",関連している #20703,"",2.3.0,"Windows 2003 server
+
+We are using LDAP Authentication and if passwords in English are used, problems aren't present if in Russian - it is impossible to logon.
+
+Thanks for correction!"
+13726,Redmine,Defect,"",Closed,Normal,Link not clickable,Filou Centrinov,"",2015-04-29 06:42,Text formatting,"","","","",0,2013-04-09 16:39,2015-04-29 06:42,次のチケットと重複 #18349,Duplicate,2.3.0,"In my example the second link is not clickable.
+
++Example:+
+
+""domain-a"":http://www.domain.com
+http://www.domain.com"
+13724,Redmine,Defect,"",Closed,Normal,SystemStackError when saving some issues,Kristoffer Renholm,"",2013-04-09 17:20,Issues,"","","","",0,2013-04-09 13:49,2013-04-09 17:20,"",Invalid,2.3.0,"Example 1:
+
+<pre>
+SystemStackError (stack level too deep):
+  app/models/issue.rb:159:in `create_or_update'
+  app/models/issue.rb:986:in `save_issue_with_child_records'
+  app/models/issue.rb:973:in `save_issue_with_child_records'
+  app/controllers/issues_controller.rb:179:in `update'
+</pre>
+
+Example 2:
+
+<pre>
+SystemStackError (stack level too deep):
+  app/models/issue.rb:159:in `create_or_update'
+  app/controllers/issues_controller.rb:270:in `bulk_update'
+  app/controllers/issues_controller.rb:259:in `each'
+  app/controllers/issues_controller.rb:259:in `bulk_update'
+</pre>
+
+What can be intersting to check regarding the structure of the issues, I presume this must have something to do with circular dependencies between issues some how."
+13723,Redmine,Defect,"",New,Normal,Collapse doesn't work with section edit link,Vadim Pushtaev,"",2014-02-03 09:38,Text formatting,"","","","",0,2013-04-09 13:07,"",関連している #26974,"",2.3.0,"Collapsed with @collapse@ macro sections don't have an edit link. More than this, all following edit links don't work properly, because service-side numeration take into account all sections, even collapsed, but client-side doesn't."
+13721,Redmine,Defect,"",Closed,Normal,2.2 --> 2.3 Internal server error,Kevin Gallagher,"",2013-04-09 19:57,Issues,"","","","",0,2013-04-09 12:35,2013-04-09 19:57,"",Invalid,2.3.0,"After upgrading from 2.2 to 2.3 (I did everything properly, I've upgraded Redmine many times before) I'm experiencing 500 internal server error when I try to load issues and other pages. Can anyone help me? Here is the log:
+
+<pre>
+Completed 500 Internal Server Error in 623ms
+
+ActionView::Template::Error (undefined method `watch_path' for #<#<Class:0x7f0d153f1140>:0x7f0d153eaf70>):
+    1: <div class=""contextual"">
+    2: <%= link_to l(:button_update), edit_issue_path(@issue), :onclick => 'showAndScrollTo(""update"", ""issue_notes""); return false;', :class => 'icon icon-edit', :accesskey => accesskey(:edit) if @issue.editable? %>
+    3: <%= link_to l(:button_log_time), new_issue_time_entry_path(@issue), :class => 'icon icon-time-add' if User.current.allowed_to?(:log_time, @project) %>
+    4: <%= watcher_link(@issue, User.current) %>
+    5: <%= link_to l(:button_copy), project_copy_issue_path(@project, @issue), :class => 'icon icon-copy' if User.current.allowed_to?(:add_issues, @project) %>
+    6: <%= link_to l(:button_delete), issue_path(@issue), :data => {:confirm => issues_destroy_confirmation_message(@issue)}, :method => :delete, :class => 'icon icon-del' if User.current.allowed_to?(:delete_issues, @project) %>
+    7: </div>
+  app/helpers/watchers_helper.rb:36:in `watcher_link'
+  app/views/issues/_action_menu.html.erb:4:in `_app_views_issues__action_menu_html_erb___1107709118_69847083572720'
+  app/views/issues/show.html.erb:1:in `_app_views_issues_show_html_erb__1022581627_69847083739660'
+  app/controllers/issues_controller.rb:119:in `show'
+  app/controllers/issues_controller.rb:116:in `show'
+
+
+Started GET ""/"" for 24.62.204.150 at Tue Apr 09 06:31:19 -0400 2013
+Processing by WelcomeController#index as HTML
+  Current user: kevin (id=92)
+  Rendered news/_news.html.erb (90.5ms)
+  Rendered welcome/index.html.erb within layouts/base (107.8ms)
+Completed 200 OK in 159ms (Views: 118.6ms | ActiveRecord: 12.5ms)
+Started GET ""/stylesheets/jquery/jquery-ui-1.8.21"" for 24.62.204.150 at Tue Apr 09 06:31:20 -0400 2013
+
+ActionController::RoutingError (No route matches [GET] ""/stylesheets/jquery/jquery-ui-1.8.21""):
+  actionpack (3.2.13) lib/action_dispatch/middleware/debug_exceptions.rb:21:in `call'
+  actionpack (3.2.13) lib/action_dispatch/middleware/show_exceptions.rb:56:in `call'
+  railties (3.2.13) lib/rails/rack/logger.rb:32:in `call_app'
+  railties (3.2.13) lib/rails/rack/logger.rb:16:in `call'
+  activesupport (3.2.13) lib/active_support/tagged_logging.rb:22:in `tagged'
+  railties (3.2.13) lib/rails/rack/logger.rb:16:in `call'
+  actionpack (3.2.13) lib/action_dispatch/middleware/request_id.rb:22:in `call'
+  rack (1.4.5) lib/rack/methodoverride.rb:21:in `call'
+  rack (1.4.5) lib/rack/runtime.rb:17:in `call'
+  activesupport (3.2.13) lib/active_support/cache/strategy/local_cache.rb:72:in `call'
+  rack (1.4.5) lib/rack/lock.rb:15:in `call'
+  actionpack (3.2.13) lib/action_dispatch/middleware/static.rb:63:in `call'
+  rack-cache (1.2) lib/rack/cache/context.rb:136:in `forward'
+  rack-cache (1.2) lib/rack/cache/context.rb:245:in `fetch'
+  rack-cache (1.2) lib/rack/cache/context.rb:185:in `lookup'
+  rack-cache (1.2) lib/rack/cache/context.rb:66:in `call!'
+  rack-cache (1.2) lib/rack/cache/context.rb:51:in `call'
+  railties (3.2.13) lib/rails/engine.rb:479:in `call'
+  railties (3.2.13) lib/rails/application.rb:223:in `call'
+  railties (3.2.13) lib/rails/railtie/configurable.rb:30:in `send'
+  railties (3.2.13) lib/rails/railtie/configurable.rb:30:in `method_missing'
+  /usr/lib/ruby/1.8/phusion_passenger/rack/request_handler.rb:92:in `process_request'
+  /usr/lib/ruby/1.8/phusion_passenger/abstract_request_handler.rb:207:in `main_loop'
+  /usr/lib/ruby/1.8/phusion_passenger/rack/application_spawner.rb:118:in `run'
+  /usr/lib/ruby/1.8/phusion_passenger/rack/application_spawner.rb:65:in `spawn_application'
+  /usr/lib/ruby/1.8/phusion_passenger/utils.rb:184:in `safe_fork'
+  /usr/lib/ruby/1.8/phusion_passenger/rack/application_spawner.rb:58:in `spawn_application'
+  /usr/lib/ruby/1.8/phusion_passenger/rack/application_spawner.rb:41:in `spawn_application'
+  /usr/lib/ruby/1.8/phusion_passenger/spawn_manager.rb:159:in `spawn_application'
+  /usr/lib/ruby/1.8/phusion_passenger/spawn_manager.rb:287:in `handle_spawn_application'
+  /usr/lib/ruby/1.8/phusion_passenger/abstract_server.rb:352:in `__send__'
+  /usr/lib/ruby/1.8/phusion_passenger/abstract_server.rb:352:in `main_loop'
+  /usr/lib/ruby/1.8/phusion_passenger/abstract_server.rb:196:in `start_synchronously'
+  /usr/lib/phusion_passenger/passenger-spawn-server:61
+
+
+Started GET ""/news/56"" for 24.62.204.150 at Tue Apr 09 06:31:21 -0400 2013
+Processing by NewsController#show as HTML
+  Parameters: {""id""=>""56""}
+  Current user: kevin (id=92)
+  Rendered news/show.html.erb within layouts/base (30.6ms)
+Completed 500 Internal Server Error in 51ms
+
+ActionView::Template::Error (undefined method `watch_path' for #<#<Class:0x7f0d15157e98>:0x7f0d15151c50>):
+    1: <div class=""contextual"">
+    2: <%= watcher_link(@news, User.current) %>
+    3: <%= link_to(l(:button_edit),
+    4:       edit_news_path(@news),
+    5:       :class => 'icon icon-edit',
+  app/helpers/watchers_helper.rb:36:in `watcher_link'
+  app/views/news/show.html.erb:2:in `_app_views_news_show_html_erb__1954377271_69847082493700'
+
+
+Started GET ""/my/page"" for 24.62.204.150 at Tue Apr 09 06:31:24 -0400 2013
+Processing by MyController#page as HTML
+  Current user: kevin (id=92)
+  Rendered issues/_list_simple.html.erb (12.8ms)
+  Rendered my/blocks/_issuesassignedtome.html.erb (137.4ms)
+  Rendered my/blocks/_timelog.html.erb (217.7ms)
+  Rendered issues/_list_simple.html.erb (23.1ms)
+  Rendered my/blocks/_issuesreportedbyme.html.erb (112.9ms)
+  Rendered issues/_list_simple.html.erb (95.6ms)
+  Rendered my/blocks/_issueswatched.html.erb (117.9ms)
+  Rendered my/page.html.erb within layouts/base (665.0ms)
+Completed 200 OK in 683ms (Views: 666.8ms | ActiveRecord: 12.5ms)
+Started GET ""/stylesheets/jquery/jquery-ui-1.8.21"" for 24.62.204.150 at Tue Apr 09 06:31:25 -0400 2013
+
+ActionController::RoutingError (No route matches [GET] ""/stylesheets/jquery/jquery-ui-1.8.21""):
+  actionpack (3.2.13) lib/action_dispatch/middleware/debug_exceptions.rb:21:in `call'
+  actionpack (3.2.13) lib/action_dispatch/middleware/show_exceptions.rb:56:in `call'
+  railties (3.2.13) lib/rails/rack/logger.rb:32:in `call_app'
+  railties (3.2.13) lib/rails/rack/logger.rb:16:in `call'
+  activesupport (3.2.13) lib/active_support/tagged_logging.rb:22:in `tagged'
+  railties (3.2.13) lib/rails/rack/logger.rb:16:in `call'
+  actionpack (3.2.13) lib/action_dispatch/middleware/request_id.rb:22:in `call'
+  rack (1.4.5) lib/rack/methodoverride.rb:21:in `call'
+  rack (1.4.5) lib/rack/runtime.rb:17:in `call'
+  activesupport (3.2.13) lib/active_support/cache/strategy/local_cache.rb:72:in `call'
+  rack (1.4.5) lib/rack/lock.rb:15:in `call'
+  actionpack (3.2.13) lib/action_dispatch/middleware/static.rb:63:in `call'
+  rack-cache (1.2) lib/rack/cache/context.rb:136:in `forward'
+  rack-cache (1.2) lib/rack/cache/context.rb:245:in `fetch'
+  rack-cache (1.2) lib/rack/cache/context.rb:185:in `lookup'
+  rack-cache (1.2) lib/rack/cache/context.rb:66:in `call!'
+  rack-cache (1.2) lib/rack/cache/context.rb:51:in `call'
+  railties (3.2.13) lib/rails/engine.rb:479:in `call'
+  railties (3.2.13) lib/rails/application.rb:223:in `call'
+  railties (3.2.13) lib/rails/railtie/configurable.rb:30:in `send'
+  railties (3.2.13) lib/rails/railtie/configurable.rb:30:in `method_missing'
+  /usr/lib/ruby/1.8/phusion_passenger/rack/request_handler.rb:92:in `process_request'
+  /usr/lib/ruby/1.8/phusion_passenger/abstract_request_handler.rb:207:in `main_loop'
+  /usr/lib/ruby/1.8/phusion_passenger/rack/application_spawner.rb:118:in `run'
+  /usr/lib/ruby/1.8/phusion_passenger/rack/application_spawner.rb:65:in `spawn_application'
+  /usr/lib/ruby/1.8/phusion_passenger/utils.rb:184:in `safe_fork'
+  /usr/lib/ruby/1.8/phusion_passenger/rack/application_spawner.rb:58:in `spawn_application'
+  /usr/lib/ruby/1.8/phusion_passenger/rack/application_spawner.rb:41:in `spawn_application'
+  /usr/lib/ruby/1.8/phusion_passenger/spawn_manager.rb:159:in `spawn_application'
+  /usr/lib/ruby/1.8/phusion_passenger/spawn_manager.rb:287:in `handle_spawn_application'
+  /usr/lib/ruby/1.8/phusion_passenger/abstract_server.rb:352:in `__send__'
+  /usr/lib/ruby/1.8/phusion_passenger/abstract_server.rb:352:in `main_loop'
+  /usr/lib/ruby/1.8/phusion_passenger/abstract_server.rb:196:in `start_synchronously'
+  /usr/lib/phusion_passenger/passenger-spawn-server:61
+
+
+Started GET ""/issues/5494"" for 24.62.204.150 at Tue Apr 09 06:31:27 -0400 2013
+Processing by IssuesController#show as HTML
+  Parameters: {""id""=>""5494""}
+  Current user: kevin (id=92)
+  Rendered issues/_action_menu.html.erb (102.9ms)
+  Rendered issues/show.html.erb within layouts/base (103.2ms)
+Completed 500 Internal Server Error in 160ms
+
+ActionView::Template::Error (undefined method `watch_path' for #<#<Class:0x7f0d153f1140>:0x7f0d150336e8>):
+    1: <div class=""contextual"">
+    2: <%= link_to l(:button_update), edit_issue_path(@issue), :onclick => 'showAndScrollTo(""update"", ""issue_notes""); return false;', :class => 'icon icon-edit', :accesskey => accesskey(:edit) if @issue.editable? %>
+    3: <%= link_to l(:button_log_time), new_issue_time_entry_path(@issue), :class => 'icon icon-time-add' if User.current.allowed_to?(:log_time, @project) %>
+    4: <%= watcher_link(@issue, User.current) %>
+    5: <%= link_to l(:button_copy), project_copy_issue_path(@project, @issue), :class => 'icon icon-copy' if User.current.allowed_to?(:add_issues, @project) %>
+    6: <%= link_to l(:button_delete), issue_path(@issue), :data => {:confirm => issues_destroy_confirmation_message(@issue)}, :method => :delete, :class => 'icon icon-del' if User.current.allowed_to?(:delete_issues, @project) %>
+    7: </div>
+  app/helpers/watchers_helper.rb:36:in `watcher_link'
+  app/views/issues/_action_menu.html.erb:4:in `_app_views_issues__action_menu_html_erb___1107709118_69847083572720'
+  app/views/issues/show.html.erb:1:in `_app_views_issues_show_html_erb__1022581627_69847083739660'
+  app/controllers/issues_controller.rb:119:in `show'
+  app/controllers/issues_controller.rb:116:in `show'
+
+
+Started GET ""/issues/3931"" for 24.62.204.150 at Tue Apr 09 06:31:30 -0400 2013
+Processing by IssuesController#show as HTML
+  Parameters: {""id""=>""3931""}
+  Current user: kevin (id=92)
+  Rendered issues/_action_menu.html.erb (109.7ms)
+  Rendered issues/show.html.erb within layouts/base (110.8ms)
+Completed 500 Internal Server Error in 170ms
+
+ActionView::Template::Error (undefined method `watch_path' for #<#<Class:0x7f0d153f1140>:0x7f0d150d60a0>):
+    1: <div class=""contextual"">
+    2: <%= link_to l(:button_update), edit_issue_path(@issue), :onclick => 'showAndScrollTo(""update"", ""issue_notes""); return false;', :class => 'icon icon-edit', :accesskey => accesskey(:edit) if @issue.editable? %>
+    3: <%= link_to l(:button_log_time), new_issue_time_entry_path(@issue), :class => 'icon icon-time-add' if User.current.allowed_to?(:log_time, @project) %>
+    4: <%= watcher_link(@issue, User.current) %>
+    5: <%= link_to l(:button_copy), project_copy_issue_path(@project, @issue), :class => 'icon icon-copy' if User.current.allowed_to?(:add_issues, @project) %>
+    6: <%= link_to l(:button_delete), issue_path(@issue), :data => {:confirm => issues_destroy_confirmation_message(@issue)}, :method => :delete, :class => 'icon icon-del' if User.current.allowed_to?(:delete_issues, @project) %>
+    7: </div>
+  app/helpers/watchers_helper.rb:36:in `watcher_link'
+  app/views/issues/_action_menu.html.erb:4:in `_app_views_issues__action_menu_html_erb___1107709118_69847083572720'
+  app/views/issues/show.html.erb:1:in `_app_views_issues_show_html_erb__1022581627_69847083739660'
+  app/controllers/issues_controller.rb:119:in `show'
+  app/controllers/issues_controller.rb:116:in `show'
+
+</pre>"
+13714,Redmine,Defect,"",Closed,Normal,no account notice setting works in mail handler script but not rake task,Brandon Bertelsen,"",2013-04-09 09:09,Email notifications,"","","","",0,2013-04-09 05:35,2013-04-09 09:09,"関連している #11498, 次のチケットと重複 #13712",Duplicate,"","I was asked to open this as a new issue: http://www.redmine.org/issues/11498#note-9
+
+no_account_notice=1 doesn't seem to work in cron. Example:
+
+*/30 * * * * cd /usr/share/redmine && rake redmine:email:receive_imap RAILS_ENV=""production"" port=993 ssl=true host=imap.gmail.com username={} password={} project=Support status=New priority=High tracker=Support unknown_user=create no_permission_check=1 no_account_notice=1
+
+The above still sends account notification emails to new email addresses.
+
+There is a suggested patch here: http://www.redmine.org/issues/11498#note-8"
+13713,Redmine,Defect,"",Closed,Normal,File attachment is broken with REST API XML format,TANUKI M,"",2013-04-10 12:41,REST API,"","","","",0,2013-04-08 17:00,2013-04-10 12:41,"","","","example case
+<pre>
+POST /issues.xml
+<issue>
+  <project_id>1</project_id>
+  <subject>Creating an issue with a uploaded file</subject>
+  <uploads type=""array"">
+    <upload>
+      <token>7167.ed1ccdb093229ca1bd0b043618d88743</token>
+      <filename>image.png</filename>
+      <description>An optional description here</description>
+      <content_type>image/png</content_type>
+    </upload>
+  </uploads>
+</issue>
+</pre>
+
+
+in 'app/controllers/issues_controller.rb' 
+<pre>
+　　 params[:issue][:uploads] # => [{""upload""=>{""content_type""=>""image/png"", ""description""=>""An optional description here"", ""filename""=>""image.png"", ""token""=>""7167.ed1ccdb093229ca1bd0b043618d88743""}}}
+</pre>
+
+
+so, never be true in 'lib/plugins/acts_as_attachable/lib/acts_as_attachable.rb'
+<pre>
+　              elsif token = attachment['token']
+</pre>
+
+attachment['upload']['token'] is true"
+13712,Redmine,Defect,"",Closed,Normal,Fix email rake tasks to also support no_account_notice and default_group options,Alex Shulgin,"",2013-05-01 14:37,Email receiving,2.3.1,"","","",0,2013-04-08 16:06,2013-05-01 14:37,"関連している #13704, 関連している #13875, 次のチケットが重複 #13714, 次のチケットに後続 #13340, 次のチケットに後続 #11498",Fixed,"","The patch in #11498 was incomplete as it didn't cover the rake tasks for reading/receiving the email.  Attached patch fixes this.
+"
+13711,Redmine,Defect,"",Closed,Normal,Issues which share the same parent cannot have relations between each other,Art Jacobson,"",2013-04-22 14:03,Issues planning,"","","","",0,2013-04-08 15:52,2013-04-08 16:00,次のチケットと重複 #13586,Duplicate,2.3.0,"Starting in version 2.3.0 when issues which share a parent issue are assigned a relation to each other, the relation fails with the error: ""This relation would create a circular dependency"".  This used to work in previous releases, and is an important part of our workflow.
+
+I believe this is a regression introduced by issue #8794.  I was able to restore the old behavior by reverting commit r11641 as seen in the attached patch.
+
+Steps to reproduce:
+# Be running redmine 2.3.0
+# Create 3 new issues (issues 1, 2, and 3)
+# Assign the parent task of of issues 2 and 3 to issue 1
+# Try to add a relation that issue 3 follows issue 2
+# Observe that adding the relation fails with the error: ""This relation would create a circular dependency""
+
+Information about my environment:
+<pre><code>> RAILS_ENV=production rake about
+About your application's environment
+Ruby version              1.9.3 (x86_64-darwin10.7.0)
+RubyGems version          1.8.25
+Rack version              1.4
+Rails version             3.2.13
+Active Record version     3.2.13
+Action Pack version       3.2.13
+Active Resource version   3.2.13
+Action Mailer version     3.2.13
+Active Support version    3.2.13
+Middleware                Rack::Cache, ActionDispatch::Static, Rack::Lock, #<ActiveSupport::Cache::Strategy::LocalCache::Middleware:0x00000101df0960>, Rack::Runtime, Rack::MethodOverride, ActionDispatch::RequestId, Rails::Rack::Logger, ActionDispatch::ShowExceptions, ActionDispatch::DebugExceptions, ActionDispatch::RemoteIp, ActionDispatch::Callbacks, ActiveRecord::ConnectionAdapters::ConnectionManagement, ActiveRecord::QueryCache, ActionDispatch::Cookies, ActionDispatch::Session::CookieStore, ActionDispatch::Flash, ActionDispatch::ParamsParser, ActionDispatch::Head, Rack::ConditionalGet, Rack::ETag, ActionDispatch::BestStandardsSupport, OpenIdAuthentication
+Application root          /Users/redmine/redmine-2.3.0
+Environment               production
+Database adapter          postgresql
+Database schema version   20130217094251
+</code></pre>"
+13710,Redmine,Defect,"",New,Normal,Wiki text does not highlight subversion revisions that refer to non-main repositories,Kyle Leber,"",2013-04-09 00:44,SCM,"","","","",0,2013-04-08 15:35,"","","",2.0.3,"I have a project set up with three subversion repositories.  If I refer to a revision in the main repository from a bug's comment field using 'r1234', then a hyperlink is properly created pointing to that revision number in the main repository.  However, if I refer to a subversion revision that is in one of the secondary repositories, redmine does not hyperlink the 'r1235' number in the comment text.
+
+Environment:
+Redmine version 2.0.3.stable
+Ruby version 1.8.7 (x86_64-linux)
+Rails version 3.2.6
+Environment production
+Database adapter MySQL
+Redmine plugins:
+redmine_mylyn_connector 2.8.2.stable"

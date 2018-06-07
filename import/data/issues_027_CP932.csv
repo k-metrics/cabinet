@@ -1,0 +1,479 @@
+#,ÉvÉçÉWÉFÉNÉg,ÉgÉâÉbÉJÅ[,êeÉ`ÉPÉbÉg,ÉXÉeÅ[É^ÉX,óDêÊìx,ëËñº,çÏê¨é“,íSìñé“,çXêVì˙,ÉJÉeÉSÉä,ëŒè€ÉoÅ[ÉWÉáÉì,äJénì˙,ä˙ì˙,ó\íËçHêî,êiíªó¶,çÏê¨ì˙,èIóπì˙,ä÷òAÇ∑ÇÈÉ`ÉPÉbÉg,Resolution,Affected version,ê‡ñæ
+23055,Redmine,Defect,"",Confirmed,Normal,Error with Fetch commits with Mercurial repository when log has invalid char,mole mole,Toshi MARUYAMA,2016-11-28 13:58,SCM,"","","","",0,2016-06-13 13:31,"","","",3.1.3,"Error with Fetch commits automatically with mercurial repository
+
+When I add a mercurial repository, redmine start to scan and add to Mysql. This take several minutes. When redmine finish to index  .Redmine show a error page. In production.log show this message. It happen with a huge repository about 70335 commits
+
+*production.log*
+<pre>
+Started GET ""/projects/iset/repository"" for 192.168.1.164 at 2016-06-13 10:56:04 +0000
+Processing by RepositoriesController#show as HTML
+  Parameters: {""id""=>""iset""}
+  Current user: admin (id=1)
+Completed 500 Internal Server Error in 2039ms (ActiveRecord: 4.8ms)
+
+NoMethodError (undefined method `[]' for nil:NilClass):
+  lib/redmine/scm/adapters/mercurial_adapter.rb:194:in `each_revision'
+  app/models/repository/mercurial.rb:187:in `block in fetch_changesets'
+  app/models/repository/mercurial.rb:186:in `step'
+  app/models/repository/mercurial.rb:186:in `fetch_changesets'
+  app/controllers/repositories_controller.rb:114:in `show'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+</pre>
+
+If you exec a manual auto_fetch to refresh data with *rake -f Rakefile RAIL_ENV=production redmine:fetch_changesets --trace*
+Console shows:
+<pre>
+/usr/local/bundle/gems/htmlentities-4.3.1/lib/htmlentities/mappings/expanded.rb:465: warning: duplicated key at line 466 ignored: ""inodot""
+** Invoke redmine:fetch_changesets (first_time)
+** Invoke environment (first_time)
+** Execute environment
+** Execute redmine:fetch_changesets
+rake aborted!
+NoMethodError: undefined method `[]' for nil:NilClass
+/usr/src/redmine/lib/redmine/scm/adapters/mercurial_adapter.rb:194:in `each_revision'
+/usr/src/redmine/app/models/repository/mercurial.rb:187:in `block in fetch_changesets'
+/usr/src/redmine/app/models/repository/mercurial.rb:186:in `step'
+/usr/src/redmine/app/models/repository/mercurial.rb:186:in `fetch_changesets'
+/usr/src/redmine/app/models/repository.rb:344:in `block (2 levels) in fetch_changesets'
+/usr/local/bundle/gems/activerecord-4.2.5/lib/active_record/relation/delegation.rb:46:in `each'
+/usr/local/bundle/gems/activerecord-4.2.5/lib/active_record/relation/delegation.rb:46:in `each'
+/usr/src/redmine/app/models/repository.rb:342:in `block in fetch_changesets'
+/usr/local/bundle/gems/activerecord-4.2.5/lib/active_record/relation/delegation.rb:46:in `each'
+/usr/local/bundle/gems/activerecord-4.2.5/lib/active_record/relation/delegation.rb:46:in `each'
+/usr/src/redmine/app/models/repository.rb:341:in `fetch_changesets'
+/usr/src/redmine/lib/tasks/redmine.rake:47:in `block (2 levels) in <top (required)>'
+/usr/local/bundle/gems/rake-10.5.0/lib/rake/task.rb:240:in `call'
+/usr/local/bundle/gems/rake-10.5.0/lib/rake/task.rb:240:in `block in execute'
+/usr/local/bundle/gems/rake-10.5.0/lib/rake/task.rb:235:in `each'
+/usr/local/bundle/gems/rake-10.5.0/lib/rake/task.rb:235:in `execute'
+/usr/local/bundle/gems/rake-10.5.0/lib/rake/task.rb:179:in `block in invoke_with_call_chain'
+/usr/local/lib/ruby/2.2.0/monitor.rb:211:in `mon_synchronize'
+/usr/local/bundle/gems/rake-10.5.0/lib/rake/task.rb:172:in `invoke_with_call_chain'
+/usr/local/bundle/gems/rake-10.5.0/lib/rake/task.rb:165:in `invoke'
+/usr/local/bundle/gems/rake-10.5.0/lib/rake/application.rb:150:in `invoke_task'
+/usr/local/bundle/gems/rake-10.5.0/lib/rake/application.rb:106:in `block (2 levels) in top_level'
+/usr/local/bundle/gems/rake-10.5.0/lib/rake/application.rb:106:in `each'
+/usr/local/bundle/gems/rake-10.5.0/lib/rake/application.rb:106:in `block in top_level'
+/usr/local/bundle/gems/rake-10.5.0/lib/rake/application.rb:115:in `run_with_threads'
+/usr/local/bundle/gems/rake-10.5.0/lib/rake/application.rb:100:in `top_level'
+/usr/local/bundle/gems/rake-10.5.0/lib/rake/application.rb:78:in `block in run'
+/usr/local/bundle/gems/rake-10.5.0/lib/rake/application.rb:176:in `standard_exception_handling'
+/usr/local/bundle/gems/rake-10.5.0/lib/rake/application.rb:75:in `run'
+/usr/local/bundle/gems/rake-10.5.0/bin/rake:33:in `<top (required)>'
+/usr/local/bundle/bin/rake:16:in `load'
+/usr/local/bundle/bin/rake:16:in `<main>'
+Tasks: TOP => redmine:fetch_changesets
+</pre>
+
+
+<pre>
+  Redmine version                3.1.3.stable
+  Ruby version                   2.2.4-p230 (2015-12-16) [x86_64-linux-gnu]
+  Rails version                  4.2.5
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.8.13
+  Mercurial                      3.1.2
+  Git                            2.1.4
+  Bazaar                         2.7.0
+  Filesystem                     
+Redmine plugins:
+  no plugin installed
+</pre>"
+23054,Redmine,Defect,"",Closed,Normal,Clearing time entry custom fields while bulk editing results in values set to __none__,Felix Sch?fer,Jean-Philippe Lang,2016-06-18 08:02,Time tracking,3.2.4,"","","",0,2016-06-13 11:46,2016-06-18 08:02,"",Fixed,"",""
+23053,Redmine,Defect,"",Closed,Normal,Secure cookie not working,Rodrigo Valladares,"",2016-06-13 15:33,Security,"","","","",0,2016-06-13 11:42,2016-06-13 15:33,"","",2.6.5,"Hi,
+
+I'm using Redmine 2.6.5. We've tried to set the redmine_session cookie as secure in application.rb like this:
+
+<pre>
+config.session_store :cookie_store, :key => '_redmine_session', :secure => true
+</pre>
+
+However, when we try to login in Redmine, a 422 error happens:
+
+!error_422.png!
+
+Is this the correct way to achieve this? Or is this solved in another version?
+
+Thank you."
+23051,Redmine,Defect,"",Closed,Normal,"Got Problem, And no resolution for this: Don't know how to build task 'test:scm:units' (see --tasks)",guidi zeng,"",2016-06-16 16:31,Issues,"","","","",0,2016-06-13 10:26,2016-06-13 15:37,"",Invalid,3.2.3,"when i installing redmine follow this link:[[http://www.redmine.org/projects/redmine/wiki/RedmineInstall]]
+Environment:
+   System: Linux version 3.10.0-327.10.1.el7.x86_64 (builder@kbuilder.dev.centos.org) (gcc version 4.
+           8.3 20140911 (Red Hat 4.8.3-9) (GCC) ) #1 SMP Tue Feb 16 17:03:50 UTC 2016)
+
+   Ruby:   ruby 2.2.5p319 (2016-04-26 revision 54774) [x86_64-linux]
+   Rails 4.2.5.2
+   rake, version 11.2.0
+
+1. process database.yml
+2. modify source to https://gems.taobao.org/ in Gemfile.
+3. bundle install --without test development
+   (completed: Bundle complete! 31 Gemfile dependencies, 56 gems now installed.)
+4. bundle exec rake generate_secret_token
+   [root@Kz redmine]# bundle exec rake generate_secret_token
+   /usr/local/ruby2.2/lib/ruby/gems/2.2.0/gems/htmlentities-4.3.1/lib/htmlentities/mappings/e
+   xpanded.rb:465: warning: duplicated key at line 466 ignored: ""inodot""rake aborted!
+   Don't know how to build task 'test:scm:units' (see --tasks)
+   /usr/local/redmine/lib/tasks/testing.rake:87:in `block (2 levels) in <top (required)>'
+   /usr/local/redmine/lib/tasks/testing.rake:22:in `block in <top (required)>'
+   /usr/local/redmine/lib/tasks/testing.rake:1:in `<top (required)>'
+   /usr/local/redmine/Rakefile:7:in `<top (required)>'
+   /usr/local/ruby2.2/bin/bundle:23:in `load'
+   /usr/local/ruby2.2/bin/bundle:23:in `<main>'
+   (See full trace by running task with --trace)
+   [root@Kz redmine]# 
+
+Some one can help me?"
+23050,Redmine,Patch,"",Closed,Normal,Bulgarian translation (jstoolbar-bg.js),Ivan Cenov,"",2016-06-14 06:16,Translations,"","","","",0,2016-06-13 08:53,2016-06-14 06:16,"","","","Translated
+* jsToolBar.strings['Highlighted code']"
+23048,Redmine,Patch,"",Closed,Normal,Bulgarian translation (r15509),Ivan Cenov,"",2016-06-13 08:45,Translations,"","","","",0,2016-06-13 07:27,2016-06-13 07:48,"","","","Translated two strings related to #15880
+* setting_new_item_menu_tab
+* label_new_object_tab_enabled"
+23046,Redmine,Patch,"",Closed,Normal,Traditional Chinese translation (to r15521),ChunChang Lo,"",2016-06-13 07:24,Translations,"","","","",0,2016-06-13 03:29,2016-06-13 07:24,"ÉRÉsÅ[å≥ #23013, ÉRÉsÅ[êÊ #23637","","","* New
+** setting_new_item_menu_tab, label_new_object_tab_enabled
+* Changed
+** label_new_project_issue_tab_enabled
+"
+23044,Redmine,Defect,"",Closed,Normal,Typo in Azerbaijani general_lang_name,Go MAEDA,"",2016-06-13 07:23,Translations,3.3.0,"","","",0,2016-06-12 14:13,2016-06-13 07:23,ä÷òAÇµÇƒÇ¢ÇÈ #21692,Fixed,"","general_lang_name for az.yml should be ""Azerbaijani"". It was pointed out in #21692.
+
+https://www.loc.gov/standards/iso639-2/php/code_list.php"
+23040,Redmine,Patch,"",Closed,Normal,Japanese translation update (r15509),Go MAEDA,Toshi MARUYAMA,2016-06-12 08:54,Translations,"","","","",0,2016-06-11 09:45,2016-06-12 08:54,ä÷òAÇµÇƒÇ¢ÇÈ #15880,"","","Translated the following strings.
+
+* setting_new_item_menu_tab
+* label_new_object_tab_enabled"
+23037,Redmine,Defect,"",New,Normal,500 error when posting on the forums,Stefan Langenmaier,Jean-Philippe Lang,2016-06-10 15:05,Website (redmine.org),"","","","",0,2016-06-10 15:05,"",ä÷òAÇµÇƒÇ¢ÇÈ #22085,"","","I want to post a reply here: http://www.redmine.org/boards/2/topics/48506/replies
+
+But I always get an internal error."
+23036,Redmine,Defect,"",Closed,Normal,Roadmap for redmine 3.2.x is missing,Marcin PY,"",2016-06-11 07:07,Roadmap,"","","","",0,2016-06-10 11:35,2016-06-11 07:07,"",Invalid,3.2.1,"There is no Roadmap tab in tabbed menu.
+Even when I enable the Issue tracking according to :
+http://www.redmine.org/projects/redmine/wiki/RedmineRoadmap
+
+How can I fix it?"
+23031,Redmine,Defect,"",Closed,Normal,CSS Wrong icon for details,C?sar Lizurey,"",2016-12-11 08:33,UI,"","","","",0,2016-06-09 23:12,2016-12-11 08:33,ä÷òAÇµÇƒÇ¢ÇÈ #24578,Wont fix,3.1.3,"Hello,
+I'm currently developing a plugin for Redmine, and I saw that there may be a mistake regarding a class:
+
+<pre>
+.icon-details  { background-image: url(../images/zoom-in.png); }
+</pre>
+
+I would have written:
+
+<pre>
+.icon-details  { background-image: url(../images/magnifier.png); }
+</pre>
+
+Because ""zoom-in"" already exists here:
+
+<pre>
+.icon-zoom-in { background-image: url(../images/zoom_in.png); }
+</pre>
+
+And ""magnifier"" doesn't exist anywhere.
+"
+23027,Redmine,Patch,"",Closed,Normal,Lighter colors for revision info,Go MAEDA,"",2016-09-04 06:35,UI,"","","","",0,2016-06-09 11:38,2016-09-04 06:35,ä÷òAÇµÇƒÇ¢ÇÈ #23146,"","","In RepositoriesController#revision screen, it is a little bit hard to find commit messages because there are many detailed information (e.g. ID, Parent, Child). Probably commit message is important information for many people, I think it should be more obvious.
+
+This patch set lighter colors for revision info like journal details (see #20370) to make commit messages more obvious.
+
+!screenshot.png!"
+23026,Redmine,Defect,"",Closed,Normal,Subject in Custom query not showing NESTED issues properly,Milan Prica,"",2016-07-02 15:05,Issues,"","","","",0,2016-06-09 11:18,2016-07-02 15:05,éüÇÃÉ`ÉPÉbÉgÇ∆èdï° #7417,Duplicate,"","I created a custom query to display my issues.
+
+Subject shows issues in nested form, but not in every case.
+
+In my example, an issue called ""Pagespeed test result"" has subtasks, and in the subject these tasks are shown as nested, which is ok.
+However, an issue called ""Bug fixes"" which also has subtasks, these subtasks are not shown as nested in the subject.
+
+Is this a defect?
+"
+23024,Redmine,Defect,"",Closed,Normal,Can we configure multiple redmine servers with Sprira.,riya chouksey,"",2016-06-09 10:23,Issues,"","","","",0,2016-06-09 10:18,2016-06-09 10:23,"",Invalid,"","We want to configure multiple redmine servers with Sprira. Please let us know the procedure for the same.
+
+ 
+
+We could integrate only one redmine server after plugin installation. "
+23021,Redmine,Patch,"",Closed,Normal,"fix Russian ""setting_thumbnails_enabled"" misspelling",Antonio Kless,"",2016-06-09 09:09,Translations,3.3.0,"","","",0,2016-06-09 00:36,2016-06-09 09:09,"","","","This is the fix for misspelling in Russian locale (use ""ÑrÑ|ÑÄÑwÑuÑ~ÑyÑu"" instead of ""ÑÅÑÇÑyÑ|ÑÄÑwÑuÑ~ÑyÑu"").
+
+It was ""rejected on GitHub"":https://github.com/redmine/redmine/pull/81 so I bring it here.
+"
+23019,Redmine,Defect,"",New,Normal,Markdown doesn't recognize mails,kay rus,"",2017-06-04 05:38,Text formatting,"","","","",0,2016-06-08 18:19,"","","","","Redmine hides this email in markdown:
+
+<pre>
+<a_bc@def.com>
+</pre>
+
+But it doesn't hide this:
+
+
+<pre>
+<abc@def.com>
+</pre>"
+23017,Redmine,Defect,"",Closed,Normal,Notification had a header from an other ticket,Markus Oelsner,"",2016-06-09 09:17,"","","","","",0,2016-06-08 16:47,2016-06-09 09:17,"",Invalid,"","Hi,
+
+maybe I found a bug?!
+
+I get an notification from our redmine system with the header from an other ticket?! This was the first time...
+
+The entrys below these 2 tickets are wrightm, but not the notification I've received.
+
+"
+23013,Redmine,Patch,"",Closed,Normal,Traditional Chinese translation (to r15493),ChunChang Lo,"",2016-06-08 13:01,Translations,"","","","",0,2016-06-08 12:15,2016-06-08 13:01,ÉRÉsÅ[êÊ #23046,"","","* New
+** error_no_tracker_allowed_for_new_issue_in_project, label_tracker_all
+"
+23010,Redmine,Defect,"",Needs feedback,Normal,ActiveRecord::StaleObjectError in issue bulk update,Steven Wong,"",2016-06-29 15:15,Issues,"","","","",0,2016-06-08 09:58,"","","",3.2.2,"I used the issue list, and select all issue.
+then right click and choose assign to someone , then loading for long time and at last occured an blank page.
+
+I checked the log as follows:
+
+<pre>
+F, [2016-06-08T15:54:36.314677 #1660] FATAL -- : 
+ActiveRecord::StaleObjectError (Attempted to update a stale object: Issue):
+  app/models/issue.rb:182:in `create_or_update'
+  app/controllers/issues_controller.rb:292:in `block in bulk_update'
+  app/controllers/issues_controller.rb:278:in `each'
+  app/controllers/issues_controller.rb:278:in `bulk_update'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+</pre>
+
+
+
+"
+23003,Redmine,Patch,"",Closed,Normal,Bulgarian translation for 3.1-stable,Toshi MARUYAMA,"",2016-06-07 15:17,Translations,3.1.7,"","","",0,2016-06-07 14:14,2016-06-07 15:17,"","","","From #23000.
+
+<pre><code class=""diff"">
+=== (+2,-2) config/locales/bg.yml ===
+@@ -392,7 +392,7 @@
+   setting_file_max_size_displayed: ÑMÑpÑ{ÑÉÑyÑ}ÑpÑ|ÑuÑ~ ÑÇÑpÑxÑ}ÑuÑÇ Ñ~Ñp ÑÑÑuÑ{ÑÉÑÑÑÄÑrÑyÑÑÑu ÑÜÑpÑzÑ|ÑÄÑrÑu, ÑÅÑÄÑ{ÑpÑxÑrÑpÑ~Ñy inline
+   setting_repository_log_display_limit: ÑMÑpÑ{ÑÉÑyÑ}ÑpÑ|ÑuÑ~ ÑqÑÇÑÄÑz Ñ~Ñp ÑÅÑÄÑ{ÑpÑxÑrÑpÑ~ÑuÑÑÑu ÑÇÑuÑrÑyÑxÑyÑy Ñr Ñ|ÑÄÑs ÑÜÑpÑzÑ|Ñp
+   setting_openid: ÑQÑpÑÇÑuÑäÑpÑrÑpÑ~Ñu Ñ~Ñp OpenID ÑrÑáÑÄÑt Ñy ÑÇÑuÑsÑyÑÉÑÑÑÇÑpÑàÑyÑë
+-  setting_password_max_age: Require password change after
++  setting_password_max_age: ÑIÑxÑyÑÉÑ{ÑrÑpÑ~Ñu ÑxÑp ÑÉÑ}ÑëÑ~Ñp Ñ~Ñp ÑÅÑpÑÇÑÄÑ|ÑpÑÑÑp ÑÉÑ|ÑuÑt
+   setting_password_min_length: ÑMÑyÑ~ÑyÑ}ÑpÑ|Ñ~Ñp ÑtÑåÑ|ÑwÑyÑ~Ñp Ñ~Ñp ÑÅÑpÑÇÑÄÑ|Ñp
+   setting_new_project_user_role_id: ÑQÑÄÑ|Ñë, ÑtÑpÑrÑpÑ~Ñp Ñ~Ñp ÑÅÑÄÑÑÑÇÑuÑqÑyÑÑÑuÑ|, ÑÉÑåÑxÑtÑpÑrÑpÑã ÑÅÑÇÑÄÑuÑ{ÑÑÑy, Ñ{ÑÄÑzÑÑÑÄ Ñ~Ñu Ñu ÑpÑtÑ}ÑyÑ~ÑyÑÉÑÑÑÇÑpÑÑÑÄÑÇ
+   setting_default_projects_modules: Ñ@Ñ{ÑÑÑyÑrÑyÑÇÑpÑ~Ñy Ñ}ÑÄÑtÑÖÑ|Ñy ÑÅÑÄ ÑÅÑÄÑtÑÇÑpÑxÑqÑyÑÇÑpÑ~Ñu ÑxÑp Ñ~ÑÄÑr ÑÅÑÇÑÄÑuÑ{ÑÑ
+</code></pre>"
+23000,Redmine,Patch,"",Closed,Normal,Bulgarian translation (r15472),Ivan Cenov,"",2016-06-07 15:16,Translations,"","","","",0,2016-06-07 07:27,2016-06-07 15:16,"","","","Translated several labels, settings, etc; ordered as in en.yml."
+22991,Redmine,Patch,"",Closed,Normal,Japanese translation update (r15472),Go MAEDA,"",2016-06-06 12:18,Translations,"","","","",0,2016-06-06 08:13,2016-06-06 12:18,"","","","Translated the following strings:
+
+* error_no_tracker_allowed_for_new_issue_in_project
+* label_tracker_all
+"
+22989,Redmine,Patch,"",Closed,Normal,Czech translation for 3.1-stable,Toshi MARUYAMA,"",2016-09-07 02:08,Translations,3.1.7,"","","",0,2016-06-06 06:24,2016-06-06 12:06,"","","",From #22974.
+22988,Redmine,Patch,"",Closed,Normal,Czech translation for 3.2-stable,Toshi MARUYAMA,"",2016-09-07 02:12,Translations,3.2.4,"","","",0,2016-06-06 06:23,2016-06-06 12:05,"","","",From #22974.
+22983,Redmine,Patch,"",Closed,Normal,Simplified Chinese translation for Revision 15449,Haihan Ji,"",2016-06-06 11:58,Translations,"","","","",0,2016-06-04 12:19,2016-06-06 11:58,"","","",As subject.
+22979,Redmine,Patch,"",Closed,Normal,German translations for 3.3 (for r15435),Tobias Fischer,Jean-Philippe Lang,2016-06-06 12:30,Translations,"","","","",0,2016-06-03 22:53,2016-06-04 12:06,"","","",Patch against current trunk (r15435) with german translations for 3.3
+22977,Redmine,Defect,"",New,Normal,"A project member has no access and gets no notification, when being a watcher of the issue",Milan Brabec,"",2016-11-28 10:36,Email notifications,"","","","",0,2016-06-03 17:03,2016-06-14 16:10,"ä÷òAÇµÇƒÇ¢ÇÈ #21260, ä÷òAÇµÇƒÇ¢ÇÈ #16133, ä÷òAÇµÇƒÇ¢ÇÈ #13512, ä÷òAÇµÇƒÇ¢ÇÈ #8488","",3.2.2,"Hi, I have an issue, where not other help was effective (public help, wiki, forum).
+In Redmine 3.2.2 (Czech localization) I have problem using watchers functionality and notifying them when an issue changes.
+We have a non-public project called ""Ukoly"" and a role called ""Zadavatel"".
+User ""milanb"" (me) created a task asigned to himself and added a watcher (user ""londruj"").
+User ""londruj"" is a member of ""Ukoly"" with a role ""Zadavatel"" - see _screenshot1.png_ attached.
+Role ""Zadavatel"" has all available Redmine rights - see _screenshot2.png_.
+Notification for the user ""londruj"" is set.
+When the issues changes, the user ""londruj"" does not get any notification.
+When accessing the give issues using a direct link, the user ""londruj"" gets 403 error.
+"
+22975,Redmine,Defect,"",Confirmed,Normal,Moving a wiki page to a different project should refresh parent page list,Karel Pi?man,"",2016-06-04 09:34,Wiki,Candidate for next minor release,"","","",0,2016-06-03 14:38,"","","","","When renaming a wiki page in order to move it to a different project, I change the *Project* in the renaming form first. But, the *Parent page* pick list is not updated according to the selected project. Therefore, it's not possible to set a parent from the target project and I can move it to the root only.
+
+A wrong selection of the *Parent page* leads to _""Parent page doesn't belong to the same project""_ error then.
+
+I think that the *Parent page* pick list should be always filled in according to the *Project* selection.
+
+!wiki_renaming.png!"
+22974,Redmine,Patch,"",Closed,Normal,Czech localization patch,Karel Pi?man,Jean-Philippe Lang,2016-06-06 07:03,Translations,"","","","",0,2016-06-03 13:07,2016-06-04 12:08,"","","",Based on the current trunk.
+22973,Redmine,Defect,"",Needs feedback,Normal,Api rest  assigned_to_id  ,Fran Lopez,"",2016-06-21 14:17,REST API,"","","","",0,2016-06-03 12:00,"","","","","Hi guys!,
+
+I am working with the api issues.xml and I use the  adminitrator account but when I want change the assigned_id always the system return me the id administrator account.
+
+is it possible change this id with the administrator account?
+
+My redmine version is 3.2.2.
+
+Thanks!!!
+
+"
+22967,Redmine,Defect,"",New,Normal,markdown: special character like ' (quote) breaks wiki links,Philippe Le Brouster,"",2016-07-17 09:01,Wiki,"","","","",0,2016-06-02 17:35,"","","",3.2.2,"**Affected version:** 3.1.5, 3.2.2, at least
+**To reproduce:** 
+
+   * create a new wiki page
+   * insert a link with a quote inside. For ex. : [[This is a link'test]]
+
+
+**Explanation**:
+
+I'm trying to upgrade redmine from 2.4.2 to 3.1.5 (or 3.2.2) and I've an issue with the wiki links.
+
+With the version 2.4.2, using quote ""'"" in the wiki links was working (using the redmine_redcarpet_formatter). 
+
+For example :
+
+    [[This is a link'test]]
+
+
+With the version 3.1.5 or 3.2.2 the same code break the wiki link during html formatting. The output is something like 
+
+    This is a link&
+
+I suspect there is a problem during the text escaping because the function ``parse_wiki_links`` in app/helpers/application_helper consider that there is an anchor. The supposed anchor come from the html escaped form of the quote (which is &#39).
+
+In French language, this is a major problem because the quote character is often used. 
+
+
+Regards,
+Philippe Le Brouster."
+22965,Redmine,Defect,"",Closed,Normal,redmine website doesnt work when used without www,Maxim Kru?ina,Jean-Philippe Lang,2016-06-02 13:19,Website (redmine.org),"","","","",0,2016-06-02 12:43,2016-06-02 13:19,"",Duplicate,"","There should be redirect redmine.org > www.redmine.org
+* www.redmine.org - works
+* redmine.org - Forbidden / You don't have permission to access / on this server.
+"
+22945,Redmine,Defect,"",New,Normal,incorrect roadmap estimated & spent time values if only summary issues have target version,Fabien Camous,"",2016-05-31 20:56,Roadmap,"","","","",0,2016-05-31 20:56,"","","",3.2.2,"one of our team is using following structure for working (not totally accurate, but only for example)
+
+* summary issue / target version : work package I
+** sub task 1 / target version : sub workpackage A 
+** sub task 2 / target version : sub workpackage A
+** sub task 3 / target version : sub workpackage B
+
+* summary issue / target version : work package II
+** sub task 4 / target version : sub workpackage A
+** sub task 5 / target version : sub workpackage B
+** sub task 6 / target version : sub workpackage B
+
+each subtasks has estimated & spent time on it which are correctly showing up when displaying the summary issue.
+
+however when displaying version work package I & II, it's only showing 0 hours (estimated & spent), assuming it's only consolidating the ""first level"" and not subtasks.
+"
+22941,Redmine,Patch,"",Closed,Normal,"Allow thumbnails on documents, messages and wiki pages",kay rus,Jean-Philippe Lang,2017-04-16 08:23,Attachments,3.4.0,"","","",0,2016-05-31 12:59,2016-07-03 09:55,"ä÷òAÇµÇƒÇ¢ÇÈ #12183, ä÷òAÇµÇƒÇ¢ÇÈ #26353","","",""
+22940,Redmine,Defect,"",Needs feedback,Normal,Why I received mail that contain underscore instead of space in from redmine.,Jong Hyuk,"",2016-06-16 16:16,Email receiving,"","","","",0,2016-05-31 11:26,"","","",3.2.2,"I want to fix not displaying underscore.
+
+how to fix..
+
+help me please."
+22932,Redmine,Defect,"",Closed,Normal,"""Group by"" row from issues listing has the colspan attribute bigger with one than the number of columns from the table ",Marius BALTEANU,Jean-Philippe Lang,2016-06-05 09:08,UI,3.2.3,"","","",0,2016-05-31 01:26,2016-06-05 09:08,"",Fixed,3.2.2,"Steps to reproduce: 
+# Open the issues tabs
+# Group results by an attribute (tracker for example)
+# Observe that the colspan attribute of the ""Group by"" row (tr.group) is bigger with one than the number of columns of issue rows (tr.issue).
+# Because of that, the right border is missing for issue rows and table header
+
+!missing_border.png!
+
+After applying the attached patch (fix_colspan_attribute.patch):
+!with_border.png!
+
+"
+22922,Redmine,Defect,"",Closed,Normal,"error, issue view page in ubuntu 14.0.4 chrome",sanghoon park,"",2016-06-02 13:20,Issues,"","","","",0,2016-05-30 11:36,2016-06-02 13:20,"",Invalid,3.2.2,"Format error of issue attributes of an issue view page in ubuntu 14.0.4 chrome (ver 50.0.2661.102 (64-bit))
+windows 7 IE 11 is fine ok..."
+22914,Redmine,Defect,"",Closed,Low,Notification mails not send when editing a ticket,Carsten Schurig,"",2016-05-27 17:21,Email notifications,"","","","",0,2016-05-27 16:18,2016-05-27 17:21,"",Invalid,3.2.2,"Notification mails are *not send* when *editing a ticket*! 
+
+Mails are send on
+
+* test email
+* creating a ticket
+* creating a news entry
+* commenting a news entry
+
+I turned on email debug output and when editing a ticket, redmine doesn't even try to send an email (at least there's no output in the log).
+
+I'm currently on 3.2.2 and I think this started after upgrading from 2.6.something (to 3.2)."
+22913,Redmine,Patch,"",Needs feedback,Normal,Auto-select fields mapping in Importing,Haihan Ji,"",2016-12-26 13:54,Importers,Candidate for next major release,"","","",0,2016-05-27 15:55,"","","","","I hate to select many times in import-mapping.
+This patch can auto select by label before you select it."
+22912,Redmine,Defect,"",Closed,Normal,Selecting a new filter on Activities should not reset the date range,Jan from Planio www.plan.io,Jean-Philippe Lang,2016-06-04 09:18,Activity view,3.2.3,"","","",90,2016-05-27 15:28,2016-06-04 09:18,"",Fixed,"",The attached patch will fix this.
+22911,Redmine,Patch,"",Closed,Normal,Error raised when importing issue with Key/Value List custom field,Haihan Ji,Jean-Philippe Lang,2016-06-04 09:19,Custom fields,3.2.3,"","","",0,2016-05-27 14:04,2016-06-04 09:19,"","","","Import issue with key/value list custom field will throw exception.
+The exception is <code>NoMethodError (undefined method `id' for #<CustomFieldEnumeration......</code>"
+22910,Redmine,Defect,"",Closed,Normal,Inline(Base64) Images are not shown anyone after update to 3.2.2,Roman Pickl,"",2016-08-19 17:13,Issues,"","","","",0,2016-05-27 09:07,2016-05-27 09:11,"",Invalid,3.2.2,"I noticed that images inlined/pasted as Base64 (using ckeditor) are not displayed any more (empty src tag in HTML) in issues, notes, project Descriptions after updating to 3.2.2.
+"
+22898,Redmine,Patch,"",Closed,Normal,!>image.png! generates invalid HTML,Gregor Schmidt,Jean-Philippe Lang,2016-06-04 11:57,Text formatting,3.2.3,"","","",90,2016-05-25 13:13,2016-06-04 11:57,ÉuÉçÉbÉNÇµÇƒÇ¢ÇÈ #22923,"","","Redmine's RedCloth (current trunk r15425) generates the following HTML:
+
+Input: <code>!>test.png! Paragraph with floating image</code>
+
+Output: <code><p><div style=""float:right""><img src=""test.png"" alt="""" /></div> Paragraph with floating image</p></code>
+
+The @div@ within the @p@ is not allowed, therefore HTML parsers will autoclose the @p@, the @div@ becomes a sibling to it, the text content will become another sibling and the closing @p@ will trigger another empty @p@ element.
+
+This is what's _generated_ in Firefox's DOM: <code><p></p><div style=""float:right""><img src=""test.png"" alt=""""/> Paragraph with floating image<p></p></code>.
+
+The attached patch simply adds a @span@ instead of a @div@ and therefore generates the expected DOM structure.
+"
+22897,Redmine,Defect,"",Closed,Normal,Leaving HTML tags in collapse macro instead of showing html_safe formatted text,Aleksandar Pavic visit redminecookbook.com,"",2016-05-31 10:57,Wiki,"","","","",0,2016-05-25 13:07,2016-05-31 10:57,"",Invalid,"","If a HTML content like <h1> for example is added to collapse macro, tags are displayed instead of html formatting it:
+
+<pre>
+{{collapse
+<h1>This is a block of text that is collapsed by default.</h1>
+It can be expanded by clicking a link.
+}}
+</pre>
+
+And the output looks like:
+{{collapse
+<h1>This is a block of text that is collapsed by default.</h1>
+It can be expanded by clicking a link.
+}}
+
+While it should be:
+!Screenshot_12.png!
+
+Attached is also diff file to make it work as I suggested in this ticket."
+22896,Redmine,Defect,"",Closed,Normal,Root Domain Provides 403 Forbidden Error,Brett Patterson,"",2016-05-25 13:30,Website (redmine.org),"","","","",0,2016-05-25 12:29,2016-05-25 13:30,éüÇÃÉ`ÉPÉbÉgÇ∆èdï° #22281,Duplicate,"","If you browse to http://redmine.org/ you will receive a 403 Forbidden error from Apache.  If you just prepend the ""www."" to the domain, the site works as expected.
+
+It looks as though you need to add the ServerAlias directive with the value ""redmine.org"" to the Apache Virtual Host Configuration."
+22894,Redmine,Defect,"",Closed,Normal,Intercepting Emails,Jean Bertrand,"",2016-05-25 11:57,"","","","","",0,2016-05-25 11:06,2016-05-25 11:57,"",Invalid,3.2.1,"Hi !
+I try to follow the Rails documentation to intercept email on dev and staging environement 
+
+http://guides.rubyonrails.org/action_mailer_basics.html#intercepting-emails
+
+But it doesn't complatly works, the mail is send to sandbox@example.com but also to the original recipient.
+
+When I use byebug just in the first line of the self.delivering_email method message.to is empty.
+
+<pre>
+[1, 7] in /Users/jbertrand/workspace/redmine_silicon/lib/mail_interceptor.rb
+   1: class MailInterceptor
+   2:   def self.delivering_email(message)
+   3:     byebug
+=> 4:     message.subject = ""[for: #{message.to.to_s} from: #{message.from.to_s}] #{message.subject}""
+   5:     message.to      = ['test+redmine@siliconsalad.com']
+   6:   end
+   7: end
+(byebug) message.to
+(byebug) message.to.inspect
+[]
+</pre>"
+22885,Redmine,Defect,"",New,High,"When I register a task linking a ""Parent task"", the system gets too slow",Tiago Rafael Poletti,"",2016-05-24 22:10,Performance,"","","","",0,2016-05-24 22:10,"","","",3.2.2,"When I register a task linking a ""Parent task"", the system gets too slow.
+
+The greater the amount of tasks inside the project, slower the tool become to record the tasks using the ""Parent task"" field. If the field ""parent task"" is not used the process is fast.
+
+Eg: I'm working with a project that contains 965 task in hierarchy. When trying to create a task linking the field ""Parent task"", the recording time is 01min and 50sec.
+
+Application data:
+
+Environment:
+  Redmine version                3.2.2.stable
+  Ruby version                   2.2.5-p319 (2016-04-26) [amd64-freebsd10]
+  Rails version                  4.2.5.2
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Filesystem                     
+Redmine plugins:
+  redmine_agile                  1.3.10"
+22879,Redmine,Defect,"",Closed,Normal,slow loading system,maru workneh,"",2016-05-24 07:23,"","","","","",0,2016-05-23 14:40,2016-05-24 07:23,"",Invalid,"","steps to reprodus
+1. download applicatoin 
+2. inter to the application
+
+expectd rsolt= rapid entry application
+ 
+ bug = when i entered to the application of "" tapuz anashim"" 
+the application taks afew second to load the system.
+
+
+"
+22864,Redmine,Defect,"",Closed,Normal,Associated revisions mix timestamps of git committer and git author.,Deniz Bahadir,"",2016-05-20 17:54,SCM,"","","","",0,2016-05-20 16:44,2016-05-20 17:54,éüÇÃÉ`ÉPÉbÉgÇ∆èdï° #11710,Duplicate,3.2.0,"h1. Background information:
+
+Git-commits have an *author*, who originally created the commit, and a *committer* who (finally) committed this commit to the Git-repository. Both come with their own timestamps.
+
+* In general, author and committer are the same.
+* They can be the same but have different dates associated with them
+* But they can even be different.
+
+h1. The problem
+
+The problem is, that if these commits are displayed as _associated revisions_ from a Redmine-ticket the *author* will be displayed with *commit-date* instead of the original *author-date*.
+
+h1. Suggested solution.
+
+The best solution would probably be to always display both, author *and* committer with their respective dates."

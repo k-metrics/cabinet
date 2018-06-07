@@ -1,0 +1,694 @@
+#,ƒvƒƒWƒFƒNƒg,ƒgƒ‰ƒbƒJ[,eƒ`ƒPƒbƒg,ƒXƒe[ƒ^ƒX,—Dæ“x,‘è–¼,ì¬Ò,’S“–Ò,XV“ú,ƒJƒeƒSƒŠ,‘ÎÛƒo[ƒWƒ‡ƒ“,ŠJn“ú,Šú“ú,—\’èH”,i’»—¦,ì¬“ú,I—¹“ú,ŠÖ˜A‚·‚éƒ`ƒPƒbƒg,Resolution,Affected version,à–¾
+25604,Redmine,Defect,"",New,Normal,Redmine does not appear to strip leading spaces from new issues,Library Systems Dept,"",2017-04-13 16:10,Issues,"","","","",0,2017-04-13 16:10,"",ŠÖ˜A‚µ‚Ä‚¢‚é #9588,"","","h4. Overview
+
+We have a group that manually creates new issues for us. Occasionally they don't pay close attention and will create new issues that contain a leading space in the Subject field. This doesn't affect basic functionality, but when attempting to sort on the Subject field we get back unexpected results. We finally figured out that the issue is caused by the leading space in the Subject line.
+
+Does Redmine intentionally provide support for creating issues with leading spaces or is this a case where it fails to strip leading/trailing spaces from that field when creating new issues? I assume the latter and am filing this report accordingly.
+
+Thank you for your time.
+
+h4. Redmine instance details
+
+@bin/about@
+<pre>
+sh: 1: darcs: not found
+sh: 1: hg: not found
+sh: 1: cvs: not found
+sh: 1: bzr: not found
+sh: 1: git: not found
+Environment:
+  Redmine version                3.3.3.stable.16539
+  Ruby version                   2.3.1-p112 (2016-04-26) [x86_64-linux-gnu]
+  Rails version                  4.2.7.1
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.9.3
+  Filesystem
+Redmine plugins:
+  no plugin installed
+</pre>
+
+Internal ref: !#52875"
+25596,Redmine,Defect,"",Closed,Normal,"when creating a new issue, custom fields for trackers don't update on tracker change",Brad Barnett,"",2017-05-12 08:40,Issues,"","","","",0,2017-04-12 23:48,2017-05-12 08:40,"",Invalid,2.5.2,"I googled, and searched -- but could not find this issue in the tracker.  Apologies if this is a dup.
+
+I have 4 trackers.  Each have differing custom fields.  Some are required.
+
+When I click on new issue, if a tracker is 'A', and I switch to 'B', the custom fields for 'A' still show.
+
+Only if I click 'submit', and receive an error (because a custom field isn't filled out), will I then be presented with the correct 'new issue' page for that particular tracker.
+
+Debian Jessie.
+
+/usr/share/redmine$ ruby bin/about
+
+sh: 1: darcs: not found
+sh: 1: hg: not found
+sh: 1: cvs: not found
+sh: 1: bzr: not found
+sh: 1: git: not found
+Environment:
+  Redmine version                2.5.2.devel
+  Ruby version                   2.1.5-p273 (2014-11-13) [x86_64-linux-gnu]
+  Rails version                  4.1.8
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.8.10
+  Filesystem
+Redmine plugins:
+  redmine_pretend                0.0.2+git20130821
+"
+25595,Redmine,Defect,"",New,High,Important usability bug - Too easy to delete issues,Fred B,"",2017-05-19 07:25,Issues,"","","","",0,2017-04-12 22:14,"","","","","*Please do not delete it or mark it as duplicate!*
+
+I know this has been discussed in other random issues here over the years. But it has been asked in different ways, with different solution proposal, and in seperated issue for the same problem. 
+
+
+___
+
+Here's the problem
+
+*It should not be possible to delete issue without:*
+
+* Having that tracked in activity tab
+* Being able to uncover (undelete) the issue later 
+
+
+___
+
+I think this is a really big issue for a mature product like redmine. I hope this post will help to flag this issue as a big priority for the nexte release and bug fixing.
+
+Sincerely 
+Fred
+"
+25594,Redmine,Defect,"",Closed,Normal,Format mismatch between Textile and CKeditor text formatting,Hamdi JMII,"",2017-04-12 12:37,"","","","","",0,2017-04-12 11:53,2017-04-12 12:37,"",Invalid,2.5.3,I installed CKeditor wiki plugin but I saw that my old wikis were bad formatted since their were formatted with Textile text formatting. It's normal to see this mismatch ?
+25593,Redmine,Defect,"",Closed,Normal,"cron failed ""Repository.fetch_changesets""",Kirill Kolchanov,"",2017-04-12 12:25,"","","","","",0,2017-04-12 10:37,2017-04-12 12:25,"",Invalid,3.3.2,"I added ""recheck svn"" to cron for root and recieved error, if run script to manual is it worked.
+
+cron root:
+<pre>
+#!/bin/bash
+LOCALDIR=/var/www/redmine/www
+PATH=/usr/bin:/bin:/usr/local/bin:/usr/local/sbin:/usr/sbin
+
+export PATH LOCALDIR SHELL
+cd $LOCALDIR && rails runner ""Repository.fetch_changesets"" -e production
+</pre>
+
+/var/mail/root:
+<pre>
+/usr/local/bin/rails:22:in `<main>': undefined method `activate_bin_path' for Gem:Module (NoMethodError)
+</pre>
+
+same, I tryed change variable SHELL=/bin/bash to /bin/sh and without succesfull.
+
+info:
+<pre>
+[root@redmine ~]# ruby -v
+ruby 2.3.3p222 (2016-11-21 revision 56859) [x86_64-linux]
+[root@redmine ~]# rails -v
+Rails 5.0.2
+</pre>
+
+Maybe, its problems because owner $LOCALDIR as user apache?"
+25590,Redmine,Patch,"",Closed,High,prevent deadlocks in attachment deduplication,Jens Kr?mer,Jean-Philippe Lang,2017-04-13 14:10,Attachments,"","","","",0,2017-04-12 03:53,2017-04-13 14:10,ƒuƒƒbƒN‚µ‚Ä‚¢‚é #25215,"","","At Planio we encountered occasional deadlocks caused by the inner lock statement on the query selecting a potentially already existing identical attachment. Running the query without @lock@ first and locking the found record second solved the problem for us.
+
+To account for the possible failure of the inner lock (i.e. when @existing@ was found but cannot be locked) this patch also adds a @rescue@ clause that silently ignores such errors. Deduplication did not happen in this case either because the duplicate was removed (then a retry would be useless) or the database aborted the transaction (deadlock or waited too long for the lock, a retry might work but I'm not sure it's worth it). "
+25583,Redmine,Defect,"",Closed,Normal,EVM Plugin Issue,vignesh moorthy,"",2017-04-11 17:40,"","","","","",0,2017-04-11 13:49,2017-04-11 17:40,"",Invalid,2.4.2,"Processing by BaselinesController#index as HTML
+  Parameters: {""project_id""=>""pcb""}
+  Current user: keshav (id=15)
+Redirected to http://192.168.0.208:8090/redmine/baselines/15
+Completed 302 Found in 13.3ms (ActiveRecord: 1.3ms)
+Started GET ""/redmine/baselines/15"" for 192.168.0.116 at 2017-04-11 17:16:05 +0530
+Processing by BaselinesController#show as HTML
+  Parameters: {""id""=>""15""}
+  Current user: keshav (id=15)
+DEPRECATION WARNING: Passing the format in the template name is deprecated. Please pass render with :formats => [:js] instead. (called from _plugins_redmine_evm_app_views_baselines_show_html_erb__3099829965297914905_61604880 at /usr/share/redmine/plugins/redmine_evm/app/views/baselines/show.html.erb:14)
+  Rendered plugins/redmine_evm/app/views/baselines/_init_translations.js.erb (27.3ms)
+  Rendered plugins/redmine_evm/app/views/baselines/show.html.erb within layouts/base (43.2ms)
+Completed 500 Internal Server Error in 56.0ms
+
+ActionView::Template::Error (comparison of String with Date failed):
+    157:     <%= render(:partial => '/baselines/chart_js',
+    158:                :locals => { maximum_chart_date: @project.maximum_chart_date(@baseline),
+    159:                             project_chart_data: @project.data_for_chart(@baseline, @forecast_is_enabled) }) %>
+    160:   </div>
+    161:   <!-- Versions Charts -->
+    162:   <div id=""evm-versions-charts"">
+    163:     <% @project.versions.each do |version| %>
+  plugins/redmine_evm/lib/redmine_evm/patches/project_patch.rb:129:in `each'
+  plugins/redmine_evm/lib/redmine_evm/patches/project_patch.rb:129:in `max'
+  plugins/redmine_evm/lib/redmine_evm/patches/project_patch.rb:129:in `maximum_chart_date'
+  plugins/redmine_evm/app/views/baselines/show.html.erb:160:in `_plugins_redmine_evm_app_views_baselines_show_html_erb__3099829965297914905_61604880'
+"
+25579,Redmine,Defect,"",Closed,Normal,EVM Plugin Issue,vignesh moorthy,"",2017-04-11 17:39,"","","","","",0,2017-04-11 13:06,2017-04-11 17:39,"",Invalid,2.4.2,"DEPRECATION WARNING: Passing the format in the template name is deprecated. Please pass render with :formats => [:js] instead. (called from _plugins_redmine_evm_app_views_baselines_show_html_erb__3099829965297914905_61604880 at /usr/share/redmine/plugins/redmine_evm/app/views/baselines/show.html.erb:14)
+  Rendered plugins/redmine_evm/app/views/baselines/_init_translations.js.erb (77.5ms)
+  Rendered plugins/redmine_evm/app/views/baselines/show.html.erb within layouts/base (97.7ms)
+Completed 500 Internal Server Error in 105.8ms
+
+ActionView::Template::Error (comparison of String with Date failed):
+    157:     <%= render(:partial => '/baselines/chart_js',
+    158:                :locals => { maximum_chart_date: @project.maximum_chart_date(@baseline),
+    159:                             project_chart_data: @project.data_for_chart(@baseline, @forecast_is_enabled) }) %>
+    160:   </div>
+    161:   <!-- Versions Charts -->
+    162:   <div id=""evm-versions-charts"">
+    163:     <% @project.versions.each do |version| %>
+  plugins/redmine_evm/lib/redmine_evm/patches/project_patch.rb:129:in `each'
+  plugins/redmine_evm/lib/redmine_evm/patches/project_patch.rb:129:in `max'
+  plugins/redmine_evm/lib/redmine_evm/patches/project_patch.rb:129:in `maximum_chart_date'
+  plugins/redmine_evm/app/views/baselines/show.html.erb:160:in `_plugins_redmine_evm_app_views_baselines_show_html_erb__3099829965297914905_61604880'
+"
+25577,Redmine,Defect,"",Closed,Low,Fixing wrong hyphenization on FAQ-Page for RequestHeader,Simon O,"",2017-04-11 18:44,Documentation,"","","","",0,2017-04-11 12:13,2017-04-11 18:44,ŠÖ˜A‚µ‚Ä‚¢‚é #24880,"","","Hi, 
+just want to point you to this issue: [[https://github.com/docker-library/redmine/issues/60]]
+The FAQ ([[http://www.redmine.org/projects/redmine/wiki/FAQ#Why-does-Redmine-use-http-links-when-I-want-it-to-use-https-links-in-Apache-SSL]]) says to use the following header in the apache config to tell the app to redirect to https urls:
+RequestHeader set X_FORWARDED_PROTO 'https'
+This is wrong, it must be
+RequestHeader set X-Forwarded-Proto ""https""
+The hyphenization has to be set correctly.
+Thanks
+"
+25573,Redmine,Patch,"",Closed,Normal,Bulgarian translation,Ivan Cenov,"",2017-04-13 07:19,Translations,"","","","",0,2017-04-11 09:42,2017-04-13 07:19,"","","","Translated
+* field_default_assigned_to
+* setting_show_custom_fields_on_registration"
+25570,Redmine,Patch,"",New,Normal,unchecked use of params[:query],Jens Kr?mer,"",2017-04-11 06:56,Code cleanup/refactoring,"","","","",0,2017-04-11 06:54,"","","","","Requests to URLs like @/issues?query=12@ result in an application error because @query.rb@ expects @params[:query]@ to be a hash, which it isn't in this case.
+
+I know that there are a more instances in the code base where we assume @params[:foo]@ to be a hash without explicit type checking. This patch does not attempt to address this problem on a global level. For whatever reason it happens to us quite often in this particular place, causing false alerts in server monitoring.
+
+This patch adds an explicit type check to resolve this @params[:query]@ case. As a bonus it makes the following 4 lines where values are taken out of the hash a bit nicer.
+
+In general I think it would be preferably to raise an error of the 4xx class in such cases. Are there any plans to make use of Rails' Strong Parameters feature in the future? I think using these permit / require calls on parameters in controllers would catch such wrong types early and would lead to responses with a more appropriate error code automatically."
+25563,Redmine,Defect,"",Closed,Normal,Remove is_binary_data? from String,Dmitry Lisichkin,"",2017-06-10 07:13,Code cleanup/refactoring,3.4.0,"","","",0,2017-04-10 10:34,2017-06-10 07:13,"",Fixed,"","Method is_binary_data? was removed from String class in ruby 1.9.2
+https://apidock.com/ruby/v1_9_1_378/String/is_binary_data%3F
+
+Then it was returned to String by redmine in 'rails 3.2' branch (r9475)
+
+It cause problem with ruby-debug-ide gem:
+https://github.com/ruby-debug/ruby-debug-ide/blob/ce3dbe0a76e11f34abf60740b7c88b23a1c3b5bf/lib/ruby-debug-ide/xml_printer.rb#L355
+Almost all non-ASCII strings in debugger shown as [BinaryData]
+
+I'll prefer remove that method at all but it used by SCM system.
+It is a very old code (r5204) and I don't know about it is actual for now days.
+
+But you can just rename that method to something different (see patch)"
+25557,Redmine,Patch,"",Closed,Normal,Japanese translation update (r16528),Go MAEDA,"",2017-04-09 06:02,Translations,"","","","",0,2017-04-09 02:26,2017-04-09 06:02,"","","","Translated field_default_assigned_to.
+"
+25556,Redmine,Patch,"",Closed,Normal,Traditional Chinese translation (to r16526),ChunChang Lo,"",2017-04-08 18:42,Translations,"","","","",0,2017-04-08 17:53,2017-04-08 18:42,"ƒRƒs[Œ³ #25341, ƒRƒs[æ #25664","","","* New
+** field_digest
+"
+25555,Redmine,Defect,"",Closed,Normal,Make api paging limit configurable,George Brooke,"",2017-05-06 16:50,REST API,"","","","",0,2017-04-08 15:06,2017-04-09 02:20,Ÿ‚Ìƒ`ƒPƒbƒg‚Æd•¡ #16069,Duplicate,"","Currently the API is limited to a maximum of 100 items in any one response [1], however on the other hand it is possible to configure the issue export limit.
+
+I would like to be able to raise this number similarly to the export limit as this would allow us to pull info from the UI into our BI (which doesn't handle paging very well) to give us dashboards for management. 
+
+I realise that simply raising the limit is not a very elegant solution, however 100 is very low, and as we can handle displaying many more through the webui it seems like a reasonable work-around.
+
+
+[1] [[Rest_api#Collection-resources-and-pagination]]"
+25528,Redmine,Defect,"",Closed,Normal,installation steps redmine 3.0.4 with IIS and Microsoft sql server?,Amit pardeshi,"",2017-04-05 18:41,"","","","","",0,2017-04-05 18:29,2017-04-05 18:41,"",Invalid,"","Hi,
+
+I am new to redmine and ruby as well. I would like to know if there is any documentation available to install redmine 3.0.4 on ISS and MS SQL SERVER.
+"
+25526,Redmine,Patch,"",Closed,Normal,Revert API change in spent_hours field in issue#show,Holger Just,Jean-Philippe Lang,2017-05-05 06:37,REST API,3.2.6,"","","",0,2017-04-05 15:29,2017-04-05 18:10,ŠÖ˜A‚µ‚Ä‚¢‚é #20661,"","","When preloading the @spent_hours@ of issues (as e.g. done for #20661, they default to @0@ instead of the previous default @0.0@. This results in a change of the @issue#show@ API which now also returns an Integer instead of a Float. Previously (in Redmine 3.2), the API used to return the data the following way:
+
+<pre><code class=""json"">
+{
+  ""issue"": {
+    ""id"": 15,
+    ...
+    ""spent_hours"": 0.0,
+    ...
+  }
+}
+</code></pre>
+
+While later versions (including the current trunk) return them as follows:
+
+<pre><code class=""json"">
+{
+  ""issue"": {
+    ""id"": 15,
+    ...
+    ""spent_hours"": 0,
+    ...
+  }
+}
+</code></pre>
+
+This appears to break strict API clients which expect a float there. In our tests, this change appears to break the current Android version of RedminePM, probably due to some internal type exceptions. The attached patch was extracted from ""Planio"":https://plan.io/redmine-hosting and fixes this behavior. With it, we follow the previous behavior of always sending Floats.
+
+"
+25518,Redmine,Patch,"",Closed,Normal,Bulgarian translation,Ivan Cenov,"",2017-04-05 18:52,Translations,"","","","",0,2017-04-05 07:14,2017-04-05 18:52,"","","","Translated
+* field_digest
+* label_last_notes"
+25507,Redmine,Patch,"",Closed,Normal,Japanese translation update (r16457),Go MAEDA,"",2017-04-05 15:38,Translations,"","","","",0,2017-04-04 03:36,2017-04-05 15:38,"","","","Translated field_digest.
+"
+25506,Redmine,Defect,"",Closed,Normal,Log,Alejandro  Sanchez,"",2017-04-04 15:36,"","","","","",0,2017-04-03 21:48,2017-04-04 15:36,"",Invalid,"",""
+25505,Redmine,Patch,"",Closed,Normal,Russian translation for 3.2-stable,Toshi MARUYAMA,"",2017-04-03 18:47,Translations,3.2.6,"","","",0,2017-04-03 18:26,2017-04-03 18:47,"","","","From #25349.
+
+<pre><code class=""diff"">
+=== (+2,-3) config/locales/ru.yml ===
+@@ -1283,5 +1283,4 @@
+   label_any_open_issues: „|„„q„„u „€„„„{„‚„„„„„u „x„p„t„p„‰„y
+   label_no_open_issues: „~„u„„ „€„„„{„‚„„„„„‡ „x„p„t„p„‰
+   label_default_values_for_new_users: „H„~„p„‰„u„~„y„‘ „„€ „…„}„€„|„‰„p„~„y„ „t„|„‘ „~„€„r„„‡ „„€„|„„x„€„r„p„„„u„|„u„z
+-  error_cannot_reassign_time_entries_to_an_issue_about_to_be_deleted: Spent time cannot
+-    be reassigned to an issue that is about to be deleted
++  error_cannot_reassign_time_entries_to_an_issue_about_to_be_deleted: „H„p„„„‚„p„‰„u„~„~„€„u „r„‚„u„}„‘ „~„u „}„€„w„u„„ „q„„„„ „„u„‚„u„~„p„x„~„p„‰„u„~„€ „~„p „x„p„t„p„‰„…, „{„€„„„€„‚„p„‘ „q„…„t„u„„ „…„t„p„|„u„~„p
+</code></pre>"
+25502,Redmine,Patch,"",Closed,Normal,Russian translation for 3.3-stable,Toshi MARUYAMA,"",2017-04-03 16:40,Translations,3.3.3,"","","",0,2017-04-03 16:30,2017-04-03 16:40,"","","","From #25397.
+
+<pre><code class=""diff"">
+=== (+2,-3) config/locales/ru.yml ===
+@@ -1308,7 +1308,6 @@
+   label_new_project_issue_tab_enabled: „O„„„€„q„‚„p„w„p„„„ „r„{„|„p„t„{„… ""„N„€„r„p„‘ „x„p„t„p„‰„p""
+   setting_new_item_menu_tab: „B„{„|„p„t„{„p „}„u„~„ „„‚„€„u„{„„„p „t„|„‘ „ƒ„€„x„t„p„~„y„‘ „~„€„r„„‡ „€„q„Œ„u„{„„„€„r
+   label_new_object_tab_enabled: „O„„„€„q„‚„p„w„p„„„ „r„„„p„t„p„„‹„y„z „ƒ„„y„ƒ„€„{ ""+""
+-  error_no_projects_with_tracker_allowed_for_new_issue: There are no projects with trackers
+-    for which you can create an issue
++  error_no_projects_with_tracker_allowed_for_new_issue: „O„„„ƒ„…„„„ƒ„„„r„…„„„ „„‚„€„u„{„„„, „„€ „„„‚„u„{„u„‚„p„} „{„€„„„€„‚„„‡ „r„ „}„€„w„u„„„u „ƒ„€„x„t„p„r„p„„„ „x„p„t„p„‰„y
+   error_cannot_reassign_time_entries_to_an_issue_about_to_be_deleted: Spent time cannot
+     be reassigned to an issue that is about to be deleted
+</code></pre>"
+25501,Redmine,Defect,"",Closed,Normal,Time entries query through multiple projects by issue custom field not possible anymore.,Felix Sch?fer,Jean-Philippe Lang,2017-04-06 19:11,Custom fields,3.3.3,"","","",0,2017-04-03 14:41,2017-04-06 19:11,"ŠÖ˜A‚µ‚Ä‚¢‚é #24014, ŠÖ˜A‚µ‚Ä‚¢‚é #1662",Fixed,3.3.1,"This is related to #24014
+
+Since r15890 / #24014 it is not possible to filter time entries from different projects by an issue custom field anymore.
+
+Sometimes it might be necessary to for example show all time entries logged against issues with a certain custom field set to some value, regardless of what project the time entry and issue are in. If one subproject is not a subproject of the other, this is not possible anymore in one query.
+
+I can understand the concern raised in #24014, but I think restricting the global query to only issue custom fields that are ""for all projects"" is too restrictive. I can understand that there might be many issue custom fields, but those should only be restricted on the project time entry query, not on the global time entry query.
+
+While researching for this I have also noticed that an issue custom field defined in a subproject will not be available anymore in the time entry query of the parent project unless the parent project also has this issue custom field defined.
+
+I propose to show all issue custom fields (maybe limited to those active on active projects?) on the global time entry query and to show only the issue custom fields active in the current project and its subprojects on the project time entry query.
+
+(Please note that the same problem exists on the global issue query and that it could be solved the same way)"
+25495,Redmine,Patch,"",Closed,Low,spelling fixes,ka seven,"",2017-04-02 13:03,Code cleanup/refactoring,"","","","",0,2017-04-01 22:09,2017-04-02 05:36,"","","","patch contains some spelling fixes ( just in comments ) as found by a bot ( https://github.com/ka7/misspell_fixer ).
+see also http://www.misfix.org
+Also, any upcoming License changes (e.g. GPL2 to GPL3+) are hereby granted.
+
+base for the diff was @adce697 on github.com"
+25491,Redmine,Patch,"",Needs feedback,Normal,List of role members,David C?t?-Tremblay,"",2017-06-02 09:46,UI,"","","","",0,2017-03-31 23:12,"","","","","This simple patch provides a list of all members of a role grouped by projects.
+
+Tested and working with Redmine 3.2 & 3.3"
+25489,Redmine,Defect,"",New,Normal,Redmine::UiTest::IssuesTest fails,Alisa M,"",2017-03-31 14:37,"","","","","",0,2017-03-31 14:27,"","","","","test/ui/issues_test_ui.rb 
+
+  1) Failure:
+Redmine::UiTest::IssuesTest#test_default_start_date_proposed_in_date_picker [test/ui/issues_test_ui.rb:181]:
+Expected: ""2012-04-01""
+  Actual: ""2017-03-30""
+
+
+  2) Failure:
+Redmine::UiTest::IssuesTest#test_default_due_date_proposed_in_date_picker [test/ui/issues_test_ui.rb:162]:
+Expected: ""2027-04-01""
+  Actual: ""2017-03-30""
+"
+25486,Redmine,Defect,"",Needs feedback,Normal,Repository history is not updating,Maxim Kru?ina,"",2017-11-08 10:34,SCM,"","","","",0,2017-03-31 11:56,"","","",3.3.1,"Hi, on just one project we have something wrong.
+When I go Git repo overview: https://ourredmine/projects/ourproject/repository I see al the changes (like file XY modified 2 hours ago etc.)
+When I click on revisions: https://ourredmine/projects/ourproject/repository/revisions i see last revision somewhere in 2016
+Also, when we push to repository something with comment referencing the ticket, it's not parsed and commit is not showing on the ticket's page.
+Other projects with git repos are working just great.
+
+Any clue? Thanx!
+"
+25483,Redmine,Patch,"",Closed,Normal,Forbid to edit/update/delete the anonymous user,Holger Just,Jean-Philippe Lang,2017-04-03 17:44,Accounts / authentication,3.4.0,"","","",0,2017-03-30 15:20,2017-04-03 15:06,"","","","Right now, an admin can (in principal) edit and even delete the Anonymous user via the UserController since it doesn't restrict its query to logged users. This should not be possible and doesn't seem to be intended from the surrounding code:
+
+* When showing the edit form for the anonymous user, a template error occurs in @app/views/users/_general.html.erb@.
+* When deleting the anonynmous user, all its objects will be assigned to itself and the user gets deleted. While it will be automatically recreated on next access, all its issues, journals, ... will have dangling @user_ids@ pointing to the old anonymous user.
+
+The attached patch restricts edit/update/delete of users to logged users. Displaying the user page of Anonymous is still supported. The Patch was extracted from ""Planio"":https://plan.io/redmine-hosting."
+25478,Redmine,Defect,"",Closed,Normal,"Related to ""no open issues"" shows all issues",Kevin Fischer,Jean-Philippe Lang,2017-04-08 09:39,Issues filter,3.2.6,"","","",0,2017-03-30 12:09,2017-04-08 09:39,"",Fixed,3.3.2,"When filtering for issues that are related (bi-directional relationship) to ""No open issues"", all issues and not just the ones related to none or closed issues are shown."
+25473,Redmine,Defect,"",New,Normal,"""Message XYZ can not be processed"" is the only error message logged when an incoming email fails to scrape due to confusion over the associated issue id",Library Systems Dept,"",2017-07-27 14:04,Email receiving,"","","","",0,2017-03-30 01:08,"","","","","First of all, thanks for Redmine. It's been infinitely helpful as a replacement ticketing system for an older desktop application based system we used years ago. Additionally, the integrated wiki support is one of many reasons it is so popular with our team.
+
+h4. Problem
+
+An email was sent in with a pattern like this:
+
+  [CCDC #123456] RE: 2017 Renewal
+
+and Redmine proceeded to scrape it. It evidently found the @#123456@ pattern and based on this log message:
+
+<pre>
+  ^[[1m^[[36mIssue Load (0.6ms)^[[0m  ^[[1mSELECT  `issues`.* FROM `issues` WHERE `issues`.`id` = 104351 LIMIT 1^[[0m
+</pre>
+
+the scraping process attempted to match the new email against an existing ticket. There isn't a ticket number 104351 in our system, so presumably the attempt to find and eventually update the existing ticket failed and the scraping process abandoned the attempt. This resulted in the email being moved to the folder we specified for rejected emails.
+
+When we checked the @development.log@ file (we have our @RAILS_ENV@ set to @develoment@ when the scraping script runs), this was the only related error message that we found:
+
+<pre>
+Message XYZ can not be processed
+</pre>
+
+h4. Our Redmine installation details
+
+@redmine@server01:/opt/redmine$ bin/about@
+<pre>
+/var/lib/gems/2.3.0/gems/htmlentities-4.3.1/lib/htmlentities/mappings/expanded.rb:465: warning: key ""inodot"" is duplicated and overwritten on line 466
+
+sh: 1: darcs: not found
+sh: 1: hg: not found
+sh: 1: cvs: not found
+sh: 1: bzr: not found
+sh: 1: git: not found
+Environment:
+  Redmine version                3.3.2.stable.16201
+  Ruby version                   2.3.1-p112 (2016-04-26) [x86_64-linux-gnu]
+  Rails version                  4.2.7.1
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.9.3
+  Filesystem
+Redmine plugins:
+  no plugin installed
+</pre>
+
+Please let me know if you need any more information.
+
+h4. Requests
+
+* Can the verbosity of the error message be increased? It would be great if it mentioned something regarding being unable to find an existing ticket to update.
+
+* Can we disable or override the behavior when a match isn't found? It may be useful to allow a new ticket to be created (what we wanted here) if Redmine cannot locate an existing ticket.
+
+"
+25470,Redmine,Defect,"",Closed,Normal,Fix Japanese mistranslation for field_base_dn,Go MAEDA,"",2017-04-03 16:40,Translations,3.4.0,"","","",0,2017-03-29 15:25,2017-04-03 16:40,"",Fixed,3.2.5,"The current translation ""ŒŸõ”ÍˆÍ"" should be changed to ""ƒx[ƒXDN"".
+
+We usually use ""ƒx[ƒXDN"". ""ƒx[ƒX"" is transliteration of ""base"". Here are some examples (please search ""ƒx[ƒX DN"" or ""ƒx[ƒXDN"" in the following pages):
+
+* https://technet.microsoft.com/ja-jp/library/cc731530(v=ws.11).aspx
+* http://www.ibm.com/support/knowledgecenter/ja/SSGRP3_2.0.0/doc/iwd/ldap_setparam_mad.html
+* http://software.fujitsu.com/jp/manual/manualfiles/M060056/B1WN6231/01Z202/secur05/secur160.htm
+
+The current translation ""ŒŸõ”ÍˆÍ"" means ""search scope"". It does not make sense in this context.
+
+
+<pre><code class=""diff"">
+Index: config/locales/ja.yml
+===================================================================
+--- config/locales/ja.yml	(revision 16444)
++++ config/locales/ja.yml	(working copy)
+@@ -290,7 +290,7 @@
+   field_host: ƒzƒXƒg
+   field_port: ƒ|[ƒg
+   field_account: ƒAƒJƒEƒ“ƒg
+-  field_base_dn: ŒŸõ”ÍˆÍ
++  field_base_dn: ƒx[ƒXDN
+   field_attr_login: ƒƒOƒCƒ“–¼‘®«
+   field_attr_firstname: –¼‘O‘®«
+   field_attr_lastname: •cš‘®«
+</code></pre>"
+25468,Redmine,Defect,"",Closed,Normal,Reopening a closed issue,Erik O,"",2017-03-29 14:59,Issues,"","","","",0,2017-03-29 14:39,2017-03-29 14:58,"",Invalid,3.3.2,"Hello,
+
+When an issue is closed and I later wish to reopen it; the priority field is not visible and not possible to edit.
+Is this a bug or a feature or am I missing something? :-)
+
+Regards,
+Erik"
+25460,Redmine,Defect,"",Closed,Normal,Redmine 3.3.2 db:migrate terminate with cryptic error message,Ruben Kelevra,"",2017-03-29 08:27,"","","","","",0,2017-03-29 08:12,2017-03-29 08:16,ŠÖ˜A‚µ‚Ä‚¢‚é #25048,Invalid,3.3.2,"I tried to update my Redmine installation to 3.3.2 but the db:migrate does not go thru:
+
+<pre>
+/usr/lib/ruby/gems/2.4.0/gems/htmlentities-4.3.1/lib/htmlentities/mappings/expanded.rb:465: warning: key ""inodot"" is duplicated and overwritten on line 466
+/usr/lib/ruby/gems/2.4.0/gems/activesupport-4.2.7.1/lib/active_support/core_ext/numeric/conversions.rb:121: warning: constant ::Fixnum is deprecated
+/usr/lib/ruby/gems/2.4.0/gems/activesupport-4.2.7.1/lib/active_support/core_ext/numeric/conversions.rb:121: warning: constant ::Bignum is deprecated
+rake aborted!
+SystemStackError: stack level too deep
+/usr/share/webapps/redmine/config/environment.rb:14:in `<top (required)>'
+/usr/bin/bundle:22:in `load'
+/usr/bin/bundle:22:in `<main>'
+Tasks: TOP => db:migrate => environment
+(See full trace by running task with --trace)
+</pre>"
+25459,Redmine,Patch,"",Closed,Normal,Portuguese translation for 3.3-stable,Toshi MARUYAMA,"",2017-03-29 08:34,Translations,3.3.3,"","","",0,2017-03-29 06:42,2017-03-29 08:34,"","","","From #25204
+
+<pre><code class=""diff"">
+=== (+21,-25) config/locales/pt.yml ===
+@@ -1177,30 +1177,26 @@
+   label_default_values_for_new_users: Valores por defeito para novo utilizadores
+   setting_sys_api_key: Chave da API
+   setting_lost_password: Perdi a palavra-chave
+-  mail_subject_security_notification: Security notification
+-  mail_body_security_notification_change: ! '%{field} was changed.'
+-  mail_body_security_notification_change_to: ! '%{field} was changed to %{value}.'
+-  mail_body_security_notification_add: ! '%{field} %{value} was added.'
+-  mail_body_security_notification_remove: ! '%{field} %{value} was removed.'
+-  mail_body_security_notification_notify_enabled: Email address %{value} now receives
+-    notifications.
+-  mail_body_security_notification_notify_disabled: Email address %{value} no longer
+-    receives notifications.
+-  mail_body_settings_updated: ! 'The following settings were changed:'
+-  field_remote_ip: IP address
+-  label_wiki_page_new: New wiki page
+-  label_relations: Relations
+-  button_filter: Filter
+-  mail_body_password_updated: Your password has been changed.
+-  label_no_preview: No preview available
+-  error_no_tracker_allowed_for_new_issue_in_project: The project doesn't have any trackers
+-    for which you can create an issue
+-  label_tracker_all: All trackers
+-  label_new_project_issue_tab_enabled: Display the ""New issue"" tab
+-  setting_new_item_menu_tab: Project menu tab for creating new objects
+-  label_new_object_tab_enabled: Display the ""+"" drop-down
+-  error_no_projects_with_tracker_allowed_for_new_issue: There are no projects with trackers
+-    for which you can create an issue
++  mail_subject_security_notification: Notifica??o de seguran?a
++  mail_body_security_notification_change: ! '%{field} foi modificado.'
++  mail_body_security_notification_change_to: ! '%{field} foi modificado para %{value}.'
++  mail_body_security_notification_add: ! '%{field} %{value} foi adicionado.'
++  mail_body_security_notification_remove: ! '%{field} %{value} foi removido.'
++  mail_body_security_notification_notify_enabled: O email %{value} agora recebe notifica??es.
++  mail_body_security_notification_notify_disabled: O email %{value} j? n?o recebe notifica??es.
++  mail_body_settings_updated: ! 'As seguintes configura??es foram modificadas:'
++  field_remote_ip: Endere?o IP
++  label_wiki_page_new: Nova p?gina wiki
++  label_relations: Rela??es
++  button_filter: Filtro
++  mail_body_password_updated: A sua palavra-chave foi atualizada.
++  label_no_preview: Sem pr?-visualiza??o dispon?vel
++  error_no_tracker_allowed_for_new_issue_in_project: O projeto n?o possui nenhum tipo de tarefa para o qual voc? pode criar uma tarefa
++  label_tracker_all: Todos os tipos de tarefa
++  label_new_project_issue_tab_enabled: Apresentar a aba ""Nova tarefa""
++  setting_new_item_menu_tab: Aba de Projeto para criar novos objetos
++  label_new_object_tab_enabled: Apresentar a aba ""+""
++  error_no_projects_with_tracker_allowed_for_new_issue: N?o h? projetos com tipos de tarefa para os quais voc? pode criar uma tarefa
+   field_textarea_font: Font used for text areas
+   label_font_default: Default font
+   label_font_monospace: Monospaced font
+</code></pre>"
+25458,Redmine,Patch,"",Closed,Normal,Portuguese translation for 3.2-stable,Toshi MARUYAMA,"",2017-03-29 08:36,Translations,3.2.6,"","","",0,2017-03-29 06:40,2017-03-29 08:36,"","","","From #25204
+
+<pre><code class=""diff"">
+=== (+9,-10) config/locales/pt.yml ===
+@@ -1168,13 +1168,13 @@
+   label_assigned_issues: Assigned issues
+   label_field_format_enumeration: Key/value list
+   label_f_hour_short: '%{value} h'
+-  field_default_version: Default version
+-  error_attachment_extension_not_allowed: Attachment extension %{extension} is not allowed
+-  setting_attachment_extensions_allowed: Allowed extensions
+-  setting_attachment_extensions_denied: Disallowed extensions
+-  label_any_open_issues: any open issues
+-  label_no_open_issues: no open issues
+-  label_default_values_for_new_users: Default values for new users
++  field_default_version: Vers?o por defeito
++  error_attachment_extension_not_allowed: A extens?o %{extension} do ficheiro anexado n?o ? permitida
++  setting_attachment_extensions_allowed: Extens?es permitidas
++  setting_attachment_extensions_denied: Extens?es n?o permitidas
++  label_any_open_issues: Quaisquer tarefas abertas
++  label_no_open_issues: Sem tarefas abertas
++  label_default_values_for_new_users: Valores por defeito para novo utilizadores
+   setting_sys_api_key: Chave da API
+   setting_lost_password: Perdi a palavra-chave
+   mail_subject_security_notification: Security notification
+@@ -1211,8 +1211,7 @@
+   setting_mail_handler_enable_regex_delimiters: Enable regular expressions
+   error_move_of_child_not_possible: 'Subtask %{child} could not be moved to the new
+     project: %{errors}'
+-  error_cannot_reassign_time_entries_to_an_issue_about_to_be_deleted: Spent time cannot
+-    be reassigned to an issue that is about to be deleted
++  error_cannot_reassign_time_entries_to_an_issue_about_to_be_deleted: O tempo gasto n?o pode ser alterado numa tarefa que ser? apagada
+   setting_timelog_required_fields: Required fields for time logs
+   label_attribute_of_object: '%{object_name}''s %{name}'
+   label_user_mail_option_only_assigned: Only for things I watch or I am assigned to
+</code></pre>"
+25455,Redmine,Defect,"",Closed,Normal,Invalid test in 3.3-stable branch,Alisa M,"",2017-03-28 16:55,"","","","","",0,2017-03-28 15:55,2017-03-28 16:55,ŠÖ˜A‚µ‚Ä‚¢‚é #12909,Fixed,"","Branch 3.3-stable has a file test/ui/custom_fields_test_ui.rb which was removed from trunk in commit 16396 ""Removed invalid test, reorder links no longer exist.""
+http://www.redmine.org/projects/redmine/repository/revisions/16396
+
+http://www.redmine.org/projects/redmine/repository/show/branches/3.3-stable/test/ui
+http://www.redmine.org/projects/redmine/repository/show/trunk/test/ui
+"
+25429,Redmine,Defect,"",Closed,Normal,Mail error,Vladimir Maklakov,"",2017-03-24 17:38,Email notifications,"","","","",0,2017-03-24 17:09,2017-03-24 17:38,"",Invalid,3.1.3,"Configured mail with SMTP authorization. When registering users, everything comes to them on the mail, when creating a new task and there are no emails - in the logs error
+2017-03-24 18:51:16 SMTP data timeout (message abandoned) on connection from (deathstar.name) [176.9.110.4] F = <redmine@deathstar.name>
+2017-03-24 18:55:45 SMTP data timeout (message abandoned) on connection from (localhost.localdomain) [176.9.110.4] F = <redmine@deathstar.name>
+
+How to fix the problem?"
+25416,Redmine,Defect,"",Closed,Normal,"""My account"" broken with MySQL 8.0 (keyword admin should be escaped)",Michael Medin,Jean-Philippe Lang,2017-06-25 14:08,Database,3.4.0,"","","",0,2017-03-23 12:46,2017-04-03 08:50,"",Fixed,3.3.2,"Clicking ""My account"" when using a mysql database gives the folowing error: 
+
+<pre>
+Completed 500 Internal Server Error in 383ms (ActiveRecord: 12.9ms)
+
+ActionView::Template::Error (Mysql2::Error: You have an error in your SQL syntax; 
+check the manual that corresponds to your MySQL server version for the right syntax to use near 
+'admin = 1 AND id <> 4) LIMIT 1' at line 1: 
+SELECT  1 AS one FROM `users` WHERE `users`.`type` IN ('User', 'AnonymousUser') AND `users`.`status` = 1 AND (admin = 1 AND id <> 4) LIMIT 1):
+    3: <p><%=l(:field_login)%>: <strong><%= link_to_user(@user, :format => :username) %></strong><br />
+    4: <%=l(:field_created_on)%>: <%= format_time(@user.created_on) %></p>
+    5:
+    6: <% if @user.own_account_deletable? %>
+    7:   <p><%= link_to(l(:button_delete_my_account), {:action => 'destroy'}, :class => 'icon icon-del') %></p>
+    8: <% end %>
+    9:
+  app/models/user.rb:687:in `own_account_deletable?'
+  app/views/my/_sidebar.html.erb:6:in `_app_views_my__sidebar_html_erb___2869233383891145181_70035919334040'
+  app/views/my/account.html.erb:57:in `block in _app_views_my_account_html_erb___4301926150472292574_70036033743920'
+  app/views/my/account.html.erb:56:in `_app_views_my_account_html_erb___4301926150472292574_70036033743920'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+</pre>
+
+
+The fix is to add escapings `` for the admin keyword in the sql query like so:
+<pre>
+[extmcm@ux310tas001 ~]$ diff user.rb user_fixed.rb
+114d113
+<   validates_length_of :identity_url, maximum: 255
+687c686
+<       (!admin? || User.active.where(""admin = ? AND id <> ?"", true, id).exists?)
+---
+>       (!admin? || User.active.where(""`admin` = ? AND id <> ?"", true, id).exists?)
+</pre>"
+25411,Redmine,Defect,"",New,Normal,Custom fields - bulk edit - adding new values or selctions overwrites existing values or selections,Rolf Madsen,"",2017-03-23 09:52,Custom fields,"","","","",0,2017-03-23 09:52,"","","","","During backlog grooming I need to add new value of a custom field to a number of issues.
+
+The problem is that existing values in a custom field are overwritten if I add a new value by using bulk edit.
+
+That effectively makes bulk edit useless on lists with multiple selections or values.
+
+Steps to reproduce:
+
+# Click checkmarks of a number issues, with multiple values in a custom field, for bulk edit
+# Right-click the checkbox of a random issue among the issues marked for bulk edit
+# Click edit
+# Click the custom field value to be added across the selected issues
+# Click submit 
+# Observe that only the newly selected value in the custom field is displayed as all earlier selected values have been overwritten
+
+Suggested solution.
+
+Bulk edit should:
+
+# add new values without overwriting exisiting values
+# make it possible to clear existing values on fields with multiple values/selections"
+25408,Redmine,Defect,"",Closed,Normal,Gemfile Error,mahesh m,"",2017-03-23 03:37,"","","","","",0,2017-03-22 19:29,2017-03-23 03:37,"",Invalid,3.3.2,"When adding gemfile content plugin to 3.3.x-2 version, the error occurs and application was unavailable and Thin Redmine and thin redmine2 servers stopped automatically."
+25402,Redmine,Patch,"",Closed,Normal,stop misusing distance_in_words,Greg T,"",2017-04-21 14:02,Translations,"","","","",0,2017-03-22 13:26,2017-04-21 13:40,ŠÖ˜A‚µ‚Ä‚¢‚é #25130,"","",When _x_hours_ and _x_days_ are *not* used for a reference to a past point in time relative to the present moment then datetime.distance_in_words must not be used as it's impossible to fix the Hungarian/Magyar language files that way.
+25400,Redmine,Defect,"",Closed,Normal,Documentation for Rest API issue listing seems incorrect,Vincent C.,"",2017-03-29 06:30,Documentation,"","","","",0,2017-03-22 11:35,2017-03-29 06:30,"",Invalid,"","Hello !
+
+On the documentation page for listing issues through the API, these lines were added 2 months ago :
+> @issue_id@: get issue with the given id or multiple issues by id using ',' to separate id.
+
+> GET /issues.xml?issue_id=1
+> GET /issues.xml?issue_id=1,2
+
+Source page :
+https://www.redmine.org/projects/redmine/wiki/Rest_Issues#Listing-issues
+
+History diff :
+https://www.redmine.org/projects/redmine/wiki/Rest_Issues/diff?utf8=%E2%9C%93&version=56&version_from=55&commit=View+differences
+
+After testing and looking at the roadmap, I can't find anything proving that ""listing issues by ID"" is working, or even implemented. (only reference to this functionnailty is Patch #10828, which has never been merged)
+
+I could edit the wiki page directly, but I want to be sure before editing the page that :
+* This functionnality really doesn't exist
+* I didn't just failed to make it work
+
+
+This is quite high priority IMO, since it's sitting at the top of the main API wiki page, and already has fooled 2 people at least (me, and the guy who asked me why it wasn't working when he was trying to get multiple issues by ID through the API)
+"
+25398,Redmine,Defect,"",Closed,Normal,CKEditor and image_clipboard_paste,Daniel Hunziker,"",2017-03-22 13:06,"","","","","",0,2017-03-22 08:40,2017-03-22 13:06,"",Invalid,"",Can the CKEditor plugin and the https://github.com/thorin/redmine_image_clipboard_paste be used in combination?
+25397,Redmine,Patch,"",Closed,Normal,Russian translation update (r16388),Go MAEDA,"",2017-04-05 19:12,Translations,"","","","",0,2017-03-22 06:32,2017-04-05 19:12,ŠÖ˜A‚µ‚Ä‚¢‚é #25392,"","","From #25392, translated by  Ilya Potapov.
+
+*  error_no_projects_with_tracker_allowed_for_new_issue
+*  field_textarea_font
+*  label_font_default
+*  label_font_monospace
+*  label_font_proportional
+*  label_table_of_contents
+*  setting_commit_logs_formatting
+*  setting_mail_handler_enable_regex_delimiters
+*  error_move_of_child_not_possible
+*  setting_timelog_required_fields
+*  label_attribute_of_object
+*  label_user_mail_option_only_assigned
+*  label_user_mail_option_only_owner
+*  warning_fields_cleared_on_bulk_edit
+*  field_updated_by
+*  field_last_updated_by
+*  field_full_width_layout
+*  label_last_notes"
+25392,Redmine,Patch,"",Closed,Normal,Change Russian translation for field_due_date and label_relation_new,Ilya Potapov,Jean-Philippe Lang,2017-04-03 15:33,Translations,3.4.0,"","","",0,2017-03-21 19:39,2017-04-03 15:33,"ŠÖ˜A‚µ‚Ä‚¢‚é #25397, ŠÖ˜A‚µ‚Ä‚¢‚é #25349","","","There is a mistranslation for these labels in redmine:
+
+* field_due_date: „D„p„„„p „x„p„r„u„‚„Š„u„~„y„‘
+** In russian it has the meaning of *actual* date of completeness, when all is done. Due date is like a deadline, so it should be translated as ""„R„‚„€„{ „x„p„r„u„‚„Š„u„~„y„‘""
+* label_relation_new: „N„€„r„€„u „€„„„~„€„Š„u„~„y„u
+** In russian it has the meaning of new relationship with somebody, or new point of view about something. So it should be translated as ""„N„€„r„p„‘ „ƒ„r„‘„x„"" to be consistent with label_relation_delete: ""„T„t„p„|„y„„„ „ƒ„r„‘„x„""
+
+I've prepared a new ru.yml file based on current trunk (r16420) (unfortunately i'm not familiar with patches) - please find it in the attachments.
+
+This file also contains ru translation for new labels which were not translated yet except one: ""error_cannot_reassign_time_entries_to_an_issue_about_to_be_deleted"":
+* If one tell me when redmine shows this label i'll find an accurate translation for this.
+
+
+It would be great to add this feature to version:3.4.0"
+25371,Redmine,Defect,"",Closed,Normal,Git 2.9 compatibility,Tamara S,"",2017-03-25 04:38,SCM,3.2.6,"","","",0,2017-03-20 15:50,2017-03-25 04:38,"",Fixed,"","With git 2.9 I have some problems with redmine git tests.
+
+Failure:
+RepositoryGitTest#test_fetch_changesets_from_scratch [redmine/trunk/test/unit/repository_git_test.rb:139]:
+Expected: 39
+Actual: 38 
+
+This patch heals it. "
+25362,Redmine,Defect,"",New,Normal,Filter's sorting by last comment (last change),Viktor Kudlak,"",2017-03-18 21:38,Issues filter,"","","","",0,2017-03-18 21:38,"","","","","to configure and use redmine in CRM cases needed sorting by updated_at.
+this case can be used to to work by round robin of selected tasks"
+25355,Redmine,Defect,"",Closed,Normal,"Unable to edit tracker on issue with status ""new"" if not ""create an issue"" selected on profile",Marilyne Guillebaud,"",2017-04-15 07:40,Permissions and roles,"","","","",0,2017-03-17 10:13,2017-04-15 07:40,"",Invalid,3.3.0,"If an user haven't ""create an issue"" selected on his profile, he can't edit tracker on issue with ""new"" status. However ""All trackers"" is selected on ""modify issues"" column.
+It should be able to modify the trackers on issues with the ""new"" status, even if he can't create them."
+25354,Redmine,Defect,"",Closed,Normal,"Mail configuration and sent successfully, but can not receive mail",di yu,"",2017-03-21 16:49,"","","","","",0,2017-03-17 06:44,2017-03-21 16:49,"",Invalid,"","Redmine mail configuration successfully sent successfully, but but can not receive this email
+redmine:3.3.1  MYSQL:5.7.17  RUBY:2.2.0
+log:
+with: No such file or directory - ""bzr"" --version
+scm: error during get scm available: No such file or directory - ""bzr"" --version
+SCM command failed, make sure that your SCM command (e.g. svn) is in PATH (C:/RailsInstaller/Ruby2.2.0/lib/ruby/gems/2.2.0/bin;D:\ImageMagick\ImageMagick-7.0.5-Q16;C:\Perl64\site\bin;C:\Perl64\bin;C:\Perl\site\bin;C:\Perl\bin;D:\ActivePerl\site\bin;D:\ActivePerl\bin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;D:\Program Files\MySQL\MySQL Server 5.5.20\bin;D:\Dev-C++\Dev-Cpp\MinGW64\bin;D:\dmake\dmake;C:\Program Files (x86)\HP\LoadRunner\strawberry-perl\perl\bin;D:\MySQL\mysql-5.5.54-winx64\bin;C:\Program Files (x86)\Windows Kits\8.1\Windows Performance Toolkit\;C:\Program Files\Microsoft SQL Server\110\Tools\Binn\;C:\Program Files\MySQL\MySQL Utilities 1.6\;C:\Program Files\MySQL\MySQL Server 5.7\bin;D:\SVN\bin;C:\RailsInstaller\Git\cmd;C:\RailsInstaller\Ruby2.2.0\bin)
+You can configure your scm commands in config/configuration.yml.
+""bzr"" --version
+with: No such file or directory - ""bzr"" --version
+scm: error during get version string: No such file or directory - ""bzr"" --version
+  Rendered settings/_repositories.html.erb (94.1ms)
+  Rendered common/_tabs.html.erb (215.2ms)
+  Rendered settings/edit.html.erb within layouts/admin (216.2ms)
+  Rendered admin/_menu.html.erb (7.0ms)
+  Rendered layouts/base.html.erb (14.0ms)
+Completed 200 OK in 256ms (Views: 230.7ms | ActiveRecord: 15.0ms)
+"
+25349,Redmine,Patch,"",Closed,Normal,Russian translation (r16388),Kirill Bezrukov (RedmineUP),"",2017-04-05 19:14,Translations,"","","","",0,2017-03-16 13:20,2017-04-03 18:52,"ŠÖ˜A‚µ‚Ä‚¢‚é #25392, ƒRƒs[Œ³ #15953","","","<pre>
+error_no_projects_with_tracker_allowed_for_new_issue: „N„u„„ „„‚„€„u„{„„„€„r „ƒ „„„‚„u„{„u„‚„p„}„y
+    „t„|„‘ „{„€„„„€„‚„„‡ „}„€„w„~„€ „ƒ„€„x„t„p„„„ „x„p„t„p„‰„…
+  field_textarea_font: „Y„‚„y„†„„ „t„|„‘ „„€„|„u„z „€„„y„ƒ„p„~„y„‘
+  label_font_default: „Y„‚„y„†„„ „„€ „…„}„€„|„‰„p„~„y„
+  label_font_monospace: „M„€„~„€„Š„y„‚„y„~„~„„z „Š„‚„y„†„„
+  label_font_proportional: „P„‚„€„„€„‚„ˆ„y„€„~„p„|„„~„„z „Š„‚„y„†„„
+  setting_timespan_format: „U„€„‚„}„p„„ „„‚„€„}„u„w„…„„„{„p „r„‚„u„}„u„~„y
+  label_table_of_contents: „R„€„t„u„‚„w„p„~„y„u
+  setting_commit_logs_formatting: „I„ƒ„„€„|„„x„€„r„p„„„ „†„€„‚„}„p„„„y„‚„€„r„p„~„y„u „r „y„x„}„u„~„u„~„y„‘„‡
+  setting_mail_handler_enable_regex_delimiters: „I„ƒ„„€„|„„x„€„r„p„„„ „‚„u„s„…„|„‘„‚„~„„u „r„„‚„p„w„u„~„y„‘
+  error_move_of_child_not_possible: '„P„€„t„x„p„t„p„‰„p %{child} „~„u „}„€„w„u„„ „q„„„„ „„u„‚„u„~„u„ƒ„u„~„p „r „~„€„r„„z 
+    „„‚„€„u„{„„: %{errors}'
+  error_cannot_reassign_time_entries_to_an_issue_about_to_be_deleted: „H„p„„„‚„p„‰„u„~„~„€„u „r„‚„u„}„‘ „~„u „}„€„w„u„„
+    „q„„„„ „„u„‚„u„~„p„x„~„p„‰„u„~„€ „~„p „x„p„t„p„‰„…, „{„€„„„€„‚„p„‘ „q„…„t„u„„ „…„t„p„|„u„~„p
+  setting_timelog_required_fields: „O„q„‘„x„p„„„u„|„„~„„u „„€„|„‘ „t„|„‘ „„„‚„…„t„€„x„p„„„‚„p„„
+  label_attribute_of_object: '%{object_name} %{name}'
+  label_user_mail_option_only_assigned: „S„€„|„„{„€ „t„|„‘ „€„q„Œ„u„{„„„€„r, „{„€„„„€„‚„„u „‘ „€„„„ƒ„|„u„w„y„r„p„ „y„|„y „{„€„„„€„‚„„u „~„p„x„~„p„‰„u„~„ „~„p „}„u„~„‘
+  label_user_mail_option_only_owner: „S„€„|„„{„€ „t„|„‘ „€„q„Œ„u„{„„„€„r, „{„€„„„€„‚„„u „‘ „€„„„ƒ„|„u„w„y„r„p„ „y„|„y „r „{„€„„„€„‚„„‡ „‘ „‘„r„|„‘„„ƒ„ „r„|„p„t„u„|„„ˆ„u„}
+  warning_fields_cleared_on_bulk_edit: „I„x„}„u„~„u„~„y„‘ „„‚„y„r„u„t„…„„ „{ „p„r„„„€„}„p„„„y„‰„u„ƒ„{„€„}„… „…„t„p„|„u„~„y„
+???? „x„~„p„‰„u„~„y„z „y„x „€„t„~„€„s„€ „y„|„y „~„u„ƒ„{„€„|„„{„y„‡ „„€„|„u„z „~„p „r„„q„‚„p„~„~„„‡ „€„q„Œ„u„{„„„p„‡
+  field_updated_by: „I„x„}„u„~„u„~„€
+  field_last_updated_by: „P„€„ƒ„|„u„t„~„u„u „y„x„}„u„~„u„~„y„u
+  field_full_width_layout: „P„€ „Š„y„‚„y„~„u
+  label_last_notes: „P„€„ƒ„|„u„t„~„u„u „„‚„y„}„u„‰„p„~„y„u
+</pre>"

@@ -1,0 +1,490 @@
+#,プロジェクト,トラッカー,親チケット,ステータス,優先度,題名,作成者,担当者,更新日,カテゴリ,対象バージョン,開始日,期日,予定工数,進捗率,作成日,終了日,関連するチケット,Resolution,Affected version,説明
+27673,Redmine,Defect,"",Closed,Normal,Watchers cannot see issue with restricted issue visibility,Jess Nielsen,"",2017-11-29 11:53,Issues permissions,"","","","",0,2017-11-29 11:05,2017-11-29 11:53,次のチケットと重複 #9330,Duplicate,3.2.1,"People added as watchers cannot see the respective issue 
+when ""Issues visibility"" is set to ""Issues created by or assigned to the user"" 
+for the role they belong to.
+
+This is very annoying, please up-prioritize it."
+27671,Redmine,Patch,"",Closed,Normal,Use reverse_each instead of reverse.each for better performance,Go MAEDA,Go MAEDA,2017-12-31 02:35,Performance,4.0.0,"","","",0,2017-11-29 03:24,2017-12-31 02:35,"","","","Array#reverse_each is faster than Array#reverse.each because reverse_each does not create an intermediate array.
+
+Pull request https://github.com/redmine/redmine/pull/84 by Timur Tarasenko."
+27670,Redmine,Patch,"",Closed,Normal,Fix typo in configuration.yml.example,Go MAEDA,Go MAEDA,2017-11-29 09:17,Code cleanup/refactoring,4.0.0,"","","",0,2017-11-29 00:38,2017-11-29 09:17,"","","","Pull request https://github.com/redmine/redmine/pull/61/files by Kosta Harlan.
+
+<pre><code class=""diff"">
+Index: config/configuration.yml.example
+===================================================================
+--- config/configuration.yml.example	(revision 17048)
++++ config/configuration.yml.example	(working copy)
+@@ -1,6 +1,6 @@
+ # = Redmine configuration file
+ #
+-# Each environment has it's own configuration options.  If you are only
++# Each environment has its own configuration options.  If you are only
+ # running in production, only the production block needs to be configured.
+ # Environment specific configuration options override the default ones.
+ #
+</code></pre>"
+27663,Redmine,Patch,"",Closed,Normal,Same relates relation can be created twice,Gregor Schmidt,Go MAEDA,2017-12-06 14:32,Issues,3.3.6,"","","",0,2017-11-28 10:23,2017-12-06 14:28,"","","","By switching from and to, it is possible to create the same relates relation twice. Within the Redmine UI, those relations look like duplicates.
+
+For all other relationship types it's not allowed to create duplicates, so I assume that this is a bug. Attached you may find a proposed fix. It adds a validation to make sure, that reverse relations are detected. It also orders the from and to IDs to ensure, that even during concurrent access, the duplicates are detected on DB level."
+27659,Redmine,Patch,"",New,Normal,redmine_plugin_model_generator improvements(fixes and timestamps),Javier Men?ndez Rizo,"",2017-12-27 18:28,"","","","","",0,2017-11-27 22:11,"",関連している #11024,"","","Problems fixed:
+* parent option not working
+* migration option not working
+
+Things added:
+* Timestamp for migrations
+
+It would be really nice to add this to the migration generator for plugins.
+
+"
+27658,Redmine,Defect,"",New,Low,Git merge-graph does not respect first parent,Joshua Judson Rosen,"",2017-11-28 04:31,SCM,"","","","",0,2017-11-27 20:55,"","","",3.3.1,"The git DAG Mainly that the DAG always seems to be oriented backward:
+?The revisions that ""git log --graph"" and gitk/qgit/etc. display as the left-hand side is on the right (what git calls the ""first parent"" is drawn as the `last parent'), and so all of the merges appear to be inverted."
+27649,Redmine,Patch,"",Closed,Normal,Spanish/Panama translation update (jstoolbar-es-pa.js),Go MAEDA,Go MAEDA,2017-12-11 05:15,Translations,3.3.6,"","","",0,2017-11-27 16:12,2017-11-27 16:27,コピー元 #27642,"","","References: #27642, #27642#note-2:
+
+<pre><code class=""diff"">
+Index: public/javascripts/jstoolbar/lang/jstoolbar-es-pa.js
+===================================================================
+--- public/javascripts/jstoolbar/lang/jstoolbar-es-pa.js	(revision 17044)
++++ public/javascripts/jstoolbar/lang/jstoolbar-es-pa.js	(working copy)
+@@ -7,7 +7,7 @@
+ jsToolBar.strings['Heading 1'] = 'Encabezado 1';
+ jsToolBar.strings['Heading 2'] = 'Encabezado 2';
+ jsToolBar.strings['Heading 3'] = 'Encabezado 3';
+-jsToolBar.strings['Highlighted code'] = 'Highlighted code';
++jsToolBar.strings['Highlighted code'] = 'C?digo resaltado';
+ jsToolBar.strings['Unordered list'] = 'Lista sin ordenar';
+ jsToolBar.strings['Ordered list'] = 'Lista ordenada';
+ jsToolBar.strings['Quote'] = 'Citar';
+</code></pre>
+"
+27642,Redmine,Patch,"",Closed,Normal,Spanish translation update (jstoolbar-es.js),Javier Men?ndez Rizo,Go MAEDA,2017-11-27 16:02,Translations,3.3.6,"","","",0,2017-11-24 17:41,2017-11-27 16:02,コピー先 #27649,"","",Highlighted code translation to Spanish in jstoolbar-es.js
+27636,Redmine,Defect,"",Closed,Normal,Redmine does not redirect to initial project page after bulk editing issues in different sub-projects.,Stephane Evr,"",2017-11-25 06:31,Issues,"","","","",0,2017-11-24 12:43,2017-11-25 06:31,次のチケットと重複 #23963,Duplicate,3.4.2,"After bulk editing 2 issues which are located in 2 different sub-projects of the current project, we are being redirected to the general issues page instead of being redirected to the initial project where the bulk edit occured.
+
+Steps to Reproduce:
+
+* Build this hierarchy:
+<pre>
+Project A
+  |
+  - Project A1
+  |   |
+  |   - Issue 1
+  - Project A2
+  |   |
+  |   - Issue 2
+</pre>
+
+* Navigate to /projects/project_a/issues page
+* Select Issues 1 and 2
+* Right click
+* Bulk edit
+* Add a note
+* Save
+
+
+* Expected: Save is successful, we are redirected back to */projects/project_a/issues* page
+* Actual: Save is successful, we are redirected back to */issues* page"
+27634,Redmine,Defect,"",Closed,Normal,The redmime product plugin cant work on TOP Menu in V3.4.3,howie.woo woo,"",2017-11-24 02:51,"","","","","",0,2017-11-24 02:46,2017-11-24 02:51,"",Invalid,3.4.3,"When I set the redmine product plugin，it doesn't work on TOP Menu in V3.4.3，but it work in V3.3.5？
+Please see the attached picture."
+27625,Redmine,Patch,"",New,High,Increase size of name for role name,Aleksandar Pavic visit redminecookbook.com,"",2017-12-16 12:10,Code cleanup/refactoring,4.1.0,"","","",0,2017-11-23 11:19,"","","","","It is limited in model of Role, at line 84
+<pre>
+  validates_length_of :name, :maximum => 30
+</pre>
+
+
+Attached is a patch, increasing it to 255, however I wouldn't limit it at all.
+
+Also migration is added here.
+"
+27622,Redmine,Defect,"",New,Normal,"When disabling notes for a role, file upload disapperas too at issue update",Kl?ra Szab?,"",2017-12-10 04:54,Issues,"","","","",0,2017-11-23 09:12,"","","",3.4.3,"When the ""Add notes"" possibility for a role is disabled, the user with that role can't upload file when editing an issue.
+This problem is not present when a new issue is made, the file upload module is visible and working, this problem occurs only when an existing issue is edited (and any kind of adding or editing note function is disabled). View and manage files option is enabled.
+
+I noticed this problem in Redmine version 3.4.3, 3.4.2, and 3.3.2.
+
+Is there a setting which i miss? (looked up the problem here in redmine and google, but could not find anything) Is there a guick fix solution, which i can use until it is resolved (if it is really a defect)?
+
+Thanks for a response in advance."
+27620,Redmine,Patch,"",Closed,Normal,Brazilian translation update,Patrick Kaminski,"",2017-12-21 18:15,Translations,3.4.4,"","","",0,2017-11-23 00:40,2017-12-21 18:15,"","","","Hello everyone!
+
+I'm sending 4 files (yml and patches) with updates for the Brazilian Portuguese translation...
+
+h2. New texts
+
+Lines 1219-1250 (trunk) translated
+
+h2. Adjusted
+
+Fixed 20 typos and grammar errors:
+
+* cant_link_an_issue_with_a_descendant
+* field_parent
+* setting_sys_api_enabled
+* setting_issue_list_default_columns
+* label_boolean
+* label_version_sharing_descendants
+* label_api_access_key
+* label_api_access_key_created_on
+* notice_api_access_key_reseted
+* setting_rest_api_enabled
+* label_missing_api_access_key
+* label_user_mail_option_only_my_events
+* label_search_for_watchers
+* setting_session_lifetime
+* setting_session_timeout
+* setting_link_copied_issue
+* label_link_copied_issue
+* error_invalid_csv_file_or_settings
+* label_file_content_preview
+* label_default_values_for_new_users
+
+*Versions:* Trunk and 3.4.3"
+27609,Redmine,Defect,"",Closed,Low,The requested URL /redmine was not found on this server.,muralidharan h,"",2017-11-22 14:13,"","","","","",0,2017-11-22 06:53,2017-11-22 14:13,"",Invalid,"","hi Team,
+
+
+After  installing successfully redmine .  the page is not loading  
+"
+27599,Redmine,Defect,"",Closed,Normal,symbols in redmine ticket,ajeesh b,"",2017-11-22 15:30,"","","","","",0,2017-11-20 20:11,2017-11-22 15:30,"",Duplicate,"","
+The text contains symbols that Redmine does not allow/recognize. If I am using any special symbol redmine will not allow me to update instead of it will show an Internal server error. How can I disable this error and disabling this feature will cause any security issues?. I am using Redmine 3.3.1.stable"
+27589,Redmine,Patch,"",New,Normal,Request for a hook under the project members list (Project / Settings / Members tab),Jens Kr?mer,"",2017-11-20 12:51,Hook requests,"","","","",0,2017-11-20 12:51,"","","","",This patch adds a @view_projects_settings_members_bottom@ hook under the members list in projects settings.
+27586,Redmine,Defect,"",Closed,Normal,"""Uncheck all"" icon at the upper left corner in workflow status transitions page is not working",Go MAEDA,Go MAEDA,2017-11-25 16:42,Administration,3.3.6,"","","",0,2017-11-20 07:17,2017-11-25 14:02,"",Fixed,3.3.5,"We can check / uncheck multiple checkboxes by clicking ""?"" icons in WorkflowsController#edit page.
+
+But the ""?"" icon at the upper left corner, supposed to be able to check / uncheck all checkboxes, is not working as expected. ""Check all"" works fine but ""Uncheck all"" does not work at all.
+
+!{width: 366px;}.workflow-uncheck-all@2x.png!"
+27584,Redmine,Defect,"",Needs feedback,Normal,REST-API projects modules not working XML,Eva Encabo,"",2017-12-12 18:57,REST API,"","","","",0,2017-11-19 23:03,"","","",3.4.2,"hi,
+No module assign to project when we do
+<enabled_module_names>issue_tracking</enabled_module_names>
+the other values are well assigned."
+27566,Redmine,Defect,"",New,Normal,API can add custom fields journal entry although it is disabled on WEB UI,Maria Oskar,"",2017-12-10 16:54,Custom fields,"","","","",0,2017-11-19 10:59,"","","",3.3.2,"*What we do:*
+
+# Create Custom Field
+# Set
+
+ * Visible: to any users
+ * Trackers: Uncheck all
+ * Projects: Uncheck all
+
+{{thumbnail(settings.JPG, size=300, title=settings)}}
+
+*What we have:*
+This way we can't edit or view this custom fields in any issues.
+This custom field will not be seen in issues.
+
+But we can add any value to this field programmatically in a plugin using the CustomValue model. And we can add an entry to the Journal about changing this field using the JournalDetails model.
+At the same time, according to our settings: the issue should not have this field.
+
+After these actions on the issue page:
+We don’t see the field and its value
+But we can see journal entries about changes in this field (that should not be).
+
+{{thumbnail(journal_entries.JPG, size=300, title=settings)}}
+
+
+I think it's better to get an error when we try to change a value of the field that does not exist in an issue and add an entry to the journal.
+It turns out that field settings don’t mean anything.
+The field is simply hidden. Despite we have special settings to change visibility.
+Values of custom fields and journal details are not checked on matching the field settings before saving.
+This behavior is controversial and someone can use it for their own purposes.
+
+*We have some questions*
+
+First of all, we need your feedback on following questions:
+
+* Is this behavior correct, undesirable or incorrect?
+* Can we base our solutions on this behavior?
+* Can we use this behavior for their own purposes in plugins development?
+* Is it better to avoid using this behavior?
+
+_Thanks!_"
+27560,Redmine,Defect,"",Closed,Normal,RJS is messing up Nginx proxy for static files,Erwin Mueller,"",2017-12-03 19:26,UI,"","","","",0,2017-11-18 11:17,2017-12-03 19:26,次のチケットと重複 #17770,Duplicate,3.4.3,"I have a simple Redmine+Nginx setup and I upgraded to the latest Redmine version. I see that the following is not working:
+
+* issues: switch version, switch tracker
+* custom field: switch format
+* probably a lot more
+
+The issue is that I have the following Nginx configuration:
+
+<pre>
+location ~* ^.+\.(?:css|js|jpe?g|gif|htc|ico|png|html)$
+</pre>
+
+That is fairly common to serve static files directly and make use of Nginx speed. But it breaks RJS apparently.
+
+Because you have this requests:
+
+<pre>
+<script>
+//<![CDATA[
+
+$('#custom_field_field_format').change(function(){
+  $.ajax({
+    url: '/custom_fields/new.js',
+    type: 'get',
+    data: $('#custom_field_form').serialize(),
+    complete: toggleDisabledInit
+  });
+});
+
+//]]>
+</script>
+</pre>
+
+And Nginx returns a 404:
+
+<pre>
+nginx_1    | 2017/11/18 09:50:09 [error] 18#18: *53 open() ""/var/www/html/public/custom_fields/new.js"" failed (2: No such file or directory), client: 192.168.80.1, server: _, request: ""GET /custom_fields/new.js?utf8=%E2%9C%93&authenticity_token=xBi4lllxH%2FNxCGxOPy1355fFA8Z5nvJ6cUKKuOJm3UjR13XVRk0jmPwbEIM1qQcXjxPkJuxr8e3l6tzKK%2BGL%2Bw%3D%3D&custom_field%5Bfield_format%5D=bool&custom_field%5Bname%5D=Affected+Version&custom_field%5Bdescription%5D=&custom_field%5Bmin_length%5D=&custom_field%5Bmax_length%5D=&custom_field%5Bregexp%5D=&custom_field%5Btext_formatting%5D=&custom_field%5Bdefault_value%5D=&custom_field%5Burl_pattern%5D=&custom_field%5Bis_required%5D=0&custom_field%5Bis_required%5D=1&custom_field%5Bis_filter%5D=0&custom_field%5Bis_filter%5D=1&custom_field%5Bsearchable%5D=0&custom_field%5Bsearchable%5D=1&custom_field%5Bvisible%5D=1&custom_field%5Brole_ids%5D%5B%5D=&custom_field%5Btracker_ids%5D%5B%5D=1&custom_field%5Btracker_ids%5D%5B%5D=&custom_field%5Bis_for_all%5D=0&custom_field%5Bproject_ids%5D%5B%5D=&type=IssueCustomField HTTP/1.1"", host: ""localhost:8080"", referrer: ""http://localhost:8080/custom_fields/new?utf8=%E2%9C%93&type=IssueCustomField""
+</pre>
+
+Nginx sees a request to @new.js@ and thinks it's a static file and tries to serve it directly.
+
+RJS shouldn't be used anyway: #15560
+
+Workaround:
+
+Add a new location for @new.js@ and let it serve from the Rails server.
+
+<pre>
+location ~* ^.+new\.js$ {
+  proxy_pass http://redmine:3000;
+</pre>
+"
+27559,Redmine,Patch,"",New,Normal,Default branch should be always first in the graph,Maciek Dems,"",2017-12-18 04:50,SCM,"","","","",0,2017-11-18 09:28,"","","","","In the revisions view, the branches graph shows neat lines for every branch. The branches in this are sorted alphabetically. However, it is much more natural to keep the default branch leftmost all the time, so it is always a straight line. It is how e.g. the network graph in github works.
+
+The attached patch changes the sorting of the branches to ensure, the default branch is always first."
+27558,Redmine,Defect,"",Closed,Urgent,Project view looks like is a bug in v3.4.3,howie.woo woo,"",2017-11-18 16:50,Projects,"","","","",0,2017-11-18 07:35,2017-11-18 16:50,次のチケットと重複 #26853,Duplicate,3.4.3,"When I test the new version v3.4.x,the ""projects"" table shows some issues, the project lists are messed up but not happened in v3.3x .please show the pictures."
+27556,Redmine,Defect,"",Closed,Normal,"Changes in the project view, the information is displayed in the form of columns.",Jorge Garcia,"",2017-11-18 16:47,Projects,"","","","",0,2017-11-17 16:09,2017-11-18 16:47,次のチケットと重複 #26853,Duplicate,3.4.3,"The project view comes out in the form of columns, which makes the reading of the projects uncomfortable. If this is the new way to show the projects, could I disable it?
+
+In addition, if the description of the project is too long, it jumps to the other column."
+27549,Redmine,Defect,"",Closed,Normal,Rewite url filter issue redmine,doanh nguyen,"",2017-12-04 05:01,Issues,"","","","",0,2017-11-17 04:16,2017-12-04 05:01,"",Invalid,"","hi All 
+
+i need Rewrite url filter issue redmine 
+http://domain/projects/ngan-sach/issues?utf8=%E2%9C%93&set_filter=1&sort=id%3Adesc&f%5B%5D=status_id&op%5Bstatus_id%5D=o&f%5B%5D=assigned_to_id&op%5Bassigned_to_id%5D=%3D&v%5Bassigned_to_id%5D%5B%5D=149&f%5B%5D=&c%5B%5D=tracker&c%5B%5D=subject&c%5B%5D=done_ratio&c%5B%5D=priority&c%5B%5D=assigned_to&c%5B%5D=due_date&c%5B%5D=cf_1&c%5B%5D=author&group_by=
+
+http://domain/projects/ngan-sach/issues/%E2%9C%93/1/3Adesc...
+
+Very Th?nks"
+27546,Redmine,Defect,"",Closed,Normal,Wiki PDF export of .png images not working properly,Mauro Condarelli,"",2017-12-09 15:35,"","","","","",0,2017-11-16 15:11,2017-12-09 15:35,"",Invalid,3.4.2,"I am running a reasonably current version of Redmine under Centos7
+
+!Screenshot from 2017-11-16 14-22-08.png!
+
+I have several images in my wiki pages that are either .png files included with the ""sort form"" (!image.png!) or .svg generated from plantuml plugin.
+
+Neither is displayed correctly in exported .PDF files.
+
+I attach an example of the generated document (this one doesn't even have embedded plantuml graphs).
+
+Is there any hope to quickly find the problem? (I urgently need to send these pages for offline viewing)
+
+TiA"
+27543,Redmine,Defect,"",New,Normal,Key/value-pair custom field type not available to all customisable contents,Felix Sch?fer,"",2017-11-26 10:51,Custom fields,Candidate for next major release,"","","",0,2017-11-16 11:53,"","","","","The key/value-pair custom field type is currently limited to the same customisable contents as User and Version custom fields. For the key/value-pair custom field type this limitation is not necessary as the key/value-pairs are not project dependant.
+
+The following patch removes the limitation inherited from the @RecordList@ in the @EnumerationFormat@.
+
+<pre><code class=""diff"">--- a/lib/redmine/field_format.rb
++++ b/lib/redmine/field_format.rb
+@@ -723,6 +723,8 @@ module Redmine
+     end
+
+     class EnumerationFormat < RecordList
++      self.customized_class_names = nil
++
+       add 'enumeration'
+       self.form_partial = 'custom_fields/formats/enumeration'
+
+</code></pre>
+
+Another possibility would be to move the limitation from the parent class @RecordList@ to the child classes that need it (@UserFormat@, @VersionFormat@), but that would mean that other existing subclasses (e.g. from plugins) would need to be updated if they rely on this limitation."
+27538,Redmine,Defect,"",Closed,Normal,"Redmine installation documentation incorrectly suggests setting uploaded file permissions to 0755, making them executable for everybody",cas dev,"",2017-12-14 13:58,Documentation,"","","","",0,2017-11-15 12:37,2017-12-14 13:15,"",Fixed,"","Official redmine installation documentation at https://www.redmine.org/projects/redmine/wiki/RedmineInstall#Step-8-File-system-permissions tells us to
+<pre>
+chmod -R 755 files log tmp public/plugin_assets
+</pre>
+to setup correct file system permissions.
+
+However, this leads to all user uploaded files to get 0755 file permissions, which makes them executable (for everybody).
+
+You'd rather should suggest something like
+<pre>
+find files log tmp public/plugin_assets -type d -exec chmod 775 {} +
+find files log tmp public/plugin_assets -type f -exec chmod 664 {} +
+</pre>
+
+instead.
+
+Check and update of documentation is needed before the Redmine Docker image maintainers update their docker-entrypoint.sh accordingly, see https://github.com/docker-library/redmine/issues/94
+
+Thanks for having a look at this!"
+27533,Redmine,Defect,"",Closed,Normal,Cannot change the priority of the parent issue in issue query context menu when parent priority is independent of children,Vito Marolda,Go MAEDA,2017-12-26 08:13,Issues list,3.3.6,"","","",0,2017-11-14 20:09,2017-12-26 08:13,関連している #20992,Fixed,3.3.1,"Also if Tracking settings are set to have parent priority independent of children, the context menu in issue query has priorities grayed out.
+In fact, when normally editing, the priorities of parent issues are perfetcly editable.
+This bug affects the context menu only.
+"
+27529,Redmine,Patch,"",Closed,Normal,Attachment Added in Issue not saves in journal,Javier Men?ndez Rizo,"",2017-12-10 17:33,Attachments,"","","","",0,2017-11-14 17:27,2017-12-10 17:33,"","","",In the model Issue the action attachment_added is missing the .save to journal.
+27526,Redmine,Defect,"",Closed,Normal,Error in Meetings-Plugin (by Arnau Martel),Rainer Rutka,"",2017-11-15 07:54,"","","","","",0,2017-11-14 11:34,2017-11-15 07:54,"",Invalid,3.2.0,"HI!
+We got a little problem in the (fine!) Meetings-Plugin made by Arnau Martel.
+
+Every time we modify the meetings-page, the start-time is appending one hour.
+Our timezone is set to GMT+1 (Berlin).
+
+e.G.:
+
+1) Start-time for a meeting is: 10.00 o'clock
+2) I press 'modify'
+3) Start-time is set automatically to: 11.00 o'clock (without any modifications made by the user).
+
+So we have to change the start-time again when we modify the contents of a meeting.
+
+Any suggestions?
+
+Thank you very much.
+
+Rainer Rutka
+University of Konstanz
+Communication, Information, Media Centre (KIM) * High-Performance-Computing (HPC) * KIM-Support and -Base-Services
+78457 Konstanz, Germany"
+27518,Redmine,Defect,"",Closed,Normal,redmine custom queries for watcher ,doanh nguyen,"",2017-12-04 05:00,"","","","","",0,2017-11-13 05:40,2017-12-04 05:00,"",Invalid,"","help me,
+
+in issue private,i want member see all data if member add in issue watcher.
+who help me !
+very thanks,"
+27512,Redmine,Defect,"",New,Normal,Totals on custom fields with different role contexts,Pierre de LESPINAY,"",2017-11-10 19:01,Custom fields,"","","","",0,2017-11-10 19:01,"","","",3.4.3,"Totals should exclude values from custom fields for which the context does not allow the user to see.
+
+Example:
+We have a custom field *field1* defined that is only visible by a manager.
+!screen1.png!
+
+I'm a developer on project 1 and a manager on project 2.
+
+If I go in the project 1's issues I can see the *field1* in the columns, it is empty since I don't have the permission to see it, but I can see it summarized in the totals:
+!screen2.png!
+
+I didn't find any issue talking about it.
+Is it a work in progress ?
+"
+27510,Redmine,Patch,"",New,Normal,Groups active method,Aleksandar Pavic visit redminecookbook.com,"",2017-12-10 11:29,Groups,"","","","",0,2017-11-10 14:36,"","","","","Groups should have ""active"" method, because they can be assigned issues to, and are treated in many ways as users.
+
+Some plugins like https://github.com/Restream/redmine_reminder use it, and even cause error as described here
+https://github.com/Restream/redmine_reminder/issues/5
+
+Even though it could be resolved as a plugin my opinion is that groups.rb model should have active method, simply because they 
+already have status attribute...
+
+So proposed is to add active? method, as provided in patch file.
+
+"
+27507,Redmine,Patch,"",Closed,Normal,Czech help files translation,Karel Pi?man,"",2017-12-10 04:54,Translations,"","","","",0,2017-11-10 13:42,2017-12-10 04:54,"","","",""
+27506,Redmine,Patch,"",Closed,Normal,Czech translation change,Karel Pi?man,"",2017-12-10 04:54,Translations,4.0.0,"","","",0,2017-11-10 12:56,2017-12-10 04:54,"","","",""
+27505,Redmine,Defect,"",Closed,Normal,Cannot install nokogiri 1.7 on Windows Ruby 2.4,Alexander Ryabinovskiy,"",2017-12-11 19:03,Gems support,3.4.4,"","","",0,2017-11-10 10:31,2017-12-11 19:03,"関連している #26183, 関連している #26503, 次のチケットが重複 #27861",Fixed,3.4.3,"I can`t install Redmine 3.4.3 with Ruby 2.4, because it needs nokogiri 1.7.2
+nokogiri 1.7.2 has limitation:
+REQUIRED RUBY VERSION:
+< 2.4, >= 2.1.0
+
+We can use nokogiri >= 1.8.0 in Gemfile for Ruby 2.4"
+27502,Redmine,Patch,"",Closed,Normal,Lithuanian translation for 3.4-stable,Marius ?il?nas,"",2017-12-10 04:55,Translations,3.4.4,"","","",0,2017-11-10 08:38,2017-12-10 04:55,"","","",Please commit those changes into the repository. Redmine version 3.4-stable.
+27407,Redmine,Defect,"",Confirmed,Normal,Default assignee in issue categories doesn't work for groups,Alex Stanev,"",2017-12-08 05:14,Project settings,"","","","",0,2017-11-08 14:10,"","","",3.4.3,"In project settings->issue categories we can select certain user to be assigned by default for every category. Choosing group instead of user is accepted here, but the group then doesn't get assigned when this category is selected.
+We have enabled ""Allow issue assignment to groups""."
+27406,Redmine,Defect,"",Closed,Normal,Internal Server Error while posting smile in issue's description,Pavel Potcheptsov,"",2017-11-08 15:11,"","","","","",0,2017-11-08 13:31,2017-11-08 14:02,"",Invalid,3.4.3,"It took a time to realize why issue's creation throw Internal Error.
+It turned out that text was actually copy-pasted to description from somewhere and it contains smile.
+I can't provide full text because of privacy but here is relevant error from log:
+
+<pre>
+Processing by IssuesController#create as HTML
+..skipped..
+Completed 500 Internal Server Error in 130ms (ActiveRecord: 67.5ms)
+ActiveRecord::StatementInvalid (Mysql2::Error: Incorrect string value: '\xF0\x9F\x98\x8A\x0D\x0A...' for column 'description' at row 1:
+</pre>
+Relevant ""article"":https://mathiasbynens.be/notes/mysql-utf8mb4#character-sets to fix issue."
+27399,Redmine,Defect,"",Closed,Normal,Issue in project list,匿名ユーザー,"",2017-11-08 18:00,UI,"","","","",0,2017-11-07 21:20,2017-11-08 18:00,次のチケットと重複 #26853,Duplicate,3.4.3,"On the 'Projects' page, the list of the projects appear on the same line with weird irregular space between two project.
+Attached a screenshot of my projects page.
+
+Issue appear on the latest version on a fresh installation"
+27397,Redmine,Defect,"",Closed,Normal,issues with custom field sql query error,Evgeniy Fedorov,"",2017-11-07 14:27,Custom fields,"","","","",0,2017-11-07 13:36,2017-11-07 14:27,"",Invalid,3.4.3,"When adding custom field in issues list,
+USING MS SQL 2016
+
+<pre>
+generates query 
+SELECT custom_values.*, cv.cnt, cv.field_format FROM [custom_values] INNER JOIN
+    (
+ERROR 1 ---	SELECT cv.id
+			cv.cnt,
+			cv.field_format
+	FROM
+	(
+	SELECT cv.id,
+			cv_m.cnt,
+			cf.field_format,
+			case when cf.multiple = 1 and cf.acl_trim_multiple = 1 then 1 else 0 end as mlt,
+ERROR 2 ---			ROW_NUMBER() OVER (PARTITION BY i.id, cv.custom_field_id, ORDER BY i.id, cv.custom_field_id, cv.id) as row_number
+	FROM custom_values cv
+			INNER JOIN custom_fields cf on cf.id = cv.custom_field_id
+			INNER JOIN issues i on i.id = cv.customized_id
+			INNER JOIN (SELECT COUNT(1) as cnt, cv.custom_field_id, cv.customized_id FROM custom_values cv WHERE cv.customized_type = ''Issue'' and cv.custom_field_id IN (1) and cv.customized_id IN (1015,1012,1010,1005,49,48,46,44,41,29,28,27,23,22,18,13,11,10,9,8,7) GROUP BY cv.custom_field_id, cv.customized_id) cv_m on cv_m.custom_field_id = cf.id and cv_m.customized_id = i.id
+	WHERE cv.customized_type = ''Issue''
+		and cv.custom_field_id IN (1)
+		and i.id IN (1015,1012,1010,1005,49,48,46,44,41,29,28,27,23,22,18,13,11,10,9,8,7)
+ERROR 3 ---	ORDER BY i.id, cv.custom_field_id, cv.id
+	) cv
+	WHERE cv.mlt = 0 OR cv.row_number <= 3
+	) cv on cv.id = custom_values.id  ORDER BY [custom_values].[customized_id] ASC, [custom_values].[custom_field_id] ASC, [custom_values].[id] ASC
+ 
+with 3 errors. 
+</pre>
+
+1) no comma after id
+2) ROW_NUMBER() OVER (PARTITION BY i.id, cv.custom_field_id, ORDER BY i.id, cv.custom_field_id, cv.id) as row_number
+the comma doesn't be before order by
+3)  ORDER BY 
+The ORDER BY clause is invalid in views, inline functions, derived tables, subqueries, and common table expressions, unless TOP, OFFSET or FOR XML is also specified."
+27393,Redmine,Defect,"",Closed,Normal,504 Gateway Time-out,Vijay bhaskar,"",2017-11-07 10:15,Administration,"","","","",0,2017-11-07 09:59,2017-11-07 10:15,"",Invalid,2.2.3,"Got very frequently ""504 Gateway Time-out"" error in Redmine"
+27379,Redmine,Defect,"",Closed,Normal,Upgrade Instructions missing important command,Chris Clemson,"",2017-11-05 04:53,Documents,"","","","",0,2017-11-04 21:02,2017-11-05 04:53,"",Invalid,"","I am trying to upgrade redmine from 3.2.6 to 3.2.8, and I am trying to follow the instructions on your site at [[RedmineUpgrade]]
+
+When I get to step 7, it says the following:
+<pre>
+7. Run the following command from your new Redmine root directory:
+
+If you're upgrading from Redmine 2.x or below, remove the following file if it exists:
+
+    config/initializers/secret_token.rb
+</pre>
+
+Surely there should be something after that line and before the ""If you're upgrading..."" ?
+
+Thanks,
+
+Chris"
+27369,Redmine,Defect,"",Closed,Normal,Permissions aren't per project,Jon Schell,"",2017-11-25 17:17,Permissions and roles,"","","","",0,2017-11-02 18:57,2017-11-25 17:17,"",Invalid,3.0.3,"Assigning someone as a role that has the permission to edit users on one project gives them the ability to edit users on other projects, even if they don't have that role on the other project."
+27368,Redmine,Patch,"",New,Normal,Make preview for comments for news,Senya Senya,"",2017-11-25 17:48,News,4.1.0,"","","",0,2017-11-02 17:18,"",関連している #2604,"","","This patch implements preview for comments for the news, just like it works for issues, news and other entities.
+
+!https://framapic.org/IjeGCdftd06J/w6WF2vL36DfR.png!"
+27361,Redmine,Defect,"",Closed,Normal,Failed when using Emoji,Charles So,"",2017-11-03 16:05,Database,"","","","",0,2017-11-02 04:38,2017-11-03 16:05,次のチケットと重複 #24992,Duplicate,3.0.4,"Tried to create Issue directly or via email with emoji, reply to forum via email using emoji, and all failed.
+
+Here is output from Production.log
+
+ActiveRecord::StatementInvalid (Mysql2::Error: Incorrect string value: '\xF0\x9F\x87\xA6\xF0\x9F...' for column 'description' at row 1: INSERT INTO `issues` (`project_id`, `author_id`, `priority_id`, `tracker_id`, `status_id`, `subject`, `description`, `start_date`, `updated_on`, `created_on`, `lock_version`) VALUES (33, 4, 4, 2, 1, 'CCCCC list', '- "
+27359,Redmine,Defect,"",Closed,Normal,Getting issues by multiple values of custom fields,I S,"",2017-12-01 09:35,REST API,"","","","",0,2017-11-01 19:41,2017-12-01 09:35,"",Invalid,3.2.1,"Hello!
+I need to get issues through REST API with several values of one custom field. 
+Tell me, please, how should i do it?
+I've tried to do it like this:
+(both of this custom field values exist in my Redmine)
+http://redmine.url/redmine/issues.json?cf_4=2349628|2338924
+
+but API returned only one issue instead of two.
+So am I doing something wrong or isn't it working?
+
+Thank you,
+Inna."
+27356,Redmine,Defect,"",Needs feedback,Normal,Confusing statements concerning fixed versions on Security Advisories wiki page,Gregor Schmidt,Gregor Schmidt,2017-12-05 09:35,Website (redmine.org),"","","","",0,2017-11-01 15:35,"","","","","The ""fixed versions"" for two old Rails related vulnerabilities listed on [[Security Advisories]]  are very confusing.
+
+Here's the relevant part of the table:
+
+|{background-color:#f88}. Critical|Ruby on Rails vulnerability (""announcement"":https://groups.google.com/forum/?fromgroups=#!topic/rubyonrails-security/1h2DR63ViGo)||All releases prior to 2.2.1 and 2.1.6|""Fix for 1.4.7"":/news/78|
+|{background-color:#f88}. Critical|Ruby on Rails vulnerability (""announcement"":https://groups.google.com/forum/#!msg/rubyonrails-security/c7jT-EeN9eI/L0u4e87zYGMJ)||All releases prior to 2.2.1 and 2.1.6|version:1.4.7|
+
+
+I assume the proper 'Fixed Versions' would be:
+
+|{background-color:#f88}. Critical|Ruby on Rails vulnerability (""announcement"":https://groups.google.com/forum/?fromgroups=#!topic/rubyonrails-security/1h2DR63ViGo)||All releases prior to 2.2.1 and 2.1.6|version:2.2.1, version:2.1.6, ""Fix for 1.4.7"":/news/78|
+|{background-color:#f88}. Critical|Ruby on Rails vulnerability (""announcement"":https://groups.google.com/forum/#!msg/rubyonrails-security/c7jT-EeN9eI/L0u4e87zYGMJ)||All releases prior to 2.2.1 and 2.1.6|version:2.2.1, version:2.1.6, version:1.4.7|
+
+
+Though I am not absolutely sure, if this change is correct - due to the confusing-ness of the current version."
+27346,Redmine,Patch,"",New,Normal,Use the new pagination style for the calendars view,Bernhard Rohloff,"",2017-11-01 09:49,Calendar,4.1.0,"","","",0,2017-11-01 07:44,"",関連している #21258,"","",This patch converts the previous and next month links in the calendars view into buttons in the new pagination style. It also aligns the buttons vertically with the input fields on the left.
+27336,Redmine,Patch,"",New,Normal,Render previews for audio and video files,Jens Kr?mer,"",2017-11-20 13:52,Attachments,4.1.0,"","","",0,2017-10-31 10:58,"","関連している #22483, 関連している #10138, 関連している #22112","","","This patch which we recently introduced at ""Planio"":https://plan.io/redmine-hosting uses the HTML 5 @audio@ and @video@ tags to render recognized audio and video files on the attachment preview page. As fallback content (for browsers not supporting these tags yet, the previously shown 'no preview available' view is rendered.
+"

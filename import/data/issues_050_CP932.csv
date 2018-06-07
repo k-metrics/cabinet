@@ -1,0 +1,1077 @@
+#,ÉvÉçÉWÉFÉNÉg,ÉgÉâÉbÉJÅ[,êeÉ`ÉPÉbÉg,ÉXÉeÅ[É^ÉX,óDêÊìx,ëËñº,çÏê¨é“,íSìñé“,çXêVì˙,ÉJÉeÉSÉä,ëŒè€ÉoÅ[ÉWÉáÉì,äJénì˙,ä˙ì˙,ó\íËçHêî,êiíªó¶,çÏê¨ì˙,èIóπì˙,ä÷òAÇ∑ÇÈÉ`ÉPÉbÉg,Resolution,Affected version,ê‡ñæ
+18916,Redmine,Defect,"",Closed,Normal,Adding Multiple Watchers - Doesn't add when you re-search users.,James H,"",2015-01-21 07:08,"","","","","",0,2015-01-20 23:20,2015-01-21 07:08,éüÇÃÉ`ÉPÉbÉgÇ∆èdï° #17579,Duplicate,2.6.0,"When adding watchings by clicking ""add"" in the right bar:
+You are shown a menu with checkboxes next to names and a search/filter field.
+
+If you check a checkbox for a name and then change the search/filter and try to check another name, the previous checks do not count and those previously checked names are not added as watchers. Only the last batch of names that you check off (after your last search/filter-ing) will be added.
+
+This seems like a defect. 
+I feel like a function like this should be able to remember previously checked checkboxes as you check names and search for more names, or it should just add the user as soon as you check the checkbox and be ""real-time"", that way there is no need for the system to ""remember"" anything.
+"
+18914,Redmine,Defect,"",New,Normal,Slow rendering pages with many small macros,ÑIÑ}Ñë ÑUÑpÑ}ÑyÑ|ÑyÑë,"",2015-01-23 00:37,"",Candidate for next minor release,"","","",0,2015-01-20 20:29,"","","",2.5.0,"Page 2 macros, including another page with 2 macros, and so on ... 16 times is not loaded. The result should not be very large. This is without recursion."
+18913,Redmine,Defect,"",New,Normal,Roadmap View from within Sub-project not complete,James H,"",2015-01-20 23:26,Roadmap,"","","","",0,2015-01-20 19:11,"","","",2.6.0,"I have many versions that are available to the entire project tree.
+
+Viewing the roadmap from within a sub-project causes only several versions to display. Viewing the roadmap from the top project shows all versions correctly and as expected."
+18912,Redmine,Defect,"",New,Normal,Clicking on a Completed Version doesn't navigate to the Version,James H,"",2015-01-20 23:24,Roadmap,"","","","",0,2015-01-20 19:09,"","","",2.6.0,"If you are using the roadmap and looking at the right bar:
+Check the option for ""Show completed versions"".
+
+NOW:
+Clicking on a Completed Version doesn't navigate to the Version.
+It ends up re-navigating to the roadmap.
+
+When you do not have the option for ""Show Completed Versions"" checked, then it navigates fine to any of the completed versions."
+18911,Redmine,Patch,"",Closed,Normal,check Setting.protocol when determining gravatar protocol,Maciej Li?ewski,"",2016-03-16 01:31,Project settings,"","","","",0,2015-01-20 14:27,2016-03-16 01:31,"ä÷òAÇµÇƒÇ¢ÇÈ #9365, ä÷òAÇµÇƒÇ¢ÇÈ #21855","","","proposed change is in line 1235 of app/helpers/application_helper.rb
+
+instead:
+options.merge!({:ssl => (request && request.ssl?), :default => Setting.gravatar_default})
+
+change to:
+options.merge!({:ssl => ((Setting.protocol == 'https') || (request && request.ssl?)), :default => Setting.gravatar_default})
+
+
+without that when Redmine is behind reverse proxy that do SSL gravatar links are generated as http (when everywhere else is https as expected after Setting.protocol is changed to 'https')"
+18905,Redmine,Defect,"",Closed,Low,502Proxy error The proxy server received an invalid response from an upstream server. The proxy server could not handle the request /GET/redmin,zhaojianmin zhao,"",2015-01-20 04:51,"","","","","",0,2015-01-20 03:56,2015-01-20 04:51,"",Invalid,2.6.0,"502Proxy error
+The proxy server received an invalid response from an upstream server.
+The proxy server could not handle the request /GET/redmin
+Reason:Error reading from remote server
+
+restart all services, turn to normal.but minutes later, error again"
+18898,Redmine,Patch,"",Closed,Normal,Back migration for 20141029181824_remove_issue_statuses_is_default doesn't work,Denis Savitskiy,Jean-Philippe Lang,2015-01-19 22:01,Database,"","","","",0,2015-01-19 11:18,2015-01-19 22:01,ä÷òAÇµÇƒÇ¢ÇÈ #5991,"","","Back migration for 20141029181824_remove_issue_statuses_is_default doesn't work.
+Here is a patch to correct this."
+18896,Redmine,Defect,"",Closed,Normal,"Grouping of Boolean field in Query: group not displayed for ""No"" value if the group is in first position",kaz k,Jean-Philippe Lang,2015-02-18 12:34,Custom fields,2.6.2,"","","",0,2015-01-19 08:30,2015-02-18 12:34,"",Fixed,2.5.0,"When I submit the query with ""Group results by"" the boolean field which *is defined as ""required""* , collapse/expand indicator line for ""No"" is not displayed. 
+* Tickets are distinguished into 2 groups, one for ""No"" and the other for ""Yes"". OK.
+* But collapse/expand indicator line for ""No"" is not displayed. It should be displayed, I think.
+** On the other hand, collapse/expand indicator line for ""Yes"" is displayed. OK.
+
+I'd appreciate if this issue is picked up and will be examined/fixed.
+
+Kind regards,
+
+---
+
+* Reported version
+Redmine 2.5.0.stable. 
+Details are as follows.
+# Test redmine (Windows7)
+<pre>
+Environment:
+  Redmine version                2.5.0.stable
+  Ruby version                   1.9.3-p231 (2012-05-25) [i386-mingw32]
+  Rails version                  3.2.17
+  Environment                    production
+  Database adapter               Mysql2
+</pre>
+# Production redmine (Linux)
+<pre>
+Environment:
+  Redmine version                2.5.0.stable
+  Ruby version                   1.9.3-p484 (2013-11-22) [x86_64-linux]
+  Rails version                  3.2.17
+  Environment                    production
+  Database adapter               PostgreSQL
+</pre> 
+
+---
+
+Note: This phenomena does not happen with a boolean field which is *not* defined as ""required"". In this case, 3 collapse/expand indicator lines are displayed (with misleading labels ( see #18894 ) when this ticket is created).
+"
+18894,Redmine,Defect,"",Closed,Normal,"Grouping of Boolean field: Both ""No"" and ""blank"" tickets are grouped in ""none"" groups",kaz k,Jean-Philippe Lang,2015-02-18 12:33,Custom fields,2.6.2,"","","",0,2015-01-19 06:32,2015-02-18 12:33,"",Fixed,2.5.0,"Boolean custom field can have three values; ""Yes"", ""No"" and "" (blank, or to say, not specified) "" if the filed is not specified as ""required"". 
+* Ref. 
+** Issue #17003-6 
+** Wiki """"Boolean: checkbox (enabled/disabled) or radio buttons *(null/yes/no)* "" in [[RedmineCustomFields]]
+
+I think it is OK. 
+
+But I found that both ""No"" and "" (blank, or to say, not specified) "" are grouped under same name (label) of ""none"" collapse/expand indicator lines when I specified ""Group results by"" the boolean field which is not defined as ""required"".
+
+The tickets are grouped in 2 groups and it is right I think.
+
+But both groups have ""none"" indicated in collapse/expand indicator line. It is not a good idea, I think.
+Boolean field which is not set as ""required"" contains 3 values, ""Yes"", ""No"" and "" (blank, or to say, not specified) "", so it is better to be grouped in different labels.
+
+Could it be changed the label of ""none"" for "" (blank, or to say, not specified) "" to ""null"", ""No Value"", or"" (blank) "" ?
+
+Kind regards,
+
+---
+
+* Reported version
+Redmine 2.5.0.stable. Details are as follows.
+# Test redmine (Windows7)
+<pre>
+Environment:
+  Redmine version                2.5.0.stable
+  Ruby version                   1.9.3-p231 (2012-05-25) [i386-mingw32]
+  Rails version                  3.2.17
+  Environment                    production
+  Database adapter               Mysql2
+</pre>
+# Production redmine (Linux)
+<pre>
+Environment:
+  Redmine version                2.5.0.stable
+  Ruby version                   1.9.3-p484 (2013-11-22) [x86_64-linux]
+  Rails version                  3.2.17
+  Environment                    production
+  Database adapter               PostgreSQL
+</pre> "
+18891,Redmine,Defect,"",Closed,Normal,Error after upgrading to lates revision (13915) ,ChunChang Lo,"",2015-01-26 03:44,"","","","","",0,2015-01-19 05:17,2015-01-26 03:44,"","","","The error message is as follows:
+<pre>
+[root@linode redmine]# rake db:migrate RAILS_ENV=""production"" --trace
+rake aborted!
+NameError: uninitialized constant ActionView::Helpers::ActiveModelHelper
+/usr/local/share/gems/gems/actionview-4.2.0/lib/action_view/helpers.rb:40:in `<module:Helpers>'
+/usr/local/share/gems/gems/actionview-4.2.0/lib/action_view/helpers.rb:4:in `<module:ActionView>'
+/usr/local/share/gems/gems/actionview-4.2.0/lib/action_view/helpers.rb:3:in `<top (required)>'
+/usr/local/share/gems/gems/actionview-4.2.0/lib/action_view/base.rb:5:in `<top (required)>'
+/usr/local/share/gems/gems/actionview-4.2.0/lib/action_view/view_paths.rb:1:in `<top (required)>'
+/usr/local/share/gems/gems/actionpack-4.2.0/lib/abstract_controller/rendering.rb:4:in `<top (required)>'
+/usr/local/share/gems/gems/actionpack-4.2.0/lib/action_controller/base.rb:204:in `<class:Base>'
+/usr/local/share/gems/gems/actionpack-4.2.0/lib/action_controller/base.rb:164:in `<module:ActionController>'
+/usr/local/share/gems/gems/actionpack-4.2.0/lib/action_controller/base.rb:5:in `<top (required)>'
+/usr/local/share/gems/gems/actionpack-action_caching-1.1.1/lib/action_controller/action_caching.rb:13:in `<top (required)>'
+/usr/local/share/gems/gems/actionpack-action_caching-1.1.1/lib/actionpack/action_caching.rb:1:in `require'
+/usr/local/share/gems/gems/actionpack-action_caching-1.1.1/lib/actionpack/action_caching.rb:1:in `<top (required)>'
+/usr/local/share/gems/gems/bundler-1.7.12/lib/bundler/runtime.rb:85:in `require'
+/usr/local/share/gems/gems/bundler-1.7.12/lib/bundler/runtime.rb:85:in `rescue in block in require'
+/usr/local/share/gems/gems/bundler-1.7.12/lib/bundler/runtime.rb:68:in `block in require'
+/usr/local/share/gems/gems/bundler-1.7.12/lib/bundler/runtime.rb:61:in `each'
+/usr/local/share/gems/gems/bundler-1.7.12/lib/bundler/runtime.rb:61:in `require'
+/usr/local/share/gems/gems/bundler-1.7.12/lib/bundler.rb:134:in `require'
+/var/www/html/redmine/config/application.rb:5:in `<top (required)>'
+/usr/share/rubygems/rubygems/core_ext/kernel_require.rb:53:in `require'
+/usr/share/rubygems/rubygems/core_ext/kernel_require.rb:53:in `require'
+/var/www/html/redmine/Rakefile:5:in `<top (required)>'
+/usr/local/share/gems/gems/rake-10.4.2/lib/rake/rake_module.rb:28:in `load'
+/usr/local/share/gems/gems/rake-10.4.2/lib/rake/rake_module.rb:28:in `load_rakefile'
+/usr/local/share/gems/gems/rake-10.4.2/lib/rake/application.rb:689:in `raw_load_rakefile'
+/usr/local/share/gems/gems/rake-10.4.2/lib/rake/application.rb:94:in `block in load_rakefile'
+/usr/local/share/gems/gems/rake-10.4.2/lib/rake/application.rb:176:in `standard_exception_handling'
+/usr/local/share/gems/gems/rake-10.4.2/lib/rake/application.rb:93:in `load_rakefile'
+/usr/local/share/gems/gems/rake-10.4.2/lib/rake/application.rb:77:in `block in run'
+/usr/local/share/gems/gems/rake-10.4.2/lib/rake/application.rb:176:in `standard_exception_handling'
+/usr/local/share/gems/gems/rake-10.4.2/lib/rake/application.rb:75:in `run'
+/usr/local/share/gems/gems/rake-10.4.2/bin/rake:33:in `<top (required)>'
+/usr/local/bin/rake:23:in `load'
+/usr/local/bin/rake:23:in `<main>'
+</pre>
+I have no idea about how to fix this.
+Help please.
+"
+18883,Redmine,Defect,"",Closed,Normal,Slow rendering of large textile tables,ÑIÑ}Ñë ÑUÑpÑ}ÑyÑ|ÑyÑë,Jean-Philippe Lang,2015-02-18 12:31,Text formatting,2.6.2,"","","",0,2015-01-18 20:19,2015-02-18 12:31,"",Fixed,2.5.3,Large tables are not a page to load. An example of a large table: table 256Å~256
+18879,Redmine,Defect,"",Closed,Normal,News Watch email notification doesn't work,Plam Sim,"",2015-01-18 07:53,Email notifications,"","","","",0,2015-01-18 07:29,2015-01-18 07:53,éüÇÃÉ`ÉPÉbÉgÇ∆èdï° #18691,Duplicate,2.6.1,I would like to report that News Watch - email notification for the News section doesn't work in Redmine 2.6.1.
+18876,Redmine,Patch,"",Closed,Normal,Traditional Chinese translation (to r13891),ChunChang Lo,"",2015-01-18 18:33,Translations,"","","","",0,2015-01-17 16:58,2015-01-18 18:33,"ÉRÉsÅ[å≥ #18819, ÉRÉsÅ[êÊ #19100","","","* New
+**setting_max_additional_emails, label_email_address_plural, label_email_address_add, label_enable_notifications, label_disable_notifications"
+18875,Redmine,Defect,"",New,Normal,"[Rest API][custom field]Why ""GET /custom_fields.xml"" required the System manager's privilege?",Hiroyuki Arakawa,"",2016-06-16 03:47,REST API,"","","","",0,2015-01-17 10:46,"",éüÇÃÉ`ÉPÉbÉgÇ™èdï° #25542,"",2.6.0,"Dear developers
+
+Why Getting ""Custom_field's Possible values"" required the System manager's privilege?
+
+I am creating a Redmine client by C#.
+My Redmine project have Custom Field as List Format.
+
+My C#'s Client can get Custom Field value,but can not update Custom Field.
+Becase Getting ""Possible values"" required the System manager's privilege.
+
+I can not give the system administrator privileges to all users.
+I want all user to be able to get Possible values.
+
+Best Regards."
+18868,Redmine,Patch,"",New,Normal,Add support for queries with 'next week' filter,Bostjan Skufca,"",2015-01-16 13:57,Issues,"","","","",0,2015-01-16 13:57,"","","","","I started using due dates quite heavily and the functionality I missed was ""show me next week's issues"". Therefore I made a filter which I would like to share here.
+
+Patch is attached below, and is also available here for quick review here:
+https://github.com/teonsystems/redmine/compare/feature/query-next-week?expand=1
+
+Possible issues:
+* only english translation exists now, I can not help you here,
+* no tests were created for this (i checked test/ dir and there is nothing similar there yet)
+
+Please review the patch and include it in master if possible.
+
+If there are changes to be done, or other things required for inclusion, please let me know.
+
+"
+18867,Redmine,Defect,"",Closed,Normal,Dmsf plugin in Redmine 2.6.1,Sunny Arge,"",2015-01-16 14:33,"","","","","",0,2015-01-16 12:34,2015-01-16 14:33,"",Invalid,2.6.1,"Hi Dears,
+Recently upgraded from Redmine 2.6.0 to 2.6.1
+Dmsf plugin was unsuccesfull in 2.6.0 (even could not install)
+In 2.6.1. it is successfully installed/migrated but following actions results Argument Error
+---------------------------------------------------------------------------------
+head to Administration>Plugins>Configure:
+
+<pre>
+ArgumentError (undefined class/module ActionController::Parameters):
+  app/models/setting.rb:97:in `value'
+  app/models/setting.rb:110:in `[]'
+  app/models/setting.rb:139:in `plugin_redmine_dmsf'
+  app/controllers/settings_controller.rb:69:in `plugin'
+</pre>
+---------------------------------------------------------------------------------
+Enable project module DMSF from Project>Settings Ok, head Go to DMSF tab
+
+<pre>
+ArgumentError (undefined class/module ActionController::Parameters):
+  app/models/setting.rb:97:in `value'
+  app/models/setting.rb:110:in `[]'
+  app/models/setting.rb:139:in `plugin_redmine_dmsf'
+</pre>
+---------------------------------------------------------------------------------
+mysql> select value from settings where name = 'plugin_redmine_dmsf';
+
+<pre>
+--- !ruby/hash:ActionController::Parameters
+dmsf_max_file_upload: '0'
+dmsf_max_file_download: '0'
+dmsf_max_email_filesize: '0'
+dmsf_max_ajax_upload_filesize: '100'
+dmsf_storage_directory: /usr/share/redmine/files/dmsf
+dmsf_default_notifications: ''
+dmsf_display_notified_recipients: ''
+dmsf_webdav: '1'
+dmsf_webdav_strategy: WEBDAV_READ_ONLY
+dmsf_index_database: ''
+dmsf_stemming_lang: turkish
+dmsf_stemming_strategy: STEM_NONE
+</pre>
+
+How can i solve this problem?
+
+Thanks and Best Regards."
+18866,Redmine,Defect,"",New,Normal,MySQL: disappear after 4-Byte UTF-8,Ñ@Ñ|ÑuÑ{ÑÉÑuÑz ÑCÑÄÑÇÑÄÑtÑuÑàÑ{ÑyÑz,"",2015-06-22 06:04,Database,"","","","",0,2015-01-16 11:37,2015-06-22 06:03,"ä÷òAÇµÇƒÇ¢ÇÈ #19742, éüÇÃÉ`ÉPÉbÉgÇ™èdï° #10779, éüÇÃÉ`ÉPÉbÉgÇ™èdï° #10772, éüÇÃÉ`ÉPÉbÉgÇ™èdï° #21679","",2.5.2,"When writing tasks text after some characters disappear. For example, after the symbol ?"
+18865,Redmine,Defect,"",Closed,Low,Size of text description of the problem,Ñ@Ñ|ÑuÑ{ÑÉÑuÑz ÑCÑÄÑÇÑÄÑtÑuÑàÑ{ÑyÑz,"",2016-01-19 03:36,Issues,"","","","",0,2015-01-16 11:15,2016-01-19 03:36,éüÇÃÉ`ÉPÉbÉgÇ∆èdï° #20127,Duplicate,2.5.2,"Text description of the problem in redmine truncated without warning. In the description of the saved text, takes no more than approximately 65530 bytes in UTF-8.
+
+ÑSÑuÑ{ÑÉÑÑ ÑÄÑÅÑyÑÉÑpÑ~ÑyÑë ÑxÑpÑtÑpÑâÑy Ñr redmine ÑÖÑÉÑuÑ{ÑpÑuÑÑÑÉÑë ÑqÑuÑx ÑÅÑÇÑuÑtÑÖÑÅÑÇÑuÑwÑtÑuÑ~ÑyÑë. ÑB ÑÄÑÅÑyÑÉÑpÑ~ÑyÑu ÑÉÑÄÑáÑÇÑpÑ~ÑëÑuÑÑÑÉÑë ÑÑÑuÑ{ÑÉÑÑ, ÑxÑpÑ~ÑyÑ}ÑpÑêÑãÑyÑz Ñ~Ñu ÑqÑÄÑ|ÑuÑu ÑÅÑÇÑyÑ}ÑuÑÇÑ~ÑÄ 65530 ÑqÑpÑzÑÑ Ñr Ñ{ÑÄÑtÑyÑÇÑÄÑrÑ{Ñu UTF-8."
+18864,Redmine,Defect,"",Closed,Normal,"troubles in email notifications  (Redmine 2.5.2.stable, russian text)",Ñ@Ñ|ÑuÑ{ÑÉÑuÑz ÑCÑÄÑÇÑÄÑtÑuÑàÑ{ÑyÑz,"",2015-01-19 08:20,Email notifications,"","","","",0,2015-01-16 11:04,2015-01-19 08:16,ä÷òAÇµÇƒÇ¢ÇÈ #5784,Invalid,2.5.2,"Change notification tasks in Redmine by e-mail come with unreadable subject of the message if the subject contains more than 167 (approximately) Russian letters, as in this report, due to incorrect partition message subject to multiple lines no longer than approximately 1000 characters 7-bit encoding, and with the transfer of the middle of the encoded character (each Russian letter is encoded here 6 bytes).
+Tested on Mozilla Thunderbird and some more e-mail client (redmine 1.3.2)
+
+After updating redmine (2.5.2) played only if there are no spaces in the subject, as on the gaps redmine now additionally line breaks within an acceptable field.
+
+ÑTÑrÑuÑtÑÄÑ}Ñ|ÑuÑ~ÑyÑë ÑÄÑq ÑyÑxÑ}ÑuÑ~ÑuÑ~ÑyÑy ÑxÑpÑtÑpÑâ Ñr Redmine ÑÅÑÄ e-mail ÑÅÑÇÑyÑáÑÄÑtÑëÑÑ ÑÉ Ñ~ÑuÑâÑyÑÑÑpÑuÑ}ÑÄÑz ÑÑÑuÑ}ÑÄÑz ÑÉÑÄÑÄÑqÑãÑuÑ~ÑyÑë, ÑuÑÉÑ|Ñy Ñr ÑÑÑuÑ}Ñu ÑxÑpÑtÑpÑâÑy ÑÉÑÄÑtÑuÑÇÑwÑyÑÑÑÉÑë ÑqÑÄÑ|ÑuÑu 167 (ÑÅÑÇÑyÑ}ÑuÑÇÑ~ÑÄ) ÑÇÑÖÑÉÑÉÑ{ÑyÑá ÑqÑÖÑ{Ñr, Ñ{ÑpÑ{ Ñr ÑèÑÑÑÄÑ} ÑÉÑÄÑÄÑqÑãÑuÑ~ÑyÑy, ÑyÑx-ÑxÑp Ñ~ÑuÑ{ÑÄÑÇÑÇÑuÑ{ÑÑÑ~ÑÄÑsÑÄ ÑÇÑpÑxÑqÑyÑuÑ~ÑyÑë ÑÑÑuÑ}Ñç ÑÉÑÄÑÄÑqÑãÑuÑ~ÑyÑë Ñ~Ñp Ñ~ÑuÑÉÑ{ÑÄÑ|ÑéÑ{ÑÄ ÑÉÑÑÑÇÑÄÑ{ ÑtÑ|ÑyÑ~ÑÄÑz Ñ~Ñu ÑqÑÄÑ|ÑuÑu ÑÅÑÇÑyÑ}ÑuÑÇÑ~ÑÄ 1000 ÑÉÑyÑ}ÑrÑÄÑ|ÑÄÑr 7-ÑqÑyÑÑÑ~ÑÄÑz Ñ{ÑÄÑtÑyÑÇÑÄÑrÑ{Ñy, ÑÅÑÇÑyÑâÑvÑ} ÑÉ ÑÅÑuÑÇÑuÑ~ÑÄÑÉÑÄÑ} ÑÅÑÄÑÉÑÇÑuÑtÑy ÑxÑpÑ{ÑÄÑtÑyÑÇÑÄÑrÑpÑ~Ñ~ÑÄÑsÑÄ ÑÉÑyÑ}ÑrÑÄÑ|Ñp (Ñ{ÑpÑwÑtÑpÑë ÑÇÑÖÑÉÑÉÑ{ÑpÑë ÑqÑÖÑ{ÑrÑp Ñ{ÑÄÑtÑyÑÇÑÖÑuÑÑÑÉÑë ÑxÑtÑuÑÉÑé 6 ÑqÑpÑzÑÑÑpÑ}Ñy).
+ÑPÑÇÑÄÑrÑuÑÇÑuÑ~ÑÄ Ñ~Ñp Mozilla Thunderbird Ñy Ñ{ÑpÑ{ÑÄÑ}-ÑÑÑÄ ÑuÑãÑv ÑÅÑÄÑâÑÑÑÄÑrÑÄÑ} Ñ{Ñ|ÑyÑuÑ~ÑÑÑu. (redmine 1.3.2)
+
+ÑPÑÄÑÉÑ|Ñu ÑÄÑqÑ~ÑÄÑrÑ|ÑuÑ~ÑyÑë redmine ÑrÑÄÑÉÑÅÑÇÑÄÑyÑxÑrÑÄÑtÑyÑÑÑÉÑë ÑÑÑÄÑ|ÑéÑ{ÑÄ ÑuÑÉÑ|Ñy Ñr ÑÑÑuÑ}Ñu Ñ~ÑuÑÑ ÑÅÑÇÑÄÑqÑuÑ|ÑÄÑr, ÑÑÑpÑ{ Ñ{ÑpÑ{ ÑÅÑÄ ÑÅÑÇÑÄÑqÑuÑ|ÑpÑ} redmine (2.5.2) ÑÑÑuÑÅÑuÑÇÑé ÑtÑÄÑÅÑÄÑ|Ñ~ÑyÑÑÑuÑ|ÑéÑ~ÑÄ ÑÅÑuÑÇÑuÑ~ÑÄÑÉÑyÑÑ ÑÉÑÑÑÇÑÄÑ{ÑÖ Ñr ÑtÑÄÑÅÑÖÑÉÑÑÑyÑ}ÑçÑá Ñ}ÑuÑÉÑÑÑpÑá."
+18863,Redmine,Defect,"",New,Normal,"troubles in search (Redmine 2.5.2.stable, russian text)",Ñ@Ñ|ÑuÑ{ÑÉÑuÑz ÑCÑÄÑÇÑÄÑtÑuÑàÑ{ÑyÑz,"",2015-01-16 10:49,Search engine,"","","","",0,2015-01-16 10:49,"","","",2.5.2,"When searching in Redmine considered only the first five keywords. Because of this, the results depend on the order of words in the query.
+
+Example:
+Search ""ÑÑÑÄ ÑsÑÄ ÑÇÑÄ Ñ~ÑÄ ÑrÑÄ ÑtÑÄ ÑÉÑÄ ÑqÑÄ"": Results (761)
+Search ""ÑrÑÄ ÑtÑÄ ÑÉÑÄ ÑqÑÄ ÑÑÑÄ ÑsÑÄ ÑÇÑÄ Ñ~ÑÄ"": Results (439)
+
+ÑPÑÇÑy ÑÅÑÄÑyÑÉÑ{Ñu Ñr Redmine ÑÖÑâÑyÑÑÑçÑrÑpÑuÑÑÑÉÑë ÑÑÑÄÑ|ÑéÑ{ÑÄ ÑÅÑuÑÇÑrÑçÑu ÑÅÑëÑÑÑé Ñ{Ñ|ÑêÑâÑuÑrÑçÑá ÑÉÑ|ÑÄÑr. ÑIÑx-ÑxÑp ÑèÑÑÑÄÑsÑÄ ÑÇÑuÑxÑÖÑ|ÑéÑÑÑpÑÑÑç ÑxÑpÑrÑyÑÉÑëÑÑ ÑÄÑÑ ÑÅÑÄÑÇÑëÑtÑ{Ñp ÑÉÑ|ÑÄÑr Ñr ÑxÑpÑÅÑÇÑÄÑÉÑu.
+ÑPÑÇÑyÑ}ÑuÑÇ:
+
+ÑPÑÄÑyÑÉÑ{ ""ÑÑÑÄ ÑsÑÄ ÑÇÑÄ Ñ~ÑÄ ÑrÑÄ ÑtÑÄ ÑÉÑÄ ÑqÑÄ"": ÑQÑuÑxÑÖÑ|ÑéÑÑÑpÑÑÑç (761)
+ÑPÑÄÑyÑÉÑ{ ""ÑrÑÄ ÑtÑÄ ÑÉÑÄ ÑqÑÄ ÑÑÑÄ ÑsÑÄ ÑÇÑÄ Ñ~ÑÄ"": ÑQÑuÑxÑÖÑ|ÑéÑÑÑpÑÑÑç (439)
+
+Environment:
+Redmine version 2.5.2.stable
+Ruby version 2.0.0-p481 (2014-05-08) [x86_64-linux]
+Rails version 3.2.19
+Environment production
+Database adapter Mysql2
+SCM:
+Subversion 1.8.8
+Git 1.9.0
+Filesystem
+Redmine plugins:
+no plugin installed
+"
+18862,Redmine,Defect,"",New,Normal,"troubles in search (Redmine 2.5.2.stable, russian text)",Ñ@Ñ|ÑuÑ{ÑÉÑuÑz ÑCÑÄÑÇÑÄÑtÑuÑàÑ{ÑyÑz,"",2015-01-19 19:25,Search engine,"","","","",0,2015-01-16 10:39,"",ä÷òAÇµÇƒÇ¢ÇÈ #18537,"","","Can not find the text ""Problem solved reinstalling"" (results (0)), but manages to find the text ""After installing updates Windows"" (Result (2)), although they are in the same task # 4539.
+
+ÑNÑu ÑÖÑtÑpÑvÑÑÑÉÑë Ñ~ÑpÑzÑÑÑy ÑÑÑuÑ{ÑÉÑÑ ""ÑPÑÇÑÄÑqÑ|ÑuÑ}Ñp ÑÇÑuÑäÑuÑ~Ñp ÑÅÑuÑÇÑuÑÖÑÉÑÑÑpÑ~ÑÄÑrÑ{ÑÄÑz"" (ÑQÑuÑxÑÖÑ|ÑéÑÑÑpÑÑÑç (0)), Ñ~ÑÄ ÑÖÑtÑpÑvÑÑÑÉÑë Ñ~ÑpÑzÑÑÑy ÑÑÑuÑ{ÑÉÑÑ ""ÑPÑÄÑÉÑ|Ñu ÑÖÑÉÑÑÑpÑ~ÑÄÑrÑ{Ñy ÑÄÑqÑ~ÑÄÑrÑ|ÑuÑ~ÑyÑz Windows"" (ÑQÑuÑxÑÖÑ|ÑéÑÑÑpÑÑÑç (2)), ÑáÑÄÑÑÑë ÑÄÑ~Ñy ÑuÑÉÑÑÑé Ñr ÑÄÑtÑ~ÑÄÑz Ñy ÑÑÑÄÑz ÑwÑu ÑxÑpÑtÑpÑâÑu #4539.
+
+Environment:
+  Redmine version                2.5.2.stable
+  Ruby version                   2.0.0-p481 (2014-05-08) [x86_64-linux]
+  Rails version                  3.2.19
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.8.8
+  Git                            1.9.0
+  Filesystem                     
+Redmine plugins:
+  no plugin installed"
+18856,Redmine,Patch,"",Closed,Normal,Fix 4 CSV encoding related tests,Antonio Terceiro,"",2015-01-16 05:57,Code cleanup/refactoring,"","","","",0,2015-01-15 20:22,2015-01-16 05:57,"","","",There are 4 IssuesController tests failing due to expecting an specific ordering of issues in the CSV output. The attached patch makes the tests independent of the ordering.
+18855,Redmine,Defect,"",Closed,Normal,User with only Move Issue rights in the project can still create issues using mass copy!,Scott Cunningham,Jean-Philippe Lang,2015-02-08 15:57,Issues permissions,3.0.0,"","","",0,2015-01-15 19:52,2015-02-08 15:57,"",Fixed,2.5.2,"I found this bug when I was trying to use a project with a list of issues as a template for other projects (process flow). I assigned members to custom role ""Copy"" which only allows viewing and moving issues. If, however, the user does not change the project (i.e. copy into other project), new issues will be created within the existing project where they do not have rights!
+
+I am running 2.5.2 on a Bitnami stack. I do not have the chance to try 2.6.x at the moment.
+
+Note - we use _task_ instead of _issue_ in our language file.
+
+h4. Custom Role *Copy* settings:
+> !01-role-rights.png!
+
+h4. User does not have issue edit rights (correct)
+> !02-no-edit-rights.png!
+
+h4. User can copy multiple issues at once (correct)
+> !03-multiple-copy-possible.png!
+
+h4. Copy screenshot
+> !04-copy-screen.png!
+
+h4. Issues were added to existing project without regard to no Add Issue rights (not correct)
+> !05-issues-added-without-rights.png!"
+18851,Redmine,Defect,"",Closed,Normal,"Broken link on ""Contribute"" page",Andrey Iskousnykh,"",2015-01-16 02:15,Documentation,"","","","",0,2015-01-15 15:18,2015-01-16 02:15,"",Fixed,"","There is a link on [[Contribute#Code-Related|""Contribute"" page]] of Developer guide to the nonexistent page. It's in the 1st paragraph: ... @Also read the@ +forum thread+ @for some more specific ideas.@ Link points to the http://www.redmine.org/boards/1/topics/show/4325. The page revision is needed."
+18850,Redmine,Defect,"",Closed,Normal,Multiple repos with same commits is parsed multiple times.,Simen Endsj?,"",2015-01-15 14:25,SCM,"","","","",0,2015-01-15 13:31,2015-01-15 14:25,éüÇÃÉ`ÉPÉbÉgÇ∆èdï° #17931,Duplicate,2.5.2,"We have a setup with a main repo and a repo for each user.
+The reason for this is to get updates quickly while users are working on features before the changes are merged into the main repo.
+
+The problem is when other repos are getting the changes merged in.
+Even though the commit hashes is equal, Redmine parses them again.
+This makes all issues get multiple references to (the same) commits, and all logged time to be logged again.
+
+Is this a bug? And is there a way to get around this issue?"
+18844,Redmine,Patch,"",Closed,Normal,Japanese translation update (r13879),Go MAEDA,"",2015-01-15 14:49,Translations,"","","","",0,2015-01-15 08:42,2015-01-15 14:49,"","","",Translated label_search_open_issues_only.
+18842,Redmine,Defect,"",Closed,Normal,Updating issue possible for a user without that permission,djiby thiaw,"",2015-09-11 07:53,Issues permissions,"","",2015-09-05,"",0,2015-01-15 01:33,2015-09-11 07:53,"","",2.6.1,"Hi,
+For a specific user, I don't give to him the permission to edit an issue. Now in the tasks page, when he rigth clicks on an issue, the button edit is disable. The problem is that when he clicks on the issue (show issue), The button edit on top right is now enabled and he can edit the issue and save changes."
+18834,Redmine,Defect,"",Closed,Normal,parent_issue_id in REST API request does not work,Nikolay Didenko,"",2015-04-10 01:57,REST API,"","","","",0,2015-01-14 07:23,2015-04-10 01:57,"",Invalid,2.6.1,"I am trying to create ticket with parent ticket.
+
+First of all i am creating parent ticket:
+<pre>
+cat $TMPNAM
+{
+  ""issue"": {
+""project_id"": ""rugion"",
+""tracker_id"": 5,
+""priority_id"": 6,
+""subject"": ""TEST ticket"",
+""description"": ""test ticket"",
+""category_id"": 90,
+""fixed_version_id"": 390,
+""assigned_to_id"": 61,
+""parent_issue_id"": ""28173"",
+""custom_fields"":
+[
+...skipped...
+]
+  }
+}
+</pre>
+
+curl -k -s -H ""Content-Type: application/json"" -X POST --data ""`cat ${TMPNAM}`"" -H ""X-Redmine-API-Key: ...skipped..."" https://redmine.dev.rugion.ru/issues.json
+
+<pre>
+{""issue"":{""id"":28181, ....}
+</pre>
+
+Getting this issue.id value i am creating child of this ticket like this:
+<pre>
+cat $TMPNAM
+{
+  ""issue"": {
+	""project_id"": ""rugion"",
+	""tracker_id"": 5,
+	""priority_id"": 6,
+	""subject"": ""TEST ticket 2"",
+	""description"": ""Test ticket 2"",
+	""category_id"": 90,
+	""fixed_version_id"": 390,
+	""assigned_to_id"": 61,
+	""parent_issue_id"": 28181,
+	""custom_fields"":
+	[
+	...skipped...
+	]
+  }
+}
+</pre>
+
+curl -k -s -H ""Content-Type: application/json"" -X POST --data ""`cat ${TMPNAM}`"" -H ""X-Redmine-API-Key: ...skipped..."" https://redmine.dev.rugion.ru/issues.json
+
+<pre>
+{""issue"":{""id"":28182, ....}
+</pre>
+
+As a result i get two tickets without any relations.
+
+I expect that ticket 28182 will be a child of ticket 28181.
+
+PS: It was checked in versions 2.6.0 and 2.6.1."
+18832,Redmine,Defect,"",Closed,Normal,Activity Stream Filter missing on right hand side due to permission,William Schey,Jean-Philippe Lang,2015-01-18 10:10,Plugin API,3.0.0,"","","",0,2015-01-13 22:53,2015-01-18 10:10,"",Fixed,2.6.1,"When adding a plugins events to the activity stream, the permission is declared as part of the acts_as_activity_provider call. Unfortunately, the Redmine::Activity. Fetcher (lib/redmine/activity/fetcher.rb) method, line 41, requires that permission be called the event type name with ""view_"" added to the front.
+
+So, if I added the event type :dmsf_file_revision_accesses then there needs to be a permission called :view_dmsf_file_revision_accesses.
+
+If this permission does not exist, the filter on the right hand side of the activity stream will be missing even though the permission works for the stream itself.
+
+This does not seem to be documented anywhere and is not expected behaviour as the permission is declared as part of the acts_as_activity_provider call.
+
+Thanks.
+
+Regards,
+Will
+ "
+18830,Redmine,Defect,"",New,Normal,"Workflow always ""current state"" not working",Gareth Evans,"",2015-01-14 04:21,Issues workflow,"","","","",0,2015-01-13 21:31,"","","",2.6.1,"Hi guys
+
+I've been having an issue where when I go to edit the workflow, the ""always"" grid at the top does not show the current state, that is, all of the checkboxes are unticked.
+If I tick some of them, and then save, the workflow for the selected tracker and role are updated to *only* the ones i've ticked, that is, the ones that were ticked no longer apply and the status/workflow transitions that were there are gone.
+
+Of note, I'm using SQL server.
+
+I am not really familiar with ruby/activerecord but I am a .net/windows developer, hence the use of sqlserver (our production SQL is replicated for redundancy so I'd prefer to use this as my dbms)
+Reviewing the data in the workflow database table, the records are as I'd expect them to be - with some records having 0 for author and 0 for assignee, and others with the appropriate truthy values in those columns.
+Using a SQL subselect insert, I deleted all of the records where author=0 and assignee=0 then re-inserted them, copying them from where author=1 and observed that this made no difference, that is, the data was not the problem.
+
+The schema of the database table shows the author and assignee columns defined as smallint for me, which is not a boolean type in SQL server (this would typically be ""bit not null default 0"")
+
+The activerecord tests for sqlserver (https://github.com/rails-sqlserver/activerecord-sqlserver-adapter/blob/master/test/cases/specific_schema_test_sqlserver.rb) have an explicit test to ensure that smallint is not treated as a boolean ala mysql, but there is no test for tinyint or bit.
+
+I dumped the contents of the workflows array; defined as follows:
+<pre>
+@workflows = {}
+@workflows['always'] = workflows.select {|w| !w.author && !w.assignee}
+@workflows['author'] = workflows.select {|w| w.author}
+@workflows['assignee'] = workflows.select {|w| w.assignee}
+</pre>
+
+with the command @<%=@workflows.to_json%>@ and observed that the always array was empty, and the author and assignee arrays contained the records where author and assignee contained falsy values.
+If I change the workflows code to 
+<pre>
+@workflows['always'] = workflows.select {|w| w.author==0 && w.assignee==0}
+@workflows['author'] = workflows.select {|w| w.author==1}
+@workflows['assignee'] = workflows.select {|w| w.assignee==1}
+</pre>
+
+Then all works as expected - the always grid has the appropriate tickboxes that I would expect by default
+
+This seems to be a boolean/casting issue with sqlserver to me, and may affect other places in the codebase, so I doubt my fix for this one screen is the correct one.
+
+Here are my enviornment details:
+<pre>
+@Environment:
+  Redmine version                2.6.1.stable
+  Ruby version                   1.9.3-p545 (2014-02-24) [x86_64-linux]
+  Rails version                  3.2.21
+  Environment                    production
+  Database adapter               SQLServer
+SCM:
+  Subversion                     1.8.5
+  Mercurial                      2.0.2
+  Git                            1.8.5.2
+  Filesystem                     
+Redmine plugins:
+  redmine_inline_attach_screenshot 0.4.6
+  redmine_issue_checklist        2.0.5
+</pre>"
+18829,Redmine,Defect,"",Closed,Normal,"Internal Error ""undefined method `name' for nil:NilClass""",Leonardo Ram?,"",2015-01-17 05:11,"","","","","",0,2015-01-13 18:22,2015-01-17 05:11,"",Invalid,2.6.1,"After upgrading to 2.6.1.stable.13876 (from svn) from 2.4.5 I started getting errors similar to this:
+ 
+<pre>
+
+    Processing by*  ProjectsController#settings as HTML
+      Parameters: {""id""=>""alberdi-sgo-del-estero""}
+      Current user: lrame (id=4)
+      Rendered projects/_form.html.erb (247.5ms)
+      Rendered projects/_edit.html.erb (252.8ms)
+      Rendered projects/settings/_modules.html.erb (7.7ms)
+      Rendered projects/settings/_members.html.erb (110.3ms)
+      Rendered projects/settings/_versions.html.erb (7.1ms)
+      Rendered common/_tabs.html.erb (388.7ms)
+      Rendered projects/settings.html.erb within layouts/base (389.8ms)
+    Completed 500 Internal Server Error in 415.1ms
+     
+    ActionView::Template::Error (undefined method `name' for nil:NilClass):
+        33: <% end %>
+        34:
+        35: <div class=""contextual"">
+        36: <% if @project.versions.any? %>
+        37:   <%= link_to l(:label_close_versions), close_completed_project_versions_path(@project), :method => :put %>
+        38: <% end %>
+        39: </div>
+      app/views/projects/settings/_versions.html.erb:36:in `_app_views_projects_settings__versions_html_erb__4284803287680039117_69974521564700'
+      app/views/common/_tabs.html.erb:22:in `block in _app_views_common__tabs_html_erb__3923104128307704039_31947360'
+      app/views/common/_tabs.html.erb:21:in `each'
+      app/views/common/_tabs.html.erb:21:in `_app_views_common__tabs_html_erb__3923104128307704039_31947360'
+      app/helpers/application_helper.rb:328:in `render_tabs'
+      app/views/projects/settings.html.erb:3:in `_app_views_projects_settings_html_erb__2442961766712979311_32041660'
+
+</pre>
+
+This install is running on Ubuntu 12.04 with Ruby 2.0.0 and mysql2 adapter.
+
+What can be happening? how can I fix it?."
+18825,Redmine,Defect,"",New,Normal,WikiPage object miss included pages attachments,Adam Cecile,"",2015-01-13 14:39,Wiki,"","","","",0,2015-01-13 14:39,"","","",2.6.0,"Hello,
+
+While working on improving PDF export I found an issue that may be related to main classes:
+When using {{ include }} in the wiki page, the WikiPage object returned actually contains the right content but its attachment attributes is empty.
+
+I was expecting a list of all attachment, from the page itself and from any page included.
+
+Here is a dump of a few ""page attribute""
+
+From the main page:
+<pre>
+##################################################################
+Main_Wiki_Page
+------------------------------------------------------------------
+[#<Attachment id: 1682, container_id: 1106, container_type: ""WikiPage"", filename: ""hitec_logo.png"", disk_filename: ""150113133053_hitec_logo.png"", filesize: 4668, content_type: """", digest: ""d8114fb74d6cdad588f257f4d2718534"", downloads: 0, author_id: 27, created_on: ""2015-01-13 13:30:53"", description: ""Hitec logo"", disk_directory: ""2015/01"">]
+------------------------------------------------------------------
+#<WikiPage:0x00000006150788>
+</pre>
+
+
+From a page being included into Main_Wiki_Page
+<pre>
+##################################################################
+Included_Page
+------------------------------------------------------------------
+[#<Attachment id: 1455, container_id: 1101, container_type: ""WikiPage"", filename: ""111.png"", disk_filename: ""141124103152_111.png"", filesize: 180513, content_type: """", digest: ""961ac9ebcbc5a5b899d295f26d842bd2"", downloads: 0, author_id: 67, created_on: ""2014-11-24 10:31:52"", description: ""1111"", disk_directory: ""2014/11"">, #<Attachment id: 1456, container_id: 1101, container_type: ""WikiPage"", filename: ""222.png"", disk_filename: ""141124103450_222.png"", filesize: 291765, content_type: """", digest: ""9c61f2a3fbc4267c5dae7ce4f13572a8"", downloads: 0, author_id: 67, created_on: ""2014-11-24 10:34:50"", description: ""222"", disk_directory: ""2014/11"">, #<Attachment id: 1457, container_id: 1101, container_type: ""WikiPage"", filename: ""333.png"", disk_filename: ""141124103520_333.png"", filesize: 403781, content_type: """", digest: ""c2190ab73ce7c42882de8836a3c6b012"", downloads: 0, author_id: 67, created_on: ""2014-11-24 10:35:20"", description: ""333"", disk_directory: ""2014/11"">, #<Attachment id: 1460, container_id: 1101, container_type: ""WikiPage"", filename: ""444.png"", disk_filename: ""141125133930_444.png"", filesize: 614140, content_type: """", digest: ""e3df881e17534253a1d9413310bc86d4"", downloads: 0, author_id: 67, created_on: ""2014-11-25 13:39:30"", description: ""444"", disk_directory: ""2014/11"">, #<Attachment id: 1461, container_id: 1101, container_type: ""WikiPage"", filename: ""555.png"", disk_filename: ""141125134219_555.png"", filesize: 1256339, content_type: """", digest: ""5f1baa59953db143202fae54dd3bc80e"", downloads: 0, author_id: 67, created_on: ""2014-11-25 13:42:19"", description: ""555"", disk_directory: ""2014/11"">, #<Attachment id: 1462, container_id: 1101, container_type: ""WikiPage"", filename: ""666.png"", disk_filename: ""141125135703_666.png"", filesize: 954793, content_type: """", digest: ""44fbbed02abf6ebe7806cda2f194fc95"", downloads: 0, author_id: 67, created_on: ""2014-11-25 13:57:03"", description: ""666"", disk_directory: ""2014/11"">]
+------------------------------------------------------------------
+#<WikiPage:0x00000006c6e3e0>
+</pre>
+
+
+The first one should return a concat of both arrays, what you think ?
+
+
+I'm available for any testing during the week days (GMT+1).
+
+Thanks in advance,
+
+Regards, Adam"
+18823,Redmine,Defect,"",New,Normal,Can't unassign user from issue when field is required,Tomasz Kowalczyk,"",2015-01-13 12:30,Issues,"","","","",0,2015-01-13 11:53,"","","",2.6.1,"I have set up a workflow, part of which is the status transition:
+
+* Confirmed (field ""assignee"" read-only and empty) -> Assigned (field ""assignee"" required),
+* Assigned -> Confirmed (same field constraints).
+
+My idea was to restrict Assignee change only in transition *to* status Assigned. Sometimes developers take issues that are not meant to be taken. We have ""Not assigned"" project version, ""Platform"" category and tracker ""Info"", if either of them is set an issue is considered just for information (subtasks status, etc.), not to be acted upon.
+
+The problem is that I can't unassign them and go back to status Confirmed because when I do that only status changes, Assignee remains set (field disappears after selecting Confirmed status from @<select>@). In Confirmed status I can't unassign user because field won't show up or Redmine will complain of field being read only.
+
+I think that not unassigning user looks like a bug, but maybe I'm unaware of achieving desired result."
+18821,Redmine,Defect,"",Closed,Normal,Receive_imap 993 sslv3 -> SSLError alert handshake failure,Guillaume Mar,"",2015-01-13 09:44,Email receiving,"","","","",0,2015-01-13 09:13,2015-01-13 09:44,"","","","Hello and happy new year !
+i have a problem when i'm using receive_imap with redmine 2.6 on bitnami ubuntu 12 - ruby 2.0.0p598 - gem 2.3.0
+i run this command:
+
+$/opt/bitnami/apps/redmine/htdocs/bundle exec rake -f /opt/bitnami/apps/redmine/htdocs/Rakefile redmine:email:receive_imap RAILS_ENV=""production"" host=imap.my.compagny username=myuser password=mypassword port=993 ssl=1 --trace
+
+Invoke redmine:email:receive_imap (first_time)
+Invoke environment (first_time)
+Execute environment
+Execute redmine:email:receive_imap
+rake aborted!
+*OpenSSL::SSL::SSLError: SSL_connect returned=1 errno=0 state=SSLv2/v3 read server hello A: sslv3 alert handshake failure
+*/opt/bitnami/ruby/lib/ruby/2.0.0/net/imap.rb:1454:in `connect'
+/opt/bitnami/ruby/lib/ruby/2.0.0/net/imap.rb:1454:in `start_tls_session'
+/opt/bitnami/ruby/lib/ruby/2.0.0/net/imap.rb:1047:in `initialize'
+/opt/bitnami/apps/redmine/htdocs/lib/redmine/imap.rb:30:in `new'
+/opt/bitnami/apps/redmine/htdocs/lib/redmine/imap.rb:30:in `check'
+/opt/bitnami/apps/redmine/htdocs/lib/tasks/email.rake:130:in `block (4 levels) in <top (required)>'
+/opt/bitnami/apps/redmine/htdocs/app/models/mailer.rb:367:in `with_synched_deliveries'
+/opt/bitnami/apps/redmine/htdocs/lib/tasks/email.rake:129:in `block (3 levels) in <top (required)>'
+/opt/bitnami/ruby/lib/ruby/gems/2.0.0/gems/rake-10.3.2/lib/rake/task.rb:240:in `call'
+/opt/bitnami/ruby/lib/ruby/gems/2.0.0/gems/rake-10.3.2/lib/rake/task.rb:240:in `block in execute'
+/opt/bitnami/ruby/lib/ruby/gems/2.0.0/gems/rake-10.3.2/lib/rake/task.rb:235:in `each'
+/opt/bitnami/ruby/lib/ruby/gems/2.0.0/gems/rake-10.3.2/lib/rake/task.rb:235:in `execute'
+/opt/bitnami/ruby/lib/ruby/gems/2.0.0/gems/rake-10.3.2/lib/rake/task.rb:179:in `block in invoke_with_call_chain'
+/opt/bitnami/ruby/lib/ruby/2.0.0/monitor.rb:211:in `mon_synchronize'
+/opt/bitnami/ruby/lib/ruby/gems/2.0.0/gems/rake-10.3.2/lib/rake/task.rb:172:in `invoke_with_call_chain'
+/opt/bitnami/ruby/lib/ruby/gems/2.0.0/gems/rake-10.3.2/lib/rake/task.rb:165:in `invoke'
+/opt/bitnami/ruby/lib/ruby/gems/2.0.0/gems/rake-10.3.2/lib/rake/application.rb:150:in `invoke_task'
+/opt/bitnami/ruby/lib/ruby/gems/2.0.0/gems/rake-10.3.2/lib/rake/application.rb:106:in `block (2 levels) in top_level'
+/opt/bitnami/ruby/lib/ruby/gems/2.0.0/gems/rake-10.3.2/lib/rake/application.rb:106:in `each'
+/opt/bitnami/ruby/lib/ruby/gems/2.0.0/gems/rake-10.3.2/lib/rake/application.rb:106:in `block in top_level'
+/opt/bitnami/ruby/lib/ruby/gems/2.0.0/gems/rake-10.3.2/lib/rake/application.rb:115:in `run_with_threads'
+/opt/bitnami/ruby/lib/ruby/gems/2.0.0/gems/rake-10.3.2/lib/rake/application.rb:100:in `top_level'
+/opt/bitnami/ruby/lib/ruby/gems/2.0.0/gems/rake-10.3.2/lib/rake/application.rb:78:in `block in run'
+/opt/bitnami/ruby/lib/ruby/gems/2.0.0/gems/rake-10.3.2/lib/rake/application.rb:176:in `standard_exception_handling'
+/opt/bitnami/ruby/lib/ruby/gems/2.0.0/gems/rake-10.3.2/lib/rake/application.rb:75:in `run'
+/opt/bitnami/ruby/lib/ruby/gems/2.0.0/gems/rake-10.3.2/bin/rake:33:in `<top (required)>'
+/opt/bitnami/ruby/bin/rake:23:in `load'
+/opt/bitnami/ruby/bin/rake:23:in `<main>'
+Tasks: TOP => redmine:email:receive_imap
+
+I've tried to patch imap.rb to force TLS, email.rb, ssl.rb. I import CA in my operating system. But i'm stick.
+Notice that my email sending works perfectly with the same email server.
+
+I do not know where I made a mistake, if anyone can help me, thank you
+Regards"
+18820,Redmine,Defect,"",Closed,Normal,Alternate theme colors by issue priority in issue list is wrong,Vaclav Fiser,"",2015-02-01 10:37,Themes,"","","","",0,2015-01-13 08:14,2015-02-01 10:37,"",Invalid,2.6.0,"Hi,
+
+We're facing issue described in #11880 for latest version 2.6.0 with custom theme installed. Unfortunately provided patch isn't compatible with this version.
+Can someone please help us ? Thank you"
+18819,Redmine,Patch,"",Closed,Normal,Traditional Chinese translation (to r13876),ChunChang Lo,"",2015-01-15 07:39,Translations,"","","","",0,2015-01-13 07:55,2015-01-15 07:39,"ÉRÉsÅ[å≥ #18519, ÉRÉsÅ[êÊ #18876","","","* New
+** label_search_attachments_yes, label_search_attachments_no, label_search_attachments_only, label_search_open_issues_only
+
+"
+18818,Redmine,Patch,"",Closed,Normal,TimeEntry acts_as_activity_provider scope should joins(:project),Ond?ej Ezr,Jean-Philippe Lang,2015-03-08 13:23,Code cleanup/refactoring,3.0.0,"","","",0,2015-01-13 01:11,2015-02-07 10:11,"","","","TimeEntry acts_as_activity_provider scope should join project, not just preload it"
+18817,Redmine,Patch,"",Closed,Normal,Sort helper undefined to_a for string,Ond?ej Ezr,Jean-Philippe Lang,2015-03-08 13:37,Code cleanup/refactoring,3.0.0,"","","",0,2015-01-13 00:22,2015-02-07 10:09,"","","",Sort helper - in new rails to_a for string is not defined
+18804,Redmine,Patch,"",Closed,Normal,Default admin user not crated in Redmine 3.0,Ond?ej Ezr,Jean-Philippe Lang,2015-02-07 14:15,"","","","","",0,2015-01-12 03:05,2015-02-07 10:05,"","","","Due to protected_attributes ( why it is added if redmine implement SafeAttributes? ) default admin user is not created.
+"
+18794,Redmine,Patch,"",Closed,Normal,Japanese translation update (r13857),Go MAEDA,"",2015-01-15 07:40,Translations,"","","","",0,2015-01-10 03:47,2015-01-15 07:40,"","","","[translated]
+* label_search_attachments_yes
+* label_search_attachments_no
+* label_search_attachments_only
+
+[changed]
+* label_optional_description"
+18792,Redmine,Defect,"",New,Normal,wrong bar length in PDF gantt chart ,Kazmi Iwasa,"",2015-01-09 15:54,Gantt,"","","","",0,2015-01-09 15:54,"","","","","In my pdf gantt chart, some task bars which have small progress percentage are painted with wrong length.
+They must have short green rectangle, but the results is long green rectangle.
+
+In lib/redmine/helpers/gantt.rb, the green rectangle is painted here:
+<pre>
+if coords[:bar_progress_end]
+  params[:pdf].SetY(params[:top] + 1.5)
+  params[:pdf].SetX(params[:subject_width] + coords[:bar_start])
+  params[:pdf].SetFillColor(90, 200, 90)
+  params[:pdf].RDMCell(coords[:bar_progress_end] - coords[:bar_start], height, """", 0, 0, """", 1)
+end
+</pre>
+
+If a task have small progress, @coords[:bar_progress_end]@ and @coords[:bar_start]@ may have the same value because they are rounded by this code.
+<pre>
+# Transforms dates into pixels witdh
+coords.keys.each do |key|
+  coords[key] = (coords[key] * zoom).floor
+end
+</pre>
+
+If @coords[:bar_progress_end] - coords[:bar_start]@ was zero, RDMCell() paints long rectangle stretched to the most right side.
+
+Environment:
+  Redmine version                2.5.2.stable
+  Ruby version                   1.9.3-p484 (2013-11-22) [x86_64-linux]
+  Rails version                  3.2.19
+  Environment                    production
+  Database adapter               Mysql2"
+18789,Redmine,Patch,"",Closed,Normal,UI tests and capybara version,Ond?ej Ezr,Jean-Philippe Lang,2015-01-10 22:12,Code cleanup/refactoring,2.6.1,"","","",0,2015-01-09 11:21,2015-01-10 22:12,"","","","I was about to try unlock capybara version - if it would not break some tests.
+
+I discovered, that UI tests does not work in redmine 3.0 ( contains old find_by fetchers ).
+In context menu tests there is a time dependend error - the ajax may be triggered after Watcher.count is - on my machine usually does.
+
+But capybara version unlock has no effect, so I post capybara unlock in second patch, if there is no reason to lock capybara, please unlock it, I use rspec for my tests and I can not update it to new version due to this lock. :("
+18788,Redmine,Defect,"",Closed,Normal,Not all columns are saved after their reordering in a custom query,Karel Pi?man,"",2015-01-10 22:22,Issues,"","","","",0,2015-01-09 11:10,2015-01-10 22:22,éüÇÃÉ`ÉPÉbÉgÇ∆èdï° #18777,Duplicate,2.6.0,"When I edit a custom query the way that I move a selected column up, the columns below the selected column are removed from the query as a result.
+
+When the query is being saved it is visible that - by a javascript code probably - only the columns above the moved columns are selected(step3.png).
+
++Example:+
+
+*1. The original state*
+
+!before.png!
+
+*2. Edit the query*
+
+!step1.png!
+
+*3. Move the last column _Author_ up*
+
+!step2.png!
+
+*4. Save the edited query*
+
+!step3.png!
+
+*5. The result*
+
+!after.png!"
+18787,Redmine,Defect,"",Closed,High,link to attachement with space in file name in Markdown Wiki,Hans Ginzel,"",2015-12-10 19:49,Text formatting,"","","","",0,2015-01-09 10:13,2015-01-09 22:19,"",Wont fix,2.6.0,"Please, consider nonalphanumeric chars in file names. E.g. `![alt](Attachement with spaces.png)`."
+18786,Redmine,Defect,"",Closed,Normal,Cant display Repository when the git repository is greater than 200MB,Nile Jiang,"",2015-01-09 08:38,SCM,"","","","",0,2015-01-09 06:34,2015-01-09 06:55,"",Invalid,2.5.3,"Hi,
+My Redmine is working well, I want to integrate it with my Gitlab server. I clone the git repository from gitlab server and add it to the project. I found that if my git repository is smaller than 200MB, it can be displayed normally when clicking Repository, but if it is greater than 200MB, the repository can't be displayed after a long response. Does anyone know how to fix it? Where is the limitation for 200MB?
+Here is my environment information:
+Environment:
+  Redmine version                2.5.3.stable
+  Ruby version                   2.1.5-p273 (2014-11-13) [x86_64-linux]
+  Rails version                  3.2.19
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.6.11
+  Bazaar                         2.3.3
+  Git                            2.0.0
+  Filesystem                     
+Redmine plugins:
+  redmine_charts2                0.2.1
+  redmine_graphs                 0.1.0
+  redmine_image_clipboard_paste  1.0.0
+
+Here is the error in production.log.
+Started GET ""/projects/projectname/repository/repositoryname"" for 192.168.13.34 at 2015-01-08 23:06:14 +0800
+Processing by RepositoriesController#show as HTML
+  Parameters: {""id""=>""projectname"", ""repository_id""=>""repositoryname""}
+  Current user: nile (id=354)
+Completed   in 57392.0ms
+Connecting to database specified by database.yml
+Starting Charts Plugin for RedMine
+Creating scope :system. Overwriting existing method Enumeration.system.
+Creating scope :sorted. Overwriting existing method Group.sorted.
+Creating scope :sorted. Overwriting existing method User.sorted.
+Started GET ""/projects/projectname/repository/repositoryname"" for 192.168.13.34 at 2015-01-08 23:07:17 +0800
+Processing by RepositoriesController#show as HTML
+  Parameters: {""id""=>""projectname"", ""repository_id""=>""repositoryname""}
+  Current user: nile (id=354)
+  Rendered common/error.html.erb within layouts/base (4.2ms)
+Completed 404 Not Found in 665.0ms (Views: 199.1ms | ActiveRecord: 31.6ms)
+Started GET ""/"" for 192.168.241.28 at 2015-01-08 23:08:01 +0800
+Processing by WelcomeController#index as */*
+  Current user: anonymous
+Redirected to http://192.168.241.28:3000/login?back_url=http%3A%2F%2F192.168.241.28%3A3000%2F
+Filter chain halted as :check_if_login_required rendered or redirected
+Completed 302 Found in 59.4ms (ActiveRecord: 3.4ms)"
+18784,Redmine,Defect,"",Closed,Normal,Unable to start Redmine with apache/passenger,Ashoka P,"",2015-01-09 06:52,"","","","","",0,2015-01-09 05:50,2015-01-09 06:52,"",Invalid,"","Hi,
+
+I have followed the installation steps as per: http://www.redmine.org/projects/redmine/wiki/HowTo_Install_Redmine_on_Ubuntu_step_by_step
+I can run redmine through ""Webrick"" just fine.
+However it throws the following error when i run from apache.
+
+This issue is similar to http://www.redmine.org/boards/2/topics/42399. Tried replying there but couldn't. 
+<pre>
+cannot load such file -- bundler/setup (LoadError)
+  /usr/lib/ruby/1.9.1/rubygems/custom_require.rb:36:in `require'
+  /usr/lib/ruby/1.9.1/rubygems/custom_require.rb:36:in `require'
+  /usr/lib/ruby/vendor_ruby/phusion_passenger/loader_shared_helpers.rb:245:in `block in run_load_path_setup_code'
+  /usr/lib/ruby/vendor_ruby/phusion_passenger/loader_shared_helpers.rb:348:in `running_bundler'
+  /usr/lib/ruby/vendor_ruby/phusion_passenger/loader_shared_helpers.rb:243:in `run_load_path_setup_code'
+  /usr/share/passenger/helper-scripts/rack-preloader.rb:100:in `preload_app'
+  /usr/share/passenger/helper-scripts/rack-preloader.rb:158:in `<module:App>'
+  /usr/share/passenger/helper-scripts/rack-preloader.rb:29:in `<module:PhusionPassenger>'
+  /usr/share/passenger/helper-scripts/rack-preloader.rb:28:in `<main>'
+Application root
+/usr/share/redmine
+Environment (value of RAILS_ENV, RACK_ENV, WSGI_ENV and PASSENGER_ENV)
+production
+Ruby interpreter command
+/usr/bin/ruby
+User and groups
+uid=33(www-data) gid=33(www-data) groups=33(www-data)
+Environment variables
+APACHE_RUN_DIR = /var/run/apache2
+APACHE_PID_FILE = /var/run/apache2/apache2.pid
+PATH = /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+APACHE_LOCK_DIR = /var/lock/apache2
+LANG = C
+APACHE_RUN_USER = www-data
+APACHE_RUN_GROUP = www-data
+APACHE_LOG_DIR = /var/log/apache2
+PWD = /usr/share/redmine
+PASSENGER_DEBUG_DIR = /tmp/passenger.spawn-debug.XXXXSmzjzZ
+USER = www-data
+LOGNAME = www-data
+SHELL = /usr/sbin/nologin
+HOME = /var/www
+IN_PASSENGER = 1
+PYTHONUNBUFFERED = 1
+NODE_PATH = /usr/share/passenger/node
+RAILS_ENV = production
+RACK_ENV = production
+WSGI_ENV = production
+NODE_ENV = production
+PASSENGER_APP_ENV = production
+RAILS_RELATIVE_URL_ROOT = /redmine
+RACK_BASE_URI = /redmine
+PASSENGER_BASE_URI = /redmine
+SERVER_PROTOCOL = HTTP/1.1
+SERVER_SOFTWARE = Apache/2.4.7 (Ubuntu)
+DOCUMENT_ROOT = /var/www/html
+SERVER_ADMIN = webmaster@localhost
+QUERY_STRING = 
+SERVER_NAME = 192.169.232.178
+REMOTE_PORT = 63595
+REMOTE_ADDR = 113.193.182.186
+SERVER_PORT = 80
+REQUEST_METHOD = GET
+SERVER_ADDR = 192.169.232.178
+REQUEST_URI = /redmine/
+Ulimits
+Unknown
+System memory usage
+             total       used       free     shared    buffers     cached
+Mem:          2048        717       1330         65          0        480
+-/+ buffers/cache:        236       1811
+Swap:            0          0          0
+General Ruby interpreter information
+RUBY_VERSION = 1.9.3
+RUBY_PLATFORM = x86_64-linux
+RUBY_ENGINE = ruby
+RubyGems version = 1.8.23
+Ruby configuration (RbConfig::CONFIG)
+DESTDIR = 
+MAJOR = 1
+MINOR = 9
+TEENY = 1
+PATCHLEVEL = 484
+INSTALL = /usr/bin/install -c
+EXEEXT = 
+prefix = /usr
+ruby_install_name = ruby1.9.1
+RUBY_INSTALL_NAME = ruby1.9.1
+RUBY_SO_NAME = ruby-1.9.1
+exec = exec
+ruby_pc = ruby-1.9.pc
+PACKAGE = ruby
+BUILTIN_TRANSSRCS =  newline.c
+USE_RUBYGEMS = YES
+MANTYPE = doc
+NROFF = /usr/bin/nroff
+vendorhdrdir = /usr/include/ruby-1.9.1/vendor_ruby
+sitehdrdir = /usr/include/ruby-1.9.1/site_ruby
+rubyhdrdir = /usr/include/ruby-1.9.1
+UNIVERSAL_INTS = 
+UNIVERSAL_ARCHNAMES = 
+configure_args =  '--build=x86_64-linux-gnu' '--prefix=/usr' '--includedir=/usr/include' '--mandir=/usr/share/man' '--infodir=/usr/share/info' '--sysconfdir=/etc' '--localstatedir=/var' '--libexecdir=/usr/lib/ruby1.9.1' '--srcdir=.' '--disable-maintainer-mode' '--disable-dependency-tracking' '--disable-silent-rules' '--enable-pthread' '--enable-shared' '--disable-rpath' '--disable-install-doc' '--with-vendordir=/usr/lib/ruby/vendor_ruby' '--with-sitedir=/usr/local/lib/site_ruby' '--program-suffix=1.9.1' '--with-soname=ruby-1.9.1' '--enable-ipv6' '--with-dbm-type=gdbm_compat' '--with-tklib=tk8.5' '--with-tcllib=tcl8.5' '--with-tcl-include=/usr/include/tcl8.5' '--with-tk-include=/usr/include/tcl8.5' '--with-tcl-lib=/usr/lib/x86_64-linux-gnu' '--with-tk-lib=/usr/lib/x86_64-linux-gnu' '--with-bundled-sha1' '--with-bundled-md5' '--with-bundled-rmd160' 'build_alias=x86_64-linux-gnu' 'CFLAGS=-g -O2 -fstack-protector --param=ssp-buffer-size=4 -Wformat -Werror=format-security -Wall -fno-strict-aliasing' 'LDFLAGS=-Wl,-Bsymbolic-functions -Wl,-z,relro -L/build/buildd/ruby1.9.1-1.9.3.484/debian/lib' 'CPPFLAGS=-D_FORTIFY_SOURCE=2' 'CXXFLAGS=-g -O2 -fstack-protector --param=ssp-buffer-size=4 -Wformat -Werror=format-security -Wall -fno-strict-aliasing'
+vendordir = /usr/lib/ruby/vendor_ruby
+sitedir = /usr/local/lib/site_ruby
+ruby_version = 1.9.1
+sitearch = x86_64-linux
+arch = x86_64-linux
+RI_BASE_NAME = ri
+ridir = /usr/share/ri
+rubylibprefix = /usr/lib/ruby
+MAKEFILES = Makefile
+PLATFORM_DIR = 
+THREAD_MODEL = pthread
+SYMBOL_PREFIX = 
+EXPORT_PREFIX = 
+COMMON_HEADERS = 
+COMMON_MACROS = 
+COMMON_LIBS = 
+MAINLIBS = 
+ENABLE_SHARED = yes
+DLDLIBS =  -lc
+SOLIBS = -lpthread -lrt -ldl -lcrypt -lm 
+LIBRUBYARG_SHARED = -lruby-1.9.1
+LIBRUBYARG_STATIC = -lruby-1.9.1-static
+LIBRUBYARG = -lruby-1.9.1
+LIBRUBY = libruby-1.9.1.so.1.9.1
+LIBRUBY_ALIASES = libruby-1.9.1.so.1.9 libruby-1.9.1.so
+LIBRUBY_SO = libruby-1.9.1.so.1.9.1
+LIBRUBY_A = libruby-1.9.1-static.a
+RUBYW_INSTALL_NAME = 
+rubyw_install_name = 
+LIBRUBY_DLDFLAGS = -Wl,-soname,libruby-1.9.1.so.1.9
+LIBRUBY_LDSHARED = gcc -shared
+EXTDLDFLAGS = 
+warnflags = -Wall -Wextra -Wno-unused-parameter -Wno-parentheses -Wno-long-long -Wno-missing-field-initializers -Wpointer-arith -Wwrite-strings -Wdeclaration-after-statement -Wimplicit-function-declaration
+debugflags = -ggdb
+optflags = -O3
+cxxflags =  -O3 -ggdb -Wall -Wextra -Wno-unused-parameter -Wno-parentheses -Wno-long-long -Wno-missing-field-initializers -Wpointer-arith -Wwrite-strings -Wdeclaration-after-statement -Wimplicit-function-declaration
+cflags =  -O3 -ggdb -Wall -Wextra -Wno-unused-parameter -Wno-parentheses -Wno-long-long -Wno-missing-field-initializers -Wpointer-arith -Wwrite-strings -Wdeclaration-after-statement -Wimplicit-function-declaration
+cppflags = -D_FORTIFY_SOURCE=2
+NULLCMD = :
+INSTALLDOC = nodoc
+CAPITARGET = nodoc
+RDOCTARGET = nodoc
+EXECUTABLE_EXTS = 
+ARCHFILE = 
+LIBRUBY_RELATIVE = no
+EXTOUT = .ext
+PREP = miniruby
+TEST_RUNNABLE = yes
+setup = Setup
+EXTSTATIC = 
+STRIP = strip -S -x
+TRY_LINK = 
+LIBPATHENV = LD_LIBRARY_PATH
+RPATHFLAG = 
+LIBPATHFLAG =  -L%s
+LINK_SO = 
+LIBEXT = a
+DLEXT2 = 
+DLEXT = so
+LDSHAREDXX = g++ -shared
+LDSHARED = gcc -shared
+CCDLFLAGS = -fPIC
+STATIC = 
+ARCH_FLAG = 
+DLDFLAGS = 
+ALLOCA = 
+POSTLINK = :
+WERRORFLAG = -Werror
+CHDIR = cd -P
+RMALL = rm -fr
+RMDIRS = rmdir --ignore-fail-on-non-empty -p
+RMDIR = rmdir --ignore-fail-on-non-empty
+CP = cp
+RM = rm -f
+PKG_CONFIG = pkg-config
+DOXYGEN = 
+DOT = 
+MAKEDIRS = /bin/mkdir -p
+MKDIR_P = /bin/mkdir -p
+INSTALL_DATA = /usr/bin/install -c -m 644
+INSTALL_SCRIPT = /usr/bin/install -c
+INSTALL_PROGRAM = /usr/bin/install -c
+SET_MAKE = 
+LN_S = ln -s
+NM = nm
+DLLWRAP = 
+WINDRES = 
+OBJCOPY = :
+OBJDUMP = objdump
+ASFLAGS = 
+AS = as
+AR = ar
+RANLIB = ranlib
+try_header = 
+COUTFLAG = -o 
+OUTFLAG = -o 
+CPPOUTFILE = -o conftest.i
+GNU_LD = yes
+GCC = yes
+EGREP = /bin/grep -E
+GREP = /bin/grep
+CPP = gcc -E
+CXXFLAGS = -g -O2 -fstack-protector --param=ssp-buffer-size=4 -Wformat -Werror=format-security -Wall -fno-strict-aliasing
+CXX = g++
+OBJEXT = o
+CPPFLAGS = -D_FORTIFY_SOURCE=2  -D_FORTIFY_SOURCE=2
+LDFLAGS = -L. -Wl,-Bsymbolic-functions -Wl,-z,relro -L/build/buildd/ruby1.9.1-1.9.3.484/debian/lib -rdynamic -Wl,-export-dynamic
+CFLAGS = -g -O2 -fstack-protector --param=ssp-buffer-size=4 -Wformat -Werror=format-security -Wall -fno-strict-aliasing -fPIC
+CC = gcc
+target_os = linux
+target_vendor = pc
+target_cpu = x86_64
+target = x86_64-pc-linux-gnu
+host_os = linux-gnu
+host_vendor = pc
+host_cpu = x86_64
+host = x86_64-pc-linux-gnu
+RUBYW_BASE_NAME = rubyw
+RUBY_BASE_NAME = ruby
+build_os = linux-gnu
+build_vendor = pc
+build_cpu = x86_64
+build = x86_64-pc-linux-gnu
+RUBY_RELEASE_DATE = 2013-11-22
+RUBY_PROGRAM_VERSION = 1.9.3
+BASERUBY = ruby
+target_alias = 
+host_alias = 
+build_alias = x86_64-linux-gnu
+LIBS = -lpthread -lrt -ldl -lcrypt -lm 
+ECHO_T = 
+ECHO_N = -n
+ECHO_C = 
+DEFS = 
+mandir = /usr/share/man
+localedir = /usr/share/locale
+libdir = /usr/lib
+psdir = /usr/share/doc/ruby
+pdfdir = /usr/share/doc/ruby
+dvidir = /usr/share/doc/ruby
+htmldir = /usr/share/doc/ruby
+infodir = /usr/share/info
+docdir = /usr/share/doc/ruby
+oldincludedir = /usr/include
+includedir = /usr/include
+localstatedir = /var
+sharedstatedir = /usr/com
+sysconfdir = /etc
+datadir = /usr/share
+datarootdir = /usr/share
+libexecdir = /usr/lib/ruby1.9.1
+sbindir = /usr/sbin
+bindir = /usr/bin
+program_transform_name = s&$&1.9.1&;s&^&&
+exec_prefix = /usr
+PACKAGE_URL = 
+PACKAGE_BUGREPORT = 
+PACKAGE_STRING = 
+PACKAGE_VERSION = 
+PACKAGE_TARNAME = 
+PACKAGE_NAME = 
+PATH_SEPARATOR = :
+SHELL = /bin/bash
+rubylibdir = /usr/lib/ruby/1.9.1
+archdir = /usr/lib/ruby/1.9.1/x86_64-linux
+sitelibdir = /usr/local/lib/site_ruby/1.9.1
+sitearchdir = /usr/local/lib/site_ruby/1.9.1/x86_64-linux
+vendorlibdir = /usr/lib/ruby/vendor_ruby/1.9.1
+vendorarchdir = /usr/lib/ruby/vendor_ruby/1.9.1/x86_64-linux
+topdir = /usr/lib/ruby/1.9.1/x86_64-linux
+Ruby load path ($LOAD_PATH)
+/usr/local/lib/site_ruby/1.9.1
+/usr/local/lib/site_ruby/1.9.1/x86_64-linux
+/usr/local/lib/site_ruby
+/usr/lib/ruby/vendor_ruby/1.9.1
+/usr/lib/ruby/vendor_ruby/1.9.1/x86_64-linux
+/usr/lib/ruby/vendor_ruby
+/usr/lib/ruby/1.9.1
+/usr/lib/ruby/1.9.1/x86_64-linux
+Ruby loaded libraries ($LOADED_FEATURES)
+enumerator.so
+/usr/lib/ruby/1.9.1/x86_64-linux/enc/encdb.so
+/usr/lib/ruby/1.9.1/x86_64-linux/enc/trans/transdb.so
+/usr/lib/ruby/1.9.1/rubygems/defaults.rb
+/usr/lib/ruby/1.9.1/x86_64-linux/rbconfig.rb
+/usr/lib/ruby/1.9.1/rubygems/deprecate.rb
+/usr/lib/ruby/1.9.1/rubygems/exceptions.rb
+/usr/lib/ruby/1.9.1/rubygems/custom_require.rb
+/usr/lib/ruby/1.9.1/rubygems.rb
+/usr/lib/ruby/vendor_ruby/phusion_passenger.rb
+/usr/lib/ruby/1.9.1/x86_64-linux/etc.so
+/usr/lib/ruby/1.9.1/fileutils.rb
+/usr/lib/ruby/1.9.1/tmpdir.rb
+/usr/lib/ruby/vendor_ruby/phusion_passenger/utils/tmpio.rb
+/usr/lib/ruby/vendor_ruby/phusion_passenger/platform_info.rb
+/usr/lib/ruby/vendor_ruby/phusion_passenger/platform_info/operating_system.rb
+/usr/lib/ruby/vendor_ruby/1.9.1/x86_64-linux/passenger_native_support.so
+/usr/lib/ruby/vendor_ruby/phusion_passenger/native_support.rb
+/usr/lib/ruby/1.9.1/x86_64-linux/socket.so
+/usr/lib/ruby/1.9.1/socket.rb
+/usr/lib/ruby/1.9.1/thread.rb
+/usr/lib/ruby/vendor_ruby/phusion_passenger/ruby_core_enhancements.rb
+/usr/lib/ruby/vendor_ruby/phusion_passenger/utils/tmpdir.rb
+/usr/lib/ruby/vendor_ruby/phusion_passenger/preloader_shared_helpers.rb
+/usr/lib/ruby/vendor_ruby/phusion_passenger/constants.rb
+/usr/lib/ruby/vendor_ruby/phusion_passenger/public_api.rb
+/usr/lib/ruby/vendor_ruby/phusion_passenger/debug_logging.rb
+/usr/lib/ruby/vendor_ruby/phusion_passenger/loader_shared_helpers.rb
+/usr/lib/ruby/1.9.1/x86_64-linux/fcntl.so
+/usr/lib/ruby/vendor_ruby/phusion_passenger/message_channel.rb
+/usr/lib/ruby/vendor_ruby/phusion_passenger/utils.rb
+/usr/lib/ruby/vendor_ruby/phusion_passenger/message_client.rb
+/usr/lib/ruby/vendor_ruby/phusion_passenger/utils/native_support_utils.rb
+/usr/lib/ruby/vendor_ruby/phusion_passenger/utils/unseekable_socket.rb
+/usr/lib/ruby/vendor_ruby/phusion_passenger/request_handler/thread_handler.rb
+/usr/lib/ruby/vendor_ruby/phusion_passenger/request_handler.rb
+/usr/lib/ruby/1.9.1/x86_64-linux/stringio.so
+/usr/lib/ruby/vendor_ruby/phusion_passenger/utils/tee_input.rb
+/usr/lib/ruby/vendor_ruby/phusion_passenger/rack/thread_handler_extension.rb
+/usr/lib/ruby/vendor_ruby/phusion_passenger/analytics_logger.rb
+/usr/lib/ruby/1.9.1/rubygems/version.rb
+/usr/lib/ruby/1.9.1/rubygems/requirement.rb
+/usr/lib/ruby/1.9.1/rubygems/platform.rb
+/usr/lib/ruby/1.9.1/rubygems/specification.rb
+/usr/lib/ruby/1.9.1/rubygems/path_support.rb
+Powered by Phusion Passenger, mod_rails / mod_rack for Apache and Nginx.
+</pre>
+"
+18782,Redmine,Patch,"",Closed,Normal,Fix ui tests broken by undefined method error,Katsuya HIDAKA,Jean-Philippe Lang,2015-01-11 09:51,Code cleanup/refactoring,2.6.1,"","","",0,2015-01-08 17:56,2015-01-11 09:51,"","","","Run @`rake test:ui`@ on Ruby 2.1.5p273 with trunk@r13854. Then, the following error occurs:
+
+<pre>
+# Running:
+
+....E...E.
+
+Finished in 19.102035s, 0.5235 runs/s, 2.9840 assertions/s.
+
+  1) Error:
+Redmine::UiTest::IssuesTest#test_create_issue_with_form_update:
+NoMethodError: undefined method `find_all_by' for #<Class:0x007f8f1c66f2d0>
+    test/ui/issues_test.rb:63:in `test_create_issue_with_form_update'
+
+  2) Error:
+Redmine::UiTest::IssuesTest#test_update_issue_with_form_update:
+NoMethodError: undefined method `find_all_by' for #<Class:0x007f8f1c66f2d0>
+    test/ui/issues_test.rb:191:in `test_update_issue_with_form_update'
+
+10 runs, 57 assertions, 0 failures, 2 errors, 0 skips
+</pre>
+"
+18781,Redmine,Defect,"",Closed,Normal,"Redmine::FieldFormat::IntFormat does not accept ""real"" Integer values",Sascha H?bner,Jean-Philippe Lang,2015-01-10 12:06,Code cleanup/refactoring,3.0.0,"","","",0,2015-01-08 09:09,2015-01-10 12:06,"",Fixed,2.5.1,"I had the Problem of setting the value of a custom field in my code
+and therefore validating the new (calculated) value.
+The CustomField had the format Redmine::FieldFormat::IntFormat.
+The new value was a true Integer: 1
+But the value was refused with the message that it's not a Number!
+
+The Reason is, that Redmine::FieldFormat::IntFormat validates the value with RegExp:
+
+ value =~ /^[+-]?\d+$/
+
+which will not return true if value is not a String.
+I understand, that ""normally"" values of custom fields will be set via forms
+and so usually all values will be Strings.
+
+But I think IntFormat's validation should accept real Integers also!"
+18779,Redmine,Defect,"",Closed,Urgent,Error: The single-table inheritance mechanism failed to locate the subclass: 'GroupNonMember',zeke lee,"",2015-03-05 03:28,"","","","","",0,2015-01-08 07:15,2015-01-08 08:14,éüÇÃÉ`ÉPÉbÉgÇ™èdï° #19272,Invalid,2.5.0,"I can't access the project setting page and here is the error log
+
+ActionView::Template::Error (The single-table inheritance mechanism failed to locate the subclass: 'GroupNonMember'. This error is raised because the column 'type' is reserved for storing the class in case of inheritance. Please rename this column if you didn't intend it to be used for storing the inheritance class or overwrite Principal.inheritance_column to use another column for that information.):
+
+"
+18778,Redmine,Patch,"",New,Normal,Add new alias for issue note links ('comment'),Katsuya HIDAKA,"",2015-01-09 04:42,Text formatting,"","","","",0,2015-01-08 06:41,"","","","","This patch adds an new redmine link @""#123#comment-1""@ as an alias for issue note link @""#123#note-1""@. I think easy to understand better ""comment"" than ""note"" in some cases."

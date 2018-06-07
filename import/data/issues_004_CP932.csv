@@ -1,0 +1,585 @@
+#,ÉvÉçÉWÉFÉNÉg,ÉgÉâÉbÉJÅ[,êeÉ`ÉPÉbÉg,ÉXÉeÅ[É^ÉX,óDêÊìx,ëËñº,çÏê¨é“,íSìñé“,çXêVì˙,ÉJÉeÉSÉä,ëŒè€ÉoÅ[ÉWÉáÉì,äJénì˙,ä˙ì˙,ó\íËçHêî,êiíªó¶,çÏê¨ì˙,èIóπì˙,ä÷òAÇ∑ÇÈÉ`ÉPÉbÉg,Resolution,Affected version,ê‡ñæ
+28209,Redmine,Defect,"",Closed,Normal,cannot download attachment .vsd,ìΩñºÉÜÅ[ÉUÅ[,"",2018-02-18 18:55,"","","","","",0,2018-02-18 16:58,2018-02-18 18:55,"",Invalid,"","I have some problem with my Redmine server.
+
+I have some attachments file that formated from visio (.vsd documents).
+
+Where the file downloaded from our server, this is the production.log in the server :
+
+<pre>
+Started GET ""/redmine/dmsf/files/2427/download"" for 114.124.141.205 at 2018-02-18 22:51:36 +0700
+Processing by DmsfFilesController#show as HTML
+  Parameters: {""download""=>"""", ""id""=>""2427""}
+  Current user: harapan (id=124)
+2018-02-18 22:51:36 harapan@114.124.141.205/: downloaded dmsf://crt/2427/4802
+Sent file /var/www/redmine/files/dmsf/p_crt/170924140613_2427_Compositional_Tpc_and_Ppc.vsd (0.1ms)
+Completed 200 OK in 40.3ms (ActiveRecord: 23.3ms)
+</pre>
+
+but in the browser don't download anything
+
+how to resolve this issues?"
+28208,Redmine,Defect,"",Closed,Normal,Anonymous icon is wrongly displayed when assignee is a group,Go MAEDA,Jean-Philippe Lang,2018-04-07 09:30,UI,3.3.7,"","","",0,2018-02-18 03:03,2018-04-07 09:30,"ä÷òAÇµÇƒÇ¢ÇÈ #26699, ä÷òAÇµÇƒÇ¢ÇÈ #28204",Fixed,3.3.6,"When the assignee of an issue is a group, an icon for an anonymous user is wrongly displayed. This behavior misleads as if the assignee is an anonymous user.
+
+I think there are two solutions:
+1. Display an icon representing groups.
+2. Don't display any icon (same behavior with Redmine 3.4.3 and earlier)
+
+!{width: 500px; border: 1px solid #ccc}.wrong-icon@2x.png!"
+28207,Redmine,Patch,"",Closed,Normal,Test improvements for footnotes formatting syntax,Mischa The Evil,Go MAEDA,2018-03-02 06:00,Text formatting,4.0.0,"","","",0,2018-02-18 00:05,2018-03-02 06:00,ä÷òAÇµÇƒÇ¢ÇÈ #16072,"","","_This originates from #28119#note-2._
+
+# We might want to add a simple test (like ""@ApplicationHelperTest#test_footnotes@"":/projects/redmine/repository/revisions/17198/entry/trunk/test/helpers/application_helper_test.rb#L1051, but than in source:trunk/test/unit/lib/redmine/wiki_formatting/markdown_formatter_test.rb) for markdown footnotes as enabled per #16072.
+# And while looking at the above, the question of 'how many other textile syntax tests are there remaining, lurking outside of source:/trunk/test/unit/lib/redmine/wiki_formatting/textile_formatter_test.rb and what do we want to do with them?' came up...
+** The answer to the first part would be 'several' (among them e.g. @ApplicationHelperTest#test_footnotes@). My answer to the second part of the question would be 'move them to the dedicated @TextileFormatterTest@ class'.
+
+I'll leave two patches against source:/trunk@17198:
+* _0001-Add-footnotes-test-for-markdown-formatter-16072.patch_
+** This patch adds a footnotes test for the markdown formatter (@MarkdownFormatterTest#test_footnotes@).
+* _0002-Move-textile-footnotes-test-to-TextileFormatterTest.patch_
+** This patch moves @ApplicationHelperTest#test_footnotes@ to become @TextileFormatterTest#test_footnotes@.
+
+In case there is consensus on my answer to the question raised under point 2, I'll open a dedicated container issue for it.
+
+Note: I won't target this issue to any version, as I don't think this is of any use for the changelogs.
+"
+28205,Redmine,Defect,"",New,Normal,Wrong values in status combo,Albrecht Dre?,"",2018-02-17 15:32,Issues workflow,"","","","",0,2018-02-17 15:32,"","","",3.3.1,"I would like to have the following configuration for the workflow of a _Reporter_:
+
+# [s]he may only create or re-open a closed ticket;
+# if a ticket is in state ÅhFeedbackÅh, [s]he may edit the ticket, and the next state *must* be _In Progress_.
+
+So I gave the Reporter Role the issue tracking permissions (inter alia) ÅgEdit issuesÅh and ÅgAdd notesÅh, and configured the workflow as in the attached screenshot ÅgConfig.pngÅh.
+
+However, when a user with role Reporter now edits a ticket in state ÅhFeedbackÅh for which [s]he is the assignee, the combo for ÅgStatusÅh (see screenshot ÅgResult.pngÅh) shows both the ÅgrequiredÅh next state (_In Progress_) *and* the current state (_Feedback_) as possible values.  But the latter should actually not be allowed according to the configuration.
+
+Did I miss something in the configuration, or is this a bug (or feature)?
+
+My environment, on a standard Debian Stable (Stretch) box:
+* Redmine version: 3.3.1.stable
+* Ruby version: 2.3.3-p222 (2016-11-21) [x86_64-linux-gnu]
+* Rails version: 4.2.7.1
+* Environment: production
+* Database adapter: PostgreSQL
+"
+28204,Redmine,Defect,"",Closed,Normal,Too large avatar breaks gantt when assignee is a group,Go MAEDA,Go MAEDA,2018-02-18 06:31,Gantt,3.3.7,"","","",0,2018-02-17 10:37,2018-02-18 06:31,"ä÷òAÇµÇƒÇ¢ÇÈ #26699, ä÷òAÇµÇƒÇ¢ÇÈ #28208",Fixed,3.3.6,"A 128px wide avatar icon breaks gantt view when the assignee of an issue is a group and ""Use Gravatar user icons"" setting is enabled.
+
+!{width: 525px}.too-large-icon@2x.png!
+
+The problem is introduced in Redmine 3.3.6 and 3.4.4 by #26699. The cause is that the HTML doesn't include ""width"" and ""height"" option because image_tag in Rails 4 doesn't accept an integer value for "":size"" option (Rails 5 accepts both integer and string value, so the current trunk is not affected).
+
+
+Redmine 3.4 (img element doesn't have ""width"" and ""height"" attributes):
+<pre>
+<img alt="""" title=""Assignee: A Team"" class=""gravatar icon-gravatar"" default=""default"" src=""/images/anonymous.png?1518850381"">
+</pre>
+
+The current trunk (img element has ""width"" and ""height"" attributes):
+<pre>
+<img alt="""" title=""Assignee: A Team"" class=""gravatar icon-gravatar"" default=""default"" src=""/images/anonymous.png?1517405352"" width=""13"" height=""13"">
+</pre>"
+28193,Redmine,Defect,"",New,Normal,watcher list can not be edited after issue is created,Uro? Malen?ek,"",2018-02-15 13:01,Issues,"","","","",0,2018-02-15 12:50,"","","",3.4.4,"Watcher list can be edit only at creation time.
+
+There is missing parameter presentation on the issue view with its walues and edit triggers.
+In the roles and permissions all watchers switches are enabled (view, add, delete)."
+28192,Redmine,Defect,"",Closed,Normal,Fix typo in German label_font_monospace,Andreas Deininger,Go MAEDA,2018-03-02 09:30,Translations,3.4.5,"","","",0,2018-02-15 12:15,2018-03-02 09:30,"",Fixed,3.4.0,I just came across a small glitch in the German translation that I would like so see fixed.
+28191,Redmine,Patch,"",New,Normal,Extend roles API with all additional fields,Alex Stanev,"",2018-03-10 05:49,REST API,Candidate for next major release,"","","",0,2018-02-14 15:38,"","","","","Currently we are missing global roles fields: assignable, issues_visibility, time_entries_visibility and users_visibility. The assignable one is pretty useful when editing issue via API."
+28190,Redmine,Defect,"",New,High,Apache passenger stopped work after upgrade passenger from 5.1.12 to 5.20,Karen Arzumanyan,"",2018-02-14 13:03,Administration,"","","","",0,2018-02-14 12:05,"","","",3.2.1,"After upgrade Apache module Passenger from 5.1.12 to 5.2.0 Apache doesn't start properly and exit with the error
+
+@# apache2ctl configtest
+Invalid command 'PassengerResolveSymlinksInDocumentRoot', perhaps misspelled or defined by a module not included in the server configuration@
+After comment string in Apache virtual host
+
+@# PassengerResolveSymlinksInDocumentRoot on@
+Apache starts but Redmine doesn't work showing listing directoty/files insted of main page(another words can't find index file)
+
+OS: Ubuntu 14.04.5 LTS
+
+*PassengerResolveSymlinksInDocumentRoot*
+This option has been removed in 5.2.0 version according to
+https://blog.phusion.nl/2018/01/29/passenger-5-2-0/
+
+How to install instruction (https://www.redmine.org/projects/redmine/wiki/HowToInstallRedmineOnUbuntuServer) is incorrect now.
+Detail: https://stackoverflow.com/questions/48623209/apache-passenger-stopped-work-after-upgrade-passenger-from-5-1-12-to-5-20"
+28189,Redmine,Defect,"",Needs feedback,Normal,Subprojects don't appear under the rights projects,Amine Mazouz,"",2018-02-14 19:58,Projects,"","","","",0,2018-02-14 11:39,"","","","","Hello,
+
+I have a problem with Redmine. my projects tree seems completely random. Most of my subprojects appear under the wrong projects. Eventhough in the settings of the subprojects, the parent project is well set, the projects tree is completely different (see image attached). This is very problematic for my tickets management with Agile board.
+
+Thanks in advance for your help,"
+28188,Redmine,Defect,"",New,Urgent,No Access-Control-Allow-Origin,anju dhiman,"",2018-03-05 20:09,Accounts / authentication,"","","","",0,2018-02-14 09:50,"","","","","Hi ,
+
+I am using the redmine api in angular js and for users and issues list, but i am getting error ""No 'Access-Control-Allow-Origin'"" while hit api.
+Can any body help me?
+I need this on urgently basis.
+ I am using redmine 3.3.1
+"
+28180,Redmine,Defect,"",Closed,Normal,Role-base cross-project issue query visibility calculated incorrectly,Gregor Schmidt,Go MAEDA,2018-04-07 02:33,Issues filter,3.4.5,"","","",0,2018-02-12 14:25,2018-04-07 02:33,"",Fixed,"","When saving a cross-project issue query and selecting role based visibility, the permission checks don't filter properly for archived projects (although this is generally done for global permissions).
+
+An example: There's a ""Manager's only"" issue query. Paul and Perter are both managers and able to see the query. Now Paul's project is finished and his project is archived. *Expected behaviour*: He is no longer able to see the ""Manager's only"" view - in the same way he's no longer able to create new project. *Desired behaviour*: He should not be able to access the ""Manager's only"" view anymore.
+
+Attached you may find a patch containing a test and proposed fix based on current trunk r17197.
+
+Holger Just of Planio identified the bug and developed the attached fix."
+28171,Redmine,Defect,"",Needs feedback,Normal,When exporting to PDF from the issue navigator (several issues) textile is not exported correctly,Javier Alfonso,"",2018-02-11 16:30,PDF export,"","","","",0,2018-02-09 21:21,"","","",3.4.3,"Environment:
+  Redmine version                3.4.3.stable
+  Ruby version                   2.3.3-p222 (2016-11-21) [i386-mingw32]
+  Rails version                  4.2.8
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Git                            2.14.1
+  Filesystem                     
+Redmine plugins:
+  computed_custom_field          1.0.6
+  easy_baseline                  1.4
+  easy_gantt                     1.10
+  easy_gantt_pro                 1.10
+  redmine_agile                  1.4.5
+  redmine_custom_workflows       0.1.5
+  redmine_editauthor             0.11.0
+  redmine_issue_evm              4.0
+  redmine_monitoring_controlling 0.1.1
+  redrisk                        1.0.1
+  sidebar_hide                   0.0.8
+  subtask_list_columns           0.0.3
+
+
+If I export a single issue from the issue page (i.e. /redmine/issues/3400) textile codes (i.e %{color:red}   text %) export correctly. Showing the color in the PDF
+
+From the issue navigator /redmine/issues an export to PDF or CSV shows the textile code 
+
+"
+28169,Redmine,Patch,"",New,Normal,Enable and add underline button to the toolbar for Markdown formatting ,Marius BALTEANU,"",2018-02-17 22:35,Text formatting,4.0.0,"","","",0,2018-02-09 16:57,"","","","","Textile formatting has the ""Underline"" option for text formatting and I find it useful to have it also for Markdown.
+
+The attached patch implements this. 
+
+As a side note, until this patch, the '_' was an alternative to '*' (italic), but I don't think that many users were aware by this alternative because Redmine uses the '*' in help docs and in the generated markup by Italic button."
+28168,Redmine,Patch,"",Closed,Normal,Allow context-menu edit of % done and priority of parent issues if the fields are not derived,Holger Just,Go MAEDA,2018-02-18 13:34,Issues,3.3.7,"","","",0,2018-02-09 15:46,2018-02-18 13:34,ä÷òAÇµÇƒÇ¢ÇÈ #27533,"","","Following #27533,  r17129 implemented a change to not check anymore whether all selected issues for a context-menu can be assigned a priority. This change however is incorrect and incomplete unfortunately.
+
+The check to disable setting of the priority (and similarly but missed in #27533: setting the % done field) was originally done in the view there since originally, the priority and %done fields were always derived from child issues. That is, parent issues always had the highest priority of any of their child issues and a average % done. Later, Redmine gained the ability to configure whether the priority and % done fields should be derived on parent issues or should be settable on their own. 
+
+The patch, as it was comitted in r17129 unfortunately fails to check whether the priority field can indeed not be set because the priority field is derived). In that case, the context-menu options should still be disabled. In any case, the same issue also is present for the % done field and is there still unhandled completely.
+
+The attached patch against current trunk (at r17192) fixes and unifies the behavior for both fields."
+28160,Redmine,Defect,"",Closed,Normal,"Misleading russian translation for ""Log time"" button",Roman Yagodin,Go MAEDA,2018-03-30 11:19,Translations,4.0.0,"","","",0,2018-02-09 10:52,2018-03-30 11:19,"",Fixed,3.4.4,"Current russian translation for the ""Log time"" button (`button_log_time`) **ÑSÑÇÑÖÑtÑÄÑxÑpÑÑÑÇÑpÑÑÑç** is misleading:
+
+- It have no meaning of action (losing ""Log"" verb part).
+- It could lead to that users can confuse the ""Log time"" button with other UI elements which have exactly same translation (see `label_spent_time`) but different role, all located in the issue details area.
+
+Proper translation would be **ÑDÑÄÑqÑpÑrÑyÑÑÑé ÑÑÑÇÑÖÑtÑÄÑxÑpÑÑÑÇÑpÑÑÑç**."
+28154,Redmine,Patch,"",Closed,Normal,Support for lastnames with spaces in user autocompleters,Gregor Schmidt,Go MAEDA,2018-04-07 08:41,Issues,4.0.0,"","","",0,2018-02-08 10:37,2018-04-07 08:41,"","","","The user autocompleter, e.g. in the watcher or project membership UIs, doesn't handle last names with spaces well. E.g. a user with @firstname@ ""Leonardo"" and @lastname@ ""da Vinci"" would not be found, when searching for ""Leonardo da Vinci"".
+
+The reason is that the search term will be split into ""Leonardo da"" and ""Vinci"" and ""Leonardo da"" will not be found in any database column.
+
+The attached patch changes the @Principal.like@ scope, so that the search term is split at any white space."
+28138,Redmine,Patch,"",New,Normal,Add link to add a new issue on the version page,Holger Just,"",2018-02-25 03:24,Issues,Candidate for next major release,"","","",0,2018-02-05 17:24,"",éüÇÃÉ`ÉPÉbÉgÇ™èdï° #5005,"","","When showing a single version, a common task is to edit issues there. For existing issues, users can easily use the context menu for that. To add issues however requires a rather complex workflow to go to the ""new issue"" page, select the version and create the issue.
+
+The attached patch against the current trunk at r17192 adds a new link to the show page of a single version to directly add a new issue for that version in the version's project. It links to a pre-configured add-issue form. The patch was extracted from ""Planio"":https://plan.io/redmine-hosting/."
+28137,Redmine,Defect,"",Closed,Normal,"Issue : We're sorry, but something went wrong.",Dhananjay Naldurgkar,"",2018-02-06 14:56,"","","","","",0,2018-02-05 13:28,2018-02-06 14:56,"",Invalid,"","Redmine is giving below error -
+
+We're sorry, but something went wrong.
+We've been notified about this issue and we'll take a look at it shortly.
+
+We also need professional support for this application : I am reachable on 9146239239
+
+Dhananjay
+"
+28134,Redmine,Defect,"",New,Normal,Can't set issue start/due date when field values are calculated from subtasks and subtasks have no such fields.,Serghei Zagorinyak,"",2018-02-05 07:08,Issues,"","","","",0,2018-02-05 07:08,"","","",3.4.4,"Steps to reproduce:
+
+1. Enable calculation of issue start/due date values based on subtasks in Redmine settings
+2. Create a parent issue that has start/due date fields enabled
+3. Add a subtask with a tracker that has start/due date fields disabled
+
+Expected result:
+Start/due date values can be set on parent issue
+
+Current result:
+Start/due dates for parent issue can't be set neither in parent, nor in subtask."
+28133,Redmine,Defect,"",New,Normal,Controller patch causes Helper Patch down,Haihan Ji,"",2018-02-05 05:59,Plugin API,"","","","",0,2018-02-05 05:59,"","","","","Create two plugins, one named 'test_001',  another is 'test_002'.
+
+h1. test_001
+
+<pre><code class=""ruby"">
+# init.rb
+Rails.configuration.to_prepare do
+  require 'test_issues_controller_patch'
+end
+
+Redmine::Plugin.register :test_001 do
+  name 'Test 001 plugin'
+  author 'Author name'
+  description 'This is a plugin for Redmine'
+  version '0.0.1'
+  url 'http://example.com/path/to/plugin'
+  author_url 'http://example.com/about'
+end
+
+# lib/test_issues_controller_patch.rb
+module TestIssuesControllerPatch
+  extend ActiveSupport::Concern
+  included do
+  end
+end
+
+unless IssuesController.included_modules.include?(TestIssuesControllerPatch)
+  IssuesController.send :include, TestIssuesControllerPatch
+end
+</code></pre>
+
+h1. test_002
+
+<pre><code class=""ruby"">
+# init.rb
+Rails.configuration.to_prepare do
+  require 'test_hooks'
+  require 'test_issues_helper_patch'
+end
+
+# Rails.configuration.to_prepare
+Redmine::Plugin.register :test_002 do
+  name 'Test 002 plugin'
+  author 'Author name'
+  description 'This is a plugin for Redmine'
+  version '0.0.1'
+  url 'http://example.com/path/to/plugin'
+  author_url 'http://example.com/about'
+end
+
+# lib/test_issues_helper_patch.rb
+module TestIssuesHelperPatch
+  extend ActiveSupport::Concern
+  included do
+  end
+
+  def test_hello
+    'hello world'
+  end
+end
+
+unless IssuesHelper.included_modules.include?(TestIssuesHelperPatch)
+  IssuesHelper.send :include, TestIssuesHelperPatch
+end
+
+# lib/test_hooks.rb
+class TestHooks < Redmine::Hook::ViewListener
+  def view_issues_show_details_bottom(context={})
+    context[:hook_caller].instance_eval do
+        render(:partial => 'test/hello_world')
+    end
+  end
+end
+
+# app/views/test/_hello_world.html.rb
+<%= test_hello %>
+</code></pre>
+
+If everything is OK,  'hello world' should be displayed in issue detail page. 
+BUT I see:
+
+<pre>ActionView::Template::Error (undefined local variable or method `test_hello' for #<#<Class:0x007fca71f0bd90>:0x007fca71f00760>):
+    1: <%= test_hello %>
+  plugins/test_002/app/views/test/_hello_world.html.erb:1:in `_plugins_test_____app_views_test__hello_world_html_erb__3192427753573044533_70253770942940'
+  plugins/test_002/lib/test_hooks.rb:4:in `block in view_issues_show_details_bottom'
+  plugins/test_002/lib/test_hooks.rb:3:in `instance_eval'
+  plugins/test_002/lib/test_hooks.rb:3:in `view_issues_show_details_bottom'
+  lib/redmine/hook.rb:61:in `block (2 levels) in call_hook'
+  lib/redmine/hook.rb:61:in `each'
+  lib/redmine/hook.rb:61:in `block in call_hook'
+  lib/redmine/hook.rb:58:in `tap'
+  lib/redmine/hook.rb:58:in `call_hook'
+  lib/redmine/hook.rb:96:in `call_hook'
+  app/views/issues/show.html.erb:70:in `_app_views_issues_show_html_erb__1203365146500478953_70253735647440'
+  app/controllers/issues_controller.rb:111:in `block (2 levels) in show'
+  app/controllers/issues_controller.rb:104:in `show'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'</pre>
+
+If I disable test_001, or rename test_002 to test_000ÅCit's work.
+It seems that controller patch make helper patch failed.
+"
+28129,Redmine,Defect,"",New,Normal,Last month period includes dates from current month,Pavel Potcheptsov,"",2018-02-02 16:54,Time tracking,"","","","",0,2018-02-02 16:54,"","","",3.4.3,"As you can see on screenshots there is Last Month (Jan 2018) period selected, however output includes dates from current month (Feb 2018)."
+28128,Redmine,Defect,"",Closed,Normal,It's not possible to edit the description of my own issue,schmier fink,"",2018-02-02 15:03,Website (redmine.org),"","","","",0,2018-02-02 12:05,2018-02-02 15:03,"","","","It's not possible to edit the description of my own issue(s) here
+
+https://www.redmine.org/projects/redmine/issues/"
+28127,Redmine,Defect,"",New,High,It is impossible to filter the trackers by project in the XML/REST-API,schmier fink,"",2018-02-02 11:58,"","","","","",0,2018-02-02 11:58,"","","","","I can query 
+https://servicedesk.cor-management.ch/Servicedesk/trackers.xml
+for a list of all trackers. 
+
+But I always get all trackers. 
+Adding the project_id to the filters has no effect. 
+
+For issues instead of trackers, it works fine. "
+28125,Redmine,Defect,"",New,Normal,PNG images on a wiki page don't appear in exported PDF,Go MAEDA,"",2018-06-06 14:19,PDF export,"","","","",0,2018-02-02 08:35,"","","","","Please see the following screenshot. The wiki page has 2 inline images, but the PNG image (Redmine logo) doesn't appear in exported PDF.
+
+!{border: 1px solid #ccc;}.inline-png-does-not-appear-on-pdf.png!
+
+<pre>
+Environment:
+  Redmine version                3.4.4.devel.17194
+  Ruby version                   2.3.3-p222 (2016-11-21) [x86_64-darwin16]
+  Rails version                  5.1.4
+  Environment                    development
+  Database adapter               SQLite
+SCM:
+  Subversion                     1.9.7
+  Mercurial                      4.3.1
+  Cvs                            1.12.13
+  Bazaar                         2.7.0
+  Git                            2.14.3
+  Filesystem                     
+Redmine plugins:
+  no plugin installed
+</pre>
+
+The PNG image which I used for test is this one: http://www.redmine.org/attachments/download/3458/redmine_logo_v1.png"
+28122,Redmine,Defect,"",Closed,Normal,Organization of Projects,Carlos  Miguel,"",2018-02-01 17:00,"","","","","",0,2018-02-01 15:31,2018-02-01 17:00,éüÇÃÉ`ÉPÉbÉgÇ∆èdï° #28005,Duplicate,3.4.3,"I would like information about the functionality regarding the organization of the Projects considering the presentation of the projects.
+My version is 3.4.3 and I did not find the configuration option in the admin panel. In other versions the organization of the projects was more accessible. Any changes in the presentation criteria?
+Thank you"
+28121,Redmine,Defect,"",Closed,Normal,"Empty Plugin ""Redmine Entelgy""",Bernhard Rohloff,"",2018-02-01 17:02,Website (redmine.org),"","","","",0,2018-02-01 13:03,2018-02-01 17:02,"","","","I think this was created for testing and can be removed:
+http://www.redmine.org/plugins/redmine_entelgy"
+28120,Redmine,Defect,"",New,High,Problem with set Version in issue via REST api.,Bart?omiej Ekiert,"",2018-02-01 10:33,REST API,"","","","",0,2018-02-01 10:33,"","","",3.4.4,"When i send a request to create or update issue via API i get respone:
+that the Target version is not set. In the documentation you write:
+
+*fixed_version_id - ID of the Target Versions (previously called 'Fixed Version' and still referred to as such in the API)*
+
+This out of date. I set fixed_version_id ant this not working now. I use redmine 3.4.4."
+28119,Redmine,Patch,"",Closed,Normal,Enable lax_spacing for markdown formatting in order to allow markdown blocks not surrounded by empty lines,Marius BALTEANU,Go MAEDA,2018-03-31 07:32,Text formatting,3.3.7,"","","",0,2018-02-01 10:18,2018-02-16 06:02,éüÇÃÉ`ÉPÉbÉgÇ™èdï° #25339,"","","In the markdown standard format, an empty line is required before and after a block in order to render the content properly.
+
+1. List without an empty line (doesn't work) 
+| !{width:200px}md_syntax_1.png! | -> | !{width:200px}md_output_1.png! | 
+
+2. List with an empty line (works ok)
+| !{width:200px}md_syntax_2.png! | -> | !{width:200px}md_output_2.png! | 
+
+3. Enabling option @:lax_spacing@ for markdown formatting (more details about this option on ""github"":https://github.com/vmg/redcarpet#and-its-like-really-simple-to-use) allows also the first format:
+| !{width:200px}md_syntax_3.png! | -> | !{width:200px}md_output_3.png! | 
+
+We already rolled out this change on our instance because most of the times, we forget to let the empty line and we observe that it doesn't work after we save the changes. 
+
+The patch is attached."
+28115,Redmine,Defect,"",Closed,Normal,Fail to create a task,Wesllen Queiroz,"",2018-02-02 15:10,Issues,"","","","",0,2018-01-31 18:16,2018-02-02 15:10,"",Invalid,3.2.5,Fail to create a task (undefined method `>' for nil:NilClass)
+28113,Redmine,Defect,"",Closed,Normal,Fix typo in German label_font_default,Felix Sch?fer,Go MAEDA,2018-04-09 01:33,Translations,3.4.5,"","","",0,2018-01-31 16:26,2018-02-11 05:56,"",Fixed,3.4.4,""
+28112,Redmine,Patch,"",Closed,Normal,Ruby 2.5.0 don't pass csv_test.rb,Sho HASHIMOTO,Go MAEDA,2018-03-29 15:51,Ruby support,"","","","",0,2018-01-31 12:10,2018-03-29 15:51,"ä÷òAÇµÇƒÇ¢ÇÈ #28689, ÉuÉçÉbÉNÇµÇƒÇ¢ÇÈ #27849","","","Ruby 2.5.0 at r17185 don't pass csv_test.rb:29.
+
+<pre>
+Failure:
+CsvTest#test_should_include_bom_when_utf8_encoded [/Users/sho-h/local/src/redmine/redmine.sho-h/test/unit/lib/redmine/export/csv_test.rb:29]:
+Expected false to be truthy.
+</pre>
+
+Maybe, the reason is regression in 2.5.0.
+
+<pre>
+$ cat csvtest.rb
+
+require 'csv'
+bom = ""\xEF\xBB\xBF""
+res1_1 = bom.dup
+res1_2 = CSV.generate(res1_1, encoding: ""UTF-8"") {|csv| csv << %w(Foo Bar)}
+p [bom, res1_1, res1_2]
+
+res2_1 = ""aa,bb""
+res2_2 = CSV.generate(res2_1, encoding: ""UTF-8"") {|csv| csv << %w(Foo Bar)}
+p [bom, res2_1, res2_2]
+
+$ rbenv each ruby -v csvtest.rb | more
+...
+ruby 2.3.6p384 (2017-12-14 revision 61254) [x86_64-darwin15]
+[""<U+FEFF>"", ""<U+FEFF>Foo,Bar\n"", ""<U+FEFF>Foo,Bar\n""]
+[""<U+FEFF>"", ""aa,bbFoo,Bar\n"", ""aa,bbFoo,Bar\n""]
+ruby 2.4.3p205 (2017-12-14 revision 61247) [x86_64-darwin15]
+[""<U+FEFF>"", ""<U+FEFF>Foo,Bar\n"", ""<U+FEFF>Foo,Bar\n""]
+[""<U+FEFF>"", ""aa,bbFoo,Bar\n"", ""aa,bbFoo,Bar\n""]
+ruby 2.5.0p0 (2017-12-25 revision 61468) [x86_64-darwin15]
+[""<U+FEFF>"", ""Foo,Bar\n"", ""Foo,Bar\n""]
+[""<U+FEFF>"", ""Foo,Bar\n"", ""Foo,Bar\n""]
+</pre>
+
+This problem was already reported below.
+
+* https://github.com/ruby/csv/pull/13
+
+I attach patch to fix this problem. This patch don't use CSV.generate's first argument.
+"
+28111,Redmine,Defect,"",New,Normal,"Redmine Permissions - option to combine ""Non member"" role with others",Stephane Evr,"",2018-01-31 11:58,"","","","","",0,2018-01-31 11:58,"","","","","In our Redmine, we have set a public project and have allowed certain permissions to the role ""Non member"".
+
+Hence, Users non members of the project can do certain actions.
+
+The moment we give a user a specific role in this project, he then looses all the rights of the ""Non member"" role.
+
+To me this is a bit counter intuitive. I would expect any role to at least take all the permissions of the ""Non member"" role. Right now for any role that could be used in this public project, we need to copy the permissions / adapt the workflows from the ""Non member"" role."
+28110,Redmine,Defect,"",Closed,Normal,Don't allow reassigning reported hours to the project if issue is a required field for time logs,Stephane Evr,Go MAEDA,2018-02-18 05:36,Time tracking,3.4.5,"","","",0,2018-01-31 11:03,2018-02-18 05:36,ä÷òAÇµÇƒÇ¢ÇÈ #24577,Fixed,3.4.4,"The problem occurs in the latest Redmine version (3.4.2)
+
+Settings:
+
+!settings.PNG!
+
+
+- Create an issue
+- Log time on it
+- Delete the issue
+
+The following pops out:
+
+!reassign_dialog.png!
+
+There, we can apply, violating the ""required issue"" constraint."
+28109,Redmine,Defect,"",Closed,Normal,Incorrect interpolation in Swedish locale,Felix Sch?fer,"",2018-01-31 19:43,Translations,3.3.7,"","","",0,2018-01-31 10:57,2018-01-31 19:43,ä÷òAÇµÇƒÇ¢ÇÈ #18587,Fixed,"",There is an incorrect interpolation in the Swedish locale file in source:/trunk/config/locales/sv.yml@17186#L137
+28108,Redmine,Defect,"",Needs feedback,Normal,"Copying a text into a wiki page I got ""Internal server error""",Matteo Calorio,"",2018-01-31 12:31,Wiki,"","","","",0,2018-01-31 09:59,"","","",3.3.1,"The text is: ""to this instance.
+?I have also""
+
+The problem seems to be the space between ""instance."" and ""I have"": if I copy the text into Vi I get ""to this instance.<202a> <202a>I have also"".
+
+Looking in the web I see <202a> is some ""Left To Right Embedding"": https://www.compart.com/en/unicode/bidiclass/LRE
+
+I hope this helps.
+
+Good day,
+  Matteo"
+28107,Redmine,Defect,"",Closed,Normal,Internal server error ,minsoo kang,"",2018-01-31 12:25,"","","","","",0,2018-01-31 09:46,2018-01-31 12:25,"",Invalid,3.4.2,"Hi!
+
+The attached files of the issue does not open and internal server error occurs.
+I can not find the cause. Please advise if there are any cause or solution.
+
+1. redmine version is 3.4.3 stable and installed with bitnami version 3.4.3-1. (Note that redmine version 3.4.2 does not cause the same thing.)
+2. Symptom: The attached file does not open and internal server error occurs.
+3. State Description
+1) It has nothing to do with file size, file extension, and seems to be related to file name.
+2) Attached the files that is occured.
+
+Very thanks!"
+28102,Redmine,Patch,"",Closed,Normal,Fix typo in Lithuanian label_version_sharing_tree,Willmore BattleShipNet,Go MAEDA,2018-02-01 07:59,Translations,3.3.7,"","","",0,2018-01-30 09:04,2018-02-01 07:59,"","","","<pre><code class=""diff"">
+Index: lt.yml
+===================================================================
+--- lt.yml	(revision 17022)
++++ lt.yml	(working copy)
+@@ -889,7 +889,7 @@
+   label_version_sharing_none: Nesidalinama
+   label_version_sharing_descendants: Su sub-projektais
+   label_version_sharing_hierarchy: Su projekto hierarchija
+-  label_version_sharing_tree: WiSu projekto med?iu
++  label_version_sharing_tree: Su projekto med?iu
+   label_version_sharing_system: Su visais projektais
+   label_update_issue_done_ratios: Atnaujinti darbo atlikimo progres?
+   label_copy_source: ?altinis@
+</code></pre>"
+28084,Redmine,Defect,"",Closed,Normal,Redmine in a sub-URI,Sebastian St?ubert,"",2018-01-26 16:20,"","","","","",0,2018-01-26 15:27,2018-01-26 16:20,"",Invalid,3.4.4,"Hi,
+
+all the suggestions described here:
+http://www.redmine.org/projects/redmine/wiki/HowTo_Install_Redmine_in_a_sub-URI
+http://www.redmine.org/boards/2/topics/24043
+http://www.redmine.org/boards/2/topics/2244
+
+do not work!
+
+Can one please provide a working solution for redmine & apache in a sub-URI?
+What modifications are to do running the [[https://hub.docker.com/_/redmine/ redmine Docker Container]] (localhost:3000) and apache providing https://domain.tld/redmine ?
+
+THX,
+Sebastian
+
+"
+28080,Redmine,Defect,"",Closed,Normal,Delete inappropriate page: [[Api]],Go MAEDA,"",2018-01-26 09:28,Documentation,"","","","",0,2018-01-26 01:39,2018-01-26 09:28,"","","",The page [[Api]] is not a valid page and should be deleted.
+28079,Redmine,Defect,"",Closed,Normal,The green tick is positioned after the label in the new member modals ,Marius BALTEANU,Go MAEDA,2018-04-09 01:33,UI,3.4.5,"","","",0,2018-01-26 00:50,2018-02-23 09:26,ä÷òAÇµÇƒÇ¢ÇÈ #27807,Fixed,"","This is a patch extracted from #27807 in order to fix it earlier (in a minor version)
+
+The green tick is positioned after the label in the new member modals from: 
+- admin (Users @->@ Edit user @->@ Projects @->@ Add Project)
+- project setting (Project setting @->@ Membership @->@ New members)
+
+I've attached:
+- two screenshots with the issue
+- a patch that fixes these issues.
+"
+28078,Redmine,Defect,"",New,Normal,"Workflows inconsistencies when removing ""add/edit issue"" permission to a role which already has a workflow defined",Stephane Evr,"",2018-01-25 18:14,"","","","","",0,2018-01-25 18:14,"","","","","I've tested this on a vanilla Redmine (3.4):
+
+
+Steps to reproduce, as admin:
+
+Setup:
+
+- Set 2 new roles with add/edit issues permission. We have: Role A, Role B
+- Set 1 new Tracker: Tracker A
+- Set 3 new statuses: Status A, Status B, Status C
+
+- Define a Workflow for Role A, Tracker A with the following: *All transitions are checked between Status A, Status B*. Transitions to and from Status C are NOT checked.
+- Define a Workflow for Role B, Tracker A with the following: *All transitions are checked between Status A, Status B, Status C*.
+
+
+Correct case:
+
+- As an admin, or as a user with Role A AND Role B, go to the New issues form, and for tracker, choose ""Tracker A""
+
+- In the ""Status"" dropdown, Status A, Status B and Status C are shown
+
+Incorrect case:
+
+- As an admin, remove the add/edit issues permission for Role B
+
+- As an admin, or as a user with Role A AND Role B, go to the New issues form, and for tracker, choose ""Tracker A""
+
+Observed:
+- In the ""Status"" dropdown, *Status A, Status B and Status C are shown*
+
+Expected:
+- In the ""Status"" dropdown, *Status A and Status B are shown*
+
+
+Reasons why this happens:
+- When we uncheck the permission add/edit issues from a Role, the WorkflowRules are kept in base.
+- In the method used to get the new statuses allowed, we don't filter out roles which are not allowed to add/edit issues, hence still reading the WorkflowRules above. 
+
+See details below
+
+Details: 
+
+https://github.com/redmine/redmine/blob/e8bc1dbaa80dd714254da9c19e4ffaae4fbf9736/app/models/issue.rb#L988
+https://github.com/redmine/redmine/blob/d105365e06eddfdd66406c56b5f45dba2fda6769/app/models/issue_status.rb#L66
+
+
+Options to solve the problem:
+- Delete the WorkflowRules associated with the role when add/edit issues permission is unchecked (maybe too destructive)
+- Always filter (see links above) on roles for which the method @consider_workflow?@ returns true (seems the simplest)"
+28069,Redmine,Defect,"",New,Normal,Queries 403 error if query author is not in the roles list,Stephane Evr,"",2018-01-25 10:44,"","","","","",0,2018-01-25 10:44,"","","","","How to reproduce (with vanilla redmine 3.4):
+
+- Go to a project where you are a member with Role A
+- create a query and save it. make it visible to Role B
+- Save the query
+
+Result:
+- Error 403
+
+
+In my opinion, a query should always be visible to its author, provided that he has sufficient rights to access the project.
+
+
+
+How to fix it:
+Here: https://github.com/redmine/redmine/blob/7fd04e1f8d36d78ee4f680d0a312c9eac2c65e90/app/models/query.rb#L339
+
+In the case above, a simple check on @user == self.user@ should fix the problem
+"
+28062,Redmine,Defect,"",Closed,Low,"""Error 500"" when creating a new task for a specific sprint",Wesllen Queiroz,"",2018-01-24 14:02,Issues,"","","","",0,2018-01-23 19:30,2018-01-23 19:34,"",Invalid,3.2.5,"I am dropping into an *Internalerror 500* page when creating a new task, of type functionality for specific sprints. Apparently it is something related to the *Scrum plugin*, which is even in its latest stable version (0.18)."
+28035,Redmine,Defect,"",Needs feedback,Normal,Order of versions is not correctly ordered,Robert Schneider,"",2018-02-02 09:15,"","","","","",0,2018-01-22 11:23,2018-01-24 18:57,"","","","I see this with version 3.4.2 and on redmine.org at different places:
+
+* in project configuration
+* in custom field 
+* in Roadmap: completed versions in sidebar or when all gets shown
+* in issue list filter for version custom field
+
+Which kind of sorting is it currently? It is not the id and it doesn't seem to be the name."
+28034,Redmine,Defect,"",New,Normal,Can assign closed/locked versions to custom field,Robert Schneider,"",2018-01-22 10:54,Custom fields,"","","","",0,2018-01-22 10:54,"","","",3.4.2,"Detected in version 3.4.2.
+
+If I create a ticket with a tracker that has a custom field of type version (trying to realize ""Affected version"") I can assign all versions, regardless of their state. Now, I've got the same problem as it is described in #8572.
+
+Project is a subproject. It has a list of versions that are not shared. The parent has also non-shared versions, which are correctly not listed.
+ 
+As it seems the same problem exists on redmine.org in the @defect@ tracker as well."
+28033,Redmine,Defect,"",New,Normal,"Unable to turn off ""For all projects"" flag of custom queries",Go MAEDA,"",2018-01-23 02:50,Issues,"","","","",0,2018-01-22 10:32,"","","","","The ""For all projects"" flag of custom queries cannot be disabled if once enabled.
+
+Steps to reproduce:
+# Create a query with ""For all projects"" flag enabled.
+# Edit the newly created query.
+# Uncheck ""For all projects"" checkbox and save the query.
+# Edit the query again.
+# ""For all projects"" checkbox is expected to be cleared, but it is actually checked."
+28030,Redmine,Patch,"",Closed,Normal,Remove unused method,Dmitry Lisichkin,"",2018-01-21 15:39,Code cleanup/refactoring,"","","","",0,2018-01-21 14:52,2018-01-21 15:39,"","","",Method usage was removed there: #26627
+28029,Redmine,Defect,"",New,Normal,"Rake tasks for fetching email don't support ""no_notification"" option",Go MAEDA,"",2018-01-21 08:33,Email receiving,"","","","",0,2018-01-21 08:33,"","","","","""--no-notification"" option to disable notifications to the created user has been added by #13341 (Redmine 2.3.0).
+
+Although @rdm-mailhandler.rb@ supports the option, it seems that rake tasks for fetching emails such as @redmine:email:receive_imap@ don't support it. Please see source:tags/3.4.4/app/models/mail_handler.rb#L68. @extract_options_from_env@ method doesn't check @ENV['no_notification']@."
+28028,Redmine,Patch,"",Closed,Normal,Remove unused method Mailer#mylogger,Go MAEDA,Go MAEDA,2018-02-11 07:40,Code cleanup/refactoring,4.0.0,"","","",0,2018-01-21 03:09,2018-02-11 07:40,"","","",@Mailer#mylogger@ was introduced in r3355 but the calling code has been deleted in r9528.

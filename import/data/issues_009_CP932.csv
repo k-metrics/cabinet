@@ -1,0 +1,1045 @@
+#,ÉvÉçÉWÉFÉNÉg,ÉgÉâÉbÉJÅ[,êeÉ`ÉPÉbÉg,ÉXÉeÅ[É^ÉX,óDêÊìx,ëËñº,çÏê¨é“,íSìñé“,çXêVì˙,ÉJÉeÉSÉä,ëŒè€ÉoÅ[ÉWÉáÉì,äJénì˙,ä˙ì˙,ó\íËçHêî,êiíªó¶,çÏê¨ì˙,èIóπì˙,ä÷òAÇ∑ÇÈÉ`ÉPÉbÉg,Resolution,Affected version,ê‡ñæ
+27072,Redmine,Defect,"",Closed,Normal,Can't update Redmine : [...] activesupport [...] `require': No such file to load -- ../lib/redmine/Pagination (LoadError),David BOUCHE,"",2017-09-27 12:29,"","","","","",0,2017-09-25 15:47,2017-09-27 12:29,"",Invalid,3.4.2,"Can update Redmine, here's the error : 
+
+<pre>
+2017-09-25T13:14:29.065Z: /home/************/vendor/bundle/ruby/2.3.0/gems/activesupport-4.2.7.1/lib/active_support/dependencies.rb:274:in `require': No such file to load -- ../lib/redmine/Pagination (LoadError)
+</pre>
+
+It seems that I'm not the only person to have this problem : https://stackoverflow.com/questions/46194782/redmine-erpmine-plug-in-error
+
+My redmine installation : 
+
+<pre>
+Environment:
+  Redmine version                3.3.3.stable
+  Ruby version                   2.3.3-p222 (2016-11-21) [x86_64-linux]
+  Rails version                  4.2.7.1
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.8.16
+  Git                            2.13.3
+  Filesystem                     
+Redmine plugins:
+  redmine_agile                  1.4.4
+  redmine_contacts               4.1.1
+  redmine_contacts_helpdesk      3.0.8
+  redmine_wktime                 2.8
+</pre>
+
+
+
+How can we solve this and update our Redmine instances ?
+
+Thanks for your support,
+David"
+27071,Redmine,Defect,"",New,High,"Error testing LDAPS Connection: ""Unable to connect (hostname X.X.X.X does not match the server certificate)""",Carlos Sim?,"",2017-10-20 09:59,LDAP,"","","","",0,2017-09-25 15:46,"","","",3.2.1,"I've migrated from a 2.4.2 Redmine server to a new 3.2.1. 
+Everything is working OK but failing to test LDAPS (LDAP + SSL) connections (LDAP connections -without SSL- are working OK). 
+I've tested with different users and different LDAP servers and always get the same result: auth_source form shows an error message: ""Unable to connect (hostname X.X.X.X does not match the server certificate)"".
+I've not found relevant info in production.log file:
+
+<pre>
+Started PATCH ""/auth_sources/8"" for 172.19.12.124 at 2017-09-25 12:46:16 +0200
+Processing by AuthSourcesController#update as HTML
+  Parameters: {""utf8""=>""?"", ""authenticity_token""=>""Fa1QoVLFef+zngYYwypUipDda1/c0Yh0mqqGmtWThvA0D2zNmqqeDLiGUwN0pwgTWfklBjrZ73G4KpDo/53qTA=="", ""auth_source""=>{""name""=>""OpenLdap"", ""host""=>""X.X.X.X"", ""port""=>""636"", ""tls""=>""1"", ""account""=>""uid=xxxxxxx,ou=xxxxxx,dc=xxxxx,dc=xx"", ""base_dn""=>""ou=xxxxxx,dc=xxxxxx,dc=xx"", ""filter""=>"""", ""timeout""=>"""", ""onthefly_register""=>""0"", ""attr_login""=>""sAMAccountName"", ""attr_firstname""=>"""", ""attr_lastname""=>"""", ""attr_mail""=>""""}, ""dummy_password""=>""[FILTERED]"", ""commit""=>""Save"", ""id""=>""8""}
+  SQL (4.3ms)  UPDATE `tokens` SET `tokens`.`updated_on` = '2017-09-25 12:46:16' WHERE `tokens`.`user_id` = 1 AND `tokens`.`value` = '932b09e00f3e76cd17f3b9b92f4dfacc77b0b3c2' AND `tokens`.`action` = 'session' AND (created_on > '2017-09-24 12:46:16.911570') AND (updated_on > '2017-09-25 00:46:16.911805')
+   (0.3ms)  SELECT MAX(`settings`.`updated_on`) FROM `settings`
+  User Load (0.3ms)  SELECT  `users`.* FROM `users` WHERE `users`.`type` IN ('User', 'AnonymousUser') AND `users`.`status` = 1 AND `users`.`id` = 1 LIMIT 1
+  Current user: admin (id=1)
+  AuthSource Load (0.2ms)  SELECT  `auth_sources`.* FROM `auth_sources` WHERE `auth_sources`.`id` = 8 LIMIT 1
+   (0.1ms)  BEGIN
+  AuthSource Exists (0.3ms)  SELECT  1 AS one FROM `auth_sources` WHERE (`auth_sources`.`name` = BINARY 'OpenLdap' AND `auth_sources`.`id` != 8) LIMIT 1
+  SQL (0.2ms)  UPDATE `auth_sources` SET `port` = 636, `tls` = 1 WHERE `auth_sources`.`id` = 8
+   (1.2ms)  COMMIT
+Redirected to https://<my_server>/auth_sources
+Completed 302 Found in 15ms (ActiveRecord: 6.8ms).
+</pre>
+
+I've tested from SSL connections with openssl to LDAP connection with ldapsearch, and it not seems to be anything wrong. 
+Using the same users credentials and the same server connections (early configured into Redmine), with ldapseach goes everything OK.
+
+
+
+Data about my environment:
+
+root@asscc111s:/usr/share/redmine# ruby bin/about
+
+<pre>
+Environment:
+  Redmine version                3.2.1.stable
+  Ruby version                   2.3.1-p112 (2016-04-26) [x86_64-linux-gnu]
+  Rails version                  4.2.6
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Git                            2.7.4
+  Filesystem
+Redmine plugins:
+  no plugin installed
+</pre>
+
+root@asscc111s:/usr/share/redmine# mysql -V
+mysql  Ver 14.14 Distrib 5.7.19, for Linux (x86_64) using  EditLine wrapper
+
+
+Finally, all installed over a Ubuntu Server 16.04.
+
+
+
+"
+27067,Redmine,Defect,"",Needs feedback,Normal,Missed task for redmine:plugins:test,Eduard Panov,"",2017-09-25 05:44,"","","","","",0,2017-09-24 23:17,"",ä÷òAÇµÇƒÇ¢ÇÈ #21361,"",3.4.0,"Hi.
+After the task for runs the plugins ui tests has been added need add invoke in redmine:plugins:test list also.
+
+File ./lib/tasks/redmine.rake
+"
+27066,Redmine,Defect,"",Closed,Normal,issue parents is wrong,Randa Bustami,"",2017-09-27 13:35,"","","","","",0,2017-09-24 13:36,2017-09-27 12:24,"","","","i  added a sub task to a task but when i save it appeared under another task
+example
+under task  69759 i had added task 253921 but it appeared under task  69755 !
+pls check  screen shots attached.
+"
+27064,Redmine,Defect,"",Closed,Normal,Migration plugin failed / question_plugin,Amauche Mandor,"",2017-09-24 06:12,"","","","","",0,2017-09-24 03:40,2017-09-24 06:12,"",Invalid,3.4.2,"Hi my plugins migration failed with this command.
+<pre>
+$> bundle exec rake redmine:plugins:migrate RAILS_ENV=production
+</pre>
+
+I have this output:
+
+<pre>
+rake aborted!
+NameError: undefined method `all' for class `ActiveRecord::Relation'
+/opt/redmine/redmine-3.4.2/plugins/question_plugin/lib/question_active_record_relation_patch.rb:13:in `alias_method'
+/opt/redmine/redmine-3.4.2/plugins/question_plugin/lib/question_active_record_relation_patch.rb:13:in `block in included'
+/opt/redmine/redmine-3.4.2/plugins/question_plugin/lib/question_active_record_relation_patch.rb:7:in `class_eval'
+/opt/redmine/redmine-3.4.2/plugins/question_plugin/lib/question_active_record_relation_patch.rb:7:in `included'
+/opt/redmine/redmine-3.4.2/plugins/question_plugin/init.rb:10:in `include'
+/opt/redmine/redmine-3.4.2/plugins/question_plugin/init.rb:10:in `block in <top (required)>'
+/var/lib/gems/2.3.0/gems/activesupport-4.2.8/lib/active_support/callbacks.rb:446:in `instance_exec'
+/var/lib/gems/2.3.0/gems/activesupport-4.2.8/lib/active_support/callbacks.rb:446:in `block in make_lambda'
+/var/lib/gems/2.3.0/gems/activesupport-4.2.8/lib/active_support/callbacks.rb:192:in `block in simple'
+/var/lib/gems/2.3.0/gems/activesupport-4.2.8/lib/active_support/callbacks.rb:504:in `block in call'
+/var/lib/gems/2.3.0/gems/activesupport-4.2.8/lib/active_support/callbacks.rb:504:in `each'
+/var/lib/gems/2.3.0/gems/activesupport-4.2.8/lib/active_support/callbacks.rb:504:in `call'
+/var/lib/gems/2.3.0/gems/activesupport-4.2.8/lib/active_support/callbacks.rb:92:in `__run_callbacks__'
+/var/lib/gems/2.3.0/gems/activesupport-4.2.8/lib/active_support/callbacks.rb:778:in `_run_prepare_callbacks'
+/var/lib/gems/2.3.0/gems/activesupport-4.2.8/lib/active_support/callbacks.rb:81:in `run_callbacks'
+/var/lib/gems/2.3.0/gems/actionpack-4.2.8/lib/action_dispatch/middleware/reloader.rb:83:in `prepare!'
+/var/lib/gems/2.3.0/gems/actionpack-4.2.8/lib/action_dispatch/middleware/reloader.rb:55:in `prepare!'
+/var/lib/gems/2.3.0/gems/railties-4.2.8/lib/rails/application/finisher.rb:50:in `block in <module:Finisher>'
+/var/lib/gems/2.3.0/gems/railties-4.2.8/lib/rails/initializable.rb:30:in `instance_exec'
+/var/lib/gems/2.3.0/gems/railties-4.2.8/lib/rails/initializable.rb:30:in `run'
+/var/lib/gems/2.3.0/gems/railties-4.2.8/lib/rails/initializable.rb:55:in `block in run_initializers'
+/var/lib/gems/2.3.0/gems/railties-4.2.8/lib/rails/initializable.rb:54:in `run_initializers'
+/var/lib/gems/2.3.0/gems/railties-4.2.8/lib/rails/application.rb:352:in `initialize!'
+/opt/redmine/redmine-3.4.2/config/environment.rb:14:in `<top (required)>'
+/var/lib/gems/2.3.0/gems/railties-4.2.8/lib/rails/application.rb:328:in `require'
+/var/lib/gems/2.3.0/gems/railties-4.2.8/lib/rails/application.rb:328:in `require_environment!'
+/var/lib/gems/2.3.0/gems/railties-4.2.8/lib/rails/application.rb:457:in `block in run_tasks_blocks'
+/var/lib/gems/2.3.0/gems/rake-12.1.0/exe/rake:27:in `<top (required)>'
+Tasks: TOP => redmine:plugins:migrate => environment
+(See full trace by running task with --trace)
+</pre>
+
+My gem installed are this:
+
+<pre>
+*** LOCAL GEMS ***
+
+actionmailer (4.2.8, 4.2.6)
+actionpack (4.2.8, 4.2.6)
+actionpack-action_caching (1.1.1)
+actionpack-xml_parser (1.0.2)
+actionview (4.2.8, 4.2.6)
+activejob (4.2.8, 4.2.6)
+activemodel (5.1.4, 4.2.8, 4.2.6)
+activerecord (5.1.4, 4.2.8, 4.2.6)
+activeresource (2.3.18)
+activesupport (5.1.4, 4.2.8, 4.2.6, 2.3.18)
+addressable (2.5.2, 2.4.0, 2.3.8)
+arel (8.0.0, 6.0.4, 6.0.3)
+atomic (1.1.16)
+awesome_nested_set (3.0.0)
+axiom-types (0.1.1)
+bigdecimal (1.2.8)
+binding_of_caller (0.7.2)
+blankslate (3.1.3)
+builder (3.2.3, 3.2.2)
+bundler (1.11.2)
+byebug (5.0.0)
+coderay (1.1.2, 1.1.1)
+coercible (1.0.0)
+coffee-rails (4.1.0)
+coffee-script (2.4.1)
+coffee-script-source (1.9.1.1)
+columnize (0.9.0)
+concurrent-ruby (1.0.5)
+contracts (0.16.0)
+css_parser (1.6.0, 1.5.0, 1.3.6)
+debug_inspector (0.0.2)
+deface (1.2.0)
+descendants_tracker (0.0.4)
+did_you_mean (1.0.0)
+equalizer (0.0.11)
+erubis (2.7.0)
+eventmachine (1.0.7)
+execjs (2.6.0)
+faraday (0.13.1)
+ffi (1.9.10)
+globalid (0.4.0, 0.3.6)
+hike (1.2.1)
+htmlentities (4.3.4, 4.3.3)
+i18n (0.7.0)
+ice_nine (0.11.2)
+io-console (0.4.5)
+issues (0.0.2)
+jbuilder (2.3.1)
+journal (0.0.7)
+jquery-rails (4.0.5, 3.1.4)
+json (1.8.3)
+kanban (0.8.1)
+layout (0.2.1)
+listen (3.0.3)
+lockfile (2.1.3)
+loofah (2.0.3)
+mail (2.6.6, 2.6.3)
+mime-types (3.1, 2.6.1)
+mime-types-data (3.2016.0521)
+mimemagic (0.3.2)
+mini_portile2 (2.1.0)
+minitest (5.10.3, 5.8.4)
+molinillo (0.4.3)
+money (6.9.0)
+multi_json (1.11.2)
+multipart-post (2.0.0)
+mysql2 (0.4.9, 0.4.3)
+net-http-persistent (2.9.4)
+net-ldap (0.12.1, 0.8.0)
+net-telnet (0.1.1)
+nokogiri (1.7.2, 1.6.7.2)
+oj (2.12.10)
+polyglot (0.3.5, 0.3.4)
+power_assert (0.2.7)
+protected_attributes (1.1.4, 1.1.3)
+psych (2.0.17)
+public_suffix (3.0.0)
+rack (1.6.8, 1.6.4)
+rack-openid (1.4.2)
+rack-test (0.6.3)
+rails (4.2.8, 4.2.6)
+rails-deprecated_sanitizer (1.0.3)
+rails-dom-testing (1.0.8, 1.0.6)
+rails-html-sanitizer (1.0.3)
+rails-observers (0.1.2)
+railties (4.2.8, 4.2.6)
+rainbow (2.2.2)
+rake (12.1.0, 12.0.0, 10.5.0)
+rb-inotify (0.9.7)
+rbpdf (1.19.3, 1.19.2, 1.19.0)
+rbpdf-font (1.19.1, 1.19.0)
+rdoc (4.2.1)
+redcarpet (3.4.0, 3.3.4)
+redis (4.0.0, 3.3.3)
+redmine_client (0.0.1)
+request_store (1.3.0, 1.0.5)
+rmagick (2.16.0, 2.15.4)
+roadie (3.2.2, 3.1.1)
+roadie-rails (1.1.1, 1.1.0)
+ruby-hmac (0.4.0)
+ruby-openid (2.7.0, 2.3.0)
+sass (3.4.21)
+sass-rails (5.0.4)
+sdoc (0.4.1)
+spring (1.3.6)
+sprockets (3.7.1, 3.3.0)
+sprockets-rails (3.2.1, 2.3.2)
+sqlite3 (1.3.11)
+test-unit (3.1.7)
+thor (0.20.0, 0.19.1)
+thread_safe (0.3.6, 0.3.5)
+tilt (2.0.1)
+treetop (1.6.3)
+turbolinks (2.5.3)
+tzinfo (1.2.3, 1.2.2)
+uglifier (2.7.2)
+virtus (1.0.5)
+web-console (2.2.1)
+</pre>
+
+My Redmine, Ruby, Gem and Bundler version:
+<pre>
+Redmine 3.4.2
+ruby 2.3.1p112 (2016-04-26) [x86_64-linux-gnu]
+gem 2.5.1
+Bundler version 1.11.2
+</pre>
+
+Thanks for your help,
+
+Amauche,
+"
+27063,Redmine,Defect,"",Closed,Normal,"Tracker configuration, issue status field can't be updated",Hal Glenn,"",2017-10-02 08:20,"","","","","",0,2017-09-23 23:25,2017-10-02 08:20,"",Invalid,3.4.2,"h2. System Info
+
+Ubuntu 14.04.5
+sqlite 2.8.17
+ruby 2.1.5
+rails (4.2.8, 4.2.7.1, 4.2.5.2, 4.2.4, 3.2.22.2, 3.2.21) ?? from GEM list
+Redmine 3.4.2
+
+The plugins we are running are:
+
+# Additionals
+# Redmine Drawio plugin
+# Image Clipboard Paste
+# Redmine Lightbox 2
+# Redmine Silencer 2
+# Redmine Theme Changer plugin
+# Redmine Wiki Lists plugin
+# ERPmine
+# Redmine Workflow Enhancements
+
+h2. Tracker configuration issue
+
+When configuring a tracker (we have about 35 of them), *all the fields will updated when save is pressed accept for any selected ""Issue statuses"".* Trackers that had ""Issue statuses"" set, are not changed, and new trackers can not have there ""Issue statuses"" set. We have about 80 issues statuses FWIW.
+
+Looking at the redmine logs, here is the loged output from two ""Saves"", one with two issue status checked, one with non checked. regardless the ""Patch"" does not appear to affect the database. 
+
+-----
+
+*Save 1 with 2 issue statuses selected (ID's highlighted)*
+
+Started PATCH ""/redmine/trackers/39"" for 192.168.50.254 at 2017-09-23 14:36:44 -0500
+Processing by TrackersController#update as HTML
+  Parameters: {""utf8""=>""?"", ""authenticity_token""=>""boE2LA057ubck5DzP5jXEpPWbSfjH+NVwm06uQaTwV1OIXpakRvbmbnD7AVPXmnGB2cxAAmnfvOecG+NGy2+Tw=="", ""tracker""=>{""name""=>""Actuator Connector"", ""default_status_id""=>""73"", ""is_in_roadmap""=>""1"", core_fields""=>[""assigned_to_id"", ""description"", """"], ""custom_field_ids""=>[""""], ""project_ids""=>[""61"", """"], *_""predef_issue_status_ids""=>[""14"", ""73""]}_*, ""commit""=>""Save"", ""id""=>""39""}
+  Current user: hglenn (id=3)
+
+*Save 2 with no issues status selected, (""predef_issue_status_ids"" missing from commit)*
+
+Started PATCH ""/redmine/trackers/39"" for 192.168.50.254 at 2017-09-23 14:37:25 -0500
+Processing by TrackersController#update as HTML
+  Parameters: {""utf8""=>""?"", ""authenticity_token""=>""6Bmn2eE2l1aXKoX70yY1zd/Rmg2wXNK6QRqCq2dDCBrIueuvfRSiKfJ6+Q2j4IsZS2DGKlrkTxwdB9efev13CA=="", ""tracker""=>{""name""=>""Actuator Connector"", ""default_status_id""=>""73"", ""is_in_roadmap""=>""1"", ""core_fields""=>[""assigned_to_id"", ""description"", """"], ""custom_field_ids""=>[""""], ""project_ids""=>[""61"", """"]}, ""commit""=>""Save"", ""id""=>""39""}
+
+-----
+
+It appears the commit / PATCH is not updating the ""predef_issue_status_ids"" fields, but all other fields seem to work as expected. I looked through the database and could verify that *""tracker_statuses""* Table was not being updated after the PATCH.
+
+This redmine instance is running redmine 3.4.2, but the issue also existed in 3.4.1. 
+
+*I believe the issue started when we updated from 2.6.X to 3.4.1.* But we did not catch it right away.
+
+I suppose it could also be a plugin issues, I have not disabled / removed them yet to see if it fixes it. If that could be helpful let me know and I will do so.
+
+Thanks for an amazing system.
+
+"
+27049,Redmine,Defect,"",Closed,Normal,Error 500 Execution expired after login,Rene Kolbe,"",2017-09-21 14:58,"","","","","",0,2017-09-21 12:31,2017-09-21 14:58,"",Invalid,"","After login i get this Error:
+<pre>
+Started POST ""/login"" for 10.20.1.0 at 2017-09-21 12:25:41 +0200
+Processing by AccountController#login as HTML
+  Parameters: {""utf8""=>""?"", ""authenticity_token""=>""1E8xUtq1cfyH0cEsnvD+tDYff4311AWQ+e0bLWDGDnsWRln7JhDol5woTdfDNk8cpARxvUZRZ/MglBurp48D4g=="", ""back_url""=>""http://myServer.ourDomain.de:3000/"", ""username""=>""myName"", ""password""=>""[FILTERED]"", ""login""=>""Anmelden""}
+  Current user: anonymous
+An error occurred when authenticating rene.kolbe: execution expired
+  Rendered common/error.html.erb within layouts/base (0.0ms)
+  Rendered plugins/redmine_planning/app/views/hooks/_planning_scripts.html.erb (0.0ms)
+Completed 500 Internal Server Error in 21046ms (Views: 18.1ms | ActiveRecord: 0.0ms)
+</pre>
+
+The Version of Redmine is: 3.4.2"
+27048,Redmine,Defect,"",Closed,Normal,unable to update issues through API,Bharath Kumar Reddy,"",2017-10-31 12:05,Custom fields,"","","","",0,2017-09-21 09:56,2017-10-31 12:05,"",No feedback,"","CRM ID field not activate for this project
+Completed 500 Internal Server Error in 2547ms
+
+TypeError (can't convert Symbol into Integer):
+  app/models/issue.rb:163:in `create_or_update'
+  app/models/issue.rb:1075:in `block in save_issue_with_child_records'
+  app/models/issue.rb:1062:in `save_issue_with_child_records'
+  app/controllers/issues_controller.rb:179:in `update'
+
+when trying update the issue through API, the above error generated in the log file"
+27043,Redmine,Defect,"",New,Normal,SVN repos with spaces allow for browsing but not file viewing,Oliver Robson,"",2017-09-20 04:11,SCM,"","","","",0,2017-09-20 04:11,"",ä÷òAÇµÇƒÇ¢ÇÈ #7505,"",3.2.5,"Our Subversion repository naming structure incorporates spaces in it (@http://some.url/svn/repo with spaces/@), and it seems this is not working perfectly in Redmine. I can see the files within the repository, however if I try and view a file or the diff of a file, I get a ""404 The entry or revision was not found in the repository."". If I try the same thing with a different repository with no spaces in the name, it works as I believe it should (can view / diff files). Interestingly, if I go to a specific revision and 'View differences' it will do a diff of all of the changes in that revision perfectly fine, it's only upon diffing / viewing a single file that it fails.
+
+I have tried replacing the spaces with %20, however this stops me being able to browse the repo at all. I have tried putting the repo string in quotes, however this is not accepted by Redmine as quotes are considered an invalid character in that box.
+
+Having a space in a file name doesn't cause any issues with regards to viewing / diffing, it's just with the repo itself.
+
+The resolution in #7505 shows the repo browsing to be working as intended (like it is for me), however upon attempting to view those files in Redmine is where the issue appears."
+27038,Redmine,Defect,"",New,Normal,Lost Password link on login page is not accessible on iOS VoiceOver,Leon Blakey,"",2017-10-19 08:21,UI,"","","","",0,2017-09-19 17:51,"","","",3.4.2,"The forgot password link on the login page is not accessible to VoiceOver on iOS. When swiping left-right it just reads ""Password lost password"" but doesn't let you click on it. I have to hunt for the link with my finger. 
+
+Even on Jaws on Windows the ""Lost Password"" link is not in the tab order. However it can be worked around since Jaws can find all links on the page. 
+
+I believe it's because the <a> is inside the <label> for the password field. 
+
+<pre>
+Environment:
+  Redmine version                3.4.2.stable
+  Ruby version                   2.4.2-p198 (2017-09-14) [x86_64-linux]
+  Rails version                  4.2.8
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.8.10
+  Mercurial                      3.1.2
+  Bazaar                         2.7.0
+  Git                            2.1.4
+  Filesystem                     
+Redmine plugins:
+  no plugin installed
+</pre>"
+27034,Redmine,Patch,"",Closed,Normal,Patch for updated Chinese translation,Sharuru Zhang,"",2017-10-13 12:18,Translations,3.4.3,"","","",0,2017-09-19 08:28,2017-10-13 12:18,"","","","Hello, here comes the updated Chinese translation for the latest code.
+
+Cheers :)"
+27027,Redmine,Defect,"",Closed,Normal,Redmine receiving emails stopped after email account migrated to outlook365 ( redmine:email:receive_imap issue),Raja  Govindan,"",2017-09-19 03:38,Email receiving,"","","","",0,2017-09-19 01:44,2017-09-19 03:38,"",Invalid,2.6.0,"Hello ,
+
+I was using a batch file to update retrive emails frequently to update the redmine tickets.  This was working fine.  After the email account is migrated to office365 all the emails are going to ""ingored"" folder. 
+
+bundle exec rake -f Rakefile redmine:email:receive_imap RAILS_ENV=""production"" host=outlook.office365.com ssl=1 port=993 username=email@company.com password=xxxxxx unknown_user=accept move_on_success=Accepted move_on_failure=Ignored no_permission_check=1 allow_override=project,tracker,status,priority,category --trace>> C:\log\email_run1.log  2>>&1
+
+The new office365 IMAP uses TLS instead of SSL.
+ (I tried TLS=1, TLS=true, tls=TLS  options : no changes.)
+
+Please help.
+
+Thanks and Regards
+-/Raja Govindan
+
+"
+27025,Redmine,Patch,"",New,Normal,Regex support for excluded mail attachments,Jan from Planio www.plan.io,"",2017-10-10 05:56,Email receiving,4.1.0,"","","",0,2017-09-18 19:43,"","","","","Now that we have regex support for mail body delimiters, it makes sense to allow regex parsing for excluded attachment filenames as well.
+
+The common case are email signatures including images. In many cases, the filenames include something like @footer@ or @signature@, so regexes like the following proved to be quite useful for us at ""Planio"":https://plan.io:
+
+<pre>smime.p7s,.+\.vcf,.*(footer|signature).*\.(gif|jpg|jpeg|png)</pre>
+
+The attached patch series implements this feature."
+27024,Redmine,Patch,"",Closed,Normal,"Links on custom field values don't have ""external"" class",Go MAEDA,Go MAEDA,2018-01-01 07:20,Custom fields,4.0.0,"","","",0,2017-09-18 16:28,2018-01-01 07:20,"","","","Textile and Markdown formatter in Redmine adds ""external"" class to @a@ element when rendering links to an external site. Here is an exmaple:
+
+Textile:
+<pre>
+""Redmine"":http://www.redmine.org/
+</pre>
+
+Rendered HTML:
+<pre>
+<a class=""external"" href=""http://www.redmine.org/"">
+</pre>
+
+Although those formatters adds ""external"" class like as above, links on custom field values, which can be configured in ""Link values to URL"" of custom fields, don't have ""external"" class. I am in trouble with this behavior because I use UI theme that provides JavaScript code which opens external link in a new browser window (please see https://github.com/farend/redmine_theme_farend_basic/blob/master/javascripts/theme.js#L3).
+
+I think that links on custom field should have ""external"" class for consistency and convenience. Attaching a patch to fix this."
+27009,Redmine,Patch,"",New,Normal,Clarify consequences of disabling the login_required setting,Holger Just,"",2017-10-15 11:37,UI,4.1.0,"","","",0,2017-09-15 16:35,"","","","","When an administrator disabled the @login_required@ setting and/or sets projects as public, this can have grave consequences for the protection of the data in-house projects. If this is done carelessly, confidential data might be exposed to undesired audiences (e.g. the global unauthenticated internet).
+
+The attached patches try to make the consequences of these settings clearer by making them more prominent and explain their consequences to the user.  This helps admins and project managers make the correct decisions.
+
+We use these patches on ""Planio"":https://plan.io/redmine-hosting/ where all accounts require authentication by default. But even for ""older"" Redmine installations which might have some internal public projects it might still be surprising that they are suddenly public when not enforcing authentication anymore."
+27008,Redmine,Patch,"",Closed,Normal,Add new subtask - parent issue id is lost in some cases,Jens Kr?mer,"",2018-01-04 11:49,Issues,"","","","",0,2017-09-15 14:16,2018-01-04 11:49,éüÇÃÉ`ÉPÉbÉgÇ∆èdï° #16260,"","","When the tracker of an issue has the @parent_issue_id@ field disabled and one tries to add a subtask, it may happen that the id of the parent gets lost if the tracker that gets preselected in the new issue form is the same or also has the @parent_issue_id@ field disabled.
+
+The attached patch which we developed at ""Planio"":https://plan.io/redmine-hosting fixes this by always passing the id of a tracker with the @parent_issue_id@ field enabled (is possible at all) through the 'Add subtask' link."
+27006,Redmine,Patch,"",Closed,Normal,German translations for 3.3-stable,Toshi MARUYAMA,"",2017-09-15 07:44,Translations,3.3.5,"","","",0,2017-09-15 06:24,2017-09-15 07:44,"","","","From #26703.
+
+<pre><code class=""diff"">
+=== (+3,-5) config/locales/de.yml ===
+@@ -1209,7 +1209,5 @@
+   label_new_project_issue_tab_enabled: Tab ""Neues Ticket"" anzeigen
+   setting_new_item_menu_tab: Men? zum Anlegen neuer Objekte
+   label_new_object_tab_enabled: Dropdown-Men? ""+"" anzeigen
+-  error_no_projects_with_tracker_allowed_for_new_issue: There are no projects with trackers
+-    for which you can create an issue
+-  error_cannot_reassign_time_entries_to_an_issue_about_to_be_deleted: Spent time cannot
+-    be reassigned to an issue that is about to be deleted
++  error_no_projects_with_tracker_allowed_for_new_issue: Es gibt keine Projekte mit Trackern, f?r welche sie Tickets erzeugen k?nnen
++  error_cannot_reassign_time_entries_to_an_issue_about_to_be_deleted: Zeitbuchungen f?r Tickets, die gel?scht werden sind nicht m?glich
+</code></pre>"
+27003,Redmine,Defect,"",Closed,Normal,import subtask csv,manel mammou,"",2017-09-14 19:08,"","","","","",0,2017-09-14 18:14,2017-09-14 19:08,"",Invalid,"","hello how can i import a sub task to redmine in csv format
+i tried this
+
+""Tracker"",""Status"",""Priority"",""Subject"",""Author"",""Assignee"",""Category"",""Target version"",""Start date"",""Due date"",""Estimated time"",""Private"",""Exigences"",""Parent task"",""Description""
+""Development"",""In Progress"",""Subject"",""some Author"",""some Assignee"",""CAT_SAA"",""G.Ag_V0"",""2017-02-01"",""2017-02-10"",""16.00"",""No"",""test"",""#703"",""Description""
+
+PS: #703 is an existing task already imported
+
+I get this error : Unique field must be specified because the column Parent task needs to refer to other tasks"
+26975,Redmine,Defect,"",Closed,Normal,custom fiels are not updating in redmine 2.3.2,Bharath Kumar Reddy,"",2017-09-14 04:00,"","","","","",0,2017-09-13 21:47,2017-09-14 04:00,"",Invalid,2.3.2,"we have one created one issue 8060 to update the custom_fields (fixed_in_build, found_in_build, and tested_build)
+
+so when we release new version of application the issue is updated like below
+
+AdminUpdate::Tested in Build:app1.0;Fixed in Build:app1.0;Found in Build:app1.0
+next release
+AdminUpdate::Tested in Build:app2.0;Fixed in Build:app2.0;Found in Build:app2.0
+
+and the release what  we did will go update the in above three custom fields
+ 
+
+now we are unable to update 1234 issue what we created for custom fields showin error as 500 internal error.
+
+now i have created one more issue 72994 and able to update issue with app release 
+
+
+AdminUpdate::Tested in Build:app3.0;Fixed in Build:app3.0;Found in Build:app3.0
+
+But app3.0 is not getting updated in custom fields, 
+
+as i'm new to redmine, few years back, old employees setup this, now i'm new employee and new to this tool.
+
+could some please tell me what is link between issue and custom field, now why the releases are not updating in custom feild,
+
+-------------------------------------------------------
+Below is the my redmine error log
+-------------------------------------------------------
+
+CRM ID field not activate for this project
+ENTRY adjust_children
+
+found_record = [] size = 0 type Array
+
+debug Entry adjust_children 72994 found code review false trackerName Support number children = 0 code_review_id 0
+
+EXIT adjust_children
+
+ENTRY adjust_assigned_reviewer id = 72994 children = 0
+
+debug info  72994  self.tracker.name = Support status New
+
+fieldId = 43  type String
+
+EXIT adjust_assigned_reviewer AFTER_SAVE 2017-09-13 20:18:10 +0100 id 72994
+
+Performance end adjust_assigned_reviewer AFTER_SAVE 2017-09-13 20:18:10 +0100 id 72994
+
+backlogs:issue_patch history BEFORE seld.id = 72994
+
+"
+26974,Redmine,Defect,"",New,Normal,Collapse macro conflicts with header section edit buttons,Jonathan Cormier,"",2017-09-15 13:27,Wiki,"","","","",0,2017-09-13 20:27,"",ä÷òAÇµÇƒÇ¢ÇÈ #13723,"",3.3.4,"Using the collapse macro to hide header sections (h1,h2,h3,etc) causes the edit buttons next to non-collapsed sections to be incorrect.
+
+The [[Macro_Conflict]] page already reproduces this. Found it from issue #16077.
+
+If you click edit on Section ""second collapse"", you end up editing Section ""collapse1Item1"".
+
+{{collapse(My redmine environment)
+<pre>
+Environment:
+  Redmine version                3.3.1.stable
+  Ruby version                   2.1.9-p490 (2016-03-30) [x86_64-linux-gnu]
+  Rails version                  4.2.7.1
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.8.8
+  Darcs                          2.8.4
+  Mercurial                      2.8.2
+  Cvs                            1.12.13
+  Bazaar                         2.7.0
+  Git                            2.10.1
+  Filesystem                     
+Redmine plugins:
+  clipboard_image_paste          1.10
+  google_analytics_plugin        1.0.0
+  redmine_banner                 0.1.2
+  redmine_charts2                0.2.1
+  redmine_checklists             3.1.5
+  redmine_favourite_projects     0.7
+  redmine_jstoolbar_ext          0.2.1
+  redmine_jstoolbar_ext_buttons  0.2.1
+  redmine_jstoolbar_ext_images   0.3.1
+  redmine_project_alias_2        1.0.2
+  redmine_release_notes          1.3.1
+  redmine_silencer               0.4.1
+  redmine_tags                   3.1.1
+  redmine_wiki_extensions        0.7.0
+  redmine_wiki_notes             0.0.2
+  redmine_xlsx_format_issue_exporter 0.1.3
+  wiki_issue_fields              0.5.1
+</pre>
+}}
+"
+26910,Redmine,Defect,"",Closed,Normal,"How to show DateTime  for issue ""Created"" and ""Updated"" as  dd/MM/yyyy HH:mm:ss.SS format ",Sandeep Kutwal,"",2017-09-13 12:02,"","","","","",0,2017-09-13 08:18,2017-09-13 12:02,"",Invalid,"","Hi All,
+
+How to show the dates for issue ""Created"" and ""Updated"" as  dd/MM/yyyy HH:mm:ss.SS format in Redmine .
+
+Currently , the Redmine shows the issues upto minutes , but would like to show complete DateTime (until sec/millisec) for both columns (""Created"" and ""Updated"")
+
+please find attachment to see how ""Created"" and ""Updated"" dates are shown currently in Redmine .
+
+Appreciate quick help.
+
+Regards ,
+Sandeep Kutwal "
+26892,Redmine,Defect,"",New,Normal,Link to user in wiki syntax only works when login is written in lower case,Anders Thomsen,"",2017-10-11 17:24,Text formatting,4.1.0,"","","",0,2017-09-12 12:10,"",ä÷òAÇµÇƒÇ¢ÇÈ #4179,"",3.4.2,"Related: #4179
+
+The plugin ""Redmine Mentions"" gives a handy dropdown with users when hitting ""@"" on the keyboard. Selecting a user puts ""@loginname"" in the textbox. This works great with the feature implemented in #4179. However, if the user's login contains capital letters it is not recognized by the regex in application_helper. 
+
+""Redmine mentions"" puts in the actual login-name with exact casing (what I believe is the correct behaivour).
+
+The regex should be ajusted to *a-zA-Z*"
+26880,Redmine,Defect,"",Confirmed,Normal,Cannot clear all watchers when copying an issue,Go MAEDA,"",2017-12-01 09:50,Issues,3.4.4,"","","",0,2017-09-11 04:47,"",ä÷òAÇµÇƒÇ¢ÇÈ #10460,"",3.4.2,"We can select/deselect watchers when we create an issue by copying existing issue (#10460). 
+
+But if you deselect *all* watchers, the original watchers are preselected in the newly created issue despite the exception that the copied issue has no watcher.
+
+*Steps to reproduce:*
+
+1. The original issue has 2 watchers.
+
+!{width: 800px; border: 1px solid #ccc;}.01-copy-source@2x.png!
+
+2. Click ""Copy"" and deselect *all* watcher.
+
+!{width: 800px; border: 1px solid #ccc;}.02-deselect-watchers@2x.png!
+
+3. The newly created issue should not have any watchers but all watchers are preserved.
+
+
+!{width: 800px; border: 1px solid #ccc;}.03-watchers-are-preserved@2x.png!"
+26869,Redmine,Patch,"",Closed,Normal,Use number input field instead of text input for Gantt months field,Marius BALTEANU,Go MAEDA,2017-11-27 01:59,Gantt,4.0.0,"","","",0,2017-09-10 17:02,2017-11-27 01:59,"","","","A small UX improvement is to use a ""number input"":https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/number instead of the classic input for the Gantt months field.
+
+Benefits:
+- users can select the number of months using the mouse or/and mouse wheel
+- it validates the field value client side
+- on mobile devices, the numeric keyboard is shown
+
+!gantt_numeric_field.png!"
+26863,Redmine,Defect,"",Closed,Normal,file: issue_query.rb   function:sql_for_issue_id_field  line: ids = value.first.to_s.scan(/\d+/).map(&:to_i) should the first to be deleted?,jiangshan song,"",2017-09-09 14:52,"","","","","",0,2017-09-09 08:19,2017-09-09 14:52,"",Invalid,3.4.2,"I'm writing a redmine plugin using: IssueQuery
+where when I want to use :
+myquery.add_filter(""issue_id"" , ""="", [""123"", ""124"",""125""])
+I got only the first issue. 
+finally i find the function:sql_for_issue_id_field
+
+<pre><code class=""ruby"">
+  def sql_for_issue_id_field(field, operator, value)
+    if operator == ""=""
+      # accepts a comma separated list of ids
+      ids = value.first.to_s.scan(/\d+/).map(&:to_i)
+      if ids.present?
+        ""#{Issue.table_name}.id IN (#{ids.join("","")})""
+      else
+        ""1=0""
+      end
+    else
+      sql_for_field(""id"", operator, value, Issue.table_name, ""id"")
+    end
+  end
+</code></pre>
+
+I seems that the ""first"" is a error?
+
+BTW: i'm new to ruby and redmine. 
+"
+26858,Redmine,Defect,"",Closed,Normal,Exporting issues  to csv/pdf has garbage characters.,john calizar,"",2017-09-09 05:32,"","","","","",0,2017-09-08 12:27,2017-09-09 05:32,"",Invalid,"","I exported the list of issues to csv or pdf and the japanese characters are displayed as garbage.
+
+The subject is in Japanese.
+
+The output in csv/pdf are like these:
+
+???Å~?y?[?W??ÅÒ?Åe??A?b?v???[?h?????R???Åg?g????????
+in pdf , Kanji are in boxes but hiragana characters are okay.
+"
+26853,Redmine,Patch,"",Needs feedback,Normal,Fix hardcoded project-index width for webkit and mozilla browsers,Ilya Malahovskiy,"",2017-11-04 14:30,Projects,"","","","",0,2017-09-07 13:56,"","éüÇÃÉ`ÉPÉbÉgÇ™èdï° #27174, éüÇÃÉ`ÉPÉbÉgÇ™èdï° #27399, éüÇÃÉ`ÉPÉbÉgÇ™èdï° #27556, éüÇÃÉ`ÉPÉbÉgÇ™èdï° #27558","","",""
+26844,Redmine,Defect,"",Closed,Normal,ÑNÑu ÑÄÑÑÑÅÑÇÑpÑrÑ|ÑëÑêÑÑÑÉÑë ÑÖÑrÑuÑtÑÄÑ}Ñ|ÑuÑ~ÑyÑë ÑÅÑÄ email,IVAN RYZHKOV,"",2017-09-06 14:00,Email notifications,"","","","",0,2017-09-06 07:08,2017-09-06 14:00,"",Invalid,2.5.1,"ÑEÑÉÑ|Ñy ÑÅÑÇÑÄÑuÑ{ÑÑ Ñ~Ñu ÑyÑ}ÑuÑuÑÑ ÑÇÑÄÑtÑyÑÑÑuÑ|ÑéÑÉÑ{ÑÄÑsÑÄ ÑÅÑÇÑÄÑuÑ{ÑÑÑp, ÑÑÑÄ ÑÖÑrÑuÑtÑÄÑ}Ñ|ÑuÑ~ÑyÑë ÑÄÑÑÑÅÑÇÑpÑrÑ|ÑëÑêÑÑÑÉÑë ÑqÑuÑx Ñ~ÑpÑÇÑuÑ{ÑpÑ~ÑyÑz (ÑÉÑÄÑsÑ|ÑpÑÉÑ~ÑÄ Ñ~ÑpÑÉÑÑÑÇÑÄÑzÑ{ÑpÑ}).
+ÑEÑÉÑ|Ñy ÑÖ ÑÅÑÇÑÄÑuÑ{ÑÑÑp ÑuÑÉÑÑÑé ""ÑÇÑÄÑtÑyÑÑÑuÑ|ÑéÑÉÑ{ÑyÑz ÑÅÑÇÑÄÑuÑ{ÑÑ"" ÑÑÑÄ ÑÖÑrÑuÑtÑÄÑ}Ñ|ÑuÑ~ÑyÑë ÑÅÑÄ email Ñ~Ñu ÑÄÑÑÑÅÑÇÑpÑrÑ|ÑëÑêÑÑÑÉÑë. ÑÅÑÄÑtÑÉÑ{ÑpÑwÑyÑÑÑu Ñ{ÑpÑ{ ÑyÑÉÑÅÑÇÑpÑrÑyÑÑÑé/Ñ~ÑpÑÉÑÑÑÇÑÄÑyÑÑÑé ÑPÑO ÑtÑ|Ñë ÑÄÑÑÑÅÑÇÑpÑrÑ{Ñy ÑÖÑrÑuÑtÑÄÑ}Ñ|ÑuÑ~ÑyÑz. ÑBÑuÑÇÑÉÑyÑë REDMIN 
+
+Environment:
+  Redmine version                2.5.1.stable
+  Ruby version                   2.1.2-p95 (2014-05-08) [x86_64-linux]
+  Rails version                  3.2.17
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.6.11
+  Git                            1.7.1
+  Filesystem                     
+Redmine plugins:
+  redmine_ldap_sync              2.0.8.devel.gf916e6574e-dirty"
+26843,Redmine,Defect,"",Closed,Normal,Commits ignored in large(ish) git repository,Jean-Michel C.,"",2017-09-05 17:07,SCM,"","","","",0,2017-09-05 15:06,2017-09-05 17:07,"","",3.4.2,"Hi there,
+I am investigating a long overdue issue in my setup and at the moment, I think it is a defect in Redmine.
+
+I do have a fairly large repo (though not huge) with 1,500 commits.
+
+About a year ago, the processing commit messages stopped working and new commits stopped appearing in my Redmine (the code is up to date though).
+
+When issuing @git log --all --pretty=format:""%cd %cn %s""@ in the repository (the bare used by Redmine) I do have all the last commits, but they are missing in Redmine.
+
+The repo has 1587 commits, but only 1276 (give or take 1) are known to Redmine.
+
+h2. Environment
+
+<pre>
+Environment:
+  Redmine version                3.4.2.stable
+  Ruby version                   2.3.4-p301 (2017-03-30) [x86_64-linux-gnu]
+  Rails version                  4.2.8
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Filesystem                     
+Redmine plugins:
+  redmine_github_hook            2.2.0
+</pre>
+
+*Note:* This is not new to 3.4.2, I upgraded today to make sure, but I was on 3.2.6 before that and it was the same."
+26836,Redmine,Defect,"",New,Normal,Filtering issues via context menu should not reset selected columns,Vincent Robert,"",2017-09-04 10:47,Issues list,"","","","",0,2017-09-04 10:47,"","","",3.4.2,"If we use the context menu to filter issues, selected columns are reset to default.
+
+Steps to reproduce this bug:
+
+# On /issues, change selected column and apply
+# Check several issues
+# Apply ""filter"" in context menu
+# The query is applied: issues are well selected, but we lose our selected columns
+
+!01.png!
+
+!02.png!
+
+!03.png!
+"
+26826,Redmine,Patch,"",New,Normal,Issue filtering by spent time,Tobias Umbach,"",2017-09-28 13:20,Issues filter,4.1.0,"","","",0,2017-09-01 14:51,"","","","","Hi!
+
+Here's a patch that adds a filter for spent time to IssueQuery.  Any chance this could be included in the next 3.3 and 3.4 versions?"
+26825,Redmine,Defect,"",Closed,Normal,"Field ""due date"" is disabled",Sergio Castellano,"",2017-09-01 16:25,"","","","","",0,2017-09-01 14:46,2017-09-01 16:25,"",Invalid,"","Hi!
+
+Some weeks ago, the users can't close the tickets, the field 'due date' is required to set status 'Closed' the ticket show disabled.
+
+?Any solution?
+
+PD: Three months ago, we migrated from Mysql to PostgreSQL.
+
+Thanks."
+26819,Redmine,Patch,"",New,Normal,Create related issue button,Sandra Tatarevicova,"",2017-09-01 15:46,Issues,"","","","",0,2017-08-31 17:57,"","","","","To create a related issue in Redmine, it is necessary to
+
+* create the issue and
+* link the issue to another issue
+
+in two steps. This patch adds a button ""Create related issue"" to issue detail page. The button allows user to create an issue and add the issue relation (@TYPE_RELATES@) in one step."
+26818,Redmine,Patch,"",Closed,Normal,Bulgarian translation,Ivan Cenov,"",2017-09-15 06:52,Translations,"","","","",0,2017-08-31 17:40,2017-09-15 06:52,"","","","Translated
+* label_x_revisions"
+26791,Redmine,Patch,"",New,Normal,Send individual notification mails per mail recipient,Holger Just,"",2017-11-04 06:49,Email notifications,4.1.0,"","","",0,2017-08-30 12:46,"","ä÷òAÇµÇƒÇ¢ÇÈ #8157, ä÷òAÇµÇƒÇ¢ÇÈ #11981, ä÷òAÇµÇƒÇ¢ÇÈ #5990, ä÷òAÇµÇƒÇ¢ÇÈ #17096, ä÷òAÇµÇƒÇ¢ÇÈ #27242, ä÷òAÇµÇƒÇ¢ÇÈ #11106, ä÷òAÇµÇƒÇ¢ÇÈ #8137, ÉuÉçÉbÉNÇµÇƒÇ¢ÇÈ #2496","","","With this patch series, we are introducing the general concept to send multiple mails per notification event. Specifically, we are sending one mail per recipient user. Each of those mails is rendered in the context of the recipient (i.e. with @User.current@ set to the recipient). The mails can be sent immediately or optionally delayed using ActiveJob.
+
+This approach has a couple of advantages over the existing approach of sending a single mail to multiple recipients:
+
+* We ensure object visibility for the rendered mails in the most generic way. Since each mail is rendered with @User.current@ set to the recipient, all content rendered in the mail (including shown issue attributes, macros and links in rendered textile text, ...) is guaranteed to only be visible to the user without having to ensure this manually for each mail using the same visibility rules as used for the HTML views already.
+* The mail will always be sent in the recipients language, even if multiple users with different languages are notified
+* There is no risk of the whole notification mail being rejected because of a single invalid recipient address (see #8157, #6829, #8733 and a lot of duplicates)
+
+In the long run, it will also allow us to introduce user-specific additional information in the rendered notification, e.g. related issues, links to assign the issue, ...
+
+With this new approach, we do have a some challenges which we are trying to address separately:
+
+* Since each mail is always rendered with an adapted @User.current@, any mail views which expected to use the original @User.current@ need to be adapted. In Redmine core, this only affects the security notifications.
+* Depending on the number of recipients for a notification, there might be many rendered mails which can take some time in the request. To ensure a snappy response, we can use ActiveJob to render and send the mails in the background. This can make the @async_*@ delivery methods obsolete.
+
+h2. Reminder: How mail sending works in plain Rails (and Redmine)
+
+This patch series changes how mails are generated and delivered. Let's first look at how a mail normally gets generated and delivered in ActionMailer.
+
+* @mail = Mailer.news_added(news)@ - The user calls a class-method of the Mailer class (a child-class of ActionMailer::Base). This method is usually not implemented in the @Mailer@ class itself. Instead, there is a ""@method_missing@"":https://github.com/rails/rails/blob/v5.1.2/actionmailer/lib/action_mailer/base.rb#L576-L582 method on @ActionMailer::Base@. Here, ActionMailer creates a @ActionMailer::MessageDelivery@ object. Which is basically a delegator to an _eventually rendered_ mail object. Now, the mail is not actually rendered here. The @MessageDelivery@ object only collects all arguments it needs to eventually render the mail. This happens implicitly when any method on the mail is accessed (e.g. when the mail is about to be delivered). The @MessageDelivery@ delegator is returned to the user.
+
+Now that we have the (delegated) mail, we can deliver it with @mail.deliver@. This method used to be the only delivery method. With newer Rails versions, there is (with some variations) @deliver_now@ and @deliver_later@. Redmine usually calls @deliver@ which in source:trunk/config/initializers/10-patches.rb#L160 calls @deliver_now@ currently.
+
+When calling @mail.deliver@, the delegator starts to render the mail:
+
+* ""@MessageDelivery#processed_mailer@"":https://github.com/rails/rails/blob/v5.1.3/actionmailer/lib/action_mailer/message_delivery.rb#L103-L107 creates a new @Mailer@ instance and calls @process@ on it.
+* @Mailer#process(:news_added, news)@ - The @process@ method is part of ActionMailer (and in turn part of the @ActionController@ framework on which ActionMailer is based on). Among things, it calls the specified action, i.e. the instance method.
+* @Mailer#news_added(news)@ - This instance method is implemented on the Mailer class and is responsible to render the actual mail message. Here, we set headers, instance variables for the view and basically do the usual controller stuff. With a final call to @mail@, we eventually render a single mail and return a @Mail::Message@ object.
+* This returned @Mail::Message@ object is delivered with a call to @Mail::Message#deliver_now@.
+
+h2. How we hook into this process
+
+Now, in order to send multiple mails, we hook into this process to render (and deliver) multiple mails. We want to ensure two things:
+
+* We want to create multiple mails, one per recipient and deliver them all in one go.
+* When rendering the mail (i.e. when calling the Mailer's instance method), we want to set @User.current@ to the recipient user and set it back to the original value after the rendering is done
+
+These two goals are achieved with two specific changes to our Mailer:
+
+We introduce a wrapper class called @Mailer::MultiMessage@. Instances of this class wrap multiple @Mail::Message@ objects (or rather @ActionMailer::MessageDelivery@ objects which delegate to @Mail::Message@ objects). The class provides the same @deliver_*@ methods as the original @Mail::Message@ objects. When calling such a method, we are calling it on each of the wrapped messages. This allows us to use an instance of this class in place of a @ActionMailer::MessageDelivery@ object.
+
+We use this class by implementing _class methods_ for each mailer action. These class methods implement the same external interface (i.e. accept the same arguments) as the old instance methods. This ensures that we keep the existing public interface. The class methods fetch the recipient users for the respective object (i.e. the issue, news, comment, ...). We use @Mailer::MultiMessage#for@ to add an @ActionMailer::MessageDelivery@ object for each recipient which eventually renders the mail.
+
+When creating the delegator, we also pass the recipient user to the arguments for the mail rendering. We use this user in the overwritten @Mailer#process@ method to set @User.current@ and their language before actually rendering the message. This convention allows us to keep the interfaces clear: the user is only passed between the class method and @Mailer#process@ but doesn't need to be specified on the instance action. Here, it is already set as @User.current@ for each rendered mail.
+
+We also extend @Mailer.method_missing@ (on the class) to create a single-mail @Mailer::MultiMessage@ object with the current user in case the class method for an action is not explicitly overwritten. This ensures that our convention of always passing a user to @Mailer#process@ is kept up even if a plugin only adds an instance method (which was valid before).
+
+h2. What we tried and did not work
+
+I first attempted to set the current user directly in the action's class method. and reset it directly afterwards. That would have made the code much more localized. However, due to the delayed rendering of the mail with the @ActionMailer::MessageDelivery@ object, the mail will be rendered only after we have already reset the current user.
+
+One way to work around this would be to introduce @deliver_*@ methods (like the now obsolete @Mailer.deliver_issue_add@ method). However doing so would have changed the intended external interface of our @Mailer@ class and would likely lead to integration pain with all existing Redmine plugins sending mail.
+
+h2. What we ship
+
+We ship three patches here:
+
+* @0001-Send-individual-emails-for-each-mail-recipient.patch@ - The main implementation including tests.
+* @0002-Cleanup-Remove-Issue-each_notification-and-Journal-e.patch@ - Removes unneccessary methods for grouping recipients based on custom field visibility
+* @0003-Optional-Ensure-that-ActiveRecord-Base-objects-are-f.patch@ - An optional patch which changes the serialization behavior when sending mails with ActiveJob (e.g. with @Mailer.news_added(news).deliver_later@). By default, Rails serialized the arguments as a globalid (which is basically a reference to the object in the database identified by its ID). If there are concurrent changes to e.g. a newly created issue, this might result in notifications using the new state instead of the original state. With this patch, we serialize the exact attributes of the given objects into the job. Since this also causes nested attributes to be serialized along, care must be taken to avoid reference errors. In general, we should probably try to use mostly immutable state in the database where it is an important consideration that the notification state is exactly shown in the DB.
+
+h2. Future work
+
+h3. ActiveJob sending
+
+If the general direction of this patch is accepted, it is probably desireable to move the mail sending to ActiveJob completely. This could replace the @async_*@ delivery methods [[EmailConfiguration#Asynchronous-delivery_methods|currently configurable]] in @configuration.yml@. This change can either be hardcoded in source:trunk/config/initializers/10-patches.rb#L160 or made configurable with a setting. I'll be glad to provide a patch for this. It would only be a few lines of code.
+
+By default, we could use the in-process ActiveJob runner to send mails. More advanced users with a dedicated job worker (e.g. delayed job) can easily switch to that without changes to the Redmine code itself.
+
+h3. BCC recipients
+
+Since each user gets their own mail, we can probably remove the setting to send mails with BCC completely. If plugins want to send mails to non-user recipients, we would have to make sure to either set the recipients manually on BCC or group them appropriately. It is not a required setting in Redmine core anymore though."
+26789,Redmine,Defect,"",Closed,Normal,"When copying an issue, the field assigned_to is not set as expected",St?phane Briand SeaSideTech,"",2017-09-28 16:17,"","","","","",0,2017-08-30 08:44,2017-09-28 16:17,"","","","<pre>
+Environment:
+  Redmine version                3.3.0.stable
+  Ruby version                   2.1.9-p490 (2016-03-30) [x64-mingw32]
+  Rails version                  4.2.6
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Git                            2.13.3
+  Filesystem                     
+Redmine plugins:
+  no plugin installed
+</pre>
+
++Description of the problem:+
+
+I want to copy an existing issue. Its field _assigned_to_ is empty.
+In the issue form, I verify that the field is still empty, then click create.
+
+Then the new issue has a user in the field _assigned_to_
+
+
++First invesitgation:+
+
+I use a ruby debuger to run Redmine, and set a breakpoint in the function _create_ in issues_controller.rb.
+
+!issue_controller.png!
+
+* Before calling @issue.save => @issue.assigned_to is empty
+* After calling @issue.save => @issue.assigned_to contains a user.
+
+"
+26785,Redmine,Defect,"",Confirmed,Normal,Wrong columns after CSV export,Vincent Robert,"",2017-09-24 03:41,Issues filter,"","","","",0,2017-08-29 11:31,"","","",3.4.2,"On the @/issues@ page, if we create a new CSV export with all columns, every columns are selected next time we visit the html page.
+
+Selected columns should remain unchanged after the CSV export.
+
+!Capture11.30.02.png!"
+26780,Redmine,Defect,"",Closed,Normal,Translation for label_week in time report is not working,Alexander Meindl,Jean-Philippe Lang,2017-10-15 13:24,Time tracking,3.3.5,"","","",0,2017-08-28 17:32,2017-10-15 13:24,ä÷òAÇµÇƒÇ¢ÇÈ #20221,Fixed,3.4.2,"Translation for label_week is not working in time report, because i18n translation is used duplicated.
+
+Attached is a patch to fix it."
+26779,Redmine,Defect,"",Closed,Normal,Redmine plugin,Eric PATOUX,"",2017-08-29 10:39,"","","","","",0,2017-08-28 16:31,2017-08-29 10:39,"",Invalid,3.2.0,"Hello,
+I need to install the auto assigned user plugin, my Redmine revision being the 3.2.0 stable.
+Apparently, there's no plugin about this topic compatible with this Redmine revision (I have tried with h?t?t?p?s?:?/?/?g?i?t?h?u?b?.?c?o?m?/?E?y?e?p?e?a?/?r?e?d?m?i?n?e?_?a?u?t?o?_?a?s?s?i?g?n?e?d?_?u?s?er, and it failed)
+May you confirm, please?
+If yes, how to have this functionality, please?
+Thx for your feedback.
+Best regards,
+EricP"
+26778,Redmine,Defect,"",New,Normal,"Wrong CSS class for themes if its name includes ""_"" or "" """,Go MAEDA,"",2017-09-17 18:38,Themes,"","","","",0,2017-08-28 16:20,"","","","","The body element in HTML has CSS classes correspond to the current theme, project, controller and action.
+
+But ""theme-*"" class name is broken when the directory name of the theme includes ""_"" or "" "". Assume that you have installed a theme whose directory name is ""foo_bar"". Redmine will generate a class name ""theme-Foo bar"". But it is clearly broken because a whitespace is used as a separater.
+
+Here is an example.
+
+<pre><code class=""html"">
+<body class=""theme-Foo bar project-ecookbook controller-issues action-index avatars-off"">
+</code></pre>"
+26774,Redmine,Defect,"",Closed,Normal,subtask columns for Redmine 3.4,Cyril BERTHELOT,"",2017-08-29 10:36,"","","","","",0,2017-08-28 10:21,2017-08-29 10:36,"",Invalid,3.4.2,"Hi,
+
+We did an upgrade from Redmine 3.2 to 3.4.2.
+But the plugin is not compatbile with this version.
+Do you plan an update to support the 3.4.x ?
+If you need more info please let me know.
+
+Regards,
+Cyril."
+26769,Redmine,Defect,"",Closed,Normal,Create issue does not allow for category_id,John Bolthouse,"",2017-08-28 06:16,REST API,"","","","",0,2017-08-28 05:50,2017-08-28 06:16,"",Invalid,3.4.1,"When I create new issues via the API, no matter what I try, I cannot seem to get them to create with a properly assigned category.
+
+I am including the category_id in the JSON post, and have tried string and integer values, but nothing seems to trigger the ID.
+
+<pre>
+Environment:
+  Redmine version                3.4.1.stable
+  Ruby version                   2.0.0-p598 (2014-11-13) [x86_64-linux]
+  Rails version                  4.2.8
+  Environment                    production
+  Database adapter               SQLServer
+SCM:
+  Subversion                     1.7.14
+  Git                            1.8.3.1
+  Filesystem                     
+Redmine plugins:
+  clipboard_image_paste          1.12
+  redmine_agile                  1.4.4
+  redmine_checklists             3.1.5
+  redmine_contacts               4.1.1
+  redmine_contacts_helpdesk      3.0.8
+  redmine_embedded_video         0.0.3.1
+  redmine_lightbox2              0.3.2
+  redmine_login_attempts_limit   0.1.0
+  redmine_mentions               0.0.1
+  sidebar_hide                   0.0.8
+</pre>"
+26765,Redmine,Defect,"",Closed,Normal,Redmine 3.3.3.stable Cannot find binary for Git 2.14 ,Mike Pento,"",2017-08-26 06:54,SCM,"","","","",0,2017-08-25 23:58,2017-08-26 06:54,éüÇÃÉ`ÉPÉbÉgÇ∆èdï° #26645,Duplicate,3.3.3,"Redmine 3.3.3.stable cannot locate binary for Git version past 2.13.3 (Archlinux)
+
+<pre>
+Environment:
+  Redmine version                3.3.3.stable
+  Ruby version                   2.3.4-p301 (2017-03-30) [x86_64-linux]
+  Rails version                  4.2.7.1
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Git                            2.13.3
+  Filesystem                     
+Redmine plugins:
+  clipboard_image_paste          1.12
+  red_jenkins                    1.0.3
+  redcase                        1.0
+
+</pre>
+Attempting to add a repository to a project in Redmine after upgrading to Git v2.14.1 shows the following in the passenger log:
+
+<pre>
+[ 2017-08-23 18:01:37.7908 1020/7fecc85f0700 age/Cor/CoreMain.cpp:917 ]: Checking whether to disconnect long-running connections for
+ process 15964, application /usr/share/webapps/redmine/public (production)
+App 14348 stderr: error: unknown option `no-color'
+App 14348 stderr: usage: git version [<options>]
+App 14348 stderr: 
+App 14348 stderr:     --build-options       also print build options
+App 14348 stderr: 
+App 14367 stdout: Version: ImageMagick 6.9.9-9 Q16 x86_64 2017-08-21 http://www.imagemagick.org
+App 14367 stdout: Copyright: ? 1999-2017 ImageMagick Studio LLC
+App 14367 stdout: License: http://www.imagemagick.org/script/license.php
+App 14367 stdout: Features: Cipher DPC HDRI Modules OpenCL OpenMP 
+App 14367 stdout: Delegates (built-in): bzlib cairo fontconfig freetype gslib jng jp2 jpeg lcms lqr ltdl lzma openexr pangocairo png ps rsvg tiff webp wmf x xml zlib
+</pre> 
+
+Investigation leads to passing the '--no-color' option from the git adapter, presumably when trying to determine if the binary is present and in the path."
+26747,Redmine,Patch,"",Needs feedback,Normal,use find_by  to replace where.first,jwjw yy,"",2017-09-12 19:21,Code cleanup/refactoring,"","","","",0,2017-08-23 06:28,"","","","","sicne where.first will issue query with order by primary key which is actually unnecessary.
+<pre>
+redmine/app/helpers/application_helper.rb:909:              u = User.visible.where(:id => oid, :type => 'User').first
+redmine/app/helpers/application_helper.rb:941:                  if repository && (changeset = Changeset.visible.where(""repository_id = ? AND scmid LIKE ?"", repository.id, ""#{name}%"").first)
+redmine/app/helpers/application_helper.rb:966:              if p = Project.visible.where(""identifier = :s OR LOWER(name) = :s"", :s => name.downcase).first
+redmine/app/helpers/application_helper.rb:970:              u = User.visible.where(:login => name, :type => 'User').first
+redmine/app/helpers/application_helper.rb:975:            u = User.visible.where(:login => name, :type => 'User').first
+redmine/app/models/issue_query.rb:474:      root_id, lft, rgt = Issue.where(:id => value.first.to_i).pluck(:root_id, :lft, :rgt).first
+redmine/app/models/issue_query.rb:490:      parent_id = Issue.where(:id => value.first.to_i).pluck(:parent_id).first
+redmine/app/models/issue_query.rb:497:      root_id, lft, rgt = Issue.where(:id => value.first.to_i).pluck(:root_id, :lft, :rgt).first
+redmine/app/models/wiki_content_version.rb:94:      where(""wiki_content_id = ? AND version < ?"", wiki_content_id, version).first
+redmine/app/models/wiki_content_version.rb:102:      where(""wiki_content_id = ? AND version > ?"", wiki_content_id, version).first
+redmine/app/models/principal.rb:128:    Principal.visible(user).where(:id => id).first == self
+redmine/app/models/token.rb:115:    token = Token.where(:action => action, :value => key).first
+redmine/app/models/user.rb:196:    user = where(:identity_url => url).first
+redmine/app/models/user.rb:489:        user = where(""LOWER(login) = ?"", login.downcase).first
+redmine/app/models/user.rb:560:      h[project_id] = memberships.where(:project_id => project_id).first
+redmine/app/models/wiki.rb:56:    page = pages.where(""LOWER(title) = LOWER(?)"", title).first
+redmine/app/models/wiki.rb:59:      redirect = redirects.where(""LOWER(title) = LOWER(?)"", title).first
+redmine/app/models/issue_import.rb:148:          elsif issue_id = items.where(:position => parent_issue_id).first.try(:obj_id)
+redmine/app/models/issue_import.rb:193:    child_id = items.where(:position => child_position).first.try(:obj_id)
+redmine/app/models/attachment.rb:271:      attachment = Attachment.where(:id => attachment_id, :digest => attachment_digest).first
+redmine/app/models/time_entry_query.rb:150:      issue = Issue.where(:id => value.first.to_i).first
+redmine/app/models/repository.rb:252:      changesets.where(""revision = ?"", s).first
+redmine/app/models/repository.rb:254:      changesets.where(""revision LIKE ?"", s + '%').first
+redmine/app/models/role.rb:296:    role = unscoped.where(:builtin => builtin).first
+redmine/app/models/repository/git.rb:92:      changesets.where(:revision => name.to_s).first ||
+redmine/app/models/repository/git.rb:93:        changesets.where('scmid LIKE ?', ""#{name}%"").first
+redmine/app/models/repository/mercurial.rb:100:      cs = changesets.where(:scmid => s).first
+redmine/app/models/repository/mercurial.rb:102:      cs = changesets.where(:revision => s).first
+redmine/app/models/repository/mercurial.rb:105:    changesets.where('scmid LIKE ?', ""#{s}%"").first
+redmine/app/models/enumeration.rb:47:      where(:is_default => true, :type => 'Enumeration').first
+redmine/app/models/enumeration.rb:50:      where(:is_default => true).first
+redmine/app/controllers/imports_controller.rb:100:    @import = Import.where(:user_id => User.current.id, :filename => params[:id]).first
+</pre>"
+26730,Redmine,Defect,"",Closed,Normal,Context Menu is broken on 3.4.2,fabrice salvaire,"",2017-09-07 07:26,UI,"","","","",0,2017-08-21 10:55,2017-09-07 07:26,"",Invalid,3.4.2,"On 3.3.0, I found these occurrences of contextMenuInit
+
+<pre>
+redmine-3.3.0/public/javascripts/context_menu.js:function contextMenuInit(url) {
+redmine-3.3.0/test/functional/versions_controller_test.rb:    assert_select ""script"", :text => Regexp.new(Regexp.escape(""contextMenuInit('/issues/context_menu')""))
+redmine-3.3.0/app/helpers/application_helper.rb:    javascript_tag ""contextMenuInit('#{ url_for(url) }')""
+</pre>
+
+rather than on 3.4.2
+
+<pre>
+redmine-3.4.2/public/javascripts/context_menu.js:function contextMenuInit(url) {
+</pre>
+
+A diff shows
+
+<pre><code class=""diff"">
+@ -1154,7 +1297,7 @@
+     end
+   end
+ 
+-  def context_menu(url)
++  def context_menu
+     unless @context_menu_included
+       content_for :header_tags do
+         javascript_include_tag('context_menu') +
+@@ -1167,7 +1310,7 @@
+       end
+       @context_menu_included = true
+     end
+-    javascript_tag ""contextMenuInit('#{ url_for(url) }')""
++    nil
+   end
+ 
+   def calendar_for(field_id)
+</code></pre>"
+26728,Redmine,Patch,"",Needs feedback,Normal,count > 0 vs exists?,jwjw yy,"",2017-08-23 06:59,Code cleanup/refactoring,"","","","",0,2017-08-21 05:10,"","","","","<pre>
+redmine/app/models/project.rb:671:      if versions.count > 0
+redmine/app/views/imports/show.html.erb:3:<% if @import.saved_items.count > 0 %>
+redmine/app/views/imports/show.html.erb:15:<% if @import.unsaved_items.count > 0 %>
+</pre>
+
+could be 
+
+<pre>
+redmine/app/models/project.rb:671:      if versions.exists?
+redmine/app/views/imports/show.html.erb:3:<% if @import.saved_items.exists? %>
+redmine/app/views/imports/show.html.erb:15:<% if @import.unsaved_items.exists?%>
+</pre>"
+26727,Redmine,Patch,"",Needs feedback,Normal,udpate_all ,jwjw yy,"",2017-08-23 07:00,Code cleanup/refactoring,"","","","",0,2017-08-21 04:33,"","","","","<pre><code class=""ruby"">
+/app/controllers/wiki_controller.rb
+272        @page.children.each do |child|
+273          child.update_attribute(:parent, reassign_to)
+274        end
+</code></pre>
+
+could use 
+<pre><code class=""ruby"">
+@page.children.update_all(parent: reassign_to)
+</code></pre>"
+26726,Redmine,Patch,"",Needs feedback,Normal,collect(&:id) could be pluck(:id),jwjw yy,"",2017-08-23 07:00,Code cleanup/refactoring,"","","","",0,2017-08-21 04:26,"","","","","<pre><code class=""ruby"">
+redmine/app/controllers/versions_controller.rb:37:        project_ids = @with_subprojects ? @project.self_and_descendants.collect(&:id) : [@project.id]
+redmine/app/controllers/versions_controller.rb:37:        project_ids = @with_subprojects ? @project.self_and_descendants.collect(&:id) : [@project.id]
+redmine/app/models/issue.rb:1383:    moved_project_ids = project.self_and_descendants.reload.collect(&:id)
+</code></pre>
+
+could change collect to pluck"
+26721,Redmine,Patch,"",Needs feedback,Normal,use find_by instead of detect,jwjw yy,"",2017-08-21 08:03,Code cleanup/refactoring,"","","","",0,2017-08-19 05:01,"","","","","In project.rb
+
+<pre><code class=""ruby"">
+enable_module(name)
+ enabled_modules.detect {|m| m.name == name}
+end 
+</code></pre>
+
+should be replaced by in order to only get the specified enabled_module instead of doing filtering after retrieving them all.
+
+<pre><code class=""ruby"">
+enabled_modules.find_by(name: name)
+</code></pre>"
+26714,Redmine,Patch,"",New,Normal,pluck instead of map in issue_query,jwjw yy,"",2017-08-18 19:50,Code cleanup/refactoring,4.1.0,"","","",0,2017-08-17 08:30,"","","","","The previous issue_query.rb, line  438 version_ids = versions(:conditions => [where]).map(&:id) will issue query as:
+
+<pre><code class=""sql"">
+SELECT `versions`.`id` AS t0_r0, `versions`.`project_id` AS t0_r1, `versions`.`name` AS t0_r2, `versions`.`description` AS t0_r3, `versions`.`effective_date` AS t0_r4, `versions`.`created_on` AS t0_r5, `versions`.`updated_on` AS t0_r6, `versions`.`wiki_page_title` AS t0_r7, `versions`.`status` AS t0_r8, `versions`.`sharing` AS t0_r9, `projects`.`id` AS t1_r0, `projects`.`name` AS t1_r1, `projects`.`description` AS t1_r2, `projects`.`homepage` AS t1_r3, `projects`.`is_public` AS t1_r4, `projects`.`parent_id` AS t1_r5, `projects`.`created_on` AS t1_r6, `projects`.`updated_on` AS t1_r7, `projects`.`identifier` AS t1_r8, `projects`.`status` AS t1_r9, `projects`.`lft` AS t1_r10, `projects`.`rgt` AS t1_r11, `projects`.`inherit_members` AS t1_r12, `projects`.`default_version_id` AS t1_r13 FROM `versions` INNER JOIN `projects` ON `projects`.`id` = `versions`.`project_id` WHERE (projects.status <> 9 AND projects.id IN (SELECT em.project_id FROM enabled_modules em WHERE em.name='issue_tracking')) AND ( 1 = 1 )
+</code></pre>
+
+However, only id is needed, so , it's possible to change to 
+
+<pre><code class=""ruby"">
+ version_ids = versions_for_id(:conditions => [where]).pluck(:id)
+  def versions_for_id(options={})
+    Version.visible.
+      where(project_statement).
+      where(options[:conditions]).
+      includes(:project).
+      references(:project)
+  rescue ::ActiveRecord::StatementInvalid => e
+    raise StatementInvalid.new(e.message)
+  end    
+</code></pre>
+
+As shown in diff.rb"

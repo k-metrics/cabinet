@@ -1,0 +1,533 @@
+#,プロジェクト,トラッカー,親チケット,ステータス,優先度,題名,作成者,担当者,更新日,カテゴリ,対象バージョン,開始日,期日,予定工数,進捗率,作成日,終了日,関連するチケット,Resolution,Affected version,説明
+14527,Redmine,Patch,"",New,Normal,Git-smart-http authentication by repository,Ciprian Ciubotariu,"",2013-07-24 00:16,SCM extra,"","","","",0,2013-07-23 17:05,"","","","","This patch allows the repository name to differ from the project name.
+
+We migrated to a multi-repository per project setup after the whole infrastructure (scripts, build servers etc.) was set up. At this point we considered that renaming all the repositories to match the project identifier is too time-consuming and error-prone.
+
+The compromise we found is to path the authentication script so that is also looks at the pool of repository identifiers when authenticating a git-smart-http request:
+
+# extract the project/repository identifier from the request URI
+# if it is a project identifier, use that project to authenticate the request
+# if it is a repository identifier, use the first project it belongs to authenticate the request.
+
+While this patch does not represent a full solution to the multi-repository problem, I hope it helps others in the same situation as us."
+14526,Redmine,Defect,"",Closed,Normal,Default Theme: Apparent strange behaviour with the main-menu when many submenus are added,Shmuel Levine,"",2013-07-23 22:01,Themes,"","","","",0,2013-07-23 16:56,2013-07-23 22:01,次のチケットと重複 #6624,Duplicate,2.3.2,"When using the Default Theme (may be true of others as well, but not yet tested), I have an issue that when plugins add many items to the main-menu, the main menu becomes unwieldly long and exceeds the width of the rest of the page.  
+
+1) I would expect for the menu items to wrap nicely once they reach the screen width and not force me to scroll to see all of the items.  
+
+2) To make things worse, because the overall background is white, the menu items are unreadable unless hovering over them.
+
+3) The issue appears to be related to the main application.css stylesheet located in public/stylesheets.  #main-menu has set margin-right to be -500px.  When this is removed, everything works as expected.
+
+-- Is there a reason for this setting in the stylesheet?  It would seem to cause some major formatting issues.
+---> I do not want to manually change this on my system as it would then affect any future updates...
+---> I know that I can make a custom theme that just overrides this item, and I will in the interim, but this seems to me to be an issue that other would be having as well."
+14522,Redmine,Defect,"",Closed,High,"upgrade to 2.3, web site can't be running any more",Lynn Lin,"",2013-07-23 18:42,"","","","","",0,2013-07-23 11:14,2013-07-23 18:42,"",Invalid,"","The previous version is 1.4. I am on ubuntu 13.0 and upgrade to 2.3
+
+it report 
+A source file that the application requires, is missing.
+It is possible that you didn't upload your application files correctly. Please check whether all your application files are uploaded.
+A required library may not installed. Please install all libraries that this application requires.
+Further information about the error may have been written to the application's log file. Please check it in order to analyse the problem.
+Error message:
+Please install the mysql2 adapter: `gem install activerecord-mysql2-adapter` (cannot load such file -- mysql2)
+
+however I did install mysql2
+see gem list output 
+*** LOCAL GEMS ***
+
+actionmailer (3.2.13)
+actionpack (3.2.13)
+activemodel (3.2.13)
+activerecord (3.2.13)
+activerecord-mysql2-adapter (0.0.3)
+activeresource (3.2.13)
+activesupport (3.2.13)
+arel (3.0.2)
+blankslate (2.1.2.4)
+builder (3.2.0)
+bundler (1.3.5)
+coderay (1.0.9)
+erubis (2.7.0)
+hike (1.2.1)
+i18n (0.6.1)
+journey (1.0.4)
+mail (2.5.4)
+memcache-client (1.8.5)
+mime-types (1.23)
+multi_json (1.3.6)
+mysql (2.8.2)
+mysql2 (0.3.13)
+net-http-persistent (2.8)
+net-ldap (0.3.1)
+polyglot (0.3.3)
+rack (1.5.2)
+rack-cache (1.2)
+rack-openid (1.3.1)
+rack-ssl (1.3.2)
+rack-test (0.6.2)
+rails (3.2.13)
+railties (3.2.13)
+rake (10.0.4)
+rchardet (1.3)
+rdoc (3.9.4)
+ruby-hmac (0.4.0)
+ruby-openid (2.1.8)
+sprockets (2.4.3, 2.1.3)
+thor (0.18.1)
+tilt (1.3.3)
+treetop (1.4.14)
+tzinfo (0.3.33)
+yajl-ruby (1.1.0)
+"
+14521,Redmine,Patch,"",Closed,Normal,Update Spanish translations for trunk and 2.3.x,Jorge L?pez,"",2013-07-24 15:47,Translations,"","","","",0,2013-07-23 10:38,2013-07-24 15:47,"","","","I have attached two diff files which can be applied against @2.3-stable@ and @trunk@ respectively.
+
+They contain some strings that were not translated yet."
+14518,Redmine,Defect,"",Closed,Normal,Plugin Anonymous watcher can not send email when update Redmine 2.3.1,Long Nguyen Hai,"",2017-09-25 21:58,Email notifications,"","","","",0,2013-07-23 09:50,2013-07-23 15:09,"",Invalid,2.3.1,"Hi all!
+
+When I update redmine from 2.1.2 to 2.3.1, the Plugin ""Anonymous Watcher"":http://www.redmine.org/plugins/anonymous-watchers can not send email to anonymous. 
+Something wrong here but i don't detect it. Please help me!
+
+Info: 
+* Redmine 2.3.1
+* Ruby 1.9.3p194 (2012-04-20 revision 35410) [x86_64-linux]
+* Gem 1.8.24
+"
+14517,Redmine,Defect,"",Closed,Normal,"Missing Html Tile on Admin (Groups, LDAP and Plugins)",Tide _,"",2013-07-28 13:50,UI,2.4.0,"","","",0,2013-07-23 05:29,2013-07-28 13:50,"",Fixed,"","The html tile is missing for the pages:
+Admin/Groups
+Admin/LDAP Authentication
+Admin/Plugins"
+14516,Redmine,Defect,"",Closed,Normal,Missing Sort Column Label and Center Align on Admin-Enumerations,Tide _,"",2013-07-28 13:53,UI,2.4.0,"","","",0,2013-07-23 05:25,2013-07-28 13:53,"",Fixed,2.3.2,"On the Enumerations page in the admin are the sort column is missing a label.
+
+Also, the sort buttons are not center aligned."
+14511,Redmine,Defect,"",Closed,Normal,warning: class variable access from toplevel on Ruby 2.0,Pascal H,"",2013-07-28 14:09,Ruby support,2.3.3,"","","",0,2013-07-22 00:17,2013-07-28 14:09,"",Fixed,2.3.2,"At each start this error message appears in httpd error_log:
+
+<pre>
+/path/to/redmine/lib/SVG/Graph/Graph.rb:3: warning: class variable access from toplevel
+</pre>
+
+Version information:
+<pre>
+Environment:
+  Redmine version                2.3.2.stable
+  Ruby version                   2.0.0-p247 (2013-06-27) [x86_64-linux]
+  Rails version                  3.2.13
+  Environment                    production
+  Database adapter               Mysql2
+Redmine plugins:
+  no plugin installed
+</pre>
+
+<pre>
+[root@localhost ~]# httpd -v
+Server version: Apache/2.4.4 (Fedora)
+Server built:   May 20 2013 09:27:20
+</pre>
+
+<pre>
+[root@localhost ~]# passenger -v
+Phusion Passenger version 4.0.10
+</pre>"
+14510,Redmine,Defect,"",Closed,Urgent,Video Flash ,carlos ponticelli,"",2013-07-22 05:47,Documentation,"","","","",0,2013-07-21 21:51,2013-07-22 05:47,"",Invalid,"",realizacion video flas hipeers 
+14509,Redmine,Patch,"",New,Normal,Add view hook to associated revision partial,Andreas ?man,"",2016-12-30 09:25,Hook requests,"","","","",0,2013-07-21 16:41,"","","","","I have a plugin that decorates each associated revision with some extra data.
+
+To achieve that I had to add this hook in the _changesets.html.erb partial and I'd like to get it upstream,
+
+thanks
+/Andreas
+"
+14507,Redmine,Defect,"",Closed,Normal,"why 2.1.4 DrawPrimitivesTest's ""ccPointSize(64);""  can't work?????",shijie huo,"",2013-07-20 16:46,"","","","","",0,2013-07-20 13:44,2013-07-20 16:46,"",Invalid,"","ccPointSize(64);
+ccDrawColor4B(255,0,0,255);
+glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);  
+ccDrawPoint( VisibleRect::center() );
+glDisable(GL_VERTEX_PROGRAM_POINT_SIZE); 
+
+the above is my code,but it's can't work, the point's size is not changed."
+14506,Redmine,Defect,"",New,Normal,Multiple repositories not visible if main repository is empty,Matthias Lohr,"",2013-07-20 13:24,SCM,"","","","",0,2013-07-20 13:24,"","","",2.3.2,"If there are multiple repositories are configured (in my case both with git) and the main repository is empty, a 404 error is displayed - without the sidebar for selecting another repository."
+14502,Redmine,Patch,"",Closed,Normal,Russian translation for 2.3-stable,Toshi MARUYAMA,"",2013-09-05 13:24,Translations,2.3.3,"","","",0,2013-07-19 18:01,2013-09-05 13:24,"","","",From #14501.
+14501,Redmine,Patch,"",Closed,Normal,Russian translation for 'description_*' strings and new strings,Alex Stein,"",2013-07-20 05:35,Translations,"","","","",0,2013-07-19 17:09,2013-07-20 05:35,"","","","Fixed missed russian translation strings.
+
+here in attach git-diff file for master branch commit 76ab4710a8a4fd6f2482fe84a1b3dea317f50965"
+14500,Redmine,Defect,"",Closed,Normal,How to migrate database from Redmine 0.7.3 to 2.3.2 CentOS?,yuli georgiev,"",2013-07-19 17:00,"","","","","",0,2013-07-19 16:05,2013-07-19 17:00,"",Invalid,"","Hello,
+I have old Redmine 0.7.3 on CentOS 4.8.
+I installed new Redmine 2.3.2 on CentOS 5.9
+
+How to migrate the old database Redmine to the new?
+Please, give me detailed instruction.
+
+Thanks in advanced. :)"
+14496,Redmine,Defect,"",Closed,Normal,Permission check on an unused custom field leads to unwanted restriction for the ticket status,J?rgen Diez,"",2013-08-20 10:11,Permissions and roles,"","","","",0,2013-07-19 10:57,2013-08-20 10:11,"",Invalid,2.2.0,"We have several project with different custom fields.
+
+For these custom fields we defined rules where it is required for a certain status.
+
+However for some projects these custom fields are completely irrelevant and therefore deactivated in the project configuration. Now these field are not available in these project.
+
+The problem is that we can't set the status of the ticket now, because the field is not available in that project but required in the projects where it is used.
+
+The permissions for custom field should be changed to be checked only if a custom field is selected in a project."
+14495,Redmine,Defect,"",Closed,Normal,Тест,Stas Butkeev,"",2013-07-19 09:13,"","","","","",0,2013-07-19 08:41,2013-07-19 09:13,"",Invalid,"",Бла бла бла
+14491,Redmine,Defect,"",Closed,Normal,MailHandler: Unable to determine target project (when allow_override=project and project=unassigned is used),Deoren Moor,Jean-Philippe Lang,2014-10-20 08:38,Email receiving,2.6.0,"","","",0,2013-07-18 16:46,2014-10-20 08:38,"",Fixed,2.3.2,"We've had a problem with emails being rejected inexplicably for a long while now, but only recently did I realize that I could specify @RAILS_ENV=""development""@ to enable more detailed logging. That done, this is what the development.log file had to say:
+
+<pre>
+Receiving message 14135
+  ^[[1m^[[35mUser Load (0.7ms)^[[0m  SELECT `users`.* FROM `users` WHERE `users`.`type` IN ('User', 'AnonymousUser') AND (LOWER(mail) = 'jdoe@example.com') LIMIT 1
+  ^[[1m^[[36mProject Load (0.2ms)^[[0m  ^[[1mSELECT `projects`.* FROM `projects` WHERE `projects`.`identifier` IS NULL LIMIT 1^[[0m
+MailHandler: missing information from John Doe: Unable to determine target project
+</pre>
+
+Here is the scraping script that we use:
+
+<pre>
+#!/bin/bash
+
+# Purpose:   Fetch emails and import into Redmine
+# Reference: http://www.redmine.org/projects/redmine/wiki/RedmineReceivingEmails
+
+cd /opt/redmine
+
+sudo -u www-data bundle exec rake -f /opt/redmine/Rakefile redmine:email:receive_imap \
+    RAILS_ENV=""development"" \
+    host=mail.example.com username=support@example.com password=PASSWORD \
+    move_on_success=accepted_emails move_on_failure=rejected_emails \
+    project=unassigned category=unassigned tracker=support \
+    no_permission_check=1 unknown_user=accept port=993 ssl=1 \
+    allow_override=project,tracker,status,priority,category,assigned_to,\
+    fixed_version,start_date,due_date,estimated_hours,\
+    done_ratio > /dev/null 2>&1
+</pre>
+
+What is odd is that I can mark the email as unread, place it back in the Inbox and let the script try again and 9/10 times it will successfully pick it on the 2nd try. I haven't been running the scraping process in development mode long enough to see what the other failures log."
+14490,Redmine,Defect,"",Closed,Normal,Redmine Low Performance,Bishoy Medhat,"",2013-07-18 18:36,"","","","","",0,2013-07-18 16:25,2013-07-18 18:36,"",Invalid,2.1.2,"*+Dear All:+*
+
+i Have Faced a problem of Low Performance while using Version *2.1.2* Installed on Windows Server 2003 and Database *mySql* and about 40 users only .. if i restarted the Sever it works well till 2 days maximum and return slow again .. please help me
+"
+14489,Redmine,Defect,"",Closed,Normal,Wrong CSS for large menu,Francesco V,"",2013-10-01 06:52,UI,"","","","",0,2013-07-18 14:30,2013-10-01 06:52,次のチケットと重複 #6624,Duplicate,2.3.1,"When I see project page in italian language very long menu, on right side, appairs like white text on white background (see attachment).
+Page width is lesser than menu width, expecially for empty project.
+
+Environment:
+  Redmine version                          2.3.1.stable
+  Ruby version                             1.9.3 (i686-linux)
+  Rails version                            3.2.13
+  Environment                              production
+  Database adapter                         MySQL
+Redmine plugins:
+  no plugin installed"
+14488,Redmine,Defect,"",Closed,Normal,Error sending mail throug gmail : An error occurred while sending mail (530-5.5.1 Authentication Required. Learn more at ),Antimo Di Comite,"",2013-07-23 23:20,Email notifications,"","","","",0,2013-07-18 13:47,2013-07-23 23:20,"",Invalid,2.3.1,"Hi,
+i'm tryng to send mail through redmine but i receive the error above
+
+ An error occurred while sending mail (530-5.5.1 Authentication Required. Learn more at )
+
+The configuration seems to be ok:
+
+email_delivery:
+    delivery_method: :smtp
+    smtp_settings:
+      enable_starttls_auto: true
+      address: ""smtp.gmail.com"" 
+      port: '587'
+      domain: ""smtp.gmail.com"" 
+      authentication: :plain
+      user_name: ""theuser@gmail.com"" 
+      password: ""password"" 
+
+
+Environment info:
+  Redmine version                          2.3.1.stable
+  Ruby version                             1.9.3 (i686-linux)
+  Rails version                            3.2.13
+  Environment                              production
+  Database adapter                         Mysql2
+
+Any help will be appreciated, i can post all info that colud be required (i'm not a ruby expert but i do my best :) )"
+14485,Redmine,Patch,"",Closed,Normal,Traditional Chinese translation for 2.3-stable,Toshi MARUYAMA,"",2013-07-19 04:29,Translations,2.3.3,"","","",0,2013-07-18 10:28,2013-07-19 04:29,"","","","From #14458.
+
+<pre><code class=""diff"">
+diff --git a/config/locales/zh-TW.yml b/config/locales/zh-TW.yml
+--- a/config/locales/zh-TW.yml
++++ b/config/locales/zh-TW.yml
+@@ -715,7 +715,7 @@
+   label_nobody: 無名
+   label_next: 下一頁
+   label_previous: 上一頁
+-  label_used_by: Used by
++  label_used_by: 已使用專案
+   label_details: 明細
+   label_add_note: 加入一個新筆記
+   label_per_page: ?頁
+</code></pre>"
+14483,Redmine,Patch,"",Closed,Normal,"Add column ""cumulated spent time"" to issue filters",Jost Baron,"",2015-09-24 06:21,Issues,"","","","",0,2013-07-18 02:02,2015-09-24 06:21,次のチケットと重複 #11253,"","","Hi!
+
+I've added a column ""cumulated spent time"" to the available columns for issue queries. This column shows the time that was spent on the shown issue and all its subissues.
+
+The patch is based on revision 12027."
+14481,Redmine,Defect,"",Closed,Normal,Adding custom cells and multicells,Aaron Edam,"",2013-07-23 23:20,PDF export,"","","","",0,2013-07-17 23:28,2013-07-23 23:20,"",Invalid,"","Hi all,
+I installed redmine on ubuntu 13.04 using bitnami 
+version 2.3.2 . I am new to ruby. When i tried to add 
+custom fields to pdf.rb (such that tracker id and issue 
+subject will be at below of description table in their own
+table or adding custom text into new tables) i couldn't
+get what i want. As searching for two days, i couldn't find
+any document about this subject, too. How can i add 
+custom fields and custom texts to pdf?
+"
+14478,Redmine,Patch,"",Closed,Normal,Japanese translation update (r12013),Go MAEDA,"",2013-07-18 10:33,Translations,"","","","",0,2013-07-17 16:22,2013-07-18 10:33,"","","",Translated 6 new strings and updated some existing strings about auto registration.
+14477,Redmine,Defect,"",Closed,Normal,Problem with URL,salva salva,"",2013-07-18 10:29,"","","","","",0,2013-07-17 14:52,2013-07-18 10:11,"",Invalid,"","Hi,
+
+I'm installing the new Redmine but a having some troubles.
+
+All is good until I try to enter. The Webpage shows me that it can't find some .js, .css,... and also if I click one link (for example projects) it goes to myurl.com/projects instead of myurl.com/redmine/projects.
+
+I assume that it's a problem of url because it needs /redmine first so I write in config/environment.rb  Redmine::Utils::relative_url_root = ""/redmine"" and the javascript,css problems has gone but the other problem persists
+
+
+I tried to fix the last problem putting #RedmineApp::Application.routes.default_scope = { :path => '/redmine', :shallow_path => '/redmine' } but it doesn't work
+
+Anybody can help me?
+
+Thanks in advance
+Regards"
+14476,Redmine,Patch,"",Closed,Normal,Fix for Issue #13544,Omar Kohl,"",2014-01-12 10:20,SCM,"","","","",0,2013-07-17 14:06,2014-01-12 10:20,関連している #13544,"","",Commit reference: autogenerated issue note has wrong commit link syntax in multi-repo or cross-project context - See #13544
+14473,Redmine,Patch,"",Closed,Normal,Bulgarian translation (r12013),Ivan Cenov,"",2013-07-18 10:34,Translations,"","","","",0,2013-07-17 09:01,2013-07-18 10:34,"","","","Translated:
+* label_hidden
+* label_visibility_private
+* label_visibility_roles
+* label_visibility_public"
+14466,Redmine,Defect,"",Closed,Normal,Wrap long issue fields in issue pdf header,Filou Centrinov,"",2014-10-18 13:05,PDF export,2.6.0,"","","",0,2013-07-16 00:23,2014-10-18 13:05,"関連している #11839, 関連している #16335","","","This patch wraps long issue fields in the issue pdf header. This works for all issue fields in the header (also for long custum fields).
+
+Before:
+!issue_nobreak.png!
+
+After:
+!issue_withbreak.png!
+
+"
+14460,Redmine,Defect,"",Closed,Normal,Issue Checklist Strikethrough Style unsynchronized,Tor Knutsson,"",2013-08-06 02:14,Issues,"","","","",0,2013-07-15 09:03,2013-08-06 02:14,"",Invalid,2.3.2,"Version etc: Sorry found this while using hostedredmine.com, which only states they have ""Redmine stable 2.3"" installed, but it's a js/css client side problem so it should normally not relate to backend (rails v ruby version etc)
+
+Problem: The style of a check item in the issue checklist gets unsychronized if multiple boxes are checked quickly on a slow/busy connection
+
+Expected behaviour:
+When on an issue page, after checking a checkbox in the checklist, another one is checked before the submission of the first check has made the server roundtrip. Both checkboxes are checked, and both checkitem texts are strikethourgh. VIce versa for unchecking the boxes.
+
+Actual behaviour:
+When on an issue page, after checking a checkbox in the checklist, another one is checked before the submission of the first check has made the server roundtrip. First checkboxes are checked, first item checkitem text is strikethough, the second checkbox is only checked but not strikethrough. When unchecking the box again, the text becomes strikethrough (the styleing is now in an inverse state). Clearly a client-side problem, reloading the page resolves the inconsistency.
+"
+14458,Redmine,Patch,"",Closed,Normal,Traditional Chinese language file (to r12025),ChunChang Lo,"",2013-07-19 04:30,Translations,"","","","",0,2013-07-15 05:22,2013-07-19 04:30,"コピー元 #13279, コピー先 #14625","","","* Translations added:
+** label_used_by, notice_account_not_activated_yet, label_hidden, label_visibility_private, label_visibility_roles, label_visibility_public"
+14457,Redmine,Defect,"",Closed,Urgent,Redmine ezlibrarian plugin modified need to be categorized by project.,Shivam Modi,"",2013-07-14 15:10,Plugin API,"","","","",0,2013-07-14 15:06,2013-07-14 15:10,"",Invalid,2.3.1,"I've modified the ezlibrarian plugin as per my need and its working fine, but as its not having code to be categorized by project, the data entered for one project is visible in others.
+Can anyone help with the code, so that the data can be made project specific.
+I've attached the plugin source code with the issue."
+14451,Redmine,Patch,"",New,Normal,Icons for issue and gantt export,Go MAEDA,"",2015-10-04 14:38,UI,"","","","",0,2013-07-13 01:13,"",関連している #21257,"","","Added pdf/csv/png icons for issue and gantt export and replaced the feed icon with 16px icon.
+
+!export_icons.png!"
+14450,Redmine,Defect,"",Closed,Normal,Assignee field is cleared when validation fails,Martin Studer,"",2013-08-13 21:57,Issues,"","","","",0,2013-07-12 16:40,2013-08-13 21:57,"",Invalid,2.3.0,"When creating a new issue and choosing an assignee but not choosing other mandatory fields, the assignee is cleared when the validation fails. This causes issues to be assigned to nobody after having entered the missing details but forgetting to fix the assignee."
+14448,Redmine,Defect,"",Closed,Low,fedora installation prerequisites,Andrej Pakhutin,"",2013-07-29 05:33,Documentation,"","","","",0,2013-07-12 12:51,2013-07-29 05:33,"","","","In order to eliminate stop errors in 'bundle install' procedure under fedora 18-19 and maybe some other distributions it is worth mentioning to install the following prerequisite packages:
+yum install ruby-devel
+for json gem build
+and
+yum install ImageMagick-devel
+yum install mariadb-devel
+or yum install community-mysql-devel
+Not sure about mysql one, but it was stated by redhat that default mysql server will be replaced by mariadb in future releases, so it's not a big issue for me."
+14447,Redmine,Defect,"",Closed,Normal,Additional status transitions for assignees do not work if assigned to a group,Christoph R?diger,Jean-Philippe Lang,2013-07-28 22:47,Issues workflow,2.3.3,"","","",0,2013-07-12 11:24,2013-07-28 22:47,"",Fixed,"","The additional status transitions for an assignee are not working/not allowed if the issue is assigned to a group (who has the appropriate role). If the ticket gets assigned to a dedicated user (who belongs to the former assigned group), the additional transitions are allowed.
+
+Please see the attached screenshots for details.
+
+My environment ist
+<pre>
+Environment:
+  Redmine version                          2.3.1.stable.11984
+  Ruby version                             1.9.3 (i686-linux)
+  Rails version                            3.2.13
+  Environment                              production
+  Database adapter                         Mysql2
+Redmine plugins:
+  due_date_reminder                        0.3.2
+  redmine_auto_percent                     0.0.1
+  redmine_banner                           0.0.8
+  redmine_didyoumean                       1.2.0
+  redmine_issue_templates                  0.0.5
+  redmine_release_notes                    1.2.1
+  redmine_spent_time                       2.5.0
+  timelog_timer                            2.0.0
+</pre>"
+14446,Redmine,Defect,"",New,High,"Public project and Redmine.pm ""Use of use of uninitialized value $salt"" error for empty username access via TortoiseSVN",Иван Бухтияров,"",2015-05-19 13:37,SCM extra,"","","","",0,2013-07-12 10:41,"","","",2.3.1,"I installed new version of Redmine on my Ubuntu server a couple days ago. I properly configured Apache for correct working Subversion with Redmine. I created public project. But when I try to commit some files in this project without entering username (it is simply empty) in TortoiseSVN dialog on local machine I get the following error: 
+> Error: Commit failed (details follow):  
+> Error: Server sent unexpected return value (500 Internal Server Error) in response to  
+> Error:  MKACTIVITY request for '/svn/mmm/!svn/act/008182d9-97ee-2740-9a75-5c734c292d4c' "".
+The following string in error.log of Apache:
+> *Use of uninitialized value $salt in concatenation (.) or string at line 471 Redmine.pm.* 
+This line from Redmine.pm is:
+> my $salted_password = Digest::SHA::sha1_hex($salt.$pass_digest);
+If I uncheck ""Public"" to this project everything is ok. In this case TortoiseSVN let me authenticate repeatedly in SVN from one dialog window (if I enter empty or incorrect credentials)
+What is the problem?
+"
+14445,Redmine,Defect,"",Closed,Normal,<code> inside <pre> destroy polish diacritic of PHP,?ukasz R.,"",2013-07-20 07:26,Text formatting,"","","","",0,2013-07-12 10:39,2013-07-20 07:26,次のチケットと重複 #11089,Duplicate,"","If I use a syntax highlight inside <@pre@> tag, polish diacritic are not shown correctly.
+
+A file show exactly, where is a problem.
+!DisplayProblem.png! 
+"
+14443,Redmine,Defect,"",New,Normal,Property class in <code> inside <pre> does not accept a single quotes,?ukasz R.,"",2013-07-20 07:15,Text formatting,"","","","",0,2013-07-12 10:22,"","","","","Inside a new issue I want to put a piece of code with code syntax highlight
+
+This code does NOT work:
+&nbsp;&nbsp;&nbsp;<@pre@><@code@ @class@='php'></@pre@>
+
+This work:
+&nbsp;&nbsp;&nbsp;<@pre@><@code@ @class@=""php""></@pre@>
+
+Redmine does not recognize a single quote, only double quote.
+"
+14441,Redmine,Defect,"",Closed,Normal,email notification problem,pravin pal,"",2013-10-03 15:14,Email notifications,"","",2013-09-30,"",0,2013-07-12 08:14,2013-10-03 15:14,"",No feedback,"","i cofigure the mail setting in ""configuration.yml"" as:
+
+default:
+  # Outgoing emails configuration (see examples above)
+  email_delivery:
+    delivery_method: :smtp
+    smtp_settings:
+      enable_starttls_auto: true
+      address: ""smtp.gmail.com""
+      port: 587
+      domain: ""smtp.gmail.com""
+      authentication: :plain
+      user_name: ""mymail@gmail.com""
+      password: ""mypassword""
+
+when i click on the ""send a test email"" button in ""email notification: field it shows an error :
+_
+ An error occurred while sending mail (execution expired)
+
+any suggestion or solution 
+
+i am using :-
+
+ Redmine version                          2.3.1.stable
+  Ruby version                             1.9.3 (i686-linux)
+  Rails version                            3.2.13
+  Environment                              production
+  Database adapter                         Mysql2
+
+thank you"
+14439,Redmine,Defect,"",Closed,Urgent,My page-Issue assigned to me-not displaying the issue,selvakumar subramaniam,"",2013-07-15 21:54,"","","","","",0,2013-07-12 07:55,2013-07-15 21:54,"",Invalid,"","hi experts
+
+  please help me. in My page issue assigned to me is not displaying any issue, its always showing 0, 
+
+ please help me out. "
+14438,Redmine,Patch,"",New,Normal,Different identifier between repository and redmine project,Tiffany C,"",2013-07-12 07:25,SCM extra,"","","","",0,2013-07-12 07:25,"","","","","Right now, to use Redmine.pm, both repository and Redmine project identifier must be same.
+However, there is a case that both identifier/name are different.
+To make it work, attached file is the changes I made to Redmine.pm on Redmine2.3.1.
+
+Simply, I added a RedmineProjectId field to define the redmine project id.
+If this field is written in configuration file, use it for $project_id. 
+<pre>
+...
+     RedmineDSN ""DBI:mysql:database=databasename;host=my.db.server""
+     RedmineDbUser ""redmine""
+     RedmineDbPass ""password""
+     RedmineProjectId ""redmine_project_id""
+...
+</pre>
+
+Since I'm not a perl programmer, I don't know how to write a nice code...
+
+If this kind of specification could be added to trunk, it would be helpful.
+Thanks.
+"
+14432,Redmine,Defect,"",Closed,High,Sorting issues with subtasks,Lucas Ribeiro,"",2013-07-19 09:26,Issues,"","","","",0,2013-07-11 15:02,2013-07-19 09:26,次のチケットと重複 #10048,Duplicate,2.3.1,"There is an odd behavior when sorting issues with subtasks. If I first sort for priority and later by parent task, the resulting sort is by Parent Task and then issue number. A custom filter produces the same outcome.
+
+Maybe there should be an option to lock subtasks below parent issues, regardless of sorting type?"
+14429,Redmine,Defect,"",New,High,Basic API Authentication does not work with http://user:pass@URL,Genadi Saltikov,"",2013-07-10 16:28,Accounts / authentication,"","","","",0,2013-07-10 16:28,"","","",2.3.1,"When posting an Issue using the API, for example to this URL:
+http://USERNAME:Pass@URL.com/issues.xml
+
+it fails on line: authenticate_with_http_basic do |username, password| of the file app/controllers/application_controller.rb
+However, when I test with a Authorization header added, with user encoded as explained in: http://en.wikipedia.org/wiki/Basic_access_authentication#Client_side
+EG: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
+It works.
+
+
+I believe this is a bug, and for the moment I do now know how to fix this in Ruby (not my language).
+However I am trying to use the fulmo plugin, and would rather not be forced to customize it to send auth data using Headers, as I'd have to create a whole new plugin."
+14428,Redmine,Defect,"",Closed,Normal,ActionView::Template::Error (translation missing: en.number.human.storage_units.format),Leo L,"",2014-10-04 15:41,"","","","","",0,2013-07-10 16:27,2013-07-10 17:00,"",Invalid,"","Hello,
+
+We are 5 in a team. Most of us have a french environment, but one has an english environment.
+The one with english environment can't connect Redmine : He got a ""500 internal error"".
+The rest connect fine !
+
+So I took a look at the logs, and I can see the following error when he tries to connect :
+
+@Started GET ""/"" for 213.30.164.210 at 2013-07-09 18:11:17 +0200
+Processing by WelcomeController#index as HTML
+  Current user: anonymous
+Redirected to https://druide.123-opportunity.com/login?back_url=https%3A%2F%2Fdruide.123-opportunity.com%2F
+Filter chain halted as :check_if_login_required rendered or redirected
+Completed 302 Found in 3ms (ActiveRecord: 0.6ms)
+Started GET ""/login?back_url=https%3A%2F%2Fdruide.123-opportunity.com%2F"" for 213.30.164.210 at 2013-07-09 18:11:17 +0200
+Processing by AccountController#login as HTML
+  Parameters: {""back_url""=>""https://druide.123-opportunity.com/""}
+  Current user: anonymous
+  Rendered account/login.html.erb within layouts/base (1.3ms)
+  Rendered plugins/redmine_improved_searchbox/app/views/redmine_improved_searchbox/_redmine_improved_searchbox_partial.html.erb (1.4ms)
+  Rendered plugins/clipboard_image_paste/app/views/clipboard_image_paste/_headers.html.erb (1.3ms)
+  Rendered plugins/clipboard_image_paste/app/views/clipboard_image_paste/_add_form.html.erb (3.7ms)
+Completed 500 Internal Server Error in 15ms
+
+ActionView::Template::Error (translation missing: en.number.human.storage_units.format):
+    2: <span id=""cbp_images_form"">
+    3:   <span id=""cbp_image_fields""></span>
+    4:   <span class=""add_attachment""><%= link_to_function(l(:cbp_txt_add_image), 'cbImagePaste.showPasteDialog(); return false;', :class => 'add_attachment') %>
+    5:   (<%= l(:label_max_size) %>: <%= number_to_human_size(Setting.attachment_max_size.to_i.kilobytes) %>)</span>
+    6: </span>
+    7:
+    8: <!-- input field span inspired by redmine/app/views/attachments/_form.html.erb -->
+  lib/redmine/hook.rb:111:in `block in render_on'
+  lib/redmine/hook.rb:61:in `block (2 levels) in call_hook'
+  lib/redmine/hook.rb:61:in `each'
+  lib/redmine/hook.rb:61:in `block in call_hook'
+  lib/redmine/hook.rb:58:in `tap'
+  lib/redmine/hook.rb:58:in `call_hook'
+  lib/redmine/hook.rb:158:in `call_hook'
+  app/views/layouts/base.html.erb:75:in `_app_views_layouts_base_html_erb__350208797_383876100'@
+
+I tried to google it but I couldn't find a solution or a clear indication.
+
+For information :
+Environment:
+  Redmine version                          2.3.1.stable.11981
+  Ruby version                             1.9.3 (i386-freebsd9)
+  Rails version                            3.2.13
+  Environment                              production
+  Database adapter                         Mysql2
+Redmine plugins:
+  clipboard_image_paste                    1.6a
+  projects_tree_view                       0.0.8
+  redmine_all_files                        0.0.3
+  redmine_documents_short                  0.2.0
+  redmine_improved_searchbox               0.0.3
+  redmine_issue_checklist                  2.0.5
+  redmine_monitoring_controlling           0.1.1"
+14426,Redmine,Defect,"",Closed,Urgent,how to install redmine ,yacine harchouche,"",2013-07-10 15:53,"","","","","",0,2013-07-10 15:43,2013-07-10 15:51,"",Invalid,"","hello everyone, I have a big problem I can not to install redmine on my computer ... do you have video for a beginner.
+Thank you"
+14422,Redmine,Defect,"",Closed,Normal,CVS root_url not recognized when connection string does not include port,Dominik Follmann,Jean-Philippe Lang,2013-07-28 22:49,SCM,2.3.3,"","","",0,2013-07-10 08:41,2013-07-28 22:49,"",Fixed,"","The patch fixes a bug in the CVS SCM module of the standard version of redmine (2.3.1).
+Without this bugfix, the revisions are not handled correctly. Each revision-number (e.g. 1.4) is only accepted once by the redmine repository, although each file has its own revision-numbers.
+
+In our case the CVSROOT looks like this:
+<pre>:pserver:cvs_user:cvs_password@123.456.789.123:9876/repo</pre>
+The problem is located in _\lib\redmine\scm\adapters\cvs_adapter.rb_ in the method _root_url_path_
+--> RegExp was changed from <pre>/^:.+:\d*/</pre> to <pre>/^(:.+)+@\d+(.\d+)+/</pre>
+
+This lets the property return the correct part of the CVSROOT-URL
+(""/repo"" instead of "":cvs_password@123.456.789.123:9876/repo"")
+And now the function 'fetch_changesets' works as expected with CVS.
+
+Find attached the patch file."
+14415,Redmine,Defect,"",Closed,Normal,Spent time details and report should ignore 'Setting.display_subprojects_issues?' when 'Subproject' filter is enabled.,Martin Dub?,Jean-Philippe Lang,2013-07-28 22:46,Time tracking,2.3.3,"","","",0,2013-07-09 06:06,2013-07-28 22:46,"",Fixed,2.3.1,"Using the 'Subproject' filter on the time log details or report pages has no effect if the ""Display subprojects issues on main projects by default"" is disabled.
+
+Attached is a patch that fix the problem by not scoping on project since the proper scope has been applied in Query.project_statement
+
+Thanks"
+14412,Redmine,Defect,"",New,Normal,Wiki > Textile text with hidden part not correctly exported to pdf,Adrien SALES,"",2013-07-21 12:33,PDF export,"","","","",0,2013-07-08 23:03,"",関連している #13051,"",2.3.1,"When i put the content (see textile source in attachment), and that i see the page with the section hidden, the pdf output is showing the raw textile output in the pdf, i'll put attachment very soon."
+14405,Redmine,Defect,"",Closed,Normal,Alternate repo commit: link wrong when automatically added from a commit message,Olivier Mehani,"",2014-03-17 06:28,SCM,"","","","",0,2013-07-08 10:21,2014-03-17 06:28,次のチケットと重複 #13544,Duplicate,"","When adding some markup, in a commit message, containing an issue number, Redmine updates this issue with a link to the commit.
+
+However, when this commit shows up in a repo which is not the main one for that project, the @commit:@ link is not formatted properly, and reads @REPONAME|commit:SHA@ instead of @commit:REPONAME|SHA@
+
+An example can be found at [0]
+
+[0] http://oml.mytestbed.net/issues/1156#note-19"

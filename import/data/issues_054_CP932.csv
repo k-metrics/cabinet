@@ -1,0 +1,1128 @@
+#,プロジェクト,トラッカー,親チケット,ステータス,優先度,題名,作成者,担当者,更新日,カテゴリ,対象バージョン,開始日,期日,予定工数,進捗率,作成日,終了日,関連するチケット,Resolution,Affected version,説明
+18218,Redmine,Defect,"",Closed,High,No more datepicker in New issue or in Issue update after upgrade to 2.6.0,Pavel Potcheptsov,"",2014-10-28 15:34,"","","","","",0,2014-10-28 13:42,2014-10-28 15:34,"",Invalid,2.6.0,"<pre>
+Environment:
+  Redmine version                2.6.0.stable.13520
+  Ruby version                   1.9.3-p327 (2012-11-10) [i686-linux]
+  Rails version                  3.2.19
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.8.8
+  Git                            1.7.1
+  Filesystem                     
+Redmine plugins:
+  multi_time_tracker             0.1.4
+  projects_table                 0.0.4
+  redmine_agile                  1.3.2
+  redmine_dmsf                   1.4.9 stable
+  redmine_drafts                 0.2.0
+  redmine_equipment_status_viewer 1.0.1
+  redmine_fields_permissions     1.0.0
+  redmine_lightbox               0.0.1
+  redmine_monitoring_controlling 0.1.1
+  redmine_plugin_views_revisions 0.0.1
+  redmine_ppo                    0.0.1
+  redmine_timesheet_plugin       0.7.0
+  redmine_xls_export             0.2.1.t4
+  reklama                        0.2.1
+</pre>"
+18209,Redmine,Patch,"",New,Normal,Add e-mail notification option: Tracker updated,Martin Cizek,"",2014-10-27 15:24,Email notifications,"","","","",0,2014-10-27 15:24,"","","","","The ""global"" email notifications settings (Administration -> Settings -> Email notifications) currently allow to specify the following issue updates to be watched by users who have chosen to watch ""any events on..."":
+<pre>
+[ ] Issue updated 
+     [x] Note added
+     [x] Status updated
+     [x] Assignee updated
+     [x] Priority updated
+</pre>
+We suggest to add ""Tracker updated"", as we consider it a substantial event for certain people (e.g. a customer willing to know whenever a Bug is changed to a Feature, but don't want to be spammed by issue reassignments). The new 'Issue updated' action notifications would be:
+<pre>
+[ ] Issue updated 
+     [x] Note added
+     [x] Status updated
+     [x] Assignee updated
+     [x] Priority updated
+     [x] Tracker updated
+</pre>
+
+This update would be especially beneficial for ""Event notifications"":http://www.redmine.org/plugins/event_notifications plugin users, who are able to set these standard notification options also per-user and per-project.
+
+The patch against current trunk (r13520) is attached; if there is anything we should improve, please let us know.
+
+P.S. I've noticed this feature is similar to #16362, where assignee change was added.
+
+(thanks to Sandra Tatarevicova, sponsored by Orchitech Solutions)"
+18206,Redmine,Defect,"",Closed,Normal,Files module doesn't sort ,Josselin Beaud'huy,"",2014-10-27 13:59,Files,"","","","",0,2014-10-27 13:02,2014-10-27 13:59,"",Invalid,2.6.0,Sort files doesn't work on files module
+18205,Redmine,Defect,"",Closed,Normal,Compatablity Issue,Prashanth S,"",2014-10-27 12:57,Issues workflow,"","","","",0,2014-10-27 12:13,2014-10-27 12:57,"",Invalid,2.4.6,"Hi , While Creating the new issues or using any of the modules randomly ,compatablity issues occurs like miss placed text and scroll bar issues in mozilla firefox browser.
+Please  go through the screnshot."
+18202,Redmine,Defect,"",Closed,Normal,Compatablity Issue,Prashanth S,"",2014-10-27 11:50,Issues,"","","","",0,2014-10-27 10:30,2014-10-27 11:50,"",Invalid,2.4.6,"Hi, 
+When we go through the issue feature , after sometime compatablity issue occurs like broken frames , Scrollbar issue.Please go through the screenshots.
+"
+18201,Redmine,Defect,"",New,Low,Internal server error (500): invalid byte sequence in UTF-8,Bj?rn Peem?ller,"",2014-11-05 10:10,"","","","","",0,2014-10-27 09:56,"","","",2.6.0,"Hi, tonight my local Redmine instance (2.6.0) was visited by YandexBot with an invalid URL:
+
+<pre>
+/login?%BB%A1%20%AA%13%BD%F4%06r
+</pre>
+
+For this input Redmine returned the following error message:
+
+<pre>
+ArgumentError: invalid byte sequence in UTF-8
+</pre>
+
+The reason seems to be an invalid UTF-8 encoding which Rails can not decode successfully. After short googling, I successfully added a gem which tries to sanitize such URLs by replacing invalid bytes (https://github.com/sunny/handle_invalid_percent_encoding_requests, based on discussion http://stackoverflow.com/questions/24648206/ruby-on-rails-invalid-byte-sequence-in-utf-8-due-to-bot), and it works for the above link.
+
+Maybe there is even a better solution, but I think it would be favourable to make Redmine more robust either way.
+
+Regards,
+Bj?rn"
+18200,Redmine,Patch,"",Closed,Normal,Traditional Chinese translation (to r13516),ChunChang Lo,"",2014-10-27 11:59,Translations,"","","","",0,2014-10-27 04:49,2014-10-27 11:59,"コピー元 #18002, コピー先 #18264","","","* New
+** label_add_projects
+"
+18192,Redmine,Defect,"",Closed,Normal,LDAP tests not running with Rails 4.1,Jean-Philippe Lang,Jean-Philippe Lang,2014-11-18 17:13,LDAP,"","","","",0,2014-10-24 23:02,2014-11-02 13:52,関連している #14534,Fixed,"",""
+18191,Redmine,Patch,"",Closed,Normal,Update time zones for Russia once again,Ilya Demenkov,"",2014-10-24 23:26,Gems support,"","","","",0,2014-10-24 22:21,2014-10-24 23:26,"","","","Starting October 26, 2014 Russia is changing its time zones again. All of Russia will move back one hour, except:
+
+* Udmurtia and Samara Oblast will remain on UTC+04:00 (thus reinstating Samara Time)
+* Kemerovo Oblast will remain on UTC+07:00
+* Zabaykalsky Krai will move back two hours to UTC+08:00
+* Magadan Oblast will move back two hours to UTC+10:00
+* Chukotka Autonomous Okrug and Kamchatka Krai will remain on UTC+12:00 (thus reinstating Kamchatka Time)
+
+For example, Moscow will move from UTC+4 back to UTC+3 it used before 2011.
+
+Annual DST changes will not be observed. Further information availble at http://en.wikipedia.org/wiki/Time_in_Russia
+
+Please release a patch to update time zones and please include it to the next version."
+18190,Redmine,Patch,"",Closed,Normal,Bulgarian translation (r13499),Ivan Cenov,"",2014-10-27 11:59,Translations,"","","","",0,2014-10-24 21:59,2014-10-27 11:59,"","","","Translated:
+* label_add_projects"
+18182,Redmine,Patch,"",Closed,Normal,Latvian translation update,J?nis Elmeris,"",2014-10-27 11:58,Translations,3.0.0,"","","",0,2014-10-24 15:47,2014-10-27 11:58,"","","",Some new Latvian translations and a few clarified translations (issue relations).
+18181,Redmine,Defect,"",Closed,Normal,Cannot send custom mail notifications with attachments,Alex Antropoff,"",2014-10-24 22:58,Email notifications,"","","","",0,2014-10-24 14:47,2014-10-24 22:58,"",Invalid,2.5.2,"Good day!
+
+Sorry, I don't know which tracker should I choose to publish my question. I think this is not Redmine's bug, but my mistake.
+Sorry for my bad English too :)
+
+I have some custom email templates (one (pair) of them is in attachment to the Issue) and extended mailer.rb: in issue_edit() I try to send specific email-notifications to users with the specific role (is_support?(project)). I do this before native mailing (see mailer.rb issue_edit() function). I need to include attachments to my custom notifications, not links - just files in email (attachments[fnam] = File.read(full, mode: 'rb')   on Windows OS)
+). So, native notifications are sending with no problems - there are all file attachments of any types (jpg/zip/pdf/doc/etc...), but my custom notifications have no any attachment.
+
+I opened the email original in GMail and saw that there were differencies in content types. Normal (with attachments) has content_type == 'multipartial/mixed', but my custom letter has content_type == 'multipart/alternative'.
+I've tried to pass content_type in mailer.rb code, but it corrupts the letter at all.
+
+Please, can you give me an advice or an example of working code.
+
+Thanks!"
+18176,Redmine,Defect,"",Closed,Urgent,PDF: long text is corrupt,Felix Muster,"",2014-10-27 09:51,PDF export,2.6.1,"","","",0,2014-10-24 10:11,2014-10-25 12:00,"",Fixed,2.6.0,"I applied the pdf.rb.patch from #14466 in my old Redmine Version 2.5.
+
+I updated to 2.6.0.
+But there is still the problem that an export of issues with long text to pdf is corrupt.
+
+The pdf.rb file was heavily adjusted.
+So the patch doesn't take an affect.
+
+I tried a bit on my own.
+But I'm really new on ruby.
+
+Could you please give me quick support?
+It's an important feature for us.
+
+Thank you."
+18175,Redmine,Defect,"",Closed,Normal,Dislocation in appearance of Right click context menu in issue list,Lajish Lakshmanan,"",2014-10-24 22:59,Issues,"","","","",0,2014-10-24 08:09,2014-10-24 22:59,"",Invalid,2.6.0,"In version 2.6.0, right click context menu appearance has been dislocated. Please check the attached image."
+18174,Redmine,Defect,"",Closed,High,Rails-4.1 branch merge into trunk (r13482) reverts trunk commits,Mischa The Evil,Jean-Philippe Lang,2014-10-25 07:31,"","","","","",0,2014-10-24 05:39,2014-10-24 20:46,"関連している #18134, 関連している #14534",Fixed,"","The merge of the rails-4.1 branch back into trunk contains errors and as such is reverting trunk commits. This is caused by the fact that the branch was not properly rebased in r13443. During the merge commits on trunk were reverted. This is something I was already expecting to happen. That is why I reported and patched (finished the rebase) this already in #18134 (under 2.1).
+I'm still looking into this right now, but wanted to report this quickly...
+
+First inspection: patch http://www.redmine.org/attachments/12519/5.%20merge-missing-in-41-from-trunk_to_rails-4.1_at_r13451.patch (attached to #18134) which was originally made to apply to rails-4.1 branch, seems to include all reverted commit's changes and should instead now be applied to trunk.
+
+Assigned to Toshi because you're trying to fix it currently."
+18173,Redmine,Defect,"",Closed,Normal,Mixed rails versions in trunk?,Ivan Cenov,"",2014-10-23 23:55,Rails support,"","","","",0,2014-10-23 18:42,2014-10-23 23:55,"",Invalid,2.6.0,"After updating trunk to r13495 here is what I saw
+<pre>
+Microsoft Windows [Version 6.1.7601]
+Copyright (c) 2009 Microsoft Corporation.  All rights reserved.
+
+D:\apps\redmine_svn>thin start -e production -p 3000
+Using rack adapter
+←[31mCould not find gem 'tzinfo-data (>= 0) x86-mingw32' in the gems available on this machine.←[0m
+←[33mRun `bundle install` to install missing gems.←[0m
+
+D:\apps\redmine_svn>bundle install --without test development
+Fetching gem metadata from https://rubygems.org/.........
+Fetching gem metadata from https://rubygems.org/.........
+Resolving dependencies...
+You have requested:
+  rails = 4.1.6
+
+The bundle currently has rails locked at 3.2.19.
+Try running `bundle update rails`
+
+D:\apps\redmine_svn>
+</pre>I saw similar mixing of rails versions when upgraded our Redmine production server to 2.6.0. Is this some mismatch in trunk?"
+18159,Redmine,Defect,"",Closed,High,Security issue when using local repositories,Luciano Silveira,"",2014-10-23 00:22,Security,"","","","",0,2014-10-22 22:03,2014-10-23 00:22,次のチケットと重複 #10966,Duplicate,"","Access to local repositories uses the system access rules. Since the system user used to run Redmine is unique, all local repositories must be accessible by this user. So, if a manager of one project knows the path to the repository of another project, he or she can configure a local repository for his/her own project using that path, obtaining reading access to that repository. "
+18157,Redmine,Patch,"",Closed,Normal,German translation,Gundolf Dampf,"",2014-10-23 04:15,Translations,2.6.1,"","","",0,2014-10-22 10:11,2014-10-23 04:15,"","","","Please change the german names of the newly introduced groups in version 2.6.0.
+So in the de.yml please change: 
+> label_group_anonymous: Anonymous users
+> label_group_non_member: Non member users
+to 
+> label_group_anonymous: Anonyme Benutzer
+> label_group_non_member: Nichtmitglieder
+
+Unfortunately I am not able to create a DIFF-file, sorry for that.
+
+Thanks!
+
+"
+18156,Redmine,Patch,"",Closed,Normal,Spanish translation file,Jes?s Guti?rrez de la Vega,"",2014-10-23 03:55,Translations,2.6.1,"","","",0,2014-10-22 08:53,2014-10-23 03:55,"","","",ES translation file reviewed.
+18149,Redmine,Defect,"",Closed,Normal,Email notifications error when moved to another machine and DNS name assigned,Pulkit Gupta,"",2014-10-21 17:03,"","","","","",0,2014-10-21 16:40,2014-10-21 17:03,"",Invalid,"","I am getting this error while sending test email - 
+
+""getaddrinfo : Name or service not known"".
+
+FYI I was using Redmine ubuntu virtual machine on a machine and email notifications were working perfectly fine. I moved this virtual machine to another machine and assigned DNS name for the same. After some time I noticed that email notification stopped working. Though everything else is working as before.
+
+Any help would be appreciated. "
+18148,Redmine,Defect,"",Needs feedback,Normal,hook controller_account_success_authentication_after not called with auth_sources,Sylvain V,"",2014-10-28 19:26,Accounts / authentication,"","","","",0,2014-10-21 15:25,"","","",2.5.2,"If users are registered by an auth_sources
+
+See [[Alternativecustom_authentication_HowTo]]
+
+the hook is not used.
+
+:controller_account_success_authentication_after
+
+source:trunk/app/controllers/account_controller.rb#L258
+
+is it the expected behavior?"
+18144,Redmine,Defect,"",Closed,Normal,"German translation on ""delete my account"" page showing a ""\n""",Maurice M.,Jean-Philippe Lang,2014-10-20 23:23,Translations,2.6.0,"","","",0,2014-10-20 21:17,2014-10-20 23:23,"",Fixed,2.5.1,see subject and attachment
+18140,Redmine,Defect,"",Closed,Normal,Server error when clicking on Wiki module,Pulkit Gupta,"",2014-10-20 14:47,"","","","","",0,2014-10-20 14:00,2014-10-20 14:47,"",Invalid,"","Hi I am facing an error when clicking on Wiki module of the project. It shows server error .
+FYI- I am using Bitnami ubuntu virtual machine and I have two plugins installed - Image clipboard Paste and redmine_mention_plugin. These plugins are working perfectly fine but after installing these two plugins I found that the Wiki module is not working and showing server error-
+""Internal error
+
+An error occurred on the page you were trying to access.
+If you continue to experience problems please contact your Redmine administrator for assistance.
+
+If you are the Redmine administrator, check your log files for details about the error.""
+
+I checked the production logs. Please check the attached screenshot of production logs.
+"
+18134,Redmine,Patch,"",New,Normal,Issues with svn:mergeinfo property values and r13443 rails-4.1 rebase.,Mischa The Evil,"",2014-10-27 07:52,Code cleanup/refactoring,"","","","",0,2014-10-20 06:05,"",関連している #18174,"","","After some Redmine core SCM log reviewing I noticed several issues:
+# related to svn:mergeinfo properties:
+## [rails-4.1 branch] r13443 rebase of rails-4.1 branch included rails-4.1 backport commits to trunk[1] (in svn:mergeinfo only obviously): need to reverse-merge them for svn:mergeinfo
+## [rails-4.1 branch] contains four commits merged from trunk[2]: this is not reflected in the respective svn:mergeinfo property
+## [trunk] three commits were backported from rails-4.1 branch to trunk[3]: this is not reflected in the respective svn:mergeinfo property
+## [2.6-stable branch] contains one commit merged from trunk (r13439): this is not reflected in the respective svn:mergeinfo property
+# related to the r13443 rails-4.1 rebase:
+## [rails-4.1 branch] r13443 rebase is missing commits from trunk[4] ((start rails-4.1)..(start rebase)): still needs to be _merged_
+
+So I checked out Redmine svn source and started fixing them one after another.
+
+The first four are changes to the svn:mergeinfo values only (@svn merge ... --record-only@) and the last is a complete merge (thus with svn:mergeinfo property update) of fourteen commits where two files[5] had some simple conflicts to be solved manually:
+* 1. reverse-merge-backport-commits-on-trunk_against_rails-4.1_at_r13451.patch:
+{{collapse(view details...)
+<pre><code class=""diff"">
+Index: .
+===================================================================
+--- .	(revision 13451)
++++ .	(working copy)
+
+Property changes on: .
+___________________________________________________________________
+Modified: svn:mergeinfo
+   Reverse-merged /trunk:r13405-13408
+
+</code></pre>
+
+Before this change, the svn:mergeinfo value for rails-4.1 branch was:
+<pre>/trunk:13333-13439</pre>
+after it, it looks like:
+<pre>/trunk:13333-13404,13409-13439</pre>
+}}
+* 2. merge-merged-in-41-from-trunk_to_rails-4.1_at_r13451.patch:
+{{collapse(view details...)
+<pre><code class=""diff"">
+Index: .
+===================================================================
+--- .	(revision 13451)
++++ .	(working copy)
+
+Property changes on: .
+___________________________________________________________________
+Modified: svn:mergeinfo
+   Merged /trunk:r13302,13306,13311,13332
+
+</code></pre>
+
+Before this change, the svn:mergeinfo value for rails-4.1 branch was:
+<pre>/trunk:13333-13404,13409-13439</pre>
+after it, it looks like:
+<pre>/trunk:13302,13306,13311,13332-13404,13409-13439</pre>
+}}
+* 3. merge-backported-in-trunk-from-41_to_trunk_at_r13451.patch:
+{{collapse(view details...)
+<pre><code class=""diff"">
+Index: .
+===================================================================
+--- .	(revision 13451)
++++ .	(working copy)
+
+Property changes on: .
+___________________________________________________________________
+Modified: svn:mergeinfo
+   Merged /sandbox/rails-4.1:r13296,13313,13315
+
+</code></pre>
+
+Before this change, the svn:mergeinfo value for trunk was:
+<pre>n/a for rails-4.1</pre>
+after it, it looks like:
+<pre>/sandbox/rails-4.1:13296,13313,13315</pre>
+}}
+* 4. merge-merged-in-2.6-stable-from-trunk_to_2.6-stable_at_r13451.patch:
+{{collapse(view details...)
+<pre><code class=""diff"">
+Index: .
+===================================================================
+--- .	(revision 13451)
++++ .	(working copy)
+
+Property changes on: .
+___________________________________________________________________
+Modified: svn:mergeinfo
+   Merged /trunk:r13439
+
+</code></pre>
+
+Before this change, the svn:mergeinfo value for 2.6-stable branch was:
+<pre>n/a for 2.6-stable</pre>
+after it, it looks like:
+<pre>/trunk:13439</pre>
+}}
+* 5. merge-missing-in-41-from-trunk_to_rails-4.1_at_r13451.patch:
+{{collapse(view details...)
+This only shows the merge tracking property changes; code changes are omitted to save some space... 
+<pre><code class=""diff"">
+Index: .
+===================================================================
+--- .	(revision 13451)
++++ .	(working copy)
+
+Property changes on: .
+___________________________________________________________________
+Modified: svn:mergeinfo
+   Merged /trunk:r13284-13285,13287,13299,13303,13322-13327,13329-13331
+Index: ...
+...
+...
+</code></pre>
+
+Before this change, the svn:mergeinfo value for rails-4.1 branch was:
+<pre>/trunk:13302,13306,13311,13332-13404,13409-13439</pre>
+after it, it looks like:
+<pre>/trunk:13284-13285,13287,13299,13302-13303,13306,13311,13322-13327,13329-13404,13409-13439</pre>
+}}
+
+If these changes are applied then:
+* rails-4.1 branch contains _all_ commits on trunk between the creation of the branch upto r13439 (fully rebased)
+* svn:merginfo property was already introduced around 2.4-stable and custom_fields branch
+* svn:merginfo property is started being reliably used with 2.6-stable (last 2.x?)
+* svn:merginfo property is having full history of rails-4.1 and current trunk
+* svn:merginfo property is having full history of and is reliably used with new major 3.0-stable and up
+
+All the patches are taken against a checkout of the respective branches at r13451. If more information is need, please let me know. I have a bunch of notes taken during the inspection, which I could attach if needed as well.
+I hope this is of any use...
+
+Regards,
+
+Mischa.
+
+
+
+
+fn1. r13407 and r13408
+
+fn2. r13302, r13306, r13311 and r13332
+
+fn3. r13296, r13313 and r13315
+
+fn4. r13284, r13285, r13287, r13299, r13303, r13322, r13323, r13324, r13325, r13326, r13327, r13329, r13330 and r13331
+
+fn5. config/locales/de.yml and Gemfile
+"
+18133,Redmine,Defect,"",Closed,Normal,Deprecation Warning,Dave Holyfield,"",2014-10-19 15:20,"","","","","",0,2014-10-19 14:34,2014-10-19 15:20,"",Invalid,2.5.1,"
+> DEPRECATION WARNING: Paginator no longer takes a controller instance as the first argument. Remove it from #new arguments. (called from initialize at */redmine/lib/redmine/pagination.rb:28)
+> 
+> DEPRECATION WARNING: Paginator#current will be removed. Use .offset instead of .current.offset. (called from current at */redmine/lib/redmine/pagination.rb:99)"
+18132,Redmine,Defect,"",Closed,Normal,Rails4: deprecated Relation#update_all at db migrate,Igor Pashev,"",2014-10-19 15:36,"","","","","",0,2014-10-19 12:59,2014-10-19 15:36,"",Fixed,"","Migration 20130215111141_populate_issues_closed_on is broken [1] with recent rake [2].
+
+[1] https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=765466
+[2] https://github.com/rails/rails/commit/1391d74e41b786d2f1a3a4ecf7fad1eda7e49622"
+18128,Redmine,Patch,"",Closed,Normal,Make User profile 404 rendering more consistent (and speed up Users#show API),Jan from Planio www.plan.io,"",2014-11-11 15:08,Accounts / authentication,"","","","",90,2014-10-18 15:57,2014-11-11 14:20,"関連している #18093, 関連している #11724, 関連している #14601","","","@Users#show@ (viewing the profile of any given user) can display three main sections of information:
+
+* The name, email, registered on, last connection, and custom fields pertaining to the user (personal information)
+* The user's memberships in projects
+* The user's last activity in any projects
+
+Currently, if the user has (a) at least one membership or (b) at least some activity, the user profile is shown, including the three sections above.
+
+If the user has no membersip and no activity, the page is not shown and a 404 is returned. 
+
+I think this is not very consistent. In the latter case, a visitor of the user's profile page could still be interested in seeing the user's personal information, even if she/he has no memberships or activity.
+
+This patch fixes this behaviour and always displays a user profile.
+
+_The reason for this patch was that we noticed that the @Users#show@ API call takes considerable time currently. It turns out, this is due to the fact that the user's activity is pulled even in case of an API request (for which the actiity is not needed). So, in order to be able to move fetching of the activity to the @format.html@ block, we made the change above. We think that both changes make sense, somehow.)_"
+18119,Redmine,Defect,"",Closed,Normal,Thumbnail image path without HTTPS,Filou Centrinov,Jean-Philippe Lang,2014-10-18 12:15,Text formatting,2.6.0,"","","",0,2014-10-17 01:44,2014-10-18 12:15,関連している #18120,Fixed,2.5.2,"Thumbnails created with ""<notextile>{</notextile><notextile>{thumbnail(image.png)}}</notextile>"" are always generated  with absolute HTTP-path, even if the Redmine runs with HTTPS.
+
+*Solution:* If thumbnail path had been relative, we wouldn't have this problem. (Like thumbnails from attachments.)
+
+
+<pre>
+Environment:
+  Redmine version                2.5.2.stable
+  Ruby version                   2.1.3-p242 (2014-09-19) [x86_64-linux]
+  Rails version                  3.2.19
+  Environment                    production
+  Database adapter               Mysql2
+</pre>"
+18113,Redmine,Defect,"",Closed,Normal,REST API KEY doesn't work with basic authentication,Renzo Dani,"",2017-03-15 15:15,REST API,"","","","",0,2014-10-16 09:30,2014-10-20 21:29,"",Cant reproduce,2.5.2,"If I try to access the api using my key and basic authentication it doesn't work. It does if I use the key as a parameter.
+
+<pre>
+$ curl -v -u MyAPIKey:randompassword https://IP/users/current.xml
+
+* STATE: INIT => CONNECT handle 0x800477e8; line 1028 (connection #-5000)
+* Hostname was NOT found in DNS cache
+*   Trying IP...
+* STATE: CONNECT => WAITCONNECT handle 0x800477e8; line 1076 (connection #0)
+* Connected to (IP) port 443 (#0)
+* STATE: PROTOCONNECT => DO handle 0x800477e8; line 1208 (connection #0)
+* Server auth using Basic with user 'MyAPIKey'
+> GET /users/current.xml HTTP/1.1
+> Authorization: Basic base64_of_MyAPIKey:randompassword
+> User-Agent: curl/7.37.1
+> Host: IP
+> Accept: */*
+>
+* STATE: DO => DO_DONE handle 0x800477e8; line 1281 (connection #0)
+* STATE: DO_DONE => WAITPERFORM handle 0x800477e8; line 1407 (connection #0)
+* STATE: WAITPERFORM => PERFORM handle 0x800477e8; line 1420 (connection #0)
+* HTTP 1.1 or later with persistent connection, pipelining supported
+< HTTP/1.1 401 Authorization Required
+< Date: Thu, 16 Oct 2014 07:21:17 GMT
+* Server Apache is not blacklisted
+< Server: Apache
+< Strict-Transport-Security: max-age=31536000; includeSubDomains
+* Authentication problem. Ignoring this.
+< WWW-Authenticate: Basic realm=""Redmine API""
+< X-UA-Compatible: IE=Edge,chrome=1
+< Cache-Control: no-cache
+< X-Request-Id: 2ea6385fbc1564b902112fd5397a88ac
+< X-Runtime: 0.006031
+< X-Rack-Cache: miss
+< Content-Type: application/xml; charset=utf-8
+< Transfer-Encoding: chunked
+<
+* STATE: PERFORM => DONE handle 0x800477e8; line 1590 (connection #0)
+* Connection #0 to host IP left intact
+* Expire cleared
+
+
+Redmine log:
+Started GET ""/users/current.xml"" for XXX at 2014-10-16 09:21:32 +0200
+Processing by UsersController#show as XML
+  Parameters: {""id""=>""current""}
+  Current user: anonymous
+Filter chain halted as :check_if_login_required rendered or redirected
+Completed 401 Unauthorized in 3.3ms (ActiveRecord: 0.7ms)
+
+
+
+
+
+
+
+
+
+$ curl -v  https://IP/users/current.xml?key=MyAPIKey
+
+
+* STATE: INIT => CONNECT handle 0x800477e8; line 1028 (connection #-5000)
+* Hostname was NOT found in DNS cache
+*   Trying IP...
+* STATE: CONNECT => WAITCONNECT handle 0x800477e8; line 1076 (connection #0)
+* Connected to (IP) port 443 (#0)
+* STATE: PROTOCONNECT => DO handle 0x800477e8; line 1208 (connection #0)
+> GET /users/current.xml?key=MyAPIKey HTTP/1.1
+> User-Agent: curl/7.37.1
+> Host: IP
+> Accept: */*
+>
+* STATE: DO => DO_DONE handle 0x800477e8; line 1281 (connection #0)
+* STATE: DO_DONE => WAITPERFORM handle 0x800477e8; line 1407 (connection #0)
+* STATE: WAITPERFORM => PERFORM handle 0x800477e8; line 1420 (connection #0)
+* HTTP 1.1 or later with persistent connection, pipelining supported
+< HTTP/1.1 200 OK
+< Date: Thu, 16 Oct 2014 07:24:31 GMT
+* Server Apache is not blacklisted
+< Server: Apache
+< Strict-Transport-Security: max-age=31536000; includeSubDomains
+< X-UA-Compatible: IE=Edge,chrome=1
+< ETag: ""3299271e718c967be9ce47132e0f3033""
+< Cache-Control: max-age=0, private, must-revalidate
+< X-Request-Id: 915ced07c7be89d4423c0dda47cfddc6
+< X-Runtime: 0.072114
+< X-Rack-Cache: miss
+< Content-Type: application/xml; charset=utf-8
+< Transfer-Encoding: chunked
+<
+* STATE: PERFORM => DONE handle 0x800477e8; line 1590 (connection #0)
+* Connection #0 to host IP left intact
+* Expire cleared
+<?xml version=""1.0"" encoding=""UTF-8""?><user><id>3</id><login>xxx</login><firstname>xxx</firstname><lastname>xxx</lastname><mail>.....
+
+
+Redmine log:
+Started GET ""/users/current.xml?key=MyAPIKey"" for 10.11.1.164 at 2014-10-16 09:24:31 +0200
+Processing by UsersController#show as XML
+  Parameters: {""key""=>""MyAPIKey"", ""id""=>""current""}
+  Current user: xxx (id=3)
+  Rendered users/show.api.rsb (3.6ms)
+Completed 200 OK in 70.1ms (Views: 3.8ms | ActiveRecord: 21.5ms)
+
+</pre>"
+18110,Redmine,Defect,"",Closed,Normal,Extraction of list of available locales is probe to bad gems,Ebrahim Mohammadi,Jean-Philippe Lang,2014-10-18 11:08,I18n,2.6.0,"","","",0,2014-10-15 22:25,2014-10-18 11:08,"",Fixed,"","I added a plugin to my Redmine which indirectly depended on @kaminari@ gem who contains a badly named @kaminari.yml@ locale file: https://github.com/amatsuda/kaminari/tree/master/config/locales. Hence a second ""English"" named language with a key of @kaminari@ is added to list of Redmine languages."
+18101,Redmine,Defect,"",Closed,Normal,Custom fields error in View on Windows,Alexander Kupchenko,"",2014-10-15 05:37,Custom fields,"","","","",0,2014-10-15 04:06,2014-10-15 05:37,"",Invalid,"","When i trying add any new custom field i see 500 internal server error. Windows 8.1 update 1 x64. I tried jruby 1.7.16 and ruby-2.0.0-p576 with both have this error.
+_____________________________________________________________________
+Environment:
+  Redmine version                2.5.2.stable
+  Ruby version                   2.0.0-p576 (2014-09-19) [i386-mingw32]
+  Rails version                  3.2.19
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Git                            1.9.4
+  Filesystem                     
+Redmine plugins:
+  redmine_track_control          1.0.9
+
+"
+18095,Redmine,Defect,"",Confirmed,Normal,Unable to submit time entries via REST API for activities that have become project-specific,Alex MacAulay,"",2014-11-14 11:43,REST API,"","","","",0,2014-10-14 17:34,"","","",2.5.2,"Steps to reproduce: Create a new project. In web interface, go to ""Settings"" tab, then go to ""Activities (time tracking)"" tab. Deactivate an activity (let's say ""Design"") by unchecking the checkbox. Click ""Save"". Then reactivate the activity by re-checking the checkbox. Click ""Save"".
+
+At this point, there is a project-specific activity for the ""Design"" activity in the Redmine database, in addition to the system-level ""Design"" activity. So the first question could be: is this a bug? Should the project-specific activity no longer exist when it has been reactivated? For the moment, I'll assume that it is reasonable that it continues to exist.
+
+So, now I make a request to the REST API to get an enumeration of the time entry activities (GET /enumerations/time_entry_activities.xml). It returns only the system-level time entry activities.
+
+However, if I use the web interface to submit a time entry on the ""Design"" activity for my project via the web interface, it uses the project-specific ID for the time entry.
+
+This inconsistency between the behavior exposed via the REST API and the web interface means that I'm unable to submit time entries via the REST API for project-specific activities, because the REST API does not give me the IDs of those activities.
+
+In order to resolve the bug, I would propose to modify the code that adds time entries in order to converts a system-level time entry activity ID to the corresponding project-specific time entry activity ID if it exists. I've attached a proposed patch.
+
+For reference, here is the output of ruby script/about:
+
+<pre>
+Environment:
+  Redmine version                2.5.2.devel.13434
+  Ruby version                   1.8.7-p352 (2011-06-30) [x86_64-linux]
+  Rails version                  3.2.19
+  Environment                    production
+  Database adapter               PostgreSQL
+SCM:
+  Subversion                     1.6.11
+  Git                            1.7.1
+  Filesystem
+Redmine plugins:
+  no plugin installed
+</pre>"
+18094,Redmine,Defect,"",Closed,Normal,List custom filed with multiple values displayed as check boxes cannot be unchecked ,Marius BALTEANU,"",2014-10-20 21:29,Custom fields,"","","","",0,2014-10-14 17:09,2014-10-20 21:29,次のチケットと重複 #16798,Duplicate,2.5.2,"Steps to reproduce:
+# Add new custom field for issues with the following attributes:
+Format: List
+Name: Test
+Description:
+Multiple values: Yes
+Possible values: One, Two, Three
+Default value:
+Link values to URL:
+Display: checkboxes
+
+# Enable the custom field on a tracker
+# Enable the custom field on a project
+# Add a new issue on the respective project and tracker
+# Check on option for Test field
+# Save
+# Edit issue
+# Uncheck all options for Test field
+# Save
+# Observe that the option is still checked
+
+I observed in logs that when the request is made with no option checked, the custom field is not sent."
+18092,Redmine,Defect,"",Closed,Normal,How to create plugin change settings?tab=issues with tracker_id for type tracker,anhkhoa Michel,"",2014-10-14 13:38,"","","","","",0,2014-10-14 11:51,2014-10-14 13:38,"",Invalid,"","HI every body. I want to create plugin overide this:http://localhost:3000/settings?tab=issues
+Can change setting default with type issues:example with bug i want to set Default columns displayed on the issue list: tracker, status,piority.with feature i want to set Default columns displayed on the issue list: tracker, status, updated. 
+Please help me!!!
+."
+18081,Redmine,Defect,"",Closed,Normal,Create a new group - 500 Internal Server Error,Roger tjmg,"",2014-10-14 17:41,"","","","","",0,2014-10-13 21:13,2014-10-14 17:41,"",Invalid,"","When i try to create a new group, the message 500 Internal Server Error appears.
+
+Environment:
+Redmine version 2.3.0.stable.11744
+Ruby version 1.8.7 (x86_64-linux)
+Rails version 3.2.13
+Environment production
+Database adapter MySQL
+Redmine plugins:
+redmine_loader 0.0.12
+redmine_testlinklink 1.0.0
+
+Started POST ""/groups"" for 10.0.1.33 at Wed Sep 17 10:53:26 -0300 2014
+Processing by GroupsController#create as HTML
+Parameters: {""group""=>{""name""=>""TEST""}, ""authenticity_token""=>""cGCTAk8JBMs+ChiUrQIykrT4hpUa78bh554Ndw9qdYc="", ""utf8""=>""?"", ""commit""=>""Criar""}
+Current user: admin (id=1)
+Completed 500 Internal Server Error in 29ms
+
+ActiveRecord::RecordNotUnique (Mysql::Error: Duplicate entry '' for key 'uclogin': INSERT INTO `users` (`admin`, `auth_source_id`, `created_on`, `firstname`, `hashed_password`, `identity_url`, `language`, `last_login_on`, `lastname`, `login`, `mail`, `mail_notification`, `salt`, `status`, `type`, `updated_on`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)):
+app/controllers/groups_controller.rb:52:in `create'
+app/controllers/groups_controller.rb:51:in `create'"
+18069,Redmine,Patch,"",Closed,Normal,Japanese translation update (r13418),Go MAEDA,"",2014-10-12 16:33,Translations,"","","","",0,2014-10-11 05:01,2014-10-12 16:33,"","","","Translated new strings.
+
+* label_group_anonymous
+* label_group_non_member
+"
+18068,Redmine,Defect,"",Closed,Normal,Copying Projects & Parent Child Issues,James H,"",2014-11-08 12:10,Issues,"","","","",0,2014-10-10 23:59,2014-11-08 12:10,"","",2.4.3,"Issues that have parent child relationships only show up as nested in a tree view in the issues list when the issues are in order (parent first then children immediately below it).
+
+When copying projects...
+* If I have the issues in order to show up in a nested view, the parent issue still gets copied first before its children and shows up incorrect.
+* If I put the issues in opposite order, it still behaves similarly. 
+* I have no way to have a nested view of issues after copying a project.
+
+i.e.
++Project Issues to be copied:+
+- Child Issue 1.1
+- Child Issue 1.2
+- Child Issue 1.3
+Parent Issue 1
+Parent Issue 2
+- Child Issue 2.1
+- Child Issue 2.2
+Parent Issue 3
+- Child Issue 2.1
+- Child Issue 2.2
+
+
++becomes:+
+- Child Issue 1.1
+- Child Issue 1.2
+- Child Issue 1.3
+Parent Issue 1
+- Child Issue 2.1
+- Child Issue 2.2
+Parent Issue 2
+- Child Issue 2.1
+- Child Issue 2.2
+Parent Issue 3
+"
+18066,Redmine,Defect,"",Needs feedback,Normal,404 Error when Creating New Issue,Barnes Bundle,"",2014-10-13 07:58,Issues,"","","","",0,2014-10-10 18:02,"","","",2.4.4,"Hi, I have the same issue as described in #17370 which had been closed without any answer. I think it's a bug, that's why I describe it with some logs.
+When I try to create an issue by filling every fields except parent, redmine warns me that the default parent task 0 is invalid.
+If I empty the parent field and repost the form I got a 404 error with this server log :
+<pre>
+Started GET ""/projects/testproj/issues/new"" for 127.0.0.1 at 2014-10-08 10:59:18 +0200
+Processing by IssuesController#new as HTML
+  Parameters: {""project_id""=>""testproj""}
+  Current user: dev(id=2)
+  Rendered issues/_form_custom_fields.html.erb (31.0ms)
+  Rendered issues/_attributes.html.erb (156.0ms)
+  Rendered issues/_form.html.erb (234.0ms)
+  Rendered attachments/_form.html.erb (16.0ms)
+  Rendered issues/new.html.erb within layouts/base (250.0ms)
+Completed 200 OK in 484.0ms (Views: 218.0ms | ActiveRecord: 155.0ms)
+Started POST ""/projects/testproj/issues"" for 127.0.0.1 at 2014-10-08 10:59:58 +0200
+Processing by IssuesController#create as HTML
+  Parameters: {""utf8""=>""?"", ""authenticity_token""=>""0ELxq1yuzmkfrTze8a/AvCOPND542Hk946rJkEnmHy8="", ""issue""=>{""is_private""=>""1"", ""tracker_id""=>""1"", ""subject""=>""z"", ""description""=>""z"", ""status_id""=>""1"", ""priority_id""=>""2"", ""assigned_to_id""=>"""", ""fixed_version_id""=>""6"", ""parent_issue_id""=>"""", ""start_date""=>""2014-10-08"", ""due_date""=>""2014-10-08"", ""estimated_hours""=>""8"", ""done_ratio""=>""0""}, ""commit""=>""Cr?er"", ""project_id""=>""testproj""}
+  Current user: dev(id=2)
+  Rendered mailer/_issue.text.erb (16.0ms)
+  Rendered mailer/issue_add.text.erb within layouts/mailer (16.0ms)
+  Rendered mailer/_issue.html.erb (0.0ms)
+  Rendered mailer/issue_add.html.erb within layouts/mailer (16.0ms)
+Completed 404 Not Found in 1500.0ms
+
+ActiveRecord::RecordNotFound (Couldn't find Issue without an ID):
+  lib/plugins/awesome_nested_set/lib/awesome_nested_set/awesome_nested_set.rb:497:in `move_to'
+  lib/plugins/awesome_nested_set/lib/awesome_nested_set/awesome_nested_set.rb:426:in `in_tenacious_transaction'
+  lib/plugins/awesome_nested_set/lib/awesome_nested_set/awesome_nested_set.rb:492:in `move_to'
+  lib/plugins/awesome_nested_set/lib/awesome_nested_set/awesome_nested_set.rb:491:in `move_to'
+  lib/plugins/awesome_nested_set/lib/awesome_nested_set/awesome_nested_set.rb:356:in `move_to_right_of'
+  app/models/issue.rb:1309:in `update_nested_set_attributes_on_parent_change'
+  app/models/issue.rb:1294:in `update_nested_set_attributes'
+  app/models/issue.rb:165:in `create_or_update'
+  app/controllers/issues_controller.rb:146:in `create'
+</pre>"
+18060,Redmine,Defect,"",Closed,Normal,"Selected projects in email notifications on ""my account"" are lost when the page is redisplayed after a validation error.",Felix Sch?fer,Jean-Philippe Lang,2014-11-23 09:45,Email notifications,2.6.1,"","","",0,2014-10-10 15:42,2014-11-23 09:45,"",Fixed,2.5.2,"On ""my account"" with ""for any event on the selected projects only"" selected in the email notifications area and some projects selected for that, the selected projects (newly selected and already saved) are lost if the page gets redisplayed after for example a validation error (no first name for example)."
+18059,Redmine,Patch,"",Resolved,Normal,Activity when issue change assigned to.,Marcin ?wi?tkiewicz,"",2015-09-17 15:17,Activity view,Candidate for next major release,"","","",0,2014-10-10 13:59,"","","","","Hi. There is patch to change activity for project. It's will shows you when issue status was changed, assigned_to was changed, and when status and assigned_to was changed together.
+
+I wrote test for this and everything works fine. 
+
+See files."
+18058,Redmine,Defect,"",Closed,Normal,Wrong redirect after saving changes to a version (Firefox with network.http.referer.trimmingPolicy = 2),Maurice M.,Jean-Philippe Lang,2014-10-23 06:03,Roadmap,"","","","",0,2014-10-10 11:13,2014-10-21 22:49,"",Invalid,2.5.1,"Steps to reproduce:
+* Go to a roadmap page
+* Click on a version number
+* Click on _edit_ (URL ex: @/versions/65/edit@)
+* Click on _Save_
+You'll be redirect to the main page. I'd expect to be redirected back to the roadmap page.
+
+The same applies to editing versions via _Project Page_ > _Settings_ > _Versions tab_.
+
+My Configuration:
+<pre>
+Environment:
+  Redmine version                2.5.1.stable
+  Ruby version                   1.8.7-p352 (2011-06-30) [x86_64-linux]
+  Rails version                  3.2.17
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.6.11
+  Git                            1.7.1
+  Filesystem
+Redmine plugins:
+  no plugin installed
+
+</pre>"
+18055,Redmine,Defect,"",New,Normal,"Wiki page ""HowTo Configure Fail2ban For Redmine"" contains incomplete/misleading instructions",Gilles L?onard,"",2016-04-22 03:06,Documentation,"","","","",0,2014-10-10 06:08,"","","",2.5.0,"[[HowTo_Configure_Fail2ban_For_Redmine]]
+I am running Redmine with the following versions:
+Environment:
+  Redmine version                2.5.1.stable.13174
+  Ruby version                   2.0.0-p481 (2014-05-08) [x86_64-linux]
+  Rails version                  3.2.18
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.8.8
+  Git                            1.9.1
+
+Redmine is installed on Ubuntu 14.04.1 LTS (GNU/Linux 3.13.0-24-generic x86_64)
+
+In *Configure* section of the howto, in the box following the text that says ""add following lines somewhere in your /etc/fail2ban/jail.conf..."", the action line (action = iptables-allports[name=redmine]) is a bit heavy handed as it bans all ports, not only http and https. 
+
+This is a problem, especially in view of the fact that the rest of the howto fails to inform you that Redmine doesn't prepends logged lines with a time stamp in ""production.log"" with the result that ""when you're banned, you're banned forever ever ever ever... on all ports, including SSH which might be your only possible access to a cloud server. I got locked out ! Fortunately, DigitalOcean VMs have a remote console access that I could use to get out of trouble.
+
+Here are the changes that propose based on my production setup that has successfully tested in the above mentioned environment:
+# No changes should me made to /etc/fail2ban/jail.conf as this file gets overwritten every time fail2ban gets updated. Instead, it is recommended to create or add to a file named /etc/fail2ban/jail.local;
+#  The content of the Redmine section in /etc/fail2ban/jail.local should read as follow:
+@
+[redmine]
+enabled  = true
+filter   = redmine
+port     = http,https
+logpath  = /srv/redmine/log/production.log
+maxretry = 5
+findtime = 600
+bantime = 600
+@
+This would have the effect of banning the IP address of a client trying to connect on ports HTTP and HTTPS for 10 minutes,  after it has seen 5 failed login reties within the last 10 minutes. 
+# The howto contains some explanation about findtime and bantime that is not in line with fail2ban's documentation and the result of using the large numbers that are proposed in the howto would not yeld good results.
+# Note that on my production setup the default location of Redmine's production log is in /srv/redmine/production.log
+# A section should be added to explain how to get redmine to add a timestamp in front of each line production.log, and it should read as follow ""Add the following to /srv/redmine/config/environment.rb :""
+@
+class Logger
+ def format_message(severity, timestamp, progname, msg)
+ ""#{timestamp} (#{$$}) #{msg}\n"" 
+ end
+end
+@
+
+
+
+"
+18054,Redmine,Defect,"",Closed,Normal,New install of Redmine,sbh bhs,"",2014-10-10 05:31,"","","","","",0,2014-10-10 05:19,2014-10-10 05:28,"",Invalid,"","I had install new redmine on FreeBSD 10.
+When i try to open tab with redmine it my browser i got an error:
+
+Web application could not be started
+An error occurred while starting up the preloader. It exited before signalling successful startup back to Phusion Passenger. Please read this article for more information about this problem.
+Raw process output:
+
+(empty)
+
+How to fix it???"
+18051,Redmine,Patch,"",Closed,Low,Cancel button on issue edit view,Marcin ?wi?tkiewicz,Jean-Philippe Lang,2016-08-10 03:51,UI,2.6.1,"","","",0,2014-10-09 11:09,2014-11-22 11:41,"","","","Please add button cancel to issue edit form.
+
+Now when you are editing an issue and select button 'back' in your browser it's takes you to issues list, but button 'cancel' can take you back to this issue.
+
+See cancel_button.diff file."
+18047,Redmine,Patch,"",Closed,Normal,MailHandler: Don't use String#respond_to?(:force_encoding) to differentiate between Ruby 1.8 and Ruby 1.9,Felix Sch?fer,"",2014-10-09 09:12,Email receiving,2.6.0,"","","",0,2014-10-08 14:32,2014-10-09 05:27,関連している #15785,"","","In source:/trunk/app/models/mail_handler.rb@13413#L424, whether @String#force_encoding@ is defined is used to make a decision about @Mail::RubyVer@, which defines @pick_encoding@ on everything but Ruby 1.8.
+
+This is dangerous as it couples knowledge about Ruby 1.8 (@String#force_encoding@ is not defined) with knowledge about the @Mail@ gem internals (@Mail::RubyVer.pick_encoding@ is not defined on 1.8), there is no guarantee that this will always be the case though.
+
+The attached patch checks whether @Mail::RubyVer.pick_encoding@ is defined before using it instead of using the indirection through whether @String#force_encoding@ is defined or not."
+18044,Redmine,Defect,"",Closed,Normal,Web application could not be started,sbh bhs,"",2014-10-08 05:15,"","","","","",0,2014-10-08 01:29,2014-10-08 05:15,"",Invalid,"","My redmine stoped to work ufter some updates.
+It worked fine before i'd restart Apache.
+Now i see errors like this:
+
+Web application could not be started
+
+An error occurred while starting up the preloader. It exited before signalling successful startup back to Phusion Passenger. Please read this article for more information about this problem.
+Raw process output:
+
+(empty)
+Error ID
+5e790e73
+Application root
+/usr/local/www/redmine
+Environment (value of RAILS_ENV, RACK_ENV, WSGI_ENV, NODE_ENV and PASSENGER_APP_ENV)
+production
+Ruby interpreter command
+/usr/local/bin/ruby19
+User and groups
+uid=80(www) gid=80(www) groups=80(www)
+Environment variables
+SERVER_SOFTWARE=Apache/2.2.29 (FreeBSD) PHP/5.3.29 with Suhosin-Patch Phusion_Passenger/4.0.53 mod_ssl/2.2.29 OpenSSL/1.0.1e-freebsd DAV/2
+SERVER_PROTOCOL=HTTP/1.1
+SERVER_NAME=rm.i.vvtf.ru
+SERVER_ADMIN=it@vvtf.ru
+SERVER_ADDR=192.168.10.202
+SERVER_PORT=443
+REMOTE_ADDR=192.168.10.45
+REMOTE_PORT=36592
+REQUEST_METHOD=GET
+QUERY_STRING=
+HTTPS=on
+DOCUMENT_ROOT=/usr/local/www/redmine/public/
+REQUEST_URI=/
+UNIQUE_ID=VDR2acCoCsoAAQBtPW8AAAAC
+SSL_TLS_SNI=rm.i.vvtf.ru
+PASSENGER_APP_ENV=production
+NODE_ENV=production
+WSGI_ENV=production
+RACK_ENV=production
+RAILS_ENV=production
+NODE_PATH=/usr/local/lib/ruby/gems/1.9/gems/passenger-4.0.53/node_lib
+PYTHONUNBUFFERED=1
+IN_PASSENGER=1
+PWD=/usr/local/www/redmine
+HOME=/nonexistent
+SHELL=/usr/sbin/nologin
+LOGNAME=www
+USER=www
+PASSENGER_DEBUG_DIR=/tmp/passenger.spawn-debug.IcG8lpxIiV
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+LD_LIBRARY_PATH=/usr/local/lib:/usr/local/lib
+RC_PID=65607
+Ulimits
+cpu time               (seconds, -t)  unlimited
+file size           (512-blocks, -f)  unlimited
+data seg size           (kbytes, -d)  524288
+stack size              (kbytes, -s)  65536
+core file size      (512-blocks, -c)  unlimited
+max memory size         (kbytes, -m)  unlimited
+locked memory           (kbytes, -l)  131072
+max user processes              (-u)  5547
+open files                      (-n)  28890
+virtual mem size        (kbytes, -v)  unlimited
+swap limit              (kbytes, -w)  unlimited
+sbsize                   (bytes, -b)  unlimited
+pseudo-terminals                (-p)  unlimited
+System metrics
+------------- General -------------
+Kernel version    : 10.0-RELEASE-p9
+Uptime            : 17h 52m 25s
+Load averages     : 1.19%, 0.85%, 0.78%
+
+------------- CPU -------------
+Number of CPUs    :    2
+Average CPU usage :   0%  --   0% user,   0% nice,   0% system, 100% idle
+  CPU 1           :   0%  --   0% user,   0% nice,   0% system, 100% idle
+  CPU 2           :   0%  --   0% user,   0% nice,   0% system, 100% idle
+
+------------- Memory -------------
+RAM total         :   1003 MB
+RAM used          :    385 MB (38%)
+RAM free          :    618 MB
+Swap total        :   2560 MB
+Swap used         :     94 MB (4%)
+Swap free         :   2465 MB
+
+General Ruby interpreter information
+RUBY_VERSION = 1.9.3
+RUBY_PLATFORM = i386-freebsd10
+RUBY_ENGINE = ruby
+RubyGems version = 1.8.29
+RubyGems paths = [""/usr/local/lib/ruby/gems/1.9""]
+Ruby configuration (RbConfig::CONFIG)
+DESTDIR = 
+MAJOR = 1
+MINOR = 9
+TEENY = 1
+PATCHLEVEL = 547
+INSTALL = /usr/bin/install -c -o root -g wheel
+EXEEXT = 
+prefix = /usr/local
+ruby_install_name = ruby19
+RUBY_INSTALL_NAME = ruby19
+RUBY_SO_NAME = ruby19
+exec = exec
+ruby_pc = ruby-1.9.pc
+PACKAGE = ruby
+BUILTIN_TRANSSRCS =  newline.c
+USE_RUBYGEMS = YES
+MANTYPE = doc
+NROFF = /usr/bin/nroff
+vendorhdrdir = /usr/local/include/ruby-1.9//vendor_ruby
+sitehdrdir = /usr/local/include/ruby-1.9//site_ruby
+rubyhdrdir = /usr/local/include/ruby-1.9/
+UNIVERSAL_INTS = 
+UNIVERSAL_ARCHNAMES = 
+configure_args =  '--with-rubyhdrdir=/usr/local/include/ruby-1.9/' '--with-rubylibprefix=/usr/local/lib/ruby' '--docdir=/usr/local/share/doc/ruby19' '--with-soname=ruby19' '--program-prefix=' '--program-suffix=19' '--enable-shared' '--enable-pthread' '--disable-rpath' '--with-ruby-version=minor' '--with-sitedir=/usr/local/lib/ruby/site_ruby' '--with-vendordir=/usr/local/lib/ruby/vendor_ruby' '--disable-install-capi' '--disable-install-rdoc' '--disable-libedit' '--with-readline-prefix=/usr/local' '--prefix=/usr/local' '--mandir=/usr/local/man' '--infodir=/usr/local/info/' '--build=i386-portbld-freebsd10' 'build_alias=i386-portbld-freebsd10' 'CC=cc' 'CFLAGS=-O2 -pipe -fno-strict-aliasing' 'LDFLAGS= -Wl,-rpath,/usr/lib:/usr/local/lib' 'LIBS=-L/usr/local/lib -pthread' 'CPPFLAGS=-I/usr/local/include' 'CXX=c++' 'CXXFLAGS=-O2 -pipe -fno-strict-aliasing' 'CPP=cpp'
+vendordir = /usr/local/lib/ruby/vendor_ruby
+sitedir = /usr/local/lib/ruby/site_ruby
+ruby_version = 1.9
+sitearch = i386-freebsd10
+arch = i386-freebsd10
+RI_BASE_NAME = ri
+ridir = /usr/local/share/ri
+rubylibprefix = /usr/local/lib/ruby
+MAKEFILES = Makefile
+PLATFORM_DIR = 
+THREAD_MODEL = pthread
+SYMBOL_PREFIX = 
+EXPORT_PREFIX = 
+COMMON_HEADERS = 
+COMMON_MACROS = 
+COMMON_LIBS = 
+MAINLIBS = -pthread 
+ENABLE_SHARED = yes
+DLDLIBS =  -lc
+SOLIBS = -lexecinfo -lcrypt -lm -L/usr/local/lib -pthread
+LIBRUBYARG_SHARED = -lruby19
+LIBRUBYARG_STATIC = -lruby19-static
+LIBRUBYARG = -lruby19
+LIBRUBY = libruby19.so.19
+LIBRUBY_ALIASES = libruby19.so
+LIBRUBY_SO = libruby19.so.19
+LIBRUBY_A = libruby19-static.a
+RUBYW_INSTALL_NAME = 
+rubyw_install_name = 
+LIBRUBY_DLDFLAGS = -Wl,-soname,libruby19.so.19
+LIBRUBY_LDSHARED = cc -shared
+EXTDLDFLAGS = 
+warnflags = -Wall -Wextra -Wno-unused-parameter -Wno-parentheses -Wno-long-long -Wno-missing-field-initializers -Wpointer-arith -Wwrite-strings -Wdeclaration-after-statement -Wshorten-64-to-32 -Wimplicit-function-declaration
+debugflags = 
+optflags = -O3
+cxxflags =  -O3  -Wall -Wextra -Wno-unused-parameter -Wno-parentheses -Wno-long-long -Wno-missing-field-initializers -Wpointer-arith -Wwrite-strings -Wdeclaration-after-statement -Wshorten-64-to-32 -Wimplicit-function-declaration
+cflags =  -O3  -Wall -Wextra -Wno-unused-parameter -Wno-parentheses -Wno-long-long -Wno-missing-field-initializers -Wpointer-arith -Wwrite-strings -Wdeclaration-after-statement -Wshorten-64-to-32 -Wimplicit-function-declaration
+cppflags = -I/usr/local/include
+NULLCMD = :
+INSTALLDOC = nodoc
+CAPITARGET = nodoc
+RDOCTARGET = nodoc
+EXECUTABLE_EXTS = 
+ARCHFILE = 
+LIBRUBY_RELATIVE = no
+EXTOUT = .ext
+PREP = miniruby
+TEST_RUNNABLE = yes
+setup = Setup
+EXTSTATIC = 
+STRIP = strip
+TRY_LINK = 
+LIBPATHENV = LD_LIBRARY_PATH
+RPATHFLAG = 
+LIBPATHFLAG =  -L%s
+LINK_SO = 
+LIBEXT = a
+DLEXT2 = 
+DLEXT = so
+LDSHAREDXX = c++ -shared
+LDSHARED = cc -shared
+CCDLFLAGS = -fPIC
+STATIC = 
+ARCH_FLAG = 
+DLDFLAGS = 
+ALLOCA = 
+codesign = 
+POSTLINK = :
+WERRORFLAG = -Werror
+CHDIR = cd -P
+RMALL = rm -fr
+RMDIRS = rmdir -p
+RMDIR = rmdir
+CP = cp
+RM = rm -f
+PKG_CONFIG = pkg-config
+DOXYGEN = 
+DOT = 
+MAKEDIRS = /bin/mkdir -p
+MKDIR_P = /bin/mkdir -p
+INSTALL_DATA = install  -o root -g wheel -m 0644
+INSTALL_SCRIPT = install  -o root -g wheel -m 555
+INSTALL_PROGRAM = install  -s -o root -g wheel -m 555
+SET_MAKE = 
+LN_S = ln -s
+NM = nm
+DLLWRAP = 
+WINDRES = 
+OBJCOPY = :
+OBJDUMP = objdump
+ASFLAGS = 
+AS = as
+AR = ar
+RANLIB = ranlib
+try_header = 
+COUTFLAG = -o 
+OUTFLAG = -o 
+CPPOUTFILE = -o conftest.i
+GNU_LD = yes
+GCC = yes
+EGREP = /usr/bin/egrep
+GREP = /usr/bin/grep
+CPP = cpp
+CXXFLAGS = -O2 -pipe -fno-strict-aliasing
+CXX = c++
+OBJEXT = o
+CPPFLAGS = -I/usr/local/include  -I/usr/local/include
+LDFLAGS = -L.  -Wl,-rpath,/usr/lib:/usr/local/lib -rdynamic
+CFLAGS = -O2 -pipe -fno-strict-aliasing -fPIC
+CC = cc
+target_os = freebsd10
+target_vendor = portbld
+target_cpu = i386
+target = i386-portbld-freebsd10
+host_os = freebsd10
+host_vendor = portbld
+host_cpu = i386
+host = i386-portbld-freebsd10
+RUBYW_BASE_NAME = rubyw
+RUBY_BASE_NAME = ruby
+build_os = freebsd10
+build_vendor = portbld
+build_cpu = i386
+build = i386-portbld-freebsd10
+RUBY_RELEASE_DATE = 2014-05-14
+RUBY_PROGRAM_VERSION = 1.9.3
+BASERUBY = ruby
+target_alias = 
+host_alias = 
+build_alias = i386-portbld-freebsd10
+LIBS = -lexecinfo -lcrypt -lm -L/usr/local/lib -pthread
+ECHO_T = 
+ECHO_N = -n
+ECHO_C = 
+DEFS = 
+mandir = /usr/local/man
+localedir = /usr/local/share/locale
+libdir = /usr/local/lib
+psdir = /usr/local/share/doc/ruby19
+pdfdir = /usr/local/share/doc/ruby19
+dvidir = /usr/local/share/doc/ruby19
+htmldir = /usr/local/share/doc/ruby19
+infodir = /usr/local/info
+docdir = /usr/local/share/doc/ruby19
+oldincludedir = /usr/include
+includedir = /usr/local/include
+localstatedir = /usr/local/var
+sharedstatedir = /usr/local/com
+sysconfdir = /usr/local/etc
+datadir = /usr/local/share
+datarootdir = /usr/local/share
+libexecdir = /usr/local/libexec
+sbindir = /usr/local/sbin
+bindir = /usr/local/bin
+program_transform_name = s&$&19&;s&^&&
+exec_prefix = /usr/local
+PACKAGE_URL = 
+PACKAGE_BUGREPORT = 
+PACKAGE_STRING = 
+PACKAGE_VERSION = 
+PACKAGE_TARNAME = 
+PACKAGE_NAME = 
+PATH_SEPARATOR = :
+SHELL = /bin/sh
+rubylibdir = /usr/local/lib/ruby/1.9
+archdir = /usr/local/lib/ruby/1.9/i386-freebsd10
+sitelibdir = /usr/local/lib/ruby/site_ruby/1.9
+sitearchdir = /usr/local/lib/ruby/site_ruby/1.9/i386-freebsd10
+vendorlibdir = /usr/local/lib/ruby/vendor_ruby/1.9
+vendorarchdir = /usr/local/lib/ruby/vendor_ruby/1.9/i386-freebsd10
+topdir = /usr/local/lib/ruby/1.9/i386-freebsd10
+Ruby load path ($LOAD_PATH)
+/usr/local/lib/ruby/site_ruby/1.9
+/usr/local/lib/ruby/site_ruby/1.9/i386-freebsd10
+/usr/local/lib/ruby/site_ruby
+/usr/local/lib/ruby/vendor_ruby/1.9
+/usr/local/lib/ruby/vendor_ruby/1.9/i386-freebsd10
+/usr/local/lib/ruby/vendor_ruby
+/usr/local/lib/ruby/1.9
+/usr/local/lib/ruby/1.9/i386-freebsd10
+Ruby loaded libraries ($LOADED_FEATURES)
+enumerator.so
+/usr/local/lib/ruby/1.9/i386-freebsd10/enc/encdb.so
+/usr/local/lib/ruby/1.9/i386-freebsd10/enc/trans/transdb.so
+/usr/local/lib/ruby/site_ruby/1.9/rubygems/defaults.rb
+/usr/local/lib/ruby/1.9/i386-freebsd10/rbconfig.rb
+/usr/local/lib/ruby/site_ruby/1.9/rubygems/deprecate.rb
+/usr/local/lib/ruby/site_ruby/1.9/rubygems/exceptions.rb
+/usr/local/lib/ruby/site_ruby/1.9/rubygems/custom_require.rb
+/usr/local/lib/ruby/site_ruby/1.9/rubygems.rb
+/usr/local/lib/ruby/gems/1.9/gems/passenger-4.0.53/lib/phusion_passenger.rb
+/usr/local/lib/ruby/1.9/i386-freebsd10/etc.so
+/usr/local/lib/ruby/1.9/fileutils.rb
+/usr/local/lib/ruby/1.9/tmpdir.rb
+/usr/local/lib/ruby/gems/1.9/gems/passenger-4.0.53/lib/phusion_passenger/utils/tmpio.rb
+/usr/local/lib/ruby/gems/1.9/gems/passenger-4.0.53/lib/phusion_passenger/platform_info.rb
+/usr/local/lib/ruby/gems/1.9/gems/passenger-4.0.53/lib/phusion_passenger/platform_info/operating_system.rb
+/usr/local/lib/ruby/gems/1.9/gems/passenger-4.0.53/lib/phusion_passenger/platform_info/ruby.rb
+/usr/local/lib/ruby/gems/1.9/gems/passenger-4.0.53/lib/phusion_passenger/platform_info/binary_compatibility.rb
+/usr/local/lib/ruby/gems/1.9/gems/passenger-4.0.53/buildout/ruby/ruby-1.9.3-x86-freebsd10/passenger_native_support.so
+/usr/local/lib/ruby/gems/1.9/gems/passenger-4.0.53/lib/phusion_passenger/native_support.rb
+/usr/local/lib/ruby/1.9/i386-freebsd10/socket.so
+/usr/local/lib/ruby/1.9/socket.rb
+/usr/local/lib/ruby/1.9/thread.rb
+/usr/local/lib/ruby/gems/1.9/gems/passenger-4.0.53/lib/phusion_passenger/ruby_core_enhancements.rb
+/usr/local/lib/ruby/gems/1.9/gems/passenger-4.0.53/lib/phusion_passenger/utils/tmpdir.rb
+/usr/local/lib/ruby/gems/1.9/gems/passenger-4.0.53/lib/phusion_passenger/utils.rb
+/usr/local/lib/ruby/gems/1.9/gems/passenger-4.0.53/lib/phusion_passenger/preloader_shared_helpers.rb
+/usr/local/lib/ruby/gems/1.9/gems/passenger-4.0.53/lib/phusion_passenger/constants.rb
+/usr/local/lib/ruby/gems/1.9/gems/passenger-4.0.53/lib/phusion_passenger/public_api.rb
+/usr/local/lib/ruby/gems/1.9/gems/passenger-4.0.53/lib/phusion_passenger/debug_logging.rb
+/usr/local/lib/ruby/1.9/shellwords.rb
+/usr/local/lib/ruby/gems/1.9/gems/passenger-4.0.53/lib/phusion_passenger/utils/shellwords.rb
+/usr/local/lib/ruby/gems/1.9/gems/passenger-4.0.53/lib/phusion_passenger/loader_shared_helpers.rb
+/usr/local/lib/ruby/1.9/i386-freebsd10/fcntl.so
+/usr/local/lib/ruby/gems/1.9/gems/passenger-4.0.53/lib/phusion_passenger/message_channel.rb
+/usr/local/lib/ruby/gems/1.9/gems/passenger-4.0.53/lib/phusion_passenger/message_client.rb
+/usr/local/lib/ruby/gems/1.9/gems/passenger-4.0.53/lib/phusion_passenger/utils/native_support_utils.rb
+/usr/local/lib/ruby/gems/1.9/gems/passenger-4.0.53/lib/phusion_passenger/utils/unseekable_socket.rb
+/usr/local/lib/ruby/gems/1.9/gems/passenger-4.0.53/lib/phusion_passenger/request_handler/thread_handler.rb
+/usr/local/lib/ruby/gems/1.9/gems/passenger-4.0.53/lib/phusion_passenger/request_handler.rb
+/usr/local/lib/ruby/1.9/i386-freebsd10/stringio.so
+/usr/local/lib/ruby/gems/1.9/gems/passenger-4.0.53/lib/phusion_passenger/utils/tee_input.rb
+/usr/local/lib/ruby/gems/1.9/gems/passenger-4.0.53/lib/phusion_passenger/rack/thread_handler_extension.rb"
+18041,Redmine,Defect,"",Closed,Normal,"Wiki, Pdf export, Table, <pre>",Ente Ente,"",2014-10-18 15:41,PDF export,2.6.0,"","","",0,2014-10-07 12:27,2014-10-18 15:41,"",Fixed,2.4.3,"When exporting this wiki page:
+
+<pre>
+<code>
+h1. Test
+
+| S3 | <pre>R1</pre> | something |
+</code>
+</pre>
+
+in the resulting pdf the R1 is in the wrong column"
+18040,Redmine,Defect,"",Closed,Normal,Crash on Reboot,Tim Porter,"",2014-10-07 20:44,"","","","","",0,2014-10-06 22:21,2014-10-07 05:16,"",Invalid,2.5.2,"Hello and thank you for your support! I found Redmine to possibly be just what I've bene looking for and built it on Ubuntu 14.04 as prescribed on this site. All worked flawlessly until I rebooted the server. 
+
+I would love to find the problems and fix them but with the log it produced, its massive and over my head! SEE ATTACHED"
+18039,Redmine,Defect,"",Closed,High,Blank page after install,lyle barras,"",2014-10-07 05:55,Rails support,"","","","",0,2014-10-06 18:42,2014-10-07 05:55,"",Invalid,"","Hey,
+
+I'm no expert with Ruby or Rails. I have been tasked with moving our installation of red mine from one server to another.
+
+Initially I tired to just copy the site over and run the bundler but it didn't work.
+
+Not I have simple followed the instructions on the install page for the latest version, my thoughts being that if I could get a blank version working I could insert our data. (Maybe)
+The installation went okay. I have to change some perms and get the mysql_devel bits added but after that it seems to work however when I browse to the site I see the Apache test page.
+If I go to /public I see the following
+
+Not Found
+The requested URL /public/index.html was not found on this server.
+
+Can someone point me in the right directions, preferably in idiot steps.
+
+Thanks"
+18032,Redmine,Defect,"",New,Normal,Continued numbered lists (#_) are not working as the textile syntax expects,Michel Behr,"",2015-08-07 19:00,Text formatting,"","","","",0,2014-10-04 23:06,"","関連している #6992, 関連している #18397, 関連している #24396","",2.5.2,"# Item 1
+
+Some text
+
+#_ Item 2 (counting continued from the last Item, with the #_ marker)
+
+Some text
+
+#_ Item 3 (counting continued from the last Item, with the #_ marker)
+
+Each item should be rendered as 1, 2, 3, but this is not happening."

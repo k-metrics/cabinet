@@ -1,0 +1,641 @@
+#,ÉvÉçÉWÉFÉNÉg,ÉgÉâÉbÉJÅ[,êeÉ`ÉPÉbÉg,ÉXÉeÅ[É^ÉX,óDêÊìx,ëËñº,çÏê¨é“,íSìñé“,çXêVì˙,ÉJÉeÉSÉä,ëŒè€ÉoÅ[ÉWÉáÉì,äJénì˙,ä˙ì˙,ó\íËçHêî,êiíªó¶,çÏê¨ì˙,èIóπì˙,ä÷òAÇ∑ÇÈÉ`ÉPÉbÉg,Resolution,Affected version,ê‡ñæ
+14753,Redmine,Defect,"",New,Normal,Remember issue filter for each project,Tyler P,"",2013-08-22 22:24,"","","","","",0,2013-08-22 22:24,"",ä÷òAÇµÇƒÇ¢ÇÈ #7360,"","","
+
+When I switch projects, redmine forgets my issue filters for the last project. It would be great if it remembered the filter for each project. Maybe by creating a different cookie for each project?
+
+Reproduce:
+1. Apply a filter to the issues in a project.
+2. Open a new tab in the browser and apply a filter in a different project.
+3. Click the issues redmine tab in the first project.
+
+Expected:
+The filter is still there.
+
+Actual:
+The filter returns to the default, and must be selected again.
+
+Notes:
+Creating custom queries is a possible workaround, but still requires an extra page load because redmine loads the default filter, then, after you click the link to the custom query, loads again.
+"
+14752,Redmine,Defect,"",Closed,Normal,h5 confuses wiki editor,Tyler P,"",2016-05-11 10:40,Text formatting,"","","","",0,2013-08-22 21:11,2016-05-11 10:40,éüÇÃÉ`ÉPÉbÉgÇ∆èdï° #11789,Invalid,"","This is a bug in Redmine that should probably be passed along to the open source developers or might be fixed by updating our Redmine to a newer version, if there is one.
+
+Reproduce:
+1. Put an h5 in a wiki page, e.g.<pre>h2. hi what's new
+
+blah blah
+
+h5. I'm 5 years old
+
+blah
+
+h3. Hi
+
+lorem ipsum</pre>and save.
+2. Click the pencil next to the h3 to edit that section.
+
+Expected:
+The editor should disply<pre>h3. Hi
+
+lorem ipsum</pre>Actual:
+The editor displays the h5 section.
+
+Notes:
+Probably because the h5 is not dynamically assigned a pencil button like the other headers are.
+
+Probably applies to h6 and h7 (if there is an h7) as well."
+14750,Redmine,Defect,"",Closed,Urgent,Move single project,Pravin Patil,"",2013-08-22 15:07,Projects,"","","","",0,2013-08-22 13:48,2013-08-22 15:07,"",Invalid,2.3.2,How can I move a single project to new redmine server?
+14749,Redmine,Defect,"",Closed,Normal,how to uplod the image,12 auqf,"",2013-08-22 15:06,"","","","","",0,2013-08-22 11:11,2013-08-22 15:05,"",Invalid,"","hi,
+  i don't know how to use  the insert image functions, 
+  in the help manaule, i see two ways ,but i can not understand the !image_url!,can you give me an example?thanks.
+"
+14748,Redmine,Defect,"",Closed,Normal,can't upload image ,12 auqf,"",2013-08-23 07:02,Accounts / authentication,"","","","",0,2013-08-22 11:06,2013-08-22 15:04,"",Invalid,"","hi,
+  My environment is centos6.3 x64, apache2, redmine 2.3.2.
+  I can not upload file or images. 
+if it need other settings?"
+14740,Redmine,Patch,"",New,Normal,display decimals hours only if fractional,J?r?me BATAILLE,"",2014-12-04 14:23,Time tracking,"","","","",0,2013-08-21 17:28,"","","","","4 hours could be displayed *4 hours*
+4.5 hours will still be displayed *4.50 hours*"
+14739,Redmine,Defect,"",New,Normal,undefined method `name' for nil:NilClass with IMAP email fetch,Dominic Collins,"",2013-08-21 17:03,Email receiving,"","","","",0,2013-08-21 17:03,"","","",2.3.2,"Hi,
+
+We are migrating from a hosted Redmine 2.1.0 installation to an in house 2.3.2 installation.  Both are running on Ubuntu Jumpboxes.
+
+The origianl Redmine wasn't using the Email Receiving feature, but we are trying to implement it in the new in house install.
+
+I've configured IMAP as per http://www.redmine.org/projects/redmine/wiki/RedmineReceivingEmails but when running the following command:
+
+bundle exec rake --trace redmine:email:receive_imap RAILS_ENV=""production"" <ourSMTPserver> port=993 username=<ourUsername> password=<OurPassword>
+
+I get the following:
+
+** Invoke redmine:email:receive_imap (first_time)
+** Invoke environment (first_time)
+** Execute environment
+** Execute redmine:email:receive_imap
+rake aborted!
+undefined method `name' for nil:NilClass
+/usr/lib/ruby/1.8/net/imap.rb:918:in `initialize'
+/var/data/redmine/lib/redmine/imap.rb:29:in `new'
+/var/data/redmine/lib/redmine/imap.rb:29:in `check'
+/var/data/redmine/lib/tasks/email.rake:141
+/var/data/redmine/vendor/bundle/ruby/1.8/gems/rake-10.0.4/lib/rake/task.rb:246:in `call'
+/var/data/redmine/vendor/bundle/ruby/1.8/gems/rake-10.0.4/lib/rake/task.rb:246:in `execute'
+/var/data/redmine/vendor/bundle/ruby/1.8/gems/rake-10.0.4/lib/rake/task.rb:241:in `each'
+/var/data/redmine/vendor/bundle/ruby/1.8/gems/rake-10.0.4/lib/rake/task.rb:241:in `execute'
+/var/data/redmine/vendor/bundle/ruby/1.8/gems/rake-10.0.4/lib/rake/task.rb:184:in `invoke_with_call_chain'
+/usr/lib/ruby/1.8/monitor.rb:242:in `synchronize'
+/var/data/redmine/vendor/bundle/ruby/1.8/gems/rake-10.0.4/lib/rake/task.rb:177:in `invoke_with_call_chain'
+/var/data/redmine/vendor/bundle/ruby/1.8/gems/rake-10.0.4/lib/rake/task.rb:170:in `invoke'
+/var/data/redmine/vendor/bundle/ruby/1.8/gems/rake-10.0.4/lib/rake/application.rb:143:in `invoke_task'
+/var/data/redmine/vendor/bundle/ruby/1.8/gems/rake-10.0.4/lib/rake/application.rb:101:in `top_level'
+/var/data/redmine/vendor/bundle/ruby/1.8/gems/rake-10.0.4/lib/rake/application.rb:101:in `each'
+/var/data/redmine/vendor/bundle/ruby/1.8/gems/rake-10.0.4/lib/rake/application.rb:101:in `top_level'
+/var/data/redmine/vendor/bundle/ruby/1.8/gems/rake-10.0.4/lib/rake/application.rb:110:in `run_with_threads'
+/var/data/redmine/vendor/bundle/ruby/1.8/gems/rake-10.0.4/lib/rake/application.rb:95:in `top_level'
+/var/data/redmine/vendor/bundle/ruby/1.8/gems/rake-10.0.4/lib/rake/application.rb:73:in `run'
+/var/data/redmine/vendor/bundle/ruby/1.8/gems/rake-10.0.4/lib/rake/application.rb:160:in `standard_exception_handling'
+/var/data/redmine/vendor/bundle/ruby/1.8/gems/rake-10.0.4/lib/rake/application.rb:70:in `run'
+/var/data/redmine/vendor/bundle/ruby/1.8/gems/rake-10.0.4/bin/rake:33
+/usr/bin/rake:19:in `load'
+/usr/bin/rake:19
+Tasks: TOP => redmine:email:receive_imap
+
+I've figured my way through a few issues so far from research, but can't find an answer to this problem.  I'm still new to this so go easy!
+
+Environment is:
+
+Environment:
+  Redmine version                2.3.2.stable
+  Ruby version                   1.8.7-p249 (2010-01-10) [i486-linux]
+  Rails version                  3.2.13
+  Environment                    production
+  Database adapter               MySQL
+Redmine plugins:
+  clipboard_image_paste          1.7
+  redmine_silencer               0.2.0
+
+Any help would be much appreciated.
+
+Thanks
+"
+14737,Redmine,Defect,"",Closed,Normal,"Gantt, completed % truncated instead of rounded",J?r?me BATAILLE,"",2014-05-16 13:17,Gantt,2.6.0,"","","",0,2013-08-21 16:17,2014-05-16 12:38,éüÇÃÉ`ÉPÉbÉgÇ™èdï° #13442,Fixed,"",""
+14735,Redmine,Patch,"",New,Normal,Allow negative time entries,J?r?me BATAILLE,"",2015-03-10 15:09,Time tracking,"","","","",0,2013-08-21 14:23,"","","","",""
+14724,Redmine,Defect,"",New,Normal,Documentation is ambiguous for redmine API for POST request to create issues,muhammad irfan,"",2013-08-21 14:17,REST API,"","","","",0,2013-08-20 14:28,"","","","","Like GET request to get all the issues from redmine through API(which is working) but when you use POST request to create issues in redmine, there are some necessary fields to create issues in redmine that is not listed in redmine API documentation, also, there are some defects in creating redmine issues using POST request, like csrf authenticity token etc.
+"
+14721,Redmine,Defect,"",Closed,Normal,Associated revisions - can't view,Andrzej Zawadzki,"",2013-08-20 11:31,Projects,"","","","",0,2013-08-20 11:02,2013-08-20 11:19,"",Invalid,2.3.2,"When developer has access to subproject and doesn't have access to main project, he can't see ""Associated revisions"" in issues related to subproject.
+When rights to project are granted ""Associated revision"" are viewable.
+But I don't want give rights to main project.
+"
+14718,Redmine,Defect,"",Closed,Normal,"update redmine 0.9.4 to 2.3.2 ,database encoding problem",hi say,"",2013-08-20 04:20,Database,"","","","",0,2013-08-20 03:37,2013-08-20 04:20,"",Invalid,2.3.2,"hi,all
+I have installed 0.9.4 versionÅC now need upgrade to 2.3.2.
+
+0.9.4 database encoding is latin1 and english version ÅCbut content have some chinese(e:wiki)
+the database default character set is  latin1;
+<code>
+mysql> show variables like '%set%';
++--------------------------+----------
+| Variable_name            | Value
++--------------------------+----------
+| auto_increment_offset    | 1
+| character_set_client     | latin1
+| character_set_connection | latin1
+| character_set_database   | latin1
+| character_set_filesystem | binary
+| character_set_results    | latin1
+| character_set_server     | latin1
+| character_set_system     | utf8
+| character_sets_dir       | D:\PROGRA
++--------------------------+----------
+9 rows in set (0.03 sec)
+</code>
+
+
+now update to 2.3.2 the chinese version, 
+the database default character set is utf8;
+<code>
+sql>show variables like '%set%';
++--------------------------+--------------
+| auto_increment_offset    | 1
+| character_set_client     | utf8
+| character_set_connection | utf8
+| character_set_database   | utf8
+| character_set_filesystem | binary
+| character_set_results    | utf8
+| character_set_server     | utf8
+| character_set_system     | utf8
+| character_sets_dir       | G:\BitNami\RE
++--------------------------+--------------
+9 rows in set (0.00 sec)
+
+mysql> show variables like '%coll%'
+    -> ;
++----------------------+-----------------+
+| Variable_name        | Value           |
++----------------------+-----------------+
+| collation_connection | utf8_general_ci |
+| collation_database   | utf8_general_ci |
+| collation_server     | utf8_general_ci |
++----------------------+-----------------+
+3 rows in set (0.00 sec)
+</code>
+when import 0.9.4 database to 2.3.2 database ,all the contents of the database cannot be displayed on the home page.
+
+get some can't read character."
+14712,Redmine,Defect,"",New,Normal,roadmap doesn't show tickets of specific subproject-tracker but version page shows them,Tobias Fischer,"",2013-08-19 11:00,Roadmap,"","","","",0,2013-08-19 11:00,"","","",2.3.2,"Our project has a subproject for internal affairs. The subproject has additional trackers enabled (e.g. ""projectmanagement"").
+The milestone ""version 2.3"" belongs to the parent project and is inherited by it's subprojects.
+
+Viewing the roadmap of the parent project it says milestone ""version 2.3"" has 2 tickets ? but it only shows 1 ticket in the list (a ticket in tracker ""defect"").
+The second ticket is a subproject ticket set to a tracker which is only available in the subproject. Such tickets seem not to be shown in the parent project roadmap view.
+
+BUT, and that's the strange thing, these subproject tickets +are+ shown on the version page (e.g. @http://{redmine-uri}/versions/{ID}@ ) where the version belongs to the parent project.
+There seems to be an inconsistency between the roadmap and the version view.
+
+I would suggest to show +all+ tickets in roadmap view - even if the specific tracker is only enabled in a subproject."
+14710,Redmine,Defect,"",Closed,Normal,Settings the left 500 error in ruby1.9.2,sword C,"",2013-08-20 04:25,"","","","","",0,2013-08-19 10:33,2013-08-20 04:25,éüÇÃÉ`ÉPÉbÉgÇ∆èdï° #13520,Duplicate,2.3.2,"Dear all,
+In order to support plug-in, after upgrading from 1.8.7 to version 1.9.3 version, the configuration page not open cast 500 error.Change ruby to 1.9.2 or so,is this how to handle.
+
+ruby -v
+ruby 1.9.2p320 (2012-04-20 revision 35421) [x86_64-linux]
+
+tail -f log/production.log
+Started GET ""/admin"" for 192.168.1.18 at 2013-08-19 17:05:04 +0800
+Processing by AdminController#index as HTML
+  Current user: sword (id=4)
+  Rendered admin/_menu.html.erb (5.1ms)
+  Rendered admin/index.html.erb within layouts/admin (5.7ms)
+  Rendered layouts/base.html.erb (11.8ms)
+Completed 200 OK in 24ms (Views: 17.4ms | ActiveRecord: 2.3ms)
+Started GET ""/settings"" for 192.168.1.18 at 2013-08-19 17:05:07 +0800
+Processing by SettingsController#index as HTML
+  Current user: sword (id=4)
+  Rendered settings/_general.html.erb (8.0ms)
+  Rendered settings/_display.html.erb (7.8ms)
+  Rendered settings/_authentication.html.erb (5.7ms)
+  Rendered settings/_projects.html.erb (10.5ms)
+  Rendered common/_tabs.html.erb (39.8ms)
+  Rendered settings/edit.html.erb within layouts/admin (40.4ms)
+Completed 500 Internal Server Error in 47ms
+
+ActionView::Template::Error (incompatible character encodings: ASCII-8BIT and UTF-8):
+    21: </script>
+    22: 
+    23: <% tabs.each do |tab| -%>
+    24:   <%= content_tag('div', render(:partial => tab[:partial], :locals => {:tab => tab} ),
+    25:                        :id => ""tab-content-#{tab[:name]}"",
+    26:                        :style => (tab[:name] != selected_tab ? 'display:none' : nil),
+    27:                        :class => 'tab-content') %>
+  app/views/common/_tabs.html.erb:24:in `block in _app_views_common__tabs_html_erb__4046057004198103457_51144240'
+  app/views/common/_tabs.html.erb:23:in `each'
+  app/views/common/_tabs.html.erb:23:in `_app_views_common__tabs_html_erb__4046057004198103457_51144240'
+  app/helpers/application_helper.rb:271:in `render_tabs'
+  app/views/settings/edit.html.erb:3:in `_app_views_settings_edit_html_erb___3437158674120265598_51525740'
+  app/controllers/settings_controller.rb:28:in `index'"
+14709,Redmine,Defect,"",New,Low,Attachment filesize is displayed to 3 decimal places,Tobias Fischer,"",2014-09-06 17:35,Attachments,"","","","",0,2013-08-19 10:31,"","","",2.3.2,"Attachment filesizes are displayed to 3 decimal places which is highly unusual. I'm using Redmine 2.3.2.
+This seemed to be introduced with one of the latest updates...
+
+I would suggest to display filesizes with 2 decimal places again."
+14706,Redmine,Defect,"",New,Normal,Sometimes pages are slow,Gareth Evans,"",2013-08-20 11:23,"","","","","",0,2013-08-19 02:37,"","","",2.3.2,"Firstly, sorry for the weird subject - it's the only way I can describe this.
+
+I've recently upgraded my redmine from 1.3.x to 2.3.2.
+We're using a bitnami VM as I know very little about rails or supporting technology.
+
+Initially, we were using mysql as the database (which ships with the bitnami install) and we noticed that the app would sometimes ""hang"" for periods of time when loading pages. 
+I migrated it from mysql to sqlserver (as we have one in the office that serves our other dev systems) by copying the schema and data then updating database.yml and page load time dropped overall.
+It's worth noting that we are also using SVN repository integration pointing at an external beanstalkapp SVN (cloud)
+
+What I'm seeing is that sometimes the redmine instance just won't load a page for ages. It will just sit there and sometimes may show the ""an error has occurred""
+I've grabbed a copy of the last 1000 lines of production.log and attached it to this issue. 
+Most of the time everything will be fast and snappy but then occassionally, we'll get this (from production.log)
+@Completed 200 OK in 506885ms (Views: 1515.8ms | ActiveRecord: 1271.4ms)@
+Note the really huge page load time but the low active record and views load times.
+
+@
+Environment:
+  Redmine version                2.3.2.stable
+  Ruby version                   1.9.3-p448 (2013-06-27) [x86_64-linux]
+  Rails version                  3.2.13
+  Environment                    production
+  Database adapter               SQLServer
+Redmine plugins:
+  no plugin installed
+
+svn, version 1.7.5 (r1336830)
+   compiled Jul 12 2013, 12:41:27
+
+@"
+14703,Redmine,Defect,"",New,Normal,Redmine rest API does not list all projects,Oleksandr Melnyk,"",2017-03-29 13:08,REST API,"","","","",0,2013-08-16 10:36,"","","","","We have about 40 projects in redmine, organised hierarchically. And for some reason REST API call /projects.json returns only part of all projects.
+We have 5 root projects and return list included only subprojects of first root. "
+14701,Redmine,Defect,"",Closed,Low,PDF Export Encoding,Eric Mascot,"",2013-08-16 04:29,PDF export,"","","","",0,2013-08-16 03:29,2013-08-16 04:29,éüÇÃÉ`ÉPÉbÉgÇ∆èdï° #13781,Duplicate,"","When exporting the activity page with Japanese kanji symbols to PDF, I get blank squares.
+This is only when my language is set to English in the ""My account"" settings.
+Setting this to Japanese exports the PDF properly.
+I like to have my language settings set to English but still be able to export Japanese to PDF."
+14699,Redmine,Defect,"",Closed,Normal,"Cannot change ""From"" header in email notifications",Zach Hamman,Jean-Philippe Lang,2014-12-26 11:41,Code cleanup/refactoring,2.6.1,"","","",0,2013-08-15 17:44,2014-12-26 11:41,"",Fixed,"","In Redmine 1.x (Rails 2.3), using from method in custom mailer changed the From header from Setting.mail_from.
+
+According to Rails 3 Action Mailer documentation, mail method can receive :from header.  Redmine 2.x's Mailer#mail does header.merge!{'From'=>Setting.mail_from,...}.  This results in the from header being overridden and removes default functionality.
+
+I have made a change to Mailer#mail to do header.reverse_merge! instead of header.merge!, but I am unsure if this is the best path.  However, this did set up the email headers correctly."
+14698,Redmine,Defect,"",Closed,High,receive_pop3 task ends up with rake aborted,Jan Zaruba,"",2013-08-22 13:53,Email receiving,"","","","",0,2013-08-15 14:13,2013-08-22 13:53,"","",2.3.2,"Hi,
+receive_pop3 task which we execute with line below fails. It does not receive the email and the email stays in the pop3 box. The email is about 5MB big however, it should not matter.
+
+/usr/local/bin/rake --trace -f /var/www/redmine/Rakefile --silent redmine:email:receive_pop3 unknown_user=accept no_permission_check=1 RAILS_ENV=""production"" host=XXXXX port=110 username=XXX password=XXXX project=XXXX allow_override=PROJECT
+
+I am attaching the trace.
+
+Jan"
+14697,Redmine,Defect,"",Closed,Normal,Wrong Russian translation in close project message,Artur Gadelshin,"",2013-08-15 18:36,Translations,2.3.3,"","","",0,2013-08-15 13:50,2013-08-15 18:36,ä÷òAÇµÇƒÇ¢ÇÈ #12021,Fixed,2.3.2,"""ÑPÑÇÑÄÑuÑ{ÑÑ ÑxÑpÑ{ÑÇÑçÑÑ Ñy Ñ~ÑpÑáÑÄÑtÑyÑÑÑéÑÉÑë Ñr ÑÇÑuÑwÑyÑ}Ñu ÑÑÑÄÑ|ÑéÑ{ÑÄ ÑtÑ|Ñë ÑâÑÑÑuÑ~ÑyÑë."" should be ""ÑPÑÇÑÄÑuÑ{ÑÑ ÑxÑpÑ{ÑÇÑçÑÑ Ñy Ñ~ÑpÑáÑÄÑtÑyÑÑÑÉÑë Ñr ÑÇÑuÑwÑyÑ}Ñu ÑÑÑÄÑ|ÑéÑ{ÑÄ ÑtÑ|Ñë ÑâÑÑÑuÑ~ÑyÑë."" ""Ñé"" in ""Ñ~ÑpÑáÑÄÑtÑyÑÑÑéÑÉÑë"" is mistake for this sentence. 
+In english translation it is ""This project is closed and read-only."""
+14696,Redmine,Defect,"",Closed,Normal,Limited status when copying an issue,Steven Schmid,Jean-Philippe Lang,2016-09-03 09:21,Issues workflow,3.4.0,"","","",0,2013-08-15 09:58,2016-09-03 09:21,éüÇÃÉ`ÉPÉbÉgÇ™èdï° #19365,Fixed,"","When creating a new issue by copying from an existing one, the @new@ form will only allow to change between two status (the default one and the status from the existing issue). The commit who implemented this feature is r9404.
+
+What is the reasoning behind this? When I copy an issue, I'm interested in the text and the properties but I would like to be able to choose between all the status which are normally available to me when I create a new issue without copying."
+14693,Redmine,Defect,"",Closed,Normal,Extending the Project Module,Christopher Mann,"",2013-08-14 17:31,Plugin API,"","","","",0,2013-08-14 16:55,2013-08-14 17:31,"",Invalid,2.3.2,"Hi,
+
+Would you please do the same thing for project as you did for issue in #4095.
+
+Many thanks,
+
+C:"
+14692,Redmine,Patch,"",Closed,Normal,Timelog controller redirections tweak,J?r?me BATAILLE,"",2014-05-20 12:38,Time tracking,"","","","",0,2013-08-14 16:38,2013-08-15 02:08,"","","","1) after update redirect to the issue time entries list if possible
+2) after deletion, get back to the issue time entries list if not in bulk edit mode"
+14690,Redmine,Defect,"",New,Normal,Redmine Ldap Auth Error,George Jebaraj,"",2013-08-15 03:11,Accounts / authentication,"","","","",0,2013-08-14 14:23,"","","","","Processing AccountController#login (for XXX.XXX.XXX at 2013-08-14 17:47:07) [POST]
+  Parameters: {""password""=>""[FILTERED]"", ""login""=>""Login ??"", ""username""=>""user1"", ""back_url""=>""http%3A%2F%2FXXX.XXX.XXX.XXX%2Fredmine%2F"", ""controller""=>""account"", ""authenticity_token""=>""uHML4RKDLkEyUbxSromKHrR/Jb8hJGm7e7kdREV07wg="", ""action""=>""login""}
+Failed login for 'sumtwo-user1' from XXX.XXX.XXX at Wed Aug 14 12:17:07 UTC 2013
+Rendering template within layouts/base
+Rendering account/login
+"
+14686,Redmine,Patch,"",Closed,Normal,Portuguese translation for 2.3-stable,Toshi MARUYAMA,"",2013-08-14 10:03,Translations,2.3.3,"","","",0,2013-08-14 07:38,2013-08-14 10:03,"","","","From #14682.
+
+<pre><code class=""diff"">
+diff --git a/config/locales/pt.yml b/config/locales/pt.yml
+--- a/config/locales/pt.yml
++++ b/config/locales/pt.yml
+@@ -1091,5 +1091,5 @@ pt:
+   setting_jsonp_enabled: Activar suporte JSONP
+   field_inherit_members: Herdar membros
+   field_closed_on: Fechado
+-  setting_default_projects_tracker_ids: Default trackers for new projects
++  setting_default_projects_tracker_ids: Tipo de tarefa padr?o para novos projectos
+   label_total_time: Total
+</code></pre>"
+14685,Redmine,Defect,"",Closed,Normal,REST queries.xml does not accept KEY authentication,Matthew Houston,"",2013-08-15 04:46,REST API,"","","","",0,2013-08-14 06:36,2013-08-15 04:46,"",Invalid,2.3.2,"Using the REST API will return a (401) if key authentication is used. If I send the request through a browser with an open session it works, or use basic authentication it will work.
+
+Example URL sent:
+
+*http://server:3000/redmine/queries.xml* (from script returns (401) from browser works)
+*http://server:3000/redmine/queries.xml&key=3e3ab1b07278a365d1435a39748760bf175b4724* (Doesn't work anywhere)
+
+I'm almost positive I saw a report of this previously though no amount of searching on Redmine or Google has found any results.
+
+Redmine : 2.3.2"
+14684,Redmine,Patch,"",Closed,Normal,Traditional Chinese translation for wiki_syntax.html (to r12113),ChunChang Lo,"",2013-08-14 05:51,Translations,"","","","",0,2013-08-14 04:07,2013-08-14 05:51,ÉRÉsÅ[êÊ #15022,"","","* Add translation for ""More Information"".
+"
+14683,Redmine,Defect,"",Closed,Normal,"Minimum password length is 8, not 4 as listed in Administrator Guide",Craig Rodrigues,Mischa The Evil,2013-08-14 05:19,Documentation,"","","","",0,2013-08-14 02:32,2013-08-14 05:19,"",Fixed,"","While investigating #14590 ,
+I saw this section in the Administrator Guide:
+http://www.redmine.org/projects/redmine/wiki/RedmineSettings#Minimum-password-length
+
+This section is wrong.  By default, the minimum password length is 8, not 4
+as listed in the Administrator guide.
+
+This can be confirmed by looking at:
+http://svn.redmine.org/redmine/trunk/config/settings.yml
+where the default value of password_min_length is 8.
+
+Related to:  #14567 #14590
+
+
+Related to:  #14567 #14590"
+14682,Redmine,Patch,"",Closed,Normal,Portuguese translation for trunk updated,Lije Also,"",2013-08-14 10:03,Translations,"","","","",0,2013-08-13 21:01,2013-08-14 10:03,"","","","Translated the strings to portuguese (pt), from the bottom of config/locales/pt.yml - lines 1095 to 1108 as seen ""here"":http://www.redmine.org/projects/redmine/repository/diff/trunk/config/locales/pt.yml?utf8=%E2%9C%93&rev=12083&rev_to=11458"
+14681,Redmine,Defect,"",Closed,Normal,Path incomplete on Plugins,Christopher Mann,"",2013-08-14 05:02,Plugin API,"","","","",0,2013-08-13 18:24,2013-08-14 05:02,"",Invalid,2.3.2,"Hi,
+
+I have a plugin, but certain includes are not found.
+Namely, if it is in plugins/my_plugin/lib I am good.
+But if any file is in plugins/my_plugin/app or plugins/my_plugin/config or plugins/my_plugin/app/views etc, they are not found.
+
+This is potentially a big plugin blocker.
+
+Many thanks,
+
+Christopher"
+14680,Redmine,Patch,"",Closed,Normal,Change Simplified Chinese translation for version 'field_effective_date',Jun Den,Jean-Philippe Lang,2016-05-10 16:57,Translations,3.3.0,"","","",0,2013-08-13 13:45,2016-05-07 10:12,ä÷òAÇµÇƒÇ¢ÇÈ #22315,"","","Branch: 2.3-stable
+Revision: 11981
+
+It just changes (Simplified) Chinese and English translation of *field_effective_date* from _Date_ to -Due to- _Due date_ (ref: #22315#note-7).
+I think that's more meaningful."
+14679,Redmine,Patch,"",New,Normal,Hierarchical relationships of parent and son issues in roadmap viewer,Jun Den,"",2015-01-11 02:43,Roadmap,"","","","",0,2013-08-13 13:38,"","","","","Branch: 2.3-stable
+Revision: 11981
+
+This patch can make issues in Roadmap viewer more readable. It make parent and son issues like following:
+<pre>
+Parent Issue
+  Son Issue
+    Grandson Issue
+</pre>
+Through this, you can see the hierarchical relationships of parent and son issues."
+14677,Redmine,Patch,"",Closed,Normal,Traditional Chinese translation for wiki_syntax html files,ChunChang Lo,"",2013-08-13 11:11,Translations,"","","","",0,2013-08-13 08:38,2013-08-13 11:11,"","","",As subject.
+14676,Redmine,Patch,"",Closed,Normal,Japanese wiki_syntax_detailed.html translation update (r12096),Go MAEDA,"",2013-08-13 11:10,Translations,"","","","",0,2013-08-13 06:45,2013-08-13 11:10,"","","",Translated wiki_syntax_detailed.html.
+14675,Redmine,Defect,"",Closed,Normal,redmine:email:receive_imap failed with localizaed characters in mail body,Evgeny Zhiryakov,"",2014-02-17 14:51,Email receiving,"","","","",0,2013-08-13 06:22,2014-02-17 14:51,"",Cant reproduce,2.3.1,"<pre>
+Environment:
+  Redmine version                          2.3.1.stable.11845
+  Ruby version                             1.9.2 (i486-linux)
+  Rails version                            3.2.13
+  Environment                              production
+  Database adapter                         Mysql2
+</pre>
+
+We send mail with only one string: ""Freundliche Gr?sse""
+
+Original mail:
+<pre>
+MIME-Version: 1.0
+Received: by 10.114.38.229 with HTTP; Mon, 12 Aug 2013 20:56:04 -0700 (PDT)
+Date: Tue, 13 Aug 2013 10:56:04 +0700
+Delivered-To: ezhiryakov@mail.com
+Message-ID: <CAN5rfSsXn675pMbiU1wqqfBpFromT05Y_xfF_XOgjXwKROen9g@mail.gmail.com>
+Subject: Swipe screen [#38669]
+From: Evgeny Zhiryakov <ezhiryakov@mail.com>
+To: redmine <redmine@mail.com>
+Content-Type: multipart/alternative; boundary=001a11c260fa53f8dc04e3cc380b
+
+--001a11c260fa53f8dc04e3cc380b
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+Freundliche Gr=C3=BCsse
+
+--001a11c260fa53f8dc04e3cc380b
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D""ltr"">Freundliche Gr=C3=BCsse<br></div>
+
+--001a11c260fa53f8dc04e3cc380b--
+</pre>
+
+When run task receive_imap we have error:
+<pre>
+** Invoke redmine:email:receive_imap (first_time)
+** Invoke environment (first_time)
+** Execute environment
+** Execute redmine:email:receive_imap
+rake aborted!
+invalid byte sequence in US-ASCII
+/var/lib/gems/1.9.1/gems/mail-2.5.4/lib/mail/core_extensions/string.rb:8:in `gsub'
+/var/lib/gems/1.9.1/gems/mail-2.5.4/lib/mail/core_extensions/string.rb:8:in `to_lf'
+/var/lib/gems/1.9.1/gems/mail-2.5.4/lib/mail/encodings/quoted_printable.rb:22:in `encode'
+/var/lib/gems/1.9.1/gems/mail-2.5.4/lib/mail/body.rb:170:in `encoded'
+/var/lib/gems/1.9.1/gems/mail-2.5.4/lib/mail/message.rb:1803:in `encoded'
+/var/lib/gems/1.9.1/gems/mail-2.5.4/lib/mail/body.rb:153:in `block in encoded'
+/var/lib/gems/1.9.1/gems/mail-2.5.4/lib/mail/parts_list.rb:11:in `block in collect'
+/var/lib/gems/1.9.1/gems/mail-2.5.4/lib/mail/parts_list.rb:11:in `each'
+/var/lib/gems/1.9.1/gems/mail-2.5.4/lib/mail/parts_list.rb:11:in `collect'
+/var/lib/gems/1.9.1/gems/mail-2.5.4/lib/mail/body.rb:153:in `encoded'
+/var/lib/gems/1.9.1/gems/mail-2.5.4/lib/mail/message.rb:1803:in `encoded'
+/var/lib/gems/1.9.1/gems/actionmailer-3.2.13/lib/action_mailer/base.rb:434:in `set_payload_for_mail'
+/var/lib/gems/1.9.1/gems/actionmailer-3.2.13/lib/action_mailer/base.rb:403:in `block in receive'
+/var/lib/gems/1.9.1/gems/activesupport-3.2.13/lib/active_support/notifications.rb:123:in `block in instrument'
+/var/lib/gems/1.9.1/gems/activesupport-3.2.13/lib/active_support/notifications/instrumenter.rb:20:in `instrument'
+/var/lib/gems/1.9.1/gems/activesupport-3.2.13/lib/active_support/notifications.rb:123:in `instrument'
+/var/lib/gems/1.9.1/gems/actionmailer-3.2.13/lib/action_mailer/base.rb:401:in `receive'
+/home/redmine/redmine-2.3/app/models/mail_handler.rb:46:in `receive'
+/home/redmine/redmine-2.3/lib/redmine/imap.rb:35:in `block in check'
+/home/redmine/redmine-2.3/lib/redmine/imap.rb:32:in `each'
+/home/redmine/redmine-2.3/lib/redmine/imap.rb:32:in `check'
+/home/redmine/redmine-2.3/lib/tasks/email.rake:142:in `block (3 levels) in <top (required)>'
+/var/lib/gems/1.9.1/gems/rake-10.0.4/lib/rake/task.rb:246:in `call'
+/var/lib/gems/1.9.1/gems/rake-10.0.4/lib/rake/task.rb:246:in `block in execute'
+/var/lib/gems/1.9.1/gems/rake-10.0.4/lib/rake/task.rb:241:in `each'
+/var/lib/gems/1.9.1/gems/rake-10.0.4/lib/rake/task.rb:241:in `execute'
+/var/lib/gems/1.9.1/gems/rake-10.0.4/lib/rake/task.rb:184:in `block in invoke_with_call_chain'
+/usr/lib/ruby/1.9.1/monitor.rb:201:in `mon_synchronize'
+/var/lib/gems/1.9.1/gems/rake-10.0.4/lib/rake/task.rb:177:in `invoke_with_call_chain'
+/var/lib/gems/1.9.1/gems/rake-10.0.4/lib/rake/task.rb:170:in `invoke'
+/var/lib/gems/1.9.1/gems/rake-10.0.4/lib/rake/application.rb:143:in `invoke_task'
+/var/lib/gems/1.9.1/gems/rake-10.0.4/lib/rake/application.rb:101:in `block (2 levels) in top_level'
+/var/lib/gems/1.9.1/gems/rake-10.0.4/lib/rake/application.rb:101:in `each'
+/var/lib/gems/1.9.1/gems/rake-10.0.4/lib/rake/application.rb:101:in `block in top_level'
+/var/lib/gems/1.9.1/gems/rake-10.0.4/lib/rake/application.rb:110:in `run_with_threads'
+/var/lib/gems/1.9.1/gems/rake-10.0.4/lib/rake/application.rb:95:in `top_level'
+/var/lib/gems/1.9.1/gems/rake-10.0.4/lib/rake/application.rb:73:in `block in run'
+/var/lib/gems/1.9.1/gems/rake-10.0.4/lib/rake/application.rb:160:in `standard_exception_handling'
+/var/lib/gems/1.9.1/gems/rake-10.0.4/lib/rake/application.rb:70:in `run'
+/var/lib/gems/1.9.1/gems/rake-10.0.4/bin/rake:33:in `<top (required)>'
+/usr/bin/rake:19:in `load'
+/usr/bin/rake:19:in `<main>'
+Tasks: TOP => redmine:email:receive_imap
+</pre>
+
+What can we do with that?"
+14674,Redmine,Defect,"",New,Low,IssuePriority expects database counters to be pristine,Daniel Sundstr?m,"",2013-08-14 02:23,Issues,"","","","",0,2013-08-12 20:43,"","","",2.3.2,"IssuePriority expects implicitly that the autoincrement counter on the Enumerations-table begins at 0, something 
+which might not be case when migrating a Redmine installation from one machine to another one. 
+
+The result is that all issues are marked graphically as high-priority issues if the counter is off by one or two - or not marked at 
+all of the counter is off by more than that. 
+
+The attached patch changes the IssuePriority to rely on internal position rather than id for selecting proper CSS-classes which 
+resolves the issue."
+14670,Redmine,Patch,"",Closed,Normal,French wiki_syntax.html and wiki_syntax_detailed.html update (r12100),Thomas Godard,"",2013-08-13 04:19,Translations,"","","","",0,2013-08-12 15:46,2013-08-13 04:19,"","","","Here are the French translations.
+
+Hope no mistake have slipped in it."
+14668,Redmine,Defect,"",New,Normal,Incoming emails has wrong line breaks,Anton Nepomnyaschih,"",2013-08-12 10:15,Email receiving,"","","","",0,2013-08-12 10:01,"","","","","h1. Steps to reproduce:
+
+# Answer any email notification from Redmine back to its email address to add a comment to a ticket (having Incoming email processing turned on).
+
+h1. Expected result:
+
+Your answer is added to the ticket as a comment with no line breaks change. As you can see in the following image, the ""very long line"" in the email is very long with no line breaks.
+
+!2013-08-12_1452.png!
+
+h1. Actual result:
+
+Your answer is added to the ticket as a comment so that all lines are no longer than 80 (?) chars length. Bulk of line breaks is added. As you can see on the following image, the ""very long line"" is split on several lines. And also email address from my signature is on another line. Though my screen allows to fit more chars in one line.
+
+!2013-08-12_1457.png!"
+14659,Redmine,Patch,"",Closed,Normal,Japanese wiki_syntax.html translation update (r12100),Go MAEDA,"",2013-08-10 11:37,Translations,"","","","",0,2013-08-10 08:21,2013-08-10 11:37,"","","",""
+14658,Redmine,Defect,"",Closed,Normal,Wrong activity timezone on user page,Toshi MARUYAMA,Jean-Philippe Lang,2017-01-07 08:53,Activity view,3.2.5,"","","",0,2013-08-10 01:48,2017-01-07 08:53,"ä÷òAÇµÇƒÇ¢ÇÈ #1048, ä÷òAÇµÇƒÇ¢ÇÈ #10996, éüÇÃÉ`ÉPÉbÉgÇ™èdï° #24707",Fixed,2.3.2,"http://www.redmine.org/users/11192
+
+I use Japanese standard time (+0900) on redmine.org.
+#14653#note-3 note-3 should be on 2013-08-10.
+
+!user-activity.png!"
+14657,Redmine,Defect,"",Closed,Normal,Wrong German translation for member inheritance,Daniel Felix,Toshi MARUYAMA,2013-08-29 10:41,Translations,2.4.0,"","","",0,2013-08-09 17:00,2013-08-29 10:41,"","","","Hi there,
+
+this translation is wrong:
+@
+field_inherit_members: Benutzer vererben
+@
+
+This project tree is given:
+Project A
+- Project B
+-- Project C
+
+The current translation would mean, if you set this option in Project B, it would bequeath the members to Project C. In fact, it will inherit the members from Project A.
+
+Please change it to:
+@
+field_inherit_members: Benutzer erben
+@
+
+I set the target version to 2.3.3, as I'm told to set target versions for translations if they change existing translations."
+14656,Redmine,Defect,"",Closed,Normal,JRuby: Encoding error when creating issues,Vincent Mathon,"",2013-09-30 05:28,Ruby support,2.3.4,"","","",0,2013-08-09 14:21,2013-09-30 05:28,ä÷òAÇµÇƒÇ¢ÇÈ #14883,Fixed,2.3.2,"I upgraded from Redmine 1.4.4 to Redmine 2.3.2.
+Redmine is built as a war using warbler-1.3.8, JRuby 1.7.2 and run on TOMCAT 7.0.37 with a JVM 1.6.31 on a RHEL 64 bit machine.
+The database is a Mysql 5.5.28 and redmine tables are using a charset utf8.
+We connect Redmine database with the following database.yml:
+
+<pre>
+production:
+   adapter: jdbc
+   jndi: java:/comp/env/jdbc/Redmine
+   driver: com.mysql.jdbc.Driver
+</pre>
+
+We do sometime observe the following issue:
+
+<pre>
+Encoding::CompatibilityError (incompatible character encodings: ASCII-8BIT and UTF-8):
+  app/models/issue.rb:159:in `create_or_update'
+  app/controllers/issues_controller.rb:141:in `create'
+</pre>
+
+The last database log before the exception is
+<pre>
+INFO:   [1m[36mIssue Load (1.0ms)[0m  [1mSELECT `issues`.* FROM `issues` WHERE `issues`.`root_id` IS NULL ORDER BY `rgt` desc LIMIT 1 FOR UPDATE[0m
+</pre>
+
+Note that we can create issues with all kind of strange characters both in subject and detail. But the following case:
+<pre>
+Subject=AS400 : fonctionnement autorisation utilisation email ?  revoir
+Detail=Rendre pr?-alimenter ? l'utilisation
+</pre>
+fails systematically. If the subject becomes ""AS400 : fonctionnement autorisation utilisation"" and the detail remains unchanged it works !
+
+As a workaround we can create the issue with the subject and update it with the detail in a second step...
+
+"
+14655,Redmine,Defect,"",Closed,Normal,Layout defect,Antony Wellens,"",2013-08-10 23:07,UI,"","","","",0,2013-08-09 11:11,2013-08-10 23:07,"",Invalid,2.3.2,"Hi,
+
+Upgraded to Redmine 2.3.2 yesterday and on some of my projects (with a lot of custom fields), the layout is messed up in Chrome. Safari and IE seem to have no issue.
+
+Screenshots in attach!
+
+Environment:
+  Redmine version                2.3.2.stable
+  Ruby version                   1.8.7-p249 (2010-01-10) [x86_64-linux]
+  Rails version                  3.2.13
+  Environment                    production
+  Database adapter               MySQL
+Redmine plugins:
+  redmine_screenshot_paste       2.1.0"
+14653,Redmine,Defect,"",Closed,Normal,Error While Migrating Data !,Subash Ghimire,"",2013-08-10 00:58,"","","","","",0,2013-08-09 09:02,2013-08-10 00:58,"",Invalid,"",I exported the database from old redime and Imported it to new redmine but some pages are not loading (Internal Error ). Why is this happening ? I just exported and imported database ! should i import any other files ?
+14652,Redmine,Defect,"",New,Normal,Internal error after login,Ivan Cenov,"",2014-11-04 23:18,Accounts / authentication,"","","","",0,2013-08-09 08:45,"","","","","I suspect that the new function, 'user must change password on next login' is related to next Internal error:
+<pre>
+Started GET ""/"" for 192.168.60.101 at 2013-08-09 09:36:36 +0300
+Processing by WelcomeController#index as HTML
+  Current user: anonymous
+Redirected to http://walker:3000/login?back_url=http%3A%2F%2Fwalker%3A3000%2F
+Filter chain halted as :check_if_login_required rendered or redirected
+Completed 302 Found in 7ms (ActiveRecord: 2.0ms)
+Started GET ""/login?back_url=http%3A%2F%2Fwalker%3A3000%2F"" for 192.168.60.101 at 2013-08-09 09:36:36 +0300
+Processing by AccountController#login as HTML
+  Parameters: {""back_url""=>""http://walker:3000/""}
+  Current user: anonymous
+  Rendered account/login.html.erb within layouts/base (2.0ms)
+  Rendered plugins/redmine_code_review/app/views/code_review/_html_header.html.erb (0.0ms)
+  Rendered plugins/clipboard_image_paste/app/views/clipboard_image_paste/_headers.html.erb (2.0ms)
+  Rendered plugins/redmine_favourite_projects/app/views/favourite_projects/_favourite_projects_searchbox_partial.html.erb (0.0ms)
+  Rendered plugins/sidebar_hide/app/views/sidebar/_hideButton_partial.html.erb (2.0ms)
+  Rendered plugins/redmine_code_review/app/views/code_review/_body_bottom.html.erb (0.0ms)
+  Rendered plugins/redmine_favourite_projects/app/views/favourite_projects/_update_menu.erb (0.0ms)
+  Rendered plugins/clipboard_image_paste/app/views/clipboard_image_paste/_add_form.html.erb (4.0ms)
+Completed 200 OK in 129ms (Views: 28.0ms | ActiveRecord: 98.0ms)
+Started POST ""/login"" for 192.168.60.101 at 2013-08-09 09:36:47 +0300
+Processing by AccountController#login as HTML
+  Parameters: {""utf8""=>""Ñr?Åg"", ""authenticity_token""=>""Xv5pNso+5RHnui77LAe6CLmOcc4XlbcpYV8uYWoiitg="", ""back_url""=>""http://walker:3000/"", ""username""=>""jwalker"", ""password""=>""[FILTERED]"", ""login""=>""ÑQÅfÑRÅcÑQ?ÑQ? ÑB?""}
+  Current user: anonymous
+Successful authentication for 'jwalker' from 192.168.60.101 at 2013-08-09 06:36:47 UTC
+Completed 500 Internal Server Error in 113ms
+
+NoMethodError (undefined method `must_change_passwd?' for #<User:0x48168a8>):
+  app/models/user.rb:284:in `must_change_password?'
+  app/controllers/application_controller.rb:81:in `start_user_session'
+  app/controllers/application_controller.rb:158:in `logged_user='
+  app/controllers/account_controller.rb:245:in `successful_authentication'
+  app/controllers/account_controller.rb:192:in `password_authentication'
+  app/controllers/account_controller.rb:178:in `authenticate_user'
+  app/controllers/account_controller.rb:32:in `login'
+</pre>
+Redmine is trunk r12103."
+14651,Redmine,Patch,"",Closed,Normal,Bulgarian translation (r12083),Ivan Cenov,"",2013-08-09 10:11,"","","","","",0,2013-08-09 08:10,2013-08-09 10:11,"","","","Translated:
+* notice_new_password_must_be_different
+* field_must_change_passwd"
+14650,Redmine,Defect,"",Closed,Urgent,Security vulnerability in Redmine REST API,Wesley Falcao,"",2015-11-27 09:31,Security,"","","","",0,2013-08-08 22:33,2015-11-27 09:31,"",Invalid,2.3.2,"If I login as a non-administrator and try - 
+
+http://localhost:3000/users/
+
+I get a 403 error saying ""You are not authorized to access this page"".
+
+However, logged in as the same user, I can do
+
+http://localhost:3000/users/1.xml
+http://localhost:3000/users/2.xml
+...
+...
+...
+http://localhost:3000/users/n.xml
+
+And I can access all the users, including their api keys. 
+
+"
+14649,Redmine,Patch,"",Closed,Normal,German Translation for r12096,Daniel Felix,"",2015-07-07 12:54,Translations,"","","","",0,2013-08-08 16:32,2015-07-07 12:54,"","","","Hi there,
+
+this is the first part of this translation.
+I currently only translated wiki_syntax.html. The other file will follow soon.
+
+Best regards,
+Daniel"
+14647,Redmine,Patch,"",Closed,Normal,German translation for r12013,Daniel Felix,"",2013-08-09 03:51,Translations,"","","","",0,2013-08-08 15:56,2013-08-09 03:51,"","","","Hi there,
+
+here I am again after my long holidays. ;-)
+
+You find the german translation for r12013. I also restructured the de.yml.
+
+Best regards,
+Daniel"

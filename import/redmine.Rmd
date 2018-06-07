@@ -1,0 +1,189 @@
+---
+title: "Untitled"
+output:
+  html_document:
+    df_print: "paged"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+require(tidyverse)
+```
+
+# はじめに
+## 整然データ
+
+## 雑然データ
+整然データに変換する余地のあるデータ。  
+　  
+
+### データ分割
+セパレータ分割や正規表現で分割することで  
+　  
+
+## 混沌データ
+言葉が悪いですがデータ分析に使えないゴミ（garbage）データを意味します。単なる記録でありデータと見なせないものをここでは、混沌データと呼びます。  
+　  
+
+### キー
+テーブルとテーブルを結合するのに必要な情報をここでは便宜上「キー」と呼ぶことにします。  
+　  
+
+# Redmineチケット
+Redmineのチケットは[Redmine](http://www.redmine.org/projects/redmine/issues)から入手できますが、一度に50レコードしかダウンロードできないので、作成日を基準に順次検索してダウンロードする必要があります。  
+　  
+
+## チケット項目
+Redmineで標準的に用意されている項目を簡単に説明します。
+
+項目             | 概要                             | データ型
+-----------------|----------------------------------|-----------------
+\#                | 識別番号（Primary Key）          | 整数型
+プロジェクト     | 属するプロジェクト               | 文字型（因子型）
+トラッカー       | 大分類                           | 文字型（因子型）
+親チケット       | 親子関係を定義したい場合に用いる | 文字型
+ステータス       | 対応状況                         | 文字型（因子型）
+優先度           | 対応優先度                       | 文字型（因子型）
+題名             | タイトル                         | 文字型
+作成者           | 作成者                           | 文字型（因子型）
+担当者           | 対応担当者                       | 文字型（因子型）
+更新日           | 更新日時                         | 日時型（POSIXct）
+カテゴリ         | 分類（任意に利用設定できる）     | 文字型（因子型）
+対象バージョン   | チケット対処したバージョン       | 文字型
+開始日           | 対応を開始した日                 | 日付型
+期日             | 対応予定期間                     | 日付型
+予定工数         | 対応予定工数                     | 数値型
+進捗率           | 対応の進捗率                     | 数値型（%表記）
+作成日           | 作成日時                         | 日時型（POSIXct）
+終了日           | 対応完了日時                     | 日時型（POSIXct）
+関連するチケット | 関係するチケット番号             | 文字型
+Resolution       | 解決結果（非標準）               | 文字型（因子型）
+Affected version | 影響のあるバージョン             | 文字型
+説明             | 詳細                             | 文字型
+
+　  
+
+### カラム（変数）タイプの設定
+**`readr::read_csv`**関数は読み込んだ最初の100行のデータを元に列（カラム、変数）のデータ型を自動的に判別しますので、あまり使わていないカラムですとファイル毎にデータ型の判定結果が異なってしまう可能性があります。そこで、**`readr::read_csv`**で多数のファイルを読み込む場合は、事前にカラム（変数）タイプを指定することで読み込みや結合時のエラー発生を抑えることができます。なお、因子型は指定時に水準も含めて指定する必要がありますので、読み込み後に因子型へ変換する方が処理的には楽です。  
+```{r}
+col_type <- list(readr::col_integer(), readr::col_character(),
+                 readr::col_character(), readr::col_character(),
+                 readr::col_character(), readr::col_character(),
+                 readr::col_character(), readr::col_character(),
+                 readr::col_character(), readr::col_datetime(format = ""),
+                 readr::col_character(), readr::col_character(),
+                 readr::col_date(), readr::col_date(), readr::col_double(),
+                 readr::col_double(), readr::col_datetime(format = ""),
+                 readr::col_datetime(format = ""), readr::col_character(),
+                 readr::col_character(), readr::col_character(),
+                 readr::col_character())
+```
+
+
+# チケットの結合
+前述の通り、[Redmine](http://www.redmine.org/projects/redmine/issues)からは一度に50レコードしかダウンロードできませんので、ダウンロードした複数のファイルを結合する必要があります。
+
+## 結合のための基礎知識
+複数のデータファイルを結合するには基本的に以下の手順にしたがいます。
+
+1. 整然データ化
+1. ファイルリストの取得
+1. ファイルの読み込み
+1. ファイルの結合
+1. 重複行の削除
+
+
+## ファイルリストの取得
+ファイルやディレクトリを扱うための`list.*`関数群が用意されています。`file.*`関数群
+
+```{r, eval=FALSE}
+list.files(path = 'リストを取得したいパス', full.names = TRUE)
+```
+
+
+## ファイルの読み込み
+RedmineチケットのようにExcelで読んでも正しく読めないファイルは`readr`パッケージを用いる方が読みこめる可能性が高くなります。  
+**`readr::read_csv`**関数は読み込んだ最初の100行のデータを元に列（カラム、変数）のデータ型を自動的に判別します。ただし、稀にしか使われていない列がある場合、読み込んだファイルごとに列のデータ型が異なってしまう場合があります。
+
+ファイルの結合処理を考慮して**`lapply`**関数でファイルのリストから一括で読み込み処理を行います。
+```{r, eval=FALSE}
+lapply(X = 'ベクトル型のファイルリスト', FUN = readr::read_csv,
+       locale = readr::locale(encoding = "cp932"), col_types = 'カラムタイプ') 
+```
+
+## ファイルの結合
+行方向の結合には**`rbind`**関数を使います。出力分だけ行方向に結合する関数（**`rbind`**や**`dplyr::bind_rows`**）関数を記述するのは手間がかかりますので**`do.call`**関数を用いて一括で処理します。
+```{r, eval=FALSE}
+do.call(what = dplyr::bind_rows, args = 'リスト形式の引数')
+```
+
+## 重複行の削除
+```{r, eval=FALSE}
+dplyr::distinct(.data = 'データ')
+```
+
+## 実行結果
+```{r}
+# `choose.dir`関数はWindows環境のみ
+tmp <- "./data/" %>% 
+  list.files(path = ., pattern = "csv", full.names = TRUE) %>% 
+  lapply(X = ., FUN = readr::read_csv,
+         locale = readr::locale(encoding = "cp932"), col_types = col_type) %>% 
+  do.call(what = dplyr::bind_rows, args = .) %>%
+  dplyr::distinct()
+
+head(tmp, 100)
+```
+
+## データの確認
+変数名が日本語のままだと扱い難いので変更しておきます。また、チケットオープン、クローズは時間まで必要ないので年月日データに変換しておきます。
+```{r}
+x <- tmp %>% 
+  dplyr::select(no = `#`, tracker = `トラッカー`, status = `ステータス`,
+                priority = `優先度`, category = `カテゴリ`,
+                version = `対象バージョン`, affected = `Affected version`, 
+                open = `作成日`, close = `終了日`) %>% 
+  dplyr::mutate(open = lubridate::date(open), close = lubridate::date(close))
+
+head(x, 100)
+```
+
+### トラッカー
+```{r}
+x %>% 
+  dplyr::group_by(tracker) %>% 
+  dplyr::summarise(n = n())
+```
+
+### ステータス
+```{r}
+x %>% 
+  dplyr::group_by(tracker, status) %>% 
+  dplyr::summarise(n = n()) %>% 
+  tidyr::spread(key = tracker, value = n)
+```
+
+### 対象バージョン
+```{r}
+x %>% 
+  dplyr::group_by(status, version) %>% 
+  dplyr::summarise(n = n()) %>% 
+  tidyr::spread(key = status, value = n)
+```
+
+### 影響のあるバージョン
+```{r}
+x %>% 
+  dplyr::group_by(status, affected) %>% 
+  dplyr::summarise(n = n()) %>% 
+  tidyr::spread(key = status, value = n)
+```
+
+### 優先度
+```{r}
+x %>% 
+  dplyr::group_by(status, priority) %>% 
+  dplyr::summarise(n = n()) %>% 
+  tidyr::spread(key = status, value = n)
+```

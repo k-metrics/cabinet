@@ -1,0 +1,1148 @@
+#,プロジェクト,トラッカー,親チケット,ステータス,優先度,題名,作成者,担当者,更新日,カテゴリ,対象バージョン,開始日,期日,予定工数,進捗率,作成日,終了日,関連するチケット,Resolution,Affected version,説明
+20799,Redmine,Defect,"",Needs feedback,Normal,Incorrect language when set to Portuguese Brazilian,Fernando Possebon,"",2015-10-20 04:13,I18n,"","","","",0,2015-09-21 17:53,"","","",3.1.1,"I'm using the Redmine 3.1.1 version and when I set the default language or the user language preference to Portuguese Brazilian, the Redmine loads the Portuguese language.
+
+I looked at database on settings table, to check if the information was written correct there, and there is stored the value pt-BR.
+
+I looked at config/locales folders and there is a pt-BR.yml file there, with all values.
+
+I did a test: renamed the pt.yml (Portuguese Portugal) and restarted the Redmine application. After the rename, Redmine starts in English. 
+
+That's means that even the language is set to pt-BR, Redmine looks for the pt.yml file."
+20795,Redmine,Defect,"",New,Normal,CSS style gets stripped from the tag,Nikolay Epifanov,"",2015-10-21 04:16,Text formatting,"","","","",0,2015-09-21 10:58,"","","","","Hi,
+
+""word-wrap:break-word"" CSS style gets stripped from the tag.
+See example below.
+
+p{color:blue;word-wrap:break-word;width:13em;}. verylonglinezzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz"
+20793,Redmine,Defect,"",Closed,Normal,Perl authentication is not working,Daniel M?ller,"",2015-10-19 12:29,"","","","","",0,2015-09-21 10:36,2015-10-16 06:41,"",Invalid,3.1.1,"I was able to install Redmine 3.1.0 on an Ubuntu server (15.04). Now, I want to integrate hgweb (Mercurial). the configuration of Apache is easy:
+<pre>
+        PerlLoadModule Apache::Redmine
+        ScriptAlias /hg  ""/var/www/html/hg/hgweb.cgi""
+        <Location /hg >
+            AuthType Basic
+            AuthName ""Redmine Mercurial Repository""
+            AuthUserFile /dev/null
+            Require valid-user
+            #Redmine auth
+            PerlAccessHandler Apache::Authn::Redmine::access_handler
+            PerlAuthenHandler Apache::Authn::Redmine::authen_handler
+            RedmineDSN ""DBI:mysql:database=redmine;host=localhost""
+            RedmineDbUser ""redmine""
+            RedmineDbPass ""redmine""
+            #RedmineCacheCredsMax 10
+        </Location>
+</pre>
+hgweb is working well if I comment out the redmine auth parts. If I try to authenticate with redmine I always get an _401 Unauthorized_ message.
+Apache error.log:
+<pre>
+[Wed Sep 16 17:23:47.447109 2015] [auth_basic:error] [pid 14574:tid 139847437932288] [client x.x.x.x:45706] AH01618: user transporter not found: /hg/
+[Wed Sep 16 17:23:53.075982 2015] [auth_basic:error] [pid 14574:tid 139847446324992] [client x.x.x.x:45712] AH01618: user transporter not found: /hg/
+[Wed Sep 16 17:23:57.296066 2015] [auth_basic:error] [pid 14574:tid 139847356380928] [client x.x.x.x:45712] AH01618: user transporter not found: /hg/
+[Wed Sep 16 17:24:01.422917 2015] [auth_basic:error] [pid 14574:tid 139847347988224] [client x.x.x.x:45712] AH01618: user transporter not found: /hg/
+</pre>
+
+I can login into my redmine installation with the used username and password, but it's not working over the pearl module.
+
+I also checked a test directory with simple html files <pre>Alias /test/ ""/var/www/html/test/""
+<Directory "" /var/www/html/test/"">
+    Order allow,deny
+    Allow from all
+    Require all granted
+</Directory>
+<Location /test >
+    AuthType Basic
+    AuthName ""Redmine Test Portal""
+    AuthUserFile /dev/null
+    Require valid-user
+    PerlAccessHandler Apache::Authn::Redmine::access_handler
+    PerlAuthenHandler Apache::Authn::Redmine::authen_handler
+    RedmineDSN ""DBI:mysql:database=redmine;host=localhost""
+    RedmineDbUser ""redmine""
+    RedmineDbPass ""redmine""
+    #RedmineCacheCredsMax 10
+</Location>
+</pre>
+
+
+<pre>Environment:
+  Redmine version                3.1.1.stable
+  Ruby version                   2.2.1-p85 (2015-02-26) [x86_64-linux]
+  Rails version                  4.2.4
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.8.10
+  Mercurial                      3.1.2
+  Git                            2.1.4
+  Filesystem                     
+Redmine plugins:
+  no plugin installed</pre>
+
+See: message#48315"
+20791,Redmine,Patch,"",Closed,Normal,Traditional Chinese translation (to r14618),ChunChang Lo,"",2015-10-31 12:41,Translations,"","","","",0,2015-09-21 09:00,2015-10-20 13:42,コピー元 #20147,"","","* New
+** field_total_estimated_hours
+* Changed
+** label_total_spent_time
+"
+20788,Redmine,Defect,"",New,Low,REST API with JSON content missing some keys,邵 岸,"",2016-03-28 08:16,REST API,Candidate for next minor release,"","","",0,2015-09-21 05:46,"","","",2.6.7,"if an issue IS NOT private，using ""GET /issues/<this_issue_id>.xml"" can get ""<is_private>false</is_private>"" in the response;but if using ""GET /issues/<this_issue_id>.json"", there is no ""is_private"" key fonud in the response.
+
+and the similar:
+if a project IS NOT public，using ""GET /projects/<this_project_id>.xml"" can get ""<is_public>false</is_public>"" in the response;but if using ""GET /issues/<this_project_id>.json"", there is no ""is_public"" key fonud in the response.
+
+
+Environment:
+  Redmine version                2.6.6.stable
+  Ruby version                   2.0.0-p645 (2015-04-13) [x86_64-linux]
+  Rails version                  3.2.22
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.7.10
+  Filesystem                     
+Redmine plugins:
+  redmine_cas                    1.2.1"
+20785,Redmine,Patch,"",Closed,Normal,Polish translation update for 3.1-stable,Sebastian Paluch,"",2015-10-20 17:13,Translations,3.1.2,"","","",0,2015-09-20 18:51,2015-10-20 17:13,"","","",it does include #14617.
+20779,Redmine,Defect,"",Closed,Normal,git exited with non-zero status: 128,[ Desperados ],"",2015-10-17 09:57,SCM,"","","","",0,2015-09-18 21:42,2015-10-17 09:57,"",Invalid,2.6.6,"I noticed this error in yesterday, but I don't know since I have it
+however, the problem is that some repositories are not updated, others are ok
+I tried to update from 2.6.5 to 2.6.6 but nothing changes
+
+my about:
+
+<pre>Environment:
+  Redmine version                2.6.6.stable
+  Ruby version                   1.9.3-p484 (2013-11-22) [x86_64-linux]
+  Rails version                  3.2.22
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.8.8
+  Git                            1.9.1
+  Filesystem
+Redmine plugins:
+  redmine_charts2                0.2.1
+  redmine_code_review            0.6.3
+  redmine_contacts               3.4.4
+  redmine_custom_css             0.1.4
+  redmine_jstoolbar_ext          0.2.0
+  redmine_jstoolbar_ext_coderay  0.1.0
+  redmine_jstoolbar_ext_images   0.1.0
+  redmine_lightbox2              0.1.3
+  redmine_people                 0.1.8
+  redmine_release_notes          1.3.1
+  redmine_wiki_extensions        0.6.5</pre>
+
+and some parts of production.log:
+
+<pre>Started GET ""/projects/bbox/repository"" for 192.168.10.196 at 2015-09-18 21:40:59 +0200
+Processing by RepositoriesController#show as HTML
+  Parameters: {""id""=>""bbox""}
+  Setting Load (0.2ms)  SELECT `settings`.* FROM `settings` WHERE `settings`.`name` = 'session_lifetime' LIMIT 1
+  Setting Load (0.2ms)  SELECT `settings`.* FROM `settings` WHERE `settings`.`name` = 'session_timeout' LIMIT 1
+   (0.2ms)  SELECT MAX(`settings`.`updated_on`) AS max_id FROM `settings`
+  User Load (0.3ms)  SELECT `users`.* FROM `users` WHERE `users`.`type` IN ('User', 'AnonymousUser') AND `users`.`status` = 1 AND `users`.`id` = 19 LIMIT 1
+  Current user: mauro (id=19)
+   (0.1ms)  SELECT MAX(`contacts_settings`.`updated_on`) AS max_id FROM `contacts_settings`
+  Setting Load (0.1ms)  SELECT `settings`.* FROM `settings` WHERE `settings`.`name` = 'force_default_language_for_loggedin' LIMIT 1
+  Project Load (0.1ms)  SELECT `projects`.* FROM `projects` WHERE `projects`.`identifier` = 'bbox' LIMIT 1
+  Repository Load (0.1ms)  SELECT `repositories`.* FROM `repositories` WHERE `repositories`.`project_id` = 1 AND (is_default = 1) LIMIT 1
+Shelling out: 'git' --version --no-color
+Shelling out: 'git' '--git-dir' '/srv/git/bbox.git' '-c' 'core.quotepath=false' '-c' 'log.decorate=no' 'branch' '--no-color' '--verbose' '--no-abbrev'
+  SQL (0.1ms)  SELECT `enabled_modules`.`name` FROM `enabled_modules` WHERE `enabled_modules`.`project_id` = 1
+  Setting Load (0.1ms)  SELECT `settings`.* FROM `settings` WHERE `settings`.`name` = 'autofetch_changesets' LIMIT 1
+   (0.1ms)  SELECT COUNT(*) FROM `changesets` WHERE `changesets`.`repository_id` = 32
+Shelling out: 'git' '--git-dir' '/srv/git/bbox.git' '-c' 'core.quotepath=false' '-c' 'log.decorate=no' 'log' '--no-color' '--encoding=UTF-8' '--raw' '--date=iso' '--pretty=fuller' '--parents' '--stdin' '--reverse'
+git log error: git exited with non-zero status: 128</pre>"
+20777,Redmine,Defect,"",Closed,Normal,Add button not working with Internet Explorer,Philip Parsons,"",2015-10-25 12:13,UI,"","","","",0,2015-09-18 12:36,2015-09-18 13:34,次のチケットと重複 #20380,Duplicate,3.1.0,"Trying to add new members to a project or add new watchers to an issue.  Nothing happens when I click the add button.  Other buttons (cancel etc) work fine.
+
+Redmine 3.1.0stable, IE9."
+20776,Redmine,Defect,"",Closed,High,Redmine in a sub-URI does not work,Anton Wiedermann,"",2015-09-18 14:12,"","","","","",0,2015-09-18 09:17,2015-09-18 09:54,"",Invalid,3.1.0,"I'm trying to run Redmine 3.1-stable on an Apache httpd together with some other apps to support the development. To make tools comfortably accessible I want all of them to run on the same port 80. VirtualHost running passenger runs on port 3000 without any problems, and I can work with Redmine there. I have httpd proxy defined for @/redmine@ and that works fine but even after defining @Redmine::Utils::relative_url_root = ""/redmine""@ Redmine does not work correctly. Resources load fine (css, js) but links inside application are not prefixed.
+
+I tried several approaches and (desperately) their combinations from [[HowTo Install Redmine in a sub-URI]] but nothing works. There are other resources referenced from the page which I tried as well without any success. I have also searched for issues on redmine.org and tried few things/patches from there and still no luck.
+
+{{collapse(version information)
+<pre>
+  Redmine version          3.1.0.stable.14601
+  Ruby version             2.2.3-p173 (2015-08-18) [x86_64-linux]
+  Rails version            4.2.4
+  Database adapter         Mysql2
+</pre>
+}}
+
+There are many discussions around this but all seem to be several years old so either I'm missing something or this is bug reintroduced?"
+20775,Redmine,Defect,"",Closed,Normal,redmine_plugins_importer,欣洋 曹,"",2015-09-18 06:20,"","","","","",0,2015-09-18 04:39,2015-09-18 06:20,"",Invalid,3.1.0,"When I install redmine_importer plug-in, hint I mistake, everybody to help me take a look at how to solve this problem, thanks"
+20769,Redmine,Defect,"",New,Normal,Issues with formatting of == (equality operator),Mehmet Soyturk,"",2015-10-16 12:41,Text formatting,"","","","",0,2015-09-17 11:03,"","","","","This operator might have special meaning in textile, but I didn't not find it in the documents. When I input this as plain textile text or as inline code (betwee @ characters), sometimes it disappears.
+
+This is annoying, because = = is the equality operator in many programming languages.
+
+I will paste this text below:
+<pre>
+@x == y && a == b@
+@x == y && a == b@
+
+== abc ==
+
+=== abc ===
+
+= abc =
+
+x == y & a == b
+
+x == y
+
+a == b
+
+@x == y && a == b@
+@x == y && a == b@
+</pre>
+
+After pasting:
+
+@x == y && a == b@
+@x == y && a == b@
+
+== abc ==
+
+=== abc ===
+
+= abc =
+
+x == y & a == b
+
+x == y
+
+a == b
+
+@x == y && a == b@
+@x == y && a == b@"
+20761,Redmine,Defect,"",Closed,Normal,Fix typo of Japanese translation for notice_gantt_chart_truncated,Go MAEDA,"",2015-09-16 12:57,Translations,2.6.7,"","","",0,2015-09-16 11:32,2015-09-16 12:57,"",Fixed,"","There is a typo in Japanse translation for notice_gantt_chart_truncated.
+""超えたたため"" must be ""超えたため"" (it has extra ""た"").
+
+<pre><code class=""diff"">
+Index: config/locales/ja.yml
+===================================================================
+--- config/locales/ja.yml	(revision 14597)
++++ config/locales/ja.yml	(working copy)
+@@ -194,7 +194,7 @@
+   notice_unable_delete_version: バージョンを削除できません
+   notice_unable_delete_time_entry: 作業時間を削除できません
+   notice_issue_done_ratios_updated: チケットの進捗率を更新しました。
+-  notice_gantt_chart_truncated: ガントチャートは、最大表示項目数(%{max})を超えたたため切り捨てられました。
++  notice_gantt_chart_truncated: ガントチャートは、最大表示項目数(%{max})を超えたため切り捨てられました。
+
+   error_can_t_load_default_data: ""デフォルト設定がロードできませんでした: %{value}""
+   error_scm_not_found: リポジトリに、エントリ/リビジョンが存在しません。
+</pre>"
+20758,Redmine,Defect,"",New,Normal,Ampersand+keyword in code highlighting,Sergey Utkin,"",2015-09-30 13:41,Third-party libraries,"","","","",0,2015-09-16 00:05,"","","",3.1.0,"I came to incorrect behavior of code highlighting in wiki-like pages if keyword begins with an ampersand.
+
+I create a new scanner for coderay for language, which contains a directive for example ""&AtServer"".
+And then parse the string with scan_tokens procedure:
+<pre><code class=""ruby"">
+def scan_tokens encoder, options
+  
+  state = :initial
+  
+  until eos?
+    
+    case state 
+
+    when :initial
+
+      if match = scan(%r! & [[:alpha:]]+ !mx)
+        encoder.text_token match, :directive
+      
+      else
+        encoder.text_token getch, :error
+      end
+    else
+      raise_inspect 'Unknown state', encoder
+
+    end
+
+  end
+
+  if state == :string
+    encoder.end_group :string
+  end
+
+  encoder
+end
+</code></pre>
+
+And then the strange behavior starts. Testing my scanner gives correct result (&AtServer is hightlighted as :directive) but in Redmine wiki the keyword
+<pre>
+<pre><code class=""my_lang"">
+&AtServer
+</code></pre>
+</pre>
+is not highlighted. However if I type ';'
+<pre>
+<pre><code class=""my_lang"">
+&AtServer;
+</code></pre>
+</pre>
+the directive becomes highlighted."
+20753,Redmine,Defect,"",Closed,Normal,"Custom Field ""Users"" on user page",Abdulhalim Baysal,"",2015-10-14 05:25,Custom fields,"","","","",0,2015-09-15 05:13,2015-10-14 05:25,"",Invalid,2.6.6,"Add custom field ""USER"" on user ?
+
+This ""USER"" custom field type is available for issue, project, version.... but not for user and groups.
+
+Need help!
+Thanks"
+20750,Redmine,Defect,"",Closed,Normal,linking a copied issue to a superordinate ticket does not work,Roman Pickl,"",2015-10-14 04:49,Issues,"","","","",0,2015-09-14 17:19,2015-10-14 04:49,次のチケットと重複 #13654,Duplicate,3.1.0,"A copied sub-task cannot be related to the same parent task after it has been created without the relation to the parent task.
+The following error is shown (see attached filed).
+
+steps to reproduce:
+* create a task 1
+* create a subtask to task 1 (task 1.1)
+* copy subtask 1.1 to 1.2 (without specifying the parent task 1)
+* try to add task 1 as a parent to task 1.2"
+20747,Redmine,Patch,"",Closed,Normal,Portuguese translation for 3.1-stable,Toshi MARUYAMA,"",2015-09-16 05:58,Translations,3.1.1,"","","",0,2015-09-14 15:35,2015-09-16 05:58,"","","",From #20728.
+20746,Redmine,Patch,"",Closed,Normal,Portuguese translation for 3.0-stable,Toshi MARUYAMA,"",2015-09-16 05:57,Translations,3.0.5,"","","",0,2015-09-14 15:27,2015-09-16 05:57,"","","",From #20728.
+20745,Redmine,Patch,"",Closed,Normal,Portuguese translation for 2.6-stable,Toshi MARUYAMA,"",2015-09-16 05:56,Translations,2.6.7,"","","",0,2015-09-14 15:20,2015-09-16 05:56,"","","","From #20728.
+
+<pre><code class=""diff"">
+=== (+3,-3) config/locales/pt.yml ===
+@@ -1121,8 +1121,8 @@
+   label_latest_compatible_version: ?ltima vers?o compat?vel
+   label_unknown_plugin: Extens?o desconhecida
+   label_radio_buttons: radio buttons
+-  label_group_anonymous: Anonymous users
+-  label_group_non_member: Non member users
++  label_group_anonymous: Utilizadores an?nimos
++  label_group_non_member: Utilizadores n?o membros
+   label_add_projects: Add projects
+   field_default_status: Default status
+   text_subversion_repository_note: 'Examples: file:///, http://, https://, svn://, svn+[tunnelscheme]://'
+</code></pre>"
+20740,Redmine,Patch,"",Closed,Normal,"Confusing name: test public query called ""private""",Kirill  Smirnov,Jean-Philippe Lang,2015-09-20 14:54,Code cleanup/refactoring,3.2.0,"","","",0,2015-09-14 10:57,2015-09-20 14:54,"","","","The attached patch just changes a public test query name from ""private"" to ""public""."
+20737,Redmine,Patch,"",Closed,Normal,Czech translation for 3.0-stable,Toshi MARUYAMA,"",2015-09-16 05:53,Translations,3.0.5,"","","",0,2015-09-14 09:21,2015-09-16 05:53,"","","",From #20452.
+20736,Redmine,Defect,"",Closed,Normal,production configuration not read from database.yml,Miroslav Za?ko,"",2015-09-14 02:57,"","","","","",0,2015-09-13 18:00,2015-09-14 02:57,"",Invalid,3.1.0,"I have strange problem with configuration of 3.1-stable in file database.yml there are 3 exactly same configurations: production,development & test
+If I print out content of database_config after read from file in <redmineroot>/Gemfile, there are test & development configurations read from config/database.yml nothing for production.
+{""production""=>nil, ""development""=>{""adapter""=>""postgresql"", ""database""=>""redmine_dev"", ""host""=>""localhost"", ""username""=>""redmine"", ""password""=>""redmine""}, ""test""=>{""adapter""=>""postgresql"", ""database""=>""redmine_test"", ""host""=>""localhost"", ""username""=>""redmine"", ""password""=>""redmine""}}
+
+I'm trying to run
+<pre>
+bundle install --without development test
+</pre>"
+20735,Redmine,Patch,"",Closed,Normal,Markdown: Upgrade redcarpet gem to 3.3 (ruby 1.9 and higher),Jean-Philippe Lang,Jean-Philippe Lang,2015-09-13 16:54,Gems support,2.6.7,"","","",0,2015-09-13 16:49,2015-09-13 16:54,"","","",""
+20733,Redmine,Patch,"",Closed,Normal,"""Total estimated time"" should be inserted after ""Estimated time"" in ""Avalable Columns""",Go MAEDA,Jean-Philippe Lang,2015-09-19 09:32,Issues,"","","","",0,2015-09-13 09:07,2015-09-19 09:32,関連している #20688,"","","#20688 would be even better with this patch: attachment:fix_available_columns_order.diff
+
+
+current trunk(r14555):
+!without-patch.png!
+
+after the patch applied:
+!with-patch.png!"
+20732,Redmine,Patch,"",Closed,Normal,MailHandler: Select project by subaddress (redmine+project@example.com),Jens Kr?mer,Jean-Philippe Lang,2015-10-19 18:58,Email receiving,3.2.0,"","","",0,2015-09-13 08:31,2015-10-19 18:58,次のチケットが重複 #8905,"","","This patch adds project selection by subaddress to the MailHandler.
+
+Basically the same feature that's shown at [[MailhandlerSubAddress]], but usable for all ways to receive mail, including the web service."
+20731,Redmine,Patch,"",Closed,Normal,"Change Japanese translation for ""spent time""",Go MAEDA,"",2015-09-16 08:18,Translations,3.1.1,"","","",0,2015-09-13 06:54,2015-09-16 08:18,関連している #20729,"","","Current translation ""作業時間の記録"" is a little too long.
+I think ""作業時間"" is better.
+
+*[sample 1]*
+
+!issue.png!
+
+*[sample 2]*
+
+Although the translation for ""Total estimated time"" is ""合計予定工数"" (proposed in #20729), Current translation for ""Total spent time"" is ""すべての作業時間の記録"". It would be better to use similar expression like ""合計予定工数"" and ""合計作業時間"" for similar concepts.
+
+!issue-fields.png!"
+20730,Redmine,Defect,"",Closed,Normal,Fix tokenization of phrases with non-ascii chars,Jens Kr?mer,Jean-Philippe Lang,2015-10-09 09:37,Search engine,3.0.6,"","","",0,2015-09-13 05:56,2015-10-09 09:37,"",Fixed,"","\w only matches ASCII characters, we should either use @[:alnum:]@ instead or simply match all non-@""@ characters for the phrase. Test case included.
+"
+20729,Redmine,Patch,"",Closed,Normal,Japanese translation update (r14555),Go MAEDA,"",2015-09-14 12:15,Translations,"","","","",0,2015-09-13 03:00,2015-09-14 12:15,関連している #20731,"","",Translated field_total_estimated_hours introduced in r14555.
+20728,Redmine,Patch,"",Closed,Normal,Portuguese translation file,Rui Rebelo,"",2015-09-16 05:59,Translations,"","","","",0,2015-09-13 00:24,2015-09-16 05:59,"","","",PT-pt translation files reviewed from trunk.
+20725,Redmine,Defect,"",Closed,Normal,problem installing on win2003,jiang haifeng,"",2015-10-12 02:23,Issues,"","","","",0,2015-09-12 14:48,2015-10-12 02:23,"",Invalid,2.6.6,"---------libmysql.dll exists---------------------------
+C:\redmine266>bundle exec rake generate_secret_token
+Failed to load libmysql.dll from C:\RailsInstaller\Ruby1.9.3\lib\ruby\gems\1.9.1
+\gems\mysql2-0.3.20-x86-mingw32\vendor\libmysql.dll
+
+
+---------other-------------
+C:\redmine266>bundle install --without development test rmagick
+Fetching gem metadata from https://rubygems.org/.........
+Fetching version metadata from https://rubygems.org/..
+Resolving dependencies.............................................
+Using rake 10.4.2
+Using i18n 0.6.11
+Using multi_json 1.11.2
+Using activesupport 3.2.22
+Using builder 3.0.4
+Using activemodel 3.2.22
+Using erubis 2.7.0
+Using journey 1.0.4
+Using rack 1.4.7
+Using rack-cache 1.2
+Using rack-test 0.6.3
+Using hike 1.2.3
+Using tilt 1.4.1
+Using sprockets 2.2.3
+Using actionpack 3.2.22
+Using mime-types 1.25.1
+Using polyglot 0.3.5
+Using treetop 1.4.15
+Using mail 2.5.4
+Using actionmailer 3.2.22
+Using arel 3.0.3
+Using tzinfo 0.3.44
+Using activerecord 3.2.22
+Using activeresource 3.2.22
+Using bundler 1.10.6
+Using coderay 1.1.0
+Using rack-ssl 1.3.4
+Using json 1.8.3
+Using rdoc 3.12.2
+Using thor 0.19.1
+Using railties 3.2.22
+Using jquery-rails 3.1.4
+Using mysql2 0.3.20
+Using net-ldap 0.3.1
+Using ruby-openid 2.3.0
+Using rack-openid 1.4.2
+Using rails 3.2.22
+Using rbpdf 1.18.6
+Using redcarpet 2.3.0
+Using request_store 1.0.5
+Bundle complete! 26 Gemfile dependencies, 40 gems now installed.
+Gems in the groups development, test, rmagick and mysql2 were not installed.
+Use `bundle show [gemname]` to see where a bundled gem is installed.
+
+--------------version---------
+redmine2.6.6
+ruby 1.9.3
+
+
+"
+20723,Redmine,Defect,"",Closed,High,Update redmine 3.0.3 -> 3.1.0,Krakozaber Krakozaber,"",2015-09-11 15:49,Administration,"","","","",0,2015-09-11 14:05,2015-09-11 15:49,"","",3.1.0,"<pre>
+Processing by ProjectsController#settings as HTML
+  Parameters: {""id""=>""cex_asu""}
+  Setting Load (0.7ms)  SELECT  ""settings"".* FROM ""settings"" WHERE ""settings"".""name"" = $1  ORDER BY ""settings"".""id"" DESC LIMIT 1  [[""name"", ""session_lifetime""]]
+  Setting Load (0.4ms)  SELECT  ""settings"".* FROM ""settings"" WHERE ""settings"".""name"" = $1  ORDER BY ""settings"".""id"" DESC LIMIT 1  [[""name"", ""session_timeout""]]
+   (0.6ms)  SELECT MAX(""settings"".""updated_on"") FROM ""settings""
+  User Load (1.1ms)  SELECT  ""users"".* FROM ""users"" WHERE ""users"".""type"" IN ('User', 'AnonymousUser') AND ""users"".""status"" = $1 AND ""users"".""id"" = $2 LIMIT 1  [[""status"", 1], [""id"", 1]]
+  Current user: admin (id=1)
+  Setting Load (0.9ms)  SELECT  ""settings"".* FROM ""settings"" WHERE ""settings"".""name"" = $1  ORDER BY ""settings"".""id"" DESC LIMIT 1  [[""name"", ""force_default_language_for_loggedin""]]
+  Project Load (0.8ms)  SELECT  ""projects"".* FROM ""projects"" WHERE ""projects"".""identifier"" = $1 LIMIT 1  [[""identifier"", ""cex_asu""]]
+   (0.5ms)  SELECT ""enabled_modules"".""name"" FROM ""enabled_modules"" WHERE ""enabled_modules"".""project_id"" = $1  [[""project_id"", 278]]
+  IssueCustomField Load (0.7ms)  SELECT ""custom_fields"".* FROM ""custom_fields"" WHERE ""custom_fields"".""type"" IN ('IssueCustomField')  ORDER BY ""custom_fields"".""position"" ASC
+  Tracker Load (0.8ms)  SELECT ""trackers"".* FROM ""trackers""  ORDER BY ""trackers"".""position"" ASC
+  Wiki Load (0.5ms)  SELECT  ""wikis"".* FROM ""wikis"" WHERE ""wikis"".""project_id"" = $1 LIMIT 1  [[""project_id"", 278]]
+  Project Load (4.3ms)  SELECT ""projects"".* FROM ""projects"" WHERE (projects.status = 1)
+  Project Load (1.6ms)  SELECT ""projects"".* FROM ""projects"" WHERE (projects.lft >= 437 AND projects.rgt <= 438)  ORDER BY ""projects"".""lft"" ASC
+  Setting Load (0.7ms)  SELECT  ""settings"".* FROM ""settings"" WHERE ""settings"".""name"" = $1  ORDER BY ""settings"".""id"" DESC LIMIT 1  [[""name"", ""text_formatting""]]
+  Setting Load (0.4ms)  SELECT  ""settings"".* FROM ""settings"" WHERE ""settings"".""name"" = $1  ORDER BY ""settings"".""id"" DESC LIMIT 1  [[""name"", ""ui_theme""]]
+  CustomField Load (0.6ms)  SELECT ""custom_fields"".* FROM ""custom_fields"" WHERE (type = 'ProjectCustomField')  ORDER BY ""custom_fields"".""position"" ASC
+  EnabledModule Load (0.5ms)  SELECT ""enabled_modules"".* FROM ""enabled_modules"" WHERE ""enabled_modules"".""project_id"" = $1  [[""project_id"", 278]]
+  Tracker Load (0.9ms)  SELECT ""trackers"".* FROM ""trackers"" INNER JOIN ""projects_trackers"" ON ""trackers"".""id"" = ""projects_trackers"".""tracker_id"" WHERE ""projects_trackers"".""project_id"" = $1  ORDER BY ""trackers"".""position"" ASC  [[""project_id"", 278]]
+  Rendered projects/_form.html.erb (84.3ms)
+  Rendered projects/_edit.html.erb (89.8ms)
+  Rendered projects/settings/_modules.html.erb (7.5ms)
+  Role Load (0.7ms)  SELECT ""roles"".* FROM ""roles"" WHERE ""roles"".""builtin"" = $1  ORDER BY ""roles"".""position"" ASC  [[""builtin"", 0]]
+  Member Load (0.9ms)  SELECT ""members"".* FROM ""members"" WHERE ""members"".""project_id"" = $1  [[""project_id"", 278]]
+  Rendered projects/settings/_members.html.erb (44.7ms)
+  Rendered common/_tabs.html.erb (160.2ms)
+  Rendered projects/settings.html.erb within layouts/base (811.5ms)
+Completed 500 Internal Server Error in 1202ms (ActiveRecord: 33.4ms)
+
+ActionView::Template::Error (undefined method `active' for #<Member::ActiveRecord_Associations_CollectionProxy:0x00000007c4b510>):
+    1: <% roles = Role.find_all_givable
+    2:    members = @project.memberships.active.includes(:member_roles, :roles, :principal).to_a.sort %>
+    3: 
+    4: <p><%= link_to l(:label_member_new), new_project_membership_path(@project), :remote => true, :class => ""icon icon-add"" %></p>
+    5: 
+  app/views/projects/settings/_members.html.erb:2:in `_app_views_projects_settings__members_html_erb__1971783444685096775_66340280'
+  app/views/common/_tabs.html.erb:22:in `block in _app_views_common__tabs_html_erb__3871189025166443250_44850440'
+  app/views/common/_tabs.html.erb:21:in `each'
+  app/views/common/_tabs.html.erb:21:in `_app_views_common__tabs_html_erb__3871189025166443250_44850440'
+  app/helpers/application_helper.rb:322:in `render_tabs'
+  app/views/projects/settings.html.erb:3:in `_app_views_projects_settings_html_erb__3629526987568122444_45015160'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+</pre>"
+20721,Redmine,Defect,"",Closed,Normal,Estimated hours field for parent task is disabled on issue edit,Robert Korulczyk,"",2015-09-20 16:00,Issues planning,"","","","",0,2015-09-11 13:18,2015-09-20 16:00,関連している #20688,Invalid,3.1.0,"For parent tasks estimated_hours filed is disabled on issue edit - we can not modify old estimation or even set new. Since v3.1 estimated_hours is no longer sum of subtask estimation, there is no reason to block this field for edit. For me for example it is much easier group task and estimate whole group rather than all tasks independent - it is impossible right now."
+20720,Redmine,Patch,"",Closed,Normal,"Traditional Chinese ""issue"" translation change",ChunChang Lo,"",2015-09-14 07:17,Translations,3.2.0,"","","",0,2015-09-11 11:13,2015-09-14 07:17,"関連している #23171, コピー元 #20147","","","* New
+** notice_import_finished, notice_import_finished_with_errors, error_invalid_file_encoding, error_invalid_csv_file_or_settings, error_can_not_read_import_file, permission_import_issues, label_import_issues, label_select_file_to_import, label_fields_separator, label_fields_wrapper, label_encoding, label_coma_char, label_semi_colon_char, label_quote_char, label_double_quote_char, label_fields_mapping
+label_file_content_preview, label_create_missing_values, button_import
+* Changed
+** 問題 --> 議題
+*** m$ made this change in their recent products.
+"
+20709,Redmine,Defect,"",Closed,Normal,"How to install Windows Server 2008 R2, I am new one for Redmine",Shanmugavelu Arumugam,"",2015-09-10 09:02,"","","","","",0,2015-09-10 07:20,2015-09-10 09:02,"",Invalid,"","How to install Windows Server 2008 R2, I am new one for Redmine"
+20708,Redmine,Patch,"",Closed,Normal,Spanish Translation Update,Leonel Iturralde,"",2015-09-14 13:34,Translations,"","","","",0,2015-09-10 07:19,2015-09-14 13:34,"","","",Spanish (Spanish and Spanish Panama) updated to  r14542 .
+20707,Redmine,Defect,"",Closed,Normal,Wrong week number,Maxim Nikolaevich,"",2015-09-10 09:05,"","","","","",0,2015-09-10 05:15,2015-09-10 09:05,次のチケットと重複 #17625,Duplicate,"","How to reproduce:
+Take date picker.
+Select Jan 2013
+
+What you will see:
+4 Jan 2013 - it is 1-st week
+
+What is expected:
+4 Jan 2013 - it is 2-nd week
+
+Probably helpful: http://www.epochconverter.com/epoch/weeknumbers.php"
+20703,Redmine,Defect,"",Closed,Normal,ldap filter can`t contain non-english characters,Alexander Ryabinovskiy,"",2015-12-23 16:13,LDAP,"","","","",0,2015-09-09 15:06,2015-12-23 16:13,関連している #13728,"",3.1.0,"I can`t save LDAP filter with non-english (russian) characters, because validation fails. But our AD groups contains it. For example:
+
+Filter: (&(objectClass=user)(memberOf=CN=Программисты,OU=All groups,DC=organization,DC=local))"
+20700,Redmine,Defect,"",Closed,Normal,"RestAPI: how to set the version ""start_date""?",T T,"",2015-09-09 00:45,REST API,"","","","",0,2015-09-08 21:51,2015-09-09 00:45,"",Invalid,3.1.0,"
+I was using the python-redmine package for creating versions (""new sprints"") programatically.
+To my surprise the API only supports the ""due_date"" but not the ""start_date"" which is computed from the issues.
+Is there a way to force the API to accept the ""start_date""?
+
+
+I was looking at this code:
+
+https://github.com/redmine/redmine/blob/master/app/models/version.rb#L71
+  
+def start_date
+  @start_date ||= fixed_issues.minimum('start_date')
+end
+"
+20699,Redmine,Defect,"",New,Normal,ldap error - not permitted to logon at this workstation,Alexander Ryabinovskiy,"",2017-12-13 12:15,LDAP,"","","","",0,2015-09-08 18:22,"","","",3.1.0,"I configured ""LDAP authentication"" for our Active Directory.
+On Windows 2003 server x68 and Windows 2012 server x64 login attempts ends with the error (logged using WireShark):
+<pre>
+LDAPMessage bindResponse(1) invalidCredentials (80090308: LdapErr: DSID-0C090334, comment: AcceptSecurityContext error, data 531, vece)
+</pre>
+which means ""not permitted to logon at this workstation"". The solution is to add AD server to ""userWorkstations"" list of each domain user, and it works. But it is a bad solution and our administrators does not accept this.
+This behavior was commented a year ago:
+#1913#note-29"
+20693,Redmine,Defect,"",New,Normal,GIT: No files/differences on git merge commit ,Anatol Bollinger,"",2015-09-08 11:52,SCM,"","","","",0,2015-09-08 11:41,"",次のチケットが重複 #8741,"",3.0.3,"When shown in Redmine Git revisions created by merge commits do not have any files/change entries.
+Regular commits do have these entries.
+@git diff <commit>@ on the command line (and in a worktree) shows the changes.
+
+Repositories have been created with @git clone --mirror .. @ and are updated by @git remote -v update --prune@
+
+
+
+"
+20687,Redmine,Patch,"",New,Normal,Quota Issues,Timo Uhlmann,"",2015-09-07 11:36,Time tracking,"","","","",0,2015-09-07 11:36,"","","","","It's very helpful that estimated hours aren't lost any more for parent issues, but we have the following workflow, which is still unsupported:
+
+* When first estimating a project, we create issues for large tasks and roughly estimate those features
+* Before they're actually implemented, the task is broken down into subtasks, which allows for a more detailed estimation
+* If the original feature (e.g. parent task) was estimated correctly, the subtasks' estimated hours should sum up to roughly equal the parents' estimated hours
+
+Currently, parent tasks' estimated hours are included into the total estimated hours. I've created an @is_quota@ field for issues. If this is set to true, the parent's total estimated hours don't include the estimated hours of the parent itself, like so.
+
+For example, when the parent task has an estimate of 100.0 h, with one task having 25 h, the output looks like this:
+
+*Estimated time:*	100.00 h (Subtasks: 25.00 h)
+
+Any thoughts on this? Is the naming correct, or does anyone have a better idea?
+Is the formatting okay? The sum of the subtasks could also go below the parent's estimated time.
+
+I'll add tests for the feature once it's clear that everyone's happy and that the patch will actually be applied.
+
+""Diff on GitHub"":https://github.com/zeroseven/redmine/pull/1/files"
+20683,Redmine,Defect,"",Closed,Normal,redmine for svn problem,欣洋 曹,"",2015-09-06 10:26,SCM,"","","","",0,2015-09-06 09:50,2015-09-06 10:26,次のチケットと重複 #20655,Duplicate,"","My question is as follows, I redmine and SVN integration, configure SVN client no problem, the configuration repository is also no problem, but when I was a little repository 500 mistakes,"
+20682,Redmine,Defect,"",Closed,Normal,what wrong with my redmine (error Redmine requires Bundler 1.5.0 or higher (you're using 1.3.5).),俊 姚,"",2015-09-06 05:46,Issues,"","","","",0,2015-09-06 04:45,2015-09-06 05:46,次のチケットと重複 #19409,Duplicate,3.0.2,"
+
+Redmine requires Bundler 1.5.0 or higher (you're using 1.3.5).
+Please update with 'gem update bundler'. (SystemExit)
+  /usr/share/redmine/Gemfile:4:in `abort'
+  /usr/share/redmine/Gemfile:4:in `eval_gemfile'
+  /usr/lib/ruby/vendor_ruby/bundler/dsl.rb:30:in `instance_eval'
+  /usr/lib/ruby/vendor_ruby/bundler/dsl.rb:30:in `eval_gemfile'
+  /usr/lib/ruby/vendor_ruby/bundler/dsl.rb:9:in `evaluate'
+  /usr/lib/ruby/vendor_ruby/bundler/definition.rb:19:in `build'
+  /usr/lib/ruby/vendor_ruby/bundler.rb:148:in `definition'
+  /usr/lib/ruby/vendor_ruby/bundler.rb:116:in `setup'
+  /usr/lib/ruby/vendor_ruby/bundler/setup.rb:17:in `<top (required)>'
+  /usr/local/lib/site_ruby/2.1.0/rubygems/core_ext/kernel_require.rb:54:in `require'
+  /usr/local/lib/site_ruby/2.1.0/rubygems/core_ext/kernel_require.rb:54:in `require'
+  /var/lib/gems/2.1.0/gems/passenger-5.0.15/lib/phusion_passenger/loader_shared_helpers.rb:406:in `activate_gem'
+  /var/lib/gems/2.1.0/gems/passenger-5.0.15/lib/phusion_passenger/loader_shared_helpers.rb:288:in `block in run_load_path_setup_code'
+  /var/lib/gems/2.1.0/gems/passenger-5.0.15/lib/phusion_passenger/loader_shared_helpers.rb:411:in `running_bundler'
+  /var/lib/gems/2.1.0/gems/passenger-5.0.15/lib/phusion_passenger/loader_shared_helpers.rb:287:in `run_load_path_setup_code'
+  /var/lib/gems/2.1.0/gems/passenger-5.0.15/helper-scripts/rack-preloader.rb:99:in `preload_app'
+  /var/lib/gems/2.1.0/gems/passenger-5.0.15/helper-scripts/rack-preloader.rb:153:in `<module:App>'
+  /var/lib/gems/2.1.0/gems/passenger-5.0.15/helper-scripts/rack-preloader.rb:29:in `<module:PhusionPassenger>'
+  /var/lib/gems/2.1.0/gems/passenger-5.0.15/helper-scripts/rack-preloader.rb:28:in `<main>'
+
+Error ID
+    433b8871
+Application root
+    /usr/share/redmine
+Environment (value of RAILS_ENV, RACK_ENV, WSGI_ENV, NODE_ENV and PASSENGER_APP_ENV)
+    production
+Ruby interpreter command
+
+    /usr/bin/ruby
+
+User and groups
+
+    uid=33(www-data) gid=33(www-data) groups=33(www-data)
+
+Environment variables
+
+    APACHE_RUN_DIR = /var/run/apache2
+    APACHE_PID_FILE = /var/run/apache2/apache2.pid
+    PATH = /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    APACHE_LOCK_DIR = /var/lock/apache2
+    LANG = C
+    APACHE_RUN_USER = www-data
+    APACHE_RUN_GROUP = www-data
+    APACHE_LOG_DIR = /var/log/apache2
+    PWD = /usr/share/redmine
+    PASSENGER_USE_FEEDBACK_FD = true
+    SERVER_SOFTWARE = Apache/2.4.7 (Ubuntu) SVN/1.8.8 Phusion_Passenger/5.0.15
+    PASSENGER_DEBUG_DIR = /tmp/passenger.spawn-debug.XXXXYk7X9j
+    USER = www-data
+    LOGNAME = www-data
+    SHELL = /usr/sbin/nologin
+    HOME = /var/www
+    IN_PASSENGER = 1
+    PYTHONUNBUFFERED = 1
+    NODE_PATH = /var/lib/gems/2.1.0/gems/passenger-5.0.15/node_lib
+    RAILS_ENV = production
+    RACK_ENV = production
+    WSGI_ENV = production
+    NODE_ENV = production
+    PASSENGER_APP_ENV = production
+    RAILS_RELATIVE_URL_ROOT = /redmine
+    RACK_BASE_URI = /redmine
+    PASSENGER_BASE_URI = /redmine
+    GEM_PATH = /var/lib/gems/2.1.0:/var/www/.gem/ruby/2.1.0:/usr/share/rubygems-integration/2.1.0:/usr/share/rubygems-integration/2.1:/usr/share/rubygems-integration/all
+    GEM_HOME = /var/lib/gems/2.1.0
+
+Ulimits
+
+    Unknown
+
+System metrics
+
+    ------------- General -------------
+    Kernel version    : 3.13.0-24-generic
+    Uptime            : 7d 17h 29m 7s
+    Load averages     : 0.01%, 0.08%, 0.07%
+    Fork rate         : unknown
+
+    ------------- CPU -------------
+    Number of CPUs    :    2
+    Average CPU usage :   0%  --   0% user,   0% nice,   0% system, 100% idle
+      CPU 1           :   0%  --   0% user,   0% nice,   0% system, 100% idle
+      CPU 2           :   0%  --   0% user,   0% nice,   0% system, 100% idle
+    I/O pressure      :   0%
+      CPU 1           :   0%
+      CPU 2           :   0%
+    Interference from other VMs:   0%
+      CPU 1                    :   0%
+      CPU 2                    :   0%
+
+    ------------- Memory -------------
+    RAM total         :   3946 MB
+    RAM used          :    682 MB (17%)
+    RAM free          :   3264 MB
+    Swap total        :   1021 MB
+    Swap used         :      0 MB (0%)
+    Swap free         :   1021 MB
+    Swap in           : unknown
+    Swap out          : unknown
+
+General Ruby interpreter information
+
+    RUBY_VERSION = 2.1.6
+    RUBY_PLATFORM = x86_64-linux-gnu
+    RUBY_ENGINE = ruby
+    RubyGems version = 2.4.8
+    RubyGems paths = [""/var/lib/gems/2.1.0"", ""/var/www/.gem/ruby/2.1.0"", ""/usr/share/rubygems-integration/2.1.0"", ""/usr/share/rubygems-integration/2.1"", ""/usr/share/rubygems-integration/all""]
+
+Ruby configuration (RbConfig::CONFIG)
+
+    DESTDIR = 
+    MAJOR = 2
+    MINOR = 1
+    TEENY = 0
+    PATCHLEVEL = 336
+    INSTALL = /usr/bin/install -c
+    EXEEXT = 
+    prefix = /usr
+    ruby_install_name = ruby2.1
+    RUBY_INSTALL_NAME = ruby2.1
+    RUBY_SO_NAME = ruby-2.1
+    exec = exec
+    ruby_pc = ruby-2.1.pc
+    PACKAGE = ruby
+    BUILTIN_TRANSSRCS =  newline.c
+    USE_RUBYGEMS = YES
+    MANTYPE = doc
+    NROFF = /usr/bin/nroff
+    vendorarchhdrdir = /usr/include/x86_64-linux-gnu/ruby-2.1.0/vendor_ruby
+    sitearchhdrdir = /usr/include/x86_64-linux-gnu/ruby-2.1.0/site_ruby
+    rubyarchhdrdir = /usr/include/x86_64-linux-gnu/ruby-2.1.0
+    vendorhdrdir = /usr/include/ruby-2.1.0/vendor_ruby
+    sitehdrdir = /usr/include/ruby-2.1.0/site_ruby
+    rubyhdrdir = /usr/include/ruby-2.1.0
+    RUBY_SEARCH_PATH = 
+    UNIVERSAL_INTS = 
+    UNIVERSAL_ARCHNAMES = 
+    configure_args =  '--build=x86_64-linux-gnu' '--prefix=/usr' '--includedir=${prefix}/include' '--mandir=${prefix}/share/man' '--infodir=${prefix}/share/info' '--sysconfdir=/etc' '--localstatedir=/var' '--libexecdir=${prefix}/lib/ruby2.1' '--disable-maintainer-mode' '--disable-dependency-tracking' '--enable-multiarch' '--target=x86_64-linux-gnu' '--program-suffix=2.1' '--with-soname=ruby-2.1' '--enable-shared' '--disable-rpath' '--with-baseruby=/usr/bin/ruby' '--with-sitedir=/usr/local/lib/site_ruby' '--with-sitearchdir=/usr/local/lib/x86_64-linux-gnu/site_ruby' '--enable-ipv6' '--with-dbm-type=gdbm_compat' 'CFLAGS=-g -O2 -fstack-protector --param=ssp-buffer-size=4 -Wformat -Werror=format-security' 'CPPFLAGS=-D_FORTIFY_SOURCE=2' 'CXXFLAGS=-g -O2 -fstack-protector --param=ssp-buffer-size=4 -Wformat -Werror=format-security' 'FFLAGS=-g -O2 -fstack-protector --param=ssp-buffer-size=4' 'GCJFLAGS=-g -O2 -fstack-protector --param=ssp-buffer-size=4' 'LDFLAGS=-Wl,-Bsymbolic-functions -Wl,-z,relro -L/build/buildd/ruby2.1-2.1.6/debian/lib' '--with-tcltkversion=8.5' '--with-tclConfig-dir=/usr/lib/x86_64-linux-gnu/tcl8.5/tclConfig.sh' '--with-tkConfig-dir=/usr/lib/x86_64-linux-gnu/tk8.5/tkConfig.sh' '--with-tcllib=tcl8.5' '--with-tklib=tk8.5' '--with-tcl-include=/usr/include/tcl8.5' '--with-tk-include=/usr/include/tcl8.5' '--with-tcl-lib=/usr/lib/x86_64-linux-gnu' '--with-tk-lib=/usr/lib/x86_64-linux-gnu' 'build_alias=x86_64-linux-gnu' 'target_alias=x86_64-linux-gnu'
+    vendorarchdir = /usr/lib/x86_64-linux-gnu/ruby/vendor_ruby/2.1.0
+    vendorlibdir = /usr/lib/ruby/vendor_ruby/2.1.0
+    vendordir = /usr/lib/ruby/vendor_ruby
+    sitearchdir = /usr/local/lib/x86_64-linux-gnu/site_ruby
+    sitelibdir = /usr/local/lib/site_ruby/2.1.0
+    sitedir = /usr/local/lib/site_ruby
+    rubyarchdir = /usr/lib/x86_64-linux-gnu/ruby/2.1.0
+    rubylibdir = /usr/lib/ruby/2.1.0
+    ruby_version = 2.1.0
+    sitearch = x86_64-linux-gnu
+    arch = x86_64-linux-gnu
+    sitearchincludedir = /usr/include/x86_64-linux-gnu
+    archincludedir = /usr/include/x86_64-linux-gnu
+    sitearchlibdir = /usr/lib/x86_64-linux-gnu
+    archlibdir = /usr/lib/x86_64-linux-gnu
+    libdirname = archlibdir
+    RUBY_EXEC_PREFIX = /usr
+    RUBY_LIB_VERSION = 
+    RUBY_LIB_VERSION_STYLE = 3	/* full */
+    RI_BASE_NAME = ri
+    ridir = /usr/share/ri
+    rubysitearchprefix = /usr/lib/x86_64-linux-gnu/ruby
+    rubyarchprefix = /usr/lib/x86_64-linux-gnu/ruby
+    MAKEFILES = Makefile GNUmakefile
+    PLATFORM_DIR = 
+    THREAD_MODEL = pthread
+    SYMBOL_PREFIX = 
+    EXPORT_PREFIX = 
+    COMMON_HEADERS = 
+    COMMON_MACROS = 
+    COMMON_LIBS = 
+    MAINLIBS = 
+    ENABLE_SHARED = yes
+    DLDLIBS =  -lc
+    SOLIBS = -lpthread -lgmp -ldl -lcrypt -lm 
+    LIBRUBYARG_SHARED = -lruby-2.1
+    LIBRUBYARG_STATIC = -lruby-2.1-static
+    LIBRUBYARG = -lruby-2.1
+    LIBRUBY = libruby-2.1.so.2.1.0
+    LIBRUBY_ALIASES = libruby-2.1.so.2.1 libruby-2.1.so
+    LIBRUBY_SO = libruby-2.1.so.2.1.0
+    LIBRUBY_A = libruby-2.1-static.a
+    RUBYW_INSTALL_NAME = 
+    rubyw_install_name = 
+    EXTDLDFLAGS = 
+    EXTLDFLAGS = 
+    strict_warnflags = -std=iso9899:1999
+    warnflags = -Wall -Wextra -Wno-unused-parameter -Wno-parentheses -Wno-long-long -Wno-missing-field-initializers -Wunused-variable -Wpointer-arith -Wwrite-strings -Wdeclaration-after-statement -Wimplicit-function-declaration
+    debugflags = -ggdb3
+    optflags = -O3 -fno-fast-math
+    cxxflags =  -O3 -fno-fast-math -ggdb3 -Wall -Wextra -Wno-unused-parameter -Wno-parentheses -Wno-long-long -Wno-missing-field-initializers -Wunused-variable -Wpointer-arith -Wwrite-strings -Wdeclaration-after-statement -Wimplicit-function-declaration
+    cflags =  -O3 -fno-fast-math -ggdb3 -Wall -Wextra -Wno-unused-parameter -Wno-parentheses -Wno-long-long -Wno-missing-field-initializers -Wunused-variable -Wpointer-arith -Wwrite-strings -Wdeclaration-after-statement -Wimplicit-function-declaration
+    cppflags = 
+    NULLCMD = :
+    DLNOBJ = dln.o
+    INSTALLDOC = all
+    CAPITARGET = nodoc
+    RDOCTARGET = rdoc
+    DTRACE_GLOMMED_OBJ = ruby-glommed.o
+    DTRACE_OBJ = probes.o
+    DTRACE_EXT = d
+    EXECUTABLE_EXTS = 
+    ARCHFILE = 
+    LIBRUBY_RELATIVE = no
+    EXTOUT = .ext
+    RUNRUBY_COMMAND = $(MINIRUBY) $(srcdir)/tool/runruby.rb --extout=.ext $(RUNRUBYOPT)
+    PREP = miniruby
+    BTESTRUBY = $(MINIRUBY)
+    CROSS_COMPILING = no
+    TEST_RUNNABLE = yes
+    rubylibprefix = /usr/lib/ruby
+    setup = Setup
+    EXTSTATIC = 
+    STRIP = strip -S -x
+    TRY_LINK = 
+    LIBPATHENV = LD_LIBRARY_PATH
+    RPATHFLAG = 
+    LIBPATHFLAG =  -L%s
+    LINK_SO = 
+    LIBEXT = a
+    DLEXT2 = 
+    DLEXT = so
+    LDSHAREDXX = g++ -shared
+    LDSHARED = gcc -shared
+    CCDLFLAGS = -fPIC
+    STATIC = 
+    ARCH_FLAG = 
+    DLDFLAGS = 
+    ALLOCA = 
+    codesign = 
+    POSTLINK = :
+    WERRORFLAG = -Werror
+    CHDIR = cd -P
+    RMALL = rm -fr
+    RMDIRS = rmdir --ignore-fail-on-non-empty -p
+    RMDIR = rmdir --ignore-fail-on-non-empty
+    CP = cp
+    RM = rm -f
+    PKG_CONFIG = pkg-config
+    PYTHON = 
+    DOXYGEN = 
+    DOT = 
+    DTRACE = dtrace
+    MAKEDIRS = /bin/mkdir -p
+    MKDIR_P = /bin/mkdir -p
+    INSTALL_DATA = /usr/bin/install -c -m 644
+    INSTALL_SCRIPT = /usr/bin/install -c
+    INSTALL_PROGRAM = /usr/bin/install -c
+    SET_MAKE = 
+    LN_S = ln -s
+    NM = nm
+    DLLWRAP = 
+    WINDRES = 
+    OBJCOPY = :
+    OBJDUMP = objdump
+    ASFLAGS = 
+    AS = as
+    AR = ar
+    RANLIB = ranlib
+    try_header = 
+    CC_VERSION = gcc -v
+    COUTFLAG = -o 
+    OUTFLAG = -o 
+    CPPOUTFILE = -o conftest.i
+    GNU_LD = yes
+    LD = ld
+    GCC = yes
+    EGREP = /bin/grep -E
+    GREP = /bin/grep
+    CPP = gcc -E
+    CXXFLAGS = -g -O2 -fstack-protector --param=ssp-buffer-size=4 -Wformat -Werror=format-security
+    CXX = g++
+    OBJEXT = o
+    CPPFLAGS = -D_FORTIFY_SOURCE=2  
+    LDFLAGS = -L. -Wl,-Bsymbolic-functions -Wl,-z,relro -L/build/buildd/ruby2.1-2.1.6/debian/lib -fstack-protector -rdynamic -Wl,-export-dynamic
+    CFLAGS = -g -O2 -fstack-protector --param=ssp-buffer-size=4 -Wformat -Werror=format-security -fPIC
+    CC = gcc
+    NACL_SDK_VARIANT = 
+    NACL_SDK_ROOT = 
+    NACL_TOOLCHAIN = 
+    target_os = linux-gnu
+    target_vendor = pc
+    target_cpu = x86_64
+    target = x86_64-pc-linux-gnu
+    host_os = linux-gnu
+    host_vendor = pc
+    host_cpu = x86_64
+    host = x86_64-pc-linux-gnu
+    RUBY_VERSION_NAME = ruby-2.1.0
+    RUBYW_BASE_NAME = rubyw
+    RUBY_BASE_NAME = ruby
+    build_os = linux-gnu
+    build_vendor = pc
+    build_cpu = x86_64
+    build = x86_64-pc-linux-gnu
+    RUBY_RELEASE_DATE = 2015-04-13
+    RUBY_PROGRAM_VERSION = 2.1.6
+    target_alias = x86_64-linux-gnu
+    host_alias = 
+    build_alias = x86_64-linux-gnu
+    LIBS = -lpthread -lgmp -ldl -lcrypt -lm 
+    ECHO_T = 
+    ECHO_N = -n
+    ECHO_C = 
+    DEFS = 
+    mandir = /usr/share/man
+    localedir = /usr/share/locale
+    libdir = /usr/lib
+    psdir = /usr/share/doc/ruby
+    pdfdir = /usr/share/doc/ruby
+    dvidir = /usr/share/doc/ruby
+    htmldir = /usr/share/doc/ruby
+    infodir = /usr/share/info
+    docdir = /usr/share/doc/ruby
+    oldincludedir = /usr/include
+    includedir = /usr/include
+    localstatedir = /var
+    sharedstatedir = /usr/com
+    sysconfdir = /etc
+    datadir = /usr/share
+    datarootdir = /usr/share
+    libexecdir = /usr/lib/ruby2.1
+    sbindir = /usr/sbin
+    bindir = /usr/bin
+    program_transform_name = s&$&2.1&;s&^&&
+    exec_prefix = /usr
+    PACKAGE_URL = 
+    PACKAGE_BUGREPORT = 
+    PACKAGE_STRING = 
+    PACKAGE_VERSION = 
+    PACKAGE_TARNAME = 
+    PACKAGE_NAME = 
+    PATH_SEPARATOR = :
+    SHELL = /bin/bash
+    archdir = /usr/lib/x86_64-linux-gnu/ruby/2.1.0
+    topdir = /usr/lib/x86_64-linux-gnu/ruby/2.1.0
+
+Activated Ruby gems
+
+    io-console => 0.4.3
+
+Ruby load path ($LOAD_PATH)
+
+    /usr/local/lib/site_ruby/2.1.0
+    /usr/local/lib/x86_64-linux-gnu/site_ruby
+    /usr/local/lib/site_ruby
+    /usr/lib/ruby/vendor_ruby/2.1.0
+    /usr/lib/x86_64-linux-gnu/ruby/vendor_ruby/2.1.0
+    /usr/lib/ruby/vendor_ruby
+    /usr/lib/ruby/2.1.0
+    /usr/lib/x86_64-linux-gnu/ruby/2.1.0
+
+Ruby loaded libraries ($LOADED_FEATURES)
+
+    enumerator.so
+    /usr/lib/x86_64-linux-gnu/ruby/2.1.0/enc/encdb.so
+    /usr/lib/x86_64-linux-gnu/ruby/2.1.0/enc/trans/transdb.so
+    /usr/lib/x86_64-linux-gnu/ruby/2.1.0/rbconfig.rb
+    thread.rb
+    /usr/lib/x86_64-linux-gnu/ruby/2.1.0/thread.so
+    /usr/local/lib/site_ruby/2.1.0/rubygems/compatibility.rb
+    /usr/local/lib/site_ruby/2.1.0/rubygems/defaults.rb
+    /usr/local/lib/site_ruby/2.1.0/rubygems/deprecate.rb
+    /usr/local/lib/site_ruby/2.1.0/rubygems/errors.rb
+    /usr/local/lib/site_ruby/2.1.0/rubygems/version.rb
+    /usr/local/lib/site_ruby/2.1.0/rubygems/requirement.rb
+    /usr/local/lib/site_ruby/2.1.0/rubygems/platform.rb
+    /usr/local/lib/site_ruby/2.1.0/rubygems/basic_specification.rb
+    /usr/local/lib/site_ruby/2.1.0/rubygems/stub_specification.rb
+    /usr/local/lib/site_ruby/2.1.0/rubygems/util/stringio.rb
+    /usr/local/lib/site_ruby/2.1.0/rubygems/specification.rb
+    /usr/local/lib/site_ruby/2.1.0/rubygems/exceptions.rb
+    /usr/lib/ruby/vendor_ruby/rubygems/defaults/operating_system.rb
+    /usr/local/lib/site_ruby/2.1.0/rubygems/core_ext/kernel_gem.rb
+    /usr/lib/ruby/2.1.0/monitor.rb
+    /usr/local/lib/site_ruby/2.1.0/rubygems/core_ext/kernel_require.rb
+    /usr/local/lib/site_ruby/2.1.0/rubygems.rb
+    /var/lib/gems/2.1.0/gems/passenger-5.0.15/lib/phusion_passenger.rb
+    /var/lib/gems/2.1.0/gems/passenger-5.0.15/lib/phusion_passenger/constants.rb
+    /usr/lib/x86_64-linux-gnu/ruby/2.1.0/etc.so
+    /usr/lib/ruby/2.1.0/fileutils.rb
+    /usr/lib/ruby/2.1.0/tmpdir.rb
+    /var/lib/gems/2.1.0/gems/passenger-5.0.15/lib/phusion_passenger/utils/tmpio.rb
+    /var/lib/gems/2.1.0/gems/passenger-5.0.15/lib/phusion_passenger/platform_info.rb
+    /var/lib/gems/2.1.0/gems/passenger-5.0.15/lib/phusion_passenger/platform_info/operating_system.rb
+    /var/lib/gems/2.1.0/gems/passenger-5.0.15/lib/phusion_passenger/platform_info/ruby.rb
+    /var/lib/gems/2.1.0/gems/passenger-5.0.15/lib/phusion_passenger/platform_info/binary_compatibility.rb
+    /var/lib/gems/2.1.0/gems/passenger-5.0.15/buildout/ruby/ruby-2.1.6-x86_64-linux/passenger_native_support.so
+    /var/lib/gems/2.1.0/gems/passenger-5.0.15/lib/phusion_passenger/native_support.rb
+    /usr/lib/x86_64-linux-gnu/ruby/2.1.0/socket.so
+    /usr/lib/ruby/2.1.0/socket.rb
+    /var/lib/gems/2.1.0/gems/passenger-5.0.15/lib/phusion_passenger/ruby_core_enhancements.rb
+    /var/lib/gems/2.1.0/gems/passenger-5.0.15/lib/phusion_passenger/ruby_core_io_enhancements.rb
+    /var/lib/gems/2.1.0/gems/passenger-5.0.15/lib/phusion_passenger/utils.rb
+    /var/lib/gems/2.1.0/gems/passenger-5.0.15/lib/phusion_passenger/preloader_shared_helpers.rb
+    /var/lib/gems/2.1.0/gems/passenger-5.0.15/lib/phusion_passenger/public_api.rb
+    /var/lib/gems/2.1.0/gems/passenger-5.0.15/lib/phusion_passenger/debug_logging.rb
+    /usr/lib/ruby/2.1.0/shellwords.rb
+    /var/lib/gems/2.1.0/gems/passenger-5.0.15/lib/phusion_passenger/utils/shellwords.rb
+    /var/lib/gems/2.1.0/gems/passenger-5.0.15/lib/phusion_passenger/loader_shared_helpers.rb
+    /usr/lib/x86_64-linux-gnu/ruby/2.1.0/fcntl.so
+    /var/lib/gems/2.1.0/gems/passenger-5.0.15/lib/phusion_passenger/message_channel.rb
+    /var/lib/gems/2.1.0/gems/passenger-5.0.15/lib/phusion_passenger/message_client.rb
+    /var/lib/gems/2.1.0/gems/passenger-5.0.15/lib/phusion_passenger/utils/native_support_utils.rb
+    /var/lib/gems/2.1.0/gems/passenger-5.0.15/lib/phusion_passenger/utils/unseekable_socket.rb
+    /var/lib/gems/2.1.0/gems/passenger-5.0.15/lib/phusion_passenger/request_handler/thread_handler.rb
+    /var/lib/gems/2.1.0/gems/passenger-5.0.15/lib/phusion_passenger/request_handler.rb
+    /usr/lib/x86_64-linux-gnu/ruby/2.1.0/stringio.so
+    /var/lib/gems/2.1.0/gems/passenger-5.0.15/lib/phusion_passenger/utils/tee_input.rb
+    /var/lib/gems/2.1.0/gems/passenger-5.0.15/lib/phusion_passenger/rack/thread_handler_extension.rb
+    /usr/local/lib/site_ruby/2.1.0/rubygems/path_support.rb
+    /var/lib/gems/2.1.0/gems/passenger-5.0.15/lib/phusion_passenger/union_station/connection.rb
+    /var/lib/gems/2.1.0/gems/passenger-5.0.15/lib/phusion_passenger/union_station/transaction.rb
+    /var/lib/gems/2.1.0/gems/passenger-5.0.15/lib/phusion_passenger/utils/lock.rb
+    /var/lib/gems/2.1.0/gems/passenger-5.0.15/lib/phusion_passenger/union_station/core.rb
+    /usr/local/lib/site_ruby/2.1.0/rubygems/dependency.rb
+    /usr/lib/x86_64-linux-gnu/ruby/2.1.0/pathname.so
+    /usr/lib/ruby/2.1.0/pathname.rb
+    /usr/lib/x86_64-linux-gnu/ruby/2.1.0/io/console.so
+    /usr/local/lib/site_ruby/2.1.0/rubygems/user_interaction.rb
+    /usr/local/lib/site_ruby/2.1.0/rubygems/config_file.rb
+    /usr/lib/ruby/vendor_ruby/bundler/rubygems_integration.rb
+    /usr/lib/ruby/vendor_ruby/bundler/shared_helpers.rb
+    /usr/lib/ruby/vendor_ruby/bundler/gem_path_manipulation.rb
+    /usr/lib/ruby/vendor_ruby/bundler/gem_helpers.rb
+    /usr/lib/ruby/vendor_ruby/bundler/match_platform.rb
+    /usr/lib/ruby/vendor_ruby/bundler/rubygems_ext.rb
+    /usr/lib/ruby/vendor_ruby/bundler/version.rb
+    /usr/lib/ruby/vendor_ruby/bundler.rb
+    /usr/lib/ruby/vendor_ruby/bundler/settings.rb
+    /usr/lib/x86_64-linux-gnu/ruby/2.1.0/digest.so
+    /usr/lib/ruby/2.1.0/digest.rb
+    /usr/lib/x86_64-linux-gnu/ruby/2.1.0/digest/sha1.so
+    /usr/lib/ruby/2.1.0/set.rb
+    /usr/lib/ruby/vendor_ruby/bundler/definition.rb
+    /usr/lib/ruby/vendor_ruby/bundler/dependency.rb
+    /usr/lib/ruby/vendor_ruby/bundler/ruby_dsl.rb
+    /usr/lib/ruby/vendor_ruby/bundler/dsl.rb
+    /usr/lib/ruby/vendor_ruby/bundler/source.rb
+    /usr/lib/ruby/2.1.0/uri/common.rb
+    /usr/lib/ruby/2.1.0/uri/generic.rb
+    /usr/lib/ruby/2.1.0/uri/ftp.rb
+    /usr/lib/ruby/2.1.0/uri/http.rb
+    /usr/lib/ruby/2.1.0/uri/https.rb
+    /usr/lib/ruby/2.1.0/uri/ldap.rb
+    /usr/lib/ruby/2.1.0/uri/ldaps.rb
+    /usr/lib/ruby/2.1.0/uri/mailto.rb
+    /usr/lib/ruby/2.1.0/uri.rb
+    /usr/lib/ruby/2.1.0/timeout.rb
+    /usr/lib/ruby/2.1.0/net/protocol.rb
+    /usr/lib/x86_64-linux-gnu/ruby/2.1.0/zlib.so
+    /usr/lib/ruby/2.1.0/net/http/exceptions.rb
+    /usr/lib/ruby/2.1.0/net/http/header.rb
+    /usr/lib/ruby/2.1.0/net/http/generic_request.rb
+    /usr/lib/ruby/2.1.0/net/http/request.rb
+    /usr/lib/ruby/2.1.0/net/http/requests.rb
+    /usr/lib/ruby/2.1.0/net/http/response.rb
+    /usr/lib/ruby/2.1.0/net/http/responses.rb
+    /usr/lib/ruby/2.1.0/net/http/proxy_delta.rb
+    /usr/lib/ruby/2.1.0/net/http/backward.rb
+    /usr/lib/ruby/2.1.0/net/http.rb
+    /usr/lib/x86_64-linux-gnu/ruby/2.1.0/date_core.so
+    /usr/lib/ruby/2.1.0/date/format.rb
+    /usr/lib/ruby/2.1.0/date.rb
+    /usr/lib/ruby/2.1.0/time.rb
+    /usr/local/lib/site_ruby/2.1.0/rubygems/request/http_pool.rb
+    /usr/local/lib/site_ruby/2.1.0/rubygems/request/https_pool.rb
+    /usr/local/lib/site_ruby/2.1.0/rubygems/request/connection_pools.rb
+    /usr/local/lib/site_ruby/2.1.0/rubygems/request.rb
+    /usr/lib/ruby/2.1.0/cgi/core.rb
+    /usr/lib/ruby/2.1.0/cgi/util.rb
+    /usr/lib/ruby/2.1.0/cgi/cookie.rb
+    /usr/lib/ruby/2.1.0/cgi.rb
+    /usr/local/lib/site_ruby/2.1.0/rubygems/uri_formatter.rb
+    /usr/lib/x86_64-linux-gnu/ruby/2.1.0/openssl.so
+    /usr/lib/ruby/2.1.0/openssl/bn.rb
+    /usr/lib/ruby/2.1.0/openssl/cipher.rb
+    /usr/lib/ruby/2.1.0/openssl/config.rb
+    /usr/lib/ruby/2.1.0/openssl/digest.rb
+    /usr/lib/ruby/2.1.0/openssl/x509.rb
+    /usr/lib/ruby/2.1.0/openssl/buffering.rb
+    /usr/lib/ruby/2.1.0/openssl/ssl.rb
+    /usr/lib/ruby/2.1.0/openssl.rb
+    /usr/lib/ruby/2.1.0/securerandom.rb
+    /usr/lib/ruby/2.1.0/resolv.rb
+    /usr/local/lib/site_ruby/2.1.0/rubygems/remote_fetcher.rb
+    /usr/local/lib/site_ruby/2.1.0/rubygems/text.rb
+    /usr/local/lib/site_ruby/2.1.0/rubygems/name_tuple.rb
+    /usr/local/lib/site_ruby/2.1.0/rubygems/spec_fetcher.rb
+    /usr/lib/ruby/vendor_ruby/bundler/source/rubygems.rb
+
+"
+20677,Redmine,Defect,"",Closed,Normal,Custom fields with multiple values required by worklow can be blank,Pavel Rosick?,Jean-Philippe Lang,2015-11-07 09:16,Issues workflow,2.6.8,"","","",0,2015-09-04 23:50,2015-11-07 09:16,"",Fixed,"","How to simulate:
+1/ create new cf type list, non-required, select multiple values
+2/ set cf as required in workflow
+3/ update issue (cf is marked with * as required)
+4/ issue will be saved without an error, even if you don't select any value
+
+How it should work?
+Validation error should be shown, because the custom field is required.
+
+Fix & Test included
+"
+20673,Redmine,Defect,"",Closed,Normal,Redmine REST API gives WATCHDOG_CRITICAL on 404 errors,Jamila Khan,"",2015-09-07 12:31,REST API,"","","","",0,2015-09-03 23:20,2015-09-07 12:31,"",Invalid,"","Howdy,
+
+tl;dr I propose the Redmine REST API should give a lower WATCHDOG error level on 404 errors, and I can submit the patch if desired.
+
+
+My company has been happily using redmine for a few years now. We have recently started using the ""redmine_rest_api module"":http://www.redmine.org/projects/redmine/wiki/Rest_api via our ""Drupal based IRC Chat Bot"":https://www.drupal.org/project/bot. I have set up a ""monitoring"":https://www.drupal.org/project/nagios ""system"":https://github.com/mxroo/palante_monitoring that will notify me if there are any WATCHDOG_CRITICAL errors on our site. These things put together meant that if someone made a typo in our chat room when trying to call up information on a redmine ticket, my monitoring system would send me a message there there were critical errors on my website.
+
+
+The relevant code is redmine_rest_api/redmine_rest_api.module, line 150
+
+<pre>
+    if ($result->code == '404') {
+      watchdog('redmine', t('The URL %url caused a 404 error from the service.', array('%url' => $url . '.' . $api_type . '?key=' . $api_key)), NULL, WATCHDOG_CRITICAL);
+    }
+    elseif ($result->code == '500') {
+      watchdog('redmine', t('The URL %url caused a 500 internal server error at the service.', array('%url' => $url . '.' . $api_type . '?key=' . $api_key)), NULL, WATCHDOG_CRITICAL);
+    }
+    elseif ($result->code == '403') {
+      watchdog('redmine', t('The URL %url was denied access with a 403 code by the service.', array('%url' => $url . '.' . $api_type . '?key=' . $api_key)), NULL, WATCHDOG_CRITICAL);
+    }
+</pre>
+
+I propose that the watchdog levels for those lines change to WATCHDOG_WARNING or WATCHDOG_ERROR.
+
+Available Drupal watchdog levels: https://api.drupal.org/api/drupal/includes!bootstrap.inc/function/watchdog/7
+Drupal severity level guidelines: https://api.drupal.org/api/drupal/includes!bootstrap.inc/group/logging_severity_levels/7
+
+
+"
+20663,Redmine,Defect,"",New,Normal,upgrade redmine 2.3 to 3.1 - filters,stephane pham,"",2016-01-24 13:34,Issues,"","","","",0,2015-09-02 18:18,"","","",3.1.0,"Hi,
+
+I upgrade redmine 3.1 from 2.3.
+Display filters disappeared,  i can filter by clicking on my custom reports but no filters.
+
+See attachment
+
+Best regards,"
+20662,Redmine,Defect,"",Closed,Normal,db:migrate fails in upgrade from 3.0.3 to 3.1.0 fails (Bitnami),Gustavo Regal,"",2015-09-03 14:41,Database,"","","","",0,2015-09-02 17:23,2015-09-03 01:26,"","",3.1.0,"I had 3.0.3 running OK (Bitnami Windows download).
+Tried to upgrade to 3.1.0.
+
+Backed up 3.0.3 MySQL DB and restored it to 3.1.0.
+Run rake db:migrate and got the following error.
+
+<pre>
+F:\Bitnami\redmine-3.1.0-0\apps\redmine\htdocs>bundle exec rake db:migrate RAILS
+_ENV=production --trace
+DL is deprecated, please use Fiddle
+** Invoke db:migrate (first_time)
+** Invoke environment (first_time)
+** Execute environment
+** Invoke db:load_config (first_time)
+** Execute db:load_config
+** Execute db:migrate
+== 20150528092912 CreateRolesManagedRoles: migrating ==========================
+-- create_table(:roles_managed_roles, {:id=>false})
+rake aborted!
+StandardError: An error has occurred, all later migrations canceled:
+
+Mysql2::Error: Table 'roles_managed_roles' already exists: CREATE TABLE `roles_m
+anaged_roles` (`role_id` int(11) NOT NULL, `managed_role_id` int(11) NOT NULL) E
+NGINE=InnoDBF:/Bitnami/redmine-3.1.0-0/apps/redmine/htdocs/vendor/bundle/ruby/2.
+0.0/gems/activerecord-4.2.3/lib/active_record/connection_adapters/abstract_mysql
+_adapter.rb:305:in `query'
+</pre>
+
+Is it a bug in migration script or have I done something wrong?
+
+Thanks in advance."
+20661,Redmine,Patch,"",Closed,Normal,Show visible spent time link for users allowed to view time entries.,Martin Dub?,Jean-Philippe Lang,2017-01-30 18:47,Time tracking,3.2.6,"","","",0,2015-09-02 15:29,2017-01-30 18:42,関連している #25526,"","","With this little change, the spent time is back, but showing only hours visible by the user according to the new ""time log visibility"" permission."
+20655,Redmine,Defect,"",Closed,Normal,Redmine and SVN link server 500 I early contact ruby for several days Everybody to help  Log as follows,欣洋 曹,"",2015-09-06 11:17,SCM,"","","","",0,2015-09-02 05:10,2015-09-06 11:17,次のチケットが重複 #20683,"","",""
+20648,Redmine,Defect,"",New,Normal,"Users' ""Last connection"" is not updated correctly.",kaz k,"",2016-06-15 14:32,Accounts / authentication,Candidate for next major release,"","","",0,2015-09-01 05:00,"","","","","In the User Profile, there are following two date fields.
+* Registered on: 2015-01-01 (value is an example)
+* Last connection: 2015-09-01 (value is an example)
+
+For some users, ""Last connection"" is not correct. Although the user logs in Redmine, ""Last connection"" date is not updated.
+In our system, for example, a user logged in on August 31, 2015. But ""Last connection"" date is still ""August 22, 2015"".
+
+It is also true in the Administration=>Users listing.
+
+We are using this field to determine if the user is active or not. So We hope this field is correct.
+
+Thank you all, in advance.
+
+* Reported version
+Redmine 2.5.0.stable. 
+Details are as follows.
+<pre>
+Environment:
+  Redmine version                2.5.0.stable
+  Ruby version                   1.9.3-p484 (2013-11-22) [x86_64-linux]
+  Rails version                  3.2.17
+  Environment                    production
+  Database adapter               PostgreSQL
+</pre>
+"
+20646,Redmine,Defect,"",New,Normal,Maximum attachment size displayed/labeled incorrectly,mathew murphy,"",2015-09-14 18:54,UI,"","","","",0,2015-08-31 23:22,"","","","","I set maximum attachment size to 5000KB in Settings, since I wanted a maximum of 5MB.
+
+However, the 'new issue' form displays the maximum size as 4.88MB.
+
+I can see three possibilities here:
+
+1. The form should say 4.77MiB, but is calculating incorrectly.
+2. The form should say 5MB.
+3. The settings field should be relabeled to specify that the maximum file size is in KiB, not KB.
+
+Since I use Linux and OS X, and generally care about how file sizes relate to disk space (which hardware manufacturers measure in base 10), my preference would be for KB/MB/GB throughout.
+
+However, you might want to go with KiB/MiB/GiB for the benefit of Windows users, unless Microsoft has fixed the display of file sizes in Windows 10.
+
+Link for the unconvinced: <http://lpar.ath0.com/2008/07/15/si-unit-prefixes-a-plea-for-sanity/>"

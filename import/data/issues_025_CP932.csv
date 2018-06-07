@@ -1,0 +1,972 @@
+#,プロジェクト,トラッカー,親チケット,ステータス,優先度,題名,作成者,担当者,更新日,カテゴリ,対象バージョン,開始日,期日,予定工数,進捗率,作成日,終了日,関連するチケット,Resolution,Affected version,説明
+23449,Redmine,Defect,"",Closed,Normal,NoMethodError (undefined method `where' for,Rainer Rutka,"",2016-07-29 02:27,Search engine,"","","","",0,2016-07-27 18:10,2016-07-29 02:27,"",Invalid,3.2.0,"When i try to search for a string in RM 3.2 I get an error:
+
+Internal error
+
+An error occurred on the page you were trying to access.
+If you continue to experience problems please contact your Redmine administrator for assistance.
+
+If you are the Redmine administrator, check your log files for details about the error.
+
+--
+This is an excerpt from the log:
+
+<pre>
+redmine@projects:/srv/redmine/ror/log$ cat sea*
+Processing by SearchController#index as HTML
+  Parameters: {""utf8""=>""?"", ""q""=>""Rainer""}
+  Current user: rainer.rutka (id=678)
+Completed 500 Internal Server Error in 661ms (ActiveRecord: 467.5ms)
+
+NoMethodError (undefined method `where' for #<Hash:0x007f3e16f5d740>):
+  lib/plugins/acts_as_searchable/lib/acts_as_searchable.rb:93:in `search_result_ranks_and_ids'
+  lib/redmine/search.rb:127:in `block in load_result_ids'
+  lib/redmine/search.rb:125:in `each'
+  lib/redmine/search.rb:125:in `load_result_ids'
+  lib/redmine/search.rb:115:in `block in load_result_ids_from_cache'
+  lib/redmine/search.rb:114:in `load_result_ids_from_cache'
+  lib/redmine/search.rb:99:in `result_ids'
+  lib/redmine/search.rb:70:in `result_count'
+  app/controllers/search_controller.rb:65:in `index'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+redmine@projects:/srv/redmine/ror/log$
+</pre> 
+
+My configs:
+
+<pre>
+Environment:
+  Redmine version        3.2.0.stable.15148
+  Ruby version                   2.1.5-p273 (2014-11-13) [x86_64-linux-gnu]
+  Rails version                  4.2.5
+  Environment                    production
+  Database adapter               PostgreSQL
+SCM:
+  Subversion                     1.8.10
+  Mercurial                      3.1.2
+  Cvs                            1.12.13
+  Git                            2.1.4
+  Filesystem                     
+Redmine plugins:
+  redmine_agile                  1.4.1
+  redmine_code_review            0.7.0
+  redmine_knowledgebase          3.2.0
+  redmine_meetings               0.2.7
+  redmine_mylyn_connector        2.8.2.stable
+  redmine_tweaks                 0.5.8-dev
+  redmine_watcher_groups         0.0.3git
+  scrum                          0.14.0
+</pre>
+
+THANK YOU ! :-)"
+23445,Redmine,Defect,"",Closed,Normal,follow issue who is closed don't appears,laurent plassard,"",2016-07-27 14:49,My page,"","","","",0,2016-07-27 10:02,2016-07-27 14:49,"",Invalid,"","When i closed an issue who is closed , this issue don't appears on my page.
+thanks for help"
+23441,Redmine,Defect,"",Closed,Normal,TestLink Integration With Redmine,Piyush Jalan,"",2016-07-27 08:30,"","","","","",0,2016-07-27 08:21,2016-07-27 08:30,"",Invalid,"","Hi,
+
+I want to configure the Testlink with My redmine. I have done below configuration in My Testlink:-
+
+<issuetracker>
+<apikey>REDMINE API KEY</apikey>
+<uribase>http://tl.m.remine.org</uribase>
+<uriview>http://tl.m.remine.org/issues/</uriview> <!-- for Redmine 1.x add show/ --> 
+<!-- Project Identifier is NEEDED ONLY if you want to create issues from TL -->
+<projectidentifier>REDMINE PROJECT IDENTIFIER
+ You can use numeric id or identifier string 
+</projectidentifier>
+
+
+Can Anyone Help Me I am getting below error:-
+""Attention Please: 
+Something is preventing connection to Bug Tracking System,
+and is going to create performance issues.
+Please contact your TestLink Administrator""
+
+Please help as soon as possible"
+23437,Redmine,Defect,"",Closed,Normal,update when CSV import with same id,Xavier Godon,"",2016-07-27 04:25,"","","","","",0,2016-07-26 11:06,2016-07-27 04:25,"",Invalid,3.2.0,"Could it be possible to update issues during a CSV import, when their ID are the same?
+Atm, if i import a task with an already existing ID, the ID changes and a new task is created.
+
+Thanks"
+23430,Redmine,Defect,"",Needs feedback,Normal,I can not access a closed project Issues,Diego Gonzalez,"",2016-09-16 15:10,Issues,"","","","",0,2016-07-25 22:09,"","","",3.2.1,"Having closed the project and the Issues on it, I can not access them"
+23425,Redmine,Defect,"",Closed,Normal,Wrong entries in custom fields after changing the content of the field,Fridolin Tam,"",2016-09-01 09:01,Custom fields,"","","","",0,2016-07-25 13:43,2016-09-01 09:01,"","",2.6.7,"Hello,
+if i change the value of a custom field to a new value it doesnt change right.
+After the change i have the old and the new value in the custom field.
+
+Pictures below does show it.
+
+Greetings,
+Fridolin"
+23421,Redmine,Defect,"",Closed,Normal,"Upgrade without ""development"" still tries to connect to ""development"" database",Arnis Juraga,"",2016-07-25 16:26,"","","","","",0,2016-07-25 09:52,2016-07-25 16:26,"",Invalid,3.3.0,"I was upgrading @3.0.1@ to @3.3.0@
+I used this command:
+
+<pre><code class=""ruby"">
+  bundle install --without development test rmagick
+</code></pre>
+
+But (using official upgrade instruction) running this script:
+
+<pre><code class=""ruby"">
+  bundle exec rake generate_secret_token
+</code></pre>
+
+gives me an error:
+
+<pre><code class=""ruby"">
+  rake aborted!
+  ActiveRecord::AdapterNotSpecified: 'development' database is not configured. Available: [""production""]
+</code></pre>
+
+
+Although, this one executes without an error and everything looks working fine now:
+
+<pre><code class=""ruby"">
+  RAILS_ENV=production bundle exec rake generate_secret_token 
+</code></pre>
+
+Is it correct behavior?
+
+
+
+"
+23420,Redmine,Defect,"",Closed,Normal,Error 500 whhen access to activity page of one project,Jean Louis,"",2016-07-25 16:41,Activity view,"","","","",0,2016-07-25 09:22,2016-07-25 16:41,"",Invalid,3.3.0,"Version Redmine 3.3.0.devel.15732
+
+Access to the activity page says internal error.
+
+The production.log says :
+
+<pre>
+Started GET ""/projects/xxxx/activity"" for xxxx at 2016-07-25 09:17:02 +0200
+Processing by ActivitiesController#index as HTML
+  Parameters: {""id""=>""xxxx""}
+  Current user: xxxx (id=4)
+  Rendered plugins/redmine_my_page/app/views/activities/esi.html.erb within layouts/base (819.7ms)
+Completed 500 Internal Server Error in 1766ms (ActiveRecord: 47.7ms)
+
+ActionView::Template::Error (undefined method `link_to_content_update' for #<#<Class:0x007f7a465c6760>:0x0000000ab849f8>):
+    22: <%= content_tag('p', l(:label_no_data), :class => 'nodata') if @events_by_day.empty? %>
+    23:
+    24: <div style=""float:left;"">
+    25: <%= link_to_content_update(""\xc2\xab "" + l(:label_previous),
+    26:                    params.merge(:from => @date_to - @days - 1),
+    27:                    :title => l(:label_date_from_to, :start => format_date(@date_to - 2*@days), :end => format_date(@date_to - @days - 1)),
+    28:                    :accesskey => accesskey(:previous)) %>
+  plugins/redmine_my_page/app/views/activities/esi.html.erb:25:in `_0a5d68e156dc6329c172caa2c15a931c'
+  plugins/redmine_my_page/lib/my_page_patches/activities_controller_patch.rb:71:in `block (2 levels) in index_with_esi'
+  plugins/redmine_my_page/lib/my_page_patches/activities_controller_patch.rb:65:in `index_with_esi'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+  plugins/redmine_dmsf/lib/redmine_dmsf/webdav/no_parse.rb:33:in `call'
+</pre>
+
+The problem is in DMSF plugin or in redmine ?
+"
+23419,Redmine,Patch,"",Closed,Normal,Change Japanese translation for label_display_used_statuses_only,Go MAEDA,"",2016-09-09 09:32,Translations,3.4.0,"","","",0,2016-07-25 02:30,2016-09-09 09:32,"","","","I suggest changing the translation for label_display_used_statuses_only as the following. the sentence will be more concise by this change.
+
+<pre><code class=""diff"">
+Index: config/locales/ja.yml
+===================================================================
+--- config/locales/ja.yml       (revision 15723)
++++ config/locales/ja.yml       (working copy)
+@@ -808,7 +808,7 @@
+   label_copy_source: コピー元
+   label_copy_target: コピー先
+   label_copy_same_as_target: 同じコピー先
+-  label_display_used_statuses_only: このトラッカーで使われているステータスのみ表示する
++  label_display_used_statuses_only: このトラッカーで使用中のステータスのみ表示
+   label_api_access_key: APIアクセスキー
+   label_missing_api_access_key: APIアクセスキーが見つかりません
+   label_api_access_key_created_on: ""APIアクセスキーは%{value}前に作成されました""
+</code></pre>
+"
+23417,Redmine,Patch,"",New,Normal,Make the ID column configurable in the issues listing like the other columns,Marius BALTEANU,"",2017-01-29 16:05,Issues filter,"","","","",0,2016-07-25 01:11,"","","","","Currently, in the issues listing table, there are two ""hard coded"" columns:
+# first column with the checkbox
+# second column with the issue ID
+
+In our custom theme, we want to have the subject in the first column in order to improve the readability of the issues and subtasks: !id_column.png!.  
+
+To obtain that, we hide both columns from the CSS, but we weren't able to display the ID column as last column in the table by default without development (or let the users to decide the ID column position).
+
+Attached is a patch that:
+- makes the ID column configurable (like the other columns)
+- adds the ID column as first column in the default Redmine settings
+- migrates the default columns settings in order to add the ID column as first column.  
+- updates the existing tests to include this change
+- removes some empty spaces
+  
+
+  
+
+"
+23414,Redmine,Defect,"",Needs feedback,Normal,Datepickers don't show in Firefox,Andrew Deviatikh,"",2016-09-22 15:29,UI,"","","","",0,2016-07-24 07:29,"",関連している #23224,"",3.3.0,"Hi. 
+
+Redmine version 3.3.0.stable
+Ruby version    2.2.2-p95 (2015-04-13) [x86_64-linux]
+Rails version   4.2.6
+Firefox version 47.0.1.
+
+All datepickers (in Issues especially) don't show (see screenshot in attachments). In Chrome, IE all is right.
+ 
+What should i do to fix this problem?"
+23412,Redmine,Defect,"",Closed,Normal,Cannot read git repository with .git in name,ruhang xu,"",2016-07-24 16:57,SCM,"","","","",0,2016-07-23 12:15,2016-07-24 16:57,"",Invalid,3.3.0,"As described in the wiki for repo configuration [[RedmineRepositories]], I created a bare repository by git clone --bare.
+
+I named it myrepo.git and setup the full path name on redmine repository setup as /var/redmine/git_repositories/myrepo.git
+Suffixing by .git is a naming convention I use for all my bare repositories.
+
+When i tried to browse it with Repository tab on my project, it failed with :
+404 The entry or revision was not found in the repository
+
+If I recreate a bare repo exactly the same way but with another name like myrepoxyz, I am able to browse it in redmine."
+23410,Redmine,Defect,"",Closed,Normal,Error if create new issue and there is no project,Quan VN,Jean-Philippe Lang,2016-08-31 18:55,Issues,3.3.1,"","","",0,2016-07-23 09:50,2016-08-31 18:55,関連している #6204,Fixed,3.3.0,"The error occurs in this case
+1. install new redmine and there is no project. 
+2. From top menu, click Project
+3. From this project index page, click View All Issue
+4. From that issue index page, click on New Issue
+Then the error 500 occurs with the following logs
+
+Started GET ""/redmine/issues/new"" for 123.20.56.163 at 2016-07-23 07:41:55 +0000
+Processing by IssuesController#new as HTML
+  Current user: admin (id=1)
+  Rendered issues/_attributes.html.erb (7.5ms)
+  Rendered issues/_form.html.erb (26.4ms)
+  Rendered issues/new.html.erb within layouts/base (28.5ms)
+Completed 500 Internal Server Error in 100ms (ActiveRecord: 34.2ms)
+
+ActionView::Template::Error (undefined method `assignable_users' for nil:NilClass):
+    15: <% end %>
+    16: 
+    17: <% if @issue.safe_attribute? 'assigned_to_id' %>
+    18: <p><%= f.select :assigned_to_id, principals_options_for_select(@issue.assignable_users, @issue.assigned_to), :include_blank => true, :required => @issue.required_attribute?('assigned_to_id') %></p>
+    19: <% end %>
+    20: 
+    21: <% if @issue.safe_attribute?('category_id') && @issue.project.issue_categories.any? %>
+  app/models/issue.rb:857:in `assignable_users'
+  app/views/issues/_attributes.html.erb:18:in `block in _app_views_issues__attributes_html_erb___3587757851355343547_69925371132800'
+  app/helpers/application_helper.rb:1058:in `labelled_fields_for'
+  app/views/issues/_attributes.html.erb:1:in `_app_views_issues__attributes_html_erb___3587757851355343547_69925371132800'
+  app/views/issues/_form.html.erb:42:in `block in _app_views_issues__form_html_erb___3675110379538404660_69925371413960'
+  app/helpers/application_helper.rb:1058:in `labelled_fields_for'
+  app/views/issues/_form.html.erb:1:in `_app_views_issues__form_html_erb___3675110379538404660_69925371413960'
+  app/views/issues/new.html.erb:11:in `block in _app_views_issues_new_html_erb__153899361600342295_69925371381020'
+  app/helpers/application_helper.rb:1051:in `labelled_form_for'
+  app/views/issues/new.html.erb:5:in `_app_views_issues_new_html_erb__153899361600342295_69925371381020'
+  app/controllers/issues_controller.rb:129:in `block (2 levels) in new'
+  app/controllers/issues_controller.rb:128:in `new'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+"
+23396,Redmine,Defect,"",Closed,Normal,Unable to import values for parent task,Sal Baki,"",2016-08-18 13:04,Issues,"","","","",0,2016-07-21 17:37,2016-07-22 19:11,"",Invalid,3.1.3,"Unable to import values for parent task
+
+Added by shivaranjani v about 4 years ago
+
+I encountered this bug with the latest version and found that it was discussed 4 years ago.
+message#31804
+
+Dear Friends,
+I have created a issue in redmine. Let us suppose its redmine id is 10. I have created two other issues manuaaly through create new issues and then added the parent id 10 in both of thes two issues. So now 10 is the parents and 11 and 12 are childs for the parent task.
+When I am trying to import data through CSV, when mapping is done with repect to the general fields, there in the import screen it displays us an option to select for unique field. Since I am creation a relatioship based on redmine id, it is not being popluated in the drop down and hence forth unable to import. Kindly provide your inputs.
+thanks inadvance.
+
+Regards,
+SR.
+"
+23395,Redmine,Defect,"",Closed,Normal,Markdown formatter crashes,Andreas Kohlbecker,"",2016-07-22 18:59,Text formatting,"","","","",0,2016-07-21 14:05,2016-07-22 18:59,次のチケットと重複 #23246,Duplicate,3.3.0,"The markdown formatter crashes redmine 3.3.0 on interpreting the following incomplete markdown snipped.
+
+<pre>
+ [areas.php"" and ""points.php]()
+</pre> 
+
+This markdown has been created by converting textile to markdown using pandoc, see also #22005"
+23394,Redmine,Defect,"",New,Normal,Auto-assign on category selection does not work when assignee is a required field,JW Fuchs,"",2016-08-19 06:42,Issues,"","","","",0,2016-07-21 13:08,"","関連している #6889, 関連している #17555","","","When the assignee is set as a mandatory field, the auto-assign function related to category does not work.
+
+Test setting:
+!01_required_field.PNG!
+
+Category definition:
+!02_category_settings.PNG!
+
+Attempt to create issue:
+!03_error_on_creation.PNG!
+
+If the assignee requirement is removed, the assignee is set as expected after a category has been chosen and the issue has been created.
+
+
+<pre>
+Environment:
+  Redmine version                3.3.0.stable
+  Ruby version                   2.1.8-p440 (2015-12-16) [i386-mingw32]
+  Rails version                  4.2.6
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.8.16
+  Git                            2.7.4
+  Filesystem                     
+Redmine plugins:
+  no plugin installed
+</pre>
+
+"
+23391,Redmine,Defect,"",Closed,Normal,Wrong CSS classes in subtasks tree,Vasil Kovalevsky,Jean-Philippe Lang,2016-08-20 13:48,UI,3.3.1,"","","",0,2016-07-21 04:06,2016-08-20 13:48,"",Fixed,"","There was patch #21474
+But there is mistake for ""render_descendants_tree"" method.
+Now every child *tr* has class of current issue, but must has own
+<pre>
+css = ""issue issue-#{child.id} hascontextmenu #{issue.css_classes}""
+</pre>
+need to be
+<pre>
+css = ""issue issue-#{child.id} hascontextmenu #{child.css_classes}""
+</pre>"
+23389,Redmine,Patch,"",Closed,Normal,Print Styles get overriden by responsive media query,Felix Gliesche,Jean-Philippe Lang,2016-08-31 19:12,UI - Responsive,3.2.4,"","","",0,2016-07-20 12:12,2016-08-31 19:12,"","","","Currently the responsive styles get applied not only to screen, but also override print styles. For example, the top padding of the @#main@ container for mobile devices will also be applied when printing a redmine page. If the print styles need to be furhter optimized, that should happen in the media query for print.
+
+
+I am attaching a patch which fixes the media query so it does not get applied when printing pages.
+"
+23388,Redmine,Patch,"",Closed,Normal,German translation change,JW Fuchs,Toshi MARUYAMA,2017-03-03 18:33,Translations,3.4.0,"","","",0,2016-07-20 10:55,2017-03-03 18:33,コピー先 #23725,"","","Added several missing translations, fixed typos and changed the translation of repository ""Projektarchiv"", which led to significant confusion in relation to archives."
+23387,Redmine,Patch,"",Closed,Normal,Traditional Chinese textile and markdown detailed help translation (to r15723),ChunChang Lo,"",2016-09-08 19:15,Translations,3.1.7,"","","",0,2016-07-20 10:49,2016-09-08 19:15,"","","","* New
+** wiki_syntax_detailed_markdown.html
+* Changed
+** wiki_syntax_detailed_textile.html
+
+"
+23378,Redmine,Patch,"",New,Normal,Speedup Project Settings with many members,Victor Campos,"",2016-08-18 06:37,Performance,"","","","",0,2016-07-19 23:00,"","","","","Hi,
+There is a .sort in _members.html.erb partial that take a lot of time for project that have more than 12s to execute, so I change for .order('roles.builtin, roles.position, users.firstname, users.lastname')
+
+<pre>
+- members = @project.memberships.active.includes(:member_roles, :roles, :principal).to_a.sort
++ members = @project.memberships.active.includes(:member_roles, :roles, :principal).order('roles.builtin, roles.position, users.firstname, users.lastname')
+</pre>	
+
+<pre>
+Benchmark.measure { project.memberships.active.includes(:member_roles, :roles, :principal).order('roles.builtin, roles.position, users.firstname, users.lastname').to_a }
+
+#<Benchmark::Tms:0x00000008a427e0 @label="""", @real=0.7370121359999757, @cstime=0.0, @cutime=0.0, @stime=0.0, @utime=0.6500000000000004, @total=0.6500000000000004>
+
+Benchmark.measure { project.memberships.active.includes(:member_roles, :roles, :principal).to_a.sort }
+
+#<Benchmark::Tms:0x0000000c68f450 @label="""", @real=12.094179325009463, @cstime=0.0, @cutime=0.0, @stime=0.019999999999999962, @utime=12.029999999999998, @total=12.049999999999997>
+</pre>	"
+23377,Redmine,Defect,"",Closed,High,"Don't show ""status"" field when creating a new version",Tobias Fischer,Jean-Philippe Lang,2016-08-31 19:27,Roadmap,3.4.0,"","","",0,2016-07-19 19:18,2016-08-31 19:27,次のチケットが重複 #21416,Fixed,3.3.0,"When creating a new version from within the issue form field with the modal dialogue, the ""status"" option should be hidden.
+It makes no sense to set this newly created version to ""closed"" or ""locked"" because then, it isn't selectable from the isuee form field.
+
+----
+
+_Defect duplicate of Feature #21416 as Feature request don't get ANY attention by the Redmine team._
+_And in fact, this one here could also be called a bug instead of a feature..._"
+23376,Redmine,Patch,"",Closed,Normal,Downloading of attachments with MIME type text/javascript fails,Holger Just,Jean-Philippe Lang,2016-10-02 12:22,Attachments,3.3.1,"","","",0,2016-07-19 17:51,2016-10-02 12:22,"","","","Right now, if you try to download an attachment with content type @text/javascript@ with Redmine 3, it will be blocked by the CSRF protection of Rails. The user-visible response will be an HTTP 422.
+
+This is because Rails thinks that these attachments are dynamic JavaScript resources and thus have to fall under the same origin policy. Unless the request is an AJAX (hxr) request, the downloads are blocked by the @verify_same_origin_request@ after filter which is part of the CSRF protection. This behavior was added to Rails 4.1 in https://github.com/rails/rails/pull/13345.
+
+The attached patch excludes the @AttachmentController#download@ action from this protection, allowing to download javascript attachments. This change won't cause an XSS vulnerability in Redmine but technically allows a specific attack of external sites:
+
+* Given the attacker (Mallory) knows the attachment download URL of a javascript attachment.
+* Given a user (Alice) is logged in to Redmine in their browser with permission to download the attachment.
+* If Mallory can trick Alice into visiting a Website which includes a @<script>@ tag referencing the attachment, Alice's browser will download and execute the JS file as a classic CSRF. An attacker controlling the website might then be able to extract data from the executed script.
+
+Unfortunately, there is not really a way around this if we want to support JS attachments (with the correct mime type) at all. Since JS attachments typically don't contain secrets though, this is probably acceptable. With the attached patch, we just fall back to the pre-Rails 4.1 behavior for attachments.
+
+Note that this issue is not directly reproducible on Chrome as uploaded JS files are sent with @application/javascript@ instead of @text/javascript@ which doesn't trigger the rule in Rails.
+
+The patch is only relevant for Redmine versions using Rails 4.1 or newer, i.e. Redmine 3. The issue was detected in ""Planio"":https://plan.io/redmine-hosting and fixed by our staff."
+23375,Redmine,Patch,"",Closed,Normal,Simplified Chinese translation for 3.1-stable,Toshi MARUYAMA,"",2016-07-20 03:38,Translations,3.1.7,"","","",0,2016-07-19 17:03,2016-07-20 03:38,"","","",From #23171.
+23374,Redmine,Patch,"",Closed,Normal,Traditional Chinese translation for 3.2-stable,Toshi MARUYAMA,"",2016-07-20 06:02,Translations,3.2.4,"","","",0,2016-07-19 16:02,2016-07-20 03:37,"","","","From #23171.
+
+<pre><code class=""diff"">
+diff --git a/config/locales/zh-TW.yml b/config/locales/zh-TW.yml
+--- a/config/locales/zh-TW.yml
++++ b/config/locales/zh-TW.yml
+@@ -186,7 +186,7 @@
+         not_same_project: ""不屬於同一個專案""
+         circular_dependency: ""這個關聯會導致環?相依""
+         cant_link_an_issue_with_a_descendant: ""議題無法被連結至自己的子任務""
+-        earlier_than_minimum_start_date: ""cannot be earlier than %{date} because of preceding issues""
++        earlier_than_minimum_start_date: ""不能早於 %{date} 因為有前置議題""
+ 
+       # You can define own errors for models or model attributes.
+       # The values :model, :attribute and :value are always available for interpolation.
+</code></pre>
+
+From #23117.
+<pre><code class=""diff"">
+=== (+1,-1) public/help/zh-tw/wiki_syntax_markdown.html ===
+@@ -50,7 +50,7 @@ table.sample th, table.sample td { borde
+ 
+ <tr><th colspan=""3"">Redmine 連結</th></tr>
+ <tr><th><img src=""../../images/jstoolbar/bt_link.png"" style=""border: 1px solid #bbb;"" alt=""連結至一個 Wiki 頁面"" /></th><td>[[Wiki 頁面]]</td><td><a href=""#"">Wiki 頁面</a></td></tr>
+-<tr><th></th><td>問題 #12</td><td>問題 <a href=""#"">#12</a></td></tr>
++<tr><th></th><td>議題 #12</td><td>議題 <a href=""#"">#12</a></td></tr>
+ <tr><th></th><td>版次 r43</td><td>版次 <a href=""#"">r43</a></td></tr>
+ <tr><th></th><td>commit:f30e13e43</td><td><a href=""#"">f30e13e4</a></td></tr>
+ <tr><th></th><td>source:some/file</td><td><a href=""#"">source:some/file</a></td></tr>
+=== (+1,-1) public/help/zh-tw/wiki_syntax_textile.html ===
+@@ -52,7 +52,7 @@ table.sample th, table.sample td { borde
+ 
+ <tr><th colspan=""3"">Redmine 連結</th></tr>
+ <tr><th><img src=""../../images/jstoolbar/bt_link.png"" style=""border: 1px solid #bbb;"" alt=""連結至一個 Wiki 頁面"" /></th><td>[[Wiki 頁面]]</td><td><a href=""#"">Wiki 頁面</a></td></tr>
+-<tr><th></th><td>問題 #12</td><td>問題 <a href=""#"">#12</a></td></tr>
++<tr><th></th><td>議題 #12</td><td>議題 <a href=""#"">#12</a></td></tr>
+ <tr><th></th><td>版次 r43</td><td>版次 <a href=""#"">r43</a></td></tr>
+ <tr><th></th><td>commit:f30e13e43</td><td><a href=""#"">f30e13e4</a></td></tr>
+ <tr><th></th><td>source:some/file</td><td><a href=""#"">source:some/file</a></td></tr>
+</code></pre>
+"
+23373,Redmine,Patch,"",Closed,Normal,Traditional Chinese translation for 3.1-stable,Toshi MARUYAMA,"",2016-07-20 03:36,Translations,3.1.7,"","","",0,2016-07-19 15:51,2016-07-20 03:36,"","","","From #23171.
+
+<pre><code class=""diff"">
+=== (+2,-2) config/locales/zh-TW.yml ===
+@@ -186,7 +186,7 @@
+         not_same_project: ""不屬於同一個專案""
+         circular_dependency: ""這個關聯會導致環?相依""
+         cant_link_an_issue_with_a_descendant: ""問題無法被連結至自己的子任務""
+-        earlier_than_minimum_start_date: ""cannot be earlier than %{date} because of preceding issues""
++        earlier_than_minimum_start_date: ""不能早於 %{date} 因為有前置問題""
+ 
+       # You can define own errors for models or model attributes.
+       # The values :model, :attribute and :value are always available for interpolation.
+</code></pre>
+
+#20720 changed 問題 to 議題.
+問題 is used for 3.1-stable."
+23369,Redmine,Defect,"",Closed,Normal,encoding error in locales de.yml,Timon Eckert,"",2016-07-19 14:01,Translations,3.3.1,"","","",0,2016-07-19 09:40,2016-07-19 14:01,関連している #21421,Fixed,3.3.0,"Hi,
+
+we encountered a problem in the german translation file `de.yml`.
+
+the following term values:
+
+* mail_body_security_notification_change: ""%{field} wurde ge??ndert."" <-- ""%{field} wurde ge?ndert.""
+* mail_body_security_notification_change_to: ""%{field} wurde ge??ndert zu %{value}."" <-- ""%{field} wurde ge?ndert zu %{value}.""
+* mail_body_security_notification_add: ""%{field} %{value} wurde hinzugef??gt."" <-- ""%{field} %{value} wurde hinzugef?gt."""
+23359,Redmine,Patch,"",Closed,Normal,Change Japanese translation for label_commits_per_author,Go MAEDA,"",2016-07-20 07:52,Translations,3.4.0,"","","",0,2016-07-18 14:13,2016-07-20 07:52,"","","","I suggest changing the translation for label_commits_per_author from ""起票者別のコミット"" to ""作成者別のコミット"".
+
+Japanese translation for field_author has been changed from ""起票者"" to ""作成者"" by #2798. But the word ""起票者"" is still used in label_commits_per_author. I think it should be changed to ""作成者"" for consistency."
+23357,Redmine,Defect,"",Needs feedback,High,Broken links in email notification,Sebastian Paluch,"",2018-01-03 10:18,Email notifications,"","","","",0,2016-07-18 12:53,"","","",3.3.0,"It seems that Redmine version 3.3.0 has broken links generation in email notifications for news (at least), with 3.2.0 noone was reporting such problem.
+
+I have a news publish that includes following description:
+
+<pre>
+New software version#1267 has been released. It is ...
+
+{{include(myproject:100-0_Alpha_2_(rev_93029))}}
+
+h3. Feel free to report new issues
+
+* ""myproject"":/redmine/projects/myproject/issues/new
+</pre>
+
+In email notification 
+* the first link to version#1267 has been generated correctly, 
+* the last one is missing server name that should be added automatically: 
+http://redmine/projects/myproject/issues/new but should be http://host/redmine/projects/myproject/issues/new
+
+Included wiki (myproject:100-0_Alpha_2_(rev_93029)) is in different project then the news and includes:
+
+<pre>
+h3. Requirements
+
+* Service Pack version#1272 or newer
+
+{{include(myproject:Update_Instruction)}}
+
+...
+
+</pre>
+
+In email notification 
+* the link to version#1272 has been generated wrong, it is missing server name: 
+http://redmine/versions/1272 but should be http://host/redmine/versions/1272
+
+
+Included wiki (myproject:Update_Instruction) is in different project then the news and includes:
+
+<pre>
+h3. Download
+
+All pre-production software releases are available on the ""shared network location"":file://host\full\path\to\directory. 
+
+...
+
+</pre>
+
+In email notification 
+* the link to ""shared network location"" has been generated wrong, all ""\"" has been replaced with a code %5: 
+file://\\host%5full%5path%5to%5directory
+the link does not work and for some reason, it is not even possible to copy it from Outlook into clipboard
+
+<pre>
+Environment:
+  Redmine version                3.3.0.stable
+  Ruby version                   2.1.8-p440 (2015-12-16) [i386-mingw32]
+  Rails version                  4.2.6
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.8.11
+  Git                            2.7.4
+  Filesystem                     
+Redmine plugins:
+  computed_custom_field          0.0.2
+  inside_avatar                  1.0.2
+  issue_filters                  1.0.1
+  redmine_agile                  1.4.1-3
+  redmine_checklists             3.1.1-1
+  redmine_custom_columns         1.1.0
+  redmine_favorite_projects      2.0.2-2
+  redmine_version_fixed_issues   1.0.1
+  sidebar_hide                   0.0.7
+</pre>"
+23347,Redmine,Defect,"",Closed,Normal,MySQL: You can't specify target table for update in FROM clause,Felix Sch?fer,Jean-Philippe Lang,2016-08-18 16:58,Database,3.4.0,"","","",0,2016-07-15 13:32,2016-08-18 16:58,"",Fixed,"","The down migration for @ClearEstimatedHoursOnParentIssues@ will fail on MySQL (5.6) with the following message:
+
+<pre>
+Mysql2::Error: You can't specify target table 'issues' for update in FROM clause: UPDATE `issues` SET estimated_hours = (SELECT SUM(leaves.estimated_hours) FROM issues leaves WHERE leaves.root_id = issues.root_id AND leaves.lft > issues.lft AND leaves.rgt < issues.rgt AND leaves.rgt = leaves.lft + 1) WHERE (rgt > lft + 1)
+</pre>
+
+Our quick fix was to explicitly make a temp table instead of referencing the issues table in the subquery:
+
+<pre><code class=""diff"">
+diff --git a/db/migrate/20150525103953_clear_estimated_hours_on_parent_issues.rb b/db/migrate/20150525103953_clear_estimated_hours_on_parent_issues.rb
+index 8eed815..c00ada0 100644
+--- a/db/migrate/20150525103953_clear_estimated_hours_on_parent_issues.rb
++++ b/db/migrate/20150525103953_clear_estimated_hours_on_parent_issues.rb
+@@ -6,7 +6,7 @@ class ClearEstimatedHoursOnParentIssues < ActiveRecord::Migration
+
+   def self.down
+     table_name = Issue.table_name
+-    leaves_sum_select = ""SELECT SUM(leaves.estimated_hours) FROM #{table_name} leaves"" +
++    leaves_sum_select = ""SELECT SUM(leaves.estimated_hours) FROM (SELECT * FROM #{table_name}) AS leaves"" +
+       "" WHERE leaves.root_id = #{table_name}.root_id AND leaves.lft > #{table_name}.lft AND leaves.rgt < #{table_name}.rgt"" +
+       "" AND leaves.rgt = leaves.lft + 1""
+
+</code></pre>"
+23346,Redmine,Patch,"",Closed,Normal,Set user's localization before redirecting on forced password change to generate flash message in current user's language,Holger Just,Jean-Philippe Lang,2016-08-31 19:10,I18n,3.3.1,"","","",0,2016-07-15 12:58,2016-08-31 19:10,"","","","If a user is forced to change their password on login, they get redirected to a password change form with a flash message set. The flash message however is generated using the locale of the previous request since the current localization is only set to i18n after the redirect. When multiple users with dirrferent languages are using a Redmine, the flash message can thus be shown in an unexpected language.
+
+The attached patch against the current trunk fixes this behavior by setting the language before checking for a forced password change."
+23341,Redmine,Defect,"",New,Normal,Markdown Table formatting breaks with redmine wiki links,Ben Blanco,"",2017-10-11 17:18,Text formatting,"","","","",0,2016-07-14 16:46,"","","",3.2.3,"When formatting a table in markdown, and inserting internal wiki links via @[[wiki_page_name|custom name]]@, such as:
+
+<pre>
+| header | [[FAQ]] | [[Plugins|List of Plugins]] |
+|--------|---------|-----------------------------|
+| aaa    | bbb     | ccc                         |
+</pre>
+
+The @[[Plugins|List of Plugins]]@ will get incorrectly truncated at @|@ which is interpreted as signaling the end of that column, and hence the URL link is not generated as it breaks off before reaching the @]]@."
+23334,Redmine,Patch,"",Closed,Normal,Issue#editable_custom_field_values very slow for issues with many custom fields,Stephane Evr,Jean-Philippe Lang,2016-08-31 19:00,Performance,3.3.1,"","","",0,2016-07-14 14:25,2016-08-31 19:00,"","","","I have several issues with around 50 custom fields. When doing updates to these issues, I identified poor performance on the @editable_custom_field_values@ function being called to check if current user has access to the custom fields. 
+
+Here is the code for this method (in @app/model/issue.rb@):
+
+<pre><code class=""ruby"">
+  # Returns the custom_field_values that can be edited by the given user
+  def editable_custom_field_values(user=nil)
+    visible_custom_field_values(user).reject do |value|
+      read_only_attribute_names(user).include?(value.custom_field_id.to_s)
+    end
+  end
+</code></pre>
+
+Here, it seems that @read_only_attribute_names(user)@ is recomputed for each @visible_custom_field_values(user)@ without caching, which will slow down the action if the issue has many custom fields associated (only if user is provided).
+
+I have applied a simple patch (I store the result of @read_only_attribute_names(user)@ before the loop):
+
+<pre><code class=""ruby"">
+  def editable_custom_field_values(user=nil)
+    read_only_attr_names_array = read_only_attribute_names(user)
+    visible_custom_field_values(user).reject do |value|
+      read_only_attr_names_array.include?(value.custom_field_id.to_s)
+    end
+  end
+</code></pre>
+
+Now, some results computed for an admin user, for approx 100 issues with various custom fields:
+
+Before:
+<pre>
+  2.2.2 :001 > puts Benchmark.measure { u = User.find(88); Issue.last(100).to_a.map{|i| i.editable_custom_field_values(u)} }
+  2.2.2 :002 > 102.260000   0.710000 102.970000 (103.480136)
+</pre>
+
+After:
+
+<pre>
+  2.2.2 :001 > puts Benchmark.measure { u = User.find(88); Issue.last(100).to_a.map{|i| i.editable_custom_field_values(u)} }
+  2.2.2 :002 > 5.070000   0.090000   5.160000 (  5.198187)
+</pre>
+
+
+<pre>
+Environment:
+  Redmine version                3.3.0.stable
+  Ruby version                   2.2.2-p95 (2015-04-13) [x86_64-linux]
+  Rails version                  4.2.6
+  Environment                    development
+  Database adapter               Mysql2
+</pre>"
+23328,Redmine,Patch,"",New,Normal,Improve Update/Create issue speed,Victor Campos,Jean-Philippe Lang,2016-08-22 02:49,Performance,Candidate for next major release,"","","",0,2016-07-14 11:35,"","","","","Hi guys,
+When Redmine look for what members it should send e-mail, they interate one by one fetching principal.
+This is a N + 1 Query problem.
+
+When we have more then 5K users in one project it is a problem. So with a single line change I drop the time for update issue from 5 to 2 seconds.
+
+I hope this help you.
+
+<pre><code class=""diff""<
+commit 619e156986dde1b674fa1e56bad4bc862c6e9df3
+Author: Victor Campos <victor.campos@visagio.com>
+Date:   Tue Jul 12 19:37:14 2016 -0300
+
+    improve update/create speed
+
+diff --git a/app/models/project.rb b/app/models/project.rb
+index 660a486..88bd8eb 100644
+--- a/app/models/project.rb
++++ b/app/models/project.rb
+@@ -524,7 +524,7 @@ class Project < ActiveRecord::Base
+   # Returns the users that should be notified on project events
+   def notified_users
+     # TODO: User part should be extracted to User#notify_about?
+-    members.select {|m| m.principal.present? && (m.mail_notification? || m.principal.mail_notification == 'all')}.collect {|m| m.principal}
++    members.includes(:principal).select {|m| m.principal.present? && (m.mail_notification? || m.principal.mail_notification == 'all')}.collect {|m| m.principal}
+   end
+ 
+   # Returns a scope of all custom fields enabled for project issues
+</code></pre>"
+23318,Redmine,Defect,"",Reopened,Normal,#lock_nested_set very slow on mysql with thousands of subtasks,Stephane Evr,Jean-Philippe Lang,2017-05-18 08:33,Performance,Candidate for next major release,"","","",0,2016-07-13 17:39,2016-10-08 11:16,関連している #19344,Fixed,"","I have a complex hierarchy of around 15000 issues in redmine, where an issue of this set could potentially have 3000 subtasks.
+
+When doing CRUD operations on such issue, I notified significant slow downs, caused by the @lock_nested_set@ function.
+
+Here is the profiling for the query actually run in @lock_nested_set@:
+
+<pre>
+SELECT `issues`.`id` FROM `issues` WHERE (root_id IN (SELECT root_id FROM issues WHERE id IN (70395,70389)))  ORDER BY `issues`.`id` ASC FOR UPDATE;
+
++-------+
+|       |
+.........
+| 70371 |
+| 70373 |
+| 70375 |
+| 70377 |
+| 70379 |
+| 70381 |
+| 70383 |
+| 70385 |
+| 70387 |
+| 70389 |
+| 70391 |
+| 70393 |
++-------+
+2932 rows in set (2.70 sec)
+
+mysql> show profile for QUERY 1;
++--------------------------------+----------+
+| Status                         | Duration |
++--------------------------------+----------+
+| starting                       | 0.000025 |
+| Waiting for query cache lock   | 0.000004 |
+| checking query cache for query | 0.000081 |
+| checking permissions           | 0.000003 |
+| checking permissions           | 0.000004 |
+| Opening tables                 | 0.000038 |
+| System lock                    | 0.000017 |
+| init                           | 0.000056 |
+| optimizing                     | 0.000013 |
+| statistics                     | 0.000023 |
+| preparing                      | 0.000009 |
+| executing                      | 0.000002 |
+| Sorting result                 | 0.000005 |
+| Sending data                   | 0.000049 |
+| optimizing                     | 0.000015 |
+| statistics                     | 0.000047 |
+| preparing                      | 2.690165 |
+| end                            | 0.000009 |
+| query end                      | 0.000067 |
+| closing tables                 | 0.000010 |
+| freeing items                  | 0.000038 |
+| logging slow query             | 0.000002 |
+| logging slow query             | 0.000163 |
+| cleaning up                    | 0.000003 |
++--------------------------------+----------+
+24 rows in set (0.00 sec)
+
+</pre>
+
+It takes around 3 seconds to execute the whole query.
+
+I think the main problem is with the nested SELECT statement. If I execute it separately, then paste its results directly into the main query, the query is much faster:
+
+<pre>
+mysql> SELECT root_id FROM issues WHERE id IN (70395,70389);
++---------+
+| root_id |
++---------+
+|   45083 |
++---------+
+1 row in set (0.00 sec)
+
+SELECT `issues`.`id` FROM `issues` WHERE (root_id IN (45083))  ORDER BY `issues`.`id` ASC FOR UPDATE;
+
++-------+
+|       |
+.........
+| 70371 |
+| 70373 |
+| 70375 |
+| 70377 |
+| 70379 |
+| 70381 |
+| 70383 |
+| 70385 |
+| 70387 |
+| 70389 |
+| 70391 |
+| 70393 |
++-------+
+2932 rows in set (0.01 sec)
+
+</pre>
+
+I am not an expert in sql queries, and don't want to break anything... Shouldn't we use a JOIN instead?
+
+<pre>
+Environment:
+  Redmine version                3.3.0.stable
+  Ruby version                   2.2.2-p95 (2015-04-13) [x86_64-linux]
+  Rails version                  4.2.6
+  Environment                    development
+  Database adapter               Mysql2
+</pre>"
+23305,Redmine,Defect,"",Closed,Normal,exporting to PDF & CSV in Arabic font,Eslam Abd Elsatar,"",2016-07-12 13:07,"","","","","",0,2016-07-12 12:52,2016-07-12 13:06,"",Invalid,2.4.3,"Dears,
+      I have a problem in exporting to PDF & CSV in arabic font
+
+      I am using windows platform not linux
+
+     Environment:
+     Redmine version                2.4.3.stable
+     Ruby version                   1.9.3-p231 (2012-05-25) [i386-mingw32]
+     Rails version                  3.2.16
+     Environment                    production
+     Database adapter               Mysql2
+    
+     Attached files samples.
+     
+     I appreciate your prompt help "
+23298,Redmine,Defect,"",Closed,Normal,Category select filter-filed is not populated by values,Maxim Kru?ina,"",2016-08-09 12:51,Issues filter,"","","","",0,2016-07-11 14:16,2016-08-09 12:51,"",Duplicate,3.3.0,"Hi, just found, probably, bug.
+When I try to filter issues by specific category, the select box is empty, so I cannot choose desired category.
+When I click on + button to turn multiselect on, still no single value.
+Please, see attached screenshots.
+Other filters works just great."
+23278,Redmine,Patch,"",Closed,Normal,"When creating issues by receiving an email, watchers created via CC in the mail don't get an email notification",Holger Just,Jean-Philippe Lang,2017-04-26 10:06,Email receiving,3.2.4,"","","",0,2016-07-08 16:03,2016-07-11 20:10,"","","","When creating issues by email via the @redmine:email:*@ rake tasks, users mentioned in the CC field of the email get added as watchers to the created issue. However, these watchers don't get a notification mail about the creation of the new issue.
+
+The reason for that is rather complex and doves deep into the ActiveRecord bowels. To make things short, the list of recipients for a notification mail is gathered by @acts_as_watchable@ from  the watcher_users attribute which is defined as
+
+<pre>
+has_many :watcher_users, :through => :watchers, :source => :user, :validate => false
+</pre>
+
+Now, when adding new watchers to an existing object (as is done in @MailHandler#add_watchers@, resp. @Redmine::Acts::Watchable#add_watcher@, the cache of the @watcher_users@ relation which is maintained by Rails is not updated. As such, when querying @@issue.watchers@, you get the correct list of watchers but @@issue.watcher_users@ still reflects the state before the watchers were added.
+
+Thus, while the watchers get added correctly to the database, they will be ignored during the actual mail receive action and will thus not receive any initial notification.
+
+At ""Planio"":https://plan.io/redmine-hosting, we use the attached patch to fix this behaviour and send the initial notifications to all watcher users on issue creation."
+23275,Redmine,Defect,"",New,Normal,Issue open takes too much time when member blongs many projects,Wadim Incognito,"",2017-07-07 12:15,Performance,"","","","",0,2016-07-08 11:07,"","","",3.2.1,"When user is a member of many open projects (about 3000), each issue takes about 7 seconds to open. When user is a member of several projects (about 10-20), each issue takes about 3 seconds to open.
+Top indicates, that most of time taken by ""ruby"" process, so it's not a database issue."
+23274,Redmine,Defect,"",Closed,Normal,Unable to create new project on demo,Ilanchezhian Jaganathan,Jean-Philippe Lang,2017-07-09 05:07,Website (redmine.org),"","","","",0,2016-07-08 10:23,2017-07-09 05:07,"",Invalid,"",Unable to create new project once logged in in demo redmine. This issue being from 08-July-2016
+23270,Redmine,Defect,"",Closed,Normal,Subtask function doesn't work,Felix Muster,"",2016-07-08 14:11,Issues,"","","","",0,2016-07-07 15:45,2016-07-08 14:11,"",Invalid,3.1.1,"Hello,
+
+I am not able to create a subtask.
+
+<pre>
+Environment:
+  Redmine version                3.1.1.stable
+  Ruby version                   2.1.7-p400 (2015-08-18) [i386-mingw32]
+  Rails version                  4.2.4
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.8.5
+  Git                            1.8.1
+  Filesystem                     
+Redmine plugins:
+  clipboard_image_paste          1.10
+  redmine_issue_reminder         1.0.0
+</pre>
+
+
+!sb1.png!
+Creating an issue (parent issue)
+and Creating a subtask via the add subtask link.
+
+!sb2.png!
+the ""subtask""
+
+URL seems to be correct:
+http://redmine.domain.com/projects/test/issues/new?issue[parent_issue_id]=1709&issue[tracker_id]=3
+--> [parent_issue_id]=1709
+
+But the sub task issue entry in the database has no parent_id:
+<pre>
+INSERT INTO `issues` (`id`, `tracker_id`, `project_id`, `subject`, `description`, `due_date`, `category_id`, `status_id`, `assigned_to_id`, `priority_id`, `fixed_version_id`, `author_id`, `lock_version`, `created_on`, `updated_on`, `start_date`, `done_ratio`, `estimated_hours`, `parent_id`, `root_id`, `lft`, `rgt`, `is_private`, `closed_on`) VALUES
+(1709, 3, 22, 'Parent Task', 'Sub Task Test', NULL, NULL, 1, NULL, 2, NULL, 1, 0, '2016-07-07 15:20:07', '2016-07-07 15:20:07', NULL, 0, NULL, NULL, 1709, 1, 2, 0, NULL),
+(1710, 3, 22, 'Sub Task', 'Sub Task Test', NULL, NULL, 1, NULL, 2, NULL, 1, 0, '2016-07-07 15:22:28', '2016-07-07 15:22:28', NULL, 0, NULL, NULL, 1710, 1, 2, 0, NULL);
+</pre>
+
+
+Finally there are no subtasks in the given project:
+!sb3.png!"
+23269,Redmine,Patch,"",Closed,Normal,Fix for Error: Unable to autoload constant Redmine::Version when accessing the time report in first request,Holger Just,Jean-Philippe Lang,2016-08-20 13:55,Rails support,3.2.4,"","","",0,2016-07-07 13:04,2016-08-20 13:55,"","","","When starting up Redmine in development mode and accessing the /time_entries/report page on the first request, Redmine in at least versions 3.3 and trunk fails to properly autoload the @Version@ class.
+
+The full error is:
+
+<pre>
+Unable to autoload constant Redmine::Version, expected lib/redmine/version.rb to define it
+
+activesupport (4.2.6) lib/active_support/dependencies.rb:495:in `load_missing_constant'
+activesupport (4.2.6) lib/active_support/dependencies.rb:184:in `const_missing'
+activesupport (4.2.6) lib/active_support/dependencies.rb:526:in `load_missing_constant'
+activesupport (4.2.6) lib/active_support/dependencies.rb:184:in `const_missing'
+activesupport (4.2.6) lib/active_support/dependencies.rb:526:in `load_missing_constant'
+activesupport (4.2.6) lib/active_support/dependencies.rb:184:in `const_missing'
+lib/redmine/helpers/time_report.rb:111:in `load_available_criteria'
+lib/redmine/helpers/time_report.rb:39:in `available_criteria'
+app/views/timelog/report.html.erb:23:in `block in _app_views_timelog_report_html_erb___3330057872428091759_70181945143200'
+</pre>
+
+The reason for this is that the lookup happens inside the class @Redmine::Helpers::TimeReport@ and the @Version@ model class is not loaded yet. Thus, the Rails autoloader tries to load the class and navigates up the module chain. It finds a file matching the naming conventions in @lib/redmine/version.rb@ which would match the expected module/class @Redmine::Version@ which in turn would have precedence before @::Version@ in the lookup chain.
+
+Since @lib/redmine/version.rb@ does not define @Redmine::Version@, the error occurs. A fix to this is to fully qualify the class on lookup to give the autoloader a hint where to look at. The attached patch fixes this.
+
+Note that this issue doesn't seem to occur in production mode."
+23268,Redmine,Defect,"",New,Normal,migrate_from_trac.rake - NOT WORKING WITH trac 1.0.1,Anton OG2K,"",2016-07-18 15:06,Importers,"","","","",0,2016-07-07 11:31,"",関連している #20943,"",3.3.0,"hello,
+
+i am trying to import data from trac 1.0.1 + mysql.
+
+there are several issues:
+
+1.
+    self.inheritance_column = :none instead of set_inheritance_column :none
+    self.primary_key = 'name' instead of #set_primary_key :name
+
+2.
+    #784  def self.trac_attachments_directory; ""#{trac_directory}/files/attachments""
+
+3.
+Migrating components..................
+Migrating milestones.rake aborted!
+TypeError: no implicit conversion from nil to integer
+/var/lib/redmine/lib/tasks/migrate_from_trac.rake:422:in `[]'
+/var/lib/redmine/lib/tasks/migrate_from_trac.rake:422:in `block in migrate'
+/var/lib/gems/1.9.1/gems/activerecord-4.2.6/lib/active_record/relation/delegation.rb:46:in `each'
+/var/lib/gems/1.9.1/gems/activerecord-4.2.6/lib/active_record/relation/delegation.rb:46:in `each'
+/var/lib/redmine/lib/tasks/migrate_from_trac.rake:410:in `migrate'
+
+4.
+Migrating components..................
+Migrating custom fields
+Migrating ticketsrake aborted!
+ActiveRecord::SubclassNotFound: The single-table inheritance mechanism failed to locate the subclass: 'defect'. This error is raised because the column 'type' is reserved for storing the class in case of inheritance. Please rename this column if you didn't intend it to be used for storing the inheritance class or overwrite TracMigrate::TracTicket.inheritance_column to use another column for that information.
+/var/lib/gems/1.9.1/gems/activerecord-4.2.6/lib/active_record/inheritance.rb:186:in `rescue in find_sti_clas
+
+
+and I can not get further
+
+
+please, someone can code new script for newer trac version?
+
+migrate_from_trac_version_1.rake
+
+many thanks
+"
+23262,Redmine,Defect,"",Closed,Normal,git: unable to edit and delete from setting if extra_info is invalid,Marco Descher,"",2016-07-12 08:42,SCM,"","","","",0,2016-07-06 14:11,2016-07-12 08:42,"","",3.2.3,"When opening the repository view in a project I get an internal server error with the following log entry
+
+<pre>
+Psych::SyntaxError ((<unknown>): found unexpected end of stream while scanning a quoted scalar at line 1439 column 7):
+  app/models/repository.rb:160:in `extra_info'
+  app/models/repository/git.rb:46:in `extra_report_last_commit'
+  app/models/repository/git.rb:97:in `scm_entries'
+  app/models/repository.rb:205:in `entries'
+  app/controllers/repositories_controller.rb:116:in `show'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+</pre>"
+23250,Redmine,Patch,"",Closed,Normal,Fixes issues with Catalan translation,Jordi Mas,"",2016-11-30 05:44,Translations,3.4.0,"","","",0,2016-07-05 20:10,2016-07-19 14:17,関連している #21747,"","",""
+23246,Redmine,Defect,"",Closed,High,Saving an empty Markdown image tag in Wiki pages causes internal server error,Viktor Berke,Jean-Philippe Lang,2016-07-10 09:48,Text formatting,3.2.4,"","","",0,2016-07-05 16:36,2016-07-10 09:48,次のチケットが重複 #23395,Fixed,3.3.0,"Steps to reproduce:
+
+- use Markdown Wiki formatting
+- Create a Wiki page
+- Add an empty image tag, i.e.:
+
+<pre>
+![]()
+</pre>
+
+- Save the changes
+- From now on, this page will show an internal server error, eventually also crashing the whole Redmine instance
+
+The log shows the following error:
+
+<pre>
+Started GET ""/projects/fpga/wiki"" for 127.0.0.1 at 2016-07-05 11:28:01 +0200
+Processing by WikiController#show as HTML
+  Parameters: {""project_id""=>""fpga""}
+  Current user: viktor@foobar.com (id=17)
+  Rendered wiki/_content.html.erb (9.7ms)
+  Rendered wiki/show.html.erb within layouts/base (31.2ms)
+Completed 500 Internal Server Error in 277ms (ActiveRecord: 23.1ms)
+
+ActionView::Template::Error (undefined method `include?' for nil:NilClass):
+    1: <div class=""wiki wiki-page"">
+    2:   <%= textilizable content, :text, :attachments => content.page.attachments,
+    3:         :edit_section_links => (@sections_editable && {:controller => 'wiki', :action => 'edit', :project_id => @page.project, :id => @page.title}) %>
+    4: </div>
+  lib/redmine/helpers/url.rb:26:in `uri_with_safe_scheme?'
+  lib/redmine/wiki_formatting/markdown/formatter.rb:48:in `image'
+  lib/redmine/wiki_formatting/markdown/formatter.rb:60:in `render'
+  lib/redmine/wiki_formatting/markdown/formatter.rb:60:in `to_html'
+  lib/redmine/wiki_formatting.rb:89:in `to_html'
+  app/helpers/application_helper.rb:598:in `textilizable'
+  app/views/wiki/_content.html.erb:2:in `_app_views_wiki__content_html_erb__2292234759012989548_70948640'
+  app/views/wiki/show.html.erb:47:in `_app_views_wiki_show_html_erb___1795174084185801307_65213660'
+  app/controllers/wiki_controller.rb:114:in `show'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+</pre>"
+23242,Redmine,Defect,"",Closed,Normal,thumbnail macro does not render when displaying wiki content version,Jens Kr?mer,Jean-Philippe Lang,2016-07-10 09:51,Wiki,3.3.1,"","","",0,2016-07-05 11:27,2016-07-10 09:51,"",Fixed,"","when looking at an older version of a wiki page, the thumbnail macro fails to render because WikiContent::Version does not @respond_to? :attachments@
+
+Attached patch fixes this."
+23241,Redmine,Defect,"",Closed,Normal,Retrieve custom fields from plugin,Aniss El Amrani,"",2016-07-05 11:39,Custom fields,"","","","",0,2016-07-05 11:25,2016-07-05 11:39,"",Invalid,"","Hi all,
+
+I'm trying to implement a new redmine plugin using custom fields but I'm not able to retrieve a custom field (List) defined in Redmine from the HTML page.
+I have tried ""issue.custom_field_values"" but it is not working.
+
+Do you have any idea how can get a custom field values by name or id ?
+
+Thanks for help.
+
+Regards,
+
+Aniss"
+23240,Redmine,Defect,"",Needs feedback,High,Each HTTP HEAD request renders views and tries to login?,Tobias Fischer,"",2016-07-19 19:24,Security,"","","","",0,2016-07-05 10:53,"","","",3.2.3,"A HTTP HEAD request is supposed to only return the HEADERS of a site to check for availablity or expiry dates and such.
+I think it's not supposed to render views and load plugins in order to do so.
+But with Redmine 3.2 it does!
+
+This is from my redmine logfile where xxx.xxx.xxx.xxx is a GitLab server checking for ceonnection-availability:
+<pre>
+Started HEAD ""/projects/PROJECT-ID/"" for xxx.xxx.xxx.xxx at 2016-07-05 10:24:49 +0200
+Processing by ProjectsController#show as */*
+  Parameters: {""id""=>""PROJECT-ID""}
+  Current user: anonymous
+Redirected to https://my-redmine-instance/login?back_url=https%3A%2F%2Fmy-redmine-instance%2Fprojects%2FPROJECT-ID
+Filter chain halted as :check_if_login_required rendered or redirected
+Completed 302 Found in 4ms (ActiveRecord: 0.5ms)
+Started HEAD ""login?back_url=https%3A%2F%2Fmy-redmine-instance%2Fprojects%2FPROJECT-ID"" for xxx.xxx.xxx.xxx at 2016-07-05 10:24:49 +0200
+Processing by AccountController#login as */*
+  Parameters: {""back_url""=>""https://my-redmine-instance/projects/PROJECT-ID""}
+  Current user: anonymous
+Failed login for '' from xxx.xxx.xxx.xxx at 2016-07-05 08:24:49 UTC
+Completed 200 OK in 356ms (Views: 323.6ms | ActiveRecord: 2.9ms)
+</pre>
+
+It's not only loading views, but also the AccountController tries to perform a login?!
+I'm not sure that is correct behaviour...
+
+Cheers,
+Tobias"
+23233,Redmine,Defect,"",Closed,Normal,redming changing port,Max Singian,"",2016-07-04 05:31,"","","","","",0,2016-07-04 05:01,2016-07-04 05:31,"",Invalid,"","Hello, how can i change the port on my redmine? can you guys give me steps? cause i tried on httpd.conf
+Listen 8008
+NameVirtualHost *:8008
+<VirtualHost *:8008>
+     DocumentRoot /var/www/redmine/public
+</VirtualHost>
+ it doesnt work"

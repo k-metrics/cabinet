@@ -1,0 +1,849 @@
+#,ÉvÉçÉWÉFÉNÉg,ÉgÉâÉbÉJÅ[,êeÉ`ÉPÉbÉg,ÉXÉeÅ[É^ÉX,óDêÊìx,ëËñº,çÏê¨é“,íSìñé“,çXêVì˙,ÉJÉeÉSÉä,ëŒè€ÉoÅ[ÉWÉáÉì,äJénì˙,ä˙ì˙,ó\íËçHêî,êiíªó¶,çÏê¨ì˙,èIóπì˙,ä÷òAÇ∑ÇÈÉ`ÉPÉbÉg,Resolution,Affected version,ê‡ñæ
+18622,Redmine,Defect,"",Closed,High,Awesome nested set. Need to update.,Vasil Kovalevsky,"",2015-01-10 22:23,"","","","","",0,2014-12-11 03:06,2015-01-10 22:23,"",Wont fix,"","Hello. In rm 2.6 you are using older version of awesome_nested_set, which has the bug in method move_to_root.
+Code from lib, which using in rm 2.6:
+<pre>
+def move_to_root
+  move_to_right_of(root)
+end
+</pre>
+Its fail for every call.
+
+Code of current version of lib (was fixed in 2013 !!! now will be 2015 soon):
+<pre>
+def move_to_root
+  move_to self, :root
+end
+</pre>
+
+It very important for us. Can you update lib in your repository ? And i did not figure our which version of lib you are using (2.1.7 does not exist in official repository)"
+18605,Redmine,Defect,"",Closed,Normal,Wrong usage of logger.info to test log level,J?r?me BATAILLE,Jean-Philippe Lang,2014-12-14 22:56,Code cleanup/refactoring,3.0.0,"","","",0,2014-12-09 10:41,2014-12-14 22:54,"",Fixed,"","logger.info (instead of logger.info?) can trigger an error
+
+Line 185 :
+<pre><code class=""ruby"">logger.info ""time entry could not be updated: #{time_entry.errors.full_messages}"" if logger && logger.info
+</code></pre>
+
+replace by :
+<pre><code class=""ruby"">logger.info ""time entry could not be updated: #{time_entry.errors.full_messages}"" if logger && logger.info?
+</code></pre>
+
+
+
+"
+18592,Redmine,Defect,"",New,Normal,Issue Update confirmation viewed on other screens,Krzysztof Moskalik,"",2014-12-08 11:36,Issues,"","","","",0,2014-12-08 11:34,"","","","","If I update issue and refresh issue list on other tab ""Successful update."" message will appear on issues list."
+18590,Redmine,Defect,"",Closed,Normal,login screen not working,Subir Pratap,"",2015-04-14 19:24,"","","","","",0,2014-12-08 06:13,2015-04-14 19:24,"",Invalid,"","# click launch icon
+# Click on Signin
+# there is no validaton for Username "
+18588,Redmine,Defect,"",Closed,Normal,Lighbox plugin doesn't show pdf content,nda 888,"",2014-12-08 03:21,Issues,"","","","",0,2014-12-07 13:46,2014-12-07 21:46,"",Invalid,2.5.1,"Today i install lightbox plugin from:
+http://www.redmine.org/plugins/redmine_lightbox
+
+But unfortunately, it doesn't work on pdf, image is ok
+
+Could you help me to update to newer version to fix this issue
+
+My redmine system version is 2.5.1"
+18587,Redmine,Patch,"",Closed,Normal,Swedish translation (updated),Khedron Wilk,"",2015-01-03 14:39,Translations,2.6.1,"","","",0,2014-12-06 20:03,2015-01-03 14:39,"","","","Updated translation for Swedish language, based on earlier translation but now including Redmine 2.6.0.
+Only sv.yml is changed, there were no changes needed in jstoolbar-sv.js.
+Instructions at redmine.org has been followed and the attached file is already in use at a local redline-installation.
+"
+18586,Redmine,Defect,"",Closed,Normal,Arabic PDF,Toshi MARUYAMA,"",2015-02-08 12:26,PDF export,2.6.2,"","","",0,2014-12-06 14:35,2015-02-08 12:26,ä÷òAÇµÇƒÇ¢ÇÈ #10681,Fixed,"","#16040 has pdf and csv problems.
+This is for only pdf problem."
+18584,Redmine,Defect,"",Closed,Normal,Custom fields of user format reset when a user is locked,Cory Riddell,Jean-Philippe Lang,2014-12-06 12:21,Custom fields,"","","","",0,2014-12-05 22:29,2014-12-06 12:21,"",Fixed,2.4.2,"Terrible title, but I'll try to explain with our specific problem.
+
+We created a custom field named ""Tester"" and its format is ""User"". When somebody tests an issue that we've marked *resolved*, they set themselves as the tester. 
+
+This works very well for us because I can search for all the issues for which I am a tester. It fails though, when an employee leaves the company and we lock the user account. From that point on, any edits to the bug will reset our custom *Tester* field and make it empty. 
+
+We are currently using v2.4.2 or Redmine."
+18580,Redmine,Defect,"",Closed,Normal,"Can't bulk edit own time entries with ""Edit own time entries""",Evgeniy Veretennikov,Jean-Philippe Lang,2015-06-25 16:22,Time tracking,2.6.5,"","","",0,2014-12-05 13:08,2015-05-10 09:19,"",Fixed,"","We use a lot Redmine possibility to track time for issues in our projects, and it works nicely. But we'd like to have something more: an opportunity to change issue for several spent time entries simultaneously. So, how it could behave: on page with issue's time entries change select checkboxes near several entries and then click edit button. If we change issue number at the next page (issue editor), then other selected entries have to change their issue number. It seems logically clear behaviour.
+
+Also it were really good if we could edit user field of spent time entry on issue editor page. It should be just new field on the form (there is no user field on form now). But I'm not sure, would there be another feature request?"
+18572,Redmine,Defect,"",Closed,Normal,some problems with file uploader,tester testownik,"",2014-12-05 03:53,Attachments,"","","","",0,2014-12-05 01:39,2014-12-05 03:49,"","",2.6.0,"I'm just using redmine on some project (I'm not admin) and was asked to pass it forward, so apologies if some infos are incomplete. But this is a general problem, probably related to this: #3957
+
+The redmine was updated to most recent official version few days ago, and a problem occurred with file uploader.
+
+1) If the ""add file"" button is not clicked, the file should be deleted from the server.
+
+2) It starts uploading a file after selecting the file, and not after deciding to create the ticket (in earlier version, the file was uploaded after final confirmation on ticket).
+
+Doesn't seem to be configurable, and you cannot cancel a file once it's been uploaded (so it will use server space, even if you don't click the ""add"" button."
+18565,Redmine,Patch,"",Closed,Normal,html improvements on project landing page,Tobias Fischer,Jean-Philippe Lang,2014-12-14 12:21,Code cleanup/refactoring,3.0.0,"","","",0,2014-12-04 12:21,2014-12-13 19:24,"","","","This patch improves use of html elements on project landing page.
+
+It
+* wrapps all kind of ""labels"" in @<span class=""label"">...</span>@
+** e.g. the member roles in the member box
+* changes content of the member box to one paragraph per role instead of one paragraph for all roles
+* wraps news comment label in a @<span class=""comments"">...</span>@
+
+This is useful if you'd like to bolden the member roles for example.
+
+patched against r13697"
+18563,Redmine,Patch,"",Closed,Normal,German Translation for label_edit_attachments,Daniel Felix,"",2014-12-06 14:54,Translations,"","","","",0,2014-12-04 09:41,2014-12-06 14:54,"","","","@
+label_edit_attachments: Angeh?ngte Dateien bearbeiten
+@"
+18562,Redmine,Patch,"",Closed,Normal,German Translation for r13669 ,Daniel Felix,"",2014-12-06 14:51,Translations,"","","","",0,2014-12-04 09:39,2014-12-06 14:51,"","","","This is the translation for the new string in r13669:
+
+@
+setting_link_copied_issue: Link issues on copy
+label_link_copied_issue: Link copied issue
+label_ask: Ask
+@
+
+should be:
+
+@
+setting_link_copied_issue: Tickets beim kopieren verlinken
+label_link_copied_issue: Kopierte Tickets verlinken
+label_ask: Nachfragen
+@
+"
+18559,Redmine,Defect,"",Closed,Normal,No status matches commit_fix_status_id setting,Tung Le,"",2014-12-04 08:19,"","","","","",0,2014-12-04 06:46,2014-12-04 08:19,"",Invalid,"","I use this plugin to connect git and redmine: https://github.com/koppen/redmine_github_hook
+Whenever there is a commit to github, redmine keeps spitting out this line: 
+
+*No status matches commit_fix_status_id setting*
+
+The rate of its appearance is every second, like it is in a loop. Anybody know how to fix/mitigate this? 
+Thanks"
+18557,Redmine,Defect,"",New,Normal,Hyperlink stripped from the text-html mimepart section of email footer,Scott Pestana,"",2015-01-02 05:10,Email notifications,"","","","",0,2014-12-03 22:44,"","","","","We're starting to deploy Redmine when a user pointed out that the address provided needed to be updated and should be a hyperlink.  I created a normal a tag with an href that goes out in the text/plain section of the email but not the text/html section of the email (which is what Thunderbird displays).  Is there some conversion / editing going on here?
+
+Example:
+To: undisclosed-recipients:;
+
+----==_mimepart_547f7f622b402_2fb94315160474c9
+Content-Type: text/plain;
+ charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+This is a test email sent by Redmine.
+Redmine URL: https://---.---.com/---/redmine/
+
+-- 
+You have received this notification because you have either subscribed to it, or are involved in it.
+To change your notification preferences, please click <a href=""https://---.---com/---/redmine/my/account"">here</a>.
+
+----==_mimepart_547f7f622b402_2fb94315160474c9
+Content-Type: text/html;
+ charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+<html>
+<head>
+<style>
+... CSS omitted for space ...
+</style>
+</head>
+<body>
+<p>This is a test email sent by Redmine.<br />
+Redmine URL: <a href=""https://---.---.com/---redmine/"">https://---.---.com/---/redmine/</a></p>
+
+<hr />
+<span class=""footer""><p>You have received this notification because you have either subscribed to it, or are involved in it.<br>
+To change your notification preferences, please click here.</p>
+</span>
+</body>
+</html>
+
+----==_mimepart_547f7f622b402_2fb94315160474c9--
+
+And here's our information page:
+
+Redmine 2.5.2.stable
+Default administrator account changed 	True
+Attachments directory writable 	True
+Plugin assets directory writable 	True
+RMagick available (optional) 	True
+ImageMagick convert available (optional) 	True
+
+Environment:
+  Redmine version                2.5.2.stable
+  Ruby version                   1.9.3-p547 (2014-05-14) [x86_64-linux]
+  Rails version                  3.2.19
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.6.11
+  Mercurial                      2.4
+  Git                            1.7.1
+  Filesystem                     
+Redmine plugins:
+  readme_at_repositories         0.2.1
+  redmine_agile                  1.3.3
+  redmine_backlogs               v1.0.6
+  redmine_contacts               3.3.0
+  redmine_contacts_helpdesk      2.2.12
+  redmine_ldap_sync              2.0.3
+
+"
+18555,Redmine,Defect,"",New,Normal,Notify user when attempting to attach more than the allowed number of attachments,Stephen Ostrow,"",2014-12-03 21:38,Attachments,"","","","",0,2014-12-03 21:38,"","ä÷òAÇµÇƒÇ¢ÇÈ #18556, éüÇÃÉ`ÉPÉbÉgÇ™èdï° #18642","",2.5.3,"I was just notified by an employee of mine that my ticket was missing some of the attached files that should have been there. I thought I had merely forgot to attach them; however, upon repeating my edit due to needing to remake all the files I learned that redmine has a hard limit of 10 files attached per edit.
+
+Although I'm not sure why this limit exists (I'll be adding another issue to make this a setting or remove it) redmine should definitely alert the end user to the limit both beforehand such as like the the text for max file size is displayed as well as after an attempt to add more than 10 files is added (javascript alert box or something similar).
+
+This is related to issue #8579
+This is the code in question: source:/trunk/public/javascripts/attachments.js#L6"
+18541,Redmine,Defect,"",Closed,Normal,Move issue to another project,Hendrik Jaeger,"",2015-09-07 06:47,Issues,"","","","",0,2014-12-02 12:20,2015-09-07 06:47,"",Invalid,"","Hi
+
+I seem to have stumbled upon a bug in redmine: it seems impossible to move a _single_ issue to another project.
+
++What I do:+
+- click 'edit' on an issue
+- select different project in the drop-down menu
+
++What happens:+
+- some popup shows for less than a second (so I donÅft know what it says)
+- the drop-down menu jumps back to the current project
+
++What I expect:+
+- the drop-down menu to stay on the selected project
+- move the issue to the selected project on clicking ""submit""
+
+
+It is, however, possible to move _multiple_ issues to another project by ""bulk-editing"" them as described below:
+- have a list of issues, e.g. 'View all issues' in the project list
+- select >1 issue (or you will get to the same page you get to when clicking ""edit"" in an issue)
+- rightclick, edit
+- select new project
+- click ""submit""
+
+
+I found several other people asking about similar issues in the last few years, but either no solution was provided for them, or the bug was fixed years ago, or the issue was related to a user having multiple, conflicting roles, one allowing him to move issues, the other not. I made sure to avoid such conflicts. References to similar issues I found but which did not seem to have a solution:
+message#17810
+message#34012
+message#27807
+message#16789
+message#37718 (mentioned role-conflict issue)
+#6195 (and related #12651 #6391)
+#1847 (and related #7447 #2559)
+
+
++System information:+
+IÅfm running redmine on debian testing (jessie) using apache and passenger, exact versions:
+<pre>
+redmine                           3.0~20140825-1
+redmine-pgsql                     3.0~20140825-1
+postgresql                        9.4+163
+postgresql-9.4                    9.4~beta3-3
+ruby-pg                           0.17.1-2
+ruby                              1:2.1.0.4
+ruby-rails                        2:4.1.6-2
+libapache2-mod-passenger          4.0.53-1
+ruby-passenger                    4.0.53-1
+</pre>
+
+The server was initially set up with debian testing and the mentioned redmine-version just a few weeks ago. No migrations or updates have been made yet. No plugins are installed.
+
+I tried running ""script/about"", but that only returned this info:
+<pre>
+ticket001:/usr/share/redmine# ruby script/about
+script/about no longer exists, please use bin/about instead.
+</pre>
+There is no bin/about in the debian-package though.
+
++Question:+
+Is this a bug or am I doing anything wrong?
+
+_I appreciate any hint at what could be wrong and any pointer to relevant docs. Please tell me if this issue is missing information that might help find a solution. IÅfm also happy about pointers regarding how to debug an issue like that properly, as I have no idea how to go on._
+"
+18537,Redmine,Defect,"",Closed,Normal,Special language characters not treated right in search,elite solutions,Jean-Philippe Lang,2014-12-15 20:23,Search engine,"","","","",0,2014-12-02 10:18,2014-12-13 19:38,ä÷òAÇµÇƒÇ¢ÇÈ #18862,Wont fix,1.4.4,"Searching a word with german umlaute, results in too many search results. I cannot figured out, what problem it is exactly."
+18535,Redmine,Patch,"",Closed,Normal,"Japanese translation update (r13667,r13669)",Go MAEDA,"",2014-12-02 09:22,Translations,"","","","",0,2014-12-02 07:12,2014-12-02 09:22,"","","","Translated 4 strings.
+
+* label_edit_attachments: ìYïtÉtÉ@ÉCÉãÇÃï“èW
+* setting_link_copied_issue: É`ÉPÉbÉgÇÉRÉsÅ[ÇµÇΩÇ∆Ç´Ç…ä÷òAÇê›íË
+* label_link_copied_issue: ÉRÉsÅ[ÇµÇΩÉ`ÉPÉbÉgÇ…ä÷òAÇê›íË
+* label_ask: ìsìxëIë"
+18534,Redmine,Patch,"",Closed,Normal,Galician (gl) translation for 2.6-stable,Toshi MARUYAMA,"",2014-12-02 09:12,Translations,2.6.1,"","","",0,2014-12-02 06:00,2014-12-02 09:12,"","","","From #18502.
+
+<pre><code class=""diff"">
+diff --git a/config/locales/gl.yml b/config/locales/gl.yml
+--- a/config/locales/gl.yml
++++ b/config/locales/gl.yml
+@@ -1125,8 +1125,8 @@ gl:
+   label_latest_compatible_version: ""?ltima versi?n compat?bel""
+   label_unknown_plugin: ""Complemento desco?ecido""
+   label_radio_buttons: ""caixas de opci?n ?nica""
+-  label_group_anonymous: Anonymous users
+-  label_group_non_member: Non member users
++  label_group_anonymous: ""Usuarios an?nimos""
++  label_group_non_member: ""Usuarios non membros""
+   label_add_projects: Add projects
+   field_default_status: Default status
+   text_subversion_repository_note: 'Examples: file:///, http://, https://, svn://, svn+[tunnelscheme]://'
+
+</code></pre>"
+18519,Redmine,Patch,"",Closed,Normal,Traditional Chinese translation (to r13683),ChunChang Lo,"",2014-12-02 09:15,Translations,"","","","",0,2014-12-01 10:08,2014-12-02 09:15,"ÉRÉsÅ[å≥ #18264, ÉRÉsÅ[êÊ #18819","","","* New
+** text_subversion_repository_note, field_users_visibility, label_users_visibility_all, label_users_visibility_members_of_visible_projects, label_edit_attachments, setting_link_copied_issue, label_link_copied_issue, label_ask
+* Modified
+** setting_user_format
+
+
+"
+18518,Redmine,Defect,"",Closed,Normal,I18n::MissingTranslationData: translation missing: en.date.formats.default,Denis Savitskiy,"",2015-03-02 11:34,I18n,"","","","",0,2014-12-01 09:46,2015-01-11 12:38,"",Invalid,"","Translations are at place (en.yml, ru.yml)
+But sometimes this error is raised:
+<pre>
+/gems/i18n-0.6.11/lib/i18n.rb:314 in ""handle_exception""
+/gems/i18n-0.6.11/lib/i18n.rb:160 in ""translate""
+/gems/i18n-0.6.11/lib/i18n/backend/base.rb:59 in ""localize""
+/gems/i18n-0.6.11/lib/i18n.rb:246 in ""localize""
+/lib/redmine/i18n.rb:60 in ""format_date""
+/lib/redmine/i18n.rb:71 in ""format_time""
+/app/helpers/application_helper.rb:451 in ""time_tag""
+/app/helpers/application_helper.rb:443 in ""authoring""
+/app/views/news/_news.html.erb:6 in ""_app_views_news__news_html_erb__3800985998352011220_70351071650260""
+/gems/actionview-4.1.8/lib/action_view/template.rb:145 in ""block in render""
+/gems/activesupport-4.1.8/lib/active_support/notifications.rb:161 in ""instrument""
+/gems/actionview-4.1.8/lib/action_view/template.rb:339 in ""instrument""
+/gems/actionview-4.1.8/lib/action_view/template.rb:143 in ""render""
+/gems/actionview-4.1.8/lib/action_view/renderer/partial_renderer.rb:399 in ""block in collection_with_template""
+/gems/actionview-4.1.8/lib/action_view/renderer/partial_renderer.rb:395 in ""map""
+/gems/actionview-4.1.8/lib/action_view/renderer/partial_renderer.rb:395 in ""collection_with_template""
+/gems/actionview-4.1.8/lib/action_view/renderer/partial_renderer.rb:291 in ""render_collection""
+/gems/actionview-4.1.8/lib/action_view/renderer/partial_renderer.rb:275 in ""block in render""
+/gems/actionview-4.1.8/lib/action_view/renderer/abstract_renderer.rb:38 in ""block in instrument""
+/gems/activesupport-4.1.8/lib/active_support/notifications.rb:159 in ""block in instrument""
+/gems/activesupport-4.1.8/lib/active_support/notifications/instrumenter.rb:20 in ""instrument""
+/gems/activesupport-4.1.8/lib/active_support/notifications.rb:159 in ""instrument""
+/gems/actionview-4.1.8/lib/action_view/renderer/abstract_renderer.rb:38 in ""instrument""
+/gems/actionview-4.1.8/lib/action_view/renderer/partial_renderer.rb:274 in ""render""
+/gems/actionview-4.1.8/lib/action_view/renderer/renderer.rb:47 in ""render_partial""
+/gems/actionview-4.1.8/lib/action_view/renderer/renderer.rb:21 in ""render""
+/gems/actionview-4.1.8/lib/action_view/helpers/rendering_helper.rb:32 in ""render""
+/app/views/welcome/index.html.erb:8 in ""_app_views_welcome_index_html_erb__2078558413296639286_70351050851840""
+/gems/actionview-4.1.8/lib/action_view/template.rb:145 in ""block in render""
+/gems/activesupport-4.1.8/lib/active_support/notifications.rb:161 in ""instrument""
+/gems/actionview-4.1.8/lib/action_view/template.rb:339 in ""instrument""
+/gems/actionview-4.1.8/lib/action_view/template.rb:143 in ""render""
+/gems/actionview-4.1.8/lib/action_view/renderer/template_renderer.rb:55 in ""block (2 levels) in render_template""
+/gems/actionview-4.1.8/lib/action_view/renderer/abstract_renderer.rb:38 in ""block in instrument""
+/gems/activesupport-4.1.8/lib/active_support/notifications.rb:159 in ""block in instrument""
+/gems/activesupport-4.1.8/lib/active_support/notifications/instrumenter.rb:20 in ""instrument""
+/gems/activesupport-4.1.8/lib/active_support/notifications.rb:159 in ""instrument""
+/gems/actionview-4.1.8/lib/action_view/renderer/abstract_renderer.rb:38 in ""instrument""
+/gems/actionview-4.1.8/lib/action_view/renderer/template_renderer.rb:54 in ""block in render_template""
+/gems/actionview-4.1.8/lib/action_view/renderer/template_renderer.rb:62 in ""render_with_layout""
+/gems/actionview-4.1.8/lib/action_view/renderer/template_renderer.rb:53 in ""render_template""
+/gems/actionview-4.1.8/lib/action_view/renderer/template_renderer.rb:17 in ""render""
+/gems/actionview-4.1.8/lib/action_view/renderer/renderer.rb:42 in ""render_template""
+/gems/actionview-4.1.8/lib/action_view/renderer/renderer.rb:23 in ""render""
+/gems/actionview-4.1.8/lib/action_view/rendering.rb:99 in ""_render_template""
+/gems/actionpack-4.1.8/lib/action_controller/metal/streaming.rb:217 in ""_render_template""
+/gems/actionview-4.1.8/lib/action_view/rendering.rb:82 in ""render_to_body""
+/gems/actionpack-4.1.8/lib/action_controller/metal/rendering.rb:32 in ""render_to_body""
+/gems/actionpack-4.1.8/lib/action_controller/metal/renderers.rb:32 in ""render_to_body""
+/gems/actionpack-4.1.8/lib/abstract_controller/rendering.rb:25 in ""render""
+/gems/actionpack-4.1.8/lib/action_controller/metal/rendering.rb:16 in ""render""
+/gems/actionpack-4.1.8/lib/action_controller/metal/instrumentation.rb:41 in ""block (2 levels) in render""
+/gems/activesupport-4.1.8/lib/active_support/core_ext/benchmark.rb:12 in ""block in ms""
+/usr/local/lib/ruby/2.0.0/benchmark.rb:296 in ""realtime""
+/gems/activesupport-4.1.8/lib/active_support/core_ext/benchmark.rb:12 in ""ms""
+/gems/actionpack-4.1.8/lib/action_controller/metal/instrumentation.rb:41 in ""block in render""
+/gems/actionpack-4.1.8/lib/action_controller/metal/instrumentation.rb:84 in ""cleanup_view_runtime""
+/gems/activerecord-4.1.8/lib/active_record/railties/controller_runtime.rb:25 in ""cleanup_view_runtime""
+/gems/actionpack-4.1.8/lib/action_controller/metal/instrumentation.rb:40 in ""render""
+/gems/actionpack-4.1.8/lib/action_controller/metal/implicit_render.rb:10 in ""default_render""
+/gems/actionpack-4.1.8/lib/action_controller/metal/implicit_render.rb:5 in ""send_action""
+/gems/actionpack-4.1.8/lib/abstract_controller/base.rb:189 in ""process_action""
+/gems/actionpack-4.1.8/lib/action_controller/metal/rendering.rb:10 in ""process_action""
+/gems/actionpack-4.1.8/lib/abstract_controller/callbacks.rb:20 in ""block in process_action""
+/gems/activesupport-4.1.8/lib/active_support/callbacks.rb:113 in ""call""
+/gems/activesupport-4.1.8/lib/active_support/callbacks.rb:113 in ""call""
+/gems/activesupport-4.1.8/lib/active_support/callbacks.rb:287 in ""block in halting_and_conditional""
+/gems/activesupport-4.1.8/lib/active_support/callbacks.rb:166 in ""call""
+/gems/activesupport-4.1.8/lib/active_support/callbacks.rb:166 in ""block in halting""
+/gems/activesupport-4.1.8/lib/active_support/callbacks.rb:166 in ""call""
+/gems/activesupport-4.1.8/lib/active_support/callbacks.rb:166 in ""block in halting""
+/gems/activesupport-4.1.8/lib/active_support/callbacks.rb:166 in ""call""
+/gems/activesupport-4.1.8/lib/active_support/callbacks.rb:166 in ""block in halting""
+/gems/activesupport-4.1.8/lib/active_support/callbacks.rb:166 in ""call""
+/gems/activesupport-4.1.8/lib/active_support/callbacks.rb:166 in ""block in halting""
+/gems/activesupport-4.1.8/lib/active_support/callbacks.rb:166 in ""call""
+/gems/activesupport-4.1.8/lib/active_support/callbacks.rb:166 in ""block in halting""
+/gems/activesupport-4.1.8/lib/active_support/callbacks.rb:166 in ""call""
+/gems/activesupport-4.1.8/lib/active_support/callbacks.rb:166 in ""block in halting""
+/gems/activesupport-4.1.8/lib/active_support/callbacks.rb:229 in ""call""
+/gems/activesupport-4.1.8/lib/active_support/callbacks.rb:229 in ""block in halting""
+/gems/activesupport-4.1.8/lib/active_support/callbacks.rb:166 in ""call""
+/gems/activesupport-4.1.8/lib/active_support/callbacks.rb:166 in ""block in halting""
+/gems/activesupport-4.1.8/lib/active_support/callbacks.rb:86 in ""call""
+/gems/activesupport-4.1.8/lib/active_support/callbacks.rb:86 in ""run_callbacks""
+/gems/actionpack-4.1.8/lib/abstract_controller/callbacks.rb:19 in ""process_action""
+/gems/actionpack-4.1.8/lib/action_controller/metal/rescue.rb:29 in ""process_action""
+/gems/actionpack-4.1.8/lib/action_controller/metal/instrumentation.rb:31 in ""block in process_action""
+/gems/activesupport-4.1.8/lib/active_support/notifications.rb:159 in ""block in instrument""
+/gems/activesupport-4.1.8/lib/active_support/notifications/instrumenter.rb:20 in ""instrument""
+/gems/activesupport-4.1.8/lib/active_support/notifications.rb:159 in ""instrument""
+/gems/actionpack-4.1.8/lib/action_controller/metal/instrumentation.rb:30 in ""process_action""
+/gems/actionpack-4.1.8/lib/action_controller/metal/params_wrapper.rb:250 in ""process_action""
+/gems/activerecord-4.1.8/lib/active_record/railties/controller_runtime.rb:18 in ""process_action""
+/gems/actionpack-4.1.8/lib/abstract_controller/base.rb:136 in ""process""
+/gems/actionview-4.1.8/lib/action_view/rendering.rb:30 in ""process""
+/gems/actionpack-4.1.8/lib/action_controller/metal.rb:196 in ""dispatch""
+/gems/actionpack-4.1.8/lib/action_controller/metal/rack_delegation.rb:13 in ""dispatch""
+/gems/actionpack-4.1.8/lib/action_controller/metal.rb:232 in ""block in action""
+/gems/actionpack-4.1.8/lib/action_dispatch/routing/route_set.rb:82 in ""call""
+/gems/actionpack-4.1.8/lib/action_dispatch/routing/route_set.rb:82 in ""dispatch""
+/gems/actionpack-4.1.8/lib/action_dispatch/routing/route_set.rb:50 in ""call""
+/gems/actionpack-4.1.8/lib/action_dispatch/journey/router.rb:73 in ""block in call""
+/gems/actionpack-4.1.8/lib/action_dispatch/journey/router.rb:59 in ""each""
+/gems/actionpack-4.1.8/lib/action_dispatch/journey/router.rb:59 in ""call""
+/gems/actionpack-4.1.8/lib/action_dispatch/routing/route_set.rb:678 in ""call""
+/gems/rack-openid-1.4.2/lib/rack/openid.rb:98 in ""call""
+/gems/request_store-1.0.5/lib/request_store/middleware.rb:9 in ""call""
+/gems/rack-1.5.2/lib/rack/etag.rb:23 in ""call""
+/gems/rack-1.5.2/lib/rack/conditionalget.rb:25 in ""call""
+/gems/rack-1.5.2/lib/rack/head.rb:11 in ""call""
+/gems/actionpack-4.1.8/lib/action_dispatch/middleware/params_parser.rb:27 in ""call""
+/gems/actionpack-4.1.8/lib/action_dispatch/middleware/flash.rb:254 in ""call""
+/gems/rack-1.5.2/lib/rack/session/abstract/id.rb:225 in ""context""
+/gems/rack-1.5.2/lib/rack/session/abstract/id.rb:220 in ""call""
+/gems/actionpack-4.1.8/lib/action_dispatch/middleware/cookies.rb:560 in ""call""
+/gems/activerecord-4.1.8/lib/active_record/query_cache.rb:36 in ""call""
+/gems/activerecord-4.1.8/lib/active_record/connection_adapters/abstract/connection_pool.rb:621 in ""call""
+/gems/actionpack-4.1.8/lib/action_dispatch/middleware/callbacks.rb:29 in ""block in call""
+/gems/activesupport-4.1.8/lib/active_support/callbacks.rb:82 in ""run_callbacks""
+/gems/actionpack-4.1.8/lib/action_dispatch/middleware/callbacks.rb:27 in ""call""
+/gems/actionpack-4.1.8/lib/action_dispatch/middleware/remote_ip.rb:76 in ""call""
+/gems/actionpack-4.1.8/lib/action_dispatch/middleware/debug_exceptions.rb:17 in ""call""
+/gems/actionpack-4.1.8/lib/action_dispatch/middleware/show_exceptions.rb:30 in ""call""
+/gems/railties-4.1.8/lib/rails/rack/logger.rb:38 in ""call_app""
+/gems/railties-4.1.8/lib/rails/rack/logger.rb:20 in ""block in call""
+/gems/activesupport-4.1.8/lib/active_support/tagged_logging.rb:68 in ""block in tagged""
+/gems/activesupport-4.1.8/lib/active_support/tagged_logging.rb:26 in ""tagged""
+/gems/activesupport-4.1.8/lib/active_support/tagged_logging.rb:68 in ""tagged""
+/gems/railties-4.1.8/lib/rails/rack/logger.rb:20 in ""call""
+/gems/actionpack-4.1.8/lib/action_dispatch/middleware/request_id.rb:21 in ""call""
+/gems/rack-1.5.2/lib/rack/methodoverride.rb:21 in ""call""
+/gems/rack-1.5.2/lib/rack/runtime.rb:17 in ""call""
+/gems/activesupport-4.1.8/lib/active_support/cache/strategy/local_cache_middleware.rb:26 in ""call""
+/gems/actionpack-4.1.8/lib/action_dispatch/middleware/static.rb:84 in ""call""
+/gems/rack-1.5.2/lib/rack/sendfile.rb:112 in ""call""
+/gems/railties-4.1.8/lib/rails/engine.rb:514 in ""call""
+/gems/railties-4.1.8/lib/rails/application.rb:144 in ""call""
+/gems/railties-4.1.8/lib/rails/railtie.rb:194 in ""public_send""
+/gems/railties-4.1.8/lib/rails/railtie.rb:194 in ""method_missing""
+/opt/passenger/passenger-4.0.53/lib/phusion_passenger/rack/thread_handler_extension.rb:74 in ""process_request""
+/opt/passenger/passenger-4.0.53/lib/phusion_passenger/request_handler/thread_handler.rb:141 in ""accept_and_process_next_request""
+/opt/passenger/passenger-4.0.53/lib/phusion_passenger/request_handler/thread_handler.rb:109 in ""main_loop""
+/opt/passenger/passenger-4.0.53/lib/phusion_passenger/request_handler.rb:455 in ""block (3 levels) in start_threads""
+</pre>
+
+<pre>
+Environment:
+  Redmine version                2.6.0.devel
+  Ruby version                   2.1.1-p76 (2014-02-24) [x86_64-darwin13.0]
+  Rails version                  4.1.8
+  Environment                    production
+  Database adapter               PostgreSQL
+SCM:
+  Subversion                     1.6.23
+  Git                            2.1.0
+  Filesystem
+Redmine plugins:
+  redmine_mili                   0.0.1
+  redmine_s3_attachments         0.0.3
+</pre>"
+18513,Redmine,Defect,"",Closed,High,apache+redmineùŸñ@ì_? à¯ópÅC ùŸñ@ êV˙ù ÊÓÁHêl?,Alan Zhang,"",2014-12-01 08:25,"","","","","",0,2014-12-01 08:21,2014-12-01 08:25,"",Invalid,"","î@?ÅF
+ùŸñ@ì_?à¯óp
+!yingyong.jpg!
+
+ùŸñ@ êV˙ù ÊÓÁHêl?
+!xinzeng.jpg!"
+18507,Redmine,Patch,"",Closed,Normal,"Bulgarian translation (r13667, 13669)",Ivan Cenov,"",2014-12-02 09:14,Translations,"","","","",0,2014-11-30 16:33,2014-12-02 09:14,"","","","Translated:
+* label_edit_attachments: ÑQÑuÑtÑpÑ{ÑÑÑyÑÇÑpÑ~Ñu Ñ~Ñp ÑÅÑÇÑyÑ{ÑpÑâÑuÑ~ÑyÑÑÑu ÑÜÑpÑzÑ|ÑÄÑrÑu
+* setting_link_copied_issue
+* label_link_copied_issue: ÑRÑåÑxÑtÑpÑrÑpÑ~Ñu Ñ~Ñp ÑrÑÇÑåÑxÑ{Ñp Ñ}ÑuÑwÑtÑÖ ÑxÑpÑtÑpÑâÑyÑÑÑu
+* label_ask: ÑPÑyÑÑÑpÑ~Ñu ÑÅÑÇÑuÑtÑy Ñ{ÑÄÑÅÑyÑÇÑpÑ~Ñu
+"
+18506,Redmine,Patch,"",Closed,Normal,Japanese translation update (r13585),Go MAEDA,"",2014-12-02 09:14,Translations,"","","","",0,2014-11-30 15:23,2014-12-02 09:14,"","","","Translated the following strings.
+
+* field_users_visibility
+* label_users_visibility_all
+* label_users_visibility_members_of_visible_projects
+"
+18504,Redmine,Defect,"",Closed,Normal,PDF export for arabic and persian language doesn't work,m mahdi,"",2014-11-30 13:24,PDF export,"","","","",0,2014-11-30 12:56,2014-11-30 13:24,"éüÇÃÉ`ÉPÉbÉgÇ∆èdï° #10681, éüÇÃÉ`ÉPÉbÉgÇ∆èdï° #16040",Duplicate,2.6.0,""
+18502,Redmine,Patch,"",Closed,Normal,Updated the Galician (gl) translation,Adri?n Chaves Fern?ndez,"",2014-12-02 09:13,Translations,"","","","",0,2014-11-30 08:48,2014-12-02 09:13,"","","",""
+18501,Redmine,Defect,"",Closed,Normal,Textile bold highlighting problem,Dmitry Lukashin,Jean-Philippe Lang,2014-12-26 11:43,Text formatting,2.6.1,"","","",0,2014-11-30 04:06,2014-12-26 11:43,"",Fixed,2.6.0,"Textile formatting
+<pre>*['components']['user']*</pre>
+leads to highlighting of only ['user'] part. Like this
+
+*['components']['user']*"
+18499,Redmine,Defect,"",Closed,Normal,Localisation not set correctly on authenticity token errors,Felix Sch?fer,Jean-Philippe Lang,2014-12-26 11:42,I18n,2.6.1,"","","",0,2014-11-29 14:03,2014-12-26 11:42,"",Fixed,2.6.0,""
+18496,Redmine,Patch,"",Resolved,Normal,Migrate to Redmine 2.5.3 (or 2.6.0) from Mantis 1.2.17,Gergely R?v?sz,"",2014-12-28 04:46,Importers,"","","","",0,2014-11-28 15:03,"","","","","Migrate to Redmine 2.5.3 (or 2.6.0) from Mantis 1.2.17.
+
+The original migrate script quits with errors when migrating from Mantis 1.2.17.
+I'm attaching the patch to get it to work.
+And the working full ""migrate_from_mantis.rake"" file if anyone finds it difficult to apply a patch.
+
+You have to patch or replace the ""%redmine%/lib/tasks/migrate_from_mantis.rake"" file."
+18495,Redmine,Defect,"",Closed,Normal,New Theme Freifunk-Red-Andy,Ruben Barkow,"",2014-11-29 17:04,"","","","","",0,2014-11-28 13:04,2014-11-29 14:46,"",Invalid,"","I modified the [[ThemeRedAndy]] so it fits the style of the Freifunk Community in Germany.
+
+Live here: http://issues.freifunk.in-kiel.de"
+18479,Redmine,Defect,"",New,Normal,Can't use reposman.rb to create both git and svn repositories,Pierre BLONDEAU,"",2015-03-22 21:59,SCM extra,"","","","",0,2014-11-27 18:53,"",ä÷òAÇµÇƒÇ¢ÇÈ #23868,"",2.5.1,"Hi,
+
+When I try to create git repositorie after the svn with reposman.rb, I get the message: Failed.  Response code = 409.  Response message = Conflict.
+
+I found this feature here : http://www.redmine.org/projects/redmine/wiki/Install_Redmine_with_git_and_svn_support_over_https_on_Debian_wheezy_using_the_Debian_repository .
+
+How can I do that without make an insert in the database?
+
+Regards"
+18475,Redmine,Defect,"",Closed,Normal,REST XML API is unable to create a new issue with multiple attachments,kim roose,"",2015-01-10 22:27,REST API,"","","","",0,2014-11-27 15:53,2015-01-10 22:27,"",Invalid,2.5.3,"I can upload multiple files just fine,
+XML serialization is no problem when using an array of size 1, issue gets oploaded correctly with attachment added.
+
+When serializing a bigger array ( eg 2 attachments ) when uploading a new issue there are no issues visible once uploaded."
+18464,Redmine,Defect,"",Closed,Normal,"Use of PRE tag in Issue description results in wrapped text with latest Google Chrome, Redmine 2.6.0",Deoren Moor,Jean-Philippe Lang,2014-12-26 11:42,UI,2.6.1,"","","",0,2014-11-27 07:15,2014-12-26 11:42,ä÷òAÇµÇƒÇ¢ÇÈ #12580,Fixed,2.6.0,As mentioned on message#44797 it appears the patch intended to fix #12580 is wrapping the contents of pre tags when used in the description for issues. Posting the same content within pre tags as a follow-up note on the same issue preserves white-space as intended.
+18459,Redmine,Defect,"",Closed,Urgent,DMSF Plugin problem for bitnami-redmine-2.6.0-1-module-windows-installer,Blerton Abazi,"",2014-11-27 04:34,Core Plugins,"","","","",0,2014-11-26 23:50,2014-11-27 04:34,"",Invalid,2.6.0,"Hi huys, i have installed redmine on my Windows Server 2012. 
+I have installed bitnami-rubystack-2.0.0-23 and then as a module bitnami-redmine-2.6.0-1-module-windows-installer
+
+I am having big troubles with DMSF, because i am not able to install it.
+Everytime i place a folder at ../plugins the thin_redmine stoped working.
+
+Any help please, i would appreciate"
+18456,Redmine,Defect,"",Closed,Normal,Javascript not working,Denis Savitskiy,"",2014-11-28 03:40,Issues,"","","","",0,2014-11-26 21:46,2014-11-27 04:36,"",Invalid,"","<pre>
+sh: darcs: command not found
+sh: hg: command not found
+sh: cvs: command not found
+sh: bzr: command not found
+Environment:
+  Redmine version                2.6.0.devel
+  Ruby version                   2.1.1-p76 (2014-02-24) [x86_64-darwin13.0]
+  Rails version                  4.1.8
+  Environment                    production
+  Database adapter               PostgreSQL
+SCM:
+  Subversion                     1.6.23
+  Git                            2.1.0
+  Filesystem
+Redmine plugins:
+  redmine_s3_attachments         0.0.3
+</pre>
+
+Javascript's not working in 2.6 trunk in issues, i can't add/delete columns (buttons not working). I am trying to fix that.
+Screenshot is attached"
+18440,Redmine,Patch,"",Closed,Low,Journals could be ordered using the create_on attribute instead of the id,Vincent Robert,"",2014-12-01 23:12,Issues,"","","","",0,2014-11-25 17:05,2014-12-01 23:12,éüÇÃÉ`ÉPÉbÉgÇ∆èdï° #14881,"","","It is usually equivalent to sort Journals by id or to order them using the create_on attribute.
+However, when importing values from an external source to the Journals table, we sometimes cannot rely on the id to give a correct order.
+
+So here is a very tiny patch to fix that.
+Thanks!"
+18438,Redmine,Patch,"",Closed,Normal,German Translations,Daniel Felix,"",2014-11-26 08:58,Translations,"","","","",0,2014-11-25 14:25,2014-11-26 08:58,"","","","Here is a small translation update:
+
+@
+label_add_projects: Add projects
+field_default_status: Default status
+text_subversion_repository_note: 'Examples: file:///, http://, https://, svn://, svn+[tunnelscheme]://'
+field_users_visibility: Users visibility
+label_users_visibility_all: All active users
+label_users_visibility_members_of_visible_projects: Members of visible projects
+@
+
+should be:
+
+@
+label_add_projects: Projekt hinzuf?gen
+field_default_status: Standardstatus
+text_subversion_repository_note: 'Beispiele: file:///, http://, https://, svn://, svn+[tunnelscheme]://'
+field_users_visibility: Benutzer Sichtbarkeit
+label_users_visibility_all: Alle aktiven Benutzer
+label_users_visibility_members_of_visible_projects: Mitglieder von sichtbaren Projekten
+@"
+18437,Redmine,Defect,"",Closed,Normal,Error during migration from 2.5 to 2.6 : Mysql2::Error: Duplicate entry,ìΩñºÉÜÅ[ÉUÅ[,"",2014-11-28 08:23,Database,"","","","",0,2014-11-25 14:18,2014-11-28 08:23,"",Invalid,2.6.0,"
+
+Hi
+
+I try to upgrade Redmine from 2.5 to 2.6 on a CentOs 7 server. I get the following error :
+
+<pre>
+bundle exec rake db:migrate RAILS_ENV=production --trace
+
+    Invoke db:migrate (first_time)
+    Invoke environment (first_time)
+    Execute environment
+    Invoke db:load_config (first_time)
+    Execute db:load_config
+    Execute db:migrate
+    InsertBuiltinGroups: migrating ==========================================
+    rake aborted!
+    StandardError: An error has occurred, all later migrations canceled:
+
+Mysql2::Error: Duplicate entry '0' for key 'PRIMARY': INSERT INTO `users` (`admin`, `auth_source_id`, `created_on`, `firstname`, `hashed_password`, `identity_url`, `language`, `last_login_on`, `lastname`, `login`, `mail`, `mail_notification`, `must_change_passwd`, `passwd_changed_on`, `salt`, `status`, `type`, `updated_on`) VALUES (0, NULL, '2014-11-17 10:55:11', '', '', NULL, '', NULL, 'Non member users', '', '', '', 0, NULL, NULL, 1, 'GroupNonMember', '2014-11-17 10:55:11')/usr/local/share/gems/gems/activerecord-3.2.20/lib/active_record/connection_adapters/abstract_mysql_adapter.rb:245:in `query'
+/usr/local/share/gems/gems/activerecord-3.2.20/lib/active_record/connection_adapters/abstract_mysql_adapter.rb:245:in `block in execute'
+/usr/local/share/gems/gems/activerecord-3.2.20/lib/active_record/connection_adapters/abstract_adapter.rb:280:in `block in log'
+/usr/local/share/gems/gems/activesupport-3.2.20/lib/active_support/notifications/instrumenter.rb:20:in `instrument'
+/usr/local/share/gems/gems/activerecord-3.2.20/lib/active_record/connection_adapters/abstract_adapter.rb:275:in `log'
+/usr/local/share/gems/gems/activerecord-3.2.20/lib/active_record/connection_adapters/abstract_mysql_adapter.rb:245:in `execute'
+/usr/local/share/gems/gems/activerecord-3.2.20/lib/active_record/connection_adapters/mysql2_adapter.rb:213:in `execute'
+/usr/local/share/gems/gems/activerecord-3.2.20/lib/active_record/connection_adapters/mysql2_adapter.rb:236:in `exec_insert'
+/usr/local/share/gems/gems/activerecord-3.2.20/lib/active_record/connection_adapters/abstract/database_statements.rb:90:in `insert'
+/usr/local/share/gems/gems/activerecord-3.2.20/lib/active_record/connection_adapters/abstract/query_cache.rb:14:in `insert'
+/usr/local/share/gems/gems/activerecord-3.2.20/lib/active_record/relation.rb:66:in `insert'
+/usr/local/share/gems/gems/activerecord-3.2.20/lib/active_record/persistence.rb:367:in `create'
+/usr/local/share/gems/gems/activerecord-3.2.20/lib/active_record/timestamp.rb:58:in `create'
+/usr/local/share/gems/gems/activerecord-3.2.20/lib/active_record/callbacks.rb:268:in `block in create'
+/usr/local/share/gems/gems/activesupport-3.2.20/lib/active_support/callbacks.rb:414:in `_run__715463877909706621__create__905197470387182340__callbacks'
+/usr/local/share/gems/gems/activesupport-3.2.20/lib/active_support/callbacks.rb:405:in `__run_callback'
+/usr/local/share/gems/gems/activesupport-3.2.20/lib/active_support/callbacks.rb:385:in `_run_create_callbacks'
+/usr/local/share/gems/gems/activesupport-3.2.20/lib/active_support/callbacks.rb:81:in `run_callbacks'
+/usr/local/share/gems/gems/activerecord-3.2.20/lib/active_record/callbacks.rb:268:in `create'
+/usr/local/share/gems/gems/activerecord-3.2.20/lib/active_record/persistence.rb:348:in `create_or_update'
+/usr/local/share/gems/gems/activerecord-3.2.20/lib/active_record/callbacks.rb:264:in `block in create_or_update'
+/usr/local/share/gems/gems/activesupport-3.2.20/lib/active_support/callbacks.rb:414:in `_run__715463877909706621__save__905197470387182340__callbacks'
+/usr/local/share/gems/gems/activesupport-3.2.20/lib/active_support/callbacks.rb:405:in `__run_callback'
+/usr/local/share/gems/gems/activesupport-3.2.20/lib/active_support/callbacks.rb:385:in `_run_save_callbacks'
+/usr/local/share/gems/gems/activesupport-3.2.20/lib/active_support/callbacks.rb:81:in `run_callbacks'
+/usr/local/share/gems/gems/activerecord-3.2.20/lib/active_record/callbacks.rb:264:in `create_or_update'
+/usr/local/share/gems/gems/activerecord-3.2.20/lib/active_record/persistence.rb:84:in `save'
+/usr/local/share/gems/gems/activerecord-3.2.20/lib/active_record/validations.rb:50:in `save'
+/usr/local/share/gems/gems/activerecord-3.2.20/lib/active_record/attribute_methods/dirty.rb:22:in `save'
+/usr/local/share/gems/gems/activerecord-3.2.20/lib/active_record/transactions.rb:259:in `block (2 levels) in save'
+/usr/local/share/gems/gems/activerecord-3.2.20/lib/active_record/transactions.rb:313:in `block in with_transaction_returning_status'
+/usr/local/share/gems/gems/activerecord-3.2.20/lib/active_record/connection_adapters/abstract/database_statements.rb:192:in `transaction'
+/usr/local/share/gems/gems/activerecord-3.2.20/lib/active_record/transactions.rb:208:in `transaction'
+/usr/local/share/gems/gems/activerecord-3.2.20/lib/active_record/transactions.rb:311:in `with_transaction_returning_status'
+/usr/local/share/gems/gems/activerecord-3.2.20/lib/active_record/transactions.rb:259:in `block in save'
+/usr/local/share/gems/gems/activerecord-3.2.20/lib/active_record/transactions.rb:270:in `rollback_active_record_state!'
+/usr/local/share/gems/gems/activerecord-3.2.20/lib/active_record/transactions.rb:258:in `save'
+/var/www/html/redmine-2.6/db/migrate/20140920094058_insert_builtin_groups.rb:13:in `up'
+/usr/local/share/gems/gems/activerecord-3.2.20/lib/active_record/migration.rb:410:in `block (2 levels) in migrate'
+/usr/share/ruby/benchmark.rb:281:in `measure'
+/usr/local/share/gems/gems/activerecord-3.2.20/lib/active_record/migration.rb:410:in `block in migrate'
+/usr/local/share/gems/gems/activerecord-3.2.20/lib/active_record/connection_adapters/abstract/connection_pool.rb:129:in `with_connection'
+/usr/local/share/gems/gems/activerecord-3.2.20/lib/active_record/migration.rb:389:in `migrate'
+/usr/local/share/gems/gems/activerecord-3.2.20/lib/active_record/migration.rb:528:in `migrate'
+/usr/local/share/gems/gems/activerecord-3.2.20/lib/active_record/migration.rb:720:in `block (2 levels) in migrate'
+/usr/local/share/gems/gems/activerecord-3.2.20/lib/active_record/migration.rb:777:in `call'
+/usr/local/share/gems/gems/activerecord-3.2.20/lib/active_record/migration.rb:777:in `ddl_transaction'
+/usr/local/share/gems/gems/activerecord-3.2.20/lib/active_record/migration.rb:719:in `block in migrate'
+/usr/local/share/gems/gems/activerecord-3.2.20/lib/active_record/migration.rb:700:in `each'
+/usr/local/share/gems/gems/activerecord-3.2.20/lib/active_record/migration.rb:700:in `migrate'
+/usr/local/share/gems/gems/activerecord-3.2.20/lib/active_record/migration.rb:570:in `up'
+/usr/local/share/gems/gems/activerecord-3.2.20/lib/active_record/migration.rb:551:in `migrate'
+/usr/local/share/gems/gems/activerecord-3.2.20/lib/active_record/railties/databases.rake:193:in `block (2 levels) in <top (required)>'
+/usr/local/share/gems/gems/rake-10.3.2/lib/rake/task.rb:240:in `call'
+/usr/local/share/gems/gems/rake-10.3.2/lib/rake/task.rb:240:in `block in execute'
+/usr/local/share/gems/gems/rake-10.3.2/lib/rake/task.rb:235:in `each'
+/usr/local/share/gems/gems/rake-10.3.2/lib/rake/task.rb:235:in `execute'
+/usr/local/share/gems/gems/rake-10.3.2/lib/rake/task.rb:179:in `block in invoke_with_call_chain'
+/usr/share/ruby/monitor.rb:211:in `mon_synchronize'
+/usr/local/share/gems/gems/rake-10.3.2/lib/rake/task.rb:172:in `invoke_with_call_chain'
+/usr/local/share/gems/gems/rake-10.3.2/lib/rake/task.rb:165:in `invoke'
+/usr/local/share/gems/gems/rake-10.3.2/lib/rake/application.rb:150:in `invoke_task'
+/usr/local/share/gems/gems/rake-10.3.2/lib/rake/application.rb:106:in `block (2 levels) in top_level'
+/usr/local/share/gems/gems/rake-10.3.2/lib/rake/application.rb:106:in `each'
+/usr/local/share/gems/gems/rake-10.3.2/lib/rake/application.rb:106:in `block in top_level'
+/usr/local/share/gems/gems/rake-10.3.2/lib/rake/application.rb:115:in `run_with_threads'
+/usr/local/share/gems/gems/rake-10.3.2/lib/rake/application.rb:100:in `top_level'
+/usr/local/share/gems/gems/rake-10.3.2/lib/rake/application.rb:78:in `block in run'
+/usr/local/share/gems/gems/rake-10.3.2/lib/rake/application.rb:176:in `standard_exception_handling'
+/usr/local/share/gems/gems/rake-10.3.2/lib/rake/application.rb:75:in `run'
+/usr/local/share/gems/gems/rake-10.3.2/bin/rake:33:in `<top (required)>'
+/usr/local/bin/rake:23:in `load'
+/usr/local/bin/rake:23:in `<main>'
+Tasks: TOP => db:migrate
+</pre>
+
+Maria DB version : 5.5.37
+Rails 3.2.20
+
+<pre>
+RAILS_ENV=production script/about
+
+sh: darcs : commande introuvable
+sh: hg : commande introuvable
+sh: cvs : commande introuvable
+sh: bzr : commande introuvable
+Environment:
+Redmine version 2.6.0.stable.13591
+Ruby version 2.0.0-p353 (2013-11-22) [x86_64-linux]
+Rails version 3.2.20
+Environment production
+Database adapter Mysql2
+SCM:
+Subversion 1.7.14
+Git 1.8.3.1
+Filesystem
+Redmine plugins:
+no plugin installed
+
+</pre>
+
+The Redmine 2.5 instance works well.
+
+I've done the following steps from RedmineUpgrade :
+
+1. Download the release in either tar.gz or zip format and uncompress the new program archive in a new directory.
+
+2. Copy your database settings-file config/database.yml into the new config directory. If you're running Redmine >= 1.4 with mysql and ruby1.9, change the database adapter to `mysql2`.
+
+3a. Copy your base configuration settings-file config/configuration.yml into the new config directory.
+
+4. Copy the files directory content into your new installation (this directory contains all your uploaded files).
+
+5. Copy the folders of your custom plugins from your plugins directory (or vendor/plugins directory if upgrading from a 1.x version) into new installation plugins directory. Make sure that you copy only plugins that are were not initially bundled with your previous Redmine setup.
+
+6. Install the required gems by running:
+
+bundle install --without development test
+
+7. Run the following command from your new Redmine root directory:
+
+bundle exec rake generate_secret_token
+
+Thanks for your help !"
+18429,Redmine,Defect,"",Closed,Normal,Error raised on project settings after project wiki is deleted,Cloud Zhong,Jean-Philippe Lang,2014-11-28 09:14,Project settings,"","","","",0,2014-11-24 10:57,2014-11-28 08:46,"ä÷òAÇµÇƒÇ¢ÇÈ #18275, ä÷òAÇµÇƒÇ¢ÇÈ #14534",Fixed,"","I do the following things.
+go to project settings wiki , click delete button.
+
+and then , the project wiki tab disappear.
+
+and I can not go to this project settings.
+
+I still can see other project's wiki and settings.
+
+
+
+Completed 500 Internal Server Error in 70ms
+
+ActionView::Template::Error (First argument in form cannot contain nil or be emp                                                                                                             ty):
+    1: <%= labelled_form_for @wiki,
+    2:                    :as => :wiki,
+    3:                    :url => { :controller => 'wikis', :action => 'edit', :                                                                                                             id => @project },
+    4:                    :remote => true, :method => 'post' do |f| %>
+  app/helpers/application_helper.rb:1047:in `labelled_form_for'
+  app/views/projects/settings/_wiki.html.erb:1:in `_app_views_projects_settings_                                                                                                             _wiki_html_erb__2849060791824469656_70013448407720'
+  app/views/common/_tabs.html.erb:22:in `block in _app_views_common__tabs_html_e                                                                                                             rb___1457674944382063957_70013446561960'
+  app/views/common/_tabs.html.erb:21:in `each'
+  app/views/common/_tabs.html.erb:21:in `_app_views_common__tabs_html_erb___1457                                                                                                             674944382063957_70013446561960'
+  app/helpers/application_helper.rb:324:in `render_tabs'
+  app/views/projects/settings.html.erb:3:in `_app_views_projects_settings_html_e                                                                                                             rb___493241672892030800_70013446548560'
+"
+18419,Redmine,Patch,"",New,Normal,Copy news along with the project,Ivan Kasatenko,"",2014-11-22 21:30,Projects,"","","","",0,2014-11-22 21:30,"","","","","Here's a patch that gives option to also copy news when copying a project.
+
+Patch contains functionality + additional test for it."
+18417,Redmine,Defect,"",Closed,Normal,Invalid username or password after core hours,Guy Volckaert,"",2014-11-22 17:41,Accounts / authentication,"","","","",0,2014-11-22 17:15,2014-11-22 17:41,"",Invalid,2.5.2,"Hi,
+
+I noticed this weird problem and I wanted to know if anyone else have seen it. During normal working hours I can login Redmine using LDAP. But if I try to access Redmine after core hours (e.g. > 6pm or weekends) then I often get a error when I attempt to login - invalid username or password. I contact our IT department (since they installed and configured Redmine), but they cannot find a reason why this is happening. 
+
+Any help would be appreciated. "
+18410,Redmine,Patch,"",Closed,Normal,Spent hours should be cleared on #reload,Ond?ej Ezr,Jean-Philippe Lang,2014-11-22 11:54,Code cleanup/refactoring,2.6.1,"","","",0,2014-11-21 17:38,2014-11-22 11:54,"","","","Spent hour cache should be forgotten as well on reload, shouldn't be?"
+18403,Redmine,Defect,"",Closed,Normal,Can't change parent task if an issue has some relations,Igor Bovin,"",2015-01-21 06:58,Issues,"","","","",0,2014-11-21 15:05,2015-01-21 06:58,éüÇÃÉ`ÉPÉbÉgÇ∆èdï° #13654,Duplicate,2.5.2,"!2014-11-21_16-57-36.png!
+
+result
+
+!2014-11-21_17-04-36.png!"
+18399,Redmine,Patch,"",Closed,Normal,"Missing ""next"" pagination link when looking at yesterday's activity",Felix Sch?fer,Jean-Philippe Lang,2017-01-04 22:16,Activity view,3.4.0,"","","",0,2014-11-20 16:38,2017-01-04 22:16,"","","","When looking at the activity page for a period up to yesterday, the ""next"" link is not rendered. Patch is upcoming."
+18393,Redmine,Defect,"",Closed,Normal,"issue assigning does not work when users change issue ""Category"" ",yu xiaohang,"",2014-11-20 09:34,Issues,"","","","",0,2014-11-20 04:53,2014-11-20 05:59,éüÇÃÉ`ÉPÉbÉgÇ∆èdï° #6889,Duplicate,2.6.0," issue ""Category"" has a automatic assinging function you can choose a user who you want assigning an issue to, but this can only work when this issue is created at the first time,if you change to another ""Category"",this function will not workÅB
+
+my redmine version is  v2.6.0 built by bitnami.com with no plugins"
+18392,Redmine,Patch,"",Closed,Normal,German translation: Self-registration,Filou Centrinov,"",2014-11-28 08:33,Translations,3.0.0,"","","",0,2014-11-20 03:31,2014-11-28 08:33,"","","","In Configuration -> Authentification you can configure ""Self-registration"". The german translation is not very clear with
+""Anmeldung erm?glicht"". Much better would be ""Registrierung erm?glichen"" for the language label <code>setting_self_registration</code>"
+18390,Redmine,Patch,"",Closed,Normal,Better RTL css for the system,Yehuda Deutsch,"",2014-11-28 08:34,UI,3.0.0,"","","",0,2014-11-20 00:52,2014-11-28 08:34,ä÷òAÇµÇƒÇ¢ÇÈ #10742,"","","Some issues might still exist, especially the issue of inline CSS used in too many places, but this one provides a pretty good option for now.
+Notice: This patch is mainly a clone of application.css with RTL overrides, but it is better than before and there is more to come.
+
+We originally worked on the 2.4.3 version of application/rtl.css, but I fitted it to meet the master branch version.
+
+File: public/stylesheets/rtl.css
+Branch: master
+
+Credit: ""Elad Shechter"":https://github.com/elad2412 @ ""Walla!"":http://www.walla.co.il/
+He did it on work hours so I thought credit is in place.
+
+RTL users, please try it out and notify me of anything."
+18387,Redmine,Defect,"",Closed,Normal,In parent issue list we have all issues (not relevant to the project),Alexander Kholodniak,"",2014-11-19 17:07,"","","","","",0,2014-11-19 15:42,2014-11-19 16:14,"",Invalid,2.5.2,In parent issue list we have all issues (issues not relevant to the project). Will correct this bug? 
+18383,Redmine,Defect,"",Closed,Normal,An error occurred while sending mail (undefined method `error' for :log:Symbol),Michael Kling,"",2014-11-22 10:41,Email notifications,"","","","",0,2014-11-19 12:31,2014-11-22 10:41,"","",2.4.3,"While sending a test mail the following error is displayed as a result in the settings Email notifications tab:
+<pre>
+An error occurred while sending mail (undefined method `error' for :log:Symbol)
+</pre>
+
+Still i receive the test mail.
+
+I encountered this bug while customers complained about not receiving emails. Using debug log i could get the following informations:
+
+Stack:
+<pre>
+NoMethodError (undefined method `error' for :log:Symbol):
+  app/models/mailer.rb:430:in `deliver_mail'
+  app/models/mailer.rb:86:in `block (2 levels) in deliver_issue_edit'
+  app/models/issue.rb:826:in `each_notification'
+  app/models/mailer.rb:85:in `block in deliver_issue_edit'
+  app/models/journal.rb:77:in `block in each_notification'
+  app/models/journal.rb:75:in `each'
+  app/models/journal.rb:75:in `each_notification'
+  app/models/mailer.rb:84:in `deliver_issue_edit'
+  app/models/journal.rb:190:in `send_notification'
+  app/models/journal.rb:54:in `save'
+  app/models/issue.rb:1511:in `create_journal'
+  app/models/issue.rb:165:in `create_or_update'
+  app/controllers/issues_controller.rb:470:in `block in save_issue_with_child_records'
+  app/controllers/issues_controller.rb:458:in `save_issue_with_child_records'
+  app/controllers/issues_controller.rb:184:in `update'
+</pre>
+
+That is the super method of the mailer class (ActionMailer::deliver_mail) called at this line. 
+In order to get more detailed informations i printed out the mail object given to the method and got this in the log - while updating the issue the customer complained about not receiving an email:
+
+<pre>
+Rendered mailer/_issue.html.erb (7.8ms)
+Rendered mailer/issue_edit.html.erb within layouts/mailer (15.1ms)
+Try to deliver:
+#<Mail::Message:60142340, Multipart: true, Headers: <From: m***t@a***o.de>, <To: >, <Cc: >, <Bcc: [""s***h@i***i.com"", ""a***n@a***o.de"", ""t***a@a***o.de"", ""c***i@a***o.de"", ""M***e@a***o.de"", ""c***s@s***p.net"", ""e***a@i***i.com""]>, <Message-ID: <redmine.journal-89253.20141119103615.67eb855ef4d4ad2e@a***o.de>>, <References: <redmine.issue-11121.20141017201624@a***o.de>>, <Subject: [*** Support - Task #11121] create new redmine account for N***r>, <Mime-Version: 1.0>, <Content-Type: multipart/alternative; boundary=""--==_mimepart_546c72a06b7e0_1e6c33e4fc412591""; charset=UTF-8>, <X-Redmine-Project: i***u>, <X-Redmine-Issue-Id: 11121>, <X-Redmine-Issue-Author: s***h>, <X-Redmine-Issue-Assignee: Michael.Kling>, <X-Redmine-Sender: Michael.Kling>, <X-Mailer: Redmine>, <X-Redmine-Host: r***p.net>, <X-Redmine-Site: Project-Management>, <X-Auto-Response-Suppress: OOF>, <Auto-Submitted: auto-generated>, <List-Id: <m***o.de>>>
+Email delivery error: undefined method `error' for :log:Symbol
+</pre>
+(i marked internal informations with *** )
+
+From what i see the mail object looks good.
+
+I tried to look into the actionmailer but my ruby knowledge isn't good enough to go further. 
+The actionmailer installed is: /vendor/bundle/gems/actionmailer-3.2.17
+
+Environment is:
+<pre>
+Environment:
+  Redmine version                2.4.3.stable
+  Ruby version                   1.9.3-p484 (2013-11-22) [x86_64-linux]
+  Rails version                  3.2.17
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Git                            1.9.1
+  Filesystem
+Redmine plugins:
+  redmine_auto_watchers          0.3.0
+  redmine_backlogs               v1.0.6
+  redmine_better_gantt_chart     0.9.0
+  redmine_dmsf                   1.4.7 stable
+  redmine_git_hosting            0.6.2
+  redmine_graphs                 0.1.0
+  redmine_hudson                 2.1.1
+  redmine_lightbox               0.0.1
+  redmine_merge_redmine          0.1.0
+  redmine_monitoring_controlling 0.1.1
+  redmine_private_wiki           0.2.2
+  redmine_spent_time             2.4.0
+</pre>
+
+I tried different mail send options:
+/config/configuration.yml
+
+<pre>
+default:
+  # Outgoing emails configuration (see examples above)
+  email_delivery:
+    delivery_method: :smtp
+    smtp_settings:
+      address: 127.0.0.1
+      port: 25
+      domain: ascendro.de
+      authentication: :login
+      user_name: ""m***t@a***e""
+      password: ""***""
+      openssl_verify_mode: 'none'
+</pre>
+
+and 
+
+<pre>
+default:
+  # Outgoing emails configuration (see examples above)
+  email_delivery:
+    delivery_method: :sendmail
+</pre>
+
+without any change.
+
+As already said, i was able to receive the test mail but it is possible that this error appears while sending the first mail and other people will not receive an email anymore."

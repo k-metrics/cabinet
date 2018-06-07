@@ -1,0 +1,1920 @@
+#,ÉvÉçÉWÉFÉNÉg,ÉgÉâÉbÉJÅ[,êeÉ`ÉPÉbÉg,ÉXÉeÅ[É^ÉX,óDêÊìx,ëËñº,çÏê¨é“,íSìñé“,çXêVì˙,ÉJÉeÉSÉä,ëŒè€ÉoÅ[ÉWÉáÉì,äJénì˙,ä˙ì˙,ó\íËçHêî,êiíªó¶,çÏê¨ì˙,èIóπì˙,ä÷òAÇ∑ÇÈÉ`ÉPÉbÉg,Resolution,Affected version,ê‡ñæ
+23922,Redmine,Defect,"",Closed,Normal,Time Entries context menu/bulk edit shows activities not available for the time entry's project,Felix Sch?fer,Jean-Philippe Lang,2016-12-03 09:38,Time tracking,3.3.2,"","","",0,2016-09-25 09:45,2016-12-03 09:38,"",Fixed,"","It is possible to deselect time entry activities on a project level, this is not taken into account in the time entries context menu.
+
+A user is able to set the activity of a time entry to an activity that has been disabled for the project/issue's project of that time entry."
+23921,Redmine,Defect,"",Closed,Normal,REST API Issue PUT responds 200 OK even when it can't set assigned_to_id,Fran Fabrizio,Jean-Philippe Lang,2016-12-10 13:05,REST API,3.4.0,"","","",0,2016-09-23 19:24,2016-12-10 13:05,ä÷òAÇµÇƒÇ¢ÇÈ #26063,Fixed,3.3.0,"Hi,
+
+I ran across an issue with the REST API that responded with a 200 OK when I think it should respond with an error.
+
+If I try to PUT this to an existing issue:
+
+<pre><code class=""json"">
+{ ""issue"": {
+ ""assigned_to_id"": ""19""
+ }
+}
+</code></pre>
+
+it will respond 200 OK even if it can't change the assigned_to_id to 19, for instance if user ID 19 does not have an assignable role on the project.  Because the API reported a 200 OK, this led to a lot of confused debugging.  A 422 return with appropriate error message in the body might be more useful.
+"
+23917,Redmine,Defect,"",Closed,Normal,LDAP login execution timeout,M K,"",2016-09-29 18:03,LDAP,"","","","",0,2016-09-23 17:10,2016-09-29 18:03,"",Invalid,"","Hi All
+
+We have started experiencing issues while logging into local redmine server hosted on Win server 2012R2 with apache24. The redmine is configured to use LDAP authentication. The login page return 500 error when using Active Directory credentials, but no issues when using local redmine admin account.
+
+*The error on the browser:*
+Proxy Error
+
+The proxy server received an invalid response from an upstream server.
+The proxy server could not handle the request POST /login.
+
+Reason: Error reading from remote server
+
+*Our Redmine Environment:*
+  Redmine version                3.2.0.stable
+  Ruby version                   2.2.4-p230 (2015-12-16) [x64-mingw32]
+  Rails version                  4.2.5
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Filesystem                     
+Redmine plugins:
+  no plugin installed
+
+*The log*
+Started GET ""/"" for 127.0.0.1 at 2016-09-23 14:57:10 +0000
+Processing by WelcomeController#index as HTML
+  Current user: anonymous
+  Rendered news/_news.html.erb (0.0ms)
+  Rendered welcome/index.html.erb within layouts/base (31.2ms)
+Completed 200 OK in 94ms (Views: 56.0ms | ActiveRecord: 15.6ms)
+Started GET ""/"" for 127.0.0.1 at 2016-09-23 14:57:15 +0000
+Processing by WelcomeController#index as HTML
+  Current user: anonymous
+  Rendered news/_news.html.erb (0.0ms)
+  Rendered welcome/index.html.erb within layouts/base (15.6ms)
+Completed 200 OK in 47ms (Views: 20.9ms | ActiveRecord: 15.6ms)
+Started GET ""/login"" for 127.0.0.1 at 2016-09-23 14:57:17 +0000
+Processing by AccountController#login as HTML
+  Current user: anonymous
+  Rendered account/login.html.erb within layouts/base (0.0ms)
+Completed 200 OK in 16ms (Views: 11.5ms | ActiveRecord: 0.0ms)
+Started POST ""/login"" for 127.0.0.1 at 2016-09-23 14:57:21 +0000
+Processing by AccountController#login as HTML
+  Parameters: {""utf8""=>""?"", ""authenticity_token""=>""zjrjx8ofEVMOte9/fm0cK5oekJfqhwI0NAqrxG6hwLWHJWT1KIt6S7n68vv//f2Jz957Kd3jhUSpa/68EdQyaA=="", ""back_url""=>""http://pe-ap06-ukpar/"", ""username""=>""nzm8nm"", ""password""=>""[FILTERED]"", ""login""=>""Login ?""}
+  Current user: anonymous
+An error occured when authenticating nzm8nm: execution expired
+  Rendered common/error.html.erb within layouts/base (0.0ms)
+Completed 500 Internal Server Error in 64531ms (Views: 11.5ms | ActiveRecord: 0.0ms)"
+23916,Redmine,Defect,"",Closed,High,User not initialized before logged in or profile opened,Marc Vollmer,"",2016-10-23 09:07,"","","","","",0,2016-09-23 16:56,2016-10-23 09:07,"",Invalid,3.3.0,"Hello,
+
+we are currently migrating our company to redmine.
+Since we don't want to manage users in redmine we added LDAP Auth (and SingleSignOn).
+Additionally we installed the LDAP Synchronize plugin to add all users and groups to redmine.
+
+Most of our users won't use redmine directly. They are using one of our programs connecting to the API.
+
+We are currently writing a program to migrate all of our old tickets from another software to redmine.
+
+This software fetches the tickets from the old system and creates them in redmine.
+To create the ticket we impersonate to the user (it's a java program so we are using this lib: https://github.com/taskadapter/redmine-java-api and call setOnBehalfOfUser on the Manager), so the author will be correct.
+
+Most of the users haven't login to redmine yet and most never will.
+When the migration software hits one of this users and calls createIssue it gets an Error 500.
+The production log shows this:
+
+<pre>
+Started POST ""/issues.json?include=attachments"" for 172.29.121.136 at 2016-09-23 16:11:08 +0200
+Processing by IssuesController#create as JSON
+  Parameters: {""issue""=>{""subject""=>""XXX"", ""spent_hours""=>0, ""assigned_to_id""=>151, ""priority_id""=>10, ""project_id""=>7, ""author_id""=>98, ""due_date""=>""2012-03-07"", ""tracker_id""=>1, ""description""=>""XXX"", ""created_on""=>""2012/03/07 10:07:00 +0100"", ""status_id""=>8, ""custom_field_values""=>{""1""=>""XXX"", ""2""=>""XXX"", ""3""=>""XXX"", ""4""=>"""", ""5""=>""2012-04-26"", ""6""=>""XXX"", ""7""=>""XXX"", ""8""=>""318"", ""11""=>""""}}, ""include""=>""attachments""}
+  User switched by: admin (id=1)
+  Current user: some_user (id=98)
+Completed 500 Internal Server Error in 93ms (ActiveRecord: 59.2ms)
+
+NoMethodError (undefined method `favourite_project_id' for nil:NilClass):
+  plugins/a_common_libs/lib/a_common_libs/user_patch.rb:9:in `favourite_project'
+  plugins/a_common_libs/lib/a_common_libs/issue_patch.rb:16:in `allowed_target_projects_with_acl'
+  app/models/issue.rb:1384:in `allowed_target_projects'
+  app/models/issue.rb:499:in `safe_attributes='
+  app/controllers/issues_controller.rb:474:in `build_new_issue_from_params'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+</pre>
+
+When I now open the profile of the user it works. So when logging in or opening the users profile it seems to be initialized.
+
+The problem is:
+Neither now in our test environment nor in production can I open all profiles (multiple hundreds). Even if I write a script to automate it, it would just be for the initial users.
+When a new user is created in the ActiveDirectory and is synced to redmine the same will happen (if I wrote earlier: most users won't use redmine directly and the program they are using does the same as the migration tool).
+
+Is there any way to solve this?
+
+Our current planned workaround for the migration tool would be to create the issue with our admin user and update the creator directly in the database (we have to update the created_on field anyway since we cant set it over the api).
+
+But this would be no solution for the production environment after the migration. I don't want to open a connection to the database from the client software.
+
+Thanks for your Help!"
+23912,Redmine,Defect,"",Closed,Normal,No validation error when date value is invalid in time entries filter,Pavel Potcheptsov,Jean-Philippe Lang,2017-06-20 13:54,Time tracking,3.4.0,"","","",0,2016-09-23 15:03,2017-06-07 21:58,"",Fixed,3.3.0,"For example if I go to @http://example.com/projects/my_project/time_entries@ and
+choose *date between* real dates by using datepicker then it shows correct data.
+But once I enter or change any date to fake one, like from 2016-09-01 to 2016-09-010 no matter for start or end date's field then it shows total time from the very beginning of the project.
+
+Expected behavior: *wrong date* message."
+23908,Redmine,Defect,"",Closed,Normal,LDAP Authentication not working,Tulgaa Tsogtoo,"",2016-10-10 18:33,LDAP,"","","","",0,2016-09-23 05:21,2016-10-10 18:33,"",Invalid,3.3.0,My LDAP not authentication... Please help meeeeeeee...
+23893,Redmine,Defect,"",Closed,Normal,How to change production.log to another path,Jacky Ho,"",2016-09-22 14:23,"","","","","",0,2016-09-22 10:44,2016-09-22 14:23,"",Invalid,"","Hi all,
+
+Currently, redmine stored production.log at /user/local/redmine/log/
+I would like change to another path. How can I do?
+
+Please help me a hand. 
+
+thank you."
+23888,Redmine,Patch,"",Closed,Normal,Show an error message when changing an issue's project fails due to errors in child issues,Jens Kr?mer,Jean-Philippe Lang,2016-12-20 10:09,Issues,3.4.0,"","","",0,2016-09-22 08:18,2016-12-20 10:09,"ä÷òAÇµÇƒÇ¢ÇÈ #15319, ä÷òAÇµÇƒÇ¢ÇÈ #11148","","",The problem occurs for example when child issues have trackers that aren't present in the destination project. This very simple solution just displays a generic error message if the save is aborted due to a failing child save.
+23883,Redmine,Patch,"",Closed,Normal,iOS 10 ignore disabled Zoom,Felix Gliesche,Jean-Philippe Lang,2016-10-02 12:20,UI - Responsive,3.2.4,"","","",0,2016-09-21 18:07,2016-10-02 12:20,"","","","With r14819 we disabled zoom on mobile devices. This has stopped working for iOS devices running iOS 10 as @maximum-scale=1@ is being ignored (see also here: https://medium.com/@johan_ronsse/re-apple-disabling-maximum-scale-behavior-on-responsive-websites-in-ios10-17bc7b0f27c0#.rkul46vzf)
+
+Adding @user-scalable=no@ to the viewport meta tag achieves our wanted behaviour also on iOS 10 and therefore fixes this issue. Attached you will find the according patch."
+23881,Redmine,Defect,"",Closed,Normal,Proxy Error while creating new issues,Amir Dervisevic,"",2016-09-21 14:52,"","","","","",0,2016-09-21 14:43,2016-09-21 14:52,"",Invalid,3.3.0,"When I set a new issue and click ""submit"" i get the following : 
+
+Proxy Error
+The proxy server received an invalid response from an upstream server.
+The proxy server could not handle the request POST /redmine/issues/9.
+Reason: Error reading from remote server
+
+BUT!! 
+The issue is created afer I refresh the page, but it takes a lot of time to load and it is not usable..
+
+Please help."
+23878,Redmine,Defect,"",Closed,Normal,Closing all subtasks causes error if default priority is not defined and priority is derived from subtasks,Pavel Potcheptsov,Jean-Philippe Lang,2016-10-02 12:21,Issues,3.3.1,"","","",0,2016-09-21 09:30,2016-10-02 12:21,"",Fixed,3.3.0,"Others tasks are closing normally but this one throws an error.
+<pre>
+Redmine 3.3.0.stable.15842
+Environment:
+  Redmine version                3.3.0.stable.15842
+  Ruby version                   1.9.3-p327 (2012-11-10) [i686-linux]
+  Rails version                  4.2.7.1
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.8.8
+  Git                            1.7.1
+  Filesystem                     
+Redmine plugins:
+  advanced_roadmap_v2            2.4.3
+  redmine_agile                  1.4.1
+  redmine_checklists             3.1.5
+  redmine_lightbox2              0.3.1
+  redmine_timesheet_plugin       0.7.0
+  redmine_xls_export             0.2.1.t9
+</pre>
+<pre>
+Started PATCH ""/issues/22964/edit.js"" for 127.0.0.1 at 2016-09-21 09:14:15 +0200
+Processing by IssuesController#edit as JS
+  Parameters: {""utf8""=>""?"", ""authenticity_token""=>""**********"", ""form_update_triggered_by""=>""issue_status_id"", ""issue""=>{""is_private""=>""0"", ""project_id""=>""657"", ""tracker_id""=>""4"", ""subject""=>""************"", ""description""=>"""", ""status_id""=>""5"", ""priority_id""=>""4"", ""assigned_to_id""=>""213"", ""fixed_version_id""=>""956"", ""parent_issue_id""=>""22746"", ""start_date""=>""2016-09-02"", ""due_date""=>""2016-09-02"", ""estimated_hours""=>""8.0"", ""done_ratio""=>""100"", ""checklists_attributes""=>{""0""=>{""is_done""=>""0"", ""subject""=>"""", ""_destroy""=>""false"", ""position""=>""1"", ""id""=>""""}}, ""notes""=>"""", ""private_notes""=>""0"", ""lock_version""=>""11""}, ""time_entry""=>{""hours""=>"""", ""activity_id""=>""20"", ""user_id""=>""95"", ""comments""=>""""}, ""last_journal_id""=>""152098"", ""id""=>""22964""}
+  Current user: ppo (id=95)
+  Rendered issues/_form_custom_fields.html.erb (0.1ms)
+  Rendered issues/_attributes.html.erb (17.9ms)
+  Rendered plugins/redmine_agile/app/views/issues/_issue_story_points_form.html.erb (0.1ms)
+  Rendered plugins/redmine_agile/app/views/issues/_agile_data_fields.html.erb (0.3ms)
+  Rendered plugins/redmine_checklists/app/views/issues/_checklist_fields.html.erb (1.1ms)
+  Rendered plugins/redmine_checklists/app/views/issues/_checklist_fields.html.erb (0.9ms)
+  Rendered plugins/redmine_checklists/app/views/issues/_checklist_form.html.erb (4.4ms)
+  Rendered issues/_form.html.erb (65.1ms)
+  Rendered issues/edit.js.erb (67.5ms)
+Completed 200 OK in 120ms (Views: 66.1ms | ActiveRecord: 11.1ms)
+Started GET ""/time_loggers/render_menu?_=1474385709357"" for 127.0.0.1 at 2016-09-21 09:14:18 +0200
+
+Started PATCH ""/issues/22964"" for 127.0.0.1 at 2016-09-21 09:14:19 +0200
+Processing by IssuesController#update as HTML
+  Parameters: {""utf8""=>""?"", ""authenticity_token""=>""******"", ""form_update_triggered_by""=>"""", ""issue""=>{""is_private""=>""0"", ""project_id""=>""657"", ""tracker_id""=>""4"", ""subject""=>""********"", ""description""=>"""", ""status_id""=>""5"", ""priority_id""=>""4"", ""assigned_to_id""=>""213"", ""fixed_version_id""=>""956"", ""parent_issue_id""=>""22746"", ""start_date""=>""2016-09-02"", ""due_date""=>""2016-09-02"", ""estimated_hours""=>""8.0"", ""done_ratio""=>""100"", ""notes""=>"""", ""private_notes""=>""0"", ""lock_version""=>""11""}, ""time_entry""=>{""hours""=>"""", ""activity_id""=>""20"", ""user_id""=>""95"", ""comments""=>""""}, ""last_journal_id""=>""152098"", ""commit""=>""Submit"", ""id""=>""22964""}
+  Current user: ppo (id=95)
+Completed 500 Internal Server Error in 227ms (ActiveRecord: 149.4ms)
+
+ActiveRecord::StatementInvalid (Mysql2::Error: Column 'priority_id' cannot be null: UPDATE `issues` SET `issues`.`priority_id` = NULL, `issues`.`updated_on` = '2016-09-21 09:14:19', `issues`.`lock_version` = 36 WHERE `issues`.`id` = 22746 AND `issues`.`lock_version` = 35):
+  app/models/issue.rb:210:in `create_or_update'
+  app/models/issue.rb:1567:in `recalculate_attributes_for'
+  app/models/issue.rb:1523:in `update_parent_attributes'
+  app/models/issue.rb:210:in `create_or_update'
+  app/controllers/issues_controller.rb:515:in `block in save_issue_with_child_records'
+  app/controllers/issues_controller.rb:503:in `save_issue_with_child_records'
+  app/controllers/issues_controller.rb:179:in `update'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+</pre>"
+23867,Redmine,Defect,"",Closed,Normal,"New issue from all issues is giving ""ActionView::Template::Error""",Mentel Inc,"",2016-09-20 16:18,Issues,"","","","",0,2016-09-20 14:41,2016-09-20 16:18,"",Invalid,3.3.0,"Here's what we have and what we get when clicking on add an issue (.com/issues/new)
+
+<pre>
+  Redmine version      3.3.0.stable
+  Ruby version         2.1.5-p273 (2014-11-13) [x86_64-linux-gnu]
+  Rails version        4.2.6
+</pre>
+
+<pre>
+Started GET ""/issues/new"" for ******** at 2016-09-20 08:29:45 -0400
+Processing by IssuesController#new as HTML
+  Current user: ******** (id=*)
+  Rendered issues/_form.html.erb (5.0ms)
+  Rendered issues/new.html.erb within layouts/base (6.6ms)
+Completed 500 Internal Server Error in 48ms (ActiveRecord: 5.3ms)
+
+ActionView::Template::Error (undefined method `id' for nil:NilClass):
+    1: <%= labelled_fields_for :issue, @issue do |f| %>
+    2: <%= call_hook(:view_issues_form_details_top, { :issue => @issue, :form => f }) %>
+    3: <%= hidden_field_tag 'form_update_triggered_by', '' %>
+    4: 
+    5: <% if @issue.safe_attribute? 'is_private' %>
+  plugins/redmine_issue_templates/lib/issue_templates_issues_hook.rb:23:in `view_issues_form_details_top'
+  lib/redmine/hook.rb:61:in `block (2 levels) in call_hook'
+  lib/redmine/hook.rb:61:in `each'
+  lib/redmine/hook.rb:61:in `block in call_hook'
+  lib/redmine/hook.rb:58:in `tap'
+  lib/redmine/hook.rb:58:in `call_hook'
+  lib/redmine/hook.rb:96:in `call_hook'
+  app/views/issues/_form.html.erb:2:in `block in _app_views_issues__form_html_erb___4437785814333451970_70147895881400'
+  app/helpers/application_helper.rb:1058:in `labelled_fields_for'
+  app/views/issues/_form.html.erb:1:in `_app_views_issues__form_html_erb___4437785814333451970_70147895881400'
+  app/views/issues/new.html.erb:11:in `block in _app_views_issues_new_html_erb__969471801192373352_70147897290300'
+  app/helpers/application_helper.rb:1051:in `labelled_form_for'
+  app/views/issues/new.html.erb:5:in `_app_views_issues_new_html_erb__969471801192373352_70147897290300'
+  app/controllers/issues_controller.rb:129:in `block (2 levels) in new'
+  app/controllers/issues_controller.rb:128:in `new'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+
+</pre>"
+23865,Redmine,Defect,"",Closed,Normal,Typo: s/projet/project/ in Redmine.pm comments,Go MAEDA,Jean-Philippe Lang,2016-10-01 09:42,SCM extra,3.4.0,"","","",0,2016-09-20 12:41,2016-10-01 09:42,"",Fixed,"",Please see the attached patch.
+23846,Redmine,Defect,"",Closed,Normal,NoMethodError (undefined method `reverse!',Jean-Michel Bain-Cornu,"",2016-09-19 11:00,"","","","","",0,2016-09-16 17:46,2016-09-17 05:26,"",Invalid,2.5.2,"Hi guys,
+
+Found an error on activating a link on an announce :
+NoMethodError (undefined method `reverse!' for #<ActiveRecord::Associations::CollectionProxy []>):
+app/controllers/news_controller.rb:62:in `show'
+
+There is a workaround by commenting the faulty line :
+
+def show
+    @comments = @news.comments
+    # @comments.reverse! if User.current.wants_comments_in_reverse_order?
+end
+
+but I miss skills to figure out what's happening.
+
+Environment:
+Redmine version 2.5.2.devel
+Ruby version 2.1.5-p273 (2014-11-13) [x86_64-linux-gnu]
+Rails version 4.1.8
+Environment production
+Database adapter Mysql2
+"
+23844,Redmine,Defect,"",Closed,Normal,"Unable to understand how to fill in the ""Term"" and ""Finish date"" fields in Risks -> New Action.",Yoshiaki Murase,"",2016-09-17 18:00,"","","","","",0,2016-09-16 07:41,2016-09-17 12:45,"",Invalid,"","The ""Term"" and ""Finish date"" fields in Risk -> New Action functionality does not indicate what types of values to enter.
+
+What types of values (e.g., date, number, etc.) should I specifically fill in there? Also, in case that I have to enter a date, what is the appropriate format (e.g., dd/mm/yyyy, yyyy/mm/dd, etc.)?"
+23841,Redmine,Defect,"",Closed,Normal,Custom field URL spaces not decoded properly,Jake Kemme,Jean-Philippe Lang,2016-10-02 12:13,Custom fields,3.1.7,"","","",0,2016-09-15 21:48,2016-10-02 12:13,ä÷òAÇµÇƒÇ¢ÇÈ #23067,Fixed,3.3.0,"Custom field link Urls with spaces (%20) are not properly decoded when url is generated as hyperlink
+
+!customFieldURL.PNG!
+
+Generated URL contains %2520 (it escaped the %):
+
+!CustomFieldOnIssueURL.png!
+
+<pre>
+  Redmine version                3.3.0.stable.15581
+  Ruby version                   2.0.0-p353 (2013-11-22) [i686-linux]
+  Rails version                  4.2.6
+</pre>
+
+The entire URL should not be encoded.  This is related to #23067"
+23840,Redmine,Defect,"",Closed,Normal,Reduce the maximum height of the issue description field,Daniel Ethur,Jean-Philippe Lang,2016-10-02 15:20,UI,3.4.0,"","","",0,2016-09-15 18:53,2016-10-02 15:20,"",Fixed,"","When editing a issue description with extensive content, the vertical dimension of the field is greater than the Browser page, causing a double scroll, which greatly hinders the use of the editor.
+
+For example , I'm putting a text at the end of the description of this issue , which will cause double scroll informed.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+<end of the text>"
+23839,Redmine,Defect,"",Closed,Normal,"""Invalid query"" (Error 500) message with MS SQL when displaying an issue from a list grouped and sorted by fixed version",Olivier Houdas,Jean-Philippe Lang,2016-10-02 12:11,Issues,3.1.7,"","","",0,2016-09-15 15:07,2016-10-02 12:11,"",Fixed,3.1.3,"Steps:
+Prerequisite: this happens only with MS SQL
+# Filter a list of issues by grouping on the fixed version field, and showing the priority field
+# Click on the Fixed version field to sort on it in descending order, click on the priority field to also sort on that field
+This should result in a query like ""this one"":https://www.redmine.org/projects/redmine/issues?c[]=tracker&c[]=status&c[]=author&c[]=subject&c[]=fixed_version&c[]=due_date&c[]=priority&f[]=status_id&f[]=assigned_to_id&f[]=fixed_version_id&f[]=&group_by=fixed_version&op[assigned_to_id]=%3D&op[fixed_version_id]=%3D&op[status_id]=o&set_filter=1&sort=priority%3Adesc%2Cfixed_version%3Adesc%2Cid%3Adesc&utf8=%E2%9C%93&v[assigned_to_id][]=1&v[fixed_version_id][]=121&v[fixed_version_id][]=122&v[fixed_version_id][]=119 for example
+# Click on one bug of the list
+Result: Error 500, Invalid query. In the log, it is indicated that there are duplicated column names in an ORDER BY clause
+Note: the issue also happens on MySQL, but MySQL does not consider duplicated sort columns as an error.
+
+The issue happens in the feature to be able to navigate with arrows to the next or previous bug in the list we came from.
+As the Fixed_version field implements a call back with its own sortable columns, this comes into the group_by_sort_order statement, which then brings columns duplicated with the ones coming from the options.
+
+Note that with a MySQL-backed Redmine site, the effect is that the order of the list can be incorrect in the previous/Next arrows on the displayed bug.
+
+See attached patch for a suggested fix."
+23835,Redmine,Patch,"",Closed,Normal,Bulgarian translation (r15754),Ivan Cenov,"",2016-09-15 15:01,Translations,"","","","",0,2016-09-15 08:09,2016-09-15 15:01,"","","","Translated:
+
+* field_textarea_font
+* label_new_project_issue_tab_enabled
+* label_font_default
+* label_font_monospace
+* label_font_proportional"
+23833,Redmine,Defect,"",Closed,Normal,Unhandled exception on custom fields with mailto URL,Jake Kemme,"",2016-09-19 06:41,Custom fields,"","","","",0,2016-09-13 21:30,2016-09-19 06:41,"",Invalid,3.3.0,"When attempting to create a custom field that creates a mailto: hyperlink
+
+!customfield.png!
+
+when clicking save:
+
+!customfielderror.png!"
+23829,Redmine,Defect,"",Closed,Normal,Wrong allow-override example in rdm-mailhandler.rb,Rene H,Jean-Philippe Lang,2016-10-01 09:17,Email receiving,3.2.4,"","","",0,2016-09-13 12:55,2016-10-01 09:17,"",Fixed,3.3.0,"The help-text in the ""rdm-manilhandler.rb"":http://www.redmine.org/projects/redmine/repository/revisions/15547/entry/trunk/extra/mail_handler/rdm-mailhandler.rb -script has wrong examples. The current version says eg:
+<pre>
+You can use --allow_override=all to allow all attributes to be overridable.
+</pre>
+The correct paramter should be
+<pre>
+--allow-override all
+</pre>
+There are also a couple of other examples that use --allow_override instead of --allow-override"
+23816,Redmine,Defect,"",Closed,Normal,Redmine-Search: everything before a colon in the title will be cut off in search results,Immanuel Wilhelmy,"",2016-09-13 12:25,"","","","","",0,2016-09-12 10:21,2016-09-13 12:25,"",Invalid,3.3.0,"h2. Redmine Release 3.3.0: Search results display truncated (searchdisplaytuncated)
+
+When you do a search for tickets containing a colon "":"" in the title, everything before the title will be cut off when displaying the search results.
+
+To reproduce: 
+Do a search for the string ""searchdisplaytuncated"" and this ticket will display as a result with the words ""Redmine-Search"" not showing up.
+
+As we are using initial descriptors in our ticket titles this is not a purely cosmetical but rather important problem."
+23812,Redmine,Defect,"",Closed,Normal,CSV export file wont work cyrillic font ,Ankhbayar Munkhsaikhan,"",2016-09-12 05:34,"","","","","",0,2016-09-12 04:29,2016-09-12 05:34,"",Invalid,"",""
+23806,Redmine,Patch,"",Closed,Normal,Fix Japanese translation inconsistency of label_tracker_new and label_custom_field_new,Go MAEDA,"",2016-09-15 15:01,Translations,3.4.0,"","","",0,2016-09-11 01:29,2016-09-15 15:01,"","","","Current translation for label_tracker_new and label_custom_field_new are inconsistent with other labels. Please see the following table.
+
+I think ""ÇçÏê¨"" should be removed from those labels.
+
+|_. label |_. French |_. English |_. Japanese |
+| label_user_new | Nouvel utilisateur | New user | êVÇµÇ¢ÉÜÅ[ÉUÅ[ |
+| label_project_new | Nouveau projet | New project | êVÇµÇ¢ÉvÉçÉWÉFÉNÉg |
+| label_issue_new | Nouvelle demande | New issue | êVÇµÇ¢É`ÉPÉbÉg |
+| label_document_new | Nouveau document | New document | êVÇµÇ¢ï∂èë |
+| label_role_new | Nouveau r?le | New role | êVÇµÇ¢ÉçÅ[Éã |
+| label_member_new | Nouveau membre | New member | êVÇµÇ¢ÉÅÉìÉoÅ[ |
+| label_tracker_new | Nouveau tracker | New tracker | *êVÇµÇ¢ÉgÉâÉbÉJÅ[ÇçÏê¨* |
+| label_issue_status_new | Nouveau statut | New status | êVÇµÇ¢ÉXÉeÅ[É^ÉX |
+| label_issue_category_new | Nouvelle cat?gorie | New category | êVÇµÇ¢ÉJÉeÉSÉä |
+| label_custom_field_new | Nouveau champ personnalis? | New custom field | *êVÇµÇ¢ÉJÉXÉ^ÉÄÉtÉBÅ[ÉãÉhÇçÏê¨* |
+| label_enumeration_new | Nouvelle valeur | New value | êVÇµÇ¢íl |
+| label_auth_source_new | Nouveau mode d'authentification | New authentication mode | êVÇµÇ¢îFèÿï˚éÆ |
+| label_subproject_new | Nouveau sous-projet | New subproject | êVÇµÇ¢ÉTÉuÉvÉçÉWÉFÉNÉg |
+| label_attachment_new | Nouveau fichier | New file | êVÇµÇ¢ÉtÉ@ÉCÉã |
+| label_news_new | Nouvelle annonce | Add news | ÉjÉÖÅ[ÉXÇí«â¡ |
+| label_version_new | Nouvelle version | New version | êVÇµÇ¢ÉoÅ[ÉWÉáÉì |
+| label_query_new | Nouveau rapport | New query | êVÇµÇ¢ÉNÉGÉä |
+| label_relation_new | Nouvelle relation | New relation | êVÇµÇ¢ä÷òA |
+| label_board_new | Nouveau forum | New forum | êVÇµÇ¢ÉtÉHÅ[ÉâÉÄ |
+| label_message_new | Nouveau message | New message | êVÇµÇ¢ÉÅÉbÉZÅ[ÉW |
+| label_group_new | Nouveau groupe | New group | êVÇµÇ¢ÉOÉãÅ[Év |
+| label_repository_new | Nouveau d?p?t | New repository | êVÇµÇ¢ÉäÉ|ÉWÉgÉä |
+| label_wiki_page_new | Nouvelle page wiki | New wiki page | êVÇµÇ¢WikiÉyÅ[ÉW |
+"
+23800,Redmine,Defect,"",Closed,Low,Subproject start/due dates are dependent on adjacent subprojects,Janice Rosado,"",2016-09-19 04:42,Projects,"","","","",0,2016-09-09 17:57,2016-09-19 04:42,"","",3.3.0,"Currently, subproject start/due dates seem to depend on the start/due dates of issues assigned not only to that subproject, but also issues assigned to other subprojects under the parent project (I noticed this when viewing the project lines on the Gantt chart). 
+
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20  
+.....<--------------Project------------------------------->.....
+.....<--------------SubProject1------------------------->.....
+.....<--------------SubProject2------------------------->.....
+
+
+When I changed ""shared_versions"" to ""rolled_up_versions"" in lines 610 and 619 of app/models/project.rb, I could finally see my subproject lines and dates limited to issues assigned to only that subproject, while the parent project still had its line and dates dependent on all of its subprojects. Is the original setting intentional?
+
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20  
+.....<--------------Project------------------------------->.....
+.....<--------------SubProject1------------>.....................
+..............................<----------SubProject2--------->.....
+"
+23797,Redmine,Patch,"",Closed,Normal,Japanese translation update (r15754),Go MAEDA,"",2016-09-09 09:53,Translations,"","","","",0,2016-09-09 00:33,2016-09-09 09:21,"","","","Translated 3 strings introduced by #23653.
+
+* label_font_default
+* label_font_monospace
+* label_font_proportional"
+23794,Redmine,Defect,"",Needs feedback,Normal,Regression in REST API ISSUES GET,Alex Kurov,"",2016-09-13 13:01,REST API,"","","","",0,2016-09-08 18:04,"","","",3.3.0,"In previos redmine version i've used rest api to sync with our ERP/CRM system for further analisis
+
+To get only updated issues we used uri like this
+
+issues.xml?key=8c4cc4a8a142484dcbe62b7e86bdfe1cb9045bec&updated_on=%3E%3D2016-09-07T06:12:07Z&limit=100&status_id=*&sort=updated_on
+
+Where ""2016-09-07T06:12:07Z"" is a timestamp of the last sync issue
+
+After 3.3 update this GET request returns issues that were update before this date
+
+I've tried this request with various dates and came across to the conclusion, that when i use only ""2016-09-07"" i get the correct result, but when i add time - i get strange set of issues
+
+I've also checked the [[Rest_Issues]], but i did not see any changes
+
+Please help to understand what is whong in this request (it worked well for a long time before the 3.3 update) or fix the problem if it is a bug"
+23781,Redmine,Defect,"",Closed,Normal,Previous/Next navigation on a issue is not displayed on r15639 and later,Go MAEDA,Jean-Philippe Lang,2016-10-01 10:13,Issues,"","","","",0,2016-09-08 03:38,2016-10-01 10:13,ä÷òAÇµÇƒÇ¢ÇÈ #14790,Fixed,"","Affected version:
+trunk (r15639 and later)
+
+Step to reproduce:
+1. Sign in to Redmine
+2. Click ""Issues""
+3. Click a issue in the issues list
+4. Previous/Next navigation cannot be seen on the issue
+
+!no-prev-next-link.png!"
+23777,Redmine,Defect,"",Closed,Normal,Login button is too thin on WebKit browsers,Go MAEDA,Jean-Philippe Lang,2016-10-02 15:09,UI,"","","","",0,2016-09-07 03:57,2016-10-02 15:09,"",Fixed,"","Affected version: trunk (r15595 and later)
+
+*Firefox:*
+No problem.
+!login-firefox.png!
+
+*Chrome:*
+padding property of input#login-submit seems to be ineffective.
+!login-chrome.png!"
+23770,Redmine,Defect,"",Closed,Low,Unable to open Redmine projects and users  giving 500 internal server error,Atish Ambavane,"",2016-09-06 14:53,"","","","","",0,2016-09-06 13:39,2016-09-06 14:53,"",Invalid,2.5.0,"I had installed redmine 2.5 with ruby 2.2.2 , it is successfully installed but when i click on users or create any projcets it gives error as internal server error
+
+ActionView::Template::Error (undefined method `name' for nil:NilClass):
+    8:      ) %>
+    9: </p>
+    10: <%= content_tag 'div', :id => 'notified-projects', :style => (@user.mail_notification == 'selected' ? '' : 'display:none;') do %>
+    11:   <%= render_project_nested_lists(@user.projects) do |project|
+    12:         content_tag('label',
+    13:           check_box_tag(
+    14:             'user[notified_project_ids][]',
+  app/helpers/application_helper.rb:258:in `render_project_nested_lists'
+  app/views/users/_mail_notifications.html.erb:11:in `block in _app_views_users__mail_notifications_html_erb___198177133578381805_69992840063240'
+  app/views/users/_mail_notifications.html.erb:10:in `_app_views_users__mail_notifications_html_erb___198177133578381805_69992840063240'
+  app/views/users/_form.html.erb:45:in `_app_views_users__form_html_erb___2472432516782750213_69992839846340'
+  app/views/users/new.html.erb:4:in `block in _app_views_users_new_html_erb__3129598378476235556_69992839771620'
+  app/helpers/application_helper.rb:1041:in `labelled_form_for'
+  app/views/users/new.html.erb:3:in `_app_views_users_new_html_erb__3129598378476235556_69992839771620'
+"
+23766,Redmine,Defect,"",Closed,Normal,API : creating issues with project identifier no longer possible,Felix Sch?fer,Jean-Philippe Lang,2016-10-02 20:13,REST API,3.3.1,"","","",0,2016-09-05 16:33,2016-10-02 12:21,"ä÷òAÇµÇƒÇ¢ÇÈ #19276, ä÷òAÇµÇƒÇ¢ÇÈ #20119",Fixed,3.3.0,Since r13999 it is not possible anymore to pass @params[:issue][:project_id]@ to the new issue API anymore. This is still referenced in the API documentation [[Rest_Issues#Creating-an-issue]].
+23765,Redmine,Defect,"",Closed,Normal,Redmine 404 Error,Mustafa Y?lmaz,"",2016-09-05 16:27,"","","","","",0,2016-09-05 16:23,2016-09-05 16:27,"",Invalid,"","Hello, i'm using Redmine 3.3.0 and trying to get Global Stats plugin to work. For two days the plugin had been giving the 404 error but this morning it magically worked for like 5 minutes and now it's gone again. I'm asking here because the plugin owner doesnt seem to be active for at least 1 year. Here's my log :
+
+Started GET ""/"" for 10.100.100.52 at 2016-09-05 14:14:16 +0000
+Processing by WelcomeController#index as HTML
+  Current user: admin (id=1)
+  Rendered welcome/index.html.erb within layouts/base (5.1ms)
+  Rendered plugins/a_common_libs/app/views/hooks/a_common_libs/_html_head.html.erb (2.9ms)
+  Rendered plugins/global_roles/app/views/hooks/global_roles/_head.html.erb (0.4ms)
+  Rendered plugins/global_roles/app/views/hooks/global_roles/_view_layouts_base_body_bottom.html.erb (0.4ms)
+Completed 200 OK in 54ms (Views: 33.2ms | ActiveRecord: 9.2ms)
+Started GET ""/global_stats/current_week"" for 10.100.100.52 at 2016-09-05 14:14:31 +0000
+Processing by StatsController#index as HTML
+  Parameters: {""time_filter""=>""current_week""}
+  Current user: admin (id=1)
+Completed 404 Not Found in 22ms (ActiveRecord: 6.8ms)
+
+ActiveRecord::RecordNotFound (Couldn't find Project with 'id'=):
+  app/models/project.rb:310:in `find'
+  plugins/redmine_stats/app/models/stat.rb:64:in `block in authors'
+  plugins/redmine_stats/app/models/stat.rb:63:in `each'
+  plugins/redmine_stats/app/models/stat.rb:63:in `authors'
+  plugins/redmine_stats/app/controllers/stats_controller.rb:22:in `index'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+
+
+Thanks in advance."
+23764,Redmine,Patch,"",Closed,Normal,closed_on field of copied issue is always set to source issue's value,Go MAEDA,Jean-Philippe Lang,2016-10-02 12:19,Issues,3.1.7,"","","",0,2016-09-05 11:26,2016-10-02 12:19,éüÇÃÉ`ÉPÉbÉgÇ™èdï° #25151,"","","When we copy a closed issue, the value of ""closed_on"" of copied issue is always set to source issue's value, even if the status of copied issue is not closed. I think it should be nil because the copied issue have not been closed before.
+
+Steps to reproduce:
+
+1. Create a closed issue (Issue_A).
+2. Click ""Copy"" on Issue_A.
+3. Change status to ""New"" and create a new copied issue (Issue_B).
+4. ""closed_on"" field of Issue_B should be nil, but the value is same with Issue_A.
+"
+23755,Redmine,Defect,"",Closed,Normal,Bulk edit form not show fields based on target tracker and status,Jean-Philippe Lang,Jean-Philippe Lang,2016-09-03 09:56,Issues,3.4.0,"","","",0,2016-09-03 09:49,2016-09-03 09:56,ä÷òAÇµÇƒÇ¢ÇÈ #26438,Fixed,"",""
+23751,Redmine,Defect,"",Closed,Normal,Tab buttons appear on pages that have no tabs,Edouard Cunibil,Jean-Philippe Lang,2016-10-01 10:57,UI,3.3.1,"","","",0,2016-09-02 12:41,2016-10-01 10:57,"",Fixed,3.3.0,"The JS condition that's supposed to hide the tab buttons checks if the first LI element is visible or not.
+If there is no LI element, the tab buttons are always shown.
+
+*file:* public/javascripts/application.js
+*line:* 383
+
+*replace:*
+<pre>
+if ((tabsWidth < el.width() - bw) && (lis.first().is(':visible'))) {
+</pre>
+
+*by:*
+<pre>
+if ((tabsWidth < el.width() - bw) && (lis.length === 0 || lis.first().is(':visible'))) {
+</pre>
+
+In case it helps, here is my environemt:
+<pre>
+Environment:
+  Redmine version                3.3.0.stable
+  Ruby version                   2.1.5-p273 (2014-11-13) [x86_64-linux-gnu]
+  Rails version                  4.2.6
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Git                            2.1.4
+  Filesystem                     
+Redmine plugins:
+  redmine_agile                  1.4.1
+  redmine_backlogs               v1.0.6
+  redmine_checklists             3.1.3
+</pre>
+
+Sorry not provinding a patch but I'm a Git guy so I don't have anything related to SVN installed on my system."
+23746,Redmine,Defect,"",Closed,Normal,Task filter is not bringing the correct value of the field.,Adriano Ceccarelli,"",2016-09-01 19:25,Issues filter,"","","","",0,2016-09-01 19:11,2016-09-01 19:18,"","","","The field is of type boolean.
+Held filter and grouped by this field when the field value is ""No"" the group considers that it is empty.
+The following case study where I am grouping by the ""Efic?cia Obtida?"" and also bringing column as the information for the conference.
+!erro_redmine.PNG!
+!custom_field.PNG!
+
+Thanks!"
+23745,Redmine,Patch,"",Closed,Normal,German translation for 3.3-stable,Toshi MARUYAMA,"",2016-09-02 03:33,Translations,3.3.1,"","","",0,2016-09-01 17:53,2016-09-02 03:33,"","","","From #23388.
+
+<pre><code class=""diff"">
+=== (+5,-6) config/locales/de.yml ===
+@@ -1204,9 +1204,8 @@
+   label_relations: Beziehungen
+   button_filter: Filter
+   mail_body_password_updated: Ihr Passwort wurde ge?ndert.
+-  error_no_tracker_allowed_for_new_issue_in_project: The project doesn't have any trackers
+-    for which you can create an issue
+-  label_tracker_all: All trackers
++  error_no_tracker_allowed_for_new_issue_in_project: F?r dieses Projekt wurden keine Tracker aktiviert.
++  label_tracker_all: Alle Tracker
+   label_new_project_issue_tab_enabled: Tab ""Neues Ticket"" anzeigen
+-  setting_new_item_menu_tab: Project menu tab for creating new objects
+-  label_new_object_tab_enabled: Display the ""+"" drop-down
++  setting_new_item_menu_tab: Men? zum Anlegen neuer Objekte
++  label_new_object_tab_enabled: Dropdown-Men? ""+"" anzeigen
+</code></pre>"
+23744,Redmine,Patch,"",Closed,Normal,German translation for 3.1-stable,Toshi MARUYAMA,"",2016-09-02 03:33,Translations,3.1.7,"","","",0,2016-09-01 17:48,2016-09-02 03:33,"","","","From #23388.
+
+<pre><code class=""diff"">
+=== (+2,-2) config/locales/de.yml ===
+@@ -145,7 +145,7 @@
+         not_same_project: ""geh?rt nicht zum selben Projekt""
+         circular_dependency: ""Diese Beziehung w?rde eine zyklische Abh?ngigkeit erzeugen""
+         cant_link_an_issue_with_a_descendant: ""Ein Ticket kann nicht mit einer Ihrer Unteraufgaben verlinkt werden""
+-        earlier_than_minimum_start_date: ""cannot be earlier than %{date} because of preceding issues""
++        earlier_than_minimum_start_date: ""kann wegen eines Vorg?ngertickets nicht vor %{date} liegen""
+ 
+   actionview_instancetag_blank_option: Bitte ausw?hlen
+</code></pre>"
+23741,Redmine,Defect,"",Closed,Normal,unable to modify the issue description,Christian Pinedo,"",2016-09-05 15:00,Database,"","","","",0,2016-09-01 12:28,2016-09-05 15:00,éüÇÃÉ`ÉPÉbÉgÇ∆èdï° #20831,Duplicate,3.3.0,"Hello,
+
+I am using the last git version of the branch 3.3-stable and I cannot modify the description of my issues once they have been defined. 
+
+I get the following error in the browser:
+
+<pre>
+Internal error
+An error occurred on the page you were trying to access.
+If you continue to experience problems please contact your Redmine administrator for assistance.
+If you are the Redmine administrator, check your log files for details about the error.
+</pre>
+
+This is the error in the log:
+
+<pre>
+ActiveRecord::StatementInvalid (Mysql2::Error: Data too long for column 'old_value' at row 1: INSERT INTO `journal_details` (`property`, `prop_key`, `old_value`, `value`, `journal_id`) VALUES (.......................
+  app/models/journal.rb:67:in `save'
+  app/models/issue.rb:1679:in `create_journal'
+  app/models/issue.rb:210:in `create_or_update'
+  app/controllers/issues_controller.rb:515:in `block in save_issue_with_child_records'
+  app/controllers/issues_controller.rb:503:in `save_issue_with_child_records'
+  app/controllers/issues_controller.rb:179:in `update'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+</pre>
+
+* If I select to modify the description of the issue but I do not modify any character, there is no problem once I update the issue.
+* If I select to modify the description of the issue and I modify even only one character, this error raises.
+
+Thanks,
+
+Christian
+"
+23740,Redmine,Patch,"",Closed,Normal,Traditional Chinese translation (to r15793),ChunChang Lo,"",2016-09-01 15:10,Translations,"","","","",0,2016-09-01 11:59,2016-09-01 15:10,"ÉRÉsÅ[å≥ #23637, ÉRÉsÅ[êÊ #24480","","","* New
+** field_textarea_font, label_font_default, label_font_monospace, label_font_proportional
+"
+23737,Redmine,Patch,"",Closed,Normal,Russian translation for 3.2-stable,Toshi MARUYAMA,"",2016-09-01 17:02,Translations,3.2.4,"","","",0,2016-09-01 06:12,2016-09-01 17:02,"","","","From #23497.
+
+<pre><code class=""diff"">
+=== (+2,-2) config/locales/ru.yml ===
+@@ -1282,4 +1282,4 @@
+   setting_attachment_extensions_denied: ÑHÑpÑÅÑÇÑuÑãÑvÑ~Ñ~ÑçÑu ÑÇÑpÑÉÑäÑyÑÇÑuÑ~ÑyÑë
+   label_any_open_issues: Ñ|ÑêÑqÑçÑu ÑÄÑÑÑ{ÑÇÑçÑÑÑçÑu ÑxÑpÑtÑpÑâÑy
+   label_no_open_issues: Ñ~ÑuÑÑ ÑÄÑÑÑ{ÑÇÑçÑÑÑçÑá ÑxÑpÑtÑpÑâ
+-  label_default_values_for_new_users: Default values for new users
++  label_default_values_for_new_users: ÑHÑ~ÑpÑâÑuÑ~ÑyÑë ÑÅÑÄ ÑÖÑ}ÑÄÑ|ÑâÑpÑ~ÑyÑê ÑtÑ|Ñë Ñ~ÑÄÑrÑçÑá ÑÅÑÄÑ|ÑéÑxÑÄÑrÑpÑÑÑuÑ|ÑuÑz
+</code></pre>"
+23736,Redmine,Patch,"",Closed,Normal,Russian translation for 3.1-stable,Toshi MARUYAMA,"",2016-09-01 10:03,Translations,3.1.7,"","","",0,2016-09-01 05:44,2016-09-01 10:03,"","","","From #23497.
+
+<pre><code class=""diff"">
+=== (+2,-2) config/locales/ru.yml ===
+@@ -206,7 +206,7 @@
+         not_same_project: ""Ñ~Ñu ÑÄÑÑÑ~ÑÄÑÉÑyÑÑÑÉÑë Ñ{ ÑÄÑtÑ~ÑÄÑ}ÑÖ ÑÅÑÇÑÄÑuÑ{ÑÑÑÖ""
+         circular_dependency: ""ÑSÑpÑ{ÑpÑë ÑÉÑrÑëÑxÑé ÑÅÑÇÑyÑrÑuÑtÑuÑÑ Ñ{ ÑàÑyÑ{Ñ|ÑyÑâÑuÑÉÑ{ÑÄÑz ÑxÑpÑrÑyÑÉÑyÑ}ÑÄÑÉÑÑÑy""
+         cant_link_an_issue_with_a_descendant: ""ÑHÑpÑtÑpÑâÑp Ñ~Ñu Ñ}ÑÄÑwÑuÑÑ ÑqÑçÑÑÑé ÑÉÑrÑëÑxÑpÑ~Ñp ÑÉÑÄ ÑÉÑrÑÄÑuÑz ÑÅÑÄÑtÑxÑpÑtÑpÑâÑuÑz""
+-        earlier_than_minimum_start_date: ""cannot be earlier than %{date} because of preceding issues""
++        earlier_than_minimum_start_date: ""Ñ~Ñu Ñ}ÑÄÑwÑuÑÑ ÑqÑçÑÑÑé ÑÇÑpÑ~ÑéÑäÑu %{date} ÑyÑx-ÑxÑp ÑÅÑÇÑuÑtÑçÑtÑÖÑãÑyÑá ÑxÑpÑtÑpÑâ""
+ 
+   support:
+     array:
+</code></pre>"
+23729,Redmine,Defect,"",Closed,Normal,Unable to update some issues,Olga McCarthy,"",2016-09-01 03:34,Issues,"","","","",0,2016-08-30 22:11,2016-09-01 03:34,"",Invalid,3.2.2,"Hi, I am running into a weird issue on redmine 3.2.2. We've been using this version for a while now, and all of a sudden today I can't update issues that are assigned to one particular user. Also if an issue has ever been assigned to that user but is now assigned to someone else I can't update it either.
+
+The error log reports no errors. We get an ""Internal Error"" in the browser.
+
+Our system info:
+<pre>
+Environment:
+  Redmine version                3.2.2.stable
+  Ruby version                   2.1.9-p490 (2016-03-30) [x86_64-linux]
+  Rails version                  4.2.5.2
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.8.13
+  Git                            2.7.4
+  Filesystem                     
+Redmine plugins:
+  no plugin installed
+</pre>"
+23725,Redmine,Patch,"",Closed,Normal,Updated Brazilian translation for 3.3.0.stable,Luiz Moura,"",2016-09-02 03:32,Translations,3.3.1,"","","",0,2016-08-30 19:17,2016-09-02 03:32,ÉRÉsÅ[å≥ #23388,"","",Lines 1205 to 1226 do not translated to pt-BR (portuguese brazil)
+23718,Redmine,Patch,"",Closed,Normal,do not ignore zero byte attachments,Jens Kr?mer,"",2016-08-31 09:26,Attachments,"","","","",0,2016-08-30 12:07,2016-08-31 09:26,ä÷òAÇµÇƒÇ¢ÇÈ #5969,"","",this patch fixes #5969
+23712,Redmine,Defect,"",Closed,Normal,Issue header format,Raju M,"",2016-08-29 16:54,"","","","","",0,2016-08-29 15:07,2016-08-29 16:54,"",Invalid,"","Iam using Redmine version 3.1.0.stable. In that Issue Header format got disturbed.
+screenshot attached.
+Help me how to resolve it. "
+23708,Redmine,Patch,"",Closed,Normal,Too long words in subtasks break layout,Felix Gliesche,Jean-Philippe Lang,2016-08-31 19:14,UI - Responsive,3.2.4,"","","",0,2016-08-29 10:00,2016-08-31 19:14,"","","","If the subject of a subtask contains a a very long word it can break the layout, which is more likely to happen on mobile devices:
+
+!{width:320px}before-patch.png!
+
+The attached patch fixes this problem by adding a
+
+<pre><code class=""css"">word-break: break-word;</code></pre> rule to the subtasks subject on mobile:
+
+!{width:320px}after-patch.png!"
+23700,Redmine,Defect,"",Closed,Normal,"Creating a wiki page named ""Sidebar"" without proper permission raises an exception",Go MAEDA,Jean-Philippe Lang,2016-08-31 18:56,Wiki,3.3.1,"","","",0,2016-08-28 03:24,2016-08-31 18:56,"",Fixed,3.3.0,"Steps to reproduce:
+
+1. Login with an account which does not have ""Protect wiki pages"" on some project.
+2. Go to the project.
+3. Click ""+"" button and then click ""New wiki page"".
+4. Enter ""Sidebar"" in the title field and click ""Next"".
+5. Redmine raises an exception.
+
+<pre>
+Completed 500 Internal Server Error in 48ms (Views: 13.8ms | ActiveRecord: 13.6ms)
+
+ActionController::UrlGenerationError (No route matches {:action=>""show"", :controller=>""wiki"", :id=>""Sidebar"", :project_id=>nil} missing required keys: [:project_id]):
+  app/controllers/wiki_controller.rb:71:in `new'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+</pre>
+"
+23693,Redmine,Defect,"",Closed,Normal,"Error in wiki ""Installing a plugin""",eugen hanussek,"",2016-08-26 17:30,"","","","","",0,2016-08-26 15:45,2016-08-26 17:18,"",Invalid,3.3.0,"after installing redmine 3.3.0 I add the scrum-plugin according the wiki [[Plugins#Installing-a-plugin|how to install]]. 
+First all seems to be OK. Here the config:
+!redmine.PNG!
+
+Then we noticed an error on Calendars. This seems to be the same as reported by ""Meindert Oldenburger"":https://redmine.ociotec.com/boards/11/topics/54 . Meindert's ""workaround""-hint is OK.
+
+But we got another error:
+<pre>
+Processing by CalendarsController#show as HTML
+  Parameters: {""project_id""=>""XXX""}
+  Current user: admin (id=1)
+  Rendered queries/_filters.html.erb (11.3ms)
+  Rendered common/_calendar.html.erb (22.7ms)
+  Rendered issues/_sidebar.html.erb (8.4ms)
+  Rendered calendars/show.html.erb within layouts/base (51.7ms)
+  Rendered plugins/scrum/app/views/scrum_hooks/_head.html.erb (0.2ms)
+  Rendered plugins/scrum/app/views/scrum_hooks/_scrum_tips.html.erb (8.1ms)
+Completed 500 Internal Server Error in 258ms (Views: 87.9ms | ActiveRecord: 24.8ms)
+
+ActiveRecord::StatementInvalid (Mysql2::Error: Unknown column 'sprints.sprint_start_date' in 'where clause': SELECT `sprints`.`id` AS t0_r0, `sprints`.`name` AS t0_r1, `sprints`.`description` AS t0_r2, `sprints`.`start_date` AS t0_r3, `sprints`.`end_date` AS t0_r4, `sprints`.`user_id` AS t0_r5, `sprints`.`project_id` AS t0_r6, `sprints`.`created_on` AS t0_r7, `sprints`.`updated_on` AS t0_r8, `sprints`.`is_product_backlog` AS t0_r9, `projects`.`id` AS t1_r0, `projects`.`name` AS t1_r1, `projects`.`description` AS t1_r2, `projects`.`homepage` AS t1_r3, `projects`.`is_public` AS t1_r4, `projects`.`parent_id` AS t1_r5, `projects`.`created_on` AS t1_r6, `projects`.`updated_on` AS t1_r7, `projects`.`identifier` AS t1_r8, `projects`.`status` AS t1_r9, `projects`.`lft` AS t1_r10, `projects`.`rgt` AS t1_r11, `projects`.`inherit_members` AS t1_r12, `projects`.`product_backlog_id` AS t1_r13, `projects`.`default_version_id` AS t1_r14 FROM `sprints` INNER JOIN `projects` ON `projects`.`id` = `sprints`.`project_id` WHERE ((projects.lft >= 9 AND projects.rgt <= 16)) AND `sprints`.`is_product_backlog` = 0 AND (`sprints`.`sprint_start_date` BETWEEN '2016-08-01' AND '2016-09-04')):
+  plugins/scrum/lib/scrum/calendars_controller_patch.rb:35:in `query_sprints'
+  plugins/scrum/lib/scrum/calendars_controller_patch.rb:24:in `add_sprints'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+
+</pre>
+
+* without the scrum plugin all was fine
+
+After some reseaches I realized that the upgrade of the database was not processed.
+Why? 
+* I tried once more:
+
+<pre>
+sudo bundle exec rake redmine:plugins:migrate RAILS_ENV=production
+</pre>
+
+* same result, error on calendar
+* and the db table @sprints@ has column @start_date@, instead of @sprint_start_date@
+
+Then I try:
+
+*sudo bundle exec rake --trace redmine:plugins:migrate NAME=scrum RAILS_ENV=production*
+
+Result:
+* no error on calendar
+* the colunm @sprints.sprint_start_date@ is there
+
+So it is a doku-error. 
+* *NAME=plugin-name* is missing
+* I would suggest to prefix the cmd with *sudo*, too
+
+
+"
+23671,Redmine,Defect,"",Closed,Normal,"The Redmine Down with logs:""Rendered mailer/reminder.html.erb within layouts/mailer"" and ""REDMAIN_XAPIAN ERROR: No Ruby bindings for Xapian installed !!.""",hony yii,"",2016-08-26 04:32,"","","","","",0,2016-08-26 04:14,2016-08-26 04:32,"",Invalid,2.5.0,"Redmine version 2.5
+At the beginning of August I met an issue.
+When I want to login,I can see the login page but when I fill Account and Password and click login the system show a new page with ""internal error"" to me. 
+
+and in the logs I found:
+
+
+=====
+Start: 7
+Days : 7
+Looking up projects to process...
+Found 49 digestable projects out of 49 total projects.
+Projects to process: B81C, B753, B754, TELEMATICS, B81C - W2, B81C - W3, B81C - W4, B753 - W3, B753 - W2, B753 - W4, C206, EP GEN 6.1, EB2, B751, B754 - W2, TITAN, B753 - Middle Life, ESL, EP8F ESL technical events, B754 - W1, B753 - W5, B81C-W5, B81C - W5, B754 - Middle Life, X74, X83, 1-Vehicle, 2-Engine, 3-Others, MRN step 4, B753-Export, B754-Export, ESP9, B753-60Y, B753-F07, B753-F03, B754-F03, EP GEN 6.2, B753 Fleet, B754-F11, NAC/RCC, B81-F03, B81-F07, B81-F11, B753-F11, B754-F07, B751-F03, B751-F11, China 6
+
+** Processing project 'B81C'...
+Summarizing: 2016-07-25 to 2016-08-01 (7 days)
+From 2016-07-25 to 2016-07-31
+Activity.scope: [""issues"", ""news""]
+events.count: 42
+Found 42 events.
+Default setting for whether digest is active for users: true
+Found 129 digest recipients out of 286 project members/groups.
+  Rendered plugins/redmine_digest/app/views/digest_mailer/digest.text.erb within layouts/mailer (78.1ms)
+  Rendered plugins/redmine_digest/app/views/digest_mailer/digest.html.erb within layouts/mailer (31.2ms)
+Email sent.
+Email delivery error: An existing connection was forcibly closed by the remote host.
+Sent digest: [B81C] Activity: 42 events (from 2016-07-25 to 2016-07-31)
+
+** Processing project 'B753'...
+Summarizing: 2016-07-25 to 2016-08-01 (7 days)
+From 2016-07-25 to 2016-07-31
+Activity.scope: [""issues"", ""news""]
+events.count: 55
+Found 55 events.
+Default setting for whether digest is active for users: true
+Found 150 digest recipients out of 359 project members/groups.
+  Rendered plugins/redmine_digest/app/views/digest_mailer/digest.text.erb within layouts/mailer (93.8ms)
+  Rendered plugins/redmine_digest/app/views/digest_mailer/digest.html.erb within layouts/mailer (218.7ms)
+Email sent.
+Email delivery error: An existing connection was forcibly closed by the remote host.
+Sent digest: [B753] Activity: 55 events (from 2016-07-25 to 2016-07-31)
+
+** Processing project 'B754'...
+Summarizing: 2016-07-25 to 2016-08-01 (7 days)
+From 2016-07-25 to 2016-07-31
+Activity.scope: [""issues"", ""news"", ""documents""]
+events.count: 44
+Found 44 events.
+Default setting for whether digest is active for users: true
+Found 161 digest recipients out of 352 project members/groups.
+  Rendered plugins/redmine_digest/app/views/digest_mailer/digest.text.erb within layouts/mailer (31.3ms)
+  Rendered plugins/redmine_digest/app/views/digest_mailer/digest.html.erb within layouts/mailer (31.2ms)
+Email sent.
+Email delivery error: An existing connection was forcibly closed by the remote host.
+Sent digest: [B754] Activity: 44 events (from 2016-07-25 to 2016-07-31)
+
+** Processing project 'TELEMATICS'...
+Summarizing: 2016-07-25 to 2016-08-01 (7 days)
+From 2016-07-25 to 2016-07-31
+Activity.scope: [""issues"", ""news""]
+events.count: 11
+Found 11 events.
+Default setting for whether digest is active for users: true
+Found 5 digest recipients out of 19 project members/groups.
+  Rendered plugins/redmine_digest/app/views/digest_mailer/digest.text.erb within layouts/mailer (62.5ms)
+  Rendered plugins/redmine_digest/app/views/digest_mailer/digest.html.erb within layouts/mailer (171.9ms)
+Email sent.
+Sent digest: [TELEMATICS] Activity: 11 events (from 2016-07-25 to 2016-07-31)
+
+** Processing project 'B81C - W2'...
+Summarizing: 2016-07-25 to 2016-08-01 (7 days)
+From 2016-07-25 to 2016-07-31
+Activity.scope: [""issues""]
+events.count: 0
+No events were found for project B81C - W2.
+
+** Processing project 'B81C - W3'...
+Summarizing: 2016-07-25 to 2016-08-01 (7 days)
+From 2016-07-25 to 2016-07-31
+Activity.scope: [""issues""]
+events.count: 0
+No events were found for project B81C - W3.
+
+** Processing project 'B81C - W4'...
+Summarizing: 2016-07-25 to 2016-08-01 (7 days)
+From 2016-07-25 to 2016-07-31
+Activity.scope: [""issues""]
+events.count: 0
+No events were found for project B81C - W4.
+
+** Processing project 'B753 - W3'...
+Summarizing: 2016-07-25 to 2016-08-01 (7 days)
+From 2016-07-25 to 2016-07-31
+Activity.scope: [""issues""]
+events.count: 0
+No events were found for project B753 - W3.
+
+** Processing project 'B753 - W2'...
+Summarizing: 2016-07-25 to 2016-08-01 (7 days)
+From 2016-07-25 to 2016-07-31
+Activity.scope: [""issues""]
+events.count: 3
+Found 3 events.
+Default setting for whether digest is active for users: true
+Found 97 digest recipients out of 246 project members/groups.
+  Rendered plugins/redmine_digest/app/views/digest_mailer/digest.text.erb within layouts/mailer (15.6ms)
+  Rendered plugins/redmine_digest/app/views/digest_mailer/digest.html.erb within layouts/mailer (0.0ms)
+Email sent.
+Sent digest: [B753 - W2] Activity: 3 events (from 2016-07-25 to 2016-07-31)
+
+** Processing project 'B753 - W4'...
+Summarizing: 2016-07-25 to 2016-08-01 (7 days)
+From 2016-07-25 to 2016-07-31
+Activity.scope: [""issues""]
+events.count: 2
+Found 2 events.
+Default setting for whether digest is active for users: true
+Found 107 digest recipients out of 262 project members/groups.
+  Rendered plugins/redmine_digest/app/views/digest_mailer/digest.text.erb within layouts/mailer (0.0ms)
+  Rendered plugins/redmine_digest/app/views/digest_mailer/digest.html.erb within layouts/mailer (0.0ms)
+Email sent.
+Email delivery error: An existing connection was forcibly closed by the remote host.
+Sent digest: [B753 - W4] Activity: 2 events (from 2016-07-25 to 2016-07-31)
+
+** Processing project 'C206'...
+Summarizing: 2016-07-25 to 2016-08-01 (7 days)
+From 2016-07-25 to 2016-07-31
+Activity.scope: [""issues""]
+events.count: 0
+No events were found for project C206.
+
+** Processing project 'EP GEN 6.1'...
+Summarizing: 2016-07-25 to 2016-08-01 (7 days)
+From 2016-07-25 to 2016-07-31
+Activity.scope: [""issues""]
+events.count: 0
+No events were found for project EP GEN 6.1.
+
+** Processing project 'EB2'...
+Summarizing: 2016-07-25 to 2016-08-01 (7 days)
+From 2016-07-25 to 2016-07-31
+Activity.scope: [""issues"", ""news""]
+events.count: 0
+No events were found for project EB2.
+
+** Processing project 'B751'...
+Summarizing: 2016-07-25 to 2016-08-01 (7 days)
+From 2016-07-25 to 2016-07-31
+Activity.scope: [""issues"", ""news""]
+events.count: 34
+Found 34 events.
+Default setting for whether digest is active for users: true
+Found 162 digest recipients out of 328 project members/groups.
+  Rendered plugins/redmine_digest/app/views/digest_mailer/digest.text.erb within layouts/mailer (93.7ms)
+  Rendered plugins/redmine_digest/app/views/digest_mailer/digest.html.erb within layouts/mailer (62.5ms)
+Email sent.
+Email delivery error: An existing connection was forcibly closed by the remote host.
+Sent digest: [B751] Activity: 34 events (from 2016-07-25 to 2016-07-31)
+
+** Processing project 'B754 - W2'...
+Summarizing: 2016-07-25 to 2016-08-01 (7 days)
+From 2016-07-25 to 2016-07-31
+Activity.scope: [""issues"", ""news""]
+events.count: 1
+Found 1 events.
+Default setting for whether digest is active for users: true
+Found 104 digest recipients out of 225 project members/groups.
+  Rendered plugins/redmine_digest/app/views/digest_mailer/digest.text.erb within layouts/mailer (15.6ms)
+  Rendered plugins/redmine_digest/app/views/digest_mailer/digest.html.erb within layouts/mailer (0.0ms)
+Email sent.
+Email delivery error: An existing connection was forcibly closed by the remote host.
+Sent digest: [B754 - W2] Activity: 1 events (from 2016-07-25 to 2016-07-31)
+
+** Processing project 'TITAN'...
+Summarizing: 2016-07-25 to 2016-08-01 (7 days)
+From 2016-07-25 to 2016-07-31
+Activity.scope: [""issues"", ""news""]
+events.count: 0
+No events were found for project TITAN.
+
+** Processing project 'B753 - Middle Life'...
+Summarizing: 2016-07-25 to 2016-08-01 (7 days)
+From 2016-07-25 to 2016-07-31
+Activity.scope: [""issues"", ""news""]
+events.count: 33
+Found 33 events.
+Default setting for whether digest is active for users: true
+Found 80 digest recipients out of 188 project members/groups.
+  Rendered plugins/redmine_digest/app/views/digest_mailer/digest.text.erb within layouts/mailer (62.5ms)
+  Rendered plugins/redmine_digest/app/views/digest_mailer/digest.html.erb within layouts/mailer (78.1ms)
+Email sent.
+Sent digest: [B753 - Middle Life] Activity: 33 events (from 2016-07-25 to 2016-07-31)
+
+** Processing project 'ESL'...
+Summarizing: 2016-07-25 to 2016-08-01 (7 days)
+From 2016-07-25 to 2016-07-31
+Activity.scope: [""issues"", ""news""]
+events.count: 10
+Found 10 events.
+Default setting for whether digest is active for users: true
+Found 46 digest recipients out of 81 project members/groups.
+  Rendered plugins/redmine_digest/app/views/digest_mailer/digest.text.erb within layouts/mailer (31.3ms)
+  Rendered plugins/redmine_digest/app/views/digest_mailer/digest.html.erb within layouts/mailer (15.6ms)
+Email sent.
+Sent digest: [ESL] Activity: 10 events (from 2016-07-25 to 2016-07-31)
+
+** Processing project 'EP8F ESL technical events'...
+Summarizing: 2016-07-25 to 2016-08-01 (7 days)
+From 2016-07-25 to 2016-07-31
+Activity.scope: [""issues"", ""news""]
+events.count: 0
+No events were found for project EP8F ESL technical events.
+
+** Processing project 'B754 - W1'...
+Summarizing: 2016-07-25 to 2016-08-01 (7 days)
+From 2016-07-25 to 2016-07-31
+Activity.scope: [""issues"", ""news""]
+events.count: 0
+No events were found for project B754 - W1.
+
+** Processing project 'B753 - W5'...
+Summarizing: 2016-07-25 to 2016-08-01 (7 days)
+From 2016-07-25 to 2016-07-31
+Activity.scope: [""issues"", ""news""]
+events.count: 0
+No events were found for project B753 - W5.
+
+** Processing project 'B81C-W5'...
+Summarizing: 2016-07-25 to 2016-08-01 (7 days)
+From 2016-07-25 to 2016-07-31
+Activity.scope: [""issues"", ""news""]
+events.count: 0
+No events were found for project B81C-W5.
+
+** Processing project 'B81C - W5'...
+Summarizing: 2016-07-25 to 2016-08-01 (7 days)
+From 2016-07-25 to 2016-07-31
+Activity.scope: [""issues"", ""news""]
+events.count: 0
+No events were found for project B81C - W5.
+
+** Processing project 'B754 - Middle Life'...
+Summarizing: 2016-07-25 to 2016-08-01 (7 days)
+From 2016-07-25 to 2016-07-31
+Activity.scope: [""issues"", ""news""]
+events.count: 0
+No events were found for project B754 - Middle Life.
+
+** Processing project 'X74'...
+Summarizing: 2016-07-25 to 2016-08-01 (7 days)
+From 2016-07-25 to 2016-07-31
+Activity.scope: [""issues"", ""news""]
+events.count: 0
+No events were found for project X74.
+
+** Processing project 'X83'...
+Summarizing: 2016-07-25 to 2016-08-01 (7 days)
+From 2016-07-25 to 2016-07-31
+Activity.scope: [""issues"", ""news""]
+events.count: 0
+No events were found for project X83.
+
+** Processing project '1-Vehicle'...
+Summarizing: 2016-07-25 to 2016-08-01 (7 days)
+From 2016-07-25 to 2016-07-31
+Activity.scope: [""issues"", ""news"", ""documents""]
+events.count: 147
+Found 147 events.
+Default setting for whether digest is active for users: true
+Found 0 digest recipients out of 1 project members/groups.
+No members were found for project 1-Vehicle.
+
+** Processing project '2-Engine'...
+Summarizing: 2016-07-25 to 2016-08-01 (7 days)
+From 2016-07-25 to 2016-07-31
+Activity.scope: [""issues"", ""news""]
+events.count: 10
+Found 10 events.
+Default setting for whether digest is active for users: true
+Found 1 digest recipients out of 4 project members/groups.
+  Rendered plugins/redmine_digest/app/views/digest_mailer/digest.text.erb within layouts/mailer (15.6ms)
+  Rendered plugins/redmine_digest/app/views/digest_mailer/digest.html.erb within layouts/mailer (31.3ms)
+Email sent.
+Sent digest: [2-Engine] Activity: 10 events (from 2016-07-25 to 2016-07-31)
+
+** Processing project '3-Others'...
+Summarizing: 2016-07-25 to 2016-08-01 (7 days)
+From 2016-07-25 to 2016-07-31
+Activity.scope: [""issues"", ""changesets"", ""news""]
+events.count: 11
+Found 11 events.
+Default setting for whether digest is active for users: true
+Found 0 digest recipients out of 1 project members/groups.
+No members were found for project 3-Others.
+
+** Processing project 'MRN step 4'...
+Summarizing: 2016-07-25 to 2016-08-01 (7 days)
+From 2016-07-25 to 2016-07-31
+Activity.scope: [""issues"", ""news""]
+events.count: 0
+No events were found for project MRN step 4.
+
+** Processing project 'B753-Export'...
+Summarizing: 2016-07-25 to 2016-08-01 (7 days)
+From 2016-07-25 to 2016-07-31
+Activity.scope: [""issues"", ""news""]
+events.count: 0
+No events were found for project B753-Export.
+
+** Processing project 'B754-Export'...
+Summarizing: 2016-07-25 to 2016-08-01 (7 days)
+From 2016-07-25 to 2016-07-31
+Activity.scope: [""issues"", ""news""]
+events.count: 0
+No events were found for project B754-Export.
+
+** Processing project 'ESP9'...
+Summarizing: 2016-07-25 to 2016-08-01 (7 days)
+From 2016-07-25 to 2016-07-31
+Activity.scope: [""issues"", ""news""]
+events.count: 0
+No events were found for project ESP9.
+
+** Processing project 'B753-60Y'...
+Summarizing: 2016-07-25 to 2016-08-01 (7 days)
+From 2016-07-25 to 2016-07-31
+Activity.scope: [""issues"", ""news""]
+events.count: 0
+No events were found for project B753-60Y.
+
+** Processing project 'B753-F07'...
+Summarizing: 2016-07-25 to 2016-08-01 (7 days)
+From 2016-07-25 to 2016-07-31
+Activity.scope: [""issues"", ""news""]
+events.count: 0
+No events were found for project B753-F07.
+
+** Processing project 'B753-F03'...
+Summarizing: 2016-07-25 to 2016-08-01 (7 days)
+From 2016-07-25 to 2016-07-31
+Activity.scope: [""issues"", ""news""]
+events.count: 0
+No events were found for project B753-F03.
+
+** Processing project 'B754-F03'...
+Summarizing: 2016-07-25 to 2016-08-01 (7 days)
+From 2016-07-25 to 2016-07-31
+Activity.scope: [""issues"", ""news""]
+events.count: 0
+No events were found for project B754-F03.
+
+** Processing project 'EP GEN 6.2'...
+Summarizing: 2016-07-25 to 2016-08-01 (7 days)
+From 2016-07-25 to 2016-07-31
+Activity.scope: [""issues"", ""news""]
+events.count: 0
+No events were found for project EP GEN 6.2.
+
+** Processing project 'B753 Fleet'...
+Summarizing: 2016-07-25 to 2016-08-01 (7 days)
+From 2016-07-25 to 2016-07-31
+Activity.scope: [""issues"", ""news""]
+events.count: 0
+No events were found for project B753 Fleet.
+
+** Processing project 'B754-F11'...
+Summarizing: 2016-07-25 to 2016-08-01 (7 days)
+From 2016-07-25 to 2016-07-31
+Activity.scope: [""issues"", ""news""]
+events.count: 6
+Found 6 events.
+Default setting for whether digest is active for users: true
+Found 47 digest recipients out of 117 project members/groups.
+  Rendered plugins/redmine_digest/app/views/digest_mailer/digest.text.erb within layouts/mailer (0.0ms)
+  Rendered plugins/redmine_digest/app/views/digest_mailer/digest.html.erb within layouts/mailer (0.0ms)
+Email sent.
+Sent digest: [B754-F11] Activity: 6 events (from 2016-07-25 to 2016-07-31)
+
+** Processing project 'NAC/RCC'...
+Summarizing: 2016-07-25 to 2016-08-01 (7 days)
+From 2016-07-25 to 2016-07-31
+Activity.scope: [""issues"", ""news""]
+events.count: 11
+Found 11 events.
+Default setting for whether digest is active for users: true
+Found 5 digest recipients out of 13 project members/groups.
+  Rendered plugins/redmine_digest/app/views/digest_mailer/digest.text.erb within layouts/mailer (46.9ms)
+  Rendered plugins/redmine_digest/app/views/digest_mailer/digest.html.erb within layouts/mailer (62.5ms)
+Email sent.
+Sent digest: [NAC/RCC] Activity: 11 events (from 2016-07-25 to 2016-07-31)
+
+** Processing project 'B81-F03'...
+Summarizing: 2016-07-25 to 2016-08-01 (7 days)
+From 2016-07-25 to 2016-07-31
+Activity.scope: [""issues"", ""news""]
+events.count: 0
+No events were found for project B81-F03.
+
+** Processing project 'B81-F07'...
+Summarizing: 2016-07-25 to 2016-08-01 (7 days)
+From 2016-07-25 to 2016-07-31
+Activity.scope: [""issues"", ""news""]
+events.count: 0
+No events were found for project B81-F07.
+
+** Processing project 'B81-F11'...
+Summarizing: 2016-07-25 to 2016-08-01 (7 days)
+From 2016-07-25 to 2016-07-31
+Activity.scope: [""issues"", ""news""]
+events.count: 5
+Found 5 events.
+Default setting for whether digest is active for users: true
+Found 36 digest recipients out of 84 project members/groups.
+  Rendered plugins/redmine_digest/app/views/digest_mailer/digest.text.erb within layouts/mailer (15.6ms)
+  Rendered plugins/redmine_digest/app/views/digest_mailer/digest.html.erb within layouts/mailer (15.6ms)
+Email sent.
+Sent digest: [B81-F11] Activity: 5 events (from 2016-07-25 to 2016-07-31)
+
+** Processing project 'B753-F11'...
+Summarizing: 2016-07-25 to 2016-08-01 (7 days)
+From 2016-07-25 to 2016-07-31
+Activity.scope: [""issues"", ""news""]
+events.count: 10
+Found 10 events.
+Default setting for whether digest is active for users: true
+Found 47 digest recipients out of 106 project members/groups.
+  Rendered plugins/redmine_digest/app/views/digest_mailer/digest.text.erb within layouts/mailer (31.3ms)
+  Rendered plugins/redmine_digest/app/views/digest_mailer/digest.html.erb within layouts/mailer (31.2ms)
+Email sent.
+Sent digest: [B753-F11] Activity: 10 events (from 2016-07-25 to 2016-07-31)
+
+** Processing project 'B754-F07'...
+Summarizing: 2016-07-25 to 2016-08-01 (7 days)
+From 2016-07-25 to 2016-07-31
+Activity.scope: [""issues"", ""news""]
+events.count: 10
+Found 10 events.
+Default setting for whether digest is active for users: true
+Found 34 digest recipients out of 80 project members/groups.
+  Rendered plugins/redmine_digest/app/views/digest_mailer/digest.text.erb within layouts/mailer (15.6ms)
+  Rendered plugins/redmine_digest/app/views/digest_mailer/digest.html.erb within layouts/mailer (15.6ms)
+Email sent.
+Sent digest: [B754-F07] Activity: 10 events (from 2016-07-25 to 2016-07-31)
+
+** Processing project 'B751-F03'...
+Summarizing: 2016-07-25 to 2016-08-01 (7 days)
+From 2016-07-25 to 2016-07-31
+Activity.scope: [""issues"", ""news""]
+events.count: 3
+Found 3 events.
+Default setting for whether digest is active for users: true
+Found 35 digest recipients out of 89 project members/groups.
+  Rendered plugins/redmine_digest/app/views/digest_mailer/digest.text.erb within layouts/mailer (15.6ms)
+  Rendered plugins/redmine_digest/app/views/digest_mailer/digest.html.erb within layouts/mailer (0.0ms)
+Email sent.
+Sent digest: [B751-F03] Activity: 3 events (from 2016-07-25 to 2016-07-31)
+
+** Processing project 'B751-F11'...
+Summarizing: 2016-07-25 to 2016-08-01 (7 days)
+From 2016-07-25 to 2016-07-31
+Activity.scope: [""issues"", ""news""]
+events.count: 5
+Found 5 events.
+Default setting for whether digest is active for users: true
+Found 53 digest recipients out of 115 project members/groups.
+  Rendered plugins/redmine_digest/app/views/digest_mailer/digest.text.erb within layouts/mailer (15.6ms)
+  Rendered plugins/redmine_digest/app/views/digest_mailer/digest.html.erb within layouts/mailer (15.6ms)
+Email sent.
+Sent digest: [B751-F11] Activity: 5 events (from 2016-07-25 to 2016-07-31)
+
+** Processing project 'China 6'...
+Summarizing: 2016-07-25 to 2016-08-01 (7 days)
+From 2016-07-25 to 2016-07-31
+Activity.scope: [""issues"", ""news""]
+events.count: 3
+Found 3 events.
+Default setting for whether digest is active for users: true
+Found 26 digest recipients out of 51 project members/groups.
+  Rendered plugins/redmine_digest/app/views/digest_mailer/digest.text.erb within layouts/mailer (0.0ms)
+  Rendered plugins/redmine_digest/app/views/digest_mailer/digest.html.erb within layouts/mailer (15.6ms)
+Email sent.
+Sent digest: [China 6] Activity: 3 events (from 2016-07-25 to 2016-07-31)
+Connecting to database specified by database.yml
+Creating scope :system. Overwriting existing method Enumeration.system.
+Creating scope :sorted. Overwriting existing method User.sorted.
+REDMAIN_XAPIAN ERROR: No Ruby bindings for Xapian installed !!. PLEASE install Xapian search engine interface for Ruby.
+Creating scope :sorted. Overwriting existing method Group.sorted.
+  Rendered mailer/reminder.text.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (31.2ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+Connecting to database specified by database.yml
+Creating scope :system. Overwriting existing method Enumeration.system.
+Creating scope :sorted. Overwriting existing method User.sorted.
+REDMAIN_XAPIAN ERROR: No Ruby bindings for Xapian installed !!. PLEASE install Xapian search engine interface for Ruby.
+Creating scope :sorted. Overwriting existing method Group.sorted.
+Connecting to database specified by database.yml
+Creating scope :system. Overwriting existing method Enumeration.system.
+Creating scope :sorted. Overwriting existing method User.sorted.
+REDMAIN_XAPIAN ERROR: No Ruby bindings for Xapian installed !!. PLEASE install Xapian search engine interface for Ruby.
+Creating scope :sorted. Overwriting existing method Group.sorted.
+Connecting to database specified by database.yml
+Creating scope :system. Overwriting existing method Enumeration.system.
+Creating scope :sorted. Overwriting existing method User.sorted.
+REDMAIN_XAPIAN ERROR: No Ruby bindings for Xapian installed !!. PLEASE install Xapian search engine interface for Ruby.
+Creating scope :sorted. Overwriting existing method Group.sorted.
+  Rendered mailer/reminder.text.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (31.3ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.7ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (16.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+Connecting to database specified by database.yml
+Creating scope :system. Overwriting existing method Enumeration.system.
+Creating scope :sorted. Overwriting existing method User.sorted.
+REDMAIN_XAPIAN ERROR: No Ruby bindings for Xapian installed !!. PLEASE install Xapian search engine interface for Ruby.
+Creating scope :sorted. Overwriting existing method Group.sorted.
+Connecting to database specified by database.yml
+Creating scope :system. Overwriting existing method Enumeration.system.
+Creating scope :sorted. Overwriting existing method User.sorted.
+REDMAIN_XAPIAN ERROR: No Ruby bindings for Xapian installed !!. PLEASE install Xapian search engine interface for Ruby.
+Creating scope :sorted. Overwriting existing method Group.sorted.
+Connecting to database specified by database.yml
+Creating scope :system. Overwriting existing method Enumeration.system.
+Creating scope :sorted. Overwriting existing method User.sorted.
+REDMAIN_XAPIAN ERROR: No Ruby bindings for Xapian installed !!. PLEASE install Xapian search engine interface for Ruby.
+Creating scope :sorted. Overwriting existing method Group.sorted.
+  Rendered mailer/reminder.text.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (140.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (31.2ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (16.9ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (109.4ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.7ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.7ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within layouts/mailer (15.6ms)
+  Rendered mailer/reminder.text.erb within layouts/mailer (0.0ms)
+  Rendered mailer/reminder.html.erb within la"

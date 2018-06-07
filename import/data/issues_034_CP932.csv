@@ -1,0 +1,677 @@
+#,プロジェクト,トラッカー,親チケット,ステータス,優先度,題名,作成者,担当者,更新日,カテゴリ,対象バージョン,開始日,期日,予定工数,進捗率,作成日,終了日,関連するチケット,Resolution,Affected version,説明
+21535,Redmine,Defect,"",Closed,Normal,Moving a custom field value in the order switches in the edit view,Nils Grimm,Jean-Philippe Lang,2016-01-09 10:14,Custom fields,3.2.1,"","","",0,2015-12-15 23:35,2016-01-09 10:14,"次のチケットが重複 #21563, 次のチケットが重複 #22061",Fixed,3.2.0,"Since the upgrade from 3.1.2 to 3.2.0 the move buttons in the custom field view are switching on each click ins custom field edit view.
+
+The position has been changed after returning to the custom field list."
+21534,Redmine,Defect,"",Closed,Normal,Backtrace cleaner should not clean plugin paths,Ond?ej Ezr,Jean-Philippe Lang,2016-01-09 10:13,Code cleanup/refactoring,3.2.1,"","","",0,2015-12-15 21:03,2016-01-09 10:13,"",Fixed,"",Rails.backtrace_cleaner.class::APP_DIRS_PATTERN
+21533,Redmine,Patch,"",Closed,Normal,Bulgarian translation (r14975),Ivan Cenov,"",2016-01-09 14:57,Translations,"","","","",0,2015-12-15 20:25,2016-01-09 14:57,"","","","Translated:
+* label_default_values_for_new_users
+
+#21447"
+21531,Redmine,Defect,"",Closed,Normal,rdm-mailhandler with project-from-subaddress fails,Daniel Feliciano Branco,Jean-Philippe Lang,2016-01-09 10:12,Email receiving,3.2.1,"","","",0,2015-12-15 19:04,2016-01-09 10:12,"",Fixed,3.2.0,"Running ""ruby extra/mail_handler/rdm-mailhandler.rb -k xxxx -u http://localhost:3000/"" waits for stdin input, running ""ruby extra/mail_handler/rdm-mailhandler.rb -k xxxx -u http://localhost:3000/ --project-from-subaddress example@redmine.org"" fails with:
+
+<pre>
+extra/mail_handler/rdm-mailhandler.rb:90:in `block (2 levels) in initialize': undefined method `[]=' for nil:NilClass (NoMethodError)
+	from /usr/lib/ruby/1.9.1/optparse.rb:1360:in `call'
+	from /usr/lib/ruby/1.9.1/optparse.rb:1360:in `block in parse_in_order'
+	from /usr/lib/ruby/1.9.1/optparse.rb:1347:in `catch'
+	from /usr/lib/ruby/1.9.1/optparse.rb:1347:in `parse_in_order'
+	from /usr/lib/ruby/1.9.1/optparse.rb:1341:in `order!'
+	from /usr/lib/ruby/1.9.1/optparse.rb:1432:in `permute!'
+	from /usr/lib/ruby/1.9.1/optparse.rb:1453:in `parse!'
+	from extra/mail_handler/rdm-mailhandler.rb:140:in `initialize'
+	from extra/mail_handler/rdm-mailhandler.rb:211:in `new'
+	from extra/mail_handler/rdm-mailhandler.rb:211:in `<main>'
+</pre>
+
+
+<pre>
+Environment:
+  Redmine version                3.2.0.stable
+  Ruby version                   1.9.3-p551 (2014-11-13) [i686-linux]
+  Rails version                  4.2.5
+  Environment                    production
+  Database adapter               PostgreSQL
+SCM:
+  Subversion                     1.6.17
+  Git                            1.7.9.5
+  Filesystem                     
+Redmine plugins:
+  periodictask                   3.1.1
+  recurring_tasks                2.0.0-pre
+  redmine_close_button           0.0.8
+  redmine_contacts               4.0.4
+  redmine_finance                2.0.1
+  redmine_helpdesk               0.0.15
+  redmine_ics_export             3.0.1.dev
+  redmine_issue_override         0.0.1
+  redmine_issue_templates        0.1.1
+  redmine_startpage              0.1.0
+  redmine_tweaks                 0.5.5
+  redmine_wiki_extensions        0.7.0
+  sidebar_hide                   0.0.7
+</pre>"
+21530,Redmine,Defect,"",New,Normal,If a new boolean custom field with a default value will be added the value won't be automatically applied to all issues,Nils Grimm,"",2015-12-15 19:03,Custom fields,"","","","",0,2015-12-15 19:03,"","","",3.2.0,"If later on another custom field with an default value will be added.
+All issues will have the state not assigned.
+Only after changing issue the dafault value will be applied.
+
+If you're using the REST API this will cause problems because all issues have to manually set to the default value.
+
+Two Fixes would be nice:
+# Is there a reason why the creation of a new boolean custom field isn't automatically set on creation?
+# Would it be possible to do this without sending for every issue an mail.
+"
+21528,Redmine,Defect,"",Closed,Normal,LDAP user autocreation doesn't work with attributes with Cyrillic,Valentin Vakhrushev,"",2015-12-15 16:33,LDAP,"","","","",0,2015-12-15 15:39,2015-12-15 16:33,次のチケットと重複 #21453,Duplicate,3.2.0,I've configured LDAP authentication in Redmine and it works fine except one thing. If some attribute in LDAP (in Active Directory in my case) consists of two or more words (contains one or more spaces) then new user from LDAP is not created. If I remove these spaces all work just fine and new user appears in Redmine.
+21527,Redmine,Patch,"",Closed,Normal,Russian translation for 3.2.0,Alexander Ryabinovskiy,"",2016-01-09 19:18,Translations,3.2.1,"","","",0,2015-12-15 15:13,2016-01-09 19:18,"","","",Russian translation update for 3.2.0
+21522,Redmine,Patch,"",Closed,Normal,Simplified Chinese translation for r14976,Hang Xie,"",2016-01-07 16:04,Translations,3.2.1,"","","",0,2015-12-15 04:24,2016-01-07 16:04,"","","","Simplified Chinese translation for r14976
+add about 30 lines translation"
+21521,Redmine,Patch,"",Closed,Normal,Updated Spanish and Spanish Panama Translations,Leonel Iturralde,"",2016-01-09 16:55,Translations,3.2.1,"","","",0,2015-12-14 21:27,2016-01-09 16:55,"","","","Changes:
+* Spanish Panama
+** Change thousand delimiters and separator
+** translation updated r14975
+* Spanish
+** translation updated r14975
+** Fix label @permission_import_issues:@ and @label_import_issues@
+
+"
+21514,Redmine,Defect,"",Closed,Normal,login page,sneha h,"",2015-12-14 14:22,"","","","","",0,2015-12-14 12:28,2015-12-14 13:22,"",Invalid,"","the length of username must be less than 8 characters
+"
+21511,Redmine,Patch,"",Closed,Normal,Japanese translation update (r14975),Go MAEDA,"",2016-01-09 14:56,Translations,"","","","",0,2015-12-14 10:20,2016-01-09 14:56,"","","",Translated label_default_values_for_new_users.
+21506,Redmine,Patch,"",Closed,Normal,Traditional Chinese translation (to r14976),ChunChang Lo,"",2016-01-09 14:56,Translations,"","","","",0,2015-12-14 03:31,2016-01-09 14:56,コピー先 #21845,"","","* New
+** label_default_values_for_new_users
+"
+21504,Redmine,Defect,"",Closed,Normal,IssuePriority.position_name not recalculated every time it should,Felix Sch?fer,Jean-Philippe Lang,2016-01-09 09:41,Administration,3.1.4,"","","",0,2015-12-13 20:52,2016-01-09 09:41,"",Fixed,"","The @position_name@ attribute of @IssuePriority@ instances is currently only recalculated when the @position@ of the @IssuePriority@ instance changes source:/tags/3.2.0/app/models/issue_priority.rb#L22
+
+However, the @position_name@ should also be recalculated when the @active@ attribute changes.
+
+I would even argue that that operation is quick enough, and that changes to the @IssuePriority@ list are not frequent and done by administrators, so that the recalculation of the @position_name@ can be done on @after_save@ without filtering.
+
+Patch to follow."
+21497,Redmine,Patch,"",Closed,Normal,Tooltip on progress bar,Go MAEDA,Jean-Philippe Lang,2016-01-09 12:19,UI,3.3.0,"","","",0,2015-12-13 04:40,2016-01-09 12:19,"","","","The progress bar on the Roadmap screen is divided into three different colors, but there is no explanation on the colors anywhere. This could be solved by showing it in tooltip.
+
+**Roadmap:**
+!tooltip-version.png!
+
+Also, it is possible to display the done ratio progress bar on the Issues screen, but it is not possible to know the real done ratio value without opening the issue. This could also be solved with a tooltip display.
+
+**Issues:**
+!tooltip-issues-list.png!"
+21493,Redmine,Patch,"",New,Normal,Tweak colors of default theme,Go MAEDA,"",2017-10-28 11:37,UI,4.1.0,"","","",0,2015-12-12 10:45,"","","","","I suggest slightly changed colors for default theme in order to improve readability and appearance.
+
+* deeper black for headings (#content h1, h2, h3, h4)
+* vivid color for header (#top-menu / #header)
+* blighter gray for sidebar (#main {background-color})
+* deeper brack for headings in sidebar (#sidebar h3)
+* blighter gray for boxes (.box)
+* blighter gray for inactive tabs (#content .tabs ul li a)
+* lighter yellow for issues (div.issue)
+* blighter gray (same color with wiki.pre {background}) for wiki diff background (.text-diff)
+* blighter gray for scm background (table.filecontent / table.annotate td.line-code)
+"
+21490,Redmine,Defect,"",Closed,Normal,"Repository Statistics will not populate on client machines, only the host machine when using the http://localhost URL",David Wise,"",2016-01-11 04:45,"","","","","",0,2015-12-12 00:51,2016-01-11 04:41,"",Invalid,"","I have Redmine setup on a virtual server (MS Server 2012 R2 Standard).  When a user logs into Redmine from their client laptop, then clicks on the _Statistics_ link from the _Repository_ tab, the page populates with 2 missing image icons and the _back_ link.  
+
+The issue appears related to the URL used.  The Statistics page will only populate the images when accessed using the _http://localhost/redmine/_ address.  When a client logs into Redmine hosted on a remote server, the statistics SVG will not populate.
+
+I have a second instance of Redmine installed on my local machine to test plugins / changes before I perform a change to the company Redmine site on the VM.  Both are Bitnami stack installs with:
+> Redmine version                3.0.3.stable
+> Ruby version                   2.0.0-p645 (2015-04-13) [i386-mingw32]
+> Rails version                  4.2.1
+> Database adapter               Mysql2
+> SCM: Subversion                1.9.2
+
+I did the following to isolate the circumstances in which this happens:
+* Accessed my local hosted Redmine using the address http://localhost/redmine/ from my local machine and %{color:#488F00}WAS% able to see the stat graphics on the Repository Statistics page
+* Accessed my local hosted Redmine using the address http:// %{color:#0000E6} _<machine_name>_ /redmine/% from my local machine and was %{color:#8F0000}NOT% able to see the stat graphics on the Repository Statistics page
+* Accessed the remote server hosted Redmine using the address http://localhost/redmine/ in a remote session on the virtual server and %{color:#488F00}WAS% able to see the stat graphics on the Repository Statistics page
+* Accessed the remote server hosted Redmine using the address http:// %{color:#0000E6} _<server_name>_ /redmine/% in a remote session on the virtual server and was %{color:#8F0000}NOT% able to see the stat graphics on the Repository Statistics page
+* Accessed the remote server hosted Redmine using the address http:// %{color:#0000E6} _<server_name>_ /redmine/% from my client laptop and was %{color:#8F0000}NOT% able to see the stat graphics on the Repository Statistics page
+
+I am reporting this as a defect as it should not matter where the page is being viewed from, or the URL address used in the browser.  There is also no settings option in either _Admin > Settings > Repositories_ or in _Project > Settings > Repositories_ to enter a value for the hosted machine name / URL used for a hosted Redmine site.
+
+Please provide a fix, or instructions, for allowing the statistics page to be viewed by client machines.  I would be quite happy with the resolution being instructions on how to resolve the issue with my current installation of Redmine.
+
+Thanks"
+21488,Redmine,Defect,"",Closed,Normal,Don't use past start date as default due date in the date picker,VITALIY SAVCHENKO,Jean-Philippe Lang,2015-12-19 09:14,Issues,3.1.4,"","","",0,2015-12-11 18:42,2015-12-19 09:14,関連している #14024,Fixed,"","When you close tasks and set due date default value must be now.
+
+
+"
+21487,Redmine,Patch,"",Closed,Normal,Larger font for email notifications,Go MAEDA,Jean-Philippe Lang,2016-03-13 09:14,Email notifications,3.2.1,"","","",0,2015-12-11 10:23,2016-03-13 09:14,関連している #22006,"","","Current font size 0.8em is too small and a little bit hard to read.
+Please use larger font."
+21485,Redmine,Defect,"",Needs feedback,Normal,Roll back copied issue status when tracker change,yoshinobu yoshida,"",2016-03-17 05:43,Issues,"","","","",0,2015-12-11 09:02,"","","","","When coping an issue
+ 1. Click ""Copy""
+ 2. Change status ""status A"" -> ""status B""
+ 3. Change tracker ""tracker A"" -> ""tracker B""
+ 4. Status is automatically roll back to ""status A""
+
+I do not know if it is a bug or not.
+
+<pre>
+Environment:
+  Redmine version                3.2.0.stable
+  Ruby version                   2.2.3-p173 (2015-08-18) [x86_64-linux-gnu]
+  Rails version                  4.2.5
+  Environment                    production
+  Database adapter               Mysql2
+</pre>"
+21479,Redmine,Defect,"",New,Normal,Including a wiki page from another project does not resolve that page's links properly,Iyad Kandalaft,"",2015-12-10 21:25,Wiki,"","","","",0,2015-12-10 21:25,"","","",2.6.0,"When including ProjectA's wiki page from a wiki page in ProjectB, the links in the included page don't resolve correctly. As an example, the links in ProjectA:Wiki_page has a link to ProjectA:wiki_page2 .  When ProjectA:Wiki_page is included inside ProjectB:Wiki_page, the link actually points to ProjectB:wiki_page2.  The work around is to include the project identifier in every link on ProjectA.
+
+<pre>
+Environment:
+  Redmine version                2.6.0.stable
+  Ruby version                   2.0.0-p481 (2014-05-08) [x86_64-linux]
+  Rails version                  3.2.19
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.8.8
+  Git                            1.9.0
+  Filesystem                     
+Redmine plugins:
+  redmine_mylyn_connector        2.8.2.stable
+</pre>"
+21478,Redmine,Defect,"",Closed,Normal,User Preference table access,Dariel Rodriguez,"",2015-12-13 16:46,"","","","","",0,2015-12-10 19:30,2015-12-13 16:46,"",Invalid,3.0.1,"because when I access this table records I get are so
+
+UserPreference.all
+
+table UserPreference
+
+# <UserPreference: 0x6035358>
+# <UserPreference: 0x6035070>
+
+but with another table as Issue
+
+It does not occur and shows me all data"
+21477,Redmine,Defect,"",Closed,Normal,"Assign to ""Anonymous"" doesn't make much sense",Felix Sch?fer,Jean-Philippe Lang,2016-09-21 13:01,Issues,3.1.4,"","","",0,2015-12-10 18:16,2015-12-19 09:02,"",Fixed,"","Issues might be created by ""Anonymous"" (most prominent example would be via email). The author is added to the list of assignable users, which doesn't make much sense.
+
+I will provide a patch to not add the author to the list of assignable users if the author is anonymous."
+21474,Redmine,Patch,"",Closed,Normal,Adding issue css classes to subtasks and relations tr,Codru? Gu?oi,Jean-Philippe Lang,2016-02-15 04:37,UI,3.3.0,"","","",0,2015-12-10 16:34,2016-01-16 09:10,"","","","In every other part of the application issues have their CSS classes added to the *tr* element.
+This patch adds them to the sub tasks and relations tables for issues#show.
+It is useful for custom themes to be able to style them according to their status/tracker or for JavaScript plugins doing funky front end logic with them."
+21470,Redmine,Defect,"",Closed,Normal,"500 Internal Server Error while entering ""Settings""",Marcin Polak,"",2015-12-12 07:46,"","","","","",0,2015-12-10 14:12,2015-12-12 07:46,"",Invalid,"","<pre>
+Started GET ""//settings"" for 127.0.0.1 at 2015-12-10 13:48:33 +0100
+Processing by SettingsController#index as HTML
+  Current user: macboz (id=8)
+  Rendered settings/_general.html.erb (14.0ms)
+  Rendered settings/_display.html.erb (10.9ms)
+  Rendered settings/_authentication.html.erb (14.7ms)
+  Rendered settings/_api.html.erb (2.3ms)
+  Rendered settings/_projects.html.erb (13.0ms)
+  Rendered queries/_columns.html.erb (5.7ms)
+  Rendered settings/_issues.html.erb (26.1ms)
+  Rendered settings/_attachments.html.erb (8.0ms)
+  Rendered settings/_notifications.html.erb (11.6ms)
+  Rendered settings/_mail_handler.html.erb (7.9ms)
+  Rendered settings/_repositories.html.erb (24.9ms)
+  Rendered common/_tabs.html.erb (150.9ms)
+  Rendered settings/edit.html.erb within layouts/admin (152.7ms)
+Completed 500 Internal Server Error in 167ms (ActiveRecord: 21.1ms)
+
+ActionView::Template::Error (The provided regular expression is using multiline anchors (^ or $), which may present a security risk. Did you mean to use \A and \z, or forgot to add the :multiline => true option?):
+    10:     <th><%= l(:text_scm_command_version) %></th>
+    11:   </tr>
+    12:   <% Redmine::Scm::Base.all.collect do |choice| %>
+    13:     <% scm_class = ""Repository::#{choice}"".constantize %>
+    14:     <% text, value = (choice.is_a?(Array) ? choice : [choice, choice]) %>
+    15:     <% setting = :enabled_scm %>
+    16:     <% enabled = Setting.send(setting).include?(value) %>
+  app/views/settings/_repositories.html.erb:13:in `block (2 levels) in _app_views_settings__repositories_html_erb__4037482333422736833_101433240'
+  app/views/settings/_repositories.html.erb:12:in `collect'
+  app/views/settings/_repositories.html.erb:12:in `block in _app_views_settings__repositories_html_erb__4037482333422736833_101433240'
+  app/views/settings/_repositories.html.erb:1:in `_app_views_settings__repositories_html_erb__4037482333422736833_101433240'
+  app/views/common/_tabs.html.erb:22:in `block in _app_views_common__tabs_html_erb___2698547874882084899_98208860'
+  app/views/common/_tabs.html.erb:21:in `each'
+  app/views/common/_tabs.html.erb:21:in `_app_views_common__tabs_html_erb___2698547874882084899_98208860'
+  app/helpers/application_helper.rb:324:in `render_tabs'
+  app/views/settings/edit.html.erb:3:in `_app_views_settings_edit_html_erb__2003413501299171050_98182100'
+  app/controllers/settings_controller.rb:30:in `index'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+</pre>
+
+<pre>
+Environment:
+  Redmine version                3.2.0.stable
+  Ruby version                   2.1.5-p273 (2014-11-13) [x86_64-linux-gnu]
+  Rails version                  4.2.5
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.8.10
+  Git                            2.1.4
+  Filesystem                     
+  Github                         2.1.4
+Redmine plugins:
+  redmine_checklists             3.1.3
+  redmine_scm                    0.5.0b
+</pre>"
+21468,Redmine,Defect,"",Closed,Normal,cursor is messed up with Chinese&English text in input box with Safari,Feng Liyuan,"",2015-12-14 04:45,"","","","","",0,2015-12-10 11:25,2015-12-13 16:44,"","","",""
+21464,Redmine,Defect,"",Closed,Normal,List issues ,Daniel M?ller,"",2015-12-09 18:42,Issues,"","","","",0,2015-12-09 12:13,2015-12-09 18:42,"",Invalid,3.2.0,"I've updated redmine from 3.1.1 to 3.2.0 a few minutes ago and created a test project with name _test_. Then I've added a new issue and clicked on ticket tab to list all tickets:
+
+<pre>
+Internal error
+
+An error occurred on the page you were trying to access.
+ If you continue to experience problems please contact your Redmine administrator for assistance.
+
+If you are the Redmine administrator, check your log files for details about the error.
+</pre>
+
+Here is the logfile part:
+<pre>Started GET ""/projects/test/issues"" for xxx.xxx.xxx.xxx at 2015-12-09 12:05:09 +0100
+Processing by IssuesController#index as HTML
+  Parameters: {""project_id""=>""test""}
+  Current user: admin (id=1)
+Completed 500 Internal Server Error in 13ms (ActiveRecord: 2.9ms)
+
+NoMethodError (undefined method `issue_list_default_totals' for #<Class:0x00000004ee55f8>):
+  app/models/query.rb:514:in `totalable_names'
+  app/helpers/queries_helper.rb:220:in `retrieve_query'
+  app/controllers/issues_controller.rb:46:in `index'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+</pre>
+
+Version:
+<pre>
+Environment:
+  Redmine version                3.2.0.stable
+  Ruby version                   1.9.3-p484 (2013-11-22) [x86_64-linux]
+  Rails version                  4.2.5
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.8.8
+  Mercurial                      2.8.2
+  Git                            1.9.1
+  Filesystem                     
+Redmine plugins:
+  no plugin installed
+</pre>
+"
+21461,Redmine,Defect,"",Closed,Normal,incorrect display page navigation,alexandr al,"",2015-12-09 18:46,UI,"","","","",0,2015-12-09 10:30,2015-12-09 18:46,"",Invalid,3.2.0,"incorrect display page navigation in issues.
+
+view attach."
+21458,Redmine,Defect,"",Closed,Normal,LDAP account creation fails when first name/last name contain umlaut,int redmine,"",2015-12-08 14:44,LDAP,"","","","",0,2015-12-08 13:36,2015-12-08 14:44,次のチケットと重複 #21453,Duplicate,3.2.0,"I get an Internal error
+> An error occurred on the page you were trying to access.
+> If you continue to experience problems please contact your Redmine administrator for assistance.
+> If you are the Redmine administrator, check your log files for details about the error.
+
+during account creation on first time login by LDAP.
+This is caused by umlauts (????...) in first name/last name
+
+Account creation through standard register procedure is working, when first name/last name contain umlauts."
+21457,Redmine,Defect,"",Closed,Normal,Issue percentage done not updating correctly when calculated from subtasks,Stephane Evr,"",2015-12-08 12:16,Issues,"","","","",0,2015-12-08 11:13,2015-12-08 12:16,次のチケットと重複 #13116,Duplicate,3.1.0,"Here are some of my issue statuses:
+
+!issue_statuses.PNG!
+
+Activity TBC is the status per default, and no % done is associated.
+
+These are my parameters in issue tracking:
+
+!issue_tracking.PNG!
+
+- Issue done ratio is associated to the issue status
+- % done is calculated from subtasks.
+
+Now I create an issue ""t1"", with ""Activity TBC"" status (no % done associated):
+
+!t1.PNG!
+
+Then I create a subtask s1 with status ""In progress 40%"".
+
+My t1 task looks like this (all fine):
+
+!t1_2.PNG!
+
+
+Then, I manually change the status of t1 to ""Started 20 %"". Everything is still OK, % done of the parent task takes precedence over subtasks:
+
+!t1_3.PNG!
+
+But Now, I want to change the status of t1 back to ""Activity TBC"", with no % associated:
+
+!t1_4.PNG!
+
+*Expected: % done of t1 should be calculated from its subtasks (here 40%) since no % is longer associated with it*
+
+
+I have encountered this problem with redmine versions 3.x (also with redmine 3.2.0)
+
+My production configuration:
+
+!config.PNG!"
+21456,Redmine,Patch,"",Closed,Normal,Simplified Chinese translation of wiki formating for 3.1-stable,Hang Xie,"",2016-01-07 05:40,Translations,3.1.4,"","","",0,2015-12-08 09:16,2016-01-07 05:40,"","","",Simplified Chinese translation of wiki formating for 3.2.0
+21454,Redmine,Patch,"",Closed,Normal,Simplified Chinese translation for 3.2.0,Hang Xie,"",2016-01-07 05:29,Translations,3.2.1,"","","",0,2015-12-08 04:49,2016-01-07 05:29,"","","",update simplified chinese translation for 3.2.0
+21453,Redmine,Defect,"",Closed,Normal,LDAP account creation fails when first name/last name contain non ASCII,Haihan Ji,Jean-Philippe Lang,2016-01-21 05:42,LDAP,3.2.1,"","","",0,2015-12-08 03:41,2016-01-21 05:42,"関連している #12811, 次のチケットが重複 #21458, 次のチケットが重複 #21528",Fixed,3.2.0,"Maybe, redmine can add an @encoding@ property to @AuthSource@.
+
+<pre>$ ruby bin/about 
+
+sh: svn: command not found
+sh: darcs: command not found
+sh: hg: command not found
+sh: cvs: command not found
+sh: bzr: command not found
+sh: git: command not found
+Environment:
+  Redmine version                3.2.0.stable
+  Ruby version                   2.2.1-p85 (2015-02-26) [x86_64-linux]
+  Rails version                  4.2.5
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Filesystem                     
+Redmine plugins:
+  no plugin installed</pre>
+
+LOG
+<pre>Started GET ""/auth_sources/autocomplete_for_new_user?term=xxxx"" for 10.10.93.107 at 2015-12-08 10:12:17 +0800
+Processing by AuthSourcesController#autocomplete_for_new_user as JSON
+  Parameters: {""term""=>""xxxx""}
+  SQL (1.7ms)  UPDATE `tokens` SET `tokens`.`updated_on` = '2015-12-08 10:12:17' WHERE `tokens`.`user_id` = 1 AND `tokens`.`value` = '5e869f0905478838585d8022d4347ea0cf68ee9e' AND `tokens`.`action` = 'session'
+   (0.5ms)  SELECT MAX(`settings`.`updated_on`) FROM `settings`
+  User Load (0.5ms)  SELECT  `users`.* FROM `users` WHERE `users`.`type` IN ('User', 'AnonymousUser') AND `users`.`status` = 1 AND `users`.`id` = 1 LIMIT 1
+  Current user: admin (id=1)
+  AuthSource Load (0.5ms)  SELECT `auth_sources`.* FROM `auth_sources`
+Completed 500 Internal Server Error in 176ms (ActiveRecord: 3.2ms)
+
+Encoding::UndefinedConversionError (""\xE5"" from ASCII-8BIT to UTF-8):
+  app/controllers/auth_sources_controller.rb:79:in `autocomplete_for_new_user'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+
+
+  Rendered /usr/local/rvm/gems/ruby-2.2.1/gems/actionpack-4.2.5/lib/action_dispatch/middleware/templates/rescues/_source.erb (3.6ms)
+  Rendered /usr/local/rvm/gems/ruby-2.2.1/gems/actionpack-4.2.5/lib/action_dispatch/middleware/templates/rescues/_trace.text.erb (0.8ms)
+  Rendered /usr/local/rvm/gems/ruby-2.2.1/gems/actionpack-4.2.5/lib/action_dispatch/middleware/templates/rescues/_request_and_response.text.erb (0.9ms)
+  Rendered /usr/local/rvm/gems/ruby-2.2.1/gems/actionpack-4.2.5/lib/action_dispatch/middleware/templates/rescues/diagnostics.text.erb (67.2ms)
+</pre>
+
+The lastname is chinese.
+
+<pre>$ rails c
+2.2.1 :001 >   AuthSource.search(:xxxx)
+  AuthSource Load (0.4ms)  SELECT `auth_sources`.* FROM `auth_sources`
+ => [{:dn=>""************"", :firstname=>"" "", :lastname=>""\xE5\xA7\xAC\xE6\xB5\xB7\xE6\xB6\xB5"", :mail=>""****"", :auth_source_id=>1, :login=>""xxxx""}] 
+2.2.1 :002 > AuthSource.search(:xxxx).to_json
+  AuthSource Load (0.4ms)  SELECT `auth_sources`.* FROM `auth_sources`
+Encoding::UndefinedConversionError: ""\xE5"" from ASCII-8BIT to UTF-8
+	from /usr/local/rvm/gems/ruby-2.2.1/gems/activesupport-4.2.5/lib/active_support/core_ext/object/json.rb:34:in `encode'
+	from /usr/local/rvm/gems/ruby-2.2.1/gems/activesupport-4.2.5/lib/active_support/core_ext/object/json.rb:34:in `to_json'
+	from /usr/local/rvm/gems/ruby-2.2.1/gems/activesupport-4.2.5/lib/active_support/core_ext/object/json.rb:34:in `to_json_with_active_support_encoder'
+	from /usr/local/rvm/gems/ruby-2.2.1/gems/activesupport-4.2.5/lib/active_support/json/encoding.rb:57:in `to_json'
+	from /usr/local/rvm/gems/ruby-2.2.1/gems/json-1.8.3/lib/json/common.rb:223:in `generate'
+	from /usr/local/rvm/gems/ruby-2.2.1/gems/json-1.8.3/lib/json/common.rb:223:in `generate'
+	from /usr/local/rvm/gems/ruby-2.2.1/gems/activesupport-4.2.5/lib/active_support/json/encoding.rb:101:in `stringify'
+	from /usr/local/rvm/gems/ruby-2.2.1/gems/activesupport-4.2.5/lib/active_support/json/encoding.rb:35:in `encode'
+	from /usr/local/rvm/gems/ruby-2.2.1/gems/activesupport-4.2.5/lib/active_support/json/encoding.rb:22:in `encode'
+	from /usr/local/rvm/gems/ruby-2.2.1/gems/activesupport-4.2.5/lib/active_support/core_ext/object/json.rb:37:in `to_json_with_active_support_encoder'
+	from (irb):32
+	from /usr/local/rvm/gems/ruby-2.2.1/gems/railties-4.2.5/lib/rails/commands/console.rb:110:in `start'
+	from /usr/local/rvm/gems/ruby-2.2.1/gems/railties-4.2.5/lib/rails/commands/console.rb:9:in `start'
+	from /usr/local/rvm/gems/ruby-2.2.1/gems/railties-4.2.5/lib/rails/commands/commands_tasks.rb:68:in `console'
+	from /usr/local/rvm/gems/ruby-2.2.1/gems/railties-4.2.5/lib/rails/commands/commands_tasks.rb:39:in `run_command!'
+	from /usr/local/rvm/gems/ruby-2.2.1/gems/railties-4.2.5/lib/rails/commands.rb:17:in `<top (required)>'
+	from bin/rails:4:in `require'
+	from bin/rails:4:in `<main>'2.2.1 :003 > </pre>"
+21449,Redmine,Defect,"",New,Normal,Automatic done ratio calculation in issue tree is wrong when parent has its own estimated time,Sebastian Paluch,"",2015-12-07 20:27,Issues,"","","","",0,2015-12-07 20:27,"",関連している #16092,"",3.2.0,"Due to the change in r14272 estimated_hours are now independent for parent and subtasks. But, it seems that automatic calculation of done ratio is still based on estimated time of children, ignoring value provided for the parent.
+
+e.g.
+
+* A (2h)
+** B (2h)
+*** C (2h) 50% done
+
+This results with 50% done ratio on all tasks up to A, what, from estimated time point of view, is wrong - only 1 of 6 hours is ""done"".
+
+I do not see a fix for this when automatic done ratio calculation is enabled as there is no way to say that some work on parent has been also done. Anyway, latest changes leads to inconsistency"
+21442,Redmine,Defect,"",Closed,Low,Documentation duplication,Hans Ginzel,"",2016-01-03 04:58,Documentation,"","","","",0,2015-12-07 12:51,2016-01-03 04:58,"","","","There are two urls describing wiki syntax
+
+* [[RedmineTextFormatting]]
+* http://www.redmine.org/help/en/wiki_syntax_detailed.html
+
+It seems that the second is older. How are they synchronised?"
+21436,Redmine,Patch,"",Closed,Normal,Prevent admins from sending themselves their own password,Jan from Planio www.plan.io,Jean-Philippe Lang,2016-01-09 10:12,Accounts / authentication,3.2.1,"","","",0,2015-12-06 17:27,2016-01-09 10:12,関連している #13197,"","","As an admin, when setting one's own password via @Users#edit@ instead of via the ""proper form"" at @My#password@, there should not be an option to send the password in plaintext to oneself.
+
+IMO, the ""send account information"" option is made for cases where a new login/password need to be transmitted to another user after they have been set by the admin. When setting one's own password (even as admin), there should be no reason (or possibility) to send it via email.
+
+The attached patch solves this issue.
+"
+21434,Redmine,Patch,"",Closed,Normal,Additional CSS class for version status,Tobias Fischer,Jean-Philippe Lang,2016-03-20 09:02,Roadmap,3.3.0,"","","",0,2015-12-06 13:50,2016-03-20 09:02,関連している #21433,"","","The version status (open, locked, closed) isn't accessible for theme designers. Neither in Roadmap view nor in Version details view.
+
+This patch adds another CSS class after #19341 in Roadmap view.
+
+Plus it adds the new CSS classes from #19341 and the ones introduced here also in Version details view.
+It can be discussed where to place the CSS classes. I put it on @<div id=""#roadmap"">@ but I believe it could also be nice to have them available when styling the @<h2>@ heading... More opinions?"
+21433,Redmine,Defect,"",Closed,Normal,"""version-completed"" class is never set when version has no due date",Tobias Fischer,Jean-Philippe Lang,2016-01-21 09:53,Roadmap,3.3.0,"","","",0,2015-12-06 13:10,2016-01-21 05:47,関連している #21434,Fixed,3.1.3,"Test case:
+
+# Create a new version with no due date
+# Add a new issue to this version
+# Close the issue
+# Close the version
+
+The HTML code in Roadmap view will still look like this:
+
+<pre>
+<article class=""version-article version-incompleted"">
+</pre>
+
+However, all tickets in the version are closed and the version itself is closed. I'd call the version ""completed"" in this case, wouldn't you?
+
+The patch from #19341 doesn't seem to work when no due date is set."
+21431,Redmine,Patch,"",Closed,Normal,Simplified Chinese translation for 3.0-stable,Toshi MARUYAMA,"",2015-12-05 11:08,Translations,3.0.7,"","","",0,2015-12-05 06:29,2015-12-05 11:08,"","","",From #21412.
+21430,Redmine,Patch,"",Closed,Normal,Simplified Chinese translation for 2.6-stable,Toshi MARUYAMA,"",2015-12-05 09:40,Translations,2.6.9,"","","",0,2015-12-05 06:21,2015-12-05 09:40,関連している #21588,"","",From #21412.
+21412,Redmine,Patch,"",Closed,Normal,Simplified Chinese translation for 3.1-stable,Hang Xie,"",2015-12-05 11:08,Translations,3.1.3,"","","",0,2015-12-03 04:10,2015-12-05 11:08,"","","",add missing simplified chinese translation for 3.1-stable
+21411,Redmine,Defect,"",Closed,Normal,MySQL 5.7: Mysql2::Error: Expression #1 of ORDER BY clause is not in SELECT list...,Haihan Ji,"",2015-12-03 04:55,Database,"","","","",0,2015-12-03 02:30,2015-12-03 04:55,"","","","<pre># ruby script/about 
+
+sh: darcs: command not found
+sh: hg: command not found
+sh: bzr: command not found
+Environment:
+  Redmine version                2.5.2.stable
+  Ruby version                   1.9.3-p545 (2014-02-24) [x86_64-linux]
+  Rails version                  3.2.19
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.7.4
+  Git                            1.7.12.4
+  Filesystem                     
+Redmine plugins:
+  parent_issue_filter            1.0.1
+  redmine_code_review            0.7.0
+  redmine_importer               1.2
+  redmine_issue_templates        0.0.9
+  redmine_xls_export             0.2.1</pre>
+
+Upgrade database to MySQL 5.7, login is OK, project overview display '500 Internal Server Error'.
+
+*stack trace*
+<pre>Started GET ""/naca00/projects/********"" for xxx.xxx.xxx.xxx at 2015-11-28 11:47:17 +0800
+Processing by ProjectsController#show as HTML
+  Parameters: {""id""=>""********""}
+  Current user: ******** (id=280)
+Completed 500 Internal Server Error in 10.7ms
+
+ActiveRecord::StatementInvalid (Mysql2::Error: Expression #1 of ORDER BY clause is not in SELECT list, references column 'redmine
+.projects.name' which is not in SELECT list; this is incompatible with DISTINCT: SELECT  DISTINCT `members`.id FROM `members` LEF
+T OUTER JOIN `projects` ON `projects`.`id` = `members`.`project_id` LEFT OUTER JOIN `member_roles` ON `member_roles`.`member_id`
+= `members`.`id` LEFT OUTER JOIN `roles` ON `roles`.`id` = `member_roles`.`role_id` WHERE `members`.`user_id` = 280 AND `members`
+.`project_id` = 169 AND (projects.status<>9) ORDER BY projects.name LIMIT 1):
+  app/models/user.rb:464:in `block in membership'
+  app/models/user.rb:466:in `yield'
+  app/models/user.rb:466:in `default'
+  app/models/user.rb:466:in `membership'
+  app/models/user.rb:479:in `roles_for_project'
+  app/models/user.rb:538:in `allowed_to?'
+  app/controllers/application_controller.rb:257:in `authorize'</pre>"
+21405,Redmine,Defect,"",Needs feedback,Normal,Timezone configs broke down on ubuntu and redmine giving Internal error,Kenan Emre ?ST?NDA?,"",2015-12-06 17:27,"","","","","",0,2015-12-02 19:42,"","","","","when i changing timezone settings, it's broke down. And when i try open redmine give me;
+----------------------------------------------------------------------------------------
+Internal error
+
+An error occurred on the page you were trying to access.
+If you continue to experience problems please contact your Redmine administrator for assistance.
+
+If you are the Redmine administrator, check your log files for details about the error.
+----------------------------------------------------------------------------------------
+but some pages can opening.
+
+my production log is;
+
+----------------------------------------------------------------------------------------------
+Connecting to database specified by database.yml
+Creating scope :system. Overwriting existing method Enumeration.system.
+Creating scope :sorted. Overwriting existing method Group.sorted.
+Creating scope :sorted. Overwriting existing method User.sorted.
+Started GET ""/redmine/"" for 77.79.95.150 at 2015-12-02 18:18:54 +0000
+Processing by WelcomeController#index as HTML
+  Current user: kenanemreu (id=7)
+  Rendered welcome/index.html.erb within layouts/base (458.6ms)
+Completed 500 Internal Server Error in 1146.7ms
+
+ActionView::Template::Error (Expected 44 bytes reading '/usr/share/zoneinfo/Europe/Istanbul', but got 8 bytes):
+    20:     <% for project in @projects %>
+    21:       <% @project = project %>
+    22:       <li>
+    23:       <%= link_to_project project %> (<%= format_time(project.created_on) %>)
+    24:       <%= textilizable project.short_description, :project => project %>
+    25:       </li>
+    26:     <% end %>
+  lib/redmine/i18n.rb:60:in `format_date'
+  lib/redmine/i18n.rb:71:in `format_time'
+  app/views/welcome/index.html.erb:23:in `block in _app_views_welcome_index_html_erb___381727932832886209_35426760'
+  app/views/welcome/index.html.erb:20:in `each'
+  app/views/welcome/index.html.erb:20:in `_app_views_welcome_index_html_erb___381727932832886209_35426760'
+--------------------------------------------------------------------------"
+21398,Redmine,Defect,"",New,Normal,Mysql: 500 server error when submitting 4 bytes utf8 (to be saved in the 'notes' field),Deoren Moor,"",2017-03-27 12:52,Database,"","","","",0,2015-12-02 01:01,"","関連している #19742, 関連している #24116","",3.1.2,"Hi,
+
+We're running multiple Redmine installations, many of them several years old and all setup as described on the [[RedmineInstall]] wiki page:
+
+<pre><code class=""sql"">
+CREATE DATABASE redmine CHARACTER SET utf8;
+CREATE USER 'redmine'@'localhost' IDENTIFIED BY 'my_password';
+GRANT ALL PRIVILEGES ON redmine.* TO 'redmine'@'localhost';
+</code></pre>
+
+As far as I know today is the first case where we ran into a problem submitting text content where one of us wasn't attempting to submit more content than a field would hold.
+
+The error messages:
+
+<pre>
+Mysql2::Error: Incorrect string value: '\xF0\x9F\x98\x81' for column 'notes' at row 1: INSERT INTO `journals` (`journalized_id`, `journalized_type`, `user_id`, `notes`, `created_on`) VALUES
+ (35747, 'Issue', 3, '?~_~X~A', '2015-12-01 16:14:16')
+</pre>
+
+<pre>
+ActiveRecord::StatementInvalid (Mysql2::Error: Incorrect string value: '\xF0\x9F\x98\x81' for column 'notes' at row 1: INSERT INTO `journals` (`journalized_id`, `journalized_type`, `user_id
+`, `notes`, `created_on`) VALUES (35747, 'Issue', 3, '?~_~X~A', '2015-12-01 16:14:16')):
+</pre>
+
+Details from @bin/about@:
+
+<pre>
+Environment:
+  Redmine version                3.1.2.stable.14882
+  Ruby version                   1.9.3-p0 (2011-10-30) [i686-linux]
+  Rails version                  4.2.4
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.6.17
+  Git                            1.7.9.5
+  Filesystem
+Redmine plugins:
+  no plugin installed
+</pre>
+
+After turning to Google it appears that the character is an emoticon described as, ""Grinning Face With Smiling Eyes""and has the UTF-8 hex code of @F0 9F 98 81@. The character displays properly within the text field and when choosing to preview the text/formatting, but not when attempting to save to the database.
+
+Looking at other tickets here I see several others similar to this one:
+
+* #20636 (not enough info to be sure it's the same)
+* #20143 (mail handler related)
+* #10772#note-7 (workaround was to convert to utf8mb4)
+
+and the general response appears to be to use @utf8mb4@, but as noted on #10772#note-7 it appears that the results of that conversion resulted in data loss. This strikes me as odd since the MySQL 5.5 reference manual[1] @utf8mb4@ is a superset of @utf8@:
+
+> For a supplementary character, utf8 cannot store the character at all, while utf8mb4 requires four bytes to store it. Since utf8 cannot store the character at all, you do not have any supplementary characters in utf8 columns and you need not worry about converting characters or losing data when upgrading utf8 data from older versions of MySQL.
+
+* Is it safe to upgrade the character set for the database and tables as described on #10772#note-7?
+** i.e., will future upgrades be problematic due to a conversion of @utf8@ to @utf8mb4@ set?
+
+* Should Redmine be expected to filter out invalid characters that do not match the character set of the database storing the data?
+
+* Should @utf8mb4@ be used at the outset?
+** I ask because that's not noted in the guide (that I can find).
+
+
+
+Thanks for your time.
+
+fn1. http://dev.mysql.com/doc/refman/5.5/en/charset-unicode-utf8mb4.html
+"
+21386,Redmine,Defect,"",Closed,Normal,Cannot logon with LDAP,Takashi YANO,"",2015-12-08 05:10,LDAP,"","","","",0,2015-12-01 01:49,2015-12-08 05:10,"",Invalid,3.1.2,"After I upgraded redmine from 3.0.0 to 3.1.2, I cannot logon id with LDAP.
+At 3.0.0, logon with LDAP was working."
+21382,Redmine,Defect,"",Closed,High,Watcher deletion of inactive user not possible for non-admin users,Rupesh  J,Jean-Philippe Lang,2015-12-06 11:45,Issues,3.2.0,"","","",0,2015-11-30 12:22,2015-12-06 11:45,"",Fixed,"","|Redmine version|3.1.1.stable|
+|Ruby version|2.2.1-p85 (2015-02-26) [x86_64-linux]|
+|Rails version|4.2.4|
+|Environment|production|
+|Database adapter|Mysql2|
+
+Add a test user account as a watcher for issue.
+Lock one test user account.
+Login as non-admin user, having permission to delete issue watchers.
+In the issue the delete icon is shown, clicking that nothing happens.
+
+Additional information,
+In the log,
+The destroy controller tries to find only the active users which returns nothing (ActiveRecord::RecordNotFound (Couldn't find User with 'id'=xxx)
+<pre>
+User.visible.find(params[:user_id]
+</pre>
+"
+21381,Redmine,Defect,"",New,Normal,Redmine 3.1.0 - Bazaar comments in utf-8 cyrillic symbols,Andrey Ovchinnikov,"",2015-11-30 08:49,SCM,"","","","",0,2015-11-30 08:49,"","","",3.1.0,"When i try to add bazaar repository to redmine - it shows me ""????"" instead of cyrillic symbols."
+21379,Redmine,Defect,"",New,High,Plugin author is not able to delete plugin versions,Tobias Fischer,Jean-Philippe Lang,2015-11-29 23:37,Website (redmine.org),"","","","",0,2015-11-29 23:32,"",関連している #19229,"","","I'm a redmine plugin author and have several plugins listed in the official Redmine plugin repository. For example: http://www.redmine.org/plugins/redmine_emojibutton
+
+I am not able to delete a plugin version. After the confirmation dialog I'm beeing redirected to http://www.redmine.org/plugins/redmine_emojibutton/versions/2011 and get a 403 error ""not allowed to access this page"".
+
+Plugin authors should be able to delete versions of their plugins in order to be able to do a roll back to a previous version."
+21378,Redmine,Patch,"",New,Normal,Include Documents in Projects API,Helder Manuel Torres Vieira,"",2016-01-31 10:37,REST API,"","","","",0,2015-11-29 19:08,"","","","","This patch adds @documents@ to the @Projects#show API@. 
+
+They will be shown only if the +include=documents+ parameter is passed on URL
+
+The behaviour is exactly the same as for issue categories, trackers and modules.
+
+*Patch and Tests* are included.
+
+*JSON Example*
+
+<pre>
+GET /projects.json?include=documents
+
+{
+  project: {
+    id: 1,
+    name: ""Test Project"",
+    identifier: ""test-project"",
+    description: """",
+    homepage: """",
+    status: 1,
+    documents: [
+      {
+        id: 1,
+        title: ""Document 1"",
+        description: ""Description 1"",
+        category: {
+          id: 1,
+          name: ""Uncategorized""
+        },
+        url: ""https://redmine/documents/1"",
+        created_on: ""2015-11-29T12:19:16Z""
+      }
+    ],
+    created_on: ""2015-11-29T12:11:34Z"",
+    updated_on: ""2015-11-29T12:11:34Z""
+  }
+}
+</pre>"
+21375,Redmine,Defect,"",Closed,Normal,Working external URL prefixes (protocols and 'www' host part) not documented in wiki syntax,Till Riedel,Jean-Philippe Lang,2017-06-25 11:01,Documentation,3.4.0,"","","",0,2015-11-28 00:38,2017-06-25 11:01,ブロックしている #26188,Fixed,"","As #2953 states @/https?:\/\/.*/@ and @/ftps?:\/\/.*/@ links work however documentation on [[RedmineTextFormatting]] mentions only http not https,ftp,ftps. Implementation is inconstent with documentations if more than only @http@ works, one would expect other URL schemes to work too as mentioned in #2953.
+"
+21374,Redmine,Defect,"",Closed,Normal,Redmine.org doesn't have a privacy policy,Cris Fuhrman,Jan Niggemann (redmine.org team member),2017-01-23 08:53,Website (redmine.org),"","","","",0,2015-11-27 21:07,2017-01-21 19:09,"","","","Per the recommendation of Toshi MARUYAMA in the forums, It seems there should be a privacy policy for a site that has user log-ins (profiles) and potentially collects information about its users. Read more at https://en.wikipedia.org/wiki/Privacy_policy
+
+Secondly, I feel that email address should be by default hidden on the profiles. Email addresses are mostly considered confidential these days, especially when one signs up for an account somewhere. "

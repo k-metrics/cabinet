@@ -1,0 +1,573 @@
+#,プロジェクト,トラッカー,親チケット,ステータス,優先度,題名,作成者,担当者,更新日,カテゴリ,対象バージョン,開始日,期日,予定工数,進捗率,作成日,終了日,関連するチケット,Resolution,Affected version,説明
+20646,Redmine,Defect,"",New,Normal,Maximum attachment size displayed/labeled incorrectly,mathew murphy,"",2015-09-14 18:54,UI,"","","","",0,2015-08-31 23:22,"","","","","I set maximum attachment size to 5000KB in Settings, since I wanted a maximum of 5MB.
+
+However, the 'new issue' form displays the maximum size as 4.88MB.
+
+I can see three possibilities here:
+
+1. The form should say 4.77MiB, but is calculating incorrectly.
+2. The form should say 5MB.
+3. The settings field should be relabeled to specify that the maximum file size is in KiB, not KB.
+
+Since I use Linux and OS X, and generally care about how file sizes relate to disk space (which hardware manufacturers measure in base 10), my preference would be for KB/MB/GB throughout.
+
+However, you might want to go with KiB/MiB/GiB for the benefit of Windows users, unless Microsoft has fixed the display of file sizes in Windows 10.
+
+Link for the unconvinced: <http://lpar.ath0.com/2008/07/15/si-unit-prefixes-a-plea-for-sanity/>"
+20645,Redmine,Defect,"",Closed,Normal,How can I create a new project for discussion,hien bui,"",2015-09-01 00:19,"","","","","",0,2015-08-31 19:14,2015-09-01 00:19,"",Invalid,3.1.0,"How can I create a new project for discussion?
+This website is just demo version, isn't it?"
+20638,Redmine,Defect,"",Closed,Normal,Plugins not working with Redmine 3.1.0,4zNzTRvC K6yjVLSX,"",2015-08-31 00:38,"","","","","",0,2015-08-30 21:24,2015-08-31 00:38,"",Invalid,"","When trying to install the 'scrum' plugin.
+I ran rake, as instructed:
+rake redmine:plugins:migrate RAILS_ENV=test
+the output:
+Migrating scrum (Scrum Redmine plugin)...
+
+However, it does not show in Administration, Plugins.
+And also the /plugin/<name> folder structure is not used between /site/,/apps/ when trying to find resources:
+
+Showing /srv/www/vhosts/redmine-test.domain.name/site/app/views/layouts/base.html.erb where line #14 raised:
+Missing partial scrum_hooks/_head with {:locale=>[:en], :formats=>[:html], :variants=>[], :handlers=>[:erb, :builder, :raw, :ruby, :rsb]}. Searched in:
+  * ""/srv/www/vhosts/redmine-test.domain.name/site/app/views""
+
+Perhaps I am missing some instructions here?
+http://www.redmine.org/projects/redmine/wiki/Plugins
+"
+20637,Redmine,Defect,"",Closed,High,#16353 broke email notification layout in Outlook,Sebastian Paluch,"",2015-08-31 08:56,Email notifications,"","","","",0,2015-08-30 18:21,2015-08-31 00:36,次のチケットと重複 #20466,Duplicate,3.1.0,"The new notification email format/layout introduced in #16535 does not work in Outlook, the outer div is not centered and has no background color while other spans do.
+
+
+!email.png!"
+20636,Redmine,Defect,"",Closed,Normal,Internal error when you submit and invalid character,Alberto Menendez Romero,"",2015-12-14 11:41,Issues,"","","","",0,2015-08-30 04:08,2015-12-14 11:41,"",No feedback,3.0.4,"System doesn't validate the charset in the description field. This might carry on to Internal error when you submit something like ? (with invalid tilde).
+
+Error details:
+-------------------------------
+Internal error
+
+An error occurred on the page you were trying to access.
+If you continue to experience problems please contact your Redmine administrator for assistance.
+
+If you are the Redmine administrator, check your log files for details about the error.
+
+Back
+------------------
+
+Thanks."
+20633,Redmine,Defect,"",Closed,Normal,Help cursor showing up since r14154,Martin Dub?,Jean-Philippe Lang,2015-09-12 14:31,UI,3.1.1,"","","",0,2015-08-28 21:46,2015-09-12 14:31,関連している #19296,Fixed,3.1.0,Change in stylesheet in r14154 (added span[title]) make a help cursor (and dotted line) appear at various places.
+20632,Redmine,Patch,"",Closed,Normal,Tab left/right buttons for project menu,Felix Gliesche,Jean-Philippe Lang,2016-06-21 09:11,UI,3.3.0,"","","",0,2015-08-28 17:26,2016-03-15 23:08,"関連している #13892, 関連している #9275, 関連している #6624, ブロックされている #20271","","","On small screens with many tabs in the project navigation the tabs of the far right are not visible. It would be nice if the tabs can be scrolled left / right like in the second level navigation (e.g. project settings). 
+
+This patch introduces this feature. It uses the same javascript as the second level navigation.
+
+In order for this to work, you need the the patch attached to #20271"
+20630,Redmine,Defect,"",New,Normal,Repeat table header in wiki exports,Antonio Exp?sito,"",2015-08-28 09:46,PDF export,"","","","",0,2015-08-28 09:46,"","","","","In wiki export to pdf, there is no way to indicate that the header has to be repeated on every page.
+
+!Table_wiki.png!
+
+
+If found this, but it doesn't work with Redmine:
+
+http://txstyle.org/doc/15/tables
+2) HTML5 requires the use of a <thead> tag. A <tfoot> tag is optional.
+
+*The <thead> tag is added when |^. above and |-. below the heading are used.*
+
+|^.
+|_. First Header |_. Second Header |
+|-.
+| Content Cell | Content Cell |
+| Content Cell | Content Cell |
+
+The <tfoot> tag is added when |~. above and |-. below the footer are used.
+
+|~.
+|\2=. A footer, centered & across two columns |
+|-.
+| Content Cell | Content Cell |
+| Content Cell | Content Cell |"
+20628,Redmine,Defect,"",Closed,Normal,Standard field (Due Date) for Redmine not showing as required.,Rafael Neves,"",2015-10-16 07:14,Issues workflow,"","","","",0,2015-08-27 19:40,2015-10-16 07:14,次のチケットと重複 #11887,Duplicate,2.6.2,"I´m using Redmine 2.6.2. Logged as admin user, standard field (Due Date) not required when adding a new issue, despite having set up as required on workflow field permission.
+
+I mean, When logged as other user (not admin) it works fine  (appears an red asterisk besides Due Date field), but i need to prevent ALL users to not forget to fill due date, even they are admin users.  Is that a bug ? Possible to fix it ?
+
+Thanks!"
+20621,Redmine,Defect,"",Closed,Normal,Internal Server Error when creating/copying issues,Jurgen Reniers,"",2015-09-09 09:45,Issues,"","","","",0,2015-08-26 15:41,2015-09-09 09:45,"",Invalid,3.1.0,"I have upgraded from Redmine 2.5.2 to 3.1.0 and I'm currently running into an Internal Server Error when creating/copying issues. The @log/production.log@ shows:
+
+<pre>
+NameError (undefined method `_run_save_callbacks' for class `Issue'):
+  app/models/issue.rb:175:in `create_or_update'
+  app/controllers/issues_controller.rb:141:in `create'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+</pre>
+
+*Configuration Info*
+
+<pre>
+Environment:
+  Redmine version                3.1.0.stable
+  Ruby version                   1.9.3-p392 (2013-02-22) [i686-linux]
+  Rails version                  4.2.3
+  Environment                    production
+  Database adapter               PostgreSQL
+SCM:
+  Subversion                     1.6.17
+  Cvs                            1.12.13
+  Git                            1.7.10.4
+  Filesystem                     
+Redmine plugins:
+  redmine_agile                  1.3.10
+  redmine_better_gantt_chart     0.9.0
+  redmine_checklists             3.1.1
+  redmine_github_hook            2.2.0
+  redmine_gitlab_hook            0.1.3
+  redmine_issue_templates        0.1.0
+  redmine_mylyn_connector        2.8.2.stable
+  redmine_spent_time             3.0.2
+  redmine_stealth                0.6.0
+  redmine_testlinklink           1.0.0
+  redmine_wiki_extensions        0.7.0
+  redmine_wiki_lists             0.0.6
+</pre>"
+20619,Redmine,Defect,"",Closed,Normal,When incomming mail has invalid journal id the mail is ignored,Erlend ter Maat,"",2015-08-27 00:51,Email receiving,"","","","",0,2015-08-26 08:48,2015-08-27 00:51,"","",3.1.0,"Incomming mail - replies to issue notifications - may contain an email header with a journal id.
+
+In some cases the journal-id does not exist in the database. I asume this can be due to system crash or some other kind of inconsistency.
+
+When the journal ID is not found in the database the email is ignored and processing continues the next mail.
+
+I think better handling would be to at least process the email as a new issue, then it would be noticed in the webinterface at the moment of sending, instead of when the sender complains about an unnoticed email message.
+
+Please add dispatch_to_default to the receive_XXX_reply functions at app/models/mail_handler.rb
+
+This affects all versions."
+20609,Redmine,Defect,"",New,Normal,Double click on send/save in time tracking results in double entries,A W,"",2015-09-10 18:26,Time tracking,"","","","",0,2015-08-25 10:48,"","","","","
+
+Hello,
+
+In our redmine we have an issue with adding entries to the time tracking. As we use it in german language I can not give you the exact names. In a ticket and in time tracking directly, a double click on send/save results in double entries. Is that a known issue? How can this be fixed?
+I added screenshots of the form and the result when save ist double clicked.
+
+And as the first two screenshots are out of a plugin I added two from adding time in a ticket.
+
+Please let me know in case you need more information!
+
+Our system info:
+
+About your application's environment
+Ruby version 1.8.7 (x86_64-linux)
+RubyGems version 1.3.7
+Rack version 1.1.3
+Rails version 2.3.14
+Active Record version 2.3.14
+Active Resource version 2.3.14
+Action Mailer version 2.3.14
+Active Support version 2.3.14
+Application root /srv/redmine-1.3
+Environment production
+Database adapter mysql
+Database schema version 20110902000000
+
+About your Redmine plugins
+Stuff To Do Plugin 0.4.0
+Redmine Carousel plugin 1.0.1
+Timesheet Plugin 0.6.0
+Redmine Time Tracker plugin 0.4
+Bulk Time Entry 0.5.0
+
+
+PS: Same issue in current versions of redmine, tested with version 2.6"
+20598,Redmine,Defect,"",New,Normal,Plugin ratings with zero stars not possible,Jan from Planio www.plan.io,Jean-Philippe Lang,2015-09-06 18:51,Website (redmine.org),"","","","",0,2015-08-23 11:41,"","","","","I tried giving the ""Custom Workflows"":http://www.redmine.org/plugins/custom-workflows plugin a zero-star rating because of my security concerns. Unfortunately, my rating was not saved. When I repeated the rating with 1 star, it was saved.
+
+Assigning this directly to you, Jean-Philippe, because I think no one else can fix this, or is the code for the plugin directory available somewhere?"
+20597,Redmine,Defect,"",New,Normal,Ajax indicator is displayed below modal boxes,Nicolas Rodriguez,"",2015-08-26 06:15,UI,"","","","",0,2015-08-23 06:19,"","","","","z-index should be set to a higher value than 100 to be displayed correcly.
+"
+20592,Redmine,Defect,"",Closed,Normal,Issue Default Status is gone,J K,"",2015-08-26 15:55,"","","","","",0,2015-08-21 14:20,2015-08-21 14:46,"",Invalid,"","Hey guys.
+
+Has the default issue status been removed in the 3.1 release? The backlog plugin (http://www.redminebacklogs.net/) is trying to use the method @is_default?@ but it's not defined anymore. Furthermore look at the screenshot please:
+
+!{width:90%}redmineFehler.png!
+
+If I remember correctly, there was a column for the default status, or am I wrong?
+
+Can somebody light me up a bit?
+
+Thank you!"
+20591,Redmine,Defect,"",Closed,Normal,PDF export does not determine picture (.png) height correctly,Marwijn Hessel,"",2015-11-07 14:09,PDF export,2.6.8,"","","",0,2015-08-21 14:03,2015-11-07 14:09,"",Fixed,3.1.0,"When exporting a redmine page as PDF. Somehow the height of pictures (.png) is not determined correctly. When there are more pictures on a page, in the PDF export these are laying on top of each other (see example in attachment)."
+20589,Redmine,Patch,"",Closed,Normal,Activate sudo mode after password based login,Jens Kr?mer,Jean-Philippe Lang,2015-10-01 19:07,Accounts / authentication,3.2.0,"","","",0,2015-08-21 11:07,2015-10-01 19:07,"","","","We found that users get confused / annoyed when they just logged in and sudo mode requires their password again if they wanted to perform some administrative action.
+
+Therefore this patch activates the sudo mode for the configured time span if the user logged in using username/password.
+
+"
+20583,Redmine,Defect,"",Closed,Normal,Setting Category/Version as a required field causes error in projects without categories/versions,Robert Barnebeck,Jean-Philippe Lang,2015-10-24 08:23,Issues workflow,3.2.0,"","","",0,2015-08-20 16:49,2015-10-24 08:23,関連している #18004,Fixed,2.5.3,"When I go to ""Administration"" --> ""Workflow"" --> ""Fields permissions"", then I can set the ""Category"" as required. The effect now is, that when I create or edit an issue, the field ""Category"" is required.
+
+But if the project has no defined categories, this validation accidently tells me, that no category is selected. In my opinion the validation should only check in projects, where one ore more categories are present."
+20582,Redmine,Defect,"",Closed,Normal,Redmine Timesheets Application - Installation,Balasubramaniyan Baskaran,"",2015-08-21 01:13,"","","","","",0,2015-08-20 16:24,2015-08-21 01:13,"",Invalid,2.4.2,"I'm trying to install Redmine Timesheets Application plugin as mentioned in the link below:
+
+https://www.redmine.org/plugins/redmine_app_timesheets
+
+But I was not able to find the option Order management in the redmine.
+
+As anyone guide me to solve this issue."
+20565,Redmine,Defect,"",Closed,Low,Search and get a 404 page when adding a new project,diguang xiao,Jean-Philippe Lang,2015-09-20 13:50,Search engine,3.2.0,"","","",0,2015-08-19 12:44,2015-09-20 13:50,"",Fixed,3.1.0,"Steps to recurrence the problem:
+
+# Goto page /projects/new (Add a new project)
+# Click the Search link on the top-right of the page (Or just input some key word and press Enter key)
+# Now, you got a 404 page
+
+Reason, in this scenario, search is linked to /projects//search instead of /search."
+20564,Redmine,Defect,"",Closed,Normal,"Issue status field is blank, and can't be edited in ""Issue update"" form",Leonid Titov,"",2015-09-09 12:53,Issues,"","","","",0,2015-08-19 10:12,2015-09-09 12:53,"",Invalid,2.6.6,"When I try to update or file new issue using the we, the ""Status"" field is empty and can't be edited.
+Please refer to attached screenshot.
+At the same time I can successfully edit issue status via issue list (any report, for instance - ""My issues"").
+I have found this issue after upgrade from 2.3 to 2.6.6.stable.14512
+Here are details about my Redmine installation:
+
+Redmine 2.6.6.stable.14512
+Default administrator account changed 	True
+Attachments directory writable 	True
+Plugin assets directory writable (./public/plugin_assets) 	True
+RMagick available (optional) 	True
+ImageMagick convert available (optional) 	True
+
+Environment:
+  Redmine version                2.6.6.stable.14512
+  Ruby version                   2.0.0-p643 (2015-02-25) [x86_64-linux]
+  Rails version                  3.2.22
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.8.8
+  Git                            1.9.1
+  Filesystem                     
+Redmine plugins:
+  mail_references                0.0.1
+  openid_fix                     0.1.0
+  redmine_change_issue_author    0.0.1
+  redmine_omniauth_google        0.0.1
+  redmine_tagging                0.1.2
+
+Here are fragment from my production.log after trying to update issue using ""Update issue web-form"":
+
+2015-08-19 11:11:54 +0300 (14949) Started PUT ""/projects/import/issues/update_form.js?id=3561"" for fdfs at 2015-08-19 11:11:54 +0300
+2015-08-19 11:11:54 +0300 (14949) Processing by IssuesController#update_form as JS
+2015-08-19 11:11:54 +0300 (14949)   Parameters: {""utf8""=>""?"", ""authenticity_token""=>""dfsfs"", ""issue""=>{""is_private""=>""0"", ""project_id""=>""42"", ""tracker_id""=>""1"", ""subject""=>""fdsfsfs"", ""description""=>""fsdfsd"", ""author_id""=>""3"", ""status_id""=>""2"", ""priority_id""=>""4"", ""assigned_to_id""=>"""", ""parent_issue_id""=>"""", ""start_date""=>"""", ""due_date""=>"""", ""estimated_hours""=>"""", ""done_ratio""=>""0"", ""custom_field_values""=>{""1""=>"""", ""2""=>"""", ""3""=>""""}, ""tags""=>"""", ""notes""=>"""", ""private_notes""=>""0"", ""lock_version""=>""1""}, ""time_entry""=>{""hours""=>"""", ""activity_id""=>"""", ""comments""=>""""}, ""last_journal_id""=>""6010"", ""id""=>""3561"", ""project_id""=>""import""}
+2015-08-19 11:11:54 +0300 (14949) Settings cache cleared.
+2015-08-19 11:11:54 +0300 (14949)   Current user: leon_ti (id=3)
+2015-08-19 11:11:54 +0300 (14949)   Rendered issues/_form_custom_fields.html.erb (1.5ms)
+2015-08-19 11:11:54 +0300 (14949)   Rendered issues/_attributes.html.erb (69.7ms)
+2015-08-19 11:11:54 +0300 (14949)   Rendered plugins/redmine_change_issue_author/app/views/issues/_attributes.html.erb (78.9ms)
+2015-08-19 11:11:54 +0300 (14949)   Rendered plugins/redmine_tagging/app/views/tagging/_issue_tagcloud.erb (25.0ms)
+2015-08-19 11:11:54 +0300 (14949)   Rendered issues/_form.html.erb (124.3ms)
+2015-08-19 11:11:54 +0300 (14949)   Rendered issues/update_form.js.erb (128.8ms)
+2015-08-19 11:11:54 +0300 (14949) Completed 200 OK in 214.9ms (Views: 130.4ms | ActiveRecord: 15.4ms)
+
+"
+20563,Redmine,Defect,"",Closed,Normal,SEGMENTATION FAULT during Redmine Deploy,Diego Dori,"",2015-08-20 09:36,"","","","","",0,2015-08-19 09:39,2015-08-20 09:35,"",Invalid,"","Hi Everyone,
+I'm trying to configure Redmine on production Windows Server running IIS 7. No problem with Web Platform Installer, no problem during Ruby installation.
+When Redmine start for the first time, the DEPLOY return this error:
+
+rake --trace db:create
+...
+C:/inetpub/wwwroot/SUPPOR~1.IT/GEM_HOME/gems/sqlite3-1.3.10-x86-mingw32/lib/sqlite3/1.9/sqlite3_native.so: [BUG] Segmentation fault
+ruby 1.9.3p448 (2013-06-27) [i386-mingw32]
+
+What do you need to understand my problem?
+
+Diego"
+20559,Redmine,Defect,"",Closed,Normal,Project copy does not copy custom field settings,Laurent Breuillard,"",2015-08-18 17:27,Projects,"","","","",0,2015-08-18 17:00,2015-08-18 17:27,次のチケットと重複 #20360,Duplicate,2.6.5,"When making a project copy by going to /redmine/projects/template/copy custom field check boxes on the new project form are not set, all are unchecked. After project copy all custom field values are lost.
+
+Copy the defect #20360 for the release 2.6.5 where I have the same issue.
+
+Env:
+<pre>
+Environment:
+  Redmine version                2.6.5.stable
+  Ruby version                   2.1.6-p336 (2015-04-13) [x86_64-linux]
+  Rails version                  3.2.21
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.6.11
+  Git                            1.7.1
+  Filesystem                     
+Redmine plugins:
+  no plugin installed
+</pre>"
+20557,Redmine,Patch,"",Closed,Normal,Czech translation for 2.6-stable,Toshi MARUYAMA,"",2015-08-23 00:38,Translations,2.6.7,"","","",0,2015-08-18 15:34,2015-08-23 00:38,"","","",From #20452.
+20556,Redmine,Defect,"",New,Normal,Redirect to HTTPS,Dennis Olsson,Jean-Philippe Lang,2017-05-04 16:05,Website (redmine.org),"","","","",0,2015-08-18 14:13,"",関連している #25764,"","","http://www.redmine.org/account/register and other sensitive pages should (IMHO) redirect to HTTPS when passwords are involved. Even better would be to redirect all traffic, since session cookies are involved and impersonation is trivial if you are in the right/wrong position/place.
+
+Adding as a defect since HTTPS is configured on the server."
+20554,Redmine,Defect,"",Closed,Normal,Use AWS-RDS database for redmine,karthik japs,"",2015-08-23 05:20,Database,"","","","",0,2015-08-18 11:22,2015-08-23 05:20,"",Invalid,"",There is any possible to connect AWS-RDS with Redmine ? 
+20551,Redmine,Defect,"",Closed,Normal,"Typo ""coma"" (correct: ""comma"")",Toshi MARUYAMA,Jean-Philippe Lang,2015-10-20 20:31,Code cleanup/refactoring,3.2.0,"","","",0,2015-08-18 02:28,2015-10-20 20:31,関連している #950,Fixed,"","On trunk r14506:
+
+h2. 1. label_coma_char
+
+Introduced by r14494 (#950):
+
+<pre>
+./config/locales/en.yml-963-  label_fields_separator: Field separator
+./config/locales/en.yml-964-  label_fields_wrapper: Field wrapper
+./config/locales/en.yml-965-  label_encoding: Encoding
+./config/locales/en.yml:966:  label_coma_char: Coma
+./config/locales/en.yml-967-  label_semi_colon_char: Semi colon
+./config/locales/en.yml-968-  label_quote_char: Quote
+./config/locales/en.yml-969-  label_double_quote_char: Double quote
+</pre>
+
+h2. 2. :lastname_coma_firstname
+
+<pre>
+./app/models/user.rb-47-        :order => %w(lastname firstname id),
+./app/models/user.rb-48-        :setting_order => 4
+./app/models/user.rb-49-      },
+./app/models/user.rb:50:    :lastname_coma_firstname => {
+./app/models/user.rb-51-        :string => '#{lastname}, #{firstname}',
+./app/models/user.rb-52-        :order => %w(lastname firstname id),
+./app/models/user.rb-53-        :setting_order => 5
+</pre>
+
+h2. 3. lib/redmine/wiki_formatting/macros.rb
+
+<pre>
+./lib/redmine/wiki_formatting/macros.rb-92-        #   invoked without a block of text.  
+./lib/redmine/wiki_formatting/macros.rb-93-        #
+./lib/redmine/wiki_formatting/macros.rb-94-        # Examples:
+./lib/redmine/wiki_formatting/macros.rb:95:        # By default, when the macro is invoked, the coma separated list of arguments
+./lib/redmine/wiki_formatting/macros.rb-96-        # is split and passed to the macro block as an array. If no argument is given
+./lib/redmine/wiki_formatting/macros.rb-97-        # the macro will be invoked with an empty array:
+./lib/redmine/wiki_formatting/macros.rb-98-        #
+</pre>"
+20549,Redmine,Defect,"",Closed,Low,Background Color of Emails,Thomas Brinegar,"",2015-08-17 17:07,Email notifications,"","","","",0,2015-08-17 16:19,2015-08-17 17:07,次のチケットと重複 #20466,Duplicate,3.1.0,"We recently upgraded from Redmine 2.1 to 3.1 and noticed that all emails have an odd off-white background with nested sections having a white background.  Any way to set this so that the background is all just solid white?  Here is an example of this:
+
+!screenshot.png!"
+20548,Redmine,Defect,"",Closed,Normal,Installin in win2k8,Oscar  Mandiola,"",2015-08-17 16:57,"","","","","",0,2015-08-17 16:17,2015-08-17 16:56,"",Invalid,3.1.0,"i got this error installing:
+
+@ The Apache service named 
+    
+   reported the following error: >>> 
+   httpd.exe: Syntax error on line 72 of C:/Bitnami/redmine-3.1.0-0/apache2/conf/httpd.conf: Cannot load modules/mod_access_compat.so into server: Error al iniciar la aplicaci\xf3n; la configuraci\xf3n en paralelo no es correcta. Consulte el registro de even 
+@"
+20547,Redmine,Defect,"",New,Normal,Exporting CSV with multiple tabs open can export wrong view,David Shanahan,"",2015-08-17 15:47,"","","","","",0,2015-08-17 15:47,"","","","","If you have multiple issue indexes open and export one to CSV, the tab you most recently opened will be exported NOT the tab you chose to export.
+
+I tested this on the demo Redmine as well. To reproduce:
+
+1. Open a tab of the ""Issues"" view (tab 1)
+2. Export CSV
+3. Open a second tab of the ""Issues"" view (tab 2), apply different filters/options
+4. Return to tab 1 and export CSV again
+5. Observe that the second export actually contains content from tab 2, not tab 1."
+20543,Redmine,Defect,"",Closed,Normal,Mail handler: don't allow override of some attributes by default,Alexander Ryabinovskiy,Jean-Philippe Lang,2015-10-19 15:26,Email receiving,3.2.0,"","","",0,2015-08-17 12:18,2015-10-17 11:11,コピー元 #20454,Fixed,3.1.0,"<pre>
+  Environment:
+  Redmine version                3.1.0.stable
+  Ruby version                   2.0.0-p645 (2015-04-13) [i386-mingw32]
+  Rails version                  4.2.3
+  Environment                    production
+  Database adapter               SQLServer
+</pre>
+
+1. I replied to email notification from Redmine about the issue (with ""RE: [test - Work #1198] in subject):
+<pre>
+Issue #1198 has been reported by Ryabinovskiy Alexander.
+
+Work #1198: test issue from email
+?	Author: Ryabinovskiy Alexander
+?	Status: New
+?	Priority: Low
+?	Assignee: Developer2
+?	Category: 
+?	Target version:
+
+Project: test2 
+Test issue description
+</pre>
+
+2. I ran command on server:
+<pre>rake redmine:email:receive_pop3 unknown_user=accept host=comp.local port=110 username=redmine@comp.local password=XXX allow_override=project,tracker,priority project=test</pre>
+
+3. Issue #1198 was updated: *Status, Priority, Target version, Assignee was changed*, and *Project did not*. But I used only *allow_override=project,tracker,priority option*!"
+20538,Redmine,Patch,"",Closed,Normal,Japanese translation update (r14494),Go MAEDA,"",2015-08-18 02:44,Translations,"","","","",0,2015-08-16 11:14,2015-08-18 02:44,"","","",Translated 20 strings introduced in r14494 (related to #950).
+20535,Redmine,Patch,"",Closed,Normal,"CSV importer raises I18n::InvalidLocale exception if current user's language is ""(auto)""",Go MAEDA,Jean-Philippe Lang,2015-08-15 11:21,Importers,"","","","",0,2015-08-15 03:25,2015-08-15 11:21,"","","","CSV importer inplemented in r14493 raises I18n::InvalidLocale exception after uploading CSV file if if current user's language selection is ""(auto)"".
+
+This is probably caused by source:trunk/lib/redmine/i18n.rb@14493#L63.
+
+<pre><code class=""ruby"">
+lang = user.try(:language) || Setting.default_language
+</code></pre>
+
+User#language returns """" (zero length string) when the users's language setting is ""(auto)"".
+I think current_language method should be called instead of language method.
+"
+20533,Redmine,Defect,"",Closed,Normal,DEPRECATION WARNING: `#timestamps` was called without specifying an option for `null`.,Go MAEDA,Jean-Philippe Lang,2015-08-15 11:22,Rails support,"","","","",0,2015-08-14 12:46,2015-08-15 11:22,"",Fixed,"","I got the following warning while migrating database.
+This is caused by a migration file 'db/migrate/20150730122707_create_imports.rb' which was added in r14493.
+
+<pre>
+== 20150730122707 CreateImports: migrating ====================================
+-- create_table(:imports)
+DEPRECATION WARNING: `#timestamps` was called without specifying an option for `null`. In Rails 5, this behavior will change to `null: false`. You should manually specify `null: true` to prevent the behavior of your existing migrations from changing. (called from block in change at /Users/maeda/redmines/redmine-trunk/db/migrate/20150730122707_create_imports.rb:10)
+</pre>"
+20529,Redmine,Defect,"",Closed,Normal,How to send email in my plugin using existing redmine mailer.,nikhil thombare,"",2015-09-04 22:04,"","","","","",0,2015-08-12 20:27,2015-08-13 02:19,"",Invalid,"",""
+20526,Redmine,Defect,"",Closed,Normal,"Incorrect new WIKI page heading, when using ""Markdown"" text formatting",Arnis Juraga,Arnis Juraga,2016-05-08 04:46,Text formatting,"","","","",0,2015-08-12 13:35,2016-05-08 04:46,"",Invalid,3.0.1,"1. Go to settings
+2. choose ""Markdown (experimental)"" as Text formatting.
+3. Go to any WIKI page, crate new page. 
+
+The new page will have heading
+<pre>
+# Heading test
+
+
+</pre>
+
+Instead of default Markdown heading formatting:
+
+<pre>
+Heading test
+===
+
+</pre>
+
+<pre>
+Environment:
+  Redmine version                3.0.1.stable
+  Ruby version                   1.9.3-p194 (2012-04-20) [i486-linux]
+  Rails version                  4.2.0
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.6.17
+  Mercurial                      2.2.2
+  Git                            1.7.10.4
+  Filesystem                     
+Redmine plugins:
+  add_link                       0.0.1
+  redmine_changeauthor           1.0.0
+  redmine_custom_css             0.1.4
+  redmine_improved_searchbox2    0.0.3
+  redmine_lightbox2              0.2.2
+</pre>"
+20525,Redmine,Defect,"",Closed,Normal,"Move WIKI page bug - renaming and moving default or other WIKI page, results in FIXED link to new project",Arnis Juraga,"",2015-09-07 08:23,Wiki,"","","","",0,2015-08-12 13:25,2015-09-07 08:23,次のチケットと重複 #20356,Duplicate,"","How to reproduce:
+
+1. Go to Project Default wiki page ```projects/wiki-page-move-test/wiki```
+2. create and save content
+
+
+
+
+
+<pre>
+Environment:
+  Redmine version                3.0.1.stable
+  Ruby version                   1.9.3-p194 (2012-04-20) [i486-linux]
+  Rails version                  4.2.0
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.6.17
+  Mercurial                      2.2.2
+  Git                            1.7.10.4
+  Filesystem                     
+Redmine plugins:
+  add_link                       0.0.1
+  redmine_changeauthor           1.0.0
+  redmine_custom_css             0.1.4
+  redmine_improved_searchbox2    0.0.3
+  redmine_lightbox2              0.2.2
+</pre>"
+20523,Redmine,Defect,"",Closed,Normal,Edit.js bug,匿名ユーザー,"",2015-08-15 16:32,"","","","","",0,2015-08-12 11:52,2015-08-15 16:32,"",Invalid,3.1.0,"I just do a redmine migration from 2.4.2 to redmine 3.1 on a new server working on Debian Jessie.
+
+Migration as done correctly.
+
+When I create a new demand, All of my ""Description Message"" and ""Subject"" are cleared when I change ""Status"" of this Issue -> Status go to New, and Subject and Description text area go to empty, like a new issue.
+This append the first time only, if i redo a change of status, everything is ok.
+
+If i try to create a new issue, same problem.
+If i go to a issue and i try to change Status, first time it doesn't work, second time OK...
+
+I'm running under Debian Jessie with apache+passenger
+
+<pre>
+Environment:
+  Redmine version                3.1.0.stable
+  Ruby version                   2.1.5-p273 (2014-11-13) [x86_64-linux-gnu]
+  Rails version                  4.2.3
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.8.10
+  Filesystem                     
+Redmine plugins:
+  no plugin installed
+</pre>"
+20514,Redmine,Defect,"",Closed,Normal,Fix Language keys for Dutch,Chris  Smeets ,"",2015-08-15 16:35,"","","","","",0,2015-08-11 20:21,2015-08-15 16:35,"",No feedback,"",Fix teh Language keus for dutch
+20513,Redmine,Defect,"",New,Normal,Unloadable plugin convention breaks with Rails 4.2.3,Pierre Pretorius,"",2017-12-10 13:10,Plugin API,4.0.0,"","","",0,2015-08-11 18:20,"","","",3.1.0,"The RM documentation and existing plugins use the Rails *unloadable* statement.  This doesn't work as expected with Redmine 3.1.  I have quite a bit of experience with Rails and building RM plugins so please do not disregard this without an investigation.
+
+The following steps illustrate and reproduce the problem:
+
+1) Create a fresh new Redmine:
+<pre>
+git clone https://github.com/redmine/redmine.git
+cd redmine
+git checkout 3.1-stable
+
+nano config/database.yml
+bundle exec rake generate_secret_token
+bundle exec rake db:migrate
+</pre>
+
+2) Create a fresh new plugin:
+<pre>
+rails g redmine_plugin polls
+rails g redmine_plugin_model polls poll name:string
+
+bundle exec rake redmine:plugins:migrate
+</pre>
+
+3) Add any code reference to this new *unloadable* Poll model.  A quick ways is to add the following to plugins/polls/init.rb:
+
+<pre>
+Rails.application.config.to_prepare do
+  Poll.new
+end
+</pre>
+
+4) At this point when Rails need to do code reloading it will fail with a message indicating it expected plugin/polls/app/models/poll.rb to define Poll.  Try it by doing the following:
+
+* Run the rails server and open any page served by it in your browser.
+
+* Edit the any .rb file.  An example is to add a newline to plugins/polls/app/models/poll.rb.
+
+* Click any link in the page opened in the first step.  You will get: *_Unable to autoload constant Poll, expected /home/pierre/redmine/plugins/polls/app/models/poll.rb to define it._*
+
+If you remove the *unloadable* in the plugin Poll model this problem disappears.  Note that a very large amount of RM plugins currently use unloadable and causes this issue.  My environment after performing these 4 steps:
+<pre>
+Environment:
+  Redmine version                3.1.0.stable
+  Ruby version                   2.1.3-p242 (2014-09-19) [x86_64-linux]
+  Rails version                  4.2.3
+  Environment                    production
+  Database adapter               PostgreSQL
+SCM:
+  Subversion                     1.8.8
+  Git                            1.9.1
+  Filesystem                     
+Redmine plugins:
+  polls                          0.0.1
+</pre>"
+20512,Redmine,Patch,"",Closed,High,Project.copy_from deletes enabled_modules on source,Ond?ej Ezr,Jean-Philippe Lang,2015-09-12 14:49,Projects,3.0.5,"","","",0,2015-08-11 18:13,2015-09-12 14:49,"","","","project#enabled_modules = project.enabled_modules causing troubles, because there are ids copied, therefore rails somehow end up with updating old enabled_modules to match new project_id, so they are not copied, but transfered."
+20508,Redmine,Patch,"",Closed,Normal,Required file lib/redmine/hook.rb is patching autoloaded ApplicationHelper,Ond?ej Ezr,Jean-Philippe Lang,2015-10-19 19:30,Code cleanup/refactoring,3.2.0,"","","",0,2015-08-11 02:00,2015-10-19 19:30,"","","","Redmine::Hook::Helper is in file, which is required, but is patching ApplicationHelper and that is loaded by Rails autoloading. So its patch is forgotten after reloading"
+20507,Redmine,Patch,"",Closed,Normal,ThemesHelper reopening ApplicationHelper is problem with autoloading,Ond?ej Ezr,Jean-Philippe Lang,2015-10-19 20:04,Code cleanup/refactoring,3.2.0,"","","",0,2015-08-11 01:58,2015-10-19 20:04,"","","","redmine/themes.rb defines ApplicationHelper, but it gets into problems, if there is a patch for it in plugin, which redefines ApplicationHelper method. Rails do not load it - it is loaded, but does not have the method defined. It works only if patch is after a controller invocation, because it load it by path and do not care if it is defined. But it bassically defines the model and avoiding Rails autoloading."
+20506,Redmine,Patch,"",Closed,Normal,redmine I18n autoload instead of require,Ond?ej Ezr,Jean-Philippe Lang,2015-08-18 08:54,Code cleanup/refactoring,3.2.0,"","","",0,2015-08-11 01:55,2015-08-18 08:54,"","","","redmine/i18n is required in redmine.rb, but row above it is autoloaded by rails and thus both mechanisms are loading it. It is problem in some of my patches. But it is basically bad idea to mix those behaviours. ( My vote goes for a rails autoloading... )"
+20501,Redmine,Defect,"",Closed,Normal,Empty divs when there are no custom fields on the issue form,Amol HATWAR,Jean-Philippe Lang,2015-08-18 09:06,Issues,3.2.0,"","","",0,2015-08-09 14:48,2015-08-18 09:06,"",Fixed,3.1.0,"The DOM is getting polluted with unnecessary ``splitcontent`` divs for ``custom_field_values`` even when there are absolutely none defined. This limits theming splitcontent divs as it renders empty boxes...
+
+Patch to get rid of the free extra divs is attached."
+20499,Redmine,Defect,"",New,Normal,Bangla charater of PDF,Anis Alamgir,"",2015-08-09 08:36,PDF export,"","","","",0,2015-08-09 07:37,"",関連している #13575,"",1.3.2,"I'm using *Bangla* language in Redmine 1.3.2.stable (MySQL) (on *Ubuntu 12.04*).
+But when I try to open pdf file of a Issue then it's showing broken text.
+Please check the attached pdf file to see the bug and show me how to fix it.
+
+Thanks
+"
+20498,Redmine,Patch,"",Closed,Normal,Wrap lines less than 80 characters in doc/INSTALL,Go MAEDA,"",2015-08-12 14:55,Documentation,"","","","",0,2015-08-09 07:14,2015-08-12 14:55,"","","",It improves readability.
+20496,Redmine,Patch,"",Closed,Normal," Change Japanese translation for ""time tracking""",Go MAEDA,"",2015-08-12 12:27,Translations,3.2.0,"","","",0,2015-08-08 08:08,2015-08-12 12:27,"","","","A term ""時間トラッキング"", Japanese translation for ""time tracking"", is obscure and not so common. There are only 3900 pages in ""Google"":https://www.google.co.jp/search?q=%22%E6%99%82%E9%96%93%E3%83%88%E3%83%A9%E3%83%83%E3%82%AD%E3%83%B3%E3%82%B0%22.
+
+I suggest changing it to ""時間管理"". It is clear and common. (803,000 pages in ""Google"":https://www.google.co.jp/search?q=%22%E6%99%82%E9%96%93%E7%AE%A1%E7%90%86%22)"
+20495,Redmine,Defect,"",Closed,Normal,How to add pagination in redmine plugin.,nikhil thombare,"",2015-08-08 04:34,"","","","","",0,2015-08-07 18:27,2015-08-08 04:34,"",Invalid,3.1.0,""
+20492,Redmine,Defect,"",Closed,Normal,"Forum e-mail ""My Account"" link shows hostname/my/account",Bruce Pieterse,"",2015-08-08 09:46,Email notifications,"","","","",0,2015-08-07 00:20,2015-08-07 02:29,"",Invalid,3.1.0,"Hi,
+
+I have noticed that the forum e-mails generated are showing http://hostname/my/account in the footer.
+
+The link in the header of the forum topic/subject is correct and uses the hostname from the settings page.
+
+Thanks"

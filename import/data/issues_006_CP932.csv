@@ -1,0 +1,876 @@
+#,プロジェクト,トラッカー,親チケット,ステータス,優先度,題名,作成者,担当者,更新日,カテゴリ,対象バージョン,開始日,期日,予定工数,進捗率,作成日,終了日,関連するチケット,Resolution,Affected version,説明
+27895,Redmine,Defect,"",New,Normal,"Trackers with ""Parent task"" field set to ""Read-only"" should not be shown when adding a new subtask",Go MAEDA,"",2018-01-04 14:17,Issues,"","","","",0,2018-01-04 14:17,"",関連している #22345,"","","If ""Parent task"" field of a tracker is set to read-only, the tracker should not be shown in the new issue form for subtasks because issues with such tracker cannot be a subtask.
+
+Steps to reproduce:
+# Set the ""Parent task"" field of the tracker (hereafter called ""Tracker-X"") to ""Read-only"" on ""Fields permissions"" tab on ""Workflow"" page.
+# Create a parent issue.
+# Go to the new issue form for subtasks by clicking ""Add"" in ""Subtasks"" area of the parent issue.
+# You can select Tracker-X in the new issue form. But the newly created issue never be a subtask because ""Parent task"" field of Tracker-X is read-only."
+27887,Redmine,Defect,"",Closed,Normal,Alertas redmine,Manuel Ulloa,"",2018-01-03 17:18,Email notifications,"","","","",0,2018-01-03 15:03,2018-01-03 17:18,"",Invalid,3.4.2,"Estimados, buenos d?as. (espero que alguien pueda ayudarme con esta consulta).
+
+Tengo instalado redmine en una maquina windows y funciona sin problemas, estos son los datos de mi instalaci?n.
+
+Environment:
+  Redmine version                3.4.2.stable
+  Ruby version                   2.3.3-p222 (2016-11-21) [i386-mingw32]
+  Rails version                  4.2.8
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Filesystem                     
+Redmine plugins:
+  redmine_agile                  1.4.5
+  redmine_checklists             3.1.10
+
+
+Mi consulta es la siguiente. De que forma puedo activar alertas por correo sobre  peticiones ya vencidas. Por ejemplo, si una tarea vencio hace un d?a, que envie alertas por correo, o bien si una tarea esta proxima a vencer, que tambi?n envie un correo.
+
+
+Desde ya agradezco su ayuda y estoy muy atento a ella.
+
+"
+27885,Redmine,Patch,"",New,Normal,"Empty email attachments are imported to Redmine, creating broken DB records",Felix Sch?fer,"",2018-01-05 05:17,Email receiving,3.3.6,"","","",0,2018-01-03 14:27,"","","","","Redmine generally disallows empty or 0-byte-sized attachments, this is not checked when importing attachments from emails through the @MailHandler@ though.
+
+In the case of an empty email attachment, an @Attachment@ record is created, though without @disk_filename@, @disk_directory@ and @digest@. The attachment is then shown in the attachment list of the issue, but clicking on the attachment link to see the attachment or to download it leads to an error, as there is no file on disk for that attachment."
+27884,Redmine,Defect,"",New,Normal,Support RTL Bidirection text,Hooman Valibeigi,"",2018-01-03 11:09,Text formatting,"","","","",0,2018-01-03 11:09,"","","",3.4.2,"The fix at #8121 is broken as stated in my last comment there.
+
+My environment: Redmine 3.4.2, Google Chrome 63
+
+1. `p(rtl).` maps to `class=""wiki-class-rtl""` in html, but there is no such class in application.css
+2. `unicode-bidi:bidi-override` must be removed or set to `normal`
+See https://www.w3schools.com/cssref/pr_text_unicode-bidi.asp
+"
+27881,Redmine,Defect,"",New,Normal,"No validation errors when entering an invalid ""Estimate hours"" value",Go MAEDA,"",2018-01-03 09:27,Issues,3.3.6,"","","",0,2018-01-03 08:36,"","関連している #12955, 関連している #2465","","","This problem was reported as a part of #12955 by ""Daniel Felix"":/users/61731 five years ago. I confirmed that the latest versions of Redmine (3.4 and trunk) are still affected.
+
+> The helper for the estimated time doesn't check the correctness of the string. For example, you can define hours by 2h30m to get 2.5 or 3h5m to get 3.08 as timevalue. But if you enter abc or 3j (misstyped) the string isn't checked. The issue just returns ""update successfully"" and sets the estimated time to nil. The string should be checked and should raise some error, if the input isn't correct."
+27878,Redmine,Defect,"",Closed,Normal,Internal error in administration (redmine v3.4.3),Van Phan,"",2018-01-03 11:25,"","","","","",0,2018-01-02 11:38,2018-01-03 11:25,"",Invalid,3.4.3,"Dear,
+
+Occur below error when I try to access on editing user and settings in administratio
+
+<pre>
+Internal error
+An error occurred on the page you were trying to access.
+If you continue to experience problems please contact your Redmine administrator for assistance.
+
+If you are the Redmine administrator, check your log files for details about the error.
+
+Back
+</pre>
+
+Information
+<pre>
+Redmine 3.4.3.stable
+Environment:
+  Redmine version                3.4.3.stable
+  Ruby version                   2.2.5-p319 (2016-04-26) [x86_64-linux]
+  Rails version                  4.2.8
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.7.14
+  Filesystem                     
+Redmine plugins:
+  no plugin installed
+</pre>
+
+Could you help me solution to resolve it asap.
+
+Thank you!"
+27871,Redmine,Defect,"",Closed,Normal,Failed to run plugins test,Tatsuya Saito,Go MAEDA,2018-01-02 11:19,Rails support,"","","","",0,2017-12-31 03:16,2018-01-01 11:35,関連している #23630,Fixed,"","I run plugins test with following, but failed it.
+
+<pre>
+/yyyyy/redmine/trunk $ bundle exec rake --trace redmine:plugins:test
+** Invoke redmine:plugins:test (first_time)
+** Execute redmine:plugins:test
+** Invoke redmine:plugins:test:units (first_time)
+** Invoke db:test:prepare (first_time)
+** Invoke environment (first_time)
+** Execute environment
+** Invoke db:load_config (first_time)
+** Execute db:load_config
+** Execute db:test:prepare
+** Invoke db:test:load (first_time)
+** Invoke db:test:purge (first_time)
+** Invoke environment 
+** Invoke db:load_config 
+** Invoke db:check_protected_environments (first_time)
+** Invoke environment 
+** Invoke db:load_config 
+** Execute db:check_protected_environments
+** Execute db:test:purge
+** Execute db:test:load
+** Invoke db:test:load_schema (first_time)
+** Invoke db:test:purge 
+** Execute db:test:load_schema
+** Execute redmine:plugins:test:units
+rake aborted!
+NoMethodError: undefined method `rake_run' for Minitest:Module
+/yyyyy/redmine/trunk/lib/tasks/redmine.rake:165:in `block (4 levels) in <top (required)>'
+/xxxxx/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/rake-12.3.0/lib/rake/task.rb:251:in `block in execute'
+/xxxxx/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/rake-12.3.0/lib/rake/task.rb:251:in `each'
+/xxxxx/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/rake-12.3.0/lib/rake/task.rb:251:in `execute'
+/xxxxx/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/rake-12.3.0/lib/rake/task.rb:195:in `block in invoke_with_call_chain'
+/xxxxx/.rbenv/versions/2.4.1/lib/ruby/2.4.0/monitor.rb:214:in `mon_synchronize'
+/xxxxx/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/rake-12.3.0/lib/rake/task.rb:188:in `invoke_with_call_chain'
+/xxxxx/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/rake-12.3.0/lib/rake/task.rb:181:in `invoke'
+/yyyyy/redmine/trunk/lib/tasks/redmine.rake:156:in `block (3 levels) in <top (required)>'
+/xxxxx/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/rake-12.3.0/lib/rake/task.rb:251:in `block in execute'
+/xxxxx/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/rake-12.3.0/lib/rake/task.rb:251:in `each'
+/xxxxx/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/rake-12.3.0/lib/rake/task.rb:251:in `execute'
+/xxxxx/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/rake-12.3.0/lib/rake/task.rb:195:in `block in invoke_with_call_chain'
+/xxxxx/.rbenv/versions/2.4.1/lib/ruby/2.4.0/monitor.rb:214:in `mon_synchronize'
+/xxxxx/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/rake-12.3.0/lib/rake/task.rb:188:in `invoke_with_call_chain'
+/xxxxx/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/rake-12.3.0/lib/rake/task.rb:181:in `invoke'
+/xxxxx/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/rake-12.3.0/lib/rake/application.rb:160:in `invoke_task'
+/xxxxx/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/rake-12.3.0/lib/rake/application.rb:116:in `block (2 levels) in top_level'
+/xxxxx/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/rake-12.3.0/lib/rake/application.rb:116:in `each'
+/xxxxx/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/rake-12.3.0/lib/rake/application.rb:116:in `block in top_level'
+/xxxxx/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/rake-12.3.0/lib/rake/application.rb:125:in `run_with_threads'
+/xxxxx/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/rake-12.3.0/lib/rake/application.rb:110:in `top_level'
+/xxxxx/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/rake-12.3.0/lib/rake/application.rb:83:in `block in run'
+/xxxxx/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/rake-12.3.0/lib/rake/application.rb:186:in `standard_exception_handling'
+/xxxxx/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/rake-12.3.0/lib/rake/application.rb:80:in `run'
+/xxxxx/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/rake-12.3.0/exe/rake:27:in `<top (required)>'
+/xxxxx/.rbenv/versions/2.4.1/bin/rake:22:in `load'
+/xxxxx/.rbenv/versions/2.4.1/bin/rake:22:in `<top (required)>'
+/xxxxx/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/bundler-1.15.4/lib/bundler/cli/exec.rb:74:in `load'
+/xxxxx/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/bundler-1.15.4/lib/bundler/cli/exec.rb:74:in `kernel_load'
+/xxxxx/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/bundler-1.15.4/lib/bundler/cli/exec.rb:27:in `run'
+/xxxxx/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/bundler-1.15.4/lib/bundler/cli.rb:362:in `exec'
+/xxxxx/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/bundler-1.15.4/lib/bundler/vendor/thor/lib/thor/command.rb:27:in `run'
+/xxxxx/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/bundler-1.15.4/lib/bundler/vendor/thor/lib/thor/invocation.rb:126:in `invoke_command'
+/xxxxx/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/bundler-1.15.4/lib/bundler/vendor/thor/lib/thor.rb:387:in `dispatch'
+/xxxxx/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/bundler-1.15.4/lib/bundler/cli.rb:22:in `dispatch'
+/xxxxx/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/bundler-1.15.4/lib/bundler/vendor/thor/lib/thor/base.rb:466:in `start'
+/xxxxx/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/bundler-1.15.4/lib/bundler/cli.rb:13:in `start'
+/xxxxx/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/bundler-1.15.4/exe/bundle:30:in `block in <top (required)>'
+/xxxxx/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/bundler-1.15.4/lib/bundler/friendly_errors.rb:121:in `with_friendly_errors'
+/xxxxx/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/bundler-1.15.4/exe/bundle:22:in `<top (required)>'
+/xxxxx/.rbenv/versions/2.4.1/bin/bundle:22:in `load'
+/xxxxx/.rbenv/versions/2.4.1/bin/bundle:22:in `<main>'
+Tasks: TOP => redmine:plugins:test:units
+</pre>
+
+This is caused by r16859 .
+I tried to fix it and attach the patch.
+
+
+**Environment**
+
+<pre>
+Environment:
+  Redmine version                3.4.3.devel.17136
+  Ruby version                   2.4.1-p111 (2017-03-22) [x86_64-darwin16]
+  Rails version                  5.1.4
+  Environment                    production
+  Database adapter               SQLite
+SCM:
+  Subversion                     1.9.4
+  Git                            2.14.3
+  Filesystem                     
+Redmine plugins:
+  no plugin installed
+</pre>
+"
+27865,Redmine,Defect,"",Closed,Normal,RailsBaseURI ignored while creating robots.txt,Grischa Zengel,"",2017-12-29 15:59,"",4.0.0,"","","",0,2017-12-28 20:27,2017-12-29 15:59,"",Fixed,3.4.3,"In my case I use
+RailsBaseURI /redmine
+which results to URLs like /redmine/issues but in robots.txt are URLs without the prefix /redmine:
+
+<pre>
+User-agent: *
+Disallow: /projects/support/repository
+Disallow: /projects/support/issues
+Disallow: /projects/support/activity
+Disallow: /issues/gantt
+Disallow: /issues/calendar
+Disallow: /activity
+Disallow: /search
+</pre>
+
+The expected robots.txt must be
+
+<pre>
+User-agent: *
+Disallow: /redmine/projects/support/repository
+Disallow: /redmine/projects/support/issues
+Disallow: /redmine/projects/support/activity
+Disallow: /redmine/issues/gantt
+Disallow: /redmine/issues/calendar
+Disallow: /redmine/activity
+Disallow: /redmine/search
+</pre>
+
+As a feature request, it would be nice to have some additional URLs which I could add in configuration.
+
+Something like:
+
+<pre>
+User-agent: *
+<% @projects.each do |p| -%>
+Disallow: /projects/<%= p.to_param %>/repository
+Disallow: /projects/<%= p.to_param %>/issues
+Disallow: /projects/<%= p.to_param %>/activity
+<% @config.robots_project.each do |u| -%>
+Disallow: /projects/<%= p.to_param %>/<%= u.to_param %>
+<% end -%>
+<% end -%>
+Disallow: /issues/gantt
+Disallow: /issues/calendar
+Disallow: /activity
+Disallow: /search
+<% @config.robots_main.each do |u| -%>
+Disallow: /<%= u.to_param %>
+<% end -%>
+</pre>"
+27863,Redmine,Defect,"",New,Urgent,If version is closed or locked  subtasks don't get copied ,Alessandro Zucchi,"",2017-12-28 14:48,Issues,"","","","",0,2017-12-28 14:48,"","","",3.3.5,"Hi,
+if I tryed to copy an issue with subtasks only the parent task is copied if the source version is closed or locked.
+Regards
+Alessandro
+
+"
+27862,Redmine,Defect,"",New,Normal,Issue notes overflow when using pre,Kenan Dervisevic,"",2017-12-28 14:41,Issues,"","","","",0,2017-12-28 14:40,"","","",3.4.3,"If user uses *pre* in his note and the note has some long text, it overflows over the sidebar on the right.
+
+"
+27861,Redmine,Defect,"",Closed,Normal,bundle install fails for nokogiri 1.7.2 (x64-mingw32) and ruby 2.4.3 on Windows,Kenan Dervisevic,"",2017-12-28 14:12,Ruby support,"","","","",0,2017-12-28 13:41,2017-12-28 14:12,次のチケットと重複 #27505,Duplicate,3.4.3,"_bundle install_ command fails for *nokogiri 1.7.2 (x64-mingw32)* and *ruby 2.4.3* on Windows with the following message:
+
+!nokogiri.png!
+
+Ruby version installed: ruby 2.4.3p205 (2017-12-14 revision 61247) [x64-mingw32] (from rubyinstaller.org)
+
+According to https://github.com/sparklemotion/nokogiri/issues/1618, nokogiri 1.8.0 fixes this. I've bumped the version to 1.8.0 in Gemfile and it did the trick."
+27848,Redmine,Defect,"",New,Normal,The progress exceeding 99.5% is displayed as 100%,Mizuki ISHIKAWA,"",2017-12-25 07:54,Issues,"","","","",0,2017-12-25 07:45,"","","","","!{width: 70%; border:1px solid #ccc}100_progress_rate.png!
+
+Steps to reproduce:
+* Create one Issue.
+* Create 200 child issues for that issue.
+* Among 200 child issues, change the status of 199 issues to ""closed"" and change the status of 1 issue to ""new”.
+* When checking the progress rate, it is displayed as 100%.
+
+Since all the issues are not closed, I think that the progress rate should be displayed as 99%."
+27835,Redmine,Patch,"",Closed,Normal,Brazilian translation for 3.3-stable,Toshi MARUYAMA,"",2017-12-21 18:15,Translations,3.3.6,"","","",0,2017-12-21 16:51,2017-12-21 18:15,"","","","From #27620.
+
+<pre><code class=""diff"">
+=== (+3,-5) config/locales/pt-BR.yml ===
+@@ -1224,7 +1224,5 @@
+   label_new_project_issue_tab_enabled: Exibir ""Nova tarefa"" em aba
+   setting_new_item_menu_tab: Aba menu do projeto para cria??o de novos objetos
+   label_new_object_tab_enabled: Exibir o ""+"" suspenso
+-  error_no_projects_with_tracker_allowed_for_new_issue: There are no projects with trackers
+-    for which you can create an issue
+-  error_cannot_reassign_time_entries_to_an_issue_about_to_be_deleted: Spent time cannot
+-    be reassigned to an issue that is about to be deleted
++  error_no_projects_with_tracker_allowed_for_new_issue: N?o h? projetos com tipos de tarefa para os quais voc? pode criar uma tarefa
++  error_cannot_reassign_time_entries_to_an_issue_about_to_be_deleted: O tempo gasto n?o pode ser alterado numa tarefa que ser? apagada
+</code></pre>"
+27825,Redmine,Defect,"",Closed,Normal,Issues are automatically filtered as open only,Viliam Slobodn?k,"",2017-12-27 16:18,Issues filter,"","","","",0,2017-12-20 09:28,2017-12-27 16:18,"",Duplicate,"",With new version of Redmine there is automatic filter for open issues only. How to switch it off? Or please disable this feature.
+27812,Redmine,Defect,"",Closed,Normal,Typo in rdm-mailhandler.rb: s/subadress/subaddress/,Go MAEDA,Go MAEDA,2017-12-17 07:36,Email receiving,4.0.0,"","","",0,2017-12-17 07:34,2017-12-17 07:36,"",Fixed,"","<pre><code class=""diff"">
+Index: extra/mail_handler/rdm-mailhandler.rb
+===================================================================
+--- extra/mail_handler/rdm-mailhandler.rb	(revision 17115)
++++ extra/mail_handler/rdm-mailhandler.rb	(working copy)
+@@ -86,7 +86,7 @@
+                                               ""user"") { |v| self.no_notification = '1'}
+       opts.separator("""")
+       opts.separator(""Issue attributes control options:"")
+-      opts.on(      ""--project-from-subaddress ADDR"", ""select project from subadress of ADDR found"",
++      opts.on(      ""--project-from-subaddress ADDR"", ""select project from subaddress of ADDR found"",
+                                               ""in To, Cc, Bcc headers"") {|v| self.project_from_subaddress = v}
+       opts.on(""-p"", ""--project PROJECT"",      ""identifier of the target project"") {|v| self.issue_attributes['project'] = v}
+       opts.on(""-s"", ""--status STATUS"",        ""name of the target status"") {|v| self.issue_attributes['status'] = v}
+</code></pre>"
+27810,Redmine,Defect,"",Closed,Normal,Typo in rdm-mailhandler.rb: s/Proccessed/Processed/,Go MAEDA,Go MAEDA,2017-12-17 06:22,Email receiving,4.0.0,"","","",0,2017-12-17 05:58,2017-12-17 06:22,"",Fixed,"","<pre><code class=""diff"">
+Index: extra/mail_handler/rdm-mailhandler.rb
+===================================================================
+--- extra/mail_handler/rdm-mailhandler.rb	(revision 17114)
++++ extra/mail_handler/rdm-mailhandler.rb	(working copy)
+@@ -186,7 +186,7 @@
+         warn ""Failed to contact your Redmine server (#{response.code}).""
+         return 75
+       when 201
+-        debug ""Proccessed successfully""
++        debug ""Processed successfully""
+         return 0
+       else
+         return 1
+</code></pre>"
+27807,Redmine,Patch,"",New,Normal,Use a unique way to check/uncheck a group/fieldset with checkboxes ,Marius BALTEANU,"",2017-12-16 11:08,UI,"","","","",0,2017-12-16 11:08,"",関連している #27678,"","","Currently, there are 2 ways to check/uncheck a group/fieldset with checkboxes:
+
+1. Using the green tick icon in screens like:
+- New member modal
+- Workflow, tab Status transitions  
+
+2. Using the explicit links ""Check All/Uncheck All"" in screens like
+- New tracker form
+- New custom field form
+
+This series of patches propose the following changes:
+3. add the the toggle feature (from point 1) to several screens:
+- Active activities from Time tracking tab (Project settings)
+- Trackers and custom fields settings from Issues tracking tab (Project settings)
+- Project modules settings (Project settings)
+- Roles permissions for each module (Administration)
+
+4. Replace the explicit links from the above mentioned screens (point 2) with the toggle feature.
+5. Some CSS cleanup
+6. Fix a current issue in new member modal where the icon is rendered after the fieldset name and not before it.
+
+In this way, will have a unique and consistent way to check/uncheck a group of checkboxes  across the application.
+
+I chose to use the version with the green tick because it requires less space than the explicit links and it fits better.
+I'm not saying that the green tick is the best option, but this is an ongoing discussion (#27678).
+
+Patch 6 can be applied also on the next minor version if we want to fix the issue from the new member modal earlier.
+
+
+Some screenshots attached. "
+27804,Redmine,Defect,"",New,Normal,Restriction of user visibility isn't working with internal authentication,Philip Heise,"",2017-12-15 10:59,Security,"","","","",0,2017-12-15 10:59,"","","",3.3.1,"Hi,
+
+I'm using Redmine 3.3.1 (Debian Stretch). I have two authentication methods configured: internal and LDAP. In the Settings I use the following settings:
+- User visibility: Members of visible projects
+- Member management: All Roles
+- Permissions: Manager members
+
+I dicovered that the restriction to view only members of visible projects (in every project's members configruration) only works for users with LDAP authentication. If a user account uses the internal authentication it can view the list of all redmine user accounts.
+"
+27803,Redmine,Defect,"",Closed,Normal,Can't post a smiley face in issues description,J?kabs J?nis Kalni??,"",2017-12-18 13:45,"","","","","",0,2017-12-15 10:03,2017-12-16 03:42,"",Invalid,3.3.2,"<pre>
+Completed 500 Internal Server Error in 102ms (ActiveRecord: 60.4ms)
+
+ActiveRecord::StatementInvalid (Mysql2::Error: Incorrect string value: '\xF0\x9F\x98\x8A' for column 
+'description' at row 1: INSERT INTO `issues` (`project_id`, `author_id`, `start_date`, `tracker_id`, 
+`status_id`, `assigned_to_id`, `subject`, `description`, `priority_id`, `due_date`, `updated_on`, `created_on`,
+ `lock_version`) VALUES (261, 210, '2017-12-15', 3, 1, 210, 'Labojumi lap?', ':blush:', 4, '2017-12-16', '2017-12-15 10:51:08', '2017-12-15 10:51:08', 0)):
+ app/models/issue.rb:210:in `create_or_update'
+ app/controllers/issues_controller.rb:140:in `create'
+ lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+</pre>
+Environment:
+ Redmine version                3.3.2.stable
+ Ruby version                   2.3.3-p222 (2016-11-21) [x86_64-linux-gnu]
+ Rails version                  4.2.7.1
+ Environment                    production
+ Database adapter               Mysql2
+SCM:
+ Git                            2.11.0
+ Filesystem                     
+Redmine plugins:
+ add_link                       0.0.1
+ easy_gantt                     2016-RC1.0
+ periodictask                   3.1.1
+ redmine_custom_css             0.1.4
+ redmine_improved_searchbox2    0.0.3
+ redmine_lightbox2              0.3.1
+ redmine_tagging                0.1.5
+ redmine_theme_changer          0.2.0
+ redmine_xlsx_format_issue_exporter 0.1.3"
+27799,Redmine,Patch,"",New,Normal,Mark default version in versions tab from project settings ,Marius BALTEANU,"",2017-12-15 07:38,Project settings,"","","","",0,2017-12-15 07:38,"","","","",!default_version.png!
+27798,Redmine,Defect,"",Closed,Normal,Error 404 occurred when opening attached file having Japanese (multibyte) file name,tacafumi tadocolo,"",2017-12-18 05:41,Attachments,"","","","",0,2017-12-15 05:18,2017-12-18 05:41,"",Invalid,3.4.2,"This problem sometimes occurs.
+The wrong URL ""%E7%94?%E8?%8B%E6%9B?"" is @""%E7%94(DCB3)%E8(DCAB)%8B%E6%9B(DCB8)""@.
+And that must be ""%E7%94%B3%E8%AB%8B%E6%9B%B8"".
+It seems that the ""%"" character of the URL is changing to binary \xdc.
+See these logs below.
+
+* Logs on success
+
+*Apache log (logs/accsss.log)
+<pre>
+10.10.45.59 - - [13/Dec/2017:10:14:45 +0900] ""GET /redmine/attachments/3054/PJ%E7%94%B3%E8%AB%8B%E6%9B%B8.txt HTTP/1.1"" 200 40204
+</pre>
+
+*Redmine log (log/production.log)*
+<pre>
+Started GET ""/redmine/attachments/3054/PJ%E7%94%B3%E8%AB%8B%E6%9B%B8.txt"" for 127.0.0.1 at 2017-12-13 10:14:45 +0900
+Processing by AttachmentsController#show as HTML
+  Parameters: {""id""=>""3054"", ""filename""=>""PJ申請書.txt""}
+  Current user: admin (id=1)
+  Rendered common/_file.html.erb (0.0ms)
+  Rendered layouts/_file.html.erb (15.6ms)
+  Rendered attachments/file.html.erb within layouts/base (15.6ms)
+  Rendered plugins/clipboard_image_paste/app/views/clipboard_image_paste/_headers.html.erb (0.0ms)
+  Rendered plugins/sidebar_hide/app/views/sidebar/_hideButton_partial.html.erb (0.0ms)
+  Rendered plugins/clipboard_image_paste/app/views/clipboard_image_paste/_add_form.html.erb (0.0ms)
+Completed 200 OK in 78ms (Views: 52.3ms | ActiveRecord: 15.6ms)
+</pre>
+
+* Logs on failure
+
+*Apache log (logs/accsss.log)*
+<pre>
+10.10.45.59 - - [13/Dec/2017:10:14:39 +0900] ""GET /redmine/attachments/3054/PJ%E7%94%B3%E8%AB%8B%E6%9B%B8.txt HTTP/1.1"" 404 12492
+</pre>
+
+*Redmine log (log/production.log)*
+<pre>
+Started GET ""/redmine/attachments/3054/PJ%E7%94?%E8?%8B%E6%9B?.txt"" for 127.0.0.1 at 2017-12-13 10:14:39 +0900
+Processing by AttachmentsController#show as HTML
+  Parameters: {""id""=>""3054"", ""filename""=>""PJ\xE7\x94\xB3\xE8\xAB\x8B\xE6\x9B\xB8.txt""}
+  Current user: admin (id=1)
+  Rendered common/error.html.erb within layouts/base (0.0ms)
+  Rendered plugins/clipboard_image_paste/app/views/clipboard_image_paste/_headers.html.erb (0.0ms)
+  Rendered plugins/sidebar_hide/app/views/sidebar/_hideButton_partial.html.erb (0.0ms)
+  Rendered plugins/clipboard_image_paste/app/views/clipboard_image_paste/_add_form.html.erb (15.6ms)
+Filter chain halted as :find_attachment rendered or redirected
+Completed 404 Not Found in 47ms (Views: 36.4ms | ActiveRecord: 0.0ms)
+</pre>
+
+<pre>
+Environment:
+  Redmine version                3.4.2.stable
+  Ruby version                   2.3.3-p222 (2016-11-21) [x64-mingw32]
+  Rails version                  4.2.8
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.9.5
+  Filesystem                     
+Redmine plugins:
+  clipboard_image_paste          1.12
+  easy_baseline                  1.4
+  easy_gantt                     1.10
+  easy_gantt_pro                 1.10
+  redmine_dmsf                   1.5.9
+  redmine_graphs                 0.1.0
+  redmine_issue_templates        0.1.8
+  redmine_issues_summary_graph   0.0.9
+  redmine_issues_tree            0.0.10
+  redmine_monitoring_controlling 0.1.1
+  redmine_nikoca_re              0.2.0
+  sidebar_hide                   0.0.8
+</pre>
+
+Other environment:
+<pre>
+OS:  Windows 2008 R2
+Web server:  Apache 2.2.32
+Additional gems:
+  thin (1.7.2)
+  thin_service (0.0.7)
+</pre>
+"
+27796,Redmine,Defect,"",Closed,Normal,Error in the manual about smtp port config,Christian B,"",2017-12-16 11:52,Documentation,"","","","",0,2017-12-14 23:21,2017-12-16 08:10,"",Fixed,"","Hello,
+
+In the installation guide [[EmailConfiguration]]
+we can read about the smtp port config:
+port: '587'
+The good syntax is (remove the quote):
+port: 587
+
+I hope this helps."
+27795,Redmine,Defect,"",Closed,Normal,Plugin: Issue Field Visibility,匿名ユーザー,"",2017-12-14 18:26,"","","","","",0,2017-12-14 17:50,2017-12-14 18:26,"",Invalid,"","Error 404 - can't configure it
+
+http://www.redmine.org/plugins/redmine_issue_field_visibility"
+27790,Redmine,Patch,"",New,Normal,mercurial - fix double quotes in branch names,Alexander Ryabinovskiy,"",2017-12-13 11:55,SCM,"","","","",0,2017-12-13 11:55,"","","","","Hello.
+I have redmine 3.4.3 installation.
+Redmine can`t handle mercurial branches with double quotes, it throws an error after parsing with ActiveSupport::XmlMini.parse(xml):
+<pre>
+hg: error during getting info: undefined method `[]' for nil:NilClass
+</pre>
+because ""xml"" variable contains string like this:
+<pre>
+<branch revision=\""138\"" node=\""8a17814e772e4a41b9c2480e047dce7d9181a39e\"" name=\""\""TestBranch\""\""/>
+</pre>
+
+My solution is to replace double quotes in branch name with <pre>&quot;</pre> in redminehelper.py, .patch is in attach.
+"
+27787,Redmine,Defect,"",Closed,Normal,Create project failed via REST api,ibm bbc,"",2017-12-13 08:57,REST API,"","","","",0,2017-12-13 05:21,2017-12-13 08:57,"",Invalid,3.3.0,"Hello,
+I try to use python to create a project, but it always return ""HTTP Error 422: Unprocessable Entity"", here are my python code, is there something wrong?
+<pre>
+headers = {'Content-Type': 'application/json',
+                   ""X-Redmine-API-Key"" : ""62ab473dec64ebc3d9514b0176f1f2f4a66e298c""}
+data = json.dumps({""is_public"": false, ""identifier"": ""test"", ""name"": ""test""})
+request = urllib2.Request(url=url, headers=headers, data=data)
+response = urllib2.urlopen(request, timeout=5)
+result = json.load(response)
+</pre>
+then I try to use curl in terminal like this:
+<pre>
+curl -v -H ""Content-Type: application/json"" -H ""X-Redmine-API-Key: 62ab473dec64ebc3d9514b0176f1f2f4a66e298c"" -X POST --data ""{\""identifier\"": \""test\"", \""Name\"": \""test\""}"" localhost:3000/redmine/projects.json
+</pre>
+it responded, but always return name blank error, my data contained name and identifier indeed, why was not recognized?
+<pre>
+{""errors"":[""Name cannot be blank"",""Identifier cannot be blank"",""Identifier is too short (minimum is 1 characters)""]}
+</pre>"
+27780,Redmine,Defect,"",New,Normal,Attachment sort doesn't work with Unicode,Амир Мусин,"",2017-12-12 03:24,Attachments,"","","","",0,2017-12-11 17:47,"",関連している #20369,"","","casecmp method doesn't work with Unicode symbol - https://bugs.ruby-lang.org/issues/14055
+decision is to use casecmp? instead of casecmp - https://bugs.ruby-lang.org/issues/12786"
+27779,Redmine,Defect,"",New,Normal,Context menu reverse-x doesn't work properly when window_height < wrapper_size,Амир Мусин,"",2017-12-11 17:49,Issues list,"","","","",0,2017-12-11 17:40,"","","","",Context menu reverse-x doesn't work properly when window_height < wrapper_size (footer isn't at the bottom)
+27773,Redmine,Defect,"",Closed,Normal,Spent time report: not possible to filter by user,Lorenzo Maurizi,"",2017-12-12 15:20,"","","","","",0,2017-12-10 18:29,2017-12-12 15:20,"","","","Hi all.
+I am testing a new Redmine installation (Bitnami Stack, redmine 3.4.2) and I am logging time at project level (no issues have been entered for the project).
+I have three users in the platform.
+I noticed that, going into spent time report, I cannot filter for a specified user, but in the drop down filter for user I have only <<me>>, even if in the project other users have reported time:
+!spent_time.png!
+
+Why is it happening this?
+Is there a configuration to make possible to filter by any user?
+
+Thanks in advance.
+Regards from Lorenzo
+"
+27772,Redmine,Patch,"",Closed,Normal,Issues reports should show only statuses used by the project,Marius BALTEANU,Go MAEDA,2017-12-19 11:17,Issues,4.0.0,"","","",0,2017-12-10 14:11,2017-12-19 11:17,"関連している #19578, 関連している #5385","","","This issue is related to #19578 and #5385.
+
+The attached patch restricts the statuses from the issues reports only to the statuses used by the project. In this way, we make the table more readable for the users.
+
+Attached is a print screen (attachment:reports.png) from our production instance which the report from one of our development project. You can easily see how many statuses are not used the by the project, but are shown in the report with (""-""). I chose to remove the statuses and trackers names from privacy reasons.
+"
+27769,Redmine,Defect,"",New,Normal,utf8 4 bytes on SQL Server 2014 Standard,Jan W?jcik,"",2017-12-10 04:48,Database,"","","","",0,2017-12-09 22:07,"","","",3.4.2,"We've just came across a major issue in our production Redmine instance.
+
+Description of the problem.
+
+One of our coworkers tried to create a ticket containing a smiley face (copy paste from MS Outlook).
+
+http://www.fileformat.info/info/unicode/char/1f60a/index.htm
+
+Form submission resulted in a 500 server error.
+
+!2.jpg!
+
+She removed the smiley face and the issue had been successfully submitted. Then other coworkers created about 10 more issues. The system was running fine. However the failed request created *an open transaction*.
+
+!1.jpg!
+
+We suspect that other issues where created in the scope of this running transaction as nested transactions. The transaction was active for about 24 hours and was blocking some of our housekeeping jobs and we had to kill it. As a result we lost all 10 issues that were (successfully) submitted after the one with the smiley face in it (resulting in a 500 error).
+
+I was able to recreate the problem folowing the steps above.
+
+BR
+Jan"
+27768,Redmine,Patch,"",Closed,Normal,"Lithuanian ""default_role_developer"" translation change",Toshi MARUYAMA,"",2017-12-10 04:53,Translations,4.0.0,"","","",0,2017-12-09 20:36,2017-12-10 04:53,"","","","From #27502.
+
+<pre><code class=""diff"">
+=== (+1,-1) config/locales/lt.yml ===
+@@ -1137,7 +1137,7 @@ lt:
+   text_turning_multiple_off: ""Jei j?s i?jungsite keli? reik?mi? pasirinkim?, visos i?vardintos reik?m?s bus pa?alintos ir palikta tik viena reik?m? kiekvienam laukui.""
+ 
+   default_role_manager: Vadovas
+-  default_role_developer: Projektuotojas
++  default_role_developer: Pl?totojas
+   default_role_reporter: Prane??jas
+   default_tracker_bug: Klaida
+   default_tracker_feature: Ypatyb?
+</code></pre>"
+27767,Redmine,Patch,"",Closed,Normal,Czech translation for 3.4-stable,Toshi MARUYAMA,"",2017-12-10 04:52,Translations,3.4.4,"","","",0,2017-12-09 17:19,2017-12-10 04:52,"","","","From #27506.
+
+<pre><code class=""diff"">
+=== (+23,-23) config/locales/cs.yml ===
+@@ -135,8 +135,8 @@
+         circular_dependency: ""Tento vztah by vytvo?il cyklickou z?vislost""
+         cant_link_an_issue_with_a_descendant: ""?kol nem??e b?t spojen s jedn?m z jeho d?l??ch ?kol?""
+         earlier_than_minimum_start_date: ""nem??e b?t d??ve ne? %{date} kv?li p?ed?azen?m ?kol?m""
+-        not_a_regexp: ""is not a valid regular expression""
+-        open_issue_with_closed_parent: ""An open issue cannot be attached to a closed parent task""
++        not_a_regexp: ""nen? platn? regul?rn? v?raz""
++        open_issue_with_closed_parent: ""Otev?en? ?kol nem??e b?t p?i?azen pod uzav?en? rodi?ovsk? ?kol""
+ 
+   actionview_instancetag_blank_option: Pros?m vyberte
+ 
+@@ -1205,25 +1205,25 @@
+   label_font_proportional: Proporci?ln? p?smo
+   setting_timespan_format: Form?t ?asov?ho intervalu
+   label_table_of_contents: Obsah
+-  setting_commit_logs_formatting: Apply text formatting to commit messages
+-  setting_mail_handler_enable_regex_delimiters: Enable regular expressions
+-  error_move_of_child_not_possible: 'Subtask %{child} could not be moved to the new
+-    project: %{errors}'
++  setting_commit_logs_formatting: Pou?ij textov? form?tov?n? pro popisky comit?
++  setting_mail_handler_enable_regex_delimiters: Povol regul?rn? v?razy
++  error_move_of_child_not_possible: 'D?l?? ?kol %{child} nem??e b?t p?esunut do nov?ho
++    projektu: %{errors}'
+   error_cannot_reassign_time_entries_to_an_issue_about_to_be_deleted: Str?ven? ?as nem??e
+     b?t p?i?azen k ?kolu, kter? se bude mazat
+-  setting_timelog_required_fields: Required fields for time logs
+-  label_attribute_of_object: '%{object_name}''s %{name}'
+-  label_user_mail_option_only_assigned: Only for things I watch or I am assigned to
+-  label_user_mail_option_only_owner: Only for things I watch or I am the owner of
+-  warning_fields_cleared_on_bulk_edit: Changes will result in the automatic deletion
+-    of values from one or more fields on the selected objects
+-  field_updated_by: Updated by
+-  field_last_updated_by: Last updated by
+-  field_full_width_layout: Full width layout
+-  label_last_notes: Last notes
+-  field_digest: Checksum
+-  field_default_assigned_to: Default assignee
+-  setting_show_custom_fields_on_registration: Show custom fields on registration
+-  permission_view_news: View news
+-  label_no_preview_alternative_html: No preview available. %{link} the file instead.
+-  label_no_preview_download: Download
++  setting_timelog_required_fields: Po?adovan? pole pro zapisov?n? ?asu
++  label_attribute_of_object: ""%{object_name} %{name}""
++  label_user_mail_option_only_assigned: Pouze pro v?ci, kter? sleduji nebo jsem na n? p?i?azen?
++  label_user_mail_option_only_owner: Pouze pro v?ci, kter? sleduji nebo jsem jejich vlastn?kem
++  warning_fields_cleared_on_bulk_edit: Zm?ny zp?sob? automatick? smaz?n?
++   hodnot z jednoho nebo v?ce pol? vybran?ch objekt?
++  field_updated_by: Aktualizoval
++  field_last_updated_by: Naposledy zm?nil
++  field_full_width_layout: Cel? ???ka schematu
++  label_last_notes: Posledn? pozn?mky
++  field_digest: Kontroln? sou?et
++  field_default_assigned_to: V?choz? p?i?azen? u?ivatel
++  setting_show_custom_fields_on_registration: Zobraz u?ivatelsk? pole p?i registraci
++  permission_view_news: Zobraz novinky
++  label_no_preview_alternative_html: ""N?hled nen? k dispozici. Soubor: %{link}.""
++  label_no_preview_download: Sta?en?
+</code></pre>"
+27766,Redmine,Patch,"",Closed,Normal,Czech translation for 3.3-stable,Toshi MARUYAMA,"",2017-12-10 04:50,Translations,3.3.6,"","","",0,2017-12-09 17:16,2017-12-10 04:50,"","","","From #27506.
+
+<pre><code class=""diff"">
+diff --git a/config/locales/cs.yml b/config/locales/cs.yml
+--- a/config/locales/cs.yml
++++ b/config/locales/cs.yml
+@@ -1189,12 +1189,12 @@ cs:
+   mail_body_security_notification_change: ! '%{field} bylo zm?n?no.'
+   mail_body_security_notification_change_to: ! '%{field} bylo zm?n?no na %{value}.'
+   mail_body_security_notification_add: ! '%{field} %{value} bylo p?id?no.'
+-  mail_body_security_notification_remove: ! '%{field} %{value} was removed.'
++  mail_body_security_notification_remove: ! '%{field} %{value} bylo odebr?no.'
+   mail_body_security_notification_notify_enabled: Email %{value} nyn? dost?v?
+     notifikace.
+   mail_body_security_notification_notify_disabled: Email %{value} u? nedost?v?
+     notifikace.
+-  mail_body_settings_updated: ! 'The following settings were changed:'
++  mail_body_settings_updated: ! 'N?sleduj?c? nastaven? byla zm?n?na:'
+   field_remote_ip: IP adresa
+   label_wiki_page_new: Nov? wiki str?nka
+   label_relations: Relace
+@@ -1207,5 +1207,5 @@ cs:
+   setting_new_item_menu_tab: Z?lo?ka v menu projektu pro vytv??en? nov?ch objekt?
+   label_new_object_tab_enabled: Zobrazit rozbalovac? menu ""+""
+   error_no_projects_with_tracker_allowed_for_new_issue: Neexistuj? projekty s frontou, pro kterou lze vytvo?it ?kol
+-  error_cannot_reassign_time_entries_to_an_issue_about_to_be_deleted: Spent time cannot
+-    be reassigned to an issue that is about to be deleted
++  error_cannot_reassign_time_entries_to_an_issue_about_to_be_deleted: Str?ven? ?as nem??e
++    b?t p?i?azen k ?kolu, kter? se bude mazat
+</code></pre>"
+27765,Redmine,Patch,"",Closed,Normal,Lithuanian translation for 3.3-stable,Toshi MARUYAMA,"",2017-12-10 04:49,Translations,3.3.6,"","","",0,2017-12-09 17:09,2017-12-10 04:49,"","","","From #27502.
+
+<pre><code class=""diff"">
+=== config/locales/lt.yml ===
+@@ -363,7 +364,7 @@
+   field_time_entries_visibility: Laiko ?ra?? matomumas
+   field_total_estimated_hours: Visas ?sivertinas laikas
+   field_default_version: Numatytoji versija
+-  field_remote_ip: IP address
++  field_remote_ip: IP adresas
+ 
+   setting_app_title: Programos pavadinimas
+   setting_app_subtitle: Programos paantra?t?
+@@ -1184,18 +1185,18 @@
+   description_date_from: ?vesti prad?ios dat?
+   description_date_to: ?vesti pabaigos dat?
+   text_repository_identifier_info: 'Leid?iamos tik ma?osios raid?s (a-z), skaitmenys, br?k?neliai ir pabraukimo simboliai.<br />Kart? i?saugojus pakeitimai negalimi'
+-  label_wiki_page_new: New wiki page
+-  label_relations: Relations
+-  button_filter: Filter
+-  mail_body_password_updated: Your password has been changed.
+-  label_no_preview: No preview available
+-  error_no_tracker_allowed_for_new_issue_in_project: The project doesn't have any trackers
+-    for which you can create an issue
+-  label_tracker_all: All trackers
+-  label_new_project_issue_tab_enabled: Display the ""New issue"" tab
+-  setting_new_item_menu_tab: Project menu tab for creating new objects
+-  label_new_object_tab_enabled: Display the ""+"" drop-down
+-  error_no_projects_with_tracker_allowed_for_new_issue: There are no projects with trackers
+-    for which you can create an issue
+-  error_cannot_reassign_time_entries_to_an_issue_about_to_be_deleted: Spent time cannot
+-    be reassigned to an issue that is about to be deleted
++  label_wiki_page_new: Naujas wiki puslapis
++  label_relations: Ry?iai
++  button_filter: Filtras
++  mail_body_password_updated: Slapta?odis pakeistas.
++  label_no_preview: Per?i?ra negalima
++  error_no_tracker_allowed_for_new_issue_in_project: Projektas neturi joki? p?dseki?,
++    kuriems galima b?t? sukurti darb?
++  label_tracker_all: Visi p?dsekiai
++  label_new_project_issue_tab_enabled: Rodyti ""Naujo darbo kortel?""
++  setting_new_item_menu_tab: Projekto meniu ?sel? nauj? objekt? k?rimui
++  label_new_object_tab_enabled: Rodyti ""+"" i?skleid?i?m?j? s?ra??
++  error_no_projects_with_tracker_allowed_for_new_issue: N?ra projekt? su p?dsekiais,
++    kuriems galima b?t? sukurti darb?
++  error_cannot_reassign_time_entries_to_an_issue_about_to_be_deleted: Dirbtas laikas negali b?ti
++    i? naujo paskirtas darbui, kuris bus i?trintas
+</code></pre>"
+27761,Redmine,Defect,"",New,Normal,Request to Add Microsoft Timeline ( free trial) to PowerPoint ,Christina  Nguyen,"",2017-12-08 19:05,Plugin Request,"","","","",0,2017-12-08 19:05,"","","","","Hi!!
+
+I wanted to see if I could get Microsoft Timeline installed onto my computer for Project Management for my team. This allows me to plug in specific target dates for my team and would be very helpful."
+27759,Redmine,Defect,"",Closed,Normal,Translation errors,Rene Dehning,"",2017-12-08 05:17,"","","","","",0,2017-12-08 00:15,2017-12-08 05:17,"",Duplicate,3.4.3,"Hello,
+
+I'm using redmine 3.x and found some errors in the translation which appear both in german and english (and I suppose in other languages as well). It can be found on several pages.
+
+I'm attaching a screenshot to clarify what I mean. The text in the red circle appears in russian and not in the selected language as all other text is."
+27754,Redmine,Defect,"",Closed,Normal,Strip whitespace from email addresses on lost password page,Felix Sch?fer,Go MAEDA,2017-12-09 03:44,Accounts / authentication,3.4.4,"","","",0,2017-12-07 12:25,2017-12-09 03:44,関連している #22532,Fixed,"",Sometimes people will not notice that they copied and pasted or inadvertently entered a whitespace when entering their email address in the lost password page. This currently leads to no password recovery being sent as the whitespaces will prevent a user from being found.
+27753,Redmine,Defect,"",Closed,Normal,Couldn't add watcher to an existing issue,David Setiawan,"",2017-12-08 11:26,"","","","","",0,2017-12-07 11:27,2017-12-08 11:26,"",Invalid,3.4.3,"Hi all,
+
+I need some help on why i couldn't add a watcher to an existing issue.
+Below are the log from upon the error happen:
+
+<pre>
+I, [2017-12-07T18:05:09.968115 #25008]  INFO -- : Started GET ""/watchers/new.html?object_id=9945&object_type=issue"" for 115.135.56.205 at 2017-12-07 18:05:09 +0800
+I, [2017-12-07T18:05:09.969757 #25008]  INFO -- : Processing by WatchersController#new as HTML
+I, [2017-12-07T18:05:09.969866 #25008]  INFO -- :   Parameters: {""object_id""=>""9945"", ""object_type""=>""issue""}
+I, [2017-12-07T18:05:10.010421 #25008]  INFO -- :   Current user: xxx (id=xxx)
+W, [2017-12-07T18:05:10.025527 #25008]  WARN -- : Missing template, responding with 404
+I, [2017-12-07T18:05:10.026238 #25008]  INFO -- :   Rendered common/error.html.erb (0.1ms)
+I, [2017-12-07T18:05:10.026427 #25008]  INFO -- : Completed 404 Not Found in 56ms (Views: 0.5ms | ActiveRecord: 39.0ms)
+</pre>
+
+Below is my redmine details:
+<pre>
+Environment:
+  Redmine version                3.4.3.stable
+  Ruby version                   2.1.5-p273 (2014-11-13) [x86_64-linux-gnu]
+  Rails version                  4.2.8
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Mercurial                      3.1.2
+  Filesystem
+Redmine plugins:
+  no plugin installed
+</pre>"
+27752,Redmine,Defect,"",Needs feedback,Normal,NoMethodError while creating an issue,stephane clouaire,"",2017-12-19 10:10,Issues,"","","","",0,2017-12-07 09:58,"","","",3.4.3,"Hello
+
+Could you please help me, because I have an error when I want to create a bug on Redmine :
+
+<pre>
+  CACHE (0.0ms)  SELECT  1 AS one FROM `attachments` WHERE `attachments`.`container_id` = 488 AND `attachments`.`container_type` = 'Issue' LIMIT 1  [[""container_id"", 488], [""container_type"", ""Issue""]]
+  Rendered mailer/_issue.html.erb (4.4ms)
+  Rendered mailer/issue_add.html.erb within layouts/mailer (6.9ms)
+  Setting Load (1.0ms)  SELECT  `settings`.* FROM `settings` WHERE `settings`.`name` = 'cache_formatted_text'  ORDER BY `settings`.`id` DESC LIMIT 1
+   (2.6ms)  ROLLBACK
+Completed 500 Internal Server Error in 635ms (ActiveRecord: 36.5ms)
+
+NoMethodError (undefined method `error' for true:TrueClass):
+  app/models/mailer.rb:497:in `initialize'
+  config/initializers/10-patches.rb:163:in `deliver'
+  app/models/mailer.rb:64:in `block in deliver_issue_add'
+  app/models/issue.rb:1058:in `each_notification'
+  app/models/mailer.rb:63:in `deliver_issue_add'
+  app/models/issue.rb:1845:in `send_notification'
+  app/models/issue.rb:210:in `create_or_update'
+  app/controllers/issues_controller.rb:129:in `create'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+</pre>"
+27728,Redmine,Defect,"",Closed,Normal,"Internal wiki anchors with ""name"" are deprecated and don't work with last Chrome versions",Mattia Gentilini,"",2017-12-29 13:46,Wiki,"","","","",0,2017-12-05 12:13,2017-12-29 13:46,"",Invalid,"","When I create a heading in a Redmine wiki page, it is rendered as such:
+
+<pre><code class=""html"">
+<a name=""Heading-title""></a>
+</code></pre>
+
+Using @name@ attribute to create fragment HTML anchors is deprecated; Furthermore, current Chrome versions do not support linking to this, so the TOC links don't work. These anchors should be created using @id@ attribute instead, better if added to the @<h1>@, @<h2>@ ... tag without creating an empty @<a>@ tag.
+
+I can't determine which Redmine version I'm using so I don't know if this is fixed in a newer release."
+27695,Redmine,Patch,"",New,Normal,Fix ActiveRecord::RecordNotUnique errors when trying to add certain issue relations,Holger Just,"",2017-12-01 16:48,Issues,"","","","",0,2017-12-01 16:48,"","","","","When adding issue relations, under certain conditions, it is not possible for the model validations to check whether a new relation can be added. This results in an @ActiveRecord::RecordNotUnique@ error to be thrown due to the UNIQUE index on the database.
+
+There are two cases where this can occur:
+
+The first case are race conditions with multiple quick attempts to add the relation which end up on multiple worker processes and are handled concurrently. This is a common (but generally rather unlikely) issue with all unique validations on models.
+
+The second case (which in this case is a logic issue) is triggered if there already are directed relations between issues and a user tries to add the reverse relation. Consider this case:
+
+* There exists a precedes relation between issues 1 and 2.
+* The user tries to add a follows relation between issues 2 and 1
+** After validation but before save, the new relation is normalized in @Relation#handle_issue_order@ to be saved as ""1 precedes 2"".
+** A save of this normalized relation triggers the uniqueness constraint on the database and results in an unhandled @ActiveRecord::RecordNotUnique@ error
+
+The root cause of the issue is that the normalization happens after validation. This was moved from @before_validation@ to @@before_save@ in r3191. I guess his was done so that validation errors do not alter the displayed form with the validation errors.
+
+The attached patch (which I extracted from ""Planio"":https://plan.io/redmine-hosting/) tries to deal with this situation by handling the exception in the controller and to add a generic error to the model. This can handle both cases described above without an unhandled exception by showing a suitable error message to all clients."
+27693,Redmine,Defect,"",New,Normal,"In queries, operator ""Any"" should be ""Not empty""",Stephane Evr,"",2017-12-27 17:07,"","","","","",0,2017-12-01 14:43,"","","","","In queries, the operator ""All"" actually returns only fields which are not empty.
+Let's say I create an Issue Query with the following filter:
+
+<pre>
+      Assignee:      ALL  
+</pre>
+
+This will return all the issues with the assignee field *not empty*, same for any filter where the operator ""ALL"" is available.
+
+* Could we change the naming of ""ALL"" to ""Not empty"" somewhat?
+* It can still be useful to have a true ""ALL"" operator which returns any result (Empty OR Not Empty), because then we can quickly change the operator without having to remove/add the filter (especially if many filters are available to select from)"
+27691,Redmine,Defect,"",Needs feedback,Normal,Issue created from mail_handler with description empty from,Julien TEHERY,"",2017-12-19 14:53,Email receiving,"","","","",0,2017-12-01 13:22,"","","",3.2.8,"Env : redmine 3.2.8 - PRODUCTION
+OS: Debian 8.9
+Mailhandler: source:tags/3.2.8/extra/mail_handler/rdm-mailhandler.rb
+
+Migrating our production redmine from 3.2.1 to 3.2.8 , we noticed that some emails with french sepcial characters were creating empty issues.
+
+Here are the details:
+
+- mail is sent to ticket@ourdomain.com
+- on mailserver, we use latest version of rdm-mailhandler.rb which forwards email to our redmine in specific projects.
+- on redmine server, we see both succeeding emails and some others who are not correctly transformed into issues.
+
+
+On production.log, we don't see any particular problem
+Here is an example of an email becoming an empty issue:
+
+
+<pre>
+Started POST ""/mail_handler"" for 10.123.1.3 at 2017-12-01 11:49:52 +0100
+Processing by MailHandlerController#index as HTML
+  Parameters: {""key""=>""XIQlZmuj8wzsyWBC4ucB"", ""email""=>""From julinux@mycompany.fr  Fri Dec  1 11:49:52 2017\nReturn-Path: <julinux@mycompany.fr>\nX-Original-To: ticket@mycompany.fr\nDelivered-To: ticket@mycompany.fr\nReceived: from localhost (unknown [127.0.0.1])\n\tby mail.mycompany.fr (Postfix::smtpd) with ESMTP id 5E1A7559\n\tfor <ticket@mycompany.fr>; Fri,  1 Dec 2017 11:49:52 +0100 (CET)\nDKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mycompany.fr;\n\ts=mycompany.fr; t=1512125392;\n\tbh=+cEL8GCaNKPGfAl6U7yCNuKL4UTN2UkhX+jOBsmT7iY=;\n\th=To:From:Subject:Date:From;\n\tb=QuPhO2+UuQM8K5Bc8AMNRXC/bC7pTaXq42ambTZz89BZcyzAFKiSZzLdAr99T+o/o\n\t thGNDzH26zgG4oxQK3szqxKzsJgsXijhJPftgDECFWIb5HOiCnb77hbYvBJ5dQ1ECz\n\t BlyasjpiMHrsALRjNAEettV58VMlDhqQaj8J7rSc=\nDKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mycompany.fr;\n\ts=mycompany.fr; t=1512125392;\n\tbh=+cEL8GCaNKPGfAl6U7yCNuKL4UTN2UkhX+jOBsmT7iY=;\n\th=To:From:Subject:Date:From;\n\tb=QuPhO2+UuQM8K5Bc8AMNRXC/bC7pTaXq42ambTZz89BZcyzAFKiSZzLdAr99T+o/o\n\t thGNDzH26zgG4oxQK3szqxKzsJgsXijhJPftgDECFWIb5HOiCnb77hbYvBJ5dQ1ECz\n\t BlyasjpiMHrsALRjNAEettV58VMlDhqQaj8J7rSc=\nX-Virus-Scanned: Debian amavisd-new at debian8amd64prodOE\nX-Spam-Flag: NO\nX-Spam-Score: -2.998\nX-Spam-Level:\nX-Spam-Status: No, score=-2.998 tagged_above=-999 required=5.5\n\ttests=[ALL_TRUSTED=-1, BAYES_00=-1.9, DKIM_SIGNED=0.1,\n\tDKIM_VALID=-0.1, DKIM_VALID_AU=-0.1, HTML_MESSAGE=0.001,\n\tURIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no\nReceived: from mail.mycompany.fr ([127.0.0.1])\n\tby localhost (mail.mycompany.fr [127.0.0.1]) (amavisd-new, port 10024)\n\twith LMTP id c9qer7n5h2LZ for <ticket@mycompany.fr>;\n\tFri,  1 Dec 2017 11:49:51 +0100 (CET)\nReceived: from [192.168.103.194] (unknown [109.190.128.27])\n\t(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))\n\t(No client certificate requested)\n\tby mail.mycompany.fr (Postfix::smtpd) with ESMTPSA id 994FA4D1\n\tfor <ticket@mycompany.fr>; Fri,  1 Dec 2017 11:49:51 +0100 (CET)\nDKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mycompany.fr;\n\ts=mycompany.fr; t=1512125391;\n\tbh=+cEL8GCaNKPGfAl6U7yCNuKL4UTN2UkhX+jOBsmT7iY=;\n\th=To:From:Subject:Date:From;\n\tb=TMesqjQtZ7ut1zYR91GtKcyz6GxYHjO7zoV6tKtAlGlT1K7EQlCC+LX0NVKGBWkgp\n\t mP4FjKVN+W1lTvgeHxFd1zcHDISeC0WGqHv5S5D94PEdaj8bpbluS0IeROPxgo8fhH\n\t IRR0nOqnWXRi15ck3qm7WR61kg/0I02o4MpQSryQ=\nDKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mycompany.fr;\n\ts=mycompany.fr; t=1512125391;\n\tbh=+cEL8GCaNKPGfAl6U7yCNuKL4UTN2UkhX+jOBsmT7iY=;\n\th=To:From:Subject:Date:From;\n\tb=TMesqjQtZ7ut1zYR91GtKcyz6GxYHjO7zoV6tKtAlGlT1K7EQlCC+LX0NVKGBWkgp\n\t mP4FjKVN+W1lTvgeHxFd1zcHDISeC0WGqHv5S5D94PEdaj8bpbluS0IeROPxgo8fhH\n\t IRR0nOqnWXRi15ck3qm7WR61kg/0I02o4MpQSryQ=\nTo: ticket@mycompany.fr\nFrom: Julien TEHERY <julinux@mycompany.fr>\nSubject: TEST 16\nMessage-ID: <e51fd0a1-b014-ef78-2ff2-4ef38a130388@mycompany.fr>\nDate: Fri, 1 Dec 2017 11:49:51 +0100\nUser-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101\n Thunderbird/52.4.0\nMIME-Version: 1.0\nContent-Type: multipart/alternative;\n boundary=\""------------4858C4CCDE564230BCC36310\""\nContent-Language: fr\n\nThis is a multi-part message in MIME format.\n--------------4858C4CCDE564230BCC36310\nContent-Type: text/plain; charset=utf-8; format=flowed\nContent-Transfer-Encoding: 8bit\n\nTEST 16\n\n-- \nCordialement,\n\nJulien T?h?ry - Ing?nieur Syst?mes et R?seaux\nSoci?t? mycompany - www.mycompany.ff
+r <http://www.mycompany.fr>\nT?l Support : 05 49 62 26 07\n\n\n--------------4858C4CCDE564230BCC36310\nContent-Type: text/html; charset=utf-8\nContent-Transfer-Encodii
+ng: 8bit\n\n<html>\n  <head>\n\n    <meta http-equiv=\""content-type\"" content=\""text/html; charset=utf-8\"">\n  </head>\n  <body text=\""#000000\"" bgcolor=\""#FFFFFF\"">\n    <p>TEST 16<br>\n    </p>\n    <div class=\""moz-signature\"">-- <br>\n      Cordialement,<br>\n      <br>\n      Julien T?h?ry - Ing?nieur Syst?mes et R?seaux<br>>
+\n      Soci?t? mycompany - <a href=\""http://www.mycompany.fr\""\n        title=\""mycompany\"" target=\""_blank\"">www.mycompany.fr</a><br>\n      T?l Suppoo
+rt : 05 49 62 26 07<br>\n      <br>\n    </div>\n  </body>\n</html>\n\n--------------4858C4CCDE564230BCC36310--\n"", ""allow_override""=>""project,tracker,priority,status"", ""unknown_user""=>""accept"", ""default_group""=>nil, ""no_account_notice""=>nil, ""no_notification""=>nil, ""no_permission_check""=>""1"", ""project_from_subaddress""=>nil, ""issue""=>{""project""=>""clients-mycompany"", ""tracker""=>""Support""}}
+  Rendered queries/_filters.html.erb (12.5ms)
+  Rendered queries/_columns.html.erb (1.8ms)
+  Rendered issues/_list.html.erb (35.5ms)
+  Rendered issues/_sidebar.html.erb (21.2ms)
+  Rendered issues/index.html.erb within layouts/base (81.4ms)
+Completed 200 OK in 566ms (Views: 132.4ms | ActiveRecord: 12.4ms)
+</pre>
+
+So I tried to figure out what was different in the incoming emails, looking at the source of them.
+Didn't find anything particular excepted that ""good emails"" had ""Content-Transfer-Encoding: quoted-printable"" in their source code.
+
+I don't know if this can be related or not to my problem.
+But the fact is we did'nt changed anything regarding mail_handler or mailserver, and we lost the ability to get emails from everyone.
+I must precise that we allready used latest version of mail_handler (see links above) before upgrading.
+
+Any help would be appreciated !
+"
+27685,Redmine,Defect,"",Closed,Normal,redmine_highlightjs plugin fix,Alexey Prohasko,"",2017-12-01 09:22,"","","","","",0,2017-12-01 07:07,2017-12-01 09:22,"",Invalid,"","In redmine version 3.4.x, the theme change does not work in the plugin Redmine HighlightJS syntax(http://www.redmine.org/plugins/redmine_highlightjs). To fix this in a file located on the path: /{your redmine directory}/plugins/redmine_highlightjs/lib/hooks/view_highlighted_hook.rb you need to change
+
+@setting = Setting.plugin_redmine_highlightjs [: theme]@
+
+on
+
+@setting = Setting.plugin_redmine_highlightjs ['theme']@
+
+"
+27683,Redmine,Defect,"",Closed,Normal,Filter assignee field,Lara R,"",2017-12-01 09:31,Issues,"","","","",0,2017-11-30 19:03,2017-12-01 09:31,"",Invalid,"","I have a project with several groups and users and when I create an issue,in the Assignee field I see the groups created but also the users from all those groups. I just want to show the groups and not the users.
+
+Any ideas?"
+27682,Redmine,Defect,"",Closed,Normal,Email notifications,Lara R,"",2017-12-01 09:31,Email notifications,"","","","",0,2017-11-30 18:58,2017-12-01 09:31,"",Invalid,"","I am starting to work with redmine and I need to configure the email notifications for users.
+I want users to receive emails when there is an issue assigned to a group they are part of,but I also want some specific users (like managers) to receive all emails from all issues.
+And the actual configuration of redmine does not allow me to do that because is the same configuration for all users. Any ideas?
+"
+27678,Redmine,Patch,"",New,Normal,"Make ""Check all / Uncheck all"" link noticeable",Mizuki ISHIKAWA,"",2017-12-25 10:51,UI,Candidate for next major release,"","","",0,2017-11-30 02:00,"",関連している #27807,"","","On the screen such as workflow there is 'Check all / Uncheck all' link.
+However, that link is not  very used because it looks like just a icon.
+I think that you need to indicate that the 'Check all / Uncheck all' link is not just a icon.
+
+I wrote a patch to change that link to a button.
+By applying this patch, I think that the ""Check all / Uncheck all"" function will be used more than ever.
+
+|link|button|
+|!toggle_checkboxes_link.png!|!toggle_checkboxes_button.png!|"
+27673,Redmine,Defect,"",Closed,Normal,Watchers cannot see issue with restricted issue visibility,Jess Nielsen,"",2017-11-29 11:53,Issues permissions,"","","","",0,2017-11-29 11:05,2017-11-29 11:53,次のチケットと重複 #9330,Duplicate,3.2.1,"People added as watchers cannot see the respective issue 
+when ""Issues visibility"" is set to ""Issues created by or assigned to the user"" 
+for the role they belong to.
+
+This is very annoying, please up-prioritize it."
+27671,Redmine,Patch,"",Closed,Normal,Use reverse_each instead of reverse.each for better performance,Go MAEDA,Go MAEDA,2017-12-31 02:35,Performance,4.0.0,"","","",0,2017-11-29 03:24,2017-12-31 02:35,"","","","Array#reverse_each is faster than Array#reverse.each because reverse_each does not create an intermediate array.
+
+Pull request https://github.com/redmine/redmine/pull/84 by Timur Tarasenko."
+27670,Redmine,Patch,"",Closed,Normal,Fix typo in configuration.yml.example,Go MAEDA,Go MAEDA,2017-11-29 09:17,Code cleanup/refactoring,4.0.0,"","","",0,2017-11-29 00:38,2017-11-29 09:17,"","","","Pull request https://github.com/redmine/redmine/pull/61/files by Kosta Harlan.
+
+<pre><code class=""diff"">
+Index: config/configuration.yml.example
+===================================================================
+--- config/configuration.yml.example	(revision 17048)
++++ config/configuration.yml.example	(working copy)
+@@ -1,6 +1,6 @@
+ # = Redmine configuration file
+ #
+-# Each environment has it's own configuration options.  If you are only
++# Each environment has its own configuration options.  If you are only
+ # running in production, only the production block needs to be configured.
+ # Environment specific configuration options override the default ones.
+ #
+</code></pre>"

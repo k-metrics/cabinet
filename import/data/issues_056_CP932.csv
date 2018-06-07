@@ -1,0 +1,926 @@
+#,プロジェクト,トラッカー,親チケット,ステータス,優先度,題名,作成者,担当者,更新日,カテゴリ,対象バージョン,開始日,期日,予定工数,進捗率,作成日,終了日,関連するチケット,Resolution,Affected version,説明
+17788,Redmine,Defect,"",Closed,Normal,I can install DMSF plugin in Redmine 2.3.3,vimalraj velumani,"",2014-09-03 13:40,"","","","","",0,2014-09-03 11:56,2014-09-03 13:40,"",Invalid,"","rake aborted!
+Gem::LoadError: You have already activated rake 10.3.2, but your Gemfile requires rake 10.1.0. Using bundle exec may solve this.
+
+
+When I am trying to install DMSF plugin for redmine.
+
+I need help from you guys!"
+17784,Redmine,Defect,"",Closed,Normal,Error via REST API for creating an Issue,Leonid  Eletskikh,"",2014-09-29 16:16,REST API,"","","","",0,2014-09-02 23:07,2014-09-29 16:16,"",Invalid,2.3.0,"Hello,
+
+I'm sending the following json
+
+<pre><code class=""json"">
+{
+    ""issue"": {
+        ""subject"": ""subject"",
+        ""status_id"": ""1"",
+        ""tracker_id"": ""11"",
+        ""description"": ""HELLOKITTY"",
+        ""assigned_to_id"": ""5795"",
+        ""priority_id"": 2,
+        ""custom_fields"": [
+            {""value"": ""mail@yeleleo.co.uk"",""name"": ""Customer Email"",""id"": 63},
+            {""value"": ""TEST"",""name"": ""Job Level"",""id"": 85},
+            {""value"": ""Multiply Markets"",""name"": ""Markets"",""id"": 90},
+            {""value"": ""TEST"",""name"": ""Company Name"",""id"": 89},
+            {""value"": ""TEST"",""name"": ""HQ Address"",""id"": 78},
+            {""value"": ""Travel"",""name"": ""Industry"",""id"": 76}
+        ]
+    }
+}
+</code></pre>
+
+and for some reason getting the folowing error:
+
+<pre><code class=""json"">
+{
+    ""errors"": [
+        ""Subject can't be blank""
+    ]
+}
+</code></pre>
+
+What I'm doing wrong? Subjects included in the request..."
+17775,Redmine,Defect,"",Closed,Normal,Problem with reset mysql root password.,David Fern?ndez,"",2014-09-02 13:54,Accounts / authentication,"","","","",0,2014-09-02 11:00,2014-09-02 13:54,"",Invalid,2.5.1,"Hi there, 
+
+I'm trying to do a password reset root. I followed the following instructions (http://wiki.bitnami.com/Components/MySQL#How_to_change_the_MySQL_root_password.3f) but I have a problem. When running the following system fails. 
+
+sudo mysql/bin/mysqld_safe --defaults-file=mysql/my.cnf --pid-file=mysql/ data/mysqld.pid --init-file=mysql-init 2> /dev/null & 
+
+error file generated. 
+
+140902 10:42:32 mysqld_safe Starting mysqld.bin daemon with databases from /home/dfernandez/redmine-2.5.1-1/mysql/data 
+140902 10:42:32 [Note] Plugin 'FEDERATED' is disabled. 
+? /home/dfernandez/redmine-2.5.1-1/mysql/bin/mysqld.bin: Can not find file: './mysql/plugin.frm' (errno: 13) 
+140902 10:42:32 [ERROR] Can not open the table mysql.plugin. Please run mysql_upgrade to create it. 
+140902 10:42:32 InnoDB: The InnoDB memory heap is disabled 
+140902 10:42:32 InnoDB: Mutexes and rw_locks use InnoDB's own Implementation 
+140902 10:42:32 InnoDB: Compressed tables use zlib 1.2.3 
+140902 10:42:32 InnoDB: Using Linux native AIO 
+140902 10:42:32 InnoDB: Initializing buffer pool, size = 128.0M 
+140902 10:42:32 InnoDB: Completed initialization of buffer pool 
+140902 10:42:32 InnoDB: Operating system error number 13 in a file operation. 
+InnoDB: Error Means The mysqld does not have any available access rights to the
+InnoDB: the directory. 
+InnoDB: File name ./ibdata1 
+InnoDB: File operation call: 'open'. 
+InnoDB: Can not continue operation. 
+140902 10:42:32 mysqld_safe mysqld from pid file 2.5.1-1/mysql/data/mysql/data/mysqld.pid /home/dfernandez/redmine-ended"
+17772,Redmine,Defect,"",Closed,Normal,"Login Fail on IPhone: ""invalid form authenticity token""",Donjeta Timsch,"",2014-09-02 10:50,"","","","","",0,2014-09-01 23:29,2014-09-02 00:43,"",Invalid,"","member could not login with Safari on there IPhone.
+
+there are some answer to this problem?
+
+yours,"
+17770,Redmine,Defect,"",New,Normal,"very simple fix:  that  causes many sites to break, and much confusion - incorrect use of .js suffix",dj jones,"",2017-12-03 19:24,"","","","","",0,2014-09-01 13:36,"","関連している #15560, 次のチケットが重複 #27560","","","Redmine by default, does something bad:  it uses (in certain places only) the .js file extension  for files that contain user content. ie files that should not be cached.
+
+A small change should be made, to stop using the .js  extension in these specific places.
+
+Because:
+Many Redmine users, configure Apache/Nginx to cache-in-the-browser  all static files, such as .css and .js.
+And the obvious config:  is to look for files name *.js or *.css.
+
+But those users will experience problems, that they then post here about (see list at the end).
+It is a hard thing to diagnose  -because the connection between the apache.nginx change and these specific, local problems:   is not obvious.
+
+*It happens alot, so fixing this will save many people pain.*
+
+When people add a Nginx or Apache config to cache all .js files - at first everything seems to work... but then a day or more later they will notice a problem:   it will happen on one of a few specific places
+
+*a) Click 'edit' on an existing journal in an issue*
+
+  (the js file created is eg 24174.js where 24174 is the journal number: the AJAX call is:
+
+-      GET  https://redmine.xyz.com/journals/edit/24174.js
+
+*b) Uploading a file to an Issue*
+
+Having selected the file in the Browse button:  this file is called, (which contains the image file being sent to the server)
+
+-     POST https://redmine.xyz.com/uploads.js?attachment_id=1&filename=my-file-to-upload.png
+
+
+*List of Tickets on redmine.org that are definitely to this issue*
+
+Can't upload image  #13564
+Nginx Configuration (with Phusion Passenger) to set Expiration Headers    message#43872
+Unable to edit issue journal messages in Redmine 2.3.1      #14150
+Unable to edit notes/answers in issues     message#35759
+"
+17769,Redmine,Defect,"",New,Normal,Export CSV export not activated custom fields,Alexandre Sab?n,"",2014-09-01 11:23,Custom fields,"","","","",0,2014-09-01 11:23,"","","",2.3.3,"Hello,
+
+on our project, we have used custom fields that have been turned off. But now when exporting to CSV these custom fields are exported with the old data for the trackers with turned off custom fields.
+
+best regards"
+17768,Redmine,Defect,"",New,Low,(Probably) incorrect display of RTL languages,Michael Heinze,"",2014-09-01 10:31,I18n,"","","","",0,2014-09-01 10:06,"","","","","Hello,
+
+just for fun I changed my Redmine language to ""arabic"" which is a right-to-left language. ;-)
+
+I noticed that the brackets in the list of languages are not displayed correctly (""("" appears twice), see attachment.
+
+Although have to admit that I don't know how the correct display looks like, in the way it is displayed now it looks somehow incorrect.
+
+!redmine_rtl_languages.png!"
+17762,Redmine,Defect,"",Closed,Normal,"When copying an issue and changing the project, the list of watchers is not updated",Kevin Palm,Jean-Philippe Lang,2017-04-06 21:57,Issues,3.4.0,"","","",0,2014-08-29 09:11,2017-04-06 21:57,"",Fixed,2.4.4,"When I 'copy' an issue and then I change the project of this issue (before saving), then the list of watchers that can be selected is not updated.
+This is clearly a bug, because now users are listed that are not assigned to the selected project.
+BTW: (The user-list for 'Assignee' is correctly updated when switching the project"
+17760,Redmine,Defect,"",Closed,Normal,REST API to update custom fields in issues does not work,Marco Descher,"",2014-09-26 13:41,REST API,"","","","",0,2014-08-28 10:27,2014-09-26 13:41,"",Invalid,2.4.3,"I just tried the following input, which returns 
+
+<pre>
+Started PUT ""/issues/3273.xml?key=asdf"" for 23233 at 2014-08-28 10:23:28 +0200
+Processing by IssuesController#update as XML
+  Parameters: {""issue""=>{""id""=>""3273"", ""subject""=>""ch.elexis.base.ch.legacy.feature.feature.group"", 
+""description""=>nil, ""start_date""=>""2014-08-20T00:00:00+02:00"", ""project_id""=>""0"", ""tracker_id""=>""0"", 
+""custom_fields""=>[{""id""=>""2"", ""name""=>""Abostatus"", ""value""=>""EXPIRED""}], ""project""=>{""id""=>""3"", 
+""name""=>""Praxis Dr. Mustermann""}, ""tracker""=>{""id""=>""4"", ""name""=>""Service""}}, ""key""=>""asdf"", ""id""=>""3273""}
+  Current user: mustermann (id=5)
+Completed 200 OK in 27.9ms (Views: 0.4ms | ActiveRecord: 3.2ms
+</pre>
+
+yet the value of the custom field in the issue is not changed, here the input
+
+<pre>
+
+<?xml version=""1.0"" encoding=""UTF-8"" standalone=""no""?>
+<issue>
+ <id>3273</id>
+ <subject>ch.elexis.base.ch.legacy.feature.feature.group</subject>
+ <description/>
+ <start_date>2014-08-20T00:00:00+02:00</start_date>
+ <project_id>0</project_id>
+ <tracker_id>0</tracker_id>
+ <custom_fields type=""array"">
+   <custom_field id=""2"" name=""Abostatus"">
+     <value>EXPIRED</value>
+   </custom_field> 
+ </custom_fields>
+ <project id=""3"" name=""Praxis Dr. Mustermann""/>
+ <tracker id=""4"" name=""Service""/>
+</issue>
+
+</pre>
+
+The respective field is defined as list with possible values."
+17757,Redmine,Defect,"",Closed,Normal,Link with hash does not work on Firefox,Toshi MARUYAMA,Jean-Philippe Lang,2015-07-05 12:23,UI,2.6.6,"","","",0,2014-08-27 17:15,2015-07-05 12:23,関連している #13134,Fixed,2.5.2,"In opening this link in new web browser window,
+browser goes to line 275.
+source:trunk/public/help/zh-tw/wiki_syntax_detailed.html@13340#L275
+
+IE and Chrome work fine, but Firefox 31.0 does not work.
+Firefox stays on top of page.
+On click in address bar, ff goes to line 275.
+
+It seems jquery-1.8.3-ui-1.9.2-ujs-2.0.3.js problem.
+Following modificaion works.
+
+<pre><code class=""diff"">
+diff --git a/app/helpers/application_helper.rb b/app/helpers/application_helper.rb
+--- a/app/helpers/application_helper.rb
++++ b/app/helpers/application_helper.rb
+@@ -1295,7 +1295,8 @@ module ApplicationHelper
+
+   # Returns the javascript tags that are included in the html layout head
+   def javascript_heads
+-    tags = javascript_include_tag('jquery-1.8.3-ui-1.9.2-ujs-2.0.3', 'application')
++    # tags = javascript_include_tag('jquery-1.8.3-ui-1.9.2-ujs-2.0.3', 'application')
++    tags = """"
+     unless User.current.pref.warn_on_leaving_unsaved == '0'
+       tags << ""\n"".html_safe + javascript_tag(""$(window).load(function(){ warnLeavingUnsaved('#{escape_javascript l(:text_warn_on_leaving_unsaved)}'); });"")
+     end
+</code></pre>"
+17752,Redmine,Defect,"",Closed,Normal,mail subject come to unreadable code when it's too long,lee min,"",2014-08-27 07:03,Email notifications,"","","","",0,2014-08-27 03:51,2014-08-27 04:30,次のチケットと重複 #3592,Duplicate,"","=?UTF-8?Q?_=E8=BE=B9=E7=9C=8B=E8=BE=B9=E9=80=81=E6=B8=B8=E6=88=8F=E8=B7=B3=E8=BD=AC=E9=93=BE=E6=8E=A5=E9=85=8D=E7=BD=AE=E4=BB=8ERMS=E8=BD=AC=E7=A7=BB=E5=88=B0=E9=9D=9E=E6=A0=B8=E5=BF=83CMS=E4=B8=AD=E5=88=9D=E5=A7=8B=E5=8C=
+
+this issue appear in #3592
+"
+17748,Redmine,Patch,"",New,Normal,Subrepositories Fail to Authenticate Internal Users upon Subversion Checkout,David Pettifor,"",2014-09-24 11:18,SCM extra,"","","","",0,2014-08-26 21:08,"","","","","* DBMS: PostgreSQL 8.4.20
+* Ruby 1.9.3p547
+* Rails 3.2.13
+* Redmine 2.2.4.stable.11981
+
+We have setup Apache 2.2.5 to host subversion repositories created in our local directory ""/var/svn/"".  We can browse these repositories through Redmine just fine.  However, when an internal Redmine user tries to checkout a secondary repository using a local ""svn checkout"" command, they would fail to authenticate against any of these secondary repositories of a given project of which they are a member.
+
+
+We tracked down the issue and found it to be located in the ""Redmine.pm"" file, located at
+
+    /extra/svn/Redmine.pm
+
+If we look at Line 246 (http://www.redmine.org/projects/redmine/repository/entry/trunk/extra/svn/Redmine.pm#L246), we are only gathering repository permission for a project whose identifier matches the repository identifier.  This is bad in at least two cases:
+
+# If the repository is named something different than the project identifier (such as project identifier is ""myproject"" but the repository is at ""/var/svn/myproj"")
+# If we have secondary repositories which of course would have a different identifier than the project's identifier
+
+To fix this, we need to modifiy line 246 to include any _repository_ identifer *or* where the repository's _URL_ matches:
+
+     AND (projects.identifier=?
+     OR projects.id IN (SELECT project_id FROM repositories WHERE identifier = ?)
+     OR projects.id IN (SELECT project_id FROM repositories WHERE url LIKE '%/'||?)
+     )
+
+Of course, we'll also need to pass in the project identifier another two times when the Perl string is compiled upon execution, which happens on line 461 (or 464 with the added code above):
+
+    $sth->execute($redmine_user, $project_id, $project_id, $project_id);
+
+I hope this is a good solution for anyone having the same issues out there, and hope that this (or an adaptation of this) is included in some future release!
+"
+17746,Redmine,Defect,"",Closed,High,Internal error redmine 2.5,Thibault Monteiro,"",2014-08-26 15:30,Issues,"","","","",0,2014-08-26 15:18,2014-08-26 15:30,"",Invalid,2.5.2,"My infos :
+<pre>
+[01:13 PM]-[root@packer-virtualbox-iso]-[/opt/redmine-2.5]-[svn] B
+B# RAILS_ENV=production ruby script/about
+
+Environment:
+  Redmine version                2.5.2.stable.13345
+  Ruby version                   1.8.7-p352 (2011-06-30) [x86_64-linux]
+  Rails version                  3.2.19
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.8.0
+  Git                            1.7.9.5
+  Filesystem
+Redmine plugins:
+  no plugin installed
+</pre>
+
+My VHOST :
+<pre>
+ <VirtualHost *>
+   SetEnv RAILS_ENV production
+   ServerName redmine.dev
+   DocumentRoot ""/opt/redmine-2.5/public""
+   <Directory ""/opt/redmine-2.5/public"">
+     Options Indexes FollowSymLinks MultiViews
+     AllowOverride All
+     Require all granted
+   </Directory>
+
+   ErrorLog ""/var/log/apache2/redmine_error.log""
+   ServerSignature Off
+   CustomLog ""/var/log/apache2/redmine_access.log"" combined
+
+   ServerAlias redmine.dev
+
+   #ProxyPassMatch ^/(.*\.php(/.*)?)$ fcgi://127.0.0.1:3000/opt/redmine-2.5/public/$1
+   ProxyPass / http://127.0.0.1:3000/
+   ProxyPassReverse / http://127.0.0.1:3000/
+
+ </VirtualHost>
+ 
+</pre>
+
+And when I go to ""redmine.dev"" I have this error :
+<pre>
+Internal error
+
+An error occurred on the page you were trying to access.
+If you continue to experience problems please contact your Redmine administrator for assistance.
+
+If you are the Redmine administrator, check your log files for details about the error.
+
+Back
+</pre>
+
+I really don't understand, this is a clean install with apache2 and mysql, with no error log. It's my first install of redmine and ruby on Ubuntu so I maybe miss something.
+
+Thanks."
+17745,Redmine,Patch,"",Closed,Normal,Issues page sidebar - Link to issues page,Michael Heinze,"",2017-03-06 13:28,UI,"","","","",0,2014-08-26 13:13,2017-03-06 13:28,関連している #5920,"","","You might be wondering why anyone wants to have a link to the issues page in the sidebar of the issues page, but the reason is as follows:
+
+When you are in the *issues view of a project*, you can set a filter and - permission provided - switch between different views (Gantt, Calendar, Issues) without losing the filter settings by using the respective links in the projects menu:
+
+!project_issues_links.png!
+
+But if you are in the *""global"" issues view* (via the ""View all issues"" link on the projects overview page) you don't have the projects menu available as you are in no project.
+
+In the ""global"" issues view, you only can only switch between the views using the links in the sidebar. There you have ""filter-keeping"" links to the Gantt view and to the Calendar view (again, permission provided). *But what you do not have there is a link which brings you from the Gantt view or the Calendar view back to the issues view without losing the filter settings!* Therefore I created this patch, to also have a ""filter-keeping"" link to the issues view in the sidebar:
+
+!global_issues_links.png!"
+17744,Redmine,Defect,"",Closed,Normal,Disabling fields in tracker keeps attached workflow permissions,Etienne Massip,Jean-Philippe Lang,2014-11-22 11:34,Issues workflow,2.6.1,"","","",0,2014-08-26 09:32,2014-11-22 11:34,"",Fixed,"","Say e.g. you create a tracker by copying an existing workflow for which some field permissions have been specifically set.
+
+Deselecting the fields used by the tracker (at creation time or at a later time) doesn't remove these permissions.
+
+The may lead to some ??Version Id can't be blank?? error message at issue form status update if the original workflow stated that the field is mandatory for the new status even if the ??Version Id?? field is not in the form.
+
+This is not easy to determinate as the workflow permissions are not visible in the administration screen but only in database.
+"
+17738,Redmine,Defect,"",Closed,Normal,"unable to custom the ""status"" from the ""Issue statuses"" screen",zeashan tayyab,"",2014-09-22 15:50,Custom fields,"","","","",0,2014-08-25 10:52,2014-08-26 09:33,"",Invalid,2.5.2,"Steps to reproduce:
+
+Login with the ""Admin"" account
+open the ""Issue statuses"" screen and add the new status ""Reopen"" as mentioned in the attached screen shot no.1
+Now open the ""Work flow"" screen.
+User can not see the custom value ""Reopen"" in the work flow screen as mentioned in screen shot 2
+"
+17737,Redmine,Defect,"",Closed,High,"Unable to change the ""Activity"" value from dropdown ""Activity"" on the feature",zeashan tayyab,"",2015-09-11 16:28,Time tracking,"","","","",0,2014-08-25 10:40,2015-08-23 17:05,"",Invalid,2.5.2,"Steps to reproduce:
+
+Login from Admin account:
+Go to ""Enumerations"" and add value ""development"" in Activities (time tracking.)
+
+Login with Manager:
+create the feature and assign to specific User
+
+Login with User:
+login with that specific User 
+open the feature assign to user
+click on the ""EDIT"" to change the status of the feature
+change the ""Activity"" value from ""Activity"" drop down as ""development"" and click on the ""submit"" button.
+System does not change the value in ""Activity"" drop down.
+snapshot attached"
+17735,Redmine,Defect,"",Closed,Low,<< me >> in custom field of type users.,Philipp Kroll,"",2014-08-26 14:42,"","","","","",0,2014-08-25 10:07,2014-08-26 14:42,"",Invalid,"","To option << me >> does not appear in a cutom field of type users.
+I read here (#9923) that it was added. But it seems not to work. Or I'm missing any configuration therefor."
+17724,Redmine,Defect,"",Closed,Normal,Time Entries Report: Reset links behave inconsistent ,Kevin Neuenfeldt,"",2016-12-11 08:45,Time tracking,"","","","",0,2014-08-22 10:04,2016-12-11 08:45,次のチケットと重複 #13622,Duplicate,"",In time entries page on the report tab there are two reset links. One for the filters and one for the aggregation. Semantically it looks like the one reset link should reset only the filters and the other one only the aggregation. But in fact both of them reset both settings. For me this looks inconsistent.
+17722,Redmine,Defect,"",Closed,High,Plugin update check not working if redmine is viewed over https,Philip Schiffer,Jean-Philippe Lang,2015-02-18 12:30,Website (redmine.org),2.6.2,"","","",0,2014-08-21 21:13,2015-02-18 12:30,"",Fixed,2.5.2,"Chrome silently blocks any request to insecure sites:
+<pre>
+[blocked] The page at 'https://<servername>/admin/plugins' was loaded over HTTPS, but ran insecure content from 'http://www.redmine.org/plugins/check_updates?<plugin info>': this content should also be loaded over HTTPS.
+</pre>
+ This causes breaks the plugin update checker. redmine.org should be accessible over https and the check should use the secure site if https is selected in the redmine settings. I'd also like to note that redmine.org is transmitting username and password unencrypted which is really bad!
+"
+17718,Redmine,Patch,"",Closed,Normal,Body delimiters to truncate emails do not take uncommon whitespace into account,Holger Just,"",2017-06-06 07:18,Email receiving,3.4.0,"","","",0,2014-08-20 18:23,2017-06-06 07:18,"","","","The function which truncate emails after a certain delimiter was found (i.e. @MailHandler#cleanup_body@) currently does not take trailing whitespace into account that is not part of @\s@. This e.g. includes non-breaking spaces which are common after e.g. signature delimiters (hyphen hyphen no-break-space).
+
+This results in delimiters being not taken into account if there are these unicode whitespace characters at the end of the line.
+
+The attached patch fixes this for Ruby versions >= 1.9. I have found no generally reliable way to fix this for Ruby 1.8 which thus retains the previous behavior. The reason this only works on Ruby >= 1.9 is that only this version includes a possibility to match unicode whitespace. Ruby 1.8 only has a limited list of ASCII characters (""against the unicode spec apparently"":http://stackoverflow.com/a/4981864).
+
+Given that I can't change the behavior on 1.8, this change is unfortunately rather difficult to test. I have also attached a patch with improved tests which work properly on 1.9 and 2.0 but breaks on 1.8 as it doesn't recognize the change in behavior. Given that, I'd rather prefer to pull the improvement of behavior without the test than to hold everything out..."
+17717,Redmine,Patch,"",Closed,Normal,Password/Email address change should invalidate security tokens,Jan from Planio www.plan.io,Jean-Baptiste Barth,2014-09-19 06:13,Security,2.6.0,"","","",90,2014-08-20 16:21,2014-09-14 10:24,"","","","To improve user account security, we believe it is a good practice to:
+
+# *invalidate the password reset token* (sent via email) once an account's *email address is changed*.
+(This prevents hackers who may be able to change a user's address (or trick him into doing it) to use an ""old"" password reset link previously sent via email once the email address has been changed back by the user.)
+# *invalidate the password reset token* and *autologin token* once an account's *password is changed*.
+(This prevents hackers from being still able to login after a user has potentially discovered a breach into his/her account and changed their password.)
+
+The attached patch against current Redmine trunk implements this; tests included.
+"
+17713,Redmine,Defect,"",New,Normal,send_reminders not reliable,Felix Muster,"",2014-08-20 00:12,Email notifications,"","","","",0,2014-08-19 16:49,"","","",2.5.0,"Hello,
+
+I have noticed that something is wrong with the reminder-function.
+
+following runs ervery weekday on the server:
+rake redmine:send_reminders days=0 RAILS_ENV=""production""
+
+I created a Test-issue on 30.06., with the same due-date.
+It was set from ""open"" to ""in work"" on 01.07.
+
+Reminding-Mails were sent on the following dates:
+03.07.
+04.07.
+10.07.
+11.07.
+14.07.
+15.07.
+16.07.
+The issue is still ""in work"" but since the 16.07. reminding-mails aren't sent anymore.
+
+The task runs fine.
+
+Any ideas?"
+17708,Redmine,Defect,"",Closed,Normal,cannot connect to svn No close tag for /lists/list,Stelios none,"",2014-08-18 17:30,SCM,"","","","",0,2014-08-18 16:34,2014-08-18 17:30,"",Invalid,2.5.1,"Him my isntallation onfo is as followes
+Environment:
+  Redmine version                2.5.1.stable.13174
+  Ruby version                   2.0.0-p481 (2014-05-08) [x86_64-linux]
+  Rails version                  3.2.18
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.8.8
+  Mercurial                      2.8.2
+  Git                            1.9.1
+  Filesystem                     
+
+and i am running it on nginx
+
+
+I am getting  the following error when trying to add an svn repository lcated on a remote server.
+
+
+Error parsing svn output: #<REXML::ParseException: No close tag for /lists/list>
+  Parameters: {""utf8""=>""?"", ""authenticity_token""=>""LOA4e/iz3Ufu/EbKwAsVRIFLzJXWL1iRSwDzmzLN9gk="", ""repository_scm""=>""Subversion"", ""repository""=>{""is_default""=>""1"", ""identifier""=>""my_svn"", ""url""=>""svn+foo://developers.mysystems.com/srv/svn/ma/kit"", ""login""=>""me"", ""password""=>""[FILTERED]""}, ""commit""=>""Create"", ""project_id""=>""stel-version-history""}
+Error parsing svn output: #<REXML::ParseException: No close tag for /lists/list>
+   path=""svn+foo://developers.mysystems.com/srv/svn/ma/kit"">
+"
+17705,Redmine,Patch,"",Closed,Normal,MailHandler should ignore bogus issue strings [some-string#1234] in subject,Felix Sch?fer,Felix Sch?fer,2014-11-22 11:43,Email receiving,2.6.1,"","","",0,2014-08-18 09:36,2014-11-22 11:43,"","","","Currently the mail handler will try to parse anything that remotely resembles square brackets containing a hash followed by a number, whatever else happens to be in front of the hash in the brackets. This leads the mail handler to try to parse things like:
+
+<pre>[12345678901234567890#1234]</pre>
+
+and
+
+<pre>[some-string#1234]</pre> used by other systems.
+
+The proposed patch Requires the hash to be either preceded by the opening bracket @[@ or a space."
+17700,Redmine,Defect,"",New,Normal,Excessive DB querying when Allow Group Issue Assignment is enabled,Basile Vorontsov,"",2015-07-24 08:43,Performance,"","","","",0,2014-08-17 06:56,"",関連している #14906,"",2.5.2,"For every issue Redmine runs a separate query to get the roles for every member of the project, but only when Allow Group Issue Assignment is enabled.
+
+In app/models/project.rb:
+33:  has_many :member_principals, :class_name => 'Member',
+34:                               :include => :principal,
+35:                               :conditions => ""#{Principal.table_name}.type='Group' OR (#{Principal.table_name}.type='User' AND #{Principal.table_name}.status=#{Principal::STATUS_ACTIVE})""
+
+changing line 34 to read:
+                               :include => [:principal, :roles],
+
+definitely solves the performance issue, but are there any pitfalls in fixing it that way?
+"
+17699,Redmine,Patch,"",New,Normal,"Parse email with header ""From"" in parentheses format",Stanislav German-Evtushenko,"",2014-08-18 12:53,Email receiving,"","","","",0,2014-08-16 23:53,"","","","","Emails header ""From"" can be not only in angles format, like this: <pre>From: John Doe <john.doe@company.mail></pre> but also in parentheses format, like this: <pre>From: john.doe@company.mail (John Doe)</pre> For example sendmail from postfix does this when using switch -F.
+The patch to fix this is attached."
+17698,Redmine,Defect,"",Needs feedback,Normal,Date format is incorrect,Viktor Petersson,"",2015-07-16 16:20,Roadmap,"","","","",0,2014-08-15 19:03,"",関連している #20244,"",2.5.2,"I recently upgraded to 2.5.2 and ran into an issue when setting the end date for a Roadmap. 
+
+The error I got was:
+<pre>
+Date is not a valid date.
+</pre>
+
+After more investigation, I noticed that the date picket inserts the date in the following format:
+08/18/2014
+
+It should however be saved as:
+2014-08-18
+
+My guess is that this is in the datepicker itself, and that it tries to autodetect depending on your locale etc, so it might not be showing up to all users.
+
+The current workaround is to manually enter the date format in the required format.
+
+My system:
+
+ * Chrome 36.0.1985.143 (Official Build 287914) 
+ * Language: US EN 
+ * OS X 10.9.4"
+17690,Redmine,Defect,"",Closed,High,"Missing template, responding with 404 context_menu for time_entries ans issues",Egon Zemmer,"",2014-08-15 17:43,UI,"","","","",0,2014-08-14 11:57,2014-08-15 17:43,"",Invalid,2.5.2,"*Redmine* 2.5.2.stable (all environments)
+*Rails* 3.2.19
+*Ruby* 1.9.3
+*Database adapter* PostgreSQL
+
+The error raises with right click on issues or time entries. The context menu don't appear. The log writes out: *Missing template, responding with 404*.
+
+Here the logs:
+
+* *Browser log*
+<pre>
+GET http://localhost:3000/time_entries/context_menu?utf8=%E2%9C%93&authenticity_token=...&back_url=%2Fprojects%2Ftest%2Fissues%2F1%2Ftime_entries&ids%5B%5D=1""
+GET http://localhost:3000/issues/context_menu?utf8=%E2%9C%93&authenticity_token=...&back_url=%2Fprojects%2Ftest%2Fissues&ids%5B%5D=1""
+
+""NetworkError: 404 Not Found 
+</pre>
+
+* *Console log (time_entries)*
+<pre>Started GET ""/time_entries/context_menu?utf8=%E2%9C%93&authenticity_token=...&back_url=%2Fprojects%2Ftest%2Fissues%2F1%2Ftime_entries&ids%5B%5D=1"" for 127.0.0.1 at 2014-08-14 11:46:13 +0200
+Processing by ContextMenusController#time_entries as */*
+  Parameters: {""utf8""=>""?"", ""authenticity_token""=>""eHzyMSGfSCC+AxtyGR5q00gMiT6+wIua4p204D+2vas="", ""back_url""=>""/projects/test/issues/1/time_entries"", ""ids""=>[""1""]}
+  Setting Load (0.9ms)  SELECT ""settings"".* FROM ""settings"" WHERE ""settings"".""name"" = 'session_lifetime' LIMIT 1
+  Setting Load (0.8ms)  SELECT ""settings"".* FROM ""settings"" WHERE ""settings"".""name"" = 'session_timeout' LIMIT 1
+   (0.9ms)  SELECT MAX(""settings"".""updated_on"") AS max_id FROM ""settings"" 
+  User Load (46.5ms)  SELECT ""users"".* FROM ""users"" WHERE ""users"".""type"" IN ('User', 'AnonymousUser') AND ""users"".""status"" = 1 AND ""users"".""id"" = $1 LIMIT 1  [[""id"", 1]]
+  Current user: admin (id=1)
+   (1.2ms)  SELECT MAX(""contacts_settings"".""updated_on"") AS max_id FROM ""contacts_settings"" 
+  Setting Load (0.8ms)  SELECT ""settings"".* FROM ""settings"" WHERE ""settings"".""name"" = 'plugin_redmine_cms' LIMIT 1
+  Setting Load (0.4ms)  SELECT ""settings"".* FROM ""settings"" WHERE ""settings"".""name"" = 'force_default_language_for_loggedin' LIMIT 1
+  Setting Load (0.6ms)  SELECT ""settings"".* FROM ""settings"" WHERE ""settings"".""name"" = 'force_default_language_for_anonymous' LIMIT 1
+   (1.1ms)  SELECT MAX(""cms_menus"".""updated_at"") AS max_id FROM ""cms_menus"" 
+  TimeEntry Load (1.7ms)  SELECT ""time_entries"".* FROM ""time_entries"" WHERE ""time_entries"".""id"" IN (1)
+  Project Load (1.4ms)  SELECT ""projects"".* FROM ""projects"" WHERE ""projects"".""id"" IN (1)
+  SQL (0.8ms)  SELECT ""enabled_modules"".""name"" FROM ""enabled_modules"" WHERE ""enabled_modules"".""project_id"" = 1
+   (1.5ms)  SELECT COUNT(*) FROM ""enumerations"" WHERE ""enumerations"".""type"" IN ('TimeEntryActivity') AND ""enumerations"".""project_id"" IS NULL AND ""enumerations"".""active"" = 't'
+  TimeEntryActivity Load (1.1ms)  SELECT ""enumerations"".* FROM ""enumerations"" WHERE ""enumerations"".""type"" IN ('TimeEntryActivity') AND ""enumerations"".""project_id"" IS NULL AND ""enumeratio
+ns"".""active"" = 't' ORDER BY enumerations.position ASC
+  Rendered context_menus/time_entries.html.erb (122.6ms)
+Missing template, responding with 404
+  Rendered common/error.html.erb (0.4ms)
+Completed 404 Not Found in 658.5ms (Views: 2.9ms | ActiveRecord: 4.2ms)
+</pre>
+
+* *Console log (issues)*
+<pre>
+Started GET ""/issues/context_menu?utf8=%E2%9C%93&authenticity_token=...&back_url=%2Fprojects%2Ftest%2Fissues&ids%5B%5D=1"" for 127.0.0.1 a
+t 2014-08-14 11:49:43 +0200
+Processing by ContextMenusController#issues as */*
+  Parameters: {""utf8""=>""?"", ""authenticity_token""=>""eHzyMSGfSCC+AxtyGR5q00gMiT6+wIua4p204D+2vas="", ""back_url""=>""/projects/test/issues"", ""ids""=>[""1""]}
+   (0.5ms)  SELECT MAX(""settings"".""updated_on"") AS max_id FROM ""settings"" 
+  User Load (0.3ms)  SELECT ""users"".* FROM ""users"" WHERE ""users"".""type"" IN ('User', 'AnonymousUser') AND ""users"".""status"" = 1 AND ""users"".""id"" = $1 LIMIT 1  [[""id"", 1]]
+  Current user: admin (id=1)
+   (0.3ms)  SELECT MAX(""contacts_settings"".""updated_on"") AS max_id FROM ""contacts_settings"" 
+   (0.3ms)  SELECT MAX(""cms_menus"".""updated_at"") AS max_id FROM ""cms_menus"" 
+  Issue Load (0.4ms)  SELECT ""issues"".* FROM ""issues"" WHERE ""issues"".""id"" IN (1)
+  Project Load (0.4ms)  SELECT ""projects"".* FROM ""projects"" WHERE ""projects"".""id"" IN (1)
+  IssueStatus Load (0.3ms)  SELECT ""issue_statuses"".* FROM ""issue_statuses"" WHERE ""issue_statuses"".""id"" IN (1)
+  Tracker Load (0.3ms)  SELECT ""trackers"".* FROM ""trackers"" WHERE ""trackers"".""id"" IN (1)
+  IssuePriority Load (0.4ms)  SELECT ""enumerations"".* FROM ""enumerations"" WHERE ""enumerations"".""type"" IN ('IssuePriority') AND ""enumerations"".""id"" IN (2) ORDER BY enumerations.position A
+SC
+  User Load (0.4ms)  SELECT ""users"".* FROM ""users"" WHERE ""users"".""type"" IN ('User', 'AnonymousUser') AND ""users"".""id"" IN (1)
+  IssueRelation Load (0.3ms)  SELECT ""issue_relations"".* FROM ""issue_relations"" WHERE ""issue_relations"".""issue_to_id"" IN (1)
+  SQL (0.3ms)  SELECT ""enabled_modules"".""name"" FROM ""enabled_modules"" WHERE ""enabled_modules"".""project_id"" = 1
+  IssueStatus Load (0.3ms)  SELECT ""issue_statuses"".* FROM ""issue_statuses"" WHERE ""issue_statuses"".""id"" = 1 LIMIT 1
+  Role Load (0.3ms)  SELECT ""roles"".* FROM ""roles"" 
+  WorkflowTransition Load (1.7ms)  SELECT ""workflows"".* FROM ""workflows"" WHERE ""workflows"".""type"" IN ('WorkflowTransition') AND ""workflows"".""old_status_id"" = 1 AND (role_id IN (4,5,1,2,3
+) AND tracker_id = 1 AND ((author = 'f' AND assignee = 'f') OR author = 't'))
+  IssueStatus Load (0.5ms)  SELECT ""issue_statuses"".* FROM ""issue_statuses"" WHERE ""issue_statuses"".""id"" IN (2, 3, 4, 5, 6)
+  Tracker Exists (1.1ms)  SELECT 1 AS one FROM ""trackers"" INNER JOIN ""projects_trackers"" ON ""trackers"".""id"" = ""projects_trackers"".""tracker_id"" WHERE ""projects_trackers"".""project_id"" = 1 
+AND ""trackers"".""id"" = 1 LIMIT 1
+  SQL (3.0ms)  SELECT ""members"".""id"" AS t0_r0, ""members"".""user_id"" AS t0_r1, ""members"".""project_id"" AS t0_r2, ""members"".""created_on"" AS t0_r3, ""members"".""mail_notification"" AS t0_r4, ""us
+ers"".""id"" AS t1_r0, ""users"".""login"" AS t1_r1, ""users"".""hashed_password"" AS t1_r2, ""users"".""firstname"" AS t1_r3, ""users"".""lastname"" AS t1_r4, ""users"".""mail"" AS t1_r5, ""users"".""admin"" AS t
+1_r6, ""users"".""status"" AS t1_r7, ""users"".""last_login_on"" AS t1_r8, ""users"".""language"" AS t1_r9, ""users"".""auth_source_id"" AS t1_r10, ""users"".""created_on"" AS t1_r11, ""users"".""updated_on"" A
+S t1_r12, ""users"".""type"" AS t1_r13, ""users"".""identity_url"" AS t1_r14, ""users"".""mail_notification"" AS t1_r15, ""users"".""salt"" AS t1_r16, ""users"".""must_change_passwd"" AS t1_r17, ""users"".""ph
+one"" AS t1_r18, ""users"".""address"" AS t1_r19, ""users"".""skype"" AS t1_r20, ""users"".""birthday"" AS t1_r21, ""users"".""job_title"" AS t1_r22, ""users"".""company"" AS t1_r23, ""users"".""middlename"" AS 
+t1_r24, ""users"".""gender"" AS t1_r25, ""users"".""twitter"" AS t1_r26, ""users"".""facebook"" AS t1_r27, ""users"".""linkedin"" AS t1_r28, ""users"".""background"" AS t1_r29, ""users"".""appearance_date"" AS 
+t1_r30, ""users"".""department_id"" AS t1_r31, ""roles"".""id"" AS t2_r0, ""roles"".""name"" AS t2_r1, ""roles"".""position"" AS t2_r2, ""roles"".""assignable"" AS t2_r3, ""roles"".""builtin"" AS t2_r4, ""roles""
+.""permissions"" AS t2_r5, ""roles"".""issues_visibility"" AS t2_r6 FROM ""members"" LEFT OUTER JOIN ""users"" ON ""users"".""id"" = ""members"".""user_id"" LEFT OUTER JOIN ""member_roles"" ON ""member_roles
+"".""member_id"" = ""members"".""id"" LEFT OUTER JOIN ""roles"" ON ""roles"".""id"" = ""member_roles"".""role_id"" WHERE ""members"".""project_id"" = 1 AND (users.type='User' AND users.status=1)
+  IssuePriority Load (0.6ms)  SELECT ""enumerations"".* FROM ""enumerations"" WHERE ""enumerations"".""type"" IN ('IssuePriority') AND ""enumerations"".""active"" = 't' ORDER BY enumerations.positio
+n ASC
+  IssueCustomField Load (1.2ms)  SELECT ""custom_fields"".* FROM ""custom_fields"" WHERE ""custom_fields"".""type"" IN ('IssueCustomField') AND (is_for_all = 't' OR id IN (SELECT DISTINCT cfp.cu
+stom_field_id FROM custom_fields_projects cfp WHERE cfp.project_id = 1)) ORDER BY custom_fields.position ASC
+  IssueCustomField Load (1.6ms)  SELECT ""custom_fields"".* FROM ""custom_fields"" INNER JOIN ""custom_fields_trackers"" ON ""custom_fields"".""id"" = ""custom_fields_trackers"".""custom_field_id"" WH
+ERE ""custom_fields"".""type"" IN ('IssueCustomField') AND ""custom_fields_trackers"".""tracker_id"" = 1
+   (0.8ms)  SELECT COUNT(*) FROM ""projects"" WHERE (projects.status = 1 AND projects.id IN (SELECT em.project_id FROM enabled_modules em WHERE em.name='issue_tracking'))
+  CACHE (0.0ms)  SELECT ""issue_statuses"".* FROM ""issue_statuses"" WHERE ""issue_statuses"".""id"" = 1 LIMIT 1
+  CACHE (0.0ms)  SELECT ""roles"".* FROM ""roles"" 
+  CACHE (0.0ms)  SELECT ""workflows"".* FROM ""workflows"" WHERE ""workflows"".""type"" IN ('WorkflowTransition') AND ""workflows"".""old_status_id"" = 1 AND (role_id IN (4,5,1,2,3) AND tracker_id =
+ 1 AND ((author = 'f' AND assignee = 'f') OR author = 't'))
+  CACHE (0.0ms)  SELECT ""issue_statuses"".* FROM ""issue_statuses"" WHERE ""issue_statuses"".""id"" IN (2, 3, 4, 5, 6)
+  CACHE (0.0ms)  SELECT ""roles"".* FROM ""roles"" 
+  WorkflowPermission Load (1.2ms)  SELECT ""workflows"".* FROM ""workflows"" WHERE ""workflows"".""type"" IN ('WorkflowPermission') AND ""workflows"".""tracker_id"" = 1 AND ""workflows"".""old_status_i
+d"" = 1 AND ""workflows"".""role_id"" IN (4, 5, 1, 2, 3)
+  Tracker Load (1.4ms)  SELECT ""trackers"".* FROM ""trackers"" INNER JOIN ""projects_trackers"" ON ""trackers"".""id"" = ""projects_trackers"".""tracker_id"" WHERE ""projects_trackers"".""project_id"" = 
+1 ORDER BY trackers.position
+   (1.8ms)  SELECT COUNT(DISTINCT ""versions"".""id"") FROM ""versions"" LEFT OUTER JOIN ""projects"" ON ""projects"".""id"" = ""versions"".""project_id"" WHERE ""versions"".""status"" = 'open' AND (project
+s.id = 1 OR (projects.status <> 9 AND ( versions.sharing = 'system' OR (projects.lft >= 1 AND projects.rgt <= 2 AND versions.sharing = 'tree') OR (projects.lft < 1 AND projects.rgt > 2 A
+ND versions.sharing IN ('hierarchy', 'descendants')) OR (projects.lft > 1 AND projects.rgt < 2 AND versions.sharing = 'hierarchy'))))
+   (1.0ms)  SELECT COUNT(*) FROM ""issue_categories"" WHERE ""issue_categories"".""project_id"" = 1
+  Setting Load (0.9ms)  SELECT ""settings"".* FROM ""settings"" WHERE ""settings"".""name"" = 'issue_done_ratio' LIMIT 1
+  Watcher Exists (0.4ms)  SELECT 1 AS one FROM ""watchers"" WHERE ""watchers"".""watchable_type"" = 'Issue' AND ""watchers"".""watchable_id"" IN (1) AND ""watchers"".""user_id"" = 1 LIMIT 1
+  Rendered context_menus/issues.html.erb (52.2ms)
+Missing template, responding with 404
+  Rendered common/error.html.erb (0.1ms)
+Completed 404 Not Found in 237.8ms (Views: 2.9ms | ActiveRecord: 9.4ms)
+</pre>"
+17688,Redmine,Defect,"",Closed,Normal,Broken email notifications for Forum messages,Piotr Oh,"",2014-09-18 21:36,Email notifications,"","","","",0,2014-08-14 10:23,2014-09-18 21:36,"",Invalid,2.5.1,"Shortly: no email notofications are sent when adding Forum mesages.
+
+At first I thought it was something wrong with my Redmine configuration, but all other email notification messages are working ok, so maybe I have found a bug. The details are here:
+http://www.redmine.org/boards/2/topics/43589
+
+Redmine env (Debian 7.x with backported Redmine packages):
+Environment:
+  Redmine version                2.5.1.stable
+  Ruby version                   1.9.3-p194 (2012-04-20) [x86_64-linux]
+  Rails version                  3.2.6
+  Environment                    production
+  Database adapter               MySQL
+Redmine plugins:
+  no plugin installed
+
+P.
+"
+17686,Redmine,Defect,"",New,Normal,MarkDownFormatting: Sections support.,Rupesh  J,"",2014-09-12 16:15,Wiki,"","","","",0,2014-08-14 07:57,"","","",2.5.2,"With markdown formatting option, The sections is not working.
+As the markdown formatting is experimental, Please change the Tracker type according."
+17684,Redmine,Defect,"",Closed,High,File Attachments in Redmine 2.5 Internal Server Error,Sekhar Nallani,"",2014-08-14 02:02,Attachments,"","","","",0,2014-08-13 21:01,2014-08-14 02:02,"",Invalid,2.5.0,"Hi,
+
+When uploading files or attaching files to issues, wiki, Files, Documents etc, getting Internal Server Error in Redmine. Please find below the error in log.
+
+Started POST ""/uploads.js?attachment_id=1&filename=Photo0735.jpg"" for 10.0.14.2 at 2014-08-13 16:08:31 +0000
+Processing by AttachmentsController#upload as JS
+  Parameters: {""attachment_id""=>""1"", ""filename""=>""Photo0735.jpg""}
+  Current user: 0001989 (id=33)
+Completed 500 Internal Server Error in 406.0ms
+
+TypeError (can't convert Array into String):
+  app/controllers/attachments_controller.rb:88:in `upload'
+
+
+I am unable to root cause and have searched extensively in net and couldn't find a solution.
+
+Please help on this.
+
+Below are my Redmine Information:
+Environment:
+  Redmine version                2.5.0.stable
+  Ruby version                   1.9.3-p194 (2012-04-20) [x86_64-linux]
+  Rails version                  3.2.17
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.6.17
+  Mercurial                      2.2.2
+  Bazaar                         2.6.0
+  Git                            1.7.10.4
+  Filesystem                     
+Redmine plugins:
+  csv_import_issues              0.0.1
+  file_servers                   1.0.0
+  leave_management_system        0.0.1
+  once_assigned_ever_watcher     0.1.0
+  progressive_projects_list      1.0.0
+  recurring_tasks                1.3.0
+  redmine_app__space             1.0.3
+  redmine_app_timesheets         1.3.22
+  redmine_auto_percent           0.0.1
+  redmine_banner                 0.0.9
+  redmine_card                   0.0.1
+  redmine_ckeditor               1.0.16
+  redmine_custom_workflows       0.0.4
+  redmine_customized_report      0.0.1
+  redmine_dashboard              2.2.4
+  redmine_dmsf                   1.4.8 stable
+  redmine_documents              1.0.0
+  redmine_image_clipboard_paste  1.0.0
+  redmine_issue_history          1.0.0
+  redmine_issue_sla              1.0.0
+  redmine_knowledgebase          3.0.3
+  redmine_lightbox               0.0.1
+  redmine_login_audit            0.1.5
+  redmine_monitoring_controlling 0.1.1
+  redmine_questions              0.0.5
+  redmine_spent_time             2.6.4
+  redmine_sticky_messages        1.0.1
+  redmine_tweaks                 0.4.6
+  redmine_user_specific_theme    0.0.1
+  redmine_work_time              0.2.15
+  reopen_issues_by_mail          0.1.0
+  sidebar_hide                   0.0.7
+  spectator                      0.0.1
+  systango_hrm                   1.0.0
+
+Sekhar Nallani"
+17680,Redmine,Defect,"",Closed,Normal,"Ticket > After installation of some issue importer plugin, what is to be done next",Surbhi Sharma,"",2014-09-09 09:04,"","","","","",0,2014-08-13 14:23,2014-08-13 16:26,"",Invalid,"","I wanted to import issues from JIRA to redmine. I installed this plugin over here- http://www.redmine.org/plugins/csv_import_issues
+I don't know what is to be done next.
+Can anyone please help me with it.
+
+Also is there any other way I can import the following in redmine from JIRA :-
+- Project
+- Issues
+- their title, descriptions, dates, comments and their versions.
+- their time log (optional)"
+17679,Redmine,Defect,"",Closed,Low,Attached inline image not working,Kira Schmieja,"",2014-09-12 05:10,Wiki,"","","","",0,2014-08-13 13:02,2014-09-12 05:10,次のチケットと重複 #10189,Duplicate,2.5.2,"The documentation says the following on attaching inline images:
+
+<pre>
+Inline images
+
+   * !image_url! displays an image located at image_url (textile syntax)
+   * !>image_url! right floating image
+   * If you have an image attached to your wiki page, it can be displayed inline using its filename: !attached_image.png!
+
+</pre>
+
+The third point does not appear to work. Trying to attach the image will only result in the text being shown
+
+Example:
+
+!Test Image.png!
+
+!Test%20Image.png!"
+17677,Redmine,Defect,"",Closed,Normal,"When upload file, program show multi control upload and duplication current file upload",Tien Cong,"",2014-08-13 11:59,Attachments,"","","","",0,2014-08-13 10:33,2014-08-13 11:59,次のチケットと重複 #17151,Duplicate,2.5.2,"When upload file, program show multi control upload and duplication current file upload, see attach image to clear.
+
+Problem occur only Chrome
+
+Pls help me"
+17669,Redmine,Defect,"",Closed,Normal,Non admin users can't modify public queries for all project,S?bastien Pochiero,"",2014-09-08 13:54,Projects,"","","","",0,2014-08-12 17:37,2014-09-08 08:23,"関連している #14239, 関連している #28264",Invalid,2.5.0,non admin users can't modify/suppress public queries howhever the permission is checked in roles configuration.
+17667,Redmine,Defect,"",Closed,Normal,Can't modify public reports for non admin users.,S?bastien Pochiero,"",2014-08-12 17:40,Projects,"","","","",0,2014-08-12 15:36,2014-08-12 17:29,"",Invalid,2.5.0,"impossible de rendre des rapports public si l'on n'est pas administrateur bien que ""g?rer les requ?tes publiques"" soit coch? dans les permissions du role.
+impossible de modifier des rapports publics si l'on n'est pas administrateurs."
+17665,Redmine,Defect,"",Closed,Normal,Attachment upload called twice using Chrome,Pierrick Perret,"",2014-08-12 15:19,"","","","","",0,2014-08-12 14:59,2014-08-12 15:19,次のチケットと重複 #17151,Duplicate,"","Hello,
+When I upload a file into an issue, the file is uploaded 2 times.
+
+I'm running Redmine 2.4.2.stable
+Accessing it through Chrome Version 36.0.1985.125 m
+"
+17664,Redmine,Defect,"",New,Normal,Project-specific custom fields should also be searchable when showing all issues - if the user only has this project assigned,Kevin Palm,"",2016-07-16 21:15,Custom fields,"","","","",0,2014-08-12 13:50,"",関連している #22498,"",2.4.4,"Currently the user cannot search on a searchable custom field in the complete issue list ([redmineUrl]/issues).
+Generally speaking, this is normal, since the mentionned custom field is project-specific and is only displayed if listing issues of the project ([redmineURL]/projects/[project]/issues)
+But if the project of this field is the only project a user can access, than the project-specific fields should also be searchable...
+Currently, in this case, it is difficult for the user to understand when he can and when he can't search on the custom-field..."
+17662,Redmine,Defect,"",Closed,Normal,Change hours into Days,Manu ps,"",2014-08-12 18:20,Project settings,"","","","",0,2014-08-12 11:29,2014-08-12 18:20,"",Invalid,2.2.0,My overall project spent time is showing in hours I need to change it into days ..Is it possible?
+17659,Redmine,Defect,"",Closed,Normal,Problem with Sendmail and BCC ,amree woot,"",2014-08-12 17:24,Email notifications,"","","","",0,2014-08-12 10:48,2014-08-12 17:24,"",Invalid,2.5.2,"Hello
+
+After a fresh installation, I tried to send myself a test email from the Settings. I was using sendmail as the email configuration. 
+
+However, I kept getting DSN: Service unavailable (from my /var/mail/mail.log) and no email was sent to my inbox. By the way, I can send just find using 'sendmail' or 'mail' command directly from the terminal.
+
+After some help and doing some testing, I realized my email object doesn't have `To` information:
+
+<pre>
+#<Mail::Message:69932463820220, Multipart: true, Headers: <From: amree@email.com>, <To: >, <Cc: >, <Bcc: [""amree@email.com""]>, <Subject: Redmine test>, <Mime-Version: 1.0>, <Content-Type: multipart/alternative; boundary=""--==_mimepart_53e9cc4e961bc_4e413f9a697f53bc626bb""; charset=UTF-8>, <X-Mailer: Redmine>, <X-Redmine-Host: localhost:3000>, <X-Redmine-Site: Redmine>, <X-Auto-Response-Suppress: OOF>, <Auto-Submitted: auto-generated>, <List-Id: <amree.usm.my>>>
+</pre>
+
+So, after turning Blind carbon copy recipients (bcc) setting off, I can now receive the test email. This means, I can't trun on BCC since my email won't be sent with that setting on. I'm not sure if this is a bug or not. But I don't think it is supposed to work like that.
+
+Some info:
+
+<pre>
+# configuration.yml
+production:
+  email_delivery:
+    delivery_method: :sendmail
+</pre>
+
+<pre>
+Environment:
+  Redmine version                2.5.2.stable
+  Ruby version                   2.1.2-p95 (2014-05-08) [x86_64-linux]
+  Rails version                  3.2.19
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.6.17
+  Git                            1.7.10.4
+  Filesystem                     
+Redmine plugins:
+  redmine_scm                    0.5.0b
+  redmine_slack                  0.1
+</pre>"
+17653,Redmine,Defect,"",Closed,Normal,Layout is broken when using chrome to upload an attachment,chu chu,"",2014-08-12 00:14,Attachments,"","","","",0,2014-08-11 04:28,2014-08-12 00:14,次のチケットと重複 #17151,Duplicate,2.5.2,"Hi Redmine,
+
+The layout is broken when I use chrome to upload an attachment, see:
+!https://www.dropbox.com/s/pejgvjdrqct6eml/%E8%9E%A2%E5%B9%95%E6%88%AA%E5%9C%96%202014-08-11%2009.58.52.png!
+
+In addition, firefox has no problem.
+
+Environment:
+Redmine version: my install is 2.5.2, but redmine.org has the same problem.
+Google Chrome version: 36.0.1985.125 m
+OS: windows 7
+
+Kindly let me know if there is any solution on it.
+
+Regards,
+hrchu"
+17632,Redmine,Defect,"",Closed,Normal,"Users can't see private notes created by themselves if ""Mark notes as private"" is set but ""View private notes"" is not",Michael Heinze,Jean-Philippe Lang,2017-01-14 12:32,Issues,3.4.0,"","","",0,2014-08-08 08:38,2017-01-14 10:53,関連している #17057,Fixed,2.5.2,"If you configure the role permission as follows:
+
+[x] Mark notes as private
+[ ] View private notes
+
+the users in this role can create private notes, but after creation they can't see them any more (see attachment).
+
+Ok, I must admit that this is not really a bug because it exactly matches the configured settings, but in my opinion users should always be allowed to see their own (private) notes, regardless of the ""View private notes"" permission."
+17630,Redmine,Defect,"",Closed,Normal,Non-Administrator account can't show Issues list on multi role.,Jun NAITOH,"",2015-08-23 17:03,Issues permissions,"","","","",0,2014-08-08 06:56,2015-08-23 17:03,"",Cant reproduce,2.4.0,"If Redmine r11963 (2.4.0) later, Non-Administrator account can't show Issues list on multi role.
+
+# I maked Issue for test prj.
+!issues_list_shown_by_admin.png!
+# It is not displayed in non-Administrator account, but when ""issues/1"" URL is specified, I can show it. 
+!issues_list_not_shown_by_no_admin_user.png!
+!issue1.png!
+# This problem occurs in the user who has two or more rolls with ""View Issues"" authority. 
+!Roles_and_permissions_Issue_tracking.png!
+!Users_Roles.png!
+
+When the following line was deleted by way of experiment, this problem was solved.
+
+http://www.redmine.org/projects/redmine/repository/revisions/11963/entry/trunk/app/models/issue_query.rb#L265
+<pre>
+265: joins(:status, :project).
+</pre>
+
+h3. My environment
+
+* CentOS 6.3 x86_64
+<pre>
+# ruby script/about
+
+sh: darcs: command not found
+sh: hg: command not found
+sh: bzr: command not found
+Environment:
+  Redmine version                2.5.2.stable
+  Ruby version                   2.0.0-p481 (2014-05-08) [x86_64-linux]
+  Rails version                  3.2.19
+  Environment                    production
+  Database adapter               SQLite
+SCM:
+  Subversion                     1.6.11
+  Git                            1.7.1
+  Filesystem
+Redmine plugins:
+  no plugin installed
+</pre>"
+17627,Redmine,Defect,"",New,Normal,Syntax highlighting breaks predefined text (that is outside the <code> tags),J?nis Elmeris,"",2014-08-07 18:33,Text formatting,"","","","",0,2014-08-07 18:33,"","","","","Two cases: one includes syntax highlighting (""code"" tags), the other ? doesn't. The syntax highlighting creates a distorted layout: extra space appears, some ""deleted"" content appears.
+
+As you can see, this is in effect also in your own Redmine installation, so apparently no additional details necessary.
+
+<pre>mysql@datas:[(none)]> <code class=""sql"">select * from pavadonis.ologg_42083 order by date limit 44;</code>
+Empty set (0.00 sec)
+
+mysql@ti> select * from data order by date;
++---------+-------------+---------------------+
+| id      | id2_te      | date                |
++---------+-------------+---------------------+
+| 1417713 | 12115809964 | 2014-07-14 18:58:27 |
++---------+-------------+---------------------+
+1 row in set (0.00 sec)
+
+mysql@ti> select * from data order by date;
++---------+-------------+---------------------+
+| id      | id2_te      | date                |
++---------+-------------+---------------------+
+| 1417713 | 12115809964 | 2014-07-14 18:58:27 |
++---------+-------------+---------------------+
+1 row in set (0.00 sec)</pre>
+
+<pre>mysql@da> select * from data order by date;
+Empty set (0.00 sec)
+
+mysql@ti> select * from data order by date;
++---------+-------------+---------------------+
+| id      | id2_te      | date                |
++---------+-------------+---------------------+
+| 1417713 | 12115809964 | 2014-07-14 18:58:27 |
++---------+-------------+---------------------+
+1 row in set (0.00 sec)
+
+
+mysql@ti> select * from data order by date;
++---------+-------------+---------------------+
+| id      | id2_te      | date                |
++---------+-------------+---------------------+
+| 1417713 | 12115809964 | 2014-07-14 18:58:27 |
++---------+-------------+---------------------+
+1 row in set (0.00 sec)</pre>"
+17626,Redmine,Defect,"",Closed,Normal,"Redmine stops automatically and shows ""No route to host - connect(2) (Errno::EHOSTUNREACH)"" error",Raghu GS,"",2014-08-07 14:15,"","","","","",0,2014-08-07 13:43,2014-08-07 13:59,"",Invalid,2.4.5,"Hello Everybody
+
+I am using Redmine 2.4.5 in ruby 1.9.3 and passenger 4.0.48.
+I have recently started to get ""No route to host - connect(2) (Errno::EHOSTUNREACH)"" error message in Passenger logs after Redmine being stopped automatically.
+
+Now, i am completely not able to start Redmine via Passenger as it would refuse to start with that error message.
+Now i am using Redmine over Webrick by restarting Webrick often, as it would also stop within a little time with no errors as i do not know where can i find the Webrick logs.
+
+We are using multiple versions Redmine in our server without any problem, but we are facing so much problem recently in this specific installation of redmine.
+
+All instance of Redmine uses distinct port numbers and i have changed port number of this instance to different numbers multiple times and didn't find any noticeable improvement.
+
+Please help me to resolve this issue soon, as i am getting lot of pressure from my teams."
+17625,Redmine,Defect,"",Confirmed,Normal,Wrong week number in JQuery datepicker if start of week day is Sunday,Mario Scondo,"",2016-01-13 23:39,UI,"","","","",0,2014-08-07 12:31,2010-07-19 22:51,"関連している #4857, 次のチケットが重複 #20707","",2.5.2,"Calendar shows incorrect week number.
+
+In the screenshot the date 2014-08-07 is part of week number 31. Correct would be 32.
+
+Screenshot:
+!screenshot.5.jpeg!
+
+Details regarding my installation of Redmine:
+<pre>
+Environment:
+  Redmine version                2.5.2.stable.13335
+  Ruby version                   2.1.0-p0 (2013-12-25) [x86_64-linux]
+  Rails version                  3.2.19
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.6.19
+  Mercurial                      1.7.5
+  Cvs                            1.12.12
+  Bazaar                         2.0.5
+  Git                            1.7.3.4
+  Filesystem                     
+Redmine plugins:
+  due_date_reminder              0.4
+  redmine_wiki_extensions        0.6.0
+  redmine_work_time              0.2.6
+  sidebar                        0.1.0
+  wiking                         1.0.0b
+</pre>"
+17624,Redmine,Defect,"",Closed,Normal,"Cannot edit users, settings after update from 1.X to 2.X",Hud Hood,"",2014-08-07 10:32,Administration,"","","","",0,2014-08-07 10:06,2014-08-07 10:32,"",Invalid,2.5.2,"I have updated my redmine from 1.x to 2.X. Everything seems to be working fine until I wanted to add new users or check the settings. I can see the list of users but unable to add new one, as when I click new, it went to the error page.
+
+@Internal error
+
+An error occurred on the page you were trying to access.
+If you continue to experience problems please contact your Redmine administrator for assistance.
+
+If you are the Redmine administrator, check your log files for details about the error.
+
+Back@
+
+The same error appeared when I clicked settings."
+17623,Redmine,Defect,"",Closed,Normal,how to change account of password,allen shen,"",2014-08-07 14:41,Accounts / authentication,"","","","",0,2014-08-07 05:02,2014-08-07 14:41,"",Invalid,2.5.2,"Hi，guys，I'm rookie of redmine，now，I have a problem; can not change  account password,especially the admin，I must change it stronger！
+my redmine version :2.5.2; system:centos 5.5;  the following is my tring information:
+
+[root@localhost redmine]# RAILS_ENV=production script/runner 'user = User.find(:first, :conditions => {:admin => true}) ; user.password, user.password_confirmation = 123456789; user.save!'
+-bash: script/runner: No such file or directory
+[root@localhost redmine]# -bash: script/runner: No such file or directory"
+17621,Redmine,Defect,"",Closed,High,Completed 500 Internal Server Error ,Ladislav B.,"",2014-08-06 14:40,"","","","","",0,2014-08-06 14:25,2014-08-06 14:40,関連している #12900,Duplicate,"","I need help with a redmine. Sometimes application crashes and I can't why. After apache reload redmine goes many days without problems.
+
+Can anybody help me with this problem?
+
+Environment:
+  Redmine version                2.5.1.stable
+  Ruby version                   1.9.3-p448 (2013-06-27) [x86_64-linux]
+  Rails version                  3.2.17
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.6.11
+  Mercurial                      2.2.2
+  Git                            1.7.1
+  Filesystem                     
+Redmine plugins:
+  appmenuadds                    1.4.2
+  calendar_shortcut_plugin       0.0.1
+  project_alias                  0.1.0
+  redmine_message_issues         0.1.0
+  scrum                          0.5.0
+--
+
+Started GET ""/"" for 213.81.172.253 at 2014-08-06 13:51:07 +0200
+Processing by WelcomeController#index as HTML
+  Current user: Ladislav (id=117)
+  Rendered news/_news.html.erb (2.1ms)
+  Rendered welcome/index.html.erb within layouts/base (2.6ms)
+Completed 500 Internal Server Error in 6.4ms
+
+ActionView::Template::Error (translation missing: en.date.formats.default):
+    3: <%= ""(#{l(:label_x_comments, :count => news.comments_count)})"" if news.comments_count > 0 %>
+    4: <br />
+    5: <% unless news.summary.blank? %><span class=""summary""><%=h news.summary %></span><br /><% end %>
+    6: <span class=""author""><%= authoring news.created_on, news.author %></span></p>
+  lib/redmine/i18n.rb:60:in `format_date'
+  lib/redmine/i18n.rb:71:in `format_time'
+  app/helpers/application_helper.rb:442:in `time_tag'
+  app/helpers/application_helper.rb:434:in `authoring'
+  app/views/news/_news.html.erb:6:in `_app_views_news__news_html_erb__3644809541294843667_70358917994100'
+  app/views/welcome/index.html.erb:8:in `_app_views_welcome_index_html_erb___56145358015715849_70358917874300'"

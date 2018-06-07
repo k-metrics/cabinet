@@ -1,0 +1,76 @@
+---
+title: "SQLite"
+output: 
+  html_document:  
+    code_folding: show
+    css: style.css
+---
+
+<!-- shared Links -->
+```{r index, child="../shared/links.Rmd", include=FALSE}
+```
+
+```{r setup, message=FALSE, warning=FALSE, error=FALSE, echo=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+
+require(RSQLite)
+require(stringi)
+require(tidyverse)
+```
+
+[R <i class="fa fa-external-link"></i>][R]では下表にあるようなデータベースからSQL文を利用してデータを直接インポートすることが可能です。  
+
+　  
+
+DBMS       | Package                  | Description
+-----------|--------------------------|----------------------------------------
+SQLite     | RSQLite, RODBC, SQLiteDF | 組込向けのファイル型軽量DBMS
+MySQL      | RMySQL, RODBC            | マルチプラットフォームのDBMS
+PostgreSQL | RPgSWL, RODBC            | BSDライセンスの大規模向けDBMS
+MS SQL Server | RODBC                 | Windows環境のみで動くDBMS
+Oracle DB  | ROracle, RODBC           | DBMS界の大御所（高杉やろ）
+
+　  
+
+上記以外にもODBC(Open Database Connectivity)を利用することでMS Access, MS Excel, FileMaker, LibreOffice Baseなどのファイル型データベースなども扱うことが可能です。  
+　  
+
+なお、本ページでは`r R.version$version.string`の標準パッケージ以外に以下の追加パッケージを用いています。  
+　  
+
+Package   | Version |Description
+----------|---------|----------------------------------------------------------
+tidyverse | `r packageVersion('tidyverse')` | Easily Install and Load the ‘Tidyverse’
+RSQLite   | `r packageVersion('RSQLite')` | 'SQLite' Interface for R
+stringi   | `r packageVersion('stringi')` | Character String Processing Facilities
+
+　  
+
+また、本ページでは以下のデータセットを用いています。  
+　  
+
+Dataset    | Package  | Version | Description
+-----------|----------|---------|----------------------------------------------
+airquality | datasets | `r packageVersion('datasets')`| New York Air Quality Measurements
+redmine    | N/A      | N/A     | [Redmine Issues <i class="fa fa-external-link"></i>](http://www.redmine.org/projects/redmine/issues){target="_blank" title="redmine.org"}
+
+　  
+
+# SQLite
+SQLiteはMySQLやPostgreSQLなどのクライアント・サーバ型のデータベースとは異なるファイルを直接読み書きする軽量なファイル型のデータベースです。初めてデータベースを利用する場合や小規模データベースの場合向いています
+
+## RSQLiteパッケージ
+[R <i class="fa fa-external-link"></i>][R]からSQLiteを利用する場合には`RSQLite`パッケージを利用するのが便利です
+　  
+
+
+　  
+
+# 参考資料
+* [ <i class="fa fa-external-link"></i>](){target="_blank" title=""}
+
+---
+
+<!-- Footer -->
+```{r child="../shared/footer.Rmd"}
+```

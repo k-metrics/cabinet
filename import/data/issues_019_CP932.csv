@@ -1,0 +1,2001 @@
+#,プロジェクト,トラッカー,親チケット,ステータス,優先度,題名,作成者,担当者,更新日,カテゴリ,対象バージョン,開始日,期日,予定工数,進捗率,作成日,終了日,関連するチケット,Resolution,Affected version,説明
+24787,Redmine,Patch,"",Closed,Normal,Don't preload all filter values when displaying issues/time entries,Jean-Philippe Lang,Jean-Philippe Lang,2017-01-12 21:20,Performance,3.4.0,"","","",0,2017-01-09 18:57,2017-01-12 21:20,"","","","Possible values for all filters are currently preloaded and included in the view as JSON objects when listing issues or time entries. This can be slow when there are many projects or users. Adding new filters (eg. #17720) would also add more overhead.
+
+The values for a given filter should be loaded when a user adds the filter only, by using an AJAX request ."
+24786,Redmine,Defect,"",Closed,Normal,Heavy performance problem when editing issues (big number of users & projects),Vincent C.,"",2017-03-18 04:03,Performance,"","","","",0,2017-01-09 17:29,2017-03-18 04:03,"",Invalid,3.2.0,"Hello !
+
+I'm part of a team maintaining a ""big"" Redmine instance, and we experience heavy performance impact on some actions, especially when sending an email after an issue update.
+
+Here are some info about our infrastructure :
+<pre>
+- 8 webservers (2 are dedicated to webservices), all servers are identical :
+
+	* Hardware :
+		- 4 vCPU
+		- 12 Gb RAM
+	* Software :
+		- Nginx 1.8.1
+		- Ruby 2.0.0
+		- Unicorn 4.8.3
+			=> 4 workers on each server
+		- Unicorn Worker Killer 0.4.3
+			=> Used to kill workers when RAM usage skyrockets
+		- Redmine 3.2.0
+
+- ~1000 projects ; ~1000 active users
+- There are also ~10 groups which contains a total of ~350 users, and who are members of almost every project
+</pre>
+
+____________________________________________
+
+Our problem occurs when an issue is updated/created, which triggers an email sending.
+Because of the large number of users/projects, Redmine was taking up to 2 minutes to send an email, which left the user hanging for 2 minutes when saving an issue.
+To avoid that, my predecessor edited the Redmine mailing process so that emails are sent in a new thread, which allow Redmine to send the response back immediately to the user, who doesn't have to wait for 2 minutes.
+This didn't fix the performance problem, it just hid it to the users.
+
+
+
+This week, I decided to take a deeper look at the problem, so I turned debug logs on, in order to find what is taking so long when sending an email.
+_(the debug log is attached)_
+
++Here is what happens in the debug log :+
+
+- *lines 1-56* : everything is ok
+- *lines 57-439* : All members of the current project are loaded, individually
+	=> This results in ~400 individual requests (responses come from cache most of the time)
+- *Lines 440-542* : everything is ok : Member, MemberRoles & Roles are loaded for each ""needed"" user
+- *Lines 543-640* (activate word wrapping to instantly notice the problem) :
+	=> For each ""needed"" user, *all their projects are loaded*
+	=> The request loading their MemberRoles includes* thousands of MemberRoles ids*
+- *Lines 641-682* : everything is ok
+
+
+This is not really a problem most of the time, but when bulk-editing, the server just can't handle the requests, and we must add crappy _sleep()_ instructions in our scripts ... (This is avoided by running these scripts at night.)
+But we can't avoid users bulk-editing issues themselves. And when they do, the server just 'explodes', and the server starts throwing HTTP 500 errors to all users connected to the server.
+
+
+This is the performance graph when bulk-editing 5 issues on a freshly restarted server (so, nothing is in cache yet) :
+!!
+
+If I close 10 issues at the same time, I start getting HTTP 500, and the server is ""dead"" for the next 5-10 minutes
+
+I tried looking into the code, to find what was causing these horrible delays (and huge amounts of SQL requests), but my knowledge of Rails is not good enough ...
+I know that reducing the number of people who are in almost every project would help greatly, but it is not possible for us ATM.
+Any help appreciated !
+
+Also, is there any option that I'm not aware of, which can be used to avoid sending completely ?
+We use _config.action_mailer.perform_deliveries = false_ on non-production environments ; it stops the server from sending the email, but it doesn't avoid the mess explained above
+_(Redmine still gets all projects/users, loads lot of useless data, just to not send the email in the end)_
+
+
+"
+24778,Redmine,Patch,"",Closed,Normal,Czech localisation for 3.3-stable,Toshi MARUYAMA,"",2017-01-09 02:05,Translations,3.3.3,"","","",0,2017-01-08 04:57,2017-01-09 02:05,"","","","From #24537.
+
+<pre><code class=""diff"">
+=== (+6,-8) config/locales/cs.yml ===
+@@ -1201,13 +1201,11 @@
+   button_filter: Filtr
+   mail_body_password_updated: Va?e heslo bylo zm?n?no.
+   label_no_preview: N?hled nen? k dispozici
+-  error_no_tracker_allowed_for_new_issue_in_project: The project doesn't have any trackers
+-    for which you can create an issue
+-  label_tracker_all: All trackers
++  error_no_tracker_allowed_for_new_issue_in_project: Projekt neobsahuje ??dnou frontu, pro kterou lze vytvo?it ?kol
++  label_tracker_all: V?echny fronty
+   label_new_project_issue_tab_enabled: Zobraz z?lo?ku ""Nov? ?kol""
+-  setting_new_item_menu_tab: Project menu tab for creating new objects
+-  label_new_object_tab_enabled: Display the ""+"" drop-down
+-  error_no_projects_with_tracker_allowed_for_new_issue: There are no projects with trackers
+-    for which you can create an issue
++  setting_new_item_menu_tab: Z?lo?ka v menu projektu pro vytv??en? nov?ch objekt?
++  label_new_object_tab_enabled: Zobrazit rozbalovac? menu ""+""
++  error_no_projects_with_tracker_allowed_for_new_issue: Neexistuj? projekty s frontou, pro kterou lze vytvo?it ?kol
+   error_cannot_reassign_time_entries_to_an_issue_about_to_be_deleted: Spent time cannot
+     be reassigned to an issue that is about to be deleted
+</code></pre>"
+24777,Redmine,Defect,"",Closed,Normal,Non-www version of redmine.org does not work,Kenn Wilson,Jean-Philippe Lang,2017-01-08 01:22,Website (redmine.org),"","","","",0,2017-01-08 01:06,2017-01-08 01:22,次のチケットと重複 #22281,Duplicate,"","Typing just ""redmine.org"" to get to this site returns a ""403 Forbidden"" error.
+
+Steps to reproduce:
+
+# Click http://redmine.org
+
+Expected behavior: Site loads or redirects to www.redmine.org
+
+This affects the non-SSL version only. The following links do work correctly:
+
+* http://www.redmine.org/
+* https://www.redmine.org/
+* https://redmine.org/
+
+
+Suggested fix: Redirect all of the above to https://www.redmine.org/. This will fix both the www and non-www URLs, while ensuring all visitors use SSL.
+"
+24776,Redmine,Patch,"",Closed,Normal,UI inconsistencies on /enumerations/index view,Mischa The Evil,Jean-Philippe Lang,2017-01-14 11:05,UI,3.4.0,"","","",0,2017-01-07 18:41,2017-01-14 11:05,関連している #24720,"","","Coming out of and a follow-up to #24720. I spotted three things that could benefit improvement:
+* re-position the new enumeration links to above the item tables (in line with #24720 changes)
+* add 'icon' and 'icon-add' classes to the new enumeration links (like most, if not all, new ... links in both the front- and the back-end) to make them stand-out more
+* handle cases of none existing enumerations using the regular @no-data@ message blocks
+
+I attach three patches implementing these changes. This patch serial, against current source:/trunk@16156, is produced using git format-patch which makes the individual patches apply-able using ""@patch -p1 < 0001-...@"".
+"
+24775,Redmine,Defect,"",Closed,Normal,"excute command ,work error.the command is bundle exec rake redmine:plugins:process_version_change RAILS_ENV=production --trace,how to fix?",xiaowen he,"",2017-01-07 07:55,"","","","","",0,2017-01-07 06:39,2017-01-07 07:55,"",Invalid,"","bundle exec rake redmine:plugins:process_version_change RAILS_ENV=production --trace
+(in /opt/redmine-3.1.1-1/apps/redmine/htdocs)
+rake aborted!
+Don't know how to build task 'redmine:plugins:process_version_change'
+/opt/redmine-3.1.1-1/apps/redmine/htdocs/vendor/bundle/ruby/2.0.0/gems/rake-10.4.2/lib/rake/task_manager.rb:62:in `[]'
+/opt/redmine-3.1.1-1/apps/redmine/htdocs/vendor/bundle/ruby/2.0.0/gems/rake-10.4.2/lib/rake/application.rb:149:in `invoke_task'
+/opt/redmine-3.1.1-1/apps/redmine/htdocs/vendor/bundle/ruby/2.0.0/gems/rake-10.4.2/lib/rake/application.rb:106:in `block (2 levels) in top_level'
+/opt/redmine-3.1.1-1/apps/redmine/htdocs/vendor/bundle/ruby/2.0.0/gems/rake-10.4.2/lib/rake/application.rb:106:in `each'
+/opt/redmine-3.1.1-1/apps/redmine/htdocs/vendor/bundle/ruby/2.0.0/gems/rake-10.4.2/lib/rake/application.rb:106:in `block in top_level'
+/opt/redmine-3.1.1-1/apps/redmine/htdocs/vendor/bundle/ruby/2.0.0/gems/rake-10.4.2/lib/rake/application.rb:115:in `run_with_threads'
+/opt/redmine-3.1.1-1/apps/redmine/htdocs/vendor/bundle/ruby/2.0.0/gems/rake-10.4.2/lib/rake/application.rb:100:in `top_level'
+/opt/redmine-3.1.1-1/apps/redmine/htdocs/vendor/bundle/ruby/2.0.0/gems/rake-10.4.2/lib/rake/application.rb:78:in `block in run'
+/opt/redmine-3.1.1-1/apps/redmine/htdocs/vendor/bundle/ruby/2.0.0/gems/rake-10.4.2/lib/rake/application.rb:176:in `standard_exception_handling'
+/opt/redmine-3.1.1-1/apps/redmine/htdocs/vendor/bundle/ruby/2.0.0/gems/rake-10.4.2/lib/rake/application.rb:75:in `run'
+/opt/redmine-3.1.1-1/apps/redmine/htdocs/vendor/bundle/ruby/2.0.0/gems/rake-10.4.2/bin/rake:33:in `<top (required)>'
+/opt/redmine-3.1.1-1/apps/redmine/htdocs/vendor/bundle/ruby/2.0.0/bin/rake:23:in `load'
+/opt/redmine-3.1.1-1/apps/redmine/htdocs/vendor/bundle/ruby/2.0.0/bin/rake:23:in `<main>'"
+24774,Redmine,Defect,"",Closed,High,Ubuntu 14.04 LTS Redmine could not be started,Vivek Buzruk,"",2017-01-07 08:54,Administration,"","","","",0,2017-01-07 03:51,2017-01-07 08:54,"",Invalid,3.3.1,"Trying to install Redmine using ==>
+============
+http://www.redmine.org/projects/redmine/wiki/HowTo_Install_Redmine_30x_on_Ubuntu_1404_with_Apache2_Phusion_Passenger_MySQL_Subversion_and_Git_(Gitolite)
+====================
+System Details =>
+===============
+""Linux 4.4.0-57-generic #78~14.04.1-Ubuntu SMP Sat Dec 10 00:14:47 UTC 2016 x86_64 x86_64 x86_64 GNU/Linux""
+==================================
+Error is => Web Application could not be started,
+uninitialized constant ActionView::Helpers::ActiveModelHelper (NameError)
+===================
+More details in the attachment., Same thing is repeated below as much as I can 
+====================================
+
+
+Web application could not be started
+
+uninitialized constant ActionView::Helpers::ActiveModelHelper (NameError)
+  /opt/redmine/.rvm/gems/ruby-2.1.4/gems/actionview-4.2.7.1/lib/action_view/helpers.rb:40:in `<module:Helpers>'
+  /opt/redmine/.rvm/gems/ruby-2.1.4/gems/actionview-4.2.7.1/lib/action_view/helpers.rb:4:in `<module:ActionView>'
+  /opt/redmine/.rvm/gems/ruby-2.1.4/gems/actionview-4.2.7.1/lib/action_view/helpers.rb:3:in `<top (required)>'
+  /opt/redmine/.rvm/gems/ruby-2.1.4/gems/actionview-4.2.7.1/lib/action_view/base.rb:5:in `<top (required)>'
+  /opt/redmine/.rvm/gems/ruby-2.1.4/gems/actionview-4.2.7.1/lib/action_view/view_paths.rb:1:in `<top (required)>'
+  /opt/redmine/.rvm/gems/ruby-2.1.4/gems/actionpack-4.2.7.1/lib/abstract_controller/rendering.rb:4:in `<top (required)>'
+  /opt/redmine/.rvm/gems/ruby-2.1.4/gems/actionpack-4.2.7.1/lib/action_controller/base.rb:204:in `<class:Base>'
+  /opt/redmine/.rvm/gems/ruby-2.1.4/gems/actionpack-4.2.7.1/lib/action_controller/base.rb:164:in `<module:ActionController>'
+  /opt/redmine/.rvm/gems/ruby-2.1.4/gems/actionpack-4.2.7.1/lib/action_controller/base.rb:5:in `<top (required)>'
+  /opt/redmine/.rvm/gems/ruby-2.1.4/gems/actionpack-action_caching-1.1.1/lib/action_controller/action_caching.rb:13:in `<top (required)>'
+  /opt/redmine/.rvm/gems/ruby-2.1.4/gems/actionpack-action_caching-1.1.1/lib/actionpack/action_caching.rb:1:in `require'
+  /opt/redmine/.rvm/gems/ruby-2.1.4/gems/actionpack-action_caching-1.1.1/lib/actionpack/action_caching.rb:1:in `<top (required)>'
+  /opt/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.13.7/lib/bundler/runtime.rb:105:in `require'
+  /opt/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.13.7/lib/bundler/runtime.rb:105:in `rescue in block in require'
+  /opt/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.13.7/lib/bundler/runtime.rb:82:in `block in require'
+  /opt/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.13.7/lib/bundler/runtime.rb:75:in `each'
+  /opt/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.13.7/lib/bundler/runtime.rb:75:in `require'
+  /opt/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.13.7/lib/bundler.rb:106:in `require'
+  /opt/redmine/redmine-3.3.1/config/application.rb:5:in `<top (required)>'
+  /opt/redmine/redmine-3.3.1/config/environment.rb:2:in `require'
+  /opt/redmine/redmine-3.3.1/config/environment.rb:2:in `<top (required)>'
+  config.ru:3:in `require'
+  config.ru:3:in `block in <main>'
+  /opt/redmine/.rvm/gems/ruby-2.1.4/gems/rack-1.6.5/lib/rack/builder.rb:55:in `instance_eval'
+  /opt/redmine/.rvm/gems/ruby-2.1.4/gems/rack-1.6.5/lib/rack/builder.rb:55:in `initialize'
+  config.ru:1:in `new'
+  config.ru:1:in `<main>'
+  /usr/share/passenger/helper-scripts/rack-preloader.rb:112:in `eval'
+  /usr/share/passenger/helper-scripts/rack-preloader.rb:112:in `preload_app'
+  /usr/share/passenger/helper-scripts/rack-preloader.rb:158:in `<module:App>'
+  /usr/share/passenger/helper-scripts/rack-preloader.rb:29:in `<module:PhusionPassenger>'
+  /usr/share/passenger/helper-scripts/rack-preloader.rb:28:in `<main>'
+
+Application root
+    /opt/redmine/redmine
+Environment (value of RAILS_ENV, RACK_ENV, WSGI_ENV and PASSENGER_ENV)
+    production
+Ruby interpreter command
+
+    /usr/bin/ruby
+
+User and groups
+
+    uid=122(redmine) gid=130(redmine) groups=130(redmine)
+
+Environment variables
+
+    APACHE_PID_FILE = /var/run/apache2/apache2.pid
+    rvm_bin_path = /opt/redmine/.rvm/bin
+    GEM_HOME = /opt/redmine/.rvm/gems/ruby-2.1.4
+    SHELL = /bin/bash
+    APACHE_RUN_USER = www-data
+    IRBRC = /opt/redmine/.rvm/rubies/ruby-2.1.4/.irbrc
+    PASSENGER_DEBUG_DIR = /tmp/passenger.spawn-debug.XXXXUwwmQn
+    MY_RUBY_HOME = /opt/redmine/.rvm/rubies/ruby-2.1.4
+    rvm_stored_umask = 0022
+    USER = redmine
+    _system_type = Linux
+    rvm_path = /opt/redmine/.rvm
+    rvm_prefix = /opt/redmine
+    APACHE_LOG_DIR = /var/log/apache2
+    PATH = /opt/redmine/.rvm/gems/ruby-2.1.4/bin:/opt/redmine/.rvm/gems/ruby-2.1.4@global/bin:/opt/redmine/.rvm/rubies/ruby-2.1.4/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/redmine/.rvm/bin
+    QT_QPA_PLATFORMTHEME = appmenu-qt5
+    rvm_loaded_flag = 1
+    PWD = /opt/redmine/redmine
+    APACHE_RUN_GROUP = www-data
+    LANG = C
+    _system_arch = x86_64
+    _system_version = 14.04
+    rvm_version = 1.28.0 (latest)
+    SHLVL = 0
+    HOME = /opt/redmine
+    LOGNAME = redmine
+    GEM_PATH = /opt/redmine/.rvm/gems/ruby-2.1.4:/opt/redmine/.rvm/gems/ruby-2.1.4@global
+    APACHE_LOCK_DIR = /var/lock/apache2
+    APACHE_RUN_DIR = /var/run/apache2
+    RUBY_VERSION = ruby-2.1.4
+    rvm_user_install_flag = 1
+    _system_name = Ubuntu
+    IN_PASSENGER = 1
+    PYTHONUNBUFFERED = 1
+    NODE_PATH = /usr/share/passenger/node
+    RAILS_ENV = production
+    RACK_ENV = production
+    WSGI_ENV = production
+    NODE_ENV = production
+    PASSENGER_APP_ENV = production
+    RAILS_RELATIVE_URL_ROOT = /redmine
+    RACK_BASE_URI = /redmine
+    PASSENGER_BASE_URI = /redmine
+    SERVER_PROTOCOL = HTTP/1.1
+    SERVER_SOFTWARE = Apache/2.4.7 (Ubuntu)
+    DOCUMENT_ROOT = /var/www/html
+    SERVER_ADMIN = webmaster@localhost
+    QUERY_STRING = 
+    SERVER_NAME = localhost
+    REMOTE_PORT = 45668
+    REMOTE_ADDR = 127.0.0.1
+    SERVER_PORT = 80
+    REQUEST_METHOD = GET
+    SERVER_ADDR = 127.0.0.1
+    REQUEST_URI = /redmine
+    BUNDLER_ORIG_PATH = /opt/redmine/.rvm/gems/ruby-2.1.4/bin:/opt/redmine/.rvm/gems/ruby-2.1.4@global/bin:/opt/redmine/.rvm/rubies/ruby-2.1.4/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/redmine/.rvm/bin
+    BUNDLER_ORIG_GEM_PATH = /opt/redmine/.rvm/gems/ruby-2.1.4:/opt/redmine/.rvm/gems/ruby-2.1.4@global
+    BUNDLE_BIN_PATH = /opt/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.13.7/exe/bundle
+    BUNDLE_GEMFILE = /opt/redmine/redmine-3.3.1/Gemfile
+    BUNDLER_VERSION = 1.13.7
+    RUBYOPT = -rbundler/setup
+    RUBYLIB = /opt/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.13.7/lib
+
+Ulimits
+
+    Unknown
+
+System memory usage
+
+                 total       used       free     shared    buffers     cached
+    Mem:          3952       3845        106         21        384       1774
+    -/+ buffers/cache:       1686       2265
+    Swap:            0          0          0
+
+General Ruby interpreter information
+
+    RUBY_VERSION = 2.1.9
+    RUBY_PLATFORM = x86_64-linux-gnu
+    RUBY_ENGINE = ruby
+    RubyGems version = 2.2.5
+
+Ruby configuration (RbConfig::CONFIG)
+
+    DESTDIR = 
+    MAJOR = 2
+    MINOR = 1
+    TEENY = 0
+    PATCHLEVEL = 490
+    INSTALL = /usr/bin/install -c
+    EXEEXT = 
+    prefix = /usr
+    ruby_install_name = ruby2.1
+    RUBY_INSTALL_NAME = ruby2.1
+    RUBY_SO_NAME = ruby-2.1
+    exec = exec
+    ruby_pc = ruby-2.1.pc
+    PACKAGE = ruby
+    BUILTIN_TRANSSRCS =  newline.c
+    USE_RUBYGEMS = YES
+    MANTYPE = doc
+    NROFF = /usr/bin/nroff
+    vendorarchhdrdir = /usr/include/x86_64-linux-gnu/ruby-2.1.0/vendor_ruby
+    sitearchhdrdir = /usr/include/x86_64-linux-gnu/ruby-2.1.0/site_ruby
+    rubyarchhdrdir = /usr/include/x86_64-linux-gnu/ruby-2.1.0
+    vendorhdrdir = /usr/include/ruby-2.1.0/vendor_ruby
+    sitehdrdir = /usr/include/ruby-2.1.0/site_ruby
+    rubyhdrdir = /usr/include/ruby-2.1.0
+    RUBY_SEARCH_PATH = 
+    UNIVERSAL_INTS = 
+    UNIVERSAL_ARCHNAMES = 
+    configure_args =  '--build=x86_64-linux-gnu' '--prefix=/usr' '--includedir=${prefix}/include' '--mandir=${prefix}/share/man' '--infodir=${prefix}/share/info' '--sysconfdir=/etc' '--localstatedir=/var' '--libexecdir=${prefix}/lib/ruby2.1' '--disable-maintainer-mode' '--disable-dependency-tracking' '--enable-multiarch' '--target=x86_64-linux-gnu' '--program-suffix=2.1' '--with-soname=ruby-2.1' '--enable-shared' '--disable-rpath' '--with-baseruby=/usr/bin/ruby' '--with-sitedir=/usr/local/lib/site_ruby' '--with-sitearchdir=/usr/local/lib/x86_64-linux-gnu/site_ruby' '--enable-ipv6' '--with-dbm-type=gdbm_compat' 'CFLAGS=-g -O2 -fstack-protector --param=ssp-buffer-size=4 -Wformat -Werror=format-security' 'CPPFLAGS=-D_FORTIFY_SOURCE=2' 'CXXFLAGS=-g -O2 -fstack-protector --param=ssp-buffer-size=4 -Wformat -Werror=format-security' 'FFLAGS=-g -O2 -fstack-protector --param=ssp-buffer-size=4' 'GCJFLAGS=-g -O2 -fstack-protector --param=ssp-buffer-size=4' 'LDFLAGS=-Wl,-Bsymbolic-functions -Wl,-z,relro -L/build/ruby2.1-3vrZnx/ruby2.1-2.1.9/debian/lib' '--with-tcltkversion=8.5' '--with-tclConfig-dir=/usr/lib/x86_64-linux-gnu/tcl8.5/tclConfig.sh' '--with-tkConfig-dir=/usr/lib/x86_64-linux-gnu/tk8.5/tkConfig.sh' '--with-tcllib=tcl8.5' '--with-tklib=tk8.5' '--with-tcl-include=/usr/include/tcl8.5' '--with-tk-include=/usr/include/tcl8.5' '--with-tcl-lib=/usr/lib/x86_64-linux-gnu' '--with-tk-lib=/usr/lib/x86_64-linux-gnu' 'build_alias=x86_64-linux-gnu' 'target_alias=x86_64-linux-gnu'
+    vendorarchdir = /usr/lib/x86_64-linux-gnu/ruby/vendor_ruby/2.1.0
+    vendorlibdir = /usr/lib/ruby/vendor_ruby/2.1.0
+    vendordir = /usr/lib/ruby/vendor_ruby
+    sitearchdir = /usr/local/lib/x86_64-linux-gnu/site_ruby
+    sitelibdir = /usr/local/lib/site_ruby/2.1.0
+    sitedir = /usr/local/lib/site_ruby
+    rubyarchdir = /usr/lib/x86_64-linux-gnu/ruby/2.1.0
+    rubylibdir = /usr/lib/ruby/2.1.0
+    ruby_version = 2.1.0
+    sitearch = x86_64-linux-gnu
+    arch = x86_64-linux-gnu
+    sitearchincludedir = /usr/include/x86_64-linux-gnu
+    archincludedir = /usr/include/x86_64-linux-gnu
+    sitearchlibdir = /usr/lib/x86_64-linux-gnu
+    archlibdir = /usr/lib/x86_64-linux-gnu
+    libdirname = archlibdir
+    RUBY_EXEC_PREFIX = /usr
+    RUBY_LIB_VERSION = 
+    RUBY_LIB_VERSION_STYLE = 3	/* full */
+    RI_BASE_NAME = ri
+    ridir = /usr/share/ri
+    rubysitearchprefix = /usr/lib/x86_64-linux-gnu/ruby
+    rubyarchprefix = /usr/lib/x86_64-linux-gnu/ruby
+    MAKEFILES = Makefile GNUmakefile
+    PLATFORM_DIR = 
+    THREAD_MODEL = pthread
+    SYMBOL_PREFIX = 
+    EXPORT_PREFIX = 
+    COMMON_HEADERS = 
+    COMMON_MACROS = 
+    COMMON_LIBS = 
+    MAINLIBS = 
+    ENABLE_SHARED = yes
+    DLDLIBS =  -lc
+    SOLIBS = -lpthread -lgmp -ldl -lcrypt -lm 
+    LIBRUBYARG_SHARED = -lruby-2.1
+    LIBRUBYARG_STATIC = -lruby-2.1-static
+    LIBRUBYARG = -lruby-2.1
+    LIBRUBY = libruby-2.1.so.2.1.0
+    LIBRUBY_ALIASES = libruby-2.1.so.2.1 libruby-2.1.so
+    LIBRUBY_SO = libruby-2.1.so.2.1.0
+    LIBRUBY_A = libruby-2.1-static.a
+    RUBYW_INSTALL_NAME = 
+    rubyw_install_name = 
+    EXTDLDFLAGS = 
+    EXTLDFLAGS = 
+    strict_warnflags = -std=iso9899:1999
+    warnflags = -Wall -Wextra -Wno-unused-parameter -Wno-parentheses -Wno-long-long -Wno-missing-field-initializers -Wunused-variable -Wpointer-arith -Wwrite-strings -Wdeclaration-after-statement -Wimplicit-function-declaration
+    debugflags = -ggdb3
+    optflags = -O3 -fno-fast-math
+    cxxflags =  -O3 -fno-fast-math -ggdb3 -Wall -Wextra -Wno-unused-parameter -Wno-parentheses -Wno-long-long -Wno-missing-field-initializers -Wunused-variable -Wpointer-arith -Wwrite-strings -Wdeclaration-after-statement -Wimplicit-function-declaration
+    cflags =  -O3 -fno-fast-math -ggdb3 -Wall -Wextra -Wno-unused-parameter -Wno-parentheses -Wno-long-long -Wno-missing-field-initializers -Wunused-variable -Wpointer-arith -Wwrite-strings -Wdeclaration-after-statement -Wimplicit-function-declaration
+    cppflags = 
+    NULLCMD = :
+    DLNOBJ = dln.o
+    INSTALLDOC = all
+    CAPITARGET = nodoc
+    RDOCTARGET = rdoc
+    DTRACE_GLOMMED_OBJ = ruby-glommed.o
+    DTRACE_OBJ = probes.o
+    DTRACE_EXT = d
+    EXECUTABLE_EXTS = 
+    ARCHFILE = 
+    LIBRUBY_RELATIVE = no
+    EXTOUT = .ext
+    RUNRUBY_COMMAND = $(MINIRUBY) $(srcdir)/tool/runruby.rb --extout=.ext $(RUNRUBYOPT)
+    PREP = miniruby
+    BTESTRUBY = $(MINIRUBY)
+    CROSS_COMPILING = no
+    TEST_RUNNABLE = yes
+    rubylibprefix = /usr/lib/ruby
+    setup = Setup
+    EXTSTATIC = 
+    STRIP = strip -S -x
+    TRY_LINK = 
+    LIBPATHENV = LD_LIBRARY_PATH
+    RPATHFLAG = 
+    LIBPATHFLAG =  -L%s
+    LINK_SO = 
+    LIBEXT = a
+    DLEXT2 = 
+    DLEXT = so
+    LDSHAREDXX = g++ -shared
+    LDSHARED = gcc -shared
+    CCDLFLAGS = -fPIC
+    STATIC = 
+    ARCH_FLAG = 
+    DLDFLAGS = 
+    ALLOCA = 
+    codesign = 
+    POSTLINK = :
+    WERRORFLAG = -Werror
+    CHDIR = cd -P
+    RMALL = rm -fr
+    RMDIRS = rmdir --ignore-fail-on-non-empty -p
+    RMDIR = rmdir --ignore-fail-on-non-empty
+    CP = cp
+    RM = rm -f
+    PKG_CONFIG = pkg-config
+    PYTHON = 
+    DOXYGEN = 
+    DOT = 
+    DTRACE = dtrace
+    MAKEDIRS = /bin/mkdir -p
+    MKDIR_P = /bin/mkdir -p
+    INSTALL_DATA = /usr/bin/install -c -m 644
+    INSTALL_SCRIPT = /usr/bin/install -c
+    INSTALL_PROGRAM = /usr/bin/install -c
+    SET_MAKE = 
+    LN_S = ln -s
+    NM = nm
+    DLLWRAP = 
+    WINDRES = 
+    OBJCOPY = :
+    OBJDUMP = objdump
+    ASFLAGS = 
+    AS = as
+    AR = ar
+    RANLIB = ranlib
+    try_header = 
+    CC_VERSION = gcc -v
+    COUTFLAG = -o 
+    OUTFLAG = -o 
+    CPPOUTFILE = -o conftest.i
+    GNU_LD = yes
+    LD = ld
+    GCC = yes
+    EGREP = /bin/grep -E
+    GREP = /bin/grep
+    CPP = gcc -E
+    CXXFLAGS = -g -O2 -fstack-protector --param=ssp-buffer-size=4 -Wformat -Werror=format-security
+    CXX = g++
+    OBJEXT = o
+    CPPFLAGS = -D_FORTIFY_SOURCE=2  
+    LDFLAGS = -L. -Wl,-Bsymbolic-functions -Wl,-z,relro -L/build/ruby2.1-3vrZnx/ruby2.1-2.1.9/debian/lib -fstack-protector -rdynamic -Wl,-export-dynamic
+    CFLAGS = -g -O2 -fstack-protector --param=ssp-buffer-size=4 -Wformat -Werror=format-security -fPIC
+    CC = gcc
+    NACL_SDK_VARIANT = 
+    NACL_SDK_ROOT = 
+    NACL_TOOLCHAIN = 
+    target_os = linux-gnu
+    target_vendor = pc
+    target_cpu = x86_64
+    target = x86_64-pc-linux-gnu
+    host_os = linux-gnu
+    host_vendor = pc
+    host_cpu = x86_64
+    host = x86_64-pc-linux-gnu
+    RUBY_VERSION_NAME = ruby-2.1.0
+    RUBYW_BASE_NAME = rubyw
+    RUBY_BASE_NAME = ruby
+    build_os = linux-gnu
+    build_vendor = pc
+    build_cpu = x86_64
+    build = x86_64-pc-linux-gnu
+    RUBY_RELEASE_DATE = 2016-03-30
+    RUBY_PROGRAM_VERSION = 2.1.9
+    target_alias = x86_64-linux-gnu
+    host_alias = 
+    build_alias = x86_64-linux-gnu
+    LIBS = -lpthread -lgmp -ldl -lcrypt -lm 
+    ECHO_T = 
+    ECHO_N = -n
+    ECHO_C = 
+    DEFS = 
+    mandir = /usr/share/man
+    localedir = /usr/share/locale
+    libdir = /usr/lib
+    psdir = /usr/share/doc/ruby
+    pdfdir = /usr/share/doc/ruby
+    dvidir = /usr/share/doc/ruby
+    htmldir = /usr/share/doc/ruby
+    infodir = /usr/share/info
+    docdir = /usr/share/doc/ruby
+    oldincludedir = /usr/include
+    includedir = /usr/include
+    localstatedir = /var
+    sharedstatedir = /usr/com
+    sysconfdir = /etc
+    datadir = /usr/share
+    datarootdir = /usr/share
+    libexecdir = /usr/lib/ruby2.1
+    sbindir = /usr/sbin
+    bindir = /usr/bin
+    program_transform_name = s&$&2.1&;s&^&&
+    exec_prefix = /usr
+    PACKAGE_URL = 
+    PACKAGE_BUGREPORT = 
+    PACKAGE_STRING = 
+    PACKAGE_VERSION = 
+    PACKAGE_TARNAME = 
+    PACKAGE_NAME = 
+    PATH_SEPARATOR = :
+    SHELL = /bin/bash
+    archdir = /usr/lib/x86_64-linux-gnu/ruby/2.1.0
+    topdir = /usr/lib/x86_64-linux-gnu/ruby/2.1.0
+
+Activated Ruby gems
+
+    bundler => 1.13.7
+    io-console => 0.4.3
+    psych => 2.0.5
+    rake => 12.0.0
+    RedCloth => 4.3.2
+    i18n => 0.7.0
+    json => 1.8.3
+    minitest => 5.10.1
+    thread_safe => 0.3.5
+    tzinfo => 1.2.2
+    activesupport => 4.2.7.1
+    builder => 3.2.2
+    erubis => 2.7.0
+    mini_portile2 => 2.1.0
+    nokogiri => 1.6.8.1
+    rails-deprecated_sanitizer => 1.0.3
+    rails-dom-testing => 1.0.8
+    loofah => 2.0.3
+    rails-html-sanitizer => 1.0.3
+    actionview => 4.2.7.1
+    rack => 1.6.5
+    rack-test => 0.6.3
+    actionpack => 4.2.7.1
+    globalid => 0.3.7
+    activejob => 4.2.7.1
+    mime-types-data => 3.2016.0521
+    mime-types => 3.1
+    mail => 2.6.4
+    actionmailer => 4.2.7.1
+    actionpack-action_caching => 1.1.1
+    actionpack-xml_parser => 1.0.2
+    activemodel => 4.2.7.1
+    arel => 6.0.4
+    activerecord => 4.2.7.1
+    public_suffix => 2.0.5
+    addressable => 2.5.0
+    asciidoctor => 1.5.5
+    coderay => 1.1.1
+    concurrent-ruby => 1.0.4
+    creole => 0.5.0
+    css_parser => 1.4.7
+    dalli => 2.7.6
+    github-markup => 1.4.0
+    gitlab-grack => 2.0.0.pre
+    gratr19 => 0.4.4.1
+    rugged => 0.24.0
+    gitolite-rugged => 1.1.0
+    tilt => 2.0.5
+    haml => 4.0.7
+    sexp_processor => 4.7.0
+    ruby_parser => 3.8.3
+    html2haml => 2.0.0
+    thor => 0.19.4
+    railties => 4.2.7.1
+    haml-rails => 0.9.0
+    hiredis => 0.6.1
+    htmlentities => 4.3.1
+    jquery-rails => 3.1.4
+    mimemagic => 0.3.2
+    mysql2 => 0.3.21
+    net-ldap => 0.12.1
+    rubypants => 0.6.0
+    org-ruby => 0.9.12
+    protected_attributes => 1.1.3
+    ruby-openid => 2.3.0
+    rack-openid => 1.4.2
+    sprockets => 3.7.1
+    sprockets-rails => 3.2.0
+    rails => 4.2.7.1
+    rbpdf-font => 1.19.0
+    rbpdf => 1.19.0
+    redcarpet => 3.3.4
+    redis => 3.3.2
+    request_store => 1.0.5
+    rmagick => 2.16.0
+    roadie => 3.2.0
+    roadie-rails => 1.1.1
+    will_paginate => 3.1.5
+
+Ruby load path ($LOAD_PATH)
+
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.13.7/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/will_paginate-3.1.5/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/roadie-rails-1.1.1/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/roadie-3.2.0/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/extensions/x86_64-linux/2.1.0/rmagick-2.16.0
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/rmagick-2.16.0/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/rmagick-2.16.0/ext
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/rmagick-2.16.0/deprecated
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/request_store-1.0.5/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/redis-3.3.2/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/extensions/x86_64-linux/2.1.0/redcarpet-3.3.4
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/redcarpet-3.3.4/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/rbpdf-1.19.0/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/rbpdf-font-1.19.0/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/rails-4.2.7.1/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/sprockets-rails-3.2.0/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/sprockets-3.7.1/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/rack-openid-1.4.2/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/ruby-openid-2.3.0/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/protected_attributes-1.1.3/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/org-ruby-0.9.12/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/rubypants-0.6.0/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/net-ldap-0.12.1/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/extensions/x86_64-linux/2.1.0/mysql2-0.3.21
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/mysql2-0.3.21/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/mimemagic-0.3.2/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/jquery-rails-3.1.4/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/htmlentities-4.3.1/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/extensions/x86_64-linux/2.1.0/hiredis-0.6.1
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/hiredis-0.6.1/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/haml-rails-0.9.0/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/railties-4.2.7.1/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/thor-0.19.4/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/html2haml-2.0.0/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/ruby_parser-3.8.3/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/sexp_processor-4.7.0/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/haml-4.0.7/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/tilt-2.0.5/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/bundler/gems/gitolite-rugged-85668adfb1f7/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/extensions/x86_64-linux/2.1.0/rugged-0.24.0
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/rugged-0.24.0/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/gratr19-0.4.4.1/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/bundler/gems/grack-1bc51d833970/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/github-markup-1.4.0/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/dalli-2.7.6/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/css_parser-1.4.7/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/creole-0.5.0/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/concurrent-ruby-1.0.4/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/coderay-1.1.1/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/asciidoctor-1.5.5/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/addressable-2.5.0/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/public_suffix-2.0.5/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activerecord-4.2.7.1/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activemodel-4.2.7.1/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/actionpack-xml_parser-1.0.2/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/actionpack-action_caching-1.1.1/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/actionmailer-4.2.7.1/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/mail-2.6.4/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/mime-types-3.1/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/mime-types-data-3.2016.0521/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activejob-4.2.7.1/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/globalid-0.3.7/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/actionpack-4.2.7.1/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/rack-test-0.6.3/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/rack-1.6.5/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/actionview-4.2.7.1/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/rails-html-sanitizer-1.0.3/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/loofah-2.0.3/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/rails-dom-testing-1.0.8/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/rails-deprecated_sanitizer-1.0.3/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/extensions/x86_64-linux/2.1.0/nokogiri-1.6.8.1
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/nokogiri-1.6.8.1/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/mini_portile2-2.1.0/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/erubis-2.7.0/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/builder-3.2.2/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/tzinfo-1.2.2/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/thread_safe-0.3.5/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/minitest-5.10.1/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/extensions/x86_64-linux/2.1.0/json-1.8.3
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/json-1.8.3/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/i18n-0.7.0/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/extensions/x86_64-linux/2.1.0/RedCloth-4.3.2
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/RedCloth-4.3.2/lib
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/RedCloth-4.3.2/lib/case_sensitive_require
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/RedCloth-4.3.2/ext
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/rake-12.0.0/lib
+    /usr/local/lib/site_ruby/2.1.0
+    /usr/local/lib/x86_64-linux-gnu/site_ruby
+    /usr/local/lib/site_ruby
+    /usr/lib/ruby/vendor_ruby/2.1.0
+    /usr/lib/x86_64-linux-gnu/ruby/vendor_ruby/2.1.0
+    /usr/lib/ruby/vendor_ruby
+    /usr/lib/ruby/2.1.0
+    /usr/lib/x86_64-linux-gnu/ruby/2.1.0
+
+Ruby loaded libraries ($LOADED_FEATURES)
+
+    enumerator.so
+    /usr/lib/x86_64-linux-gnu/ruby/2.1.0/enc/encdb.so
+    /usr/lib/x86_64-linux-gnu/ruby/2.1.0/enc/trans/transdb.so
+    /usr/lib/x86_64-linux-gnu/ruby/2.1.0/rbconfig.rb
+    /usr/lib/ruby/2.1.0/rubygems/compatibility.rb
+    /usr/lib/ruby/2.1.0/rubygems/defaults.rb
+    /usr/lib/ruby/2.1.0/rubygems/deprecate.rb
+    /usr/lib/ruby/2.1.0/rubygems/errors.rb
+    /usr/lib/ruby/2.1.0/rubygems/version.rb
+    /usr/lib/ruby/2.1.0/rubygems/requirement.rb
+    /usr/lib/ruby/2.1.0/rubygems/platform.rb
+    /usr/lib/ruby/2.1.0/rubygems/basic_specification.rb
+    /usr/lib/ruby/2.1.0/rubygems/stub_specification.rb
+    /usr/lib/ruby/2.1.0/rubygems/util/stringio.rb
+    /usr/lib/ruby/2.1.0/rubygems/specification.rb
+    /usr/lib/ruby/2.1.0/rubygems/exceptions.rb
+    /usr/lib/ruby/vendor_ruby/rubygems/defaults/operating_system.rb
+    /usr/lib/ruby/2.1.0/rubygems/core_ext/kernel_gem.rb
+    thread.rb
+    /usr/lib/x86_64-linux-gnu/ruby/2.1.0/thread.so
+    /usr/lib/ruby/2.1.0/monitor.rb
+    /usr/lib/ruby/2.1.0/rubygems/core_ext/kernel_require.rb
+    /usr/lib/ruby/2.1.0/rubygems.rb
+    /usr/lib/ruby/vendor_ruby/phusion_passenger.rb
+    /usr/lib/x86_64-linux-gnu/ruby/2.1.0/etc.so
+    /usr/lib/ruby/2.1.0/fileutils.rb
+    /usr/lib/ruby/2.1.0/tmpdir.rb
+    /usr/lib/ruby/vendor_ruby/phusion_passenger/utils/tmpio.rb
+    /usr/lib/ruby/vendor_ruby/phusion_passenger/platform_info.rb
+    /usr/lib/ruby/vendor_ruby/phusion_passenger/platform_info/operating_system.rb
+    /usr/lib/ruby/2.1.0/rubygems/path_support.rb
+    /usr/lib/ruby/2.1.0/rubygems/dependency.rb
+    /usr/lib/ruby/vendor_ruby/phusion_passenger/platform_info/ruby.rb
+    /usr/lib/ruby/vendor_ruby/phusion_passenger/platform_info/binary_compatibility.rb
+    /usr/lib/ruby/vendor_ruby/phusion_passenger/constants.rb
+    /usr/lib/ruby/vendor_ruby/phusion_passenger/native_support.rb
+    /usr/lib/x86_64-linux-gnu/ruby/2.1.0/socket.so
+    /usr/lib/ruby/2.1.0/socket.rb
+    /usr/lib/ruby/vendor_ruby/phusion_passenger/ruby_core_enhancements.rb
+    /usr/lib/ruby/vendor_ruby/phusion_passenger/utils/tmpdir.rb
+    /usr/lib/ruby/vendor_ruby/phusion_passenger/preloader_shared_helpers.rb
+    /usr/lib/ruby/vendor_ruby/phusion_passenger/public_api.rb
+    /usr/lib/ruby/vendor_ruby/phusion_passenger/debug_logging.rb
+    /usr/lib/ruby/vendor_ruby/phusion_passenger/loader_shared_helpers.rb
+    /usr/lib/x86_64-linux-gnu/ruby/2.1.0/fcntl.so
+    /usr/lib/ruby/vendor_ruby/phusion_passenger/message_channel.rb
+    /usr/lib/ruby/vendor_ruby/phusion_passenger/utils.rb
+    /usr/lib/ruby/vendor_ruby/phusion_passenger/message_client.rb
+    /usr/lib/ruby/vendor_ruby/phusion_passenger/utils/native_support_utils.rb
+    /usr/lib/ruby/vendor_ruby/phusion_passenger/utils/unseekable_socket.rb
+    /usr/lib/ruby/vendor_ruby/phusion_passenger/request_handler/thread_handler.rb
+    /usr/lib/ruby/vendor_ruby/phusion_passenger/request_handler.rb
+    /usr/lib/x86_64-linux-gnu/ruby/2.1.0/stringio.so
+    /usr/lib/ruby/vendor_ruby/phusion_passenger/utils/tee_input.rb
+    /usr/lib/ruby/vendor_ruby/phusion_passenger/rack/thread_handler_extension.rb
+    /usr/lib/ruby/vendor_ruby/phusion_passenger/analytics_logger.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.13.7/lib/bundler/postit_trampoline.rb
+    /usr/lib/x86_64-linux-gnu/ruby/2.1.0/pathname.so
+    /usr/lib/ruby/2.1.0/pathname.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.13.7/lib/bundler/constants.rb
+    /usr/lib/x86_64-linux-gnu/ruby/2.1.0/io/console.so
+    /usr/lib/ruby/2.1.0/rubygems/user_interaction.rb
+    /usr/lib/ruby/2.1.0/rubygems/config_file.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.13.7/lib/bundler/rubygems_integration.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.13.7/lib/bundler/current_ruby.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.13.7/lib/bundler/shared_helpers.rb
+    /usr/lib/ruby/2.1.0/rubygems/ext/build_error.rb
+    /usr/lib/ruby/2.1.0/rubygems/ext/builder.rb
+    /usr/lib/ruby/2.1.0/rubygems/ext/configure_builder.rb
+    /usr/lib/ruby/2.1.0/delegate.rb
+    /usr/lib/ruby/2.1.0/tempfile.rb
+    /usr/lib/ruby/2.1.0/rubygems/ext/ext_conf_builder.rb
+    /usr/lib/ruby/2.1.0/rubygems/ext/rake_builder.rb
+    /usr/lib/ruby/2.1.0/optparse.rb
+    /usr/lib/ruby/2.1.0/rubygems/command.rb
+    /usr/lib/ruby/2.1.0/rubygems/ext/cmake_builder.rb
+    /usr/lib/ruby/2.1.0/rubygems/ext.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.13.7/lib/bundler/errors.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.13.7/lib/bundler/environment_preserver.rb
+    /usr/lib/ruby/2.1.0/timeout.rb
+    /usr/lib/ruby/2.1.0/net/protocol.rb
+    /usr/lib/ruby/2.1.0/uri/common.rb
+    /usr/lib/ruby/2.1.0/uri/generic.rb
+    /usr/lib/ruby/2.1.0/uri/ftp.rb
+    /usr/lib/ruby/2.1.0/uri/http.rb
+    /usr/lib/ruby/2.1.0/uri/https.rb
+    /usr/lib/ruby/2.1.0/uri/ldap.rb
+    /usr/lib/ruby/2.1.0/uri/ldaps.rb
+    /usr/lib/ruby/2.1.0/uri/mailto.rb
+    /usr/lib/ruby/2.1.0/uri.rb
+    /usr/lib/x86_64-linux-gnu/ruby/2.1.0/zlib.so
+    /usr/lib/ruby/2.1.0/net/http/exceptions.rb
+    /usr/lib/ruby/2.1.0/net/http/header.rb
+    /usr/lib/ruby/2.1.0/net/http/generic_request.rb
+    /usr/lib/ruby/2.1.0/net/http/request.rb
+    /usr/lib/ruby/2.1.0/net/http/requests.rb
+    /usr/lib/ruby/2.1.0/net/http/response.rb
+    /usr/lib/ruby/2.1.0/net/http/responses.rb
+    /usr/lib/ruby/2.1.0/net/http/proxy_delta.rb
+    /usr/lib/ruby/2.1.0/net/http/backward.rb
+    /usr/lib/ruby/2.1.0/net/http.rb
+    /usr/lib/x86_64-linux-gnu/ruby/2.1.0/date_core.so
+    /usr/lib/ruby/2.1.0/date/format.rb
+    /usr/lib/ruby/2.1.0/date.rb
+    /usr/lib/ruby/2.1.0/time.rb
+    /usr/lib/ruby/2.1.0/rubygems/request.rb
+    /usr/lib/ruby/2.1.0/cgi/core.rb
+    /usr/lib/ruby/2.1.0/cgi/util.rb
+    /usr/lib/ruby/2.1.0/cgi/cookie.rb
+    /usr/lib/ruby/2.1.0/cgi.rb
+    /usr/lib/ruby/2.1.0/rubygems/uri_formatter.rb
+    /usr/lib/x86_64-linux-gnu/ruby/2.1.0/digest.so
+    /usr/lib/ruby/2.1.0/digest.rb
+    /usr/lib/x86_64-linux-gnu/ruby/2.1.0/openssl.so
+    /usr/lib/ruby/2.1.0/openssl/bn.rb
+    /usr/lib/ruby/2.1.0/openssl/cipher.rb
+    /usr/lib/ruby/2.1.0/openssl/config.rb
+    /usr/lib/ruby/2.1.0/openssl/digest.rb
+    /usr/lib/ruby/2.1.0/openssl/x509.rb
+    /usr/lib/ruby/2.1.0/openssl/buffering.rb
+    /usr/lib/ruby/2.1.0/openssl/ssl.rb
+    /usr/lib/ruby/2.1.0/openssl.rb
+    /usr/lib/ruby/2.1.0/securerandom.rb
+    /usr/lib/ruby/2.1.0/resolv.rb
+    /usr/lib/ruby/2.1.0/rubygems/remote_fetcher.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.13.7/lib/bundler/gem_remote_fetcher.rb
+    /usr/lib/x86_64-linux-gnu/ruby/2.1.0/digest/sha1.so
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.13.7/lib/bundler/plugin/api/source.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.13.7/lib/bundler/plugin/api.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.13.7/lib/bundler/plugin.rb
+    /usr/lib/ruby/2.1.0/rubygems/util.rb
+    /usr/lib/ruby/2.1.0/rubygems/source/git.rb
+    /usr/lib/ruby/2.1.0/rubygems/source/installed.rb
+    /usr/lib/ruby/2.1.0/rubygems/source/specific_file.rb
+    /usr/lib/ruby/2.1.0/rubygems/source/local.rb
+    /usr/lib/ruby/2.1.0/rubygems/source/lock.rb
+    /usr/lib/ruby/2.1.0/rubygems/source/vendor.rb
+    /usr/lib/ruby/2.1.0/rubygems/source.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.13.7/lib/bundler/gem_helpers.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.13.7/lib/bundler/match_platform.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.13.7/lib/bundler/rubygems_ext.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.13.7/lib/bundler/version.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.13.7/lib/bundler.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.13.7/lib/bundler/settings.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.13.7/lib/bundler/yaml_serializer.rb
+    /usr/lib/x86_64-linux-gnu/ruby/2.1.0/strscan.so
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.13.7/lib/bundler/source.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.13.7/lib/bundler/source/path.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.13.7/lib/bundler/source/git.rb
+    /usr/lib/ruby/2.1.0/rubygems/text.rb
+    /usr/lib/ruby/2.1.0/rubygems/name_tuple.rb
+    /usr/lib/ruby/2.1.0/rubygems/spec_fetcher.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.13.7/lib/bundler/source/rubygems.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.13.7/lib/bundler/lockfile_parser.rb
+    /usr/lib/ruby/2.1.0/set.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.13.7/lib/bundler/definition.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.13.7/lib/bundler/dependency.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.13.7/lib/bundler/ruby_dsl.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.13.7/lib/bundler/dsl.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.13.7/lib/bundler/source_list.rb
+    /usr/lib/ruby/2.1.0/erb.rb
+    /usr/lib/ruby/2.1.0/psych/exception.rb
+    /usr/lib/ruby/2.1.0/psych/syntax_error.rb
+    /usr/lib/x86_64-linux-gnu/ruby/2.1.0/psych.so
+    /usr/lib/ruby/2.1.0/psych/omap.rb
+    /usr/lib/ruby/2.1.0/psych/set.rb
+    /usr/lib/ruby/2.1.0/psych/class_loader.rb
+    /usr/lib/ruby/2.1.0/psych/scalar_scanner.rb
+    /usr/lib/ruby/2.1.0/psych/nodes/node.rb
+    /usr/lib/ruby/2.1.0/psych/nodes/stream.rb
+    /usr/lib/ruby/2.1.0/psych/nodes/document.rb
+    /usr/lib/ruby/2.1.0/psych/nodes/sequence.rb
+    /usr/lib/ruby/2.1.0/psych/nodes/scalar.rb
+    /usr/lib/ruby/2.1.0/psych/nodes/mapping.rb
+    /usr/lib/ruby/2.1.0/psych/nodes/alias.rb
+    /usr/lib/ruby/2.1.0/psych/nodes.rb
+    /usr/lib/ruby/2.1.0/psych/streaming.rb
+    /usr/lib/ruby/2.1.0/psych/visitors/visitor.rb
+    /usr/lib/ruby/2.1.0/psych/visitors/to_ruby.rb
+    /usr/lib/ruby/2.1.0/psych/visitors/emitter.rb
+    /usr/lib/ruby/2.1.0/psych/handler.rb
+    /usr/lib/ruby/2.1.0/psych/tree_builder.rb
+    /usr/lib/ruby/2.1.0/psych/visitors/yaml_tree.rb
+    /usr/lib/ruby/2.1.0/psych/json/ruby_events.rb
+    /usr/lib/ruby/2.1.0/psych/visitors/json_tree.rb
+    /usr/lib/ruby/2.1.0/psych/visitors/depth_first.rb
+    /usr/lib/ruby/2.1.0/psych/visitors.rb
+    /usr/lib/ruby/2.1.0/psych/parser.rb
+    /usr/lib/ruby/2.1.0/psych/coder.rb
+    /usr/lib/ruby/2.1.0/psych/core_ext.rb
+    /usr/lib/ruby/2.1.0/psych/deprecated.rb
+    /usr/lib/ruby/2.1.0/psych/stream.rb
+    /usr/lib/ruby/2.1.0/psych/json/yaml_events.rb
+    /usr/lib/ruby/2.1.0/psych/json/tree_builder.rb
+    /usr/lib/ruby/2.1.0/psych/json/stream.rb
+    /usr/lib/ruby/2.1.0/psych/handlers/document_stream.rb
+    /usr/lib/ruby/2.1.0/psych.rb
+    /usr/lib/ruby/2.1.0/yaml.rb
+    /usr/lib/x86_64-linux-gnu/ruby/2.1.0/enc/utf_16le.so
+    /usr/lib/x86_64-linux-gnu/ruby/2.1.0/enc/utf_16be.so
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.13.7/lib/bundler/ui.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.13.7/lib/bundler/ui/silent.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.13.7/lib/bundler/ui/rg_proxy.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.13.7/lib/bundler/lazy_specification.rb
+    /usr/lib/ruby/2.1.0/tsort.rb
+    /usr/lib/ruby/2.1.0/forwardable.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.13.7/lib/bundler/spec_set.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.13.7/lib/bundler/gem_version_promoter.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.13.7/lib/bundler/source/git/git_proxy.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.13.7/lib/bundler/source/gemspec.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.13.7/lib/bundler/runtime.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.13.7/lib/bundler/dep_proxy.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.13.7/lib/bundler/index.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.13.7/lib/bundler/remote_specification.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.13.7/lib/bundler/stub_specification.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.13.7/lib/bundler/endpoint_specification.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.13.7/lib/bundler/setup.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/rack-1.6.5/lib/rack/multipart.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/rack-1.6.5/lib/rack/utils.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/rack-1.6.5/lib/rack.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/rack-1.6.5/lib/rack/builder.rb
+    /opt/redmine/redmine-3.3.1/config/boot.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/railties-4.2.7.1/lib/rails/ruby_version_check.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/thread_safe-0.3.5/lib/thread_safe/version.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/thread_safe-0.3.5/lib/thread_safe/synchronized_delegator.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/thread_safe-0.3.5/lib/thread_safe.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/array/prepend_and_append.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/hash/deep_merge.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/hash/except.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/hash/slice.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/i18n-0.7.0/lib/i18n/version.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/i18n-0.7.0/lib/i18n/exceptions.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/i18n-0.7.0/lib/i18n/interpolate/ruby.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/i18n-0.7.0/lib/i18n.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/lazy_load_hooks.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/i18n-0.7.0/lib/i18n/config.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/i18n.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/thread_safe-0.3.5/lib/thread_safe/non_concurrent_cache_backend.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/thread_safe-0.3.5/lib/thread_safe/mri_cache_backend.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/thread_safe-0.3.5/lib/thread_safe/cache.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/inflector/inflections.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/inflections.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/inflector/methods.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/dependencies/autoload.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/gem_version.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/version.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/array/extract_options.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/module/attribute_accessors.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/concern.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/logger_silence.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/logger_thread_safe_level.rb
+    /usr/lib/ruby/2.1.0/logger.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/logger.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support.rb
+    /usr/lib/ruby/2.1.0/singleton.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/kernel/singleton_class.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/module/delegation.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/deprecation/instance_delegator.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/notifications/instrumenter.rb
+    /usr/lib/ruby/2.1.0/mutex_m.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/notifications/fanout.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/per_thread_registry.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/notifications.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/deprecation/behaviors.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/deprecation/reporting.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/module/aliasing.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/deprecation/method_wrappers.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/deprecation/proxy_wrappers.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/module/deprecation.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/deprecation.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/kernel/reporting.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/hash/keys.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/object/blank.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/key_generator.rb
+    /usr/lib/ruby/2.1.0/base64.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/security_utils.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/message_verifier.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/railties-4.2.7.1/lib/rails/initializable.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/ordered_options.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/object/acts_like.rb
+    /usr/lib/x86_64-linux-gnu/ruby/2.1.0/bigdecimal.so
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/object/duplicable.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/object/deep_dup.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/object/itself.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/object/try.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/object/inclusion.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/object/to_query.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/object/to_param.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/multibyte.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/string/multibyte.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/inflector/transliterate.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/string/inflections.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/date_time/calculations.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/xml_mini/rexml.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/xml_mini.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/array/conversions.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/time/acts_like.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/duration.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/tzinfo-1.2.2/lib/tzinfo/ruby_core_support.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/tzinfo-1.2.2/lib/tzinfo/offset_rationals.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/tzinfo-1.2.2/lib/tzinfo/time_or_datetime.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/tzinfo-1.2.2/lib/tzinfo/timezone_definition.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/tzinfo-1.2.2/lib/tzinfo/timezone_offset.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/tzinfo-1.2.2/lib/tzinfo/timezone_transition.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/tzinfo-1.2.2/lib/tzinfo/timezone_transition_definition.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/tzinfo-1.2.2/lib/tzinfo/timezone_index_definition.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/tzinfo-1.2.2/lib/tzinfo/timezone_info.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/tzinfo-1.2.2/lib/tzinfo/data_timezone_info.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/tzinfo-1.2.2/lib/tzinfo/linked_timezone_info.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/tzinfo-1.2.2/lib/tzinfo/transition_data_timezone_info.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/tzinfo-1.2.2/lib/tzinfo/zoneinfo_timezone_info.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/tzinfo-1.2.2/lib/tzinfo/data_source.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/tzinfo-1.2.2/lib/tzinfo/ruby_data_source.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/tzinfo-1.2.2/lib/tzinfo/zoneinfo_data_source.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/tzinfo-1.2.2/lib/tzinfo/timezone_period.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/tzinfo-1.2.2/lib/tzinfo/timezone.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/tzinfo-1.2.2/lib/tzinfo/info_timezone.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/tzinfo-1.2.2/lib/tzinfo/data_timezone.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/tzinfo-1.2.2/lib/tzinfo/linked_timezone.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/tzinfo-1.2.2/lib/tzinfo/timezone_proxy.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/tzinfo-1.2.2/lib/tzinfo/country_index_definition.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/tzinfo-1.2.2/lib/tzinfo/country_info.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/tzinfo-1.2.2/lib/tzinfo/ruby_country_info.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/tzinfo-1.2.2/lib/tzinfo/zoneinfo_country_info.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/tzinfo-1.2.2/lib/tzinfo/country.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/tzinfo-1.2.2/lib/tzinfo/country_timezone.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/tzinfo-1.2.2/lib/tzinfo.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/values/time_zone.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/time/conversions.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/time_with_zone.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/date_and_time/zones.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/time/zones.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/date_and_time/calculations.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/date/zones.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/date/calculations.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/time/calculations.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/time/marshal.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/time.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/date/acts_like.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/module/remove_method.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/date/conversions.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/date.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/date_time/acts_like.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/date_time/conversions.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/date_time/zones.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/date_time.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/numeric/time.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/integer/time.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/string/conversions.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/string/zones.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/time.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/array/wrap.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/hash/reverse_merge.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/hash/conversions.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/object/conversions.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/object/instance_variables.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/json-1.8.3/lib/json/version.rb
+    /usr/lib/ruby/2.1.0/ostruct.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/json-1.8.3/lib/json/generic_object.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/json-1.8.3/lib/json/common.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/json-1.8.3/lib/json/pure/parser.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/json-1.8.3/lib/json/pure/generator.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/json-1.8.3/lib/json/pure.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/json-1.8.3/lib/json.rb
+    /usr/lib/ruby/2.1.0/bigdecimal/util.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/big_decimal/conversions.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/object/json.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/option_merger.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/object/with_options.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/object.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/railties-4.2.7.1/lib/rails/paths.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/railties-4.2.7.1/lib/rails/rack.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/railties-4.2.7.1/lib/rails/configuration.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/inflector.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/module/introspection.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/railties-4.2.7.1/lib/rails/railtie.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/railties-4.2.7.1/lib/rails/engine/railties.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/railties-4.2.7.1/lib/rails/engine.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/railties-4.2.7.1/lib/rails/application.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/railties-4.2.7.1/lib/rails/gem_version.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/railties-4.2.7.1/lib/rails/version.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/file_update_checker.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/railties-4.2.7.1/lib/rails/railtie/configuration.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/i18n_railtie.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/railtie.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/class/attribute.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/rails.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/actionpack-4.2.7.1/lib/action_pack/gem_version.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/actionpack-4.2.7.1/lib/action_pack/version.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/actionpack-4.2.7.1/lib/action_pack.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/actionpack-4.2.7.1/lib/action_dispatch.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/actionpack-4.2.7.1/lib/action_dispatch/railtie.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/railties-4.2.7.1/lib/rails.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activemodel-4.2.7.1/lib/active_model/gem_version.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activemodel-4.2.7.1/lib/active_model/version.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activemodel-4.2.7.1/lib/active_model.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/crud.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/factory_methods.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/expressions.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/predications.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/window_predications.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/math.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/alias_predication.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/order_predications.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/table.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/attributes/attribute.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/attributes.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/compatibility/wheres.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/visitors/visitor.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/visitors/depth_first.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/visitors/reduce.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/visitors/to_sql.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/visitors/sqlite.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/visitors/postgresql.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/visitors/mysql.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/visitors/mssql.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/visitors/oracle.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/visitors/where_sql.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/visitors/dot.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/visitors/ibm_db.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/visitors/informix.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/visitors.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/collectors/plain_string.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/collectors/sql_string.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/tree_manager.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/insert_manager.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/select_manager.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/update_manager.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/delete_manager.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/nodes/node.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/nodes/select_statement.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/nodes/select_core.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/nodes/insert_statement.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/nodes/update_statement.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/nodes/bind_param.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/nodes/terminal.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/nodes/true.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/nodes/false.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/nodes/unary.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/nodes/grouping.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/nodes/ascending.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/nodes/descending.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/nodes/unqualified_column.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/nodes/with.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/nodes/binary.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/nodes/equality.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/nodes/in.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/nodes/join_source.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/nodes/delete_statement.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/nodes/table_alias.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/nodes/infix_operation.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/nodes/over.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/nodes/matches.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/nodes/and.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/nodes/function.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/nodes/count.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/nodes/extract.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/nodes/values.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/nodes/named_function.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/nodes/window.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/nodes/full_outer_join.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/nodes/inner_join.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/nodes/outer_join.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/nodes/right_outer_join.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/nodes/string_join.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/nodes/sql_literal.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/nodes.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activerecord-4.2.7.1/lib/active_record/gem_version.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activerecord-4.2.7.1/lib/active_record/version.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activerecord-4.2.7.1/lib/active_record/attribute.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activerecord-4.2.7.1/lib/active_record/attribute_set/builder.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activerecord-4.2.7.1/lib/active_record/attribute_set.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/enumerable.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/string/filters.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activemodel-4.2.7.1/lib/active_model/attribute_methods.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activerecord-4.2.7.1/lib/active_record/attribute_methods.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activerecord-4.2.7.1/lib/active_record/type/decorator.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activerecord-4.2.7.1/lib/active_record/type/mutable.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activerecord-4.2.7.1/lib/active_record/type/numeric.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activerecord-4.2.7.1/lib/active_record/type/time_value.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activerecord-4.2.7.1/lib/active_record/type/value.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activerecord-4.2.7.1/lib/active_record/type/integer.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activerecord-4.2.7.1/lib/active_record/type/big_integer.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activerecord-4.2.7.1/lib/active_record/type/binary.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activerecord-4.2.7.1/lib/active_record/type/boolean.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activerecord-4.2.7.1/lib/active_record/type/date.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activerecord-4.2.7.1/lib/active_record/type/date_time.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activerecord-4.2.7.1/lib/active_record/type/decimal.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activerecord-4.2.7.1/lib/active_record/type/decimal_without_scale.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activerecord-4.2.7.1/lib/active_record/type/float.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activerecord-4.2.7.1/lib/active_record/type/serialized.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activerecord-4.2.7.1/lib/active_record/type/string.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activerecord-4.2.7.1/lib/active_record/type/text.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activerecord-4.2.7.1/lib/active_record/type/time.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activerecord-4.2.7.1/lib/active_record/type/unsigned_integer.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activerecord-4.2.7.1/lib/active_record/type/type_map.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activerecord-4.2.7.1/lib/active_record/type/hash_lookup_type_map.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activerecord-4.2.7.1/lib/active_record/type.rb
+    /usr/lib/ruby/2.1.0/benchmark.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/benchmark.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activerecord-4.2.7.1/lib/active_record/connection_adapters/schema_cache.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activerecord-4.2.7.1/lib/active_record/connection_adapters/abstract/schema_dumper.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/string/strip.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activerecord-4.2.7.1/lib/active_record/connection_adapters/abstract/schema_creation.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/arel-6.0.4/lib/arel/collectors/bind.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activerecord-4.2.7.1/lib/active_record/connection_adapters/abstract/quoting.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activerecord-4.2.7.1/lib/active_record/connection_adapters/abstract/database_statements.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activerecord-4.2.7.1/lib/active_record/errors.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activerecord-4.2.7.1/lib/active_record/migration.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activerecord-4.2.7.1/lib/active_record/migration/join_table.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/string/access.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activerecord-4.2.7.1/lib/active_record/connection_adapters/abstract/schema_definitions.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activerecord-4.2.7.1/lib/active_record/connection_adapters/abstract/schema_statements.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activerecord-4.2.7.1/lib/active_record/connection_adapters/abstract/database_limits.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activerecord-4.2.7.1/lib/active_record/connection_adapters/abstract/query_cache.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/descendants_tracker.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/callbacks.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activerecord-4.2.7.1/lib/active_record/connection_adapters/abstract_adapter.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activerecord-4.2.7.1/lib/active_record/scoping.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activerecord-4.2.7.1/lib/active_record.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activemodel-4.2.7.1/lib/active_model/railtie.rb
+    /opt/redmine/.rvm/gems/ruby-2.1.4/gems/activesupport-4.2.7.1/lib/active_support/core_ext/module/attr_internal.rb
+  "
+24769,Redmine,Defect,"",Closed,Normal,"User custom field filter lists only ""Me"" on cross project issue list",Go MAEDA,Jean-Philippe Lang,2017-01-30 19:38,Issues filter,3.4.0,"","","",0,2017-01-05 16:43,2017-01-30 19:38,"次のチケットが重複 #9445, 次のチケットが重複 #18940",Fixed,"","Although assignee field and author field list visible members of all projects, user type custom field only lists ""Me"". It is inconsistent and inconvenient.
+
+User format custom field should list members of projects in addition to ""Me"".
+
+*User format custom field:*
+!user-format-custom-field.png!
+
+*User format standard field (assignee):*
+!assignee-field.png!"
+24756,Redmine,Defect,"",Closed,Normal,Clicking Cancel in Issue edit page nothing happens.,Rupesh  J,"",2017-01-05 10:56,Issues,"","","","",0,2017-01-04 13:23,2017-01-04 16:10,次のチケットと重複 #21579,Duplicate,3.2.2,"From the issue list,
+* Select one issue row,
+* Right click and Edit
+* In the edit page of a single issue, Click Cancel. Nothing happens.
+
+The Cancel does not redirect back to the Issue list page.
+
+Thanks
+
+<pre>
+  Redmine version                3.3.1.stable
+  Ruby version                   2.2.1-p85 (2015-02-26) [x86_64-linux]
+  Rails version                  4.2.7.1
+  Environment                    production
+  Database adapter               Mysql2
+</pre>
+"
+24755,Redmine,Defect,"",Closed,Normal,Slow Queries because of Custom Fields,HAKAN G?RB?Z,"",2017-11-04 07:04,Performance,"","","","",0,2017-01-04 12:59,2017-11-04 07:04,次のチケットと重複 #24473,Duplicate,"","I use my project espacially custom fields. There are nearly 100.000 issue. 
+I import with excel import method.
+Creating index, about custom fileds tables is any solution? Or how can I speed up?
+Redmine version                3.3.0.stable"
+24751,Redmine,Patch,"",Closed,Normal,"Japanese translation update (r16063, r16066, r16067, r16090, r16108, r16119)",Go MAEDA,"",2017-01-21 06:53,Translations,"","","","",0,2017-01-04 05:31,2017-01-21 06:53,ブロックされている #24750,"","","Translated the following strings.
+
+* setting_commit_logs_formatting
+* setting_mail_handler_enable_regex_delimiters
+* not_a_regexp
+* error_move_of_child_not_possible
+* open_issue_with_closed_parent
+* error_cannot_reassign_time_entries_to_an_issue_about_to_be_deleted"
+24750,Redmine,Patch,"",Closed,Normal,Change Japanese translation for setting_text_formatting and setting_cache_formatted_text,Go MAEDA,Toshi MARUYAMA,2017-01-21 06:52,Translations,3.4.0,"","","",0,2017-01-04 05:13,2017-01-21 06:52,ブロックしている #24751,"","","I propose Japanese translation change.
+
+*setting_text_formatting:*
+
+* current: ""テキストの書式""
+* new: ""テキスト書式""
+
+Current translation is ""テキストの書式"". It is made by connecting two nouns ""テキスト"" (text) and ""書式"" (formatting) with a particle ""の"". With the particle ""の"", the word ""テキスト"" modifies ""書式"". As a result, it means ""formatting of text"". ""テキストの書式"" is essentially two nouns, ""テキスト"" and ""書式"". And the word ""書式"" is most emphasized.
+
+The proposed new translation ""テキスト書式"" is also made by two nouns, but there is no particle ""の"". In this translation, the connection between ""テキスト"" and ""書式"" becomes stronger, so it becomes practically like one noun. No specific noun is emphasized.
+
+""text formatting"" is compound　and semantically a single noun. Therefore I think ""テキスト書式"" is more appropriate as the Japanese translation.
+
+*setting_cache_formatted_text:*
+
+* current: ""書式化されたテキストをキャッシュする""
+* new: ""テキスト書式の変換結果をキャッシュ""
+
+The current translation ""書式化されたテキストをキャッシュする"" is a literal translation from English. But ""書式化されたテキスト"" is unfamiliar expression. So it is hard to understand the meaning of translation for many people.
+
+The new translation means ""Cache conversion result of text formatting"". The meaning of the setting will be clarified. And by using the word ""テキスト書式"" (translation for setting_text_formatting), users can easily understand the relation with text formatting such as Textile and Markdown. "
+24746,Redmine,Defect,"",Closed,Normal,Template::Error after project and issue rebuild,del med,"",2017-01-10 13:06,Issues,"","","","",0,2017-01-03 18:14,2017-01-10 13:06,"",Invalid,3.2.0,"Hello,
+i had a issue with projects tree. i found a 'solution' in this forum to rebuild the tree:
+<pre>
+ruby bin/rails runner 'Project.rebuild_tree!' RAILS_ENV=production
+ruby bin/rails runner 'Issue.rebuild_tree!' RAILS_ENV=production
+</pre>
+
+now projects tree a re fine, but when i would like to enter in the project-issue page, i have an error:
+
+<pre>
+Started GET ""/projects/xxx/issues"" for xx.xx.xx.xx at 2017-01-03 18:11:11 +0100
+Processing by IssuesController#index as HTML
+  Parameters: {""project_id""=>""xxx""}
+  Current user: xx(id=xx)
+  Rendered queries/_filters.html.erb (24.9ms)
+  Rendered issues/index.html.erb within layouts/base (26.5ms)
+Completed 500 Internal Server Error in 128ms (ActiveRecord: 44.7ms)
+
+ActionView::Template::Error (comparison of NilClass with 218 failed):
+    3: var operatorByType = <%= raw_json Query.operators_by_filter_type %>;
+    4: var availableFilters = <%= raw_json query.available_filters_as_json %>;
+    5: var labelDayPlural = <%= raw_json l(:label_day_plural) %>;
+    6: var allProjects = <%= raw_json query.all_projects_values %>;
+    7: $(document).ready(function(){
+    8:   initFilters();
+    9:   <% query.filters.each do |field, options| %>
+  app/models/project.rb:784:in `sort_by'
+  app/models/project.rb:784:in `project_tree'
+  app/models/query.rb:336:in `all_projects_values'
+  app/views/queries/_filters.html.erb:6:in `block in _app_views_queries__filters_html_erb__928470405_121460600'
+  app/views/queries/_filters.html.erb:1:in `_app_views_queries__filters_html_erb__928470405_121460600'
+  app/views/issues/index.html.erb:19:in `block in _app_views_issues_index_html_erb__380465873_120187980'
+  app/views/issues/index.html.erb:11:in `_app_views_issues_index_html_erb__380465873_120187980'
+  app/controllers/issues_controller.rb:77:in `block (2 levels) in index'
+  app/controllers/issues_controller.rb:76:in `index'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+</pre>
+
+i note the the number 218 is always the same even if i change project.
+can someone help me please.
+
+<pre>
+Environment:
+  Redmine version                3.2.0.stable
+  Ruby version                   1.9.3-p194 (2012-04-20) [i486-linux]
+  Rails version                  4.2.5
+  Environment                    production
+  Database adapter               Mysql2
+</pre>
+thanks.
+"
+24745,Redmine,Defect,"",Closed,Normal,Unable to proceed,Test Test,"",2017-01-03 11:59,"","","","","",0,2017-01-03 11:28,2017-01-03 11:59,"",Invalid,"","Hi all,
+Please find the attachment.
+
+I installed redmine throw http://www.redmine.org/projects/redmine/wiki/HowTo_Install_Redmine_on_Ubuntu_step_by_step this link.
+But it`s is not running."
+24741,Redmine,Defect,"",Closed,Normal,Redmine is showing index of redmine.,Amit  Khurchay,"",2017-01-02 14:43,"","","","","",0,2017-01-02 14:25,2017-01-02 14:43,"",Invalid,"","Hi,
+
+I am using ubuntu 14.04, I installed redmine on my local server, but I am facing a problem that when I types localhost/redmine  on firefox or chromium browser,as I pressed enter it showes index of /redmine . Why I dont know? Help me please, I am sharing a screenshot."
+24729,Redmine,Defect,"",Needs feedback,Normal,Problem 'Filters' and 'Options' of 'Issues' tab,Jechan Yeon,"",2017-01-16 13:22,"","","","","",0,2017-01-02 03:27,"","","","","There are some problem when I use 'Filters' and 'Options' of 'Issues' tab.
+
+*1. Filters*
+I want to use filter 'Defect' and 'Patch' of tracker but it doesn't work properly.
+when I click the '+' button, there is no reaction.
+in other words, I can't multiple select filters.
+
+*2. Options*
+I can't modify 'Columns' of issues list because all arrow buttons don't work.
+
+I attached my environment below, 
+*Environment:
+  Redmine version                3.2.2.stable
+  Ruby version                   2.2.4-p230 (2015-12-16) [x86_64-linux]
+  Rails version                  4.2.5.2
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.8.8
+  Git                            1.9.1
+  Filesystem                     
+Redmine plugins:
+  no plugin installed*
+  
+Is there anybody have soluiton or see before of these problems?
+Please reply for me ASAP.
+HAPPY NEW YEAR and THANKS :)"
+24726,Redmine,Defect,"",Closed,Normal,Slow to load issues list,ge jin,"",2017-01-02 03:14,"","","","","",0,2017-01-02 01:19,2017-01-02 03:14,"",Invalid,"","
+*Software*
+
+Redmine in docker from https://github.com/sameersbn/docker-redmine
+MySQL 5.7.10 in docker
+
+Redmine 3.2.0
+Ruby 2.1.7p400 (2015-08-18 revision 51632) [x86_64-linux-gnu]
+Rails 4.2.5
+unicorn_rails v5.0.1
+Nginx version: nginx/1.8.0
+
+
+*Hardware*
+Virtual machine, 8GB RAM, 4 virtual processor @ 1,6GHz
+
+*MySQL Configuration*
+```
+
+
+[client]
+port		= 3306
+socket		= /var/run/mysqld/mysqld.sock
+
+[mysqld_safe]
+pid-file	= /var/run/mysqld/mysqld.pid
+socket		= /var/run/mysqld/mysqld.sock
+nice		= 0
+
+[mysqld]
+skip-host-cache
+skip-name-resolve
+user		= mysql
+pid-file	= /var/run/mysqld/mysqld.pid
+socket		= /var/run/mysqld/mysqld.sock
+port		= 3306
+basedir		= /usr
+datadir		= /var/lib/mysql
+tmpdir		= /tmp
+default_password_lifetime=0
+lc-messages-dir	= /usr/share/mysql
+explicit_defaults_for_timestamp
+innodb_buffer_pool_size=512M
+
+
+
+symbolic-links=0
+
+!includedir /etc/mysql/conf.d/
+```
+
+*Very slow to load issues list*
+```
+Started GET ""/projects/qdata_db_appliance_development/issues"" for 115.195.178.221 at 2017-01-02 00:15:27 +0000
+Processing by IssuesController#index as HTML
+  Parameters: {""project_id""=>""qdata_db_appliance_development""}
+  Current user: ge.jin@woqutech.com (id=2)
+  Rendered queries/_filters.html.erb (32.6ms)
+  Rendered queries/_columns.html.erb (3.6ms)
+  Rendered issues/_list.html.erb (3029.0ms)
+  Rendered issues/_sidebar.html.erb (7.0ms)
+  Rendered issues/index.html.erb within layouts/base (3089.1ms)
+  Rendered plugins/clipboard_image_paste/app/views/clipboard_image_paste/_headers.html.erb (0.6ms)
+  Rendered plugins/clipboard_image_paste/app/views/clipboard_image_paste/_add_form.html.erb (4.9ms)
+Completed 200 OK in 3588ms (Views: 2579.4ms | ActiveRecord: 672.9ms)
+```"
+24723,Redmine,Defect,"",Confirmed,Normal,[regression?] r10132's changes were reverted with r15569,Mischa The Evil,Mischa The Evil,2017-01-10 15:41,Third-party libraries,"","","","",0,2017-01-01 06:35,"",関連している #24800,"","","The adjustments made in r10132 were reverted by r15569 for #23107. Was this intentional, eg. to bring the upstream alpha base in sync with Redmine's theme or was it by mistake? Either way, the inline styles in the multilingual wiki_syntax_detailed_[*].html documentation needs to be re-synced again (like in r14492 for #20288). Before I start mocking-up a patch, I'd like to know what was/is intended...
+"
+24722,Redmine,Defect,"",Closed,Normal,Error when trying to reassign spent time when deleting issues from different projects,Jean-Philippe Lang,Jean-Philippe Lang,2017-01-04 21:53,Issues,3.2.5,"","","",0,2016-12-31 16:22,2017-01-04 21:53,"",Fixed,"","When deleting issues from different projects and trying to reassign spent time to an issue, a 500 error occurs."
+24719,Redmine,Defect,"",Closed,Normal,New subtask link should not be shown when parent_id field is disabled for the tracker,Go MAEDA,"",2016-12-31 13:55,UI,"","","","",0,2016-12-31 02:05,2016-12-31 13:55,関連している #24606,Invalid,"","Users cannot create subtasks when parent_id field is disabled for the tracker.
+But current versions of Redmine shows new subtask link even if the field is disabled.
+
+I think the link should not be shown when parent_id field is disabled.
+Showing the link without respect to disabled parent_id may causes confusion like #24606.
+
+!parent_id-is-disabled.png!
+
+!new-subtask-link.png!"
+24718,Redmine,Defect,"",Closed,Normal,Prevent from reassigning spent time to an issue that is going to be deleted,Go MAEDA,Jean-Philippe Lang,2017-01-07 19:05,Issues,3.2.5,"","","",0,2016-12-30 08:16,2017-01-04 21:53,関連している #24693,Fixed,"","We can reassign reported hours to other issue when we delete issues.
+But if you reassign reported hours to the issue about to be deleted, we will lose those data without any notice.
+
+This is a patch to fix this behavior: attachment:reassigning-reported-hours-to-the-issue-about-to-deleted-should-fail.diff"
+24713,Redmine,Patch,"",Closed,Normal,Remove iteration in ApplicationHelper#syntax_highlight_lines,Go MAEDA,Jean-Philippe Lang,2017-01-08 23:42,Code cleanup/refactoring,3.4.0,"","","",0,2016-12-29 10:20,2017-01-08 23:42,"","","","<pre><code class=""diff"">
+Index: app/helpers/application_helper.rb
+===================================================================
+--- app/helpers/application_helper.rb	(revision 16111)
++++ app/helpers/application_helper.rb	(working copy)
+@@ -466,9 +466,7 @@
+   end
+
+   def syntax_highlight_lines(name, content)
+-    lines = []
+-    syntax_highlight(name, content).each_line { |line| lines << line }
+-    lines
++    syntax_highlight(name, content).each_line.to_a
+   end
+
+   def syntax_highlight(name, content)
+</code></pre>"
+24709,Redmine,Defect,"",Closed,Normal,For importer plugin how can we assign custom field value.,sarthak gandhi,"",2016-12-29 16:41,"","","","","",0,2016-12-28 13:21,2016-12-29 16:41,"",Invalid,"",""
+24708,Redmine,Patch,"",Closed,Normal,Traditional Chinese translation (to r16111),ChunChang Lo,"",2017-01-13 05:34,Translations,"","","","",0,2016-12-28 09:55,2017-01-13 05:34,"コピー元 #24607, コピー先 #24824","","","* New
+** setting_commit_logs_formatting, setting_mail_handler_enable_regex_delimiters, error_move_of_child_not_possible
+"
+24707,Redmine,Defect,"",Closed,Normal,"Activity in User Profile shows incorrect date/time, dependent to Time zone ",kaz k,"",2017-01-01 13:30,Activity view,"","","","",0,2016-12-28 09:50,2017-01-01 03:15,"次のチケットと重複 #14658, 次のチケットが重複 #5425, 次のチケットが重複 #1048",Duplicate,"","There are 3 area which shows ""Activity"".
+# Activity in ""Project""
+# Activity in ""User Profile"" (offical name maybe different ...), which shows User Name, Mail(optional), projects to which the user joins in the left, recent activity of the user in the right.
+# Activity History of the user, which shows activity history in 30 days period (days are set differently at the installation). You could go to the past history and come back.
+
+We observed the following.
+# Among these 3 ""Activity"", Date/Time is different in 2. from 1 and 3. 
+# Compared with the actual modification date and time, 2. shows wrong date/time, while 1. and 3. shows correct date/time.
+# Wrong Date/Time is related to Time zone setting of User profile of the viewer, which means who is to view Activities. It is not the setting of the user to be viewed.
+** For example, if Time zone is set to JST, ie. GMT+09:00(Tokyo), activities between 00:00-08:59 (in JST) are diaplayed as it was in the day before.
+*** example: Activity at Dec.22, 2016 06:35 AM =>  Dec. *21* , 2016 06:35 AM
+** In order to confirm, if Time zone is changed to GMT, ie. GMT+00:00(London), all activities are displayed correctly.
+
+We wonder if these 3 activity listing use different calculation logic.
+
+Please note:
+# There are several open issues about Time zone, such as #6991, #5425, #5091. I am not sure if the issue described here is the duplicate of existing ones. If so, I am happy if someone would point it out.
+** I made this issue to clarify the phenomena. hope this helps.
+# The issue happens but, in my opinion, the severity is minor. 
+
+* Redmine version 3.1.1.stable
+ "
+24699,Redmine,Defect,"",Closed,Normal,Error 500 on timesheet report,Paolo Lazzaro,"",2016-12-28 01:16,"","","","","",0,2016-12-27 10:41,2016-12-28 01:16,"",Invalid,"","Hi,
+
+
+i'm receiving an error 500 using the report and details link of a project
+
+inspecting the redmine's log i've found this message : 
+
+TypeError (can't dup NilClass):
+  app/models/query.rb:366:in `add_filter'
+  app/models/time_entry_query.rb:35:in `initialize'
+  app/models/query.rb:254:in `build_from_params'
+  app/controllers/timelog_controller.rb:78:in `report'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+
+
+Environment:
+  Redmine version                3.1.2.stable
+  Ruby version                   2.0.0-p647 (2015-08-18) [x86_64-linux]
+  Rails version                  4.2.4
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.8.13
+  Git                            2.6.1
+  Filesystem                     
+Redmine plugins:
+  redmine_agile                  1.3.12
+  redmine_involvement_filter     0.2.0
+
+i'm attaching the production log (in debug mode) as a zip file
+
+Available for any clarification
+
+Thanks for any support
+
+Best Regards
+
+Paolo 
+
+
+
+
+"
+24698,Redmine,Defect,"",Closed,Normal,"""Icon for Datepicker"" does not appear if the issue has a child issue (or issues).",kaz k,"",2016-12-27 10:01,UI,"","","","",0,2016-12-27 08:02,2016-12-27 09:08,次のチケットと重複 #21219,Duplicate,"","When editing the issue, fields are displayed for modification in ""Change properties"" area.
+In the area, ""Start date"" and ""Due date"" have string-fields and there are Icons for Datepicker right of the string-fields normally.
+
+But, if an issue has a child issue ( or issues ), Icons for Datepicker right of the string-fields does NOT appear when editing the issue.
+If I remove the child from the parent and enter edit screen, Icons for Datepicker come back again. Wow.
+
+This phenomenon happens 100% of probability.
+We made sure that it does happen with Firefox and Internet Explorer through the testing.
+
+Attached is the ZIP of screen captures of this phenomenon. File names represent what was happening in the screen. Hope this helps.
+
+Redmine configuration (from ""Information"" of ""Redmine"") are as follows.
+The phenomenon happens on both configurations.
+
+* production system: Linux based
+<pre>
+Environment:
+  Redmine version                3.1.1.stable
+  Ruby version                   2.2.3-p173 (2015-08-18) [x86_64-linux]
+  Rails version                  4.2.4
+  Environment                    production
+  Database adapter               PostgreSQL
+SCM:
+  Git                            1.7.1
+  Filesystem                     
+Redmine plugins:
+  redmine_absolute_dates         0.0.3
+  redmine_dmsf                   1.5.6
+  redmine_document_view_overwrite 0.0.1
+  redmine_enter_cancel           0.0.2
+  redmine_good_job               0.0.1.1
+  redmine_issue_templates        0.1.0
+  redmine_local_avatars          0.1.1
+  redmine_pivot_table            0.0.4
+  redmine_show_issue_assignee_avatar 0.0.1
+  redmine_vividtone_my_page_blocks 20150614
+  redmine_wiki_lists             0.0.6
+  sidebar_hide                   0.0.7
+</pre>
+
+* Testing system: Windows 7 based
+<pre>
+Environment:
+  Redmine version                3.1.1.stable
+  Ruby version                   2.0.0-p645 (2015-04-13) [i386-mingw32]
+  Rails version                  4.2.4
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.8.11
+  Git                            1.9.5
+  Filesystem                     
+Redmine plugins:
+  redmine_good_job               0.0.1.1
+  redmine_issues_summary_graph   0.0.9
+  redmine_local_avatars          1.0.3
+  redmine_pivot_table            0.0.4
+  redmine_show_issue_assignee_avatar 0.0.1
+  redmine_vividtone_my_page_blocks 20150614
+  redmine_wiki_lists             0.0.6
+</pre>
+ "
+24696,Redmine,Defect,"",Closed,Normal,Create issue assigned_to_id does not work,Ramon Nunes Teixeira,"",2017-01-16 12:47,"","","","","",0,2016-12-26 19:02,2017-01-16 12:47,"",Invalid,"","I have installed redmine 3.3 official docker and when I try to create a new issue with a assigned_to filled the value is not saved, even coming in the request
+
+In the log no error is displayed, however the value is not filled, if I edit the issue and fill in the field again then it works.
+
+
+<pre>
+Started POST ""/projects/infra/issues"" for 192.168.99.1 at 2016-12-26 15:24:21 -0200
+Processing by IssuesController#create as HTML
+  Parameters: {""utf8""=>""?"", ""authenticity_token""=>""N8zoHbIRPxnLQnzLAycKHYBSt/hGP/tla6yPuz3+AJLDNyh4lTAlKzrpAyJy2aOWaCbILUxRcLzGs7PyqAKAvg=="", ""form_update_triggered_by""=>"""", ""issue""=>{""is_private""=>""0"", ""tracker_id""=>""14"", ""subject""=>""teste"", ""description""=>""teste"", ""status_id""=>""1"", ""priority_id""=>""2"", ""assigned_to_id""=>""33"", ""fixed_version_id""=>"""", ""parent_issue_id""=>"""", ""start_date""=>""2016-12-26"", ""due_date""=>"""", ""estimated_hours""=>"""", ""done_ratio""=>""0"", ""custom_field_values""=>{""1""=>"""", ""24""=>""N?o Necess?rio""}, ""sprint_id""=>""1"", ""pending_effort""=>""""}, ""was_default_status""=>""1"", ""requirement_issue""=>{""num_of_cases""=>""""}, ""commit""=>""Criar"", ""project_id""=>""infra""}
+  Current user: ramon.teixeira (id=33)
+= Running shared code for Issue (#) ""Tarefa de Desenvolvimento #: teste""
+= Finished running shared code for Issue (#) ""Tarefa de Desenvolvimento #: teste""
+  Rendered mailer/_issue.text.erb (3.1ms)
+  Rendered mailer/issue_add.text.erb within layouts/mailer (4.7ms)
+  Rendered mailer/_issue.html.erb (3.9ms)
+  Rendered mailer/issue_add.html.erb within layouts/mailer (4.3ms)
+Redirected to http://192.168.99.100:3000/issues/15083
+</pre>"
+24693,Redmine,Defect,"",Closed,Normal,Spent time on subtasks should also be reassigned when deleting an issue,David C?t?-Tremblay,Jean-Philippe Lang,2017-03-22 20:54,Issues,3.2.5,"","","",0,2016-12-26 17:02,2017-01-04 21:53,関連している #24718,Fixed,"","When you delete an issue, its spent hours will be reassigned to selected issue, but the time spent on descendants was just simply deleted. Now it is also reassigned to the targeted issue.
+
+*Patch tested and fully working for Redmine 3.3.1-devel*
+
+Pull request on GitHub : https://github.com/redmine/redmine/pull/92"
+24692,Redmine,Patch,"",Closed,Normal,Issue destroy : Reassign time issue autocomplete,David C?t?-Tremblay,Jean-Philippe Lang,2017-01-08 23:48,Issues,3.4.0,"","","",0,2016-12-26 16:58,2017-01-08 23:48,"","","","When deleting an issue, you get a form to propose you where to reassign the time entries. This patch provides an autocomplete instead of entering the raw issue ID.
+
+*Patch tested and fully working for Redmine 3.3.1-devel*"
+24650,Redmine,Defect,"",Closed,Normal,Internal error after every plugin installed,Alex Doe,"",2016-12-20 01:03,"","","","","",0,2016-12-19 17:59,2016-12-20 01:03,"",Invalid,3.2.1,"Hi everyone,
+
+I'm new into Ruby/rails world and Redmine. I'm trying to deploy and configure redmine for my projects. Installation is OK but when I install every single plugin I've an internal error .. I checked the folder name, he's OK, I checked github issues too.
+
+My logs :
+
+<pre>
+ActionView::Template::Error (Missing partial hooks/_base_head with {:locale=>[:fr, :en], :formats=>[:html], :variants=>[], :handlers=>[:erb, :builder, :raw, :ruby, :rsb]}. Searched in:
+  * ""/usr/share/redmine/app/views""
+):
+    13: <%= stylesheet_link_tag 'rtl', :media => 'all' if l(:direction) == 'rtl' %>
+    14: <%= javascript_heads %>
+    15: <%= heads_for_theme %>
+    16: <%= call_hook :view_layouts_base_html_head %>
+    17: <!-- page specific tags -->
+    18: <%= yield :header_tags -%>
+    19: </head>
+  lib/redmine/hook/view_listener.rb:59:in `block (2 levels) in render_on'
+  lib/redmine/hook/view_listener.rb:57:in `map'
+  lib/redmine/hook/view_listener.rb:57:in `block in render_on'
+  lib/redmine/hook.rb:61:in `block (2 levels) in call_hook'
+  lib/redmine/hook.rb:61:in `each'
+  lib/redmine/hook.rb:61:in `block in call_hook'
+  lib/redmine/hook.rb:58:in `tap'
+  lib/redmine/hook.rb:58:in `call_hook'
+  lib/redmine/hook.rb:96:in `call_hook'
+  app/views/layouts/base.html.erb:16:in `_app_views_layouts_base_html_erb__4449588612264819497_43138540'
+  app/controllers/application_controller.rb:470:in `block (2 levels) in render_error'
+  app/controllers/application_controller.rb:468:in `render_error'
+  app/controllers/application_controller.rb:456:in `render_404'
+  app/controllers/application_controller.rb:480:in `missing_template'
+</pre>
+
+Informations:
+
+<pre>
+Environment:
+  Redmine version                3.2.1.stable
+  Ruby version                   2.3.1-p112 (2016-04-26) [x86_64-linux-gnu]
+  Rails version                  4.2.6
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Git                            2.7.4
+  Filesystem                     
+Redmine plugins:
+  no plugin installed
+</pre>
+
+I searched on google, found some posts but nothing worked for me.
+I really need your heal because I just started learn rails the last week :/
+
+Thanks in advance,
+
+Best regards,
+
+Alex"
+24649,Redmine,Patch,"",Closed,Normal,Make Spent time clickable in issue lists,Olivier Houdas,Jean-Philippe Lang,2017-01-15 17:29,Issues list,3.4.0,"","","",0,2016-12-19 17:44,2017-01-15 17:29,"","","","In Issue lists, User, Version or Project fields are clickable to take the user to the relevant page, and not to the issue page itself.
+
+It would make sense to also make the Spent time values clickable to take the user to the details of the logged time.
+
+A patch to do it is attached."
+24648,Redmine,Defect,"",Closed,Normal,Time shown in PDF or CSV export is different than the time shown in the issue list (when logged in both parents and children),Olivier Houdas,"",2017-01-03 01:35,PDF export,"","","","",0,2016-12-19 17:24,2017-01-03 01:35,"",Invalid,3.3.1,"Steps to repro:
+1. Take a task with at least one child
+2. Log time for both the parent and the child
+3. Display that task with the Spent time column active, in a list of issues
+4. Export that list to CSV or PDF
+Result: 
+* at step 3, we see the total logged time in the Spent time column
+* at step 4, we see only children tasks' logged time in the spent column
+"
+24647,Redmine,Defect,"",Closed,Normal,[Email notification] error 550 5.2.1 Mailbox cannot be accessed (Office365),Alex Doe,"",2016-12-20 23:28,Email notifications,"","","","",0,2016-12-19 16:14,2016-12-20 23:28,"",Invalid,3.2.1,"Hi everyone !
+
+First I'm new into Ruby/rails world and Redmine. 
+I'm trying to deploy Redmine on my personnal network for my projects. I need email notifications with my office365 account so I tried the configuration wich is write in the ""Howto"" and faced this error : ""550 5.2.1 Mailbox cannot be accessed"". With Gmail it works correctly but not with office365.
+Yes I googlelize it and used all solutions that I found with the same error every time since 3 days..
+
+My redmine informations:
+<pre>
+Environment:
+  Redmine version                3.2.1.stable
+  Ruby version                   2.3.1-p112 (2016-04-26) [x86_64-linux-gnu]
+  Rails version                  4.2.6
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Filesystem                     
+Redmine plugins:
+  no plugin installed
+</pre>
+
+And my configuration.yml:
+
+<pre>
+default:
+  email_delivery:
+    delivery_method: :smtp
+    smtp_settings:
+      enable_starttls_auto: true
+      address: ""smtp.office365.com""
+      port: 587
+      domain: ""xxxxxxxx""
+      authentication: :login
+      user_name: ""my_adress@xxxxx.com""
+      password: ""xxxxx""
+</pre>
+
+I dont want replace office365 by Gmail ;) 
+
+Thanks in advance !
+
+Best regards,
+
+Alex"
+24646,Redmine,Defect,"",Closed,Normal,X-Sendfile is missing in response headers,Karel Pi?man,Jean-Philippe Lang,2017-01-04 20:53,Attachments,3.2.5,"","","",0,2016-12-19 09:51,2017-01-04 20:53,"",Fixed,3.3.1,"Despite uncommenting X-Sendfile option in _config/additional_environment.rb_, X-Sendfile header is not added into the response. Therefore the download is not handed over to the webserver and it is processed by the application. It prevents from downloading of large files.
+
+_config/additional_environment.rb_
+
+<pre>
+# Specifies the header that your server uses for sending files
+config.action_dispatch.x_sendfile_header = ""X-Sendfile""
+</pre>
+
+Response header when downloading a file from the _Files_ module:
+
+*Cache-Control* private
+*Connection* Keep-Alive
+*Content-Disposition* attachment; filename=""file.zip""
+*Content-Length* 25362
+*Content-Type* application/x-zip-compressed
+*Date* Mon, 19 Dec 2016 08:33:42 GMT
+*Etag* ""c4c34e17fd91b5e7f97ea03a1e4366f6""
+*Server* WEBrick/1.3.1 (Ruby/2.3.1/2016-04-26)
+*Set-Cookie* _redmine_session=SzJycUd0VUYybGNkU2NVWGVHN1VQOVhJVUY1dTJCRjNOS05HU2xaSzY1aWYwOHp3am1SUURiWEdjNCtZOE44T2I0UkV3eHNWSWwwZDJ0MHBUMmhjck5Vd3ZNVHZla1RNTXBTTWQ3bnQva2p4OXk1KzUxcFgzWmVmU0dlYWg2dXFtei9JRXpXYWpyQXJ1ckY2TlQ0WEtkb1dPclprSlJ5Ni9pejN0a0FXMkUrVFdTUVFUeDBlMW9DNGJuN0k5Y3dPM1FIekcxUDByZlQ4emg1TmJyVUdkdC84REwyU1pVNGtIZnkzTVJ4T1dDdnVIYTFPMWJBWFNZeU5DRlRSUkE3QytUc3dFbWRaMXdhUjZmK0FvcGlENklCV3YzTDhSbWt4YWs5UEJLdW9wczlFMy9yc3BlY3krakV1ZjlSeUdNN29Gd2tENnk3Vk5VOFlSMERkdVdxNVpjdG1xQ3RTQlNTYWRnb1QvVmVzZy9NPS0tVGFOZGhaWUZVdEdRMUJrSjMwU05pQT09--150df285ffe701a4ef1e1bad01398101dcb4989c; path=/; HttpOnly
+*X-Content-Type-Options* nosniff
+*X-Frame-Options* SAMEORIGIN
+*X-Request-Id* 8743fb81-42d3-4924-b93f-199b95e68ed1
+*X-Runtime* 0.030291
+*X-XSS-Protection* 1; mode=block
+*content-transfer-encoding* binary
+
+My environment:
+
+<pre>
+Environment:
+  Redmine version                3.3.1.stable
+  Ruby version                   2.3.1-p112 (2016-04-26) [x86_64-linux-gnu]
+  Rails version                  4.2.7.1
+  Environment                    production
+  Database adapter               Mysql2
+</pre>"
+24645,Redmine,Patch,"",Closed,Normal,Bulgarian translation,Ivan Cenov,Jean-Philippe Lang,2017-01-17 05:23,Translations,"","","","",0,2016-12-19 07:30,2017-01-07 09:00,"","","","Translated:
+* error_move_of_child_not_possible
+* setting_timespan_format
+* setting_mail_handler_enable_regex_delimiters
+* setting_commit_logs_formatting
+* label_table_of_contents"
+24643,Redmine,Patch,"",Closed,Normal,"Rename ""issue"" to ""item"" in query helpers",Marius BALTEANU,Jean-Philippe Lang,2016-12-20 10:07,Code cleanup/refactoring,3.4.0,"","","",0,2016-12-19 01:17,2016-12-20 10:07,"","","","I propose to rename the variable name ""issue"" to ""item"" in the following QuerysHelper methods:
+* column_content
+* column_value
+* csv_content
+* csv_value
+
+These methods are used by two different entities (Issue and TimeEntry) and using the name ""item"" instead ""issue"" is less confusing.  The same rename was made in r15639 (queries_controller)."
+24641,Redmine,Defect,"",Closed,Normal,Project close -> Error 404,Furby Lon,"",2016-12-20 23:30,Projects,"","","","",0,2016-12-18 11:46,2016-12-20 23:30,"",Invalid,3.3.1,"Hi,
+
+I've a Brand new Redmine 3.3.1 installation with a single ""Test"" Project. If i try to close the Project i am getting the Error:
+/projects/test/close
+Page not found
+
+The page you were trying to access doesn't exist or has been removed.
+
+Back
+
+Loggins shows:
+Processing by ProjectsController#show as HTML
+  Parameters: {""id""=>""test""}
+  Current user: admin (id=1)
+  Rendered projects/_members_box.html.erb (3.0ms)
+  Rendered projects/_sidebar.html.erb (1.8ms)
+  Rendered projects/show.html.erb within layouts/base (77.2ms)
+Completed 200 OK in 710ms (Views: 393.1ms | ActiveRecord: 50.5ms)
+Started GET ""/projects/test/close"" for 127.0.0.1 at 2016-12-18 11:08:41 +0100
+
+ActionController::RoutingError (No route matches [GET] ""/projects/test/close""):
+  actionpack (4.2.7.1) lib/action_dispatch/middleware/debug_exceptions.rb:21:in `call'
+  actionpack (4.2.7.1) lib/action_dispatch/middleware/show_exceptions.rb:30:in `call'
+  railties (4.2.7.1) lib/rails/rack/logger.rb:38:in `call_app'
+  railties (4.2.7.1) lib/rails/rack/logger.rb:20:in `block in call'
+  activesupport (4.2.7.1) lib/active_support/tagged_logging.rb:68:in `block in tagged'
+  activesupport (4.2.7.1) lib/active_support/tagged_logging.rb:26:in `tagged'
+  activesupport (4.2.7.1) lib/active_support/tagged_logging.rb:68:in `tagged'
+  railties (4.2.7.1) lib/rails/rack/logger.rb:20:in `call'
+  actionpack (4.2.7.1) lib/action_dispatch/middleware/request_id.rb:21:in `call'
+  rack (1.6.5) lib/rack/methodoverride.rb:22:in `call'
+  rack (1.6.5) lib/rack/runtime.rb:18:in `call'
+  activesupport (4.2.7.1) lib/active_support/cache/strategy/local_cache_middleware.rb:28:in `call'
+  actionpack (4.2.7.1) lib/action_dispatch/middleware/static.rb:120:in `call'
+  rack (1.6.5) lib/rack/sendfile.rb:113:in `call'
+  railties (4.2.7.1) lib/rails/engine.rb:518:in `call'
+  railties (4.2.7.1) lib/rails/application.rb:165:in `call'
+  rack (1.6.5) lib/rack/lock.rb:17:in `call'
+  rack (1.6.5) lib/rack/content_length.rb:15:in `call'
+  rack (1.6.5) lib/rack/handler/webrick.rb:88:in `service'
+  /usr/local/lib/ruby/2.3.0/webrick/httpserver.rb:140:in `service'
+  /usr/local/lib/ruby/2.3.0/webrick/httpserver.rb:96:in `run'
+  /usr/local/lib/ruby/2.3.0/webrick/server.rb:296:in `block in start_thread'
+
+Env:
+
+Environment:
+  Redmine version                3.3.1.stable
+  Ruby version                   2.3.3-p222 (2016-11-21) [x86_64-linux]
+  Rails version                  4.2.7.1
+  Environment                    production
+  Database adapter               PostgreSQL"
+24624,Redmine,Defect,"",Closed,Normal,closed subprojects on the project overview does not display another color,Luiz Moura,"",2017-02-16 01:06,UI,"","","","",0,2016-12-15 19:36,2017-02-16 01:06,"",Invalid,3.3.1,"There is a list of subprojects on a parent project page. Thats absolutelly ok, but does not display different color for closed subprojects.
+
+Feature
+#23327
+
+Defect
+#23152"
+24623,Redmine,Patch,"",New,Normal,Implements permissions and restrictions to issue attachments,Frederico Camara,"",2017-04-26 04:24,Attachments,"","","","",0,2016-12-15 19:29,"","次のチケットと重複 #4362, 次のチケットと重複 #9358, 次のチケットと重複 #21562","","","If anyone could help implement the test cases, I think this would be a great feature to Redmine.
+
+Test applying the patch from Redmine directory:
+
+<pre>
+patch --dry-run -p1 < atta.version
+</pre>
+
+Then apply:
+
+<pre>
+patch -p1 < atta.version
+</pre>
+
+Patches added to redmine 3.1/3.2, 3.3 and current master.
+
+h2. Patch details:
+
+Permissions:
+* lib/redmine.rb
+
+Permission to view/delete:
+* app/models/issue.rb
+* app/models/journal.rb
+* app/views/issues/show.api.rsb
+* app/views/issues/show.html.erb
+* lib/redmine/export/pdf/issues_pdf_helper.rb
+* lib/plugins/acts_as_searchable/lib/acts_as_searchable.rb
+
+Permission to edit (add):
+* app/views/issues/new.html.erb
+* app/views/issues/_edit.html.erb
+
+Permission to copy (view from, edit to):
+* app/controllers/issues_controller.rb
+* app/models/issue.rb
+
+Mailer restrictions:
+* app/models/mailer.rb
+* app/views/mailer/_issue.html.erb
+* app/views/mailer/_issue.text.erb
+
+Translation:
+* config/locales/en.yml
+* config/locales/pt-BR.yml
+
+Migration:
+* db/migrate/20161215142110_add_attachments_permissions.rb"
+24617,Redmine,Defect,"",Closed,Normal,Browser js/css cache remains after upgrade,Hiroshi Shirosaki,Jean-Philippe Lang,2017-07-06 17:25,UI,3.4.0,"","","",0,2016-12-15 10:05,2017-04-03 07:50,"",Fixed,"","Browser js/css cache remains after Redmine application upgrade.
+
+Asset path parameter like ""?1481777729"" is not added with Rails 4.2.
+Adding asset id parameters like old Rails 3 would solve the issue.
+
+<pre>
+<script src=""/redmine/javascripts/application.js?1481777729""></script>
+</pre>
+
+Attached patch is based on:
+http://apidock.com/rails/ActionView/Helpers/AssetTagHelper/rails_asset_id
+
+Redmine version is 3.3.1.devel."
+24616,Redmine,Defect,"",Closed,Normal,Should not replace all invalid utf8 characters (e.g in mail),Pavel Rosick?,"",2017-01-28 08:56,I18n,3.4.0,"","","",0,2016-12-15 02:13,2017-01-28 08:56,"",Fixed,"","Hello,
+I've an email, that is encoded in utf8, but it contains an invalid character. In this case, redmine converts the content to us-ascii and then to utf8. This step will replace non-ascii compatible chars to ""?"". Why?
+
+<pre>
+1) Failure:
+MailHandlerTest#test_invalid_utf8 [/test/unit/mail_handler_test.rb:548]:
+Expected: ""Здравствуйте?""
+  Actual: ""?????????????""
+</pre>
+
+I changed Redmine::CodesetUtil.replace_invalid_utf8(str) and Redmine::CodesetUtil.to_utf8(str, encoding)
+
+<pre>
+        str = str.encode(""US-ASCII"", :invalid => :replace, :undef => :replace, :replace => '?').encode(""UTF-8"")
+</pre>
+to 
+<pre>
+        str = str.encode(""UTF-8"", :invalid => :replace, :undef => :replace, :replace => '?')
+</pre>
+all tests are passing with this change.
+
+
+<pre>
+  Redmine version                3.3.1.stable
+  Ruby version                   2.1.5-p273 (2014-11-13) [x64-mingw32]
+  Rails version                  4.2.7.1
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Git                            2.10.1
+  Filesystem
+Redmine plugins:
+  no plugin installed
+</pre>"
+24607,Redmine,Patch,"",Closed,Normal,Traditional Chinese translation (to r16072),ChunChang Lo,"",2017-01-13 05:32,Translations,"","","","",0,2016-12-14 10:51,2017-01-13 05:32,"コピー元 #24480, コピー先 #24708","","","* New
+** setting_commit_logs_formatting, setting_mail_handler_enable_regex_delimiters
+"
+24606,Redmine,Defect,"",Closed,Normal,parent task id never filled in the field 'parent_task',qr lin,"",2016-12-31 02:09,Issues,"","","","",0,2016-12-14 08:16,2016-12-31 02:09,関連している #24719,Invalid,3.1.3,"hey, seems there's a bug with subtask. 
+
+i create a new sub task , but when i return the parent task detail page, i cant see any link in the subtask zone,
+
+also  when i open task list, the parent field of the subtask item is emtpy.
+
+i cant find any msg help both in bug list and message board, so i'm not sure this is bug or using way problem
+
+!QQ20161214-1@2x.png!"
+24604,Redmine,Defect,"",Closed,Normal,Typo: s/changset-comments/changeset-comments/,Mischa The Evil,Jean-Philippe Lang,2016-12-18 10:36,Code cleanup/refactoring,"","","","",0,2016-12-13 21:38,2016-12-18 10:36,関連している #22758,Fixed,"","Introduced in r16062 for #22758. I'm not 100% sure if it is intentional or not, but it looks like ""@changset-comments@"" should be ""@changeset-comments@"". Patch against source:/trunk@16072 attached."
+24602,Redmine,Defect,"",New,Normal,Exporting wiki pages in HTML fails if {{collapse}},Vincent Le Goff,"",2016-12-13 16:39,Wiki,"","","","",0,2016-12-13 16:39,"","","","","When exporting a wiki page in HTML (using /projects/id/wiki/title.html), if some text is hidden in a @{{collapse}}@ macro, then the exported page doesn't allow to click on the link to see the text.
+
+h3. Steps to reproduce the bug
+
+# Create a wiki page in a project with some text:
+<pre>
+h1. This is a test
+
+{{collapse(Click to show/hide)
+This is hidden.
+}}
+</pre>
+# Try to export this page as HTML
+<pre>
+curl https://server.ext/projects/project_id/wiki/Title.html > page.html
+</pre>
+# Open the HTML page.  If you click on the ""click to show/hide"" link, nothing appears.
+
+h3. Possible causes
+
+This is obviously due to the fact that the JavaScript used by the @{{collapse}}@ macro isn't exported with the HTML page.  Perhaps it could be easily added, like the CSS code which is already exported."
+24599,Redmine,Defect,"",Closed,Urgent,Upgrade Redmin 3.2.0 to 3.3.1,PRASHANT Koparde,"",2017-01-01 19:16,Issues,"","","","",0,2016-12-13 12:41,2016-12-15 22:34,"",Invalid,"","Hi,
+ 
+Please let me know steps to upgrade Redmin 3.2.0 to 3.3.1 version, Unable to upgrade redmin 3.2.0 to 3.3.1,Giving below mentioned errors,
+
+Gem::InstallError: public_suffix requires Ruby version >= 2.0. "
+24596,Redmine,Defect,"",Needs feedback,Normal,User_to_group mapping exists after deleting given user,Vidhya Sundaram,"",2016-12-27 01:09,Database,"","","","",0,2016-12-13 11:06,"","","","","After deleting a user from super admin UI , the user_to_group mapping for the user still remains in the database.
+Ideally if user entry is deleted from database, the corresponding entries need to be flushed from other tables too.
+Alternatively mark user table entry inactive/disabled so that data is in sync."
+24595,Redmine,Defect,"",Closed,Normal,Unarchive link for a subproject of a closed project does not work,Felix Sch?fer,Jean-Philippe Lang,2016-12-20 10:05,Projects,3.3.2,"","","",0,2016-12-13 10:50,2016-12-20 10:05,"",Fixed,"","When the parent project of an archived project is closed the ""unarchive"" link is shown source:/branches/3.3-stable/app/views/admin/projects.html.erb@16048#L35, it won't work though as the parent project is not open source:/branches/3.3-stable/app/models/project.rb@16048#L377"
+24592,Redmine,Defect,"",Closed,High,Cannot create new project,Paul C.,"",2016-12-16 01:25,Projects,"","","","",0,2016-12-12 19:42,2016-12-16 01:25,"",Invalid,3.3.1,"I can't create any new project or subproject in my redmine instance. 
+
+When I insert all necessary data in the form and submit, nothing happens. No error is shown, only the ""new project page"" is loaded again, with empty fields. I can't find anything useful in the log-files. The same applies for creating subprojects or copying projects.
+
+The configuration:
+
+Environment:
+  Redmine version                3.3.1.stable
+  Ruby version                   2.2.3-p173 (2015-08-18) [x86_64-linux]
+  Rails version                  4.2.7.1
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.8.8
+  Git                            1.9.1
+  Filesystem                     
+Redmine plugins:
+  redmine_dmsf                   1.5.7
+
+All other functions of redmine are working fine! This is the only issue I have (but unfortunately a severe one). 
+
+Is this a Redmine bug, a DMSF plugin bug or misconfiguration?
+
+Thank you!!"

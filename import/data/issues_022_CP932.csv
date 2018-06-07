@@ -1,0 +1,657 @@
+#,プロジェクト,トラッカー,親チケット,ステータス,優先度,題名,作成者,担当者,更新日,カテゴリ,対象バージョン,開始日,期日,予定工数,進捗率,作成日,終了日,関連するチケット,Resolution,Affected version,説明
+24073,Redmine,Defect,"",Closed,Normal,Redmine requires Bundler 1.5.0 or higher (you're using 1.3.5).,Marlon Ferreira Minotti,"",2016-10-15 05:25,"","","","","",0,2016-10-14 21:34,2016-10-15 05:25,"",Invalid,"","WEB:
+
+Redmine requires Bundler 1.5.0 or higher (you're using 1.3.5).
+
+Server:
+#:/usr/share/redmine-3.3$ sudo bundler -v
+Bundler version 1.13.4
+
+1.13.4 is greater than 1.5.0
+1.13.4 > 1.5.0
+
+if (1.13.4 > 1.5.0){
+   echo true;
+}
+
+Output: TRUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUE; VERY TRUE;
+
+GOD, 1.13.4 IS GREATER THAN 1.5.0. SO, WHAT'S HAPPEN?
+
+HELP ME PLEASE. I'M LOSING MONTHS OF LIFE BECAUSE OF THIS.
+
+REDMINE VERSION: 3.3.1
+UBUNTU VERSION: 14.04
+"
+24072,Redmine,Patch,"",New,Normal,Added formatting for email notifications,Bryan Settles,"",2016-10-15 06:28,Email notifications,"","","","",0,2016-10-14 21:10,"","","","","This is meant to allow email notifications to show due date, and separate the issues that are past due from the ones that are due in the next (custom amount) of days"
+24066,Redmine,Defect,"",Closed,Normal,Issue after upgrading to MariaDB 10.1.18,heykel limaiem,"",2016-10-14 05:38,"","","","","",0,2016-10-14 05:12,2016-10-14 05:38,"",Invalid,"","After upgrading my local MariaDB version i can't run redmine anymore; after checking the log i found out this:
+
+<pre>
+[ 2016-10-13 21:33:36.2518 2319/7f763b7fe700 age/Cor/Con/CheckoutSession.cpp:285 ]: [Client 2-3] Cannot checkout session because a spawning error occurred. The identifier of the error is 4f8ea207. Please see earlier logs for details about the error.
+App 6817 stdout: 
+App 6817 stdout: 
+[ 2016-10-13 22:09:26.5580 2319/7f76401f1700 age/Cor/App/Implementation.cpp:304 ]: Could not spawn process for application /var/...../bugs: An error occurred while starting up the preloader.
+  Error ID: 3ada3e39
+  Error details saved to: /tmp/passenger-error-KQidBu.html
+  Message from application: There was an error while trying to load the gem 'mysql2'. (Bundler::GemRequireError)
+  /usr/local/share/gems/gems/bundler-1.11.2/lib/bundler/runtime.rb:80:in `rescue in block (2 levels) in require'
+  /usr/local/share/gems/gems/bundler-1.11.2/lib/bundler/runtime.rb:76:in `block (2 levels) in require'
+  /usr/local/share/gems/gems/bundler-1.11.2/lib/bundler/runtime.rb:72:in `each'
+  /usr/local/share/gems/gems/bundler-1.11.2/lib/bundler/runtime.rb:72:in `block in require'
+  /usr/local/share/gems/gems/bundler-1.11.2/lib/bundler/runtime.rb:61:in `each'
+  /usr/local/share/gems/gems/bundler-1.11.2/lib/bundler/runtime.rb:61:in `require'
+  /usr/local/share/gems/gems/bundler-1.11.2/lib/bundler.rb:99:in `require'
+  /var/www/vhosts/f.....bugs/config/application.rb:5:in `<top (required)>'
+  /var/www/vhosts/.....bugs/config/environment.rb:2:in `require'
+  /var/www/vhosts/.....bugs/config/environment.rb:2:in `<top (required)>'
+  config.ru:3:in `require'
+  config.ru:3:in `block in <main>'
+  /usr/share/gems/gems/rack-1.6.4/lib/rack/builder.rb:55:in `instance_eval'
+  /usr/share/gems/gems/rack-1.6.4/lib/rack/builder.rb:55:in `initialize'
+  config.ru:1:in `new'
+  config.ru:1:in `<main>'
+  /usr/share/passenger/helper-scripts/rack-preloader.rb:110:in `eval'
+  /usr/share/passenger/helper-scripts/rack-preloader.rb:110:in `preload_app'
+  /usr/share/passenger/helper-scripts/rack-preloader.rb:156:in `<module:App>'
+  /usr/share/passenger/helper-scripts/rack-preloader.rb:30:in `<module:PhusionPassenger>'
+  /usr/share/passenger/helper-scripts/rack-preloader.rb:29:in `<main>'
+
+
+[ 2016-10-13 22:09:26.5675 2319/7f763affd700 age/Cor/Con/CheckoutSession.cpp:285 ]: [Client 3-3] Cannot checkout session because a spawning error occurred. The identifier of the error is 3ada3e39. Please see earlier logs for details about the error.
+</pre>"
+24062,Redmine,Patch,"",Closed,Normal,Allow only vertical reorderingin sortable lists,Vincent Robert,Jean-Philippe Lang,2016-12-03 09:42,UI,3.3.2,"","","",0,2016-10-13 12:13,2016-12-03 09:42,関連している #12909,"","","Here is a patch which allows only vertical reordering for positioned items:
+
+<pre><code class=""diff"">
+From: Vincent Robert <vincent.robert@nanego.com>
+Date: Thu, 13 Oct 2016 12:04:01 +0200
+Subject: Vertical reordering only
+
+---
+ public/javascripts/application.js | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/public/javascripts/application.js b/public/javascripts/application.js
+index 087d3de..b303702 100644
+--- a/public/javascripts/application.js
++++ b/public/javascripts/application.js
+@@ -597,6 +597,7 @@ function beforeShowDatePicker(input, inst) {
+     }, options );
+
+     return this.sortable($.extend({
++      axis: 'y',
+       handle: "".sort-handle"",
+       helper: function(event, ui){
+         ui.children('td').each(function(){
+--
+</code></pre>
+
+Thank you for considering this tiny contribution ;)"
+24061,Redmine,Defect,"",New,Normal,Tickets can be watched by users who are not available in specific tracker,Maxim Kru?ina,"",2016-10-13 04:30,Issues,"","","","",0,2016-10-12 21:49,"","関連している #23172, 関連している #16133","",3.3.1,"It's basically the same as solved here: #23172 - but now it's not about assignee but about watchers.
+In 3.3.1 assignee list is fixed, so now can be issues assigned only to users available in selected tracker.
+The same shoud be fixed for watchers. Now we can add watchers which are not available in specific tracker - the list of possible watchers shoul be limited only to users available in selected tracker."
+24052,Redmine,Defect,"",Closed,Normal,"Unable to select columns in Administration, Settings, Issue Tracking, Default columns displayed on the issue list",Eric Ross,"",2016-10-18 05:29,Administration,"","","","",0,2016-10-11 22:04,2016-10-18 05:29,"",Invalid,3.3.0,"I recently installed 3.3.0.stable on Centos 7 on Amazon EC2.  Everything seems to work except for 2 issues - selecting the default columns and importing.  Initially, some columns were showing under ""Selected columns"".  All could be removed except for ""Priority"".  Now no columns can be added.
+
+There are no errors in the Apache logs or production.log.  Clicking on the arrows in the Issue Tracking screen does not trigger any logging either in production.log.
+
+
+
+Redmine 3.3.0.stable - checked
+Default administrator account changed - checked
+Attachments directory writable  - checked
+Plugin assets directory writable (./public/plugin_assets) - checked
+RMagick available (optional) - checked 	
+ImageMagick convert available (optional) - checked
+
+Here are the version numbers:
+
+Database: MariaDB-server-10.1.18-1.el7
+
+Environment:
+  Redmine version                3.3.0.stable
+  Ruby version                   2.3.1-p112 (2016-04-26) [x86_64-linux]
+  Rails version                  4.2.6
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Git                            1.8.3.1
+  Filesystem                     
+Redmine plugins:
+  redhopper                      1.0.4
+
+"
+24051,Redmine,Patch,"",Resolved,Normal,"As a non-admin user using API, I want to be able to filter users by their username without getting forbidden exception",David C?t?-Tremblay,"",2016-11-02 17:51,REST API,"","","","",0,2016-10-11 20:36,"",関連している #7773,"","","We created an Odoo -> Redmine connector for uploading time spent from Redmine to HR tools in Odoo (https://github.com/savoirfairelinux/connector-redmine/tree/ddufresne_port_to_8_0).
+
+When we call that function from a superuser API key, all works well, but when it is normal user API key, it does return a forbidden exception : 
+
+<pre>
+redmine_api.user.filter(name=""SOMEUSERNAME"")
+</pre>
+
+I think that to reinforce security by not giving superuser Redmine API key to Odoo would be interesting.
+
+That would be possible by allowing standard Redmine users to use API to filter users by their username instead of throwing an exception."
+24049,Redmine,Defect,"",Closed,Low,Records in table time_entries with null value at field issue_id,Miguel Salcedo Menendez,"",2016-12-11 03:25,Time tracking,"","","","",0,2016-10-11 16:42,2016-12-11 03:25,次のチケットと重複 #24577,Duplicate,3.3.1,It appears records at the table time_entries with an empty issue_id. I think this is not correct. Generaly it occurs when a user modify a time imputation for example to change de issue id.
+24047,Redmine,Defect,"",Closed,Low,Problem with api plugin,Yen Ho,"",2016-10-11 13:05,"","","","","",0,2016-10-11 11:42,2016-10-11 13:05,"",Invalid,"","Before I writed some APIs in plugins folder, they work well with redmine version 2.5.2.
+But after I upgraded redmine version 3.3.0 then these APIs don't still work. I don't know why?
+Could you help me?"
+24041,Redmine,Defect,"",Closed,Normal,"Issue subject is not updated when you select another issue in the new ""Log time"" page",Marius BALTEANU,Jean-Philippe Lang,2017-07-02 07:32,Time tracking,3.4.0,"","","",0,2016-10-10 23:46,2016-11-26 09:56,"",Fixed,3.3.1,"To reproduce:
+# Open an issue
+# Click ""Log time""
+# Observe that the issue subject is displayed next to issue (issue_2.png)
+# Select another issue in the issue field 
+# Observe that the issue subject is still the same  (issue_3.png) even if I selected another issue
+
+The attached patch fixes this issue. "
+24030,Redmine,Defect,"",New,High,"When SVN or Git repository has a commit comment include an emoji (4 bytes charactor), error occurs",Jiamin Wang,"",2016-10-10 09:02,SCM,"","","","",0,2016-10-10 05:47,"","","",3.1.2,"I already set the MySQL and all databases' charset to utb8mb4
+
+the error is in fetch_changeset method, when insert the commit comment into database table"
+24024,Redmine,Defect,"",Closed,Normal,open user account info occured 500 error,Steven Wong,"",2017-02-21 11:18,Accounts / authentication,"","","","",0,2016-10-09 06:23,2017-02-21 11:18,"",Invalid,3.3.0,"Started GET ""/users/8"" for 192.168.60.238 at 2016-10-09 12:24:05 +0800
+Processing by UsersController#show as HTML
+  Parameters: {""id""=>""8""}
+  Current user: hui.wang (id=8)
+Completed 500 Internal Server Error in 414ms (ActiveRecord: 86.0ms)
+
+NoMethodError (undefined method `where' for #<Hash:0x007f9934e4bbf8>):
+  lib/plugins/acts_as_activity_provider/lib/acts_as_activity_provider.rb:64:in `find_events'
+  lib/redmine/activity/fetcher.rb:91:in `block (2 levels) in events'
+  lib/redmine/activity/fetcher.rb:90:in `each'
+  lib/redmine/activity/fetcher.rb:90:in `block in events'
+  lib/redmine/activity/fetcher.rb:89:in `each'
+  lib/redmine/activity/fetcher.rb:89:in `events'
+  app/controllers/users_controller.rb:75:in `block (2 levels) in show'
+  app/controllers/users_controller.rb:73:in `show'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+"
+24020,Redmine,Defect,"",Needs feedback,Normal,"Importing csv fails when using data containing bullet character, No error message in the UI, no reason is presented for the crash",Adrian Moisa,"",2016-10-08 19:44,Issues,"","","","",0,2016-10-08 13:35,"","","",3.3.0,"All you have to do to reproduce this bug is to import the following csv file. In the import form, just match Subject with Subject column and chose Tracker -> Feature.
+
+<pre>
+""Subject"",""Start_Date""
+""Test1 test"",""9/7/2016""
+""Test2 ? test"",""9/7/2016""
+</pre>
+
+The only clue available to what did fail is the following console message, which is not to much to get going:
+
+<pre>
+POST http://localhost:3000/imports/36ed0f56e6db80daaaf6dfec4042eb93/run.js 500 (Internal Server Error)
+</pre>
+
+
+I had to trim down my csv file until I managed to exclude the error, and it looks like the bullet character is the cullprit. Maybe other UTF characters have the same issues, I didn't test."
+24019,Redmine,Defect,"",Closed,Normal,GIT not update ,Haihan Ji,"",2016-10-08 05:49,"","","","","",0,2016-10-07 20:57,2016-10-08 05:49,"",Invalid,"","https://github.com/redmine/redmine no update.
+The latest update about one month ago.
+My sites follow cannot get latest version by git."
+24018,Redmine,Defect,"",Closed,Normal,Redmine crash when entering emoji symbols (at least into Custom query name),Maxim Kru?ina,"",2016-10-08 05:52,"","","","","",0,2016-10-07 18:52,2016-10-08 05:52,"",Invalid,3.3.0,""
+24016,Redmine,Defect,"",Closed,Normal,Completed 500 Internal Server Error   Errno::ENOENT (No such file or directory - getcwd):,clean liquid,"",2016-10-08 05:47,Issues,"","","","",0,2016-10-07 15:30,2016-10-08 05:47,"",Invalid,3.2.0,"Hello,
+
+I have a problem with create new issue
+
+<pre>
+Internal error
+
+An error occurred on the page you were trying to access.
+ If you continue to experience problems please contact your Redmine administrator for assistance.
+
+If you are the Redmine administrator, check your log files for details about the error.
+
+</pre>
+
+<pre>
+App 19317 stderr: Completed 200 OK in 46ms (Views: 21.7ms | ActiveRecord: 9.5ms)
+App 19317 stderr: Started GET ""/projects/flyctrl"" for 192.168.169.1 at 2016-10-07 06:12:34 -0700
+App 19317 stderr: Processing by ProjectsController#show as HTML
+App 19317 stderr:   Parameters: {""id""=>""flyctrl""}
+App 19317 stderr:   Current user: admin (id=1)
+App 19317 stderr:   Rendered projects/_members_box.html.erb (0.1ms)
+App 19317 stderr:   Rendered projects/_sidebar.html.erb (0.6ms)
+App 19317 stderr:   Rendered projects/show.html.erb within layouts/base (5.0ms)
+App 19317 stderr: Completed 200 OK in 32ms (Views: 15.4ms | ActiveRecord: 7.6ms)
+App 19317 stderr: Started GET ""/projects/flyctrl/issues/new"" for 192.168.169.1 at 2016-10-07 06:17:05 -0700
+App 19317 stderr: Processing by IssuesController#new as HTML
+App 19317 stderr:   Parameters: {""project_id""=>""flyctrl""}
+App 19317 stderr:   Current user: admin (id=1)
+App 19317 stderr:   Rendered issues/_form_custom_fields.html.erb (1.5ms)
+App 19317 stderr:   Rendered issues/_attributes.html.erb (7.6ms)
+App 19317 stderr:   Rendered issues/_form.html.erb (11.2ms)
+App 19317 stderr:   Rendered attachments/_form.html.erb (1.0ms)
+App 19317 stderr:   Rendered issues/new.html.erb within layouts/base (17.4ms)
+App 19317 stderr: Completed 200 OK in 44ms (Views: 23.9ms | ActiveRecord: 8.7ms)
+App 19317 stderr: Started POST ""/projects/flyctrl/issues"" for 192.168.169.1 at 2016-10-07 06:17:16 -0700
+App 19317 stderr: Processing by IssuesController#create as HTML
+App 19317 stderr:   Parameters: {""utf8""=>""?"", ""authenticity_token""=>""Qh8wfq6/K2w0TRqIjbbi8W1rdLQSgjMHuru4SNduc1IWpYEXjTIq10sIYo7oQFB0giPq7PK26GvO0O9oY6wBgA=="", ""form_update_triggered_by""=>"""", ""issue""=>{""is_private""=>""0"", ""tracker_id""=>""1"", ""subject""=>""aaaaaaaaaaa"", ""description""=>""aaaaaaaaaaaa"", ""status_id""=>""1"", ""priority_id""=>""2"", ""assigned_to_id""=>"""", ""parent_issue_id""=>"""", ""start_date""=>""2016-10-07"", ""due_date""=>""2016-10-07"", ""estimated_hours""=>"""", ""done_ratio""=>""0""}, ""was_default_status""=>""1"", ""continue""=>""?建并??"", ""project_id""=>""flyctrl""}
+App 19317 stderr:   Current user: admin (id=1)
+App 19317 stderr:   Rendered mailer/_issue.text.erb (1.5ms)
+App 19317 stderr:   Rendered mailer/issue_add.text.erb within layouts/mailer (1.8ms)
+App 19317 stderr:   Rendered mailer/_issue.html.erb (1.2ms)
+App 19317 stderr:   Rendered mailer/issue_add.html.erb within layouts/mailer (1.5ms)
+App 19317 stderr: *Completed 500 Internal Server Error in 50ms (ActiveRecord: 17.1ms)*
+App 19317 stderr: 
+App 19317 stderr: *Errno::ENOENT (No such file or directory - getcwd):*
+App 19317 stderr:   config/initializers/10-patches.rb:154:in `deliver'
+App 19317 stderr:   app/models/mailer.rb:64:in `block in deliver_issue_add'
+App 19317 stderr:   app/models/issue.rb:940:in `each_notification'
+App 19317 stderr:   app/models/mailer.rb:63:in `deliver_issue_add'
+App 19317 stderr:   app/models/issue.rb:1665:in `send_notification'
+App 19317 stderr:   app/models/issue.rb:182:in `create_or_update'
+App 19317 stderr:   app/controllers/issues_controller.rb:141:in `create'
+App 19317 stderr:   lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+App 19317 stderr:
+</pre> "
+24014,Redmine,Defect,"",Closed,Normal,Custom fields not used in project should not be visible in spent time report,Maxim Kru?ina,Jean-Philippe Lang,2016-10-31 17:20,Time tracking,3.3.1,"","","",0,2016-10-07 13:41,2016-10-09 10:39,関連している #25501,Fixed,3.3.0,"We have really lot of custom fields, mostly used by only some trackers/projects.
+Anyway I just found, when working with project Spent Time report and adding new filter, there are listed all issue's custom fields defined across whole redmine, which doesn't make sense and also it floods select list with so much (even non usable) items."
+24010,Redmine,Defect,"",New,Normal,Using a tables inside a list (wrong intendation),Uwe Gra?hoff,"",2016-10-06 11:49,Text formatting,"","","","",0,2016-10-06 11:49,"","","",3.0.1,"Hello I have the following Problem:
+
+When I have a tables inside a list the second table get the wrong indentation (only first level instead of second level).
+My system:
+<pre>
+Environment:
+  Redmine version                3.0.1.stable.14155
+  Ruby version                   1.9.3-p551 (2014-11-13) [x86_64-linux]
+  Rails version                  4.2.1
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.6.17
+  Git                            1.7.10.4
+  Filesystem                     
+Redmine plugins:
+  linopro_exists_issue           0.0.1
+  linopro_reports                0.0.1
+  linopro_test_cases             0.0.1
+  redmine_issue_templates        0.1.0
+  redmine_subtasks_inherited_fields 0.0.3
+  redmine_wiki_gchart_formula    0.0.5
+  speiseplan                     0.0.1
+</pre>
+
+
+But I also tested it in the online demo redmine installation also (no success)
+
+Source:
+<pre>
+* Test headline 1
+** Test headline 2 (second level)
+|_. A |_. B  |
+| Val A | Val B |
+
+** Test headline 3 (second level)
+|_. C |_. D  |
+| Val C | Val D |
+</pre>
+Result:
+* Test headline 1
+** Test headline 2 (second level)
+|_. A |_. B  |
+| Val A | Val B |
+
+** Test headline 3 (second level)
+|_. C |_. D  |
+| Val C | Val D |
+
+When I remove the blank line after the first table the ""Test headline 3"" is not being displayed and the two tables are merged together.
+Source:
+<pre>
+* Test headline 1
+** Test headline 2 (second level)
+|_. A |_. B  |
+| Val A | Val B |
+** Test headline 3 (second level)
+|_. C |_. D  |
+| Val C | Val D |
+</pre>
+Result:
+* Test headline 1
+** Test headline 2 (second level)
+|_. A |_. B  |
+| Val A | Val B |
+** Test headline 3 (second level)
+|_. C |_. D  |
+| Val C | Val D |
+
+I found no way to get this working. The only workaround I found is to insert a ""empty"" indentation after the first table.
+Source:
+<pre>* Test headline 1
+** Test headline 2 (second level)
+|_. A |_. B  |
+| Val A | Val B |
+
+*  
+** Test headline 3 (second level)
+|_. C |_. D  |
+| Val C | Val D |
+</pre>
+Result:
+* Test headline 1
+** Test headline 2 (second level)
+|_. A |_. B  |
+| Val A | Val B |
+
+*  
+** Test headline 3 (second level)
+|_. C |_. D  |
+| Val C | Val D |
+"
+24008,Redmine,Defect,"",New,Normal,Remove 'Copied from' / 'Copied to' relationship between issues,Sergey User,"",2016-10-12 22:14,Issues,"","","","",0,2016-10-06 00:11,"","","","","The 'copy' relationship does not represent actual dependencies between Issues, but rather a way a particular issue was created. Copying is often done between issues which are not logically related (for instance, just to save time to fill in certain 'Defect' fields; still, defects themselves are not related). All other types of relations in Redmine are 'real', in a sense that they reflect actual dependencies affecting project execution and planning. The 'copy' relationship, on the other hand, obfuscates real dependencies between issues, and therefore is recommended to be removed."
+24007,Redmine,Patch,"",Reopened,Normal,Change plugins directory through the configuration.yml file,Helder Manuel Torres Vieira,"",2017-06-17 12:41,Plugin API,"","","","",0,2016-10-05 20:18,2017-06-10 14:05,"関連している #13927, ブロックされている #26139","","","This patch adds the possibility to change the directory ""plugins"" of the application through the file configuration.yml.
+
+The patch has been tested with the last Trunk version (15839)"
+24006,Redmine,Defect,"",Closed,Normal,Add character limitation on description field for MySQL,Helder Manuel Torres Vieira,"",2016-10-24 16:34,Issues,"","","","",0,2016-10-05 20:15,2016-10-24 16:34,"関連している #19869, 関連している #20127",Fixed,3.3.0,"h2. Defect Description
+
+On the actual version as in the las trunk, when trying to create a new description with more than 65536 characters, Redmine answers with an error 500.
+
+This happens when the adapter ActiveRecord of MySQL is used, as the field description is of type :text and the maximum limit that it accepts is 65536 as i explain on the next link: https://www.packtpub.com/books/content/working-rails-%E2%80%93-activerecord-migrations-models-scaffolding-and-database-completion
+
+With this patch this problem is solved as it adds a validation in case of the adapter being MySQL.
+
+h2. Attached Screenshots:
+
+!mysql_1.png!
+
+!mysql_2.png!
+
+!mysql_3.png!
+
+!mysql_4.png!"
+24005,Redmine,Patch,"",Closed,Normal,Settings to accept 0 hours time entries and for maximum hours per user and day,Helder Manuel Torres Vieira,Jean-Philippe Lang,2017-07-26 18:53,Time tracking,4.0.0,"","","",0,2016-10-05 20:10,2017-07-19 16:14,次のチケットが重複 #26450,"","","This patch modifies the existing limitation on the TimeEntry model to enable the introduction of hours with values 0 or superior to 24 hours.
+
+About the limitation for values superior to 24 hours, this is due to having 1 time value based on a concrete day, whereby the maximum hours that are usable per day are 24.
+
+About the limitation to introduce hours with value 0, this is due to the objective of a time entry is to be able to enter a time dedication superior to 0 minutes, for what makes no sense for the users to be able to create this kind of entries.
+
+The patch has been tested on the last Trunk version (15839)"
+24004,Redmine,Patch,"",Closed,Normal,Spanish & Spanish (PA) Translation,Helder Manuel Torres Vieira,"",2016-11-30 11:54,Translations,3.3.2,"","","",0,2016-10-05 20:07,2016-11-30 11:54,"","","",Spanish & Spanish (PA) translation for version 3.3.x
+24003,Redmine,Patch,"",Closed,Normal,Catalan Translation,Helder Manuel Torres Vieira,"",2016-11-30 07:22,Translations,3.3.2,"","","",0,2016-10-05 20:06,2016-11-30 07:22,関連している #21747,"","",Catalan translation for version 3.3.x
+24002,Redmine,Defect,"",Closed,Normal,Filter on issues page does not appear after adding (it looks like jQuery version problem),Ilya Ternovoy,"",2016-10-05 15:48,Issues filter,"","","","",0,2016-10-05 11:31,2016-10-05 15:48,"",Invalid,3.3.0,"After updating on Redmine 3.3.0 filters stop working.
+It looks like jQuery version problem, cause errors on page are:
+*_
+_Uncaught TypeError: Cannot read property 'msie' of undefined
+lightbox.js:11 Uncaught TypeError: $(...).fancybox is not a function__*
+
+My jquery file from /redmine-3.3.0/public/javascripts/jquery-1.11.1-ui-1.11.0-ujs-3.1.4.js is in attachment.
+
+My plugins now is:
+clipboard_image_paste
+redmine_inline_note_images_plugin
+redmine_ldap_sync
+redmine_lightbox
+sidebar_hide"
+24000,Redmine,Defect,"",Closed,Normal,z-index children menu should be greater than content ,Kirill Ponomarev,Jean-Philippe Lang,2016-12-03 09:39,UI,3.3.2,"","","",0,2016-10-05 09:57,2016-12-03 09:39,関連している #15880,Fixed,"","In Redmine 3.3.0.stable.15884 we have:
+<pre><code class=""CSS"">
+#main-menu .menu-children {
+  z-index:1;
+}
+
+#content {
+  z-index: 10;
+}
+</code></pre>
+
+It should be:
+<pre><code class=""CSS"">
+#main-menu .menu-children {
+  z-index: 11;
+}
+</code></pre>"
+23999,Redmine,Patch,"",Closed,Normal,Show additional info in watcher list,Koen Janssens,"",2016-10-05 09:48,Issues,"","","","",0,2016-10-05 09:33,2016-10-05 09:48,"","","","Dear,
+Where can I define what user fields I would like to see in the watchers list?
+Currently it only shows firstname and lastname, but I would like to add for example the title.
+What view should I patch?
+Best regards,
+Koen"
+23998,Redmine,Patch,"",Closed,Normal,Added link to author in Repository,Andrey Lobanov (RedSoft),Jean-Philippe Lang,2016-10-09 11:20,UI,3.4.0,"","","",0,2016-10-05 08:29,2016-10-09 11:20,"","","","Now if user that performed commit exists in redmine you can be easily navigated to his profile.
+!redmine_rep_author.png!"
+23997,Redmine,Patch,"",New,Normal,Per role visibility settings for project and version custom fields,Jens Kr?mer,"",2017-05-18 09:21,"",Candidate for next minor release,"","","",0,2016-10-05 04:39,"",関連している #5037,"","","For issue custom fields, one can already select which roles should be allowed to view this field.
+
+This patch, developed at ""Planio"":https://plan.io/redmine-hosting and sponsored by ""SDZeCOM GmbH"":http://www.sdzecom.de, introduces the same setting for project and version custom fields."
+23983,Redmine,Defect,"",Needs feedback,Normal,Estimated time and logged time always round down to full hours,Mario Meili,"",2016-10-04 12:05,Time tracking,"","","","",0,2016-10-04 10:17,"","","",3.3.0,"It is not possible to set an estimated time or log for example 1.5 hours. The time will be rounded down to 1.0 hours. 0.5 hours will be rounded down to 0.0 hours and so on. Other input formats like 30min etc don't work either.
+As stated in the title, this happens when trying to set the estimated time on an issue and also when logging time on an issue.
+Since I really need Redmine for my project thesis, I would be very happy if this could be treated urgently.
+Thank you very much in advance"
+23980,Redmine,Patch,"",New,Normal,Replace images with icon fonts,Marius BALTEANU,Jean-Philippe Lang,2017-12-30 08:29,UI,Candidate for next major release,"","","",0,2016-10-04 02:07,"","関連している #5830, 関連している #11757","","","Icon fonts have some advantages over the classical images:
+- being vector graphics, they are scalable an can be resized without losing quality.
+- can be customized directly from CSS (size, colour, etc)
+- less HTTP requests to server because they are loaded only with one or a few requests. Now, Redmine make a request for each image.
+- some of the current custom themes already use icon fonts (Abacus theme, Minelab, PurpleMine2, our custom theme and I think the theme from plan.io).
+
+We're interested to contribute with a patch that implements the FontAwesome icons, but because there are at least two ways to implement them, we want some feedback before from Redmine contributors and/or users.
+
+1. *Using i tags*: 
+
+Advantages:
+* Is the recommended way on their ""official page"":http://fontawesome.io/examples/#basic 
+* We can use all the build-in rules available in the FontAwesome CSS.
+
+Disadvantages:
+* it'll be required to add the i elements in views.
+
+2. *Only from css*
+
+Advantages:
+* the views will not be modified
+
+Disadvantages:
+* The build-in rules must be reimplemented in the current  CSS
+* The icons will be defined using their unicode. For example, the fa-pencil icon (similar with the current images for icon-edit) has the unicode f040.
+
+Only for demo purposes, I've attached a patch that replaces the icons from issue page with font awesome icons (using i tags). "
+23979,Redmine,Defect,"",Closed,Normal,Elements are not aligned properly in issues table for some cases,Marius BALTEANU,Jean-Philippe Lang,2017-07-02 07:33,UI,3.4.0,"","","",0,2016-10-04 00:48,2016-11-18 13:11,"",Fixed,3.3.0,"To reproduce the bellow issue:
+* Sort the issues by parent task
+* Resize the screen until the Assignee goes also on two lines
+* Have at least on parent issue with a subject on two lines
+* Have a child issue with a short subject. 
+
+!issue_list_before.png!
+
+The attached patch fixes this.
+
+!issue_list_after.png!
+
+I chose to change from top to middle for all _table.list td_ because I don't see any side effect of this change. If it's not ok, i can update the patch to target only the _table.list.issues td_
+"
+23978,Redmine,Patch,"",Closed,Normal,Make the email notifications for adding/updating issues more readable/clear,Marius BALTEANU,Jean-Philippe Lang,2016-12-16 09:54,Email notifications,3.4.0,"","","",0,2016-10-04 00:13,2016-12-16 09:54,"","","","The attached patch (improvements_to_email_notifications.patch) adds the following changes to the email notifications sent when an issue is added or updated. 
+
+# Adds a delimiter between the email header (""Issue #x has been updated by y"") and the rest of the email only for the notifications sent on update (this delimiter is not required for reported issue notifications).    
+# Adds the styles implemented in #20370 for both type of emails
+
+Some screenshots before and after the patch.
+
+Issue update before the patch:
+!issue_updated_before.png! 
+
+Issue update after the patch:
+!issue_updated_after.png!
+
+Issue reported before the patch: 
+!issue_reported_before.png!
+
+Issue reported after the patch: 
+!issue_reported_after.png!"
+23977,Redmine,Patch,"",Closed,Normal,Redmine performance issues.,bilel kedidi,"",2016-10-04 04:23,Performance,"","","","",0,2016-10-03 22:28,2016-10-04 04:23,"","","","Hello,
+We have redmine with 500 projects, and if one user non admin try to load a page it will get rendered in 4-5sec 
+An admin render the same page in 1 - 1.5 sec
+This is a huge difference.
+I have made some investigation it is caused by project#allowed_conditions
+I have try to make some indexing on projects, trying to improve performance but with the same result
+I found that project table is called multiple times so if we can find a better solution 
+I have made a plugin but need but still having no good result)
+https://github.com/bilel-kedidi/redmine_performance
+
+Thanks for helping"
+23971,Redmine,Defect,"",Closed,Normal,"Alternate theme,but the "" issuelist-colouring based on issue's priority "" not enabled",GAN A,"",2016-10-02 19:22,Themes,"","","","",0,2016-10-02 17:46,2016-10-02 19:21,"",Invalid,"","I had set the theme to Alternate,but the issuelist back color is not change,why ? please look the image I upload."
+23969,Redmine,Defect,"",Closed,Normal,Edit/delete links displayed on issue even if project is closed,Jean-Philippe Lang,Jean-Philippe Lang,2016-10-08 09:05,Issues,3.3.1,"","","",0,2016-10-02 12:59,2016-10-08 09:05,関連している #285,Fixed,3.3.0,"Edit and delete links are displayed on the issue details, even if the project is closed. It's a UI issue only, as these links are not functional."
+23966,Redmine,Defect,"",Closed,Normal,db:migrate InsertBuiltinGroups needs to be after RemoveUsersMail,Equipe Evolix,"",2016-10-01 18:15,Database,"","","","",0,2016-10-01 15:23,2016-10-01 18:15,"",Invalid,3.2.0,"Hello,
+
+db:migate fails with old Redmine versions :
+
+InsertBuiltinGroups (20140920094058_insert_builtin_groups.rb) fails with old versions because users.mail column always exists :
+
+Mysql2::Error: Field 'mail' doesn't have a default value: INSERT INTO `users` (`type`, `lastname`, `created_on`, `updated_on`, `firstname`) VALUES ('GroupAnonymous', 'Anonymous users', '2016-10-01 14:28:55', '2016-10-01 14:28:55','')/home/foo/.gem/ruby/2.1.0/gems/activerecord-4.2.5.1/lib/active_record/connection_adapters/abstract_mysql_adapter.rb:305:in `query'
+
+users.mail column is deleted after by RemoveUsersMail (20150113213922_remove_users_mail.rb)
+
+If I change order with InsertBuiltinGroups just after RemoveUsersMail, all is right.
+
+Regards,
+
+Gr?gory Colpart / Evolix"
+23964,Redmine,Defect,"",Closed,Normal,"Processing by WikiController#show as PNG/JPEG Missing template, responding with 404",Stephane Malinet,"",2016-10-01 18:16,Attachments,"","","","",0,2016-09-30 16:25,2016-10-01 18:16,"",Invalid,3.3.0,"Hi,
+
+Files/images uploaded in wiki page doesn't appear on footer page and give 404 when it's called via image link (!!)
+
+My env:
+
+Apache + uWSGI
+
+<pre>
+Environment:
+  Redmine version                3.3.0.stable
+  Ruby version                   1.9.3-p0 (2011-10-30) [x86_64-linux]
+  Rails version                  4.2.7.1
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Mercurial                      2.0.2
+  Git                            1.7.9.5
+  Filesystem                     
+Redmine plugins:
+  no plugin installed
+</pre>
+
+Log for uploaded file:
+
+<pre>
+Started POST ""/uploads.js?attachment_id=1&filename=2xiruku.jpg&content_type=image%2Fjpeg"" for x.x.x.x at 2016-09-30 15:57:49 +0200
+Processing by AttachmentsController#upload as JS
+  Parameters: {""attachment_id""=>""1"", ""filename""=>""2xiruku.jpg"", ""content_type""=>""image/jpeg""}
+  Current user: smalinet (id=5)
+Saving attachment '/var/www/crossknowledge.com/ckops/files/2016/09/160930155749_2xiruku.jpg' (7817 bytes)
+  Rendered attachments/upload.js.erb (1.1ms)
+Completed 200 OK in 36ms (Views: 7.4ms | ActiveRecord: 4.6ms)
+</pre>
+
+
+<pre>
+Started GET ""/projects/operations/wiki/2xiruku.jpg"" for 92.103.17.66 at 2016-09-30 16:22:54 +0200
+Processing by WikiController#show as JPEG
+  Parameters: {""project_id""=>""operations"", ""id""=>""2xiruku""}
+  Current user: smalinet (id=5)
+Missing template, responding with 404
+Completed 404 Not Found in 12ms (ActiveRecord: 3.1ms)
+</pre>
+
+Regards."
+23963,Redmine,Defect,"",New,Normal,Bulk editing issues from various projects take us to Redmine's root (no project),Olivier Houdas,"",2016-09-30 15:15,Issues,"","","","",0,2016-09-30 15:15,"",次のチケットが重複 #27636,"",3.3.0,"1. Take a Redmine site having a tree of projects with at least 2 sub-projects in a master project.
+2. In the master project, list all issues from sub-projects
+3. Select 2 issues from each sub-project, right-click and choose Modify
+Result: On the Modification landing page, there is no project set. We have lost our project's tabs
+Expected result: Either stay in the source project, or assign the first common parent project of all chosen issues to be the current project
+
+I can suggest the attached code for implementing the second solution (based on redmine 3.3.0)."
+23962,Redmine,Defect,"",New,High,Redmine  Out of Memory Exception when exporting issues with lots of columns (> 50) to PDF,Stephane Evr,"",2016-09-30 12:50,PDF export,"","","","",0,2016-09-30 11:13,"","","",3.3.0,"I was able to reproduce the bug descibed hereafter on a bitnami vanilla redmine install. This bug makes the server eventually run out of memory, so is quite severe in my opinion.
+
+<pre>
+Environment:
+  Redmine version                3.3.0.stable
+  Ruby version                   2.1.10-p492 (2016-04-01) [x86_64-linux]
+  Rails version                  4.2.6
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.9.4
+  Cvs                            1.12.13
+  Git                            2.7.4
+  Filesystem                     
+Redmine plugins:
+  no plugin installed
+</pre>
+
+
+The bug occurs when trying to export to pdf a list of issues (on the issues page) with a huge amount of columns (around 50 or more). It happens even if there is only 1 issue to export. 
+
+To reproduce the bug, you can create around 40 custom fields with a random name (30 chars) / format and assign them to a tracker / project. then create an issue with random content in the fields. Then on the issues page, export to pdf with all columns included.
+
+
+Because anyway the pdf would not look nice with such big amount of columns, we could perhaps forbid the export if there are too many columns (lets say > 40) selected in the export. 
+
+This is what I added to mitigate the error, in app/controllers/issues_controller.rb#index:
+
+<pre><code class=""ruby"">
+if params[:format] == 'pdf' && @query.column_names.count > 40
+  redirect_to(:back)
+  flash[:error] = ""Please reduce the amount of columns selected.""
+  return
+end
+</code></pre>
+
+After further investigation, I found the problem to be located in lib/redmine/export/pdf.rb, in the RDMMultiCell method. So it may be due to RBPDF...
+"
+23959,Redmine,Defect,"",Needs feedback,Normal,Issue copy form load wrong data when user can't create issues in the copied issue project,Lucas Arnaud,"",2016-10-27 17:37,Issues,"","","","",0,2016-09-29 17:11,"","","","","When a user tries to copy an issue in a project they are not allowed to create issues, the first available project in combo box is selected but all form data rendered (custom fields, assignable users, possible watchers, etc) are based on the current.
+
+In order to load the selected project data, the user have to select a different project and then the first one to force to reload the form.
+
+The following patch solves this bug by setting the issue project to the first ""@issue.allowed_target_projects"" in IssuesController#build_new_issue_from_params"
+23954,Redmine,Patch,"",New,Normal,Shows the date of the last activity on Projects administration.,Frederico Camara,"",2017-02-01 19:42,Administration,Candidate for next major release,"","","",0,2016-09-28 22:02,"",関連している #13696,"","","On Administration > Projects, it shows the date of the last activity on each project. Helps the admin to decide when to close or archive stale projects."
+23952,Redmine,Defect,"",Closed,Normal,Values in user fields are sorted by ID and not by name,Serghei Zagorinyak,"",2016-10-10 19:05,UI,"","","","",0,2016-09-28 15:53,2016-10-10 19:05,"",Invalid,3.3.0,"In all user fields other than @assigned_to@ field values in dropdown list are sorted by @user_id@, not by @lastname@, like in previous versions."
+23947,Redmine,Defect,"",Closed,High,Single issue edit from context menu fix,Andrey Lobanov (RedSoft),"",2016-10-02 13:09,Issues,"","","","",0,2016-09-28 08:18,2016-10-02 13:09,"",Invalid,"",If you use context menu action edit on single issue you'll get an exception.
+23946,Redmine,Patch,"",New,Normal,News appearance with box class,Andrey Lobanov (RedSoft),"",2016-11-07 15:20,UI,"","","","",0,2016-09-28 08:14,"","","","",Now it is displaying in div with box class.
+23942,Redmine,Defect,"",Closed,Normal,Test: Mysql2::Error: Deadlock found when trying to get lock,Stefan Rinkes,"",2016-09-27 15:33,Database,"","","","",0,2016-09-27 15:25,2016-09-27 15:33,次のチケットと重複 #19344,Duplicate,3.3.0,"This Unit Test is always failing in my setup with MySQL.
+All other Tests run with *rake test* are fine.
+
+<pre>
+ruby test/unit/issue_nested_set_concurrency_test.rb
+/var/lib/gems/2.3.0/gems/htmlentities-4.3.1/lib/htmlentities/mappings/expanded.rb:465: warning: key ""inodot"" is duplicated and overwritten on line 466
+Run options: --seed 18494
+
+# Running:
+
+FF
+
+Finished in 2.488381s, 0.8037 runs/s, 1.6075 assertions/s.
+
+  1) Failure:
+IssueNestedSetConcurrencyTest#test_concurrency [test/unit/issue_nested_set_concurrency_test.rb:45]:
+Expected ""Mysql2::Error: Deadlock found when trying to get lock; try restarting transaction: SELECT `issues`.`id` FROM `issues` WHERE (root_id IN (SELECT root_id FROM issues WHERE id IN (225)))  ORDER BY `issues`.`id` ASC FOR UPDATE"" to be nil.
+
+
+  2) Failure:
+IssueNestedSetConcurrencyTest#test_concurrent_subtasks_creation [test/unit/issue_nested_set_concurrency_test.rb:61]:
+Expected ""Mysql2::Error: Deadlock found when trying to get lock; try restarting transaction: SELECT `issues`.`id` FROM `issues` WHERE (root_id IN (SELECT root_id FROM issues WHERE id IN (229)))  ORDER BY `issues`.`id` ASC FOR UPDATE"" to be nil.
+
+2 runs, 4 assertions, 2 failures, 0 errors, 0 skips
+</pre>"
+23940,Redmine,Defect,"",Needs feedback,Normal,Private issues notifications,Oleg Fedotkin,"",2016-09-27 12:45,Email notifications,"","","","",0,2016-09-27 12:06,"","","","","If user receives all notifications from project, he also always receives all notifications about private issues even if he can't view the issue. I think it's a bug."
+23939,Redmine,Defect,"",Closed,Normal,Watchers not recieving e-mail notifications,Falcon Wood,"",2016-09-30 06:13,Email receiving,"","","","",0,2016-09-26 21:55,2016-09-30 06:13,"",Invalid,3.3.0,"I have a question for you. Our Redmine install is set up as follows. LDAP for authentication with E-mail from users coming from AD. We have IMAP and SMTP set up and working, and groups of users assigned to each project, in the project, you can create a new ticket, and submit it to the group in some way. The Watchers List indicates who's in each group, and you can select group members. On occasion we select watchers that are registered users but not in the group.
+
+Shown here is a watchers list where we have a couple of members, these selected watchers all receive e-mails. 
+!WatchersList.png!
+
+When we update tickets these watchers are not receiving e-mail notifications, but members of the project or group do receive email notifications. We have the default for all accounts for email's as ""Only for things I watch or am involved in"". I can replicate this by adding these users to the new issue, ""search for watchers to add"", or even after adding them using the edit function.  
+
+Settings page selected for Email notifications
+!EmailNotifications.png!
+
+Here is our default preferences: 
+!DefaultEmailPrefs.png!
+
+is this behavior intended or?
+
+Thanks!"
+23930,Redmine,Defect,"",Closed,Normal,Firebird & RedDatabase support problem,Andrey Lobanov (RedSoft),"",2016-09-26 13:36,Database,"","","","",0,2016-09-26 12:22,2016-09-26 12:52,"",Invalid,3.3.0,"Redmine have some queries that uses firebird keywords, ex. count
+<pre>
+          result_scope = ActsAsTaggableOn::Tag
+            .joins(:taggings)
+            .select('tags.id, tags.name, tags.taggings_count, COUNT(taggings.id) as count')
+            .group('tags.id, tags.name, tags.taggings_count')
+            .where(taggings: { taggable_type: 'Issue', taggable_id: issues_scope})
+</pre>
+In this example used fragment of code from plugins/redmine_tags/lib/redmine_tags/patches/issue_patch.rb (available_tags)
+
+The problem is that count is reserved keyword and to name column it should look like this 
+<pre>'COUNT(taggings.id) as ""COUNT""'</pre>
+
+In my fork i located few more used keywords: position, admin.
+
+I'll make a patch, if i'll have time, but it would be nice if someone fix it."
+23922,Redmine,Defect,"",Closed,Normal,Time Entries context menu/bulk edit shows activities not available for the time entry's project,Felix Sch?fer,Jean-Philippe Lang,2016-12-03 09:38,Time tracking,3.3.2,"","","",0,2016-09-25 09:45,2016-12-03 09:38,"",Fixed,"","It is possible to deselect time entry activities on a project level, this is not taken into account in the time entries context menu.
+
+A user is able to set the activity of a time entry to an activity that has been disabled for the project/issue's project of that time entry."

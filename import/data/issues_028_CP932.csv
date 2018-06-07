@@ -1,0 +1,766 @@
+#,プロジェクト,トラッカー,親チケット,ステータス,優先度,題名,作成者,担当者,更新日,カテゴリ,対象バージョン,開始日,期日,予定工数,進捗率,作成日,終了日,関連するチケット,Resolution,Affected version,説明
+22864,Redmine,Defect,"",Closed,Normal,Associated revisions mix timestamps of git committer and git author.,Deniz Bahadir,"",2016-05-20 17:54,SCM,"","","","",0,2016-05-20 16:44,2016-05-20 17:54,次のチケットと重複 #11710,Duplicate,3.2.0,"h1. Background information:
+
+Git-commits have an *author*, who originally created the commit, and a *committer* who (finally) committed this commit to the Git-repository. Both come with their own timestamps.
+
+* In general, author and committer are the same.
+* They can be the same but have different dates associated with them
+* But they can even be different.
+
+h1. The problem
+
+The problem is, that if these commits are displayed as _associated revisions_ from a Redmine-ticket the *author* will be displayed with *commit-date* instead of the original *author-date*.
+
+h1. Suggested solution.
+
+The best solution would probably be to always display both, author *and* committer with their respective dates."
+22863,Redmine,Defect,"",Closed,Low,Page not found error on Homepage,Gregor Su?anj,"",2016-05-24 12:40,"","","","","",0,2016-05-20 15:23,2016-05-21 05:30,"",Invalid,3.1.3,"Greetings,
+after a long process to setup the Redmine server on Centos 7 I hit a wall.
+
+Whenever I visit the homepage https://redmine.someurl.com it returns a Page not found.
+All subpages work properly (I ""guessed"" https://redmine.someurl.com/projects), I can edit my profile information and create new projects.
+
+I can not find a suitable category to fit this issue into."
+22861,Redmine,Defect,"",Needs feedback,Normal,Allow themes to override responsive style sheet.,S?bastien Comeau,"",2016-05-30 10:17,Themes,"","","","",0,2016-05-20 13:33,"","","",3.2.2,Modified the scan_themes method in themes.rb to allow themes to override responsive style sheet.
+22850,Redmine,Patch,"",Closed,Normal,Speedup remove_inherited_roles,Pavel Rosick?,Jean-Philippe Lang,2016-10-02 13:45,Performance,3.4.0,"","","",0,2016-05-19 10:18,2016-10-02 13:45,関連している #19179,"","","<pre>
+Environment:
+  Redmine version                3.2.2.devel
+  Ruby version                   2.1.5-p273 (2014-11-13) [x64-mingw32]
+  Rails version                  4.2.6
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Git                            2.8.1
+  Filesystem
+Redmine plugins:
+  no plugin installed
+</pre>
+
+I made an optimalization to avoid these queries, that reliably kills the application if there are many member roles.
+
+SELECT `member_roles`.* FROM `member_roles` WHERE `member_roles`.`inherited_from` = ?
+
+This table was retrieved with a full table scan, which is often quite bad for performance, unless you only retrieve a few rows.
+The table was retrieved with this index:
+No index was used in this part of the query.
+You can speed up this query by querying only fields that are within the index. Or you can create an index that includes every field in your query, including the primary key.
+Approximately 1224500 rows of this table were scanned.
+"
+22847,Redmine,Defect,"",Closed,Normal,"Developed a redmine plug-in, can upload? ",匿名ユーザー,"",2016-05-19 05:51,"","","","","",0,2016-05-18 21:22,2016-05-19 05:51,"",Invalid,"","plugin source:
+
+https://github.com/zhujunwu/redmine-plugin-notice
+
+remark : en.yml,zh.yml"
+22846,Redmine,Defect,"",Closed,Normal,??了一个redmine公告插件，可以上??,匿名ユーザー,"",2016-05-18 15:34,"","","","","",0,2016-05-18 15:10,2016-05-18 15:31,"",Invalid,"","??了一个redmine公告插件，可否上??
+
+代?下? : 
+https://github.com/zhujunwu/redmine-plugin-notice"
+22843,Redmine,Defect,"",New,Normal,Markdown code blocks not inserted properly,Jean-Claude Wippler,"",2017-12-24 16:03,Text formatting,"","","","",0,2016-05-18 11:06,"","","",3.2.0,"When using the @pre@ button in the web editor to insert a pre-formatted code block for a project which uses Markdown formatting, the lines inserted contain ""@~~~@"", which does not work in Markdown. It should insert lines ""@```@"" instead (possibly also preceded and followed by an empty line, not sure).
+
+Very easy to reproduce: in a Markdown project, add an entry, press the ""pre"" button, click on ""Preview"". The resulting page shows ""~~~"" instead of a proper code block."
+22835,Redmine,Defect,"",Closed,Low,Can't change start month in Gant custom querie,Nikita Brattsev,"",2016-05-18 09:49,Gantt,"","","","",0,2016-05-17 11:08,2016-05-18 09:49,"",Invalid,3.2.1,"When I trying to save new querie in Gant, start month and year is always current."
+22831,Redmine,Defect,"",Closed,Normal,"Rest api no longer return estimated time ,hours spent for master tickets",Filip Endris,"",2017-01-07 08:23,REST API,"","","","",0,2016-05-16 15:11,2017-01-07 08:23,次のチケットと重複 #21757,Duplicate,"","Since we upgraded from 1.2.xx to 3.2.1 (this major update is the reason i cant provide version which broke this feature) I can no longer retrieve spent time and estimated time for master tickets this is what i get ->
+<estimated_hours/>
+<spent_hours>0.0</spent_hours>
+the ticket itself of course have more than 0 in both fields"
+22822,Redmine,Defect,"",Needs feedback,Normal,Tracker configuration page don't show actual project hiearchy,fabrice salvaire,"",2016-05-15 17:35,Administration,"","","","",0,2016-05-15 12:01,"","","",3.2.0,"The project hierarchy shown in the tracker configuration page doesn't correspond to the actual hierarchy but to the initial one.
+"
+22819,Redmine,Defect,"",Closed,Normal,Internal Error while create new issue,saurabh Savaliya,"",2017-08-07 16:52,"","","","","",0,2016-05-14 16:40,2016-06-22 06:58,"",No feedback,"","While I am going to create, delete or edit any issue, it will give *internal error*. Recently I changed fields permission from administration. I have tried again after reset those changes but still it is not working.
+
+I give lots of time to configure redmine and its admin. Please advise what should be error.
+
+*Affected Version: 3.2.1*"
+22809,Redmine,Patch,"",Closed,Normal,Updated Korean locale data,Yonghwan SO,"",2016-05-22 07:01,Translations,"","","","",0,2016-05-13 08:07,2016-05-22 07:01,"","","",I updated for current status.
+22808,Redmine,Defect,"",Closed,Normal,Malformed SQL query with SQLServer when grouping and sorting by fixed version,Silvio Fernandes,Jean-Philippe Lang,2016-05-21 08:50,Issues filter,3.1.6,"","","",0,2016-05-12 18:29,2016-05-21 08:50,"",Fixed,3.2.1,"Hi guys,
+
+I had the same problem of issue #19544, but my was with the fixed version column, in version 3.2.1 with SQL Server 2012, and this r14207 did not solve my problem.
+
+making a debug in the code, I found that the part where it should make a flatten between two Array, the variable group_by_sort_order comes as String, so I did a treatment to make this String into Array, and solved my problem.
+
+code modified in /app/models/issue_query.rb
+<pre><code class=""ruby"">
+  # Returns the issues
+  # Valid options are :order, :offset, :limit, :include, :conditions
+  def issues(options={})
+    if group_by_sort_order.is_a?(String)
+      # convert String in Array
+      order_option = [group_by_sort_order.split(','), options[:order]].flatten.reject(&:blank?)
+    else
+      order_option = [group_by_sort_order, options[:order]].flatten.reject(&:blank?)
+    end
+
+...
+</code></pre>"
+22807,Redmine,Defect,"",Needs feedback,Normal,rbpdf 1.19.0 breaks the encoding,Pavel Rosick?,"",2016-05-12 19:09,PDF export,"","","","",0,2016-05-12 17:06,"",関連している #22077,"",3.2.2,"env
+ruby 2.1.5p273 (2014-11-13 revision 48405) [x64-mingw32]
+redmine 3.2.2 stable
+general_pdf_fontname: freesans
+no plugins
+
+Can't properly export czech characters to pdf since Redmine 3.2.0
+example: p??li? ?lu?ou?k? k??
+
+Forcing previous version of rbpdf gem fixes the issue
+gem ""rbpdf"", ""1.18.7"""
+22799,Redmine,Defect,"",Closed,Normal,my account error 500,梦航 侯,"",2016-05-12 05:36,"","","","","",0,2016-05-12 05:07,2016-05-12 05:36,"",Invalid,"","App 57868 stderr: ActionView::Template::Error (Permission denied @ dir_s_mkdir - /var/www/redmine/tmp/cache/900):
+App 57868 stderr: 17: <p><%= f.text_field :lastname, :required => true ></p>
+App 57868 stderr: 18: <p><%= f.text_field :mail, :required => true %></p>
+App 57868 stderr: 19: < unless @user.force_default_language? >
+App 57868 stderr: 20: <p><%= f.select :language, lang_options_for_select %></p>
+App 57868 stderr: 21: < end >
+App 57868 stderr: 22: < if Setting.openid? %>
+App 57868 stderr: 23: <p><%= f.text_field :identity_url %></p>
+App 57868 stderr: lib/redmine/i18n.rb:102:in `languages_options'
+App 57868 stderr: app/helpers/application_helper.rb:1041:in `lang_options_for_select'
+App 57868 stderr: app/views/my/account.html.erb:20:in `block in app_views_my_account_html_erb__3042467007524082365_70303794276760'
+App 57868 stderr: app/helpers/application_helper.rb:1056:in `labelled_form_for'
+App 57868 stderr: app/views/my/account.html.erb:9:in `_app_views_my_account_html_erb___3042467007524082365_70303794276760'
+App 57868 stderr: 
+App 57868 stderr: 
+App 66091 stdout: 
+App 66091 stderr: Rails Error: Unable to access log file. Please ensure that /var/www/redmine/log/production.log exists and is chmod 0666. The log level has been raised to WARN and the output directed to STDERR until the problem is fixed.
+App 66091 stderr: Creating scope :system. Overwriting existing method Enumeration.system.
+App 66091 stderr: Creating scope :sorted. Overwriting existing method User.sorted.
+App 66091 stderr: Creating scope :sorted. Overwriting existing method Group.sorted."
+22798,Redmine,Patch,"",New,Normal,fetching of Git changesets sometimes fails due to non existant revisions in prev_db_heads,Jens Kr?mer,"",2016-06-14 02:37,SCM,Candidate for next minor release,"","","",0,2016-05-12 02:39,"","","","","Under certain circumstances it may happen that revisions disappear from a git repository (i.e. when the repository is compacted / garbage collected after doing force pushes).
+
+Redmine stores a @prev_db_heads@ list in the repositories @extra_info@, which may contain hashes pointing to such no more existing objects. In this case, @Repository#fetch_changesets@ will fail silently and not fetch anything, since the underlying @git log@ command refuses to work when non existing revisions are given on the command line.
+
+The attached patch was extracted from ""Planio"":https://plan.io/redmine-hosting and checks each entry in @prev_db_heads@, keeping only those that still exist."
+22797,Redmine,Defect,"",Closed,Normal,How to remove plugins in Redmine 2.6.3-0 for Windows,Miguel Rueda,"",2016-05-11 16:48,Administration,"","","","",0,2016-05-11 16:39,2016-05-11 16:48,"",Invalid,2.6.3,"Hi,
+
+I'm working in Redmine 2.6.3-0 for Windows, and I'm trying to upgrade to the las version but I can't remove the plugins for migrate the data to the new version.
+
+What are the steps to remove these plugins in this version and complete the upgrade to the last version??"
+22796,Redmine,Defect,"",Closed,Normal,Problem with ruby,Dmitry Starovoytov,"",2016-05-11 16:45,Email receiving,"","","","",0,2016-05-11 15:44,2016-05-11 16:45,"",Invalid,1.4.4,"Hello, i`m trying to set up revieving mail on my debian server. 
+Finally have this message
+** Invoke redmine:email:receive_pop3 (first_time)
+rake aborted!
+Don't know how to build task 'environment'
+/usr/lib/ruby/vendor_ruby/rake/task_manager.rb:49:in `[]'
+/usr/lib/ruby/vendor_ruby/rake/task.rb:60:in `lookup_prerequisite'
+/usr/lib/ruby/vendor_ruby/rake/task.rb:56:in `block in prerequisite_tasks'
+/usr/lib/ruby/vendor_ruby/rake/task.rb:56:in `collect'
+/usr/lib/ruby/vendor_ruby/rake/task.rb:56:in `prerequisite_tasks'
+/usr/lib/ruby/vendor_ruby/rake/task.rb:174:in `invoke_prerequisites'
+/usr/lib/ruby/vendor_ruby/rake/task.rb:157:in `block in invoke_with_call_chain'
+/usr/lib/ruby/1.9.1/monitor.rb:211:in `mon_synchronize'
+/usr/lib/ruby/vendor_ruby/rake/task.rb:151:in `invoke_with_call_chain'
+/usr/lib/ruby/vendor_ruby/rake/task.rb:144:in `invoke'
+/usr/lib/ruby/vendor_ruby/rake/application.rb:116:in `invoke_task'
+/usr/lib/ruby/vendor_ruby/rake/application.rb:94:in `block (2 levels) in top_level'
+/usr/lib/ruby/vendor_ruby/rake/application.rb:94:in `each'
+/usr/lib/ruby/vendor_ruby/rake/application.rb:94:in `block in top_level'
+/usr/lib/ruby/vendor_ruby/rake/application.rb:133:in `standard_exception_handling'
+/usr/lib/ruby/vendor_ruby/rake/application.rb:88:in `top_level'
+/usr/lib/ruby/vendor_ruby/rake/application.rb:66:in `block in run'
+/usr/lib/ruby/vendor_ruby/rake/application.rb:133:in `standard_exception_handling'
+/usr/lib/ruby/vendor_ruby/rake/application.rb:63:in `run'
+/usr/bin/rake:27:in `<main>'
+
+"
+22795,Redmine,Patch,"",Closed,Normal,Render custom field values of enumerations in API requests,Jens Kr?mer,Jean-Philippe Lang,2017-06-25 14:11,REST API,3.4.0,"","","",0,2016-05-11 13:09,2016-09-03 09:30,"","","","As it is now, the values of custom fields of enumeration objects (like time entry activities) aren't rendered in the API. The attached patch fixes this."
+22794,Redmine,Defect,"",Closed,Normal,Multi-value custom list fields are not wrapped in Issues view,Christian Luginb?hl,"",2016-05-11 14:24,UI,"","","","",0,2016-05-11 11:57,2016-05-11 14:24,次のチケットと重複 #22496,Duplicate,3.2.2,"We have a custom value multi-value list field which can have quite a few activated items. When showing this field in the Issues view, the here comma-separated items are not wrapped which leads to very long lines and unnecessary horizontal scrolling. See attached image ""redmine_multi_value_list_not_word_wrapping.png""
+
+Expected behaviour: Multi-value list fields should be wrapped over multiple lines as seen in attached image ""expected_redmine_multi_value_list_with_word_wrapping.png""
+
+I did create this fix with a tiny CSS change in my custom theme:
+
+<pre>
+tr.issue td.list {
+	white-space: normal;
+}
+</pre>
+
+It seems that one cannot distinguish between single and multi-value fields out of the CSS classes that are set. It would be best if the rendering of  multi-value list would add another class attribute."
+22792,Redmine,Defect,"",Closed,Normal,Trying to install new redmine 3.2.2 rake failed ,maximilian gablinger,"",2016-05-11 10:02,"","","","","",0,2016-05-11 08:44,2016-05-11 10:02,"",Invalid,"","I try to install new redmine with mysql Database on a remote maschine . This fails when I try to generate a secret token.
+Same thing happens at next step when I try to generate a database structure.
+step 1:
+bundle exec rake generate_secret_token
+You have requested:
+  mime-types ~> 3.0
+
+The bundle currently has mime-types locked at 2.99.1.
+Try running `bundle update mime-types`
+
+If you are updating multiple gems in your Gemfile at once,
+try passing them all to `bundle update`
+Run `bundle install` to install missing gems.
+
+The bundle update succeeds fine itself.
+
+But the following step fails:
+RAILS_ENV=production exec rake db:migrate
+You have requested:
+  mime-types ~> 3.0
+
+The bundle currently has mime-types locked at 2.99.1.
+Try running `bundle update mime-types`
+
+If you are updating multiple gems in your Gemfile at once,
+try passing them all to `bundle update`
+Run `bundle install` to install missing gems.
+
+What is wrong?"
+22791,Redmine,Defect,"",Closed,Normal,Redmine.org => forbidden,Florian S.,"",2016-05-11 10:03,Website (redmine.org),"","","","",0,2016-05-11 08:30,2016-05-11 10:03,次のチケットと重複 #22281,Duplicate,"","it seems as only www.redmine.org can be displayed. entering redmine.org (without www.) the following error is returned:
+<pre>
+Forbidden
+
+You don't have permission to access / on this server.
+Apache Server at redmine.org Port 80
+</pre>"
+22788,Redmine,Patch,"",Closed,Normal,Traditional Chinese translation (to r15413),ChunChang Lo,"",2016-05-22 07:00,Translations,"","","","",0,2016-05-11 03:39,2016-05-22 07:00,"","","","* New
+** jsToolBar.strings['Highlighted code']
+"
+22786,Redmine,Defect,"",Needs feedback,Normal,"On click PDF link on Project bottom PDF, not open, showing error ""Couldn't open PDF""  in IE and Microsoft Edge",Neeraj Singh,"",2016-05-10 16:25,"","","","","",0,2016-05-10 14:19,"","","","","Hi,
+
+When i click on PDF link on Project bottom PDF, it is showing error ""Couldn't open PDF"". This is issue in IE and Microsoft Edge.
+
+Please help!"
+22778,Redmine,Patch,"",Closed,Normal,Traditional Chinese translation (to r15411),ChunChang Lo,"",2016-05-10 09:26,Translations,"","","","",0,2016-05-10 08:11,2016-05-10 09:26,コピー元 #22770,"","","* New:
+** setting_new_project_issue_tab_enabled"
+22776,Redmine,Patch,"",Closed,Normal,Japanese translation update (r15408),Go MAEDA,"",2016-05-10 06:07,Translations,"","","","",0,2016-05-10 02:00,2016-05-10 06:07,"","","",Translated setting_new_project_issue_tab_enabled.
+22774,Redmine,Defect,"",Closed,Low,"""Parent task is invalid"" message when setting parent to root issue after setting to a child of the root.",Brandon Legault,"",2016-12-11 08:56,Issues,"","","","",0,2016-05-09 18:53,2016-12-11 08:56,次のチケットと重複 #13654,Fixed,3.2.1,"Hopefully the title makes sense.
+
+*Repro steps:*
+# Create Issue 1
+# Create Issue 2 and assign 1 as parent
+# Create Issue 3 and assign 1 as parent
+# Navigate to issue 3 and assign 2 as parent
+# Navigate to issue 3 and re-assign 1 as parent
+
+Step 5 will display ""Parent Task is invalid"". 
+
+*Workaround:*
+5. Navigate to issue 3 and remove any parenting
+6. Navigate to issue 3 and re-assign 1 as the parent
+
+Seems the issue can't be assigned to its parent because it would create a conflict reassigning the lft and rgt fields of the 3 issues involved.
+
+<pre>
+Environment:
+  Redmine version                3.0.1.stable
+  Ruby version                   2.0.0-p598 (2014-11-13) [x86_64-linux]
+  Rails version                  4.2.0
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.8.10
+  Git                            1.9.5
+  Filesystem                    
+</pre> "
+22770,Redmine,Patch,"",Closed,Normal,Traditional Chinese translation (to r15404),ChunChang Lo,"",2016-05-09 17:54,Translations,"","","","",0,2016-05-09 03:48,2016-05-09 17:54,"コピー元 #22732, コピー先 #22778","","","* New:
+** button_filter, mail_body_password_updated, label_no_preview
+* Changed:
+** field_is_filter
+*** unified translation for filter
+"
+22769,Redmine,Patch,"",Closed,Normal,Japanese translation update (r15400),Go MAEDA,"",2016-05-08 13:36,Translations,"","","","",0,2016-05-08 10:57,2016-05-08 13:36,次のチケットが重複 #22668,"","","Translated the following 5 strings. This patch replaces #22668.
+
+* label_wiki_page_new
+* label_relations
+* button_filter
+* mail_body_password_updated
+* label_no_preview
+"
+22761,Redmine,Patch,"",Closed,Normal,Korean translation for 3.2-stable,Toshi MARUYAMA,"",2016-05-07 18:12,Translations,3.2.3,"","","",0,2016-05-07 14:11,2016-05-07 18:12,"","","",From #22506.
+22760,Redmine,Patch,"",Closed,Normal,Korean translation for 3.1-stable,Toshi MARUYAMA,"",2016-05-07 18:11,Translations,3.1.6,"","","",0,2016-05-07 14:09,2016-05-07 18:11,"","","",From #22506.
+22759,Redmine,Patch,"",Closed,Normal,pt-BR translation for 3.1.stable,Toshi MARUYAMA,"",2016-05-07 14:24,Translations,3.1.6,"","","",0,2016-05-07 13:00,2016-05-07 14:24,"","","",From #22427.
+22756,Redmine,Patch,"",Closed,Normal,Edit versions links on the roadmap,Jean-Philippe Lang,Jean-Philippe Lang,2016-05-06 18:56,UI,3.3.0,"","","",0,2016-05-06 18:56,2016-05-06 18:56,"","","",""
+22754,Redmine,Defect,"",Closed,Normal,Error while updating issues with boolean custom field through API,Christopher  Gabriel,Jean-Philippe Lang,2016-06-04 09:43,REST API,"","","","",0,2016-05-06 15:01,2016-06-04 09:43,"","","","We started having trouble while updating an issue through the API. Some client code worked fine for almost 2 years.
+
+Hints?
+
+<pre>
+Started PUT ""/issues/1564987.json"" for 151.66.249.97 at 2016-05-06 14:53:29 +0200
+Processing by IssuesController#update as JSON
+  Parameters: {""issue""=>{""due_date""=>""2016-07-05"", ""id""=>1564987, ""custom_fields""=>[{""id""=>207, ""value""=>1}], ""status_id""=>""30""}, ""id""=>""1564987""}
+WARNING: Can't verify CSRF token authenticity
+  Current user: SOAP (id=165)
+  Rendered mailer/issue_edit.text.erb within layouts/mailer (3.9ms)
+Completed 500 Internal Server Error in 295ms
+
+ActionView::Template::Error (undefined method `empty?' for 1:Fixnum):
+    1: <%= l(:text_issue_updated, :id => ""##{@issue.id}"", :author => @journal.user) %>
+    2: 
+    3: <% details_to_strings(@journal.details, true).each do |string| -%>
+    4: <%= string %>
+    5: <% end -%>
+    6: 
+  lib/redmine/custom_field_format.rb:98:in `format_value'
+  app/helpers/custom_fields_helper.rb:120:in `format_value'
+  app/helpers/issues_helper.rb:288:in `show_detail'
+  app/helpers/issues_helper.rb:238:in `block in details_to_strings'
+  app/helpers/issues_helper.rb:223:in `details_to_strings'
+  app/views/mailer/issue_edit.text.erb:3:in `_app_views_mailer_issue_edit_text_erb__2517208687241099780_60946440'
+  app/models/mailer.rb:417:in `block in mail'
+  app/models/mailer.rb:416:in `mail'
+  app/models/mailer.rb:76:in `issue_edit'
+  app/models/mailer.rb:427:in `initialize'
+  app/models/mailer.rb:440:in `method_missing'
+  app/models/journal_observer.rb:26:in `after_create'
+  app/models/journal.rb:52:in `save'
+  app/models/issue.rb:1362:in `create_journal'
+  app/models/issue.rb:965:in `block in save_issue_with_child_records'
+  app/models/issue.rb:952:in `save_issue_with_child_records'
+  app/controllers/issues_controller.rb:176:in `update'
+</pre>
+
+"
+22745,Redmine,Defect,"",Closed,Normal,Rest API for Custom Fields does not return keys for key/value types,Stephen Stuart,Jean-Philippe Lang,2016-05-08 10:47,REST API,3.3.0,"","","",0,2016-05-05 21:35,2016-05-08 10:47,関連している #26017,Fixed,3.2.1,"When using the REST API to retrieve the list of custom_fields by calling http://localhost:3000/custom_fields.json , if there is a Key/Value list type custom fields only the value comes back, as in the example below:
+
+<pre><code class=""json"">
+""id"": 5,
+""name"": ""Lifecycle Status"",
+""customized_type"": ""version"",
+""field_format"": ""enumeration"",
+""regexp"": """",
+""visible"": true,
+""possible_values"": [
+  {
+    ""value"": ""2"",
+  },
+  {
+    ""value"": ""3"",
+  },
+  {
+    ""value"": ""4"",
+  }
+]
+</code></pre>
+to replace this block:
+It would be much more useful to get the name back as well, like:
+
+<pre><code class=""json"">
+""id"": 5,
+""name"": ""Lifecycle Status"",
+""customized_type"": ""version"",
+""field_format"": ""enumeration"",
+""regexp"": """",
+""visible"": true,
+""possible_values"": [
+  {
+    ""value"": ""2"",
+    ""label"": ""Planned""
+  },
+  {
+    ""value"": ""3"",
+    ""label"": ""In Progress""
+  },
+  {
+    ""value"": ""4"",
+    ""label"": ""Complete""
+  }
+]
+</code></pre>
+
+I did this in a plugin by overriding app/views/custom_fields/index.api.rsb and adding and if block checking for EnumerationFormat.
+
+<pre><code class=""ruby"">
+      values = field.possible_values_options
+      if values.present?
+        api.array :possible_values do
+          values.each do |label, value|
+            api.possible_value do
+              api.value value || label
+              if field.format.class.name.demodulize == 'EnumerationFormat'
+                  api.label label
+              end
+            end
+          end
+        end
+      end
+</code></pre>
+
+I was going to just put the 'api.label label' line in without the if statement but it also takes effect for list types where label and value appear to be the same.  There is almost certainly a better way to do this.
+"
+22740,Redmine,Defect,"",Closed,High,Redmine is not working ,AT1234 D,"",2016-05-05 15:51,"","","","","",0,2016-05-05 13:49,2016-05-05 15:51,"",Invalid,2.6.0,"
+HI All,
+
+Redmine stops working suddenly after server reboot.
+
+
+
+[Thu May 05 17:11:31.585990 2016] [proxy:error] [pid 6648:tid 1272] (OS 10061)No connection could be made because the target machine actively refused it.  : AH00957: HTTP: attempt to connect to 127.0.0.1:3001 (127.0.0.1) failed
+[Thu May 05 17:11:31.585990 2016] [proxy:error] [pid 6648:tid 1272] AH00959: ap_proxy_connect_backend disabling worker for (127.0.0.1) for 60s
+[Thu May 05 17:11:31.585990 2016] [proxy_http:error] [pid 6648:tid 1272] [client IP:49488] AH01114: HTTP: failed to make connection to backend: 127.0.0.1, referer: https://ABC.ABC.AB.AB/redmine/
+"
+22733,Redmine,Defect,"",Closed,Normal,404 The entry or revision was not found in the repository,Sw Dev,"",2016-05-06 17:46,"","","","","",0,2016-05-05 09:50,2016-05-06 17:46,"",Invalid,3.2.1,"Environment: Redmine 3.2.1 with Bitnami Virtual Machine.
+Goal: setup a Git repository.
+
+This might have been resolved but none of the solutions worked in my setup. I followed these instructions: https://www.redmine.org/projects/redmine/wiki/RedmineRepositories adapted to the bitnami setup: 
+directory is /opt/bitnami/projects/myrepo.git
+user is bitnami:daemon . 
+I can fetch a remote repository, so my bare repository on the machine is not empty.
+The error above happens.
+Ideally I would only like to link to an existing Gitlab repository and enable issue tracking via commit comments. 
+
+I tried other solutions, variants of the path, etc. Nothing worked. 
+
+Please help."
+22732,Redmine,Patch,"",Closed,Normal,Traditional Chinese translation (to r15362),ChunChang Lo,"",2016-05-07 15:57,Translations,"","","","",0,2016-05-05 05:44,2016-05-07 15:57,"コピー元 #22113, コピー先 #22770","","","* New:
+** label_wiki_page_new, label_relations: Relations
+"
+22724,Redmine,Patch,"",Closed,Normal,"Change Japanese translation for ""last name"" and ""first name""",Go MAEDA,"",2016-05-08 14:01,Translations,3.3.0,"","","",0,2016-05-04 15:09,2016-05-08 14:01,"","","","I suggest changing Japanese translation for ""last name"" and ""first name"", from ""苗字"" and ""名前"" to ""姓"" and ""名"".
+
+* ""名前"" is ambiguous. It can be interpreted either as ""first name"" or ""full name"" in Japanese.
+* ""姓"" and ""名"" is more generic than ""苗字"" and ""名前"" for applications. All the following applications uses ""姓"" and ""名"":
+** MacOS Address Book
+** Android Contacts
+** Windows Address Book
+** Wordpress
+** Google Accounts"
+22712,Redmine,Defect,"",Needs feedback,Normal,picture's in email notification,Timmy Vercruysse,"",2016-05-19 16:05,Email notifications,"","","","",0,2016-05-03 14:24,"","","","","Dear,
+
+When i i make an issue with a picture in the picture isn't shown inline. I looks like the link for the inline is nog good, while the link for the on the buttom of the mail is correctly.
+i've filed in the correct hostname for the server, and the link in the bottom of the mail works fine, while the inline picture doesn't have a host before the url.
+!mail_attachment.png!"
+22700,Redmine,Defect,"",Closed,Normal,Error parsing repository,Marco Descher,"",2016-05-03 01:15,SCM,"","","","",0,2016-05-02 13:39,2016-05-03 01:15,"",Invalid,2.3.4,"The git repository indexing worked great for quite a while, until it suddenly stopped. Manually executing
+@
+ruby script/rails runner ""Repository.fetch_changesets"" -e production@
+
+shows
+
+<pre>
+/var/lib/gems/1.9.1/gems/railties-3.2.13/lib/rails/commands/runner.rb:53:in `eval': undefined method `merge!' for #<String:0x000000053fec60> (NoMethodError)
+	from /home/server/services/redmine-2.3.4/app/models/repository/git.rb:143:in `fetch_changesets'
+	from /home/server/services/redmine-2.3.4/app/models/repository.rb:333:in `block (2 levels) in fetch_changesets'
+	from /var/lib/gems/1.9.1/gems/activerecord-3.2.13/lib/active_record/associations/collection_proxy.rb:89:in `each'
+	from /var/lib/gems/1.9.1/gems/activerecord-3.2.13/lib/active_record/associations/collection_proxy.rb:89:in `method_missing'
+	from /home/server/services/redmine-2.3.4/app/models/repository.rb:331:in `block in fetch_changesets'
+	from /home/server/services/redmine-2.3.4/app/models/repository.rb:330:in `each'
+	from /home/server/services/redmine-2.3.4/app/models/repository.rb:330:in `fetch_changesets'
+	from (eval):1:in `<top (required)>'
+	from /var/lib/gems/1.9.1/gems/railties-3.2.13/lib/rails/commands/runner.rb:53:in `eval'
+	from /var/lib/gems/1.9.1/gems/railties-3.2.13/lib/rails/commands/runner.rb:53:in `<top (required)>'
+	from /var/lib/gems/1.9.1/gems/railties-3.2.13/lib/rails/commands.rb:64:in `require'
+	from /var/lib/gems/1.9.1/gems/railties-3.2.13/lib/rails/commands.rb:64:in `<top (required)>'
+	from script/rails:6:in `require'
+	from script/rails:6:in `<main>'
+</pre>"
+22695,Redmine,Defect,"",Closed,Normal,Revision content message is not escaped,Tom Rochette,"",2016-05-07 09:42,Issues,"","","","",0,2016-05-01 02:55,2016-05-07 09:42,関連している #22758,Invalid,3.2.0,"In my commit, I have the following content:
+
+<pre>
+[Fixes #2436] Adding new text in a contenteditable/list item converts spaces into &nbsp;
+</pre>
+
+But in the content displayed on the revision page, the following is displayed:
+
+<pre>
+[Fixes #2436] Adding new text in a contenteditable/list item converts spaces into  
+</pre>
+
+The content in the changesets table correspond to the content listed in the commit, so it appears to be only display related.
+
+
+  Redmine version                3.2.0.stable
+  Ruby version                   1.9.3-p551 (2014-11-13) [x86_64-linux]
+  Rails version                  4.2.5
+  Environment                    production
+  Database adapter               Mysql2"
+22694,Redmine,Defect,"",Closed,Normal,Associated revision content is not escaped,Tom Rochette,"",2016-05-07 09:42,Issues,"","","","",0,2016-05-01 02:53,2016-05-07 09:42,関連している #22758,Invalid,3.2.0,"In my commit, I have the following content:
+
+<pre>
+[Fixes #2436] Adding new text in a contenteditable/list item converts spaces into &nbsp;
+</pre>
+
+But in the affected revision box, the following is displayed:
+
+<pre>
+[Fixes #2436] Adding new text in a contenteditable/list item converts spaces into  
+</pre>
+
+The content in the changesets table correspond to the content listed in the commit, so it appears to be only display related.
+
+
+  Redmine version                3.2.0.stable
+  Ruby version                   1.9.3-p551 (2014-11-13) [x86_64-linux]
+  Rails version                  4.2.5
+  Environment                    production
+  Database adapter               Mysql2"
+22693,Redmine,Patch,"",Closed,Normal,Add styles for pre in email notifications,Go MAEDA,Jean-Philippe Lang,2016-05-08 09:24,Email notifications,3.3.0,"","","",0,2016-04-30 09:40,2016-05-08 09:24,"","","","This patch adds styles for pre element in email notifications. It will improve readability.
+Related to #22309.
+
+*before:*
+!pre-style-before.png!
+
+*after:*
+!pre-style-after.png!"
+22670,Redmine,Defect,"",Needs feedback,Normal,Email reminder sent even if ticket is closed,Markus Harrieder,"",2016-04-29 13:28,Email notifications,"","","","",0,2016-04-29 09:28,"",関連している #21227,"",3.1.1,"We have the issues that some of our team members get email reminders (""25 issue(s) due in the next 1/3/7 days"") even for already closed tickets. 
+I could not find any pattern, on some teammembers it works, others[me] get tons of closed ticket notifications. It seems to be related to the tickets somehow. The tickets are definitly closed but something forces redmine to list em on this notification mails. There are always 25Tickets per mail report. Its the exactly same behavior as described at #8108
+
+We already verified that it is not related to any plugin. We uninstalled our two plugins for testing, behavior is the same.
+
+Our environment:
+<pre>
+Environment:
+  Redmine version                3.1.1.stable
+  Ruby version                   2.1.5-p273 (2014-11-13) [x86_64-linux-gnu]
+  Rails version                  4.2.4
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.8.10
+  Git                            2.1.4
+  Filesystem                     
+Redmine plugins:
+  redmine_contacts               4.0.3
+  redmine_contacts_helpdesk      3.0.1
+</pre>
+
+Thank you for any help!
+
+Regards,
+Markus"
+22668,Redmine,Patch,"",Closed,Normal,Japanese translation update (r15354),Go MAEDA,"",2016-05-08 11:01,Translations,"","","","",0,2016-04-29 04:23,2016-05-08 11:01,次のチケットと重複 #22769,"","",Translated :label_wiki_page_new and :label_relations.
+22661,Redmine,Defect,"",Closed,Normal,redmine:email:receive_imap Errors out,Wayne Oliver,"",2016-04-28 16:45,Email receiving,"","","","",0,2016-04-28 14:33,2016-04-28 16:45,"",Invalid,3.2.1,"Fresh install of redmine 3.2.1 (existed on 3.2.0 too) on Ubuntu 14.04
+Environment:
+  Redmine version                3.2.1.stable
+  Ruby version                   2.1.4-p265 (2014-10-27) [x86_64-linux]
+  Rails version                  4.2.5.2
+  Environment                    production
+  Database adapter               Mysql2
+
+When attempting to use the receive_imap I get the following error
+<pre>
+/usr/bin/rake -f /home/redmine/redmine/Rakefile redmine:email:receive_imap RAILS_ENV=""production"" host=imap.gmail.com username=""xxxx"" password=xxxxport=993 ssl=1 project=testing folder=""test"" --trace
+rake aborted!
+NameError: uninitialized constant ActionView::Helpers::ActiveModelHelper
+/home/redmine/.rvm/gems/ruby-2.1.4/gems/actionview-4.2.5.2/lib/action_view/helpers.rb:40:in `<module:Helpers>'
+/home/redmine/.rvm/gems/ruby-2.1.4/gems/actionview-4.2.5.2/lib/action_view/helpers.rb:4:in `<module:ActionView>'
+/home/redmine/.rvm/gems/ruby-2.1.4/gems/actionview-4.2.5.2/lib/action_view/helpers.rb:3:in `<top (required)>'
+/home/redmine/.rvm/gems/ruby-2.1.4/gems/actionview-4.2.5.2/lib/action_view/base.rb:5:in `<top (required)>'
+/home/redmine/.rvm/gems/ruby-2.1.4/gems/actionview-4.2.5.2/lib/action_view/view_paths.rb:1:in `<top (required)>'
+/home/redmine/.rvm/gems/ruby-2.1.4/gems/actionpack-4.2.5.2/lib/abstract_controller/rendering.rb:4:in `<top (required)>'
+/home/redmine/.rvm/gems/ruby-2.1.4/gems/actionpack-4.2.5.2/lib/action_controller/base.rb:204:in `<class:Base>'
+/home/redmine/.rvm/gems/ruby-2.1.4/gems/actionpack-4.2.5.2/lib/action_controller/base.rb:164:in `<module:ActionController>'
+/home/redmine/.rvm/gems/ruby-2.1.4/gems/actionpack-4.2.5.2/lib/action_controller/base.rb:5:in `<top (required)>'
+/home/redmine/.rvm/gems/ruby-2.1.4/gems/actionpack-action_caching-1.1.1/lib/action_controller/action_caching.rb:13:in `<top (required)>'
+/home/redmine/.rvm/gems/ruby-2.1.4/gems/actionpack-action_caching-1.1.1/lib/actionpack/action_caching.rb:1:in `require'
+/home/redmine/.rvm/gems/ruby-2.1.4/gems/actionpack-action_caching-1.1.1/lib/actionpack/action_caching.rb:1:in `<top (required)>'
+/home/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.11.2/lib/bundler/runtime.rb:91:in `require'
+/home/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.11.2/lib/bundler/runtime.rb:91:in `rescue in block in require'
+/home/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.11.2/lib/bundler/runtime.rb:68:in `block in require'
+/home/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.11.2/lib/bundler/runtime.rb:61:in `each'
+/home/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.11.2/lib/bundler/runtime.rb:61:in `require'
+/home/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.11.2/lib/bundler.rb:99:in `require'
+/home/redmine/redmine/config/application.rb:5:in `<top (required)>'
+/usr/lib/ruby/2.1.0/rubygems/core_ext/kernel_require.rb:55:in `require'
+/usr/lib/ruby/2.1.0/rubygems/core_ext/kernel_require.rb:55:in `require'
+/home/redmine/redmine/Rakefile:5:in `<top (required)>'
+/home/redmine/.rvm/gems/ruby-2.1.4/gems/rake-11.1.2/lib/rake/rake_module.rb:28:in `load'
+/home/redmine/.rvm/gems/ruby-2.1.4/gems/rake-11.1.2/lib/rake/rake_module.rb:28:in `load_rakefile'
+/home/redmine/.rvm/gems/ruby-2.1.4/gems/rake-11.1.2/lib/rake/application.rb:689:in `raw_load_rakefile'
+/home/redmine/.rvm/gems/ruby-2.1.4/gems/rake-11.1.2/lib/rake/application.rb:94:in `block in load_rakefile'
+/home/redmine/.rvm/gems/ruby-2.1.4/gems/rake-11.1.2/lib/rake/application.rb:176:in `standard_exception_handling'
+/home/redmine/.rvm/gems/ruby-2.1.4/gems/rake-11.1.2/lib/rake/application.rb:93:in `load_rakefile'
+/home/redmine/.rvm/gems/ruby-2.1.4/gems/rake-11.1.2/lib/rake/application.rb:77:in `block in run'
+/home/redmine/.rvm/gems/ruby-2.1.4/gems/rake-11.1.2/lib/rake/application.rb:176:in `standard_exception_handling'
+/home/redmine/.rvm/gems/ruby-2.1.4/gems/rake-11.1.2/lib/rake/application.rb:75:in `run'
+/usr/bin/rake:33:in `<main>'
+LoadError: cannot load such file -- actionpack-action_caching
+/home/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.11.2/lib/bundler/runtime.rb:77:in `require'
+/home/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.11.2/lib/bundler/runtime.rb:77:in `block (2 levels) in require'
+/home/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.11.2/lib/bundler/runtime.rb:72:in `each'
+/home/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.11.2/lib/bundler/runtime.rb:72:in `block in require'
+/home/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.11.2/lib/bundler/runtime.rb:61:in `each'
+/home/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.11.2/lib/bundler/runtime.rb:61:in `require'
+/home/redmine/.rvm/gems/ruby-2.1.4/gems/bundler-1.11.2/lib/bundler.rb:99:in `require'
+/home/redmine/redmine/config/application.rb:5:in `<top (required)>'
+/usr/lib/ruby/2.1.0/rubygems/core_ext/kernel_require.rb:55:in `require'
+/usr/lib/ruby/2.1.0/rubygems/core_ext/kernel_require.rb:55:in `require'
+/home/redmine/redmine/Rakefile:5:in `<top (required)>'
+/home/redmine/.rvm/gems/ruby-2.1.4/gems/rake-11.1.2/lib/rake/rake_module.rb:28:in `load'
+/home/redmine/.rvm/gems/ruby-2.1.4/gems/rake-11.1.2/lib/rake/rake_module.rb:28:in `load_rakefile'
+/home/redmine/.rvm/gems/ruby-2.1.4/gems/rake-11.1.2/lib/rake/application.rb:689:in `raw_load_rakefile'
+/home/redmine/.rvm/gems/ruby-2.1.4/gems/rake-11.1.2/lib/rake/application.rb:94:in `block in load_rakefile'
+/home/redmine/.rvm/gems/ruby-2.1.4/gems/rake-11.1.2/lib/rake/application.rb:176:in `standard_exception_handling'
+/home/redmine/.rvm/gems/ruby-2.1.4/gems/rake-11.1.2/lib/rake/application.rb:93:in `load_rakefile'
+/home/redmine/.rvm/gems/ruby-2.1.4/gems/rake-11.1.2/lib/rake/application.rb:77:in `block in run'
+/home/redmine/.rvm/gems/ruby-2.1.4/gems/rake-11.1.2/lib/rake/application.rb:176:in `standard_exception_handling'
+/home/redmine/.rvm/gems/ruby-2.1.4/gems/rake-11.1.2/lib/rake/application.rb:75:in `run'
+/usr/bin/rake:33:in `<main>'
+</pre>
+
+Please let me know if you require more information.
+
+Many thanks
+Wayne Oliver
+"
+22660,Redmine,Defect,"",Closed,Normal,Deleting Wiki page fails,Ren? Heck,"",2016-04-28 11:53,Wiki,"","","","",0,2016-04-28 11:42,2016-04-28 11:53,"",Invalid,3.2.1,"Currently i'm hitting an problem with deleting wiki pages after upgrading redmine from 2.6 to 3.2. 
+
+In the transaction it fails on this sql statement in there where clausel.
+
+<pre>
+DELETE FROM `wiki_redirects` WHERE `wiki_redirects`.`redirects_to_wiki_id` = 16 AND `wiki_redirects`.`redirects_to` = 'Nomailreceipt';
+</pre>
+
+Error message:
+
+<pre>
+Error Code: 1064. You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '`wiki_redirects` WHERE `wiki_redirects`.`redirects_to_wiki_id` = 16 AND `wiki_re' at line 1
+</pre>
+
+After many debugging i found out that error occurs throughs an invisible unicode character in the query. 
+
+I'm not if its because of an plugin or an encoding error through the Apache2.
+
+Debug message:
+<pre>
+Parameters: {""utf8""=>""?"", ""authenticity_token""=>""ujMrRIftiEVTR0NpRKNFPByFK5hh9MFy7/u+Q11aT8id2u3vrflcGeN+r7pE9eCerVPBDZh1IbTxjsC80z2jsQ=="", ""todo""=>""destroy"", ""reassign_to_id""=>""1667"", ""commit""=>""Anwenden"", ""project_id""=>""wiki-gx2"", ""id""=>""H?ufig_verwendete_Rauten""}
+  Setting Load (0.4ms)  SELECT  `settings`.* FROM `settings` WHERE `settings`.`name` = 'session_lifetime'  ORDER BY `settings`.`id` DESC LIMIT 1
+  Setting Load (0.7ms)  SELECT  `settings`.* FROM `settings` WHERE `settings`.`name` = 'session_timeout'  ORDER BY `settings`.`id` DESC LIMIT 1
+  SQL (2.3ms)  UPDATE `tokens` SET `tokens`.`updated_on` = '2016-04-28 09:29:38' WHERE `tokens`.`user_id` = 196 AND `tokens`.`value` = 'f12049fa145dca16b262ce6ca5df285423cb1102' AND `tokens`.`action` = 'session' AND (created_on > '2016-03-29 09:29:38.141898') AND (updated_on > '2016-04-27 09:29:38.144336')
+   (0.4ms)  SELECT MAX(`settings`.`updated_on`) FROM `settings`
+  User Load (0.4ms)  SELECT  `users`.* FROM `users` WHERE `users`.`type` IN ('User', 'AnonymousUser') AND `users`.`status` = 1 AND `users`.`id` = 196 LIMIT 1
+  Current user: r.heck (id=196)
+   (0.3ms)  SELECT MAX(`contacts_settings`.`updated_on`) FROM `contacts_settings`
+  Setting Load (0.3ms)  SELECT  `settings`.* FROM `settings` WHERE `settings`.`name` = 'force_default_language_for_loggedin'  ORDER BY `settings`.`id` DESC LIMIT 1
+  Project Load (0.4ms)  SELECT  `projects`.* FROM `projects` WHERE `projects`.`identifier` = 'wiki-gx2' LIMIT 1
+  Wiki Load (0.3ms)  SELECT  `wikis`.* FROM `wikis` WHERE `wikis`.`project_id` = 11047 LIMIT 1
+   (0.3ms)  SELECT `enabled_modules`.`name` FROM `enabled_modules` WHERE `enabled_modules`.`project_id` = 11047
+  WikiPage Load (0.5ms)  SELECT  `wiki_pages`.* FROM `wiki_pages` WHERE `wiki_pages`.`wiki_id` = 16 AND (LOWER(title) = LOWER('H?ufig_verwendete_Rauten'))  ORDER BY title LIMIT 1
+  WikiPage Load (0.4ms)  SELECT `wiki_pages`.* FROM `wiki_pages` WHERE `wiki_pages`.`parent_id` = 802  ORDER BY title
+  WikiPage Load (0.2ms)  SELECT `wiki_pages`.* FROM `wiki_pages` WHERE `wiki_pages`.`parent_id` = 1300  ORDER BY title
+  CACHE (0.0ms)  SELECT `wiki_pages`.* FROM `wiki_pages` WHERE `wiki_pages`.`parent_id` = 802  ORDER BY title  [[""parent_id"", 802]]
+  CACHE (0.0ms)  SELECT `wiki_pages`.* FROM `wiki_pages` WHERE `wiki_pages`.`parent_id` = 1300  ORDER BY title  [[""parent_id"", 1300]]
+   (0.1ms)  BEGIN
+  WikiContent Load (0.2ms)  SELECT  `wiki_contents`.* FROM `wiki_contents` WHERE `wiki_contents`.`page_id` = 1300 LIMIT 1
+  SQL (0.3ms)  DELETE FROM `wiki_content_versions` WHERE `wiki_content_versions`.`wiki_content_id` = 1300
+  SQL (0.2ms)  DELETE FROM `wiki_contents` WHERE `wiki_contents`.`id` = 1300 AND `wiki_contents`.`version` = 2
+  Attachment Load (0.3ms)  SELECT `attachments`.* FROM `attachments` WHERE `attachments`.`container_id` = 1300 AND `attachments`.`container_type` = 'WikiPage'  ORDER BY attachments.created_on ASC, attachments.id ASC
+  SQL (0.2ms)  UPDATE `wiki_pages` SET `wiki_pages`.`parent_id` = NULL WHERE `wiki_pages`.`parent_id` = 1300 ORDER BY title
+  SQL (0.2ms)  DELETE FROM `watchers` WHERE `watchers`.`watchable_id` = 1300 AND `watchers`.`watchable_type` = 'WikiPage'
+  SQL (0.2ms)  DELETE FROM `wiki_redirects` WHERE `wiki_redirects`.`redirects_to_wiki_id` = 16 AND `wiki_redirects`.`redirects_to` = 'Nomailreceipt'
+  ActsAsTaggableOn::Tagging Load (0.2ms)  SELECT `taggings`.* FROM `taggings` WHERE `taggings`.`taggable_id` = 1300 AND `taggings`.`taggable_type` = 'WikiPage'
+  ActsAsTaggableOn::Tagging Load (0.3ms)  SELECT `taggings`.* FROM `taggings` INNER JOIN `tags` ON `tags`.`id` = `taggings`.`tag_id` WHERE `taggings`.`taggable_id` = 1300 AND `taggings`.`taggable_type` = 'WikiPage' AND `taggings`.`context` = 'tags'
+  WikiExtensionsTagRelation Load (0.2ms)  SELECT `wiki_extensions_tag_relations`.* FROM `wiki_extensions_tag_relations` WHERE `wiki_extensions_tag_relations`.`wiki_page_id` = 1300
+  SQL (0.3ms)  DELETE FROM `wiki_extensions_tag_relations` WHERE `wiki_extensions_tag_relations`.`id` = 5006
+  WikiExtensionsTag Load (0.2ms)  SELECT  `wiki_extensions_tags`.* FROM `wiki_extensions_tags` WHERE `wiki_extensions_tags`.`id` = 1183 LIMIT 1
+  WikiExtensionsTagRelation Load (0.2ms)  SELECT `wiki_extensions_tag_relations`.* FROM `wiki_extensions_tag_relations` WHERE `wiki_extensions_tag_relations`.`tag_id` = 1183
+  WikiPage Load (0.2ms)  SELECT  `wiki_pages`.* FROM `wiki_pages` WHERE `wiki_pages`.`id` = 813 LIMIT 1
+  WikiPage Load (0.2ms)  SELECT  `wiki_pages`.* FROM `wiki_pages` WHERE `wiki_pages`.`id` = 822 LIMIT 1
+  WikiPage Load (0.2ms)  SELECT  `wiki_pages`.* FROM `wiki_pages` WHERE `wiki_pages`.`id` = 1037 LIMIT 1
+  WikiPage Load (0.2ms)  SELECT  `wiki_pages`.* FROM `wiki_pages` WHERE `wiki_pages`.`id` = 914 LIMIT 1
+  WikiPage Load (0.2ms)  SELECT  `wiki_pages`.* FROM `wiki_pages` WHERE `wiki_pages`.`id` = 815 LIMIT 1
+  WikiPage Load (0.2ms)  SELECT  `wiki_pages`.* FROM `wiki_pages` WHERE `wiki_pages`.`id` = 1796 LIMIT 1
+   (1.1ms)  ROLLBACK
+Completed 500 Internal Server Error in 181ms (ActiveRecord: 25.7ms)
+
+</pre>
+
+Enviroment:
+
+<pre>
+Environment:
+  Redmine version                3.2.0.stable
+  Ruby version                   2.1.8-p440 (2015-12-16) [x86_64-linux-gnu]
+  Rails version                  4.2.5
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.8.8
+  Darcs                          2.8.4
+  Mercurial                      2.8.2
+  Cvs                            1.12.13
+  Bazaar                         2.7.0
+  Git                            2.8.1
+  Filesystem                     
+Redmine plugins:
+  a_common_libs                  2.1.0
+  clipboard_image_paste          1.8
+  export_control                 0.0.1
+  extended_fields                1.0.0
+  extra_queries                  2.0.3
+  help_heidi                     0.0.1
+  hide_member_box                0.0.1
+  meta                           0.2.3
+  parent_issue_filter            1.0.0
+  portal_auth                    0.0.1
+  project_publicity              0.0.1
+  quick_edit                     0.0.4
+  readme_at_repositories         0.2.1
+  redmine_actions_buttons        0.0.9
+  redmine_agile                  1.3.12
+  redmine_app_notifications      0.0.1
+  redmine_backlogs               v1.0.6
+  redmine_banner                 0.1.1
+  redmine_base_deface            0.0.1
+  redmine_base_select2           0.0.1
+  redmine_checklists             3.1.3
+  redmine_ckeditor               1.1.3
+  redmine_code_review            0.7.0
+  redmine_contacts               4.0.2
+  redmine_contacts_invoices      4.0.1
+  redmine_didyoumean             1.2.0
+  redmine_dmsf                   1.5.5
+  redmine_documents              1.0.0
+  redmine_email_fetcher          0.3.1
+  redmine_favorite_projects      1.0.4
+  redmine_finance                2.0.0
+  redmine_gist                   0.0.1
+  redmine_issue_favicon          0.0.1
+  redmine_issue_icons            1.0.0
+  redmine_issue_templates        0.1.1
+  redmine_last_updated_by_column 0.3.0
+  redmine_ldap_sync              2.0.7.devel.gba84cac44e-dirty
+  redmine_login_audit            0.1.4
+  redmine_logs                   0.0.5
+  redmine_menu_links             1.0.0
+  redmine_message_issues         0.1.0
+  redmine_monitoring_controlling 0.1.1
+  redmine_multiprojects_issue    0.1
+  redmine_my_page_queries        2.0.9
+  redmine_open_search            0.1.0
+  redmine_people                 1.0.0
+  redmine_per_project_formatting 0.0.4
+  redmine_private_wiki           0.2.2
+  redmine_products               2.0.0
+  redmine_release_notes          1.3.1
+  redmine_remote_revision_url    0.1.0
+  redmine_sidebar_toc_pt         1.6.0
+  redmine_subtasks_inherited_fields 0.0.1
+  redmine_tags                   2.0.1-dev
+  redmine_theme_changer          0.2.0
+  redmine_uhoh                   0.0.1
+  redmine_vote                   1.2.2
+  redmine_wiki_extensions        0.7.0
+  report_roles                   0.0.1
+  spectator                      0.0.1
+
+</pre>"
+22655,Redmine,Defect,"",Closed,Normal,Error when migrate to new redmine,Jacky Ho,"",2016-04-28 06:28,"","","","","",0,2016-04-28 04:38,2016-04-28 06:28,"",Invalid,"","I'm run the following cli it show me an error. How can I resolve that?
+ 
+*bundle exec rake spu_redmine:load_default_data* --trace
+rake aborted!
+Don't know how to build task 'spu_redmine:load_default_data' (see --tasks)
+/usr/local/rvm/gems/ruby-2.0.0-p247/gems/rake-11.1.2/lib/rake/task_manager.rb:71:in `[]'
+/usr/local/rvm/gems/ruby-2.0.0-p247/gems/rake-11.1.2/lib/rake/application.rb:149:in `invoke_task'
+/usr/local/rvm/gems/ruby-2.0.0-p247/gems/rake-11.1.2/lib/rake/application.rb:106:in `block (2 levels) in top_level'
+/usr/local/rvm/gems/ruby-2.0.0-p247/gems/rake-11.1.2/lib/rake/application.rb:106:in `each'
+/usr/local/rvm/gems/ruby-2.0.0-p247/gems/rake-11.1.2/lib/rake/application.rb:106:in `block in top_level'
+/usr/local/rvm/gems/ruby-2.0.0-p247/gems/rake-11.1.2/lib/rake/application.rb:115:in `run_with_threads'
+/usr/local/rvm/gems/ruby-2.0.0-p247/gems/rake-11.1.2/lib/rake/application.rb:100:in `top_level'
+/usr/local/rvm/gems/ruby-2.0.0-p247/gems/rake-11.1.2/lib/rake/application.rb:78:in `block in run'
+/usr/local/rvm/gems/ruby-2.0.0-p247/gems/rake-11.1.2/lib/rake/application.rb:176:in `standard_exception_handling'
+/usr/local/rvm/gems/ruby-2.0.0-p247/gems/rake-11.1.2/lib/rake/application.rb:75:in `run'
+/usr/local/rvm/gems/ruby-2.0.0-p247/gems/rake-11.1.2/bin/rake:33:in `<top (required)>'
+/usr/local/rvm/gems/ruby-2.0.0-p247/bin/rake:23:in `load'
+/usr/local/rvm/gems/ruby-2.0.0-p247/bin/rake:23:in `<main>'
+/usr/local/rvm/gems/ruby-2.0.0-p247/bin/ruby_executable_hooks:15:in `eval'
+/usr/local/rvm/gems/ruby-2.0.0-p247/bin/ruby_executable_hooks:15:in `<main>'"
+22646,Redmine,Defect,"",Closed,Normal,PostgreSQL: Exception in issue report view.,Lars Kanis,"",2016-04-28 15:18,Issues,"","","","",0,2016-04-27 17:44,2016-04-28 14:04,"",Invalid,"","The following exception is raised, when viewing /projects/projektmanagement/issues/report on PostgreSQL:
+
+<pre>
+ActiveRecord::StatementInvalid (PG::AmbiguousColumn: ERROR:  column reference ""status_id"" is ambiguous
+LINE 1: SELECT COUNT(*) AS count_all, status_id AS status_id, is_clo...
+                                      ^
+: SELECT COUNT(*) AS count_all, status_id AS status_id, is_closed AS is_closed, tracker_id AS tracker_id FROM ""issues"" INNER JOIN ""projects"" ON ""projects"".""id"" = ""issues"".""project_id"" INNER JOIN ""issue_statuses"" ON ""issue_statuses"".""id"" = ""issues"".""status_id"" INNER JOIN ""trackers"" ON ""trackers"".""id"" = ""issues"".""tracker_id"" WHERE ((projects.id = 204) AND (projects.status <> 9 AND projects.id IN (SELECT em.project_id FROM enabled_modules em WHERE em.name='issue_tracking'))) GROUP BY ""issues"".""status_id"", ""is_closed"", ""issues"".""tracker_id""):
+  app/models/issue.rb:1348:in `count_and_group_by'
+  app/models/issue.rb:1305:in `by_tracker'
+  app/controllers/reports_controller.rb:31:in `issue_report'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+</pre>
+
+The attached patch fixes this.
+"

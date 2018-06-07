@@ -1,0 +1,845 @@
+#,プロジェクト,トラッカー,親チケット,ステータス,優先度,題名,作成者,担当者,更新日,カテゴリ,対象バージョン,開始日,期日,予定工数,進捗率,作成日,終了日,関連するチケット,Resolution,Affected version,説明
+15736,Redmine,Defect,"",New,Normal,WARNING: making https request to https:// ... without verifying server certificate; no CA path was specified.,Marcel M,"",2013-12-18 21:27,Security,"","","","",0,2013-12-18 21:27,"","","","","Hi,
+
+when I do a openid authentication I always had this in the logs
+
+<pre>
+WARNING: making https request to https://.../index.php?user=.. without verifying server certificate; no CA path was specified.
+</pre>
+
+Fixing it is really simple if you know how. Simply add the following to config/environments.rb
+
+
+<pre>
+3,5d2
+< require 'openid/fetchers'
+< 
+< 
+18d14
+< OpenID.fetcher.ca_file = ""#{Rails.root}/config/ca-bundle.crt""
+</pre>
+
+and create the file ca-bundle.crt which stores your trusted CAs (in pem format) . Example file content
+
+-----BEGIN CERTIFICATE-----
+<1st trusted CA in base 64 >
+-----END CERTIFICATE-----
+-----BEGIN CERTIFICATE-----
+<2nd trusted CA in base 64>
+-----END CERTIFICATE-----
+
+I suggest to add the changes in enviroment.rb and add a comment in the file which explains how to use it. Also this might be added to the docu somewhere.
+"
+15735,Redmine,Defect,"",Closed,Normal,OpenID login fails due to CSRF verification,Marcel M,Jean-Philippe Lang,2013-12-22 15:48,Accounts / authentication,2.4.2,"","","",0,2013-12-18 21:18,2013-12-22 15:48,"",Fixed,2.4.1,"Hi,
+
+after upgrading from 2.3.0 to 2.4.1 I could no longer login via openid.
+
+This is the log snippet:
+
+<pre>
+Generated checkid_setup request to https://openid.xxx.com/index.php?user=John.Doe
+ with assocication bmshmeqgqqlrpqbu5sjo4g3g84
+Started GET ""/support/login?_method=post&openid1_claimed_id=...
+ for 192.168.x.x at Sun Dec 15 15:24:48 +0100 2013
+Processing by AccountController#login as HTML
+  Parameters: {""openid1_claimed_id""=>""https://openid.xxx.com/John.Doe"", ""rp_nonce""=>""2013-12-15T14:24:43ZZ0jbBB""}
+WARNING: Can't verify CSRF token authenticity
+  Rendered common/error.html.erb within layouts/base (0.8ms)
+Filter chain halted as :verify_authenticity_token rendered or redirected
+Completed 422 Unprocessable Entity in 28.0ms (Views: 27.3ms | ActiveRecord: 0.0ms)
+</pre>
+
+After googling a bit I found a solution based on this https://github.com/xaviershay/enki/issues/91
+
+So I tweaked app/controllers/account_controller.rb a bit:
+
+<pre>
+diff redmine/app/controllers/account_controller.rb redmine-2.4.1/app/controllers/account_controller.rb
+23,25c23
+<   skip_before_filter :check_if_login_required, :check_password_change, :verify_authenticity_token, :only => :login
+<   before_filter :verify_authenticity_token_unless_openid, :only => :create
+< 
+---
+>   skip_before_filter :check_if_login_required, :check_password_change
+345,349d342
+< 
+<   def verify_authenticity_token_unless_openid
+<     verify_authenticity_token unless using_open_id?
+<   end
+<
+</pre> 
+
+and I can now successfully  login. 
+
+From my point of view I did not introduce a security issue here but a 2nd opionion would be great before this is added to redmine.
+
+"
+15732,Redmine,Defect,"",New,Normal,install not working when using a specific mysql password,Victor Isabel Bueno,"",2013-12-18 14:20,Database,"","","","",0,2013-12-18 14:20,"","","",2.4.1,"Hi,
+
+I've been having some problems installing redmine 2.4.1. On my local virtual machine i was using a very simple password for the mysql user (only numbers and letters). On the production server we had the following password (which we are not using any more, of course): %$enerD%$Mi2
+
+If during the installation process I create the user redmine in Mysql and give it this password, this is what happens:
+
+root@redmine:/usr/local/share/redmine# bundle install --without development test postgresql sqlite
+Gemfile syntax error:
+
+There is absolutely no more information than this, but the installation process stops here and there is no way to carry on. 
+
+If I try the same with my local password (only numbers and letters), it works on my local machine and also on the production server. 
+
+I initially though that maybe the problem was that I was using special characters (% and $), but then I tried using the password $%hola and it worked. 
+
+I spent quite a lot of time trying to find out what was going on, so it would be nice if you could check it out. Just in case someone finds themselve in the same situation.
+
+This is what we are using:
+
+MySQL                          5.5.31
+Redmine version                2.4.1.stable
+Ruby version                   1.9.3-p194 (2012-04-20) [x86_64-linux]
+Rails version                  3.2.15
+Environment                    production
+Database adapter               Mysql2
+
+Thanks a lot and let me know if you need more information."
+15723,Redmine,Defect,"",Closed,Normal,can not preview the attachement,12 auqf,12 auqf,2013-12-19 08:16,Attachments,"","","","",0,2013-12-17 09:45,2013-12-19 08:16,"",Invalid,"","hi, i add a picture,but i can not preview it,can you help me to resolve it?thanks!"
+15716,Redmine,Defect,"",Closed,Normal,Scraped emails include CSS from HTML emails,Deoren Moor,Jean-Philippe Lang,2015-07-15 15:18,Email receiving,3.1.0,"","","",0,2013-12-16 15:34,2015-06-16 20:24,"関連している #19740, 関連している #20311",Fixed,2.4.1,"I'm not sure how many others are encountering this behavior, but when replying to an email notification (and making sure to remove all text from the body) the CSS for HTML emails is included as if it were written by the user. In this particular case I responded to a notification using the default mail client from iOS 7.
+
+Example reply:
+
+<pre>
+Sure, that will work.
+
+body {
+font-family: Verdana, sans-serif;
+font-size: 0.8em;
+color:#484848;
+}
+h1, h2, h3 { font-family: ""Trebuchet MS"", Verdana, sans-serif; margin: 0px; }
+h1 { font-size: 1.2em; }
+h2, h3 { font-size: 1.1em; }
+a, a:link, a:visited { color: #2A5685;}
+a:hover, a:active { color: #c61a1a; }
+a.wiki-anchor { display: none; }
+fieldset.attachments {border-width: 1px 0 0 0;}
+hr {
+width: 100%;
+height: 1px;
+background: #ccc;
+border: 0;
+}
+span.footer {
+font-size: 0.8em;
+font-style: italic;
+}
+</pre>
+
+Our environment:
+
+<pre>
+  Redmine version                2.4.1.stable.12325
+  Ruby version                   1.8.7-p352 (2011-06-30) [i686-linux]
+  Rails version                  3.2.15
+  Environment                    production
+  Database adapter               MySQL
+</pre>
+
+"
+15714,Redmine,Defect,"",Closed,Normal,Notification on loosing assignment does not work,Marc M.,Jean-Philippe Lang,2014-01-13 22:02,Email notifications,2.4.2,"","","",0,2013-12-16 13:42,2013-12-21 12:26,"",Fixed,2.4.1,"It was implemented long long time ago in r8695, but it seems that it doesnt work.
+Only the new ""Assigned to"" user, the author and watcher are notified, but not the old ""assigned to"" user.
+The mailnotificationoptions are on both ""Only for Issue I'm watching or working on""
+
+Am I missing something or is it broken?
+
+Our Redmine:
+
+<pre>
+Environment:
+  Redmine version                2.4.1.stable.12357
+  Ruby version                   1.9.3-p0 (2011-10-30) [x86_64-linux]
+  Rails version                  3.2.16
+  Environment                    production
+  Database adapter               Mysql2
+</pre>"
+15711,Redmine,Defect,"",New,Normal,"Assignee does not receive email with ""only for things I watch or I'm involved in"" ",Sang Tan,"",2013-12-16 10:23,Email notifications,"","","","",0,2013-12-16 10:23,"","","",2.2.3,"My assignee does not receive email even I select ""only for things I watch or I'm involved in""  for each users.
+Do I mess anything?"
+15710,Redmine,Patch,"",Closed,Normal,Traditional Chinese translation (to r12417),ChunChang Lo,"",2013-12-16 08:54,Translations,"","","","",0,2013-12-16 08:11,2013-12-16 08:54,"","","","* Added translations:
+** label_link, label_only, label_drop_down_list, label_checkboxes"
+15709,Redmine,Defect,"",Closed,Normal,TimeEntry custom_values are not deleted from the database when destroying the associated project,Mischa The Evil,Jean-Philippe Lang,2013-12-18 19:39,Custom fields,2.5.0,"","","",0,2013-12-16 05:36,2013-12-18 19:39,"",Fixed,"","This defect emerged while I was writing some tests (with new fixtures) for my patch for issue #4138. When I ran these new tests they passed without issues, but when I ran the whole test suite to make sure I didn't break any existing functionality I encountered a failing unit test. The failing test is @ProjectTest#test_destroying_root_projects_should_clear_data@.
+
+The assertion that triggers the test failure is
+<pre>assert_equal 0, CustomValue.where(:customized_type => ['Project', 'Issue', 'TimeEntry', 'Version']).count</pre>
+
+This assertion tests if all custom_values of the designated @cutomized_type@ are deleted from the database when the associated project has been destroyed. This functionality works for custom_values of the type @Project@, @Issue@ and @Version@ (where the first two are explicitly tested because they have fixtures, in contrast to the @Version@ type that is not-yet tested because it is missing fixtures), +but it does not work for custom_values of the type @TimeEntry@+.
+
+The defect (and the error-free behavior of the @Version@ type custom_values) can be made visible by adding some custom_value fixtures like shown below, followed by running @ProjectTest#test_destroying_root_projects_should_clear_data@:
+<pre><code class=""diff"">
+Index: test/fixtures/custom_fields.yml
+===================================================================
+--- test/fixtures/custom_fields.yml	(revision 12406)
++++ test/fixtures/custom_fields.yml	(working copy)
+@@ -145,3 +145,35 @@
+     SGXDqWzDp2prc2Tigqw2NTTDuQ==
+   - Other value
+   field_format: list
++custom_fields_012: 
++  name: Searchable time entry field
++  regexp: """"
++  is_for_all: false
++  is_filter: false
++  type: TimeEntryCustomField
++  possible_values: """"
++  id: 12
++  is_required: false
++  field_format: string
++  searchable: true
++  default_value: """"
++  editable: true
++  position: 2
++custom_fields_013: 
++  name: vState
++  regexp: """"
++  is_for_all: false
++  is_filter: false
++  type: VersionCustomField
++  possible_values: 
++  - Stable
++  - Beta
++  - Alpha
++  - Planning
++  id: 13
++  is_required: false
++  field_format: list
++  searchable: false
++  default_value: """"
++  editable: true
++  position: 1
+Index: test/fixtures/custom_values.yml
+===================================================================
+--- test/fixtures/custom_values.yml	(revision 12406)
++++ test/fixtures/custom_values.yml	(working copy)
+@@ -101,3 +101,15 @@
+   customized_id: 1
+   id: 17
+   value: '2009-12-01'
++custom_values_018: 
++  customized_type: TimeEntry
++  custom_field_id: 12
++  customized_id: 2
++  id: 18
++  value: ""stringfortimeentry custom field search""
++custom_values_019: 
++  customized_type: Version
++  custom_field_id: 13
++  customized_id: 2
++  id: 19
++  value: Stable
+</code></pre>
+
+The assertion fails because the @TimeEntry@ custom_value is not deleted from the db when the associated project is destroyed (as opposed to the yet-untested @Version@ custom_value which is indeed properly deleted [as like for the already-tested @Issue@ and @Project@ custom_values]).
+
+This issue seems pretty much related to #7385 and #7904.
+
+Environment information:
+* Redmine Trunk at r12406
+* Ruby 2.0.0-p353 (2013-11-22) [i686-linux
+* Rails 3.2.16
+
+Please let me know if more information is needed..."
+15708,Redmine,Defect,"",Closed,High,Issue Post broken in 2.4.1,Marco Descher,"",2013-12-16 03:46,REST API,"","","","",0,2013-12-15 20:08,2013-12-16 03:46,"",Invalid,2.4.1,"It seems like posting issues using the api is broken in 2.4.1
+<pre>
+Started POST ""/issues.xml?key=asdf"" for 84.115.253.86 at 2013-12-15 20:01:46 +0100
+Processing by IssuesController#create as XML
+  Parameters: {""issue""=>{""id""=>""0"", ""subject""=>""at.medevit.redmine.rest.RedmineConnectorTest"", ""description""=>""at.medevit.redmine.rest.RedmineConnectorTest Description"", ""project_id""=>""3"", ""tracker_id""=>""4""}, ""key""=>""asdf""}
+  Current user: wfeconnector (id=4)
+  Rendered common/error_messages.api.rsb (0.3ms)
+Completed 422 Unprocessable Entity in 224.6ms (Views: 2.2ms | ActiveRecord: 4.1ms)
+</pre>
+
+where the incoming data is 
+
+<pre>
+<?xml version=""1.0"" encoding=""UTF-8"" standalone=""yes""?>
+<issue>
+    <id>0</id>
+    <subject>at.medevit.redmine.rest.RedmineConnectorTest</subject>
+    <description>at.medevit.redmine.rest.RedmineConnectorTest Description</description>
+    <project_id>3</project_id>
+    <tracker_id>4</tracker_id>
+</issue>
+</pre>"
+15705,Redmine,Defect,"",Closed,Normal,new local .yml file not picked up by the user interface,David Tremblay,"",2013-12-15 16:03,I18n,"","","","",0,2013-12-15 12:59,2013-12-15 13:56,"",Invalid,2.4.1,"I created a new language file to deal with specifics of the subject matter in the projects we will managed
+
+
+(followed http://www.redmine.org/projects/redmine/wiki/HowTo_translate_Redmine_in_your_own_language) 
+
+
+
+<pre>
+cp en.yml en-MJ.yml
+</pre>
+
+edited some fields  (issues --> tasks issue --> task) 
+
+change the first line of the field from 
+
+en:
+
+to
+
+en-MJ:
+
+
+ran 
+
+<pre>
+rake locales
+</pre>
+
+I see it updating and parsing the files
+
+<pre>
+Updating file ./config/locales/en-MJ.yml
+parsing ./config/locales/en-MJ.yml...
+</pre>
+
+restart redmine by restarting apache
+
+log in as admin, check in my account, no new language...
+
+
+
+so I did a little experiment. 
+
+instead I took the en-GB.yml file made a backup of it and did the same edits right in the en-GB.yml file ..
+
+(rake locales, restart redmine, login as admin)
+
+
+Now if I choose en-GB.yml I can see the edit.
+
+So the problem is about adding a new language, am I wrong ?
+
+
+I've been searching for hours, if you have any idea on how I can make it work you are most welcome
+"
+15704,Redmine,Defect,"",Closed,Normal,Journal for relation should store relation type instead of i18n key,Jean-Philippe Lang,Jean-Philippe Lang,2013-12-15 12:02,Code cleanup/refactoring,2.5.0,"","","",0,2013-12-15 11:29,2013-12-15 12:02,"",Fixed,"",""
+15700,Redmine,Patch,"",Closed,Normal,Bulgarian translation (r12401),Ivan Cenov,"",2013-12-15 05:16,Translations,"","","","",0,2013-12-14 19:37,2013-12-15 05:16,"","","","Bulgarian translation:
+* label_link
+* label_only
+* label_drop_down_list
+* label_checkboxes
+"
+15696,Redmine,Patch,"",Closed,Normal,Russian translation update,Alex Stein,"",2013-12-15 08:06,Translations,2.4.2,"","","",0,2013-12-13 14:00,2013-12-15 08:06,"","","","Added translation for new strings:
+<pre>
+  field_must_change_passwd
+  notice_new_password_must_be_different
+  setting_mail_handler_excluded_filenames
+  text_convert_available
+</pre>
+
+Fix typo for:
+<pre>
+  setting_session_timeout
+</pre>
+
+Updated translation for:
+<pre>
+  text_file_repository_writable
+  text_plugin_assets_writable
+</pre>
+"
+15694,Redmine,Defect,"",New,Normal,Error while uploading attachments,Yuri N,"",2014-02-24 13:52,Attachments,"","","","",0,2013-12-13 11:48,"","","",2.4.1,"Hello
+
+When I'm trying to upload attachment redmine hangs for a few seconds and then prints ""error"" near the file name to be attached(please look at screenshot with Firebug enabled).
+
+In console I got this message:
+[2013-12-13 14:24:33] ERROR invalid body size.
+[2013-12-13 14:24:33] ERROR HTTPRequest#fixup: WEBrick::HTTPStatus::BadRequest occured.
+
+(production.log remains untouched)
+
+I tried to do it with different browsers(Firefox, Chrome,Opera) but it behaves the same way.(of course tried to clean browsers' caches)
+
+I had this problem with redmine-2.3 and now I've just run update to 2.4.1 and it's still the same.
+
+<pre>
+# ruby script/about
+Environment:
+  Redmine version                2.4.1.stable
+  Ruby version                   1.8.7-p352 (2011-06-30) [x86_64-linux]
+  Rails version                  3.2.15
+  Environment                    production
+  Database adapter               MySQL
+SCM:
+  Subversion                     1.6.17
+  Mercurial                      2.0.2
+  Git                            1.7.9.5
+  Filesystem
+Redmine plugins:
+  no plugin installed
+
+</pre>
+
+Thanks in advance."
+15693,Redmine,Defect,"",Closed,Urgent,PhusionPassenger::ClassicRails::ApplicationSpawner::Error,IT LHFS,"",2013-12-13 18:35,Rails support,"","","","",0,2013-12-13 07:40,2013-12-13 18:35,"",Invalid,2.4.1,"*My redmine 2.4.1 is running perfectly with webrick on Ubuntu 12.04.3. However, I stuck with the errors below when I am trying to use apache2+passenger to load it.*
+
+Exception class:PhusionPassenger::ClassicRails::ApplicationSpawner::ErrorBacktrace:
+
+#
+
+File
+
+Line
+
+Location
+
+0 /usr/lib/ruby/vendor_ruby/phusion_passenger/classic_rails/application_spawner.rb 139 in `rescue in spawn_application' 
+1 /usr/lib/ruby/vendor_ruby/phusion_passenger/classic_rails/application_spawner.rb 134 in `spawn_application' 
+2 /usr/lib/ruby/vendor_ruby/phusion_passenger/spawn_manager.rb 223 in `block in spawn_rails_application' 
+3 /usr/lib/ruby/vendor_ruby/phusion_passenger/abstract_server_collection.rb 82 in `block in synchronize' 
+4  prelude> 10:in `synchronize' 
+5 /usr/lib/ruby/vendor_ruby/phusion_passenger/abstract_server_collection.rb 79 in `synchronize' 
+6 /usr/lib/ruby/vendor_ruby/phusion_passenger/spawn_manager.rb 213 in `spawn_rails_application' 
+7 /usr/lib/ruby/vendor_ruby/phusion_passenger/spawn_manager.rb 132 in `spawn_application' 
+8 /usr/lib/ruby/vendor_ruby/phusion_passenger/spawn_manager.rb 275 in `handle_spawn_application' 
+9 /usr/lib/ruby/vendor_ruby/phusion_passenger/abstract_server.rb 357 in `server_main_loop' 
+10 /usr/lib/ruby/vendor_ruby/phusion_passenger/abstract_server.rb 206 in `start_synchronously' 
+11 /usr/share/phusion-passenger/helper-scripts/passenger-spawn-server 99 in `' 
+"
+15691,Redmine,Defect,"",Closed,Normal,Installation and up gradation from redmine-1.2.1-0 to redmine-2.4.1-1 ,PRANAV MR,"",2013-12-13 18:34,"","","","","",0,2013-12-12 17:06,2013-12-13 18:34,"",Invalid,"","Installation of red mine-2.4.1-1 is completed but the migration of plugin step got error.
+
+error is given at the end
+rake redmine:migrate RAILS_ENV=production
+rake aborted!
+No Rakefile found (looking for: rakefile, Rakefile, rakefile.rb, Rakefile.rb)
+
+(See full trace by running task with --trace)
+"
+15689,Redmine,Patch,"",Closed,Normal,Make favicon themeable,Felix Sch?fer,Jean-Philippe Lang,2016-02-26 11:11,Themes,2.5.0,"","","",0,2013-12-12 16:09,2014-01-11 12:23,"","","","""Plan.io"":https://plan.io had the case that we needed to be able to set the favicon according to the theme. We have developed a patch to be able to use a favicon from the @favicon@ directory in the theme directory (if more than one is available the @[].first@ will be used).
+
+(Patch coming up as soon as I have an issue number)"
+15688,Redmine,Patch,"",Closed,Normal,Spanish translation updated,Borja Campina,"",2013-12-15 08:06,Translations,2.4.2,"","","",0,2013-12-12 15:51,2013-12-15 08:06,コピー元 #15687,"","",""
+15687,Redmine,Patch,"",Closed,Normal,Spanish translation updated,Borja Campina,"",2013-12-13 21:51,I18n,"","","","",0,2013-12-12 12:19,2013-12-13 21:51,コピー先 #15688,"","",""
+15684,Redmine,Defect,"",Closed,Normal,MailHandler : text/plain attachments are added to description,Pavel Brych,Jean-Philippe Lang,2013-12-21 12:25,Email receiving,2.4.2,"","","",0,2013-12-12 00:29,2013-12-21 12:25,関連している #13646,Fixed,2.4.0,"When handling email messages with text/plain file attached, it's contents is attached to issue description text (file from email is also properly attached to newly created issue, as it should be).
+
+I believe that it may be caused by patch #13646, which combines all text/plain message parts to issue description and not distinguish between text part and file attachment?.
+
+Example of problematic mail (sent from Thunderbird client):
+
+<pre>
+--===============0191659920==
+Content-Type: text/plain; charset=""utf-8""
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+
+SGzDocWhZW7DrSBvIGNoeWLEmyB2IHByb2dyYW11IEhPUkVTCj09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09CgpEYXR1bTogMTEuMTIuMjAxMy... proper message body text continues
+
+--===============0191659920==
+Content-Type: text/plain; charset=""utf-8""
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename=""log_message.txt""
+
+RGF0ZTogICAgMTEuMTIuMjAxMyAxODoxODowMQpNZXNzYWdlOiBBdHRyaWJ1dGVFcnJvcjogJ2Z1
+bmN0aW9uJyBvYmplY3QgaGFzIG5vIGF0dHJpYnV0ZSAnaXNEZWFkJwpUeXBlOiAgICA0C... attachment data continues
+</pre>
+
+Problems started when upgraded to Redmine 2.4.0"
+15677,Redmine,Defect,"",Closed,Normal,Links for relations in notifications do not include hostname,Florian S.,Jean-Philippe Lang,2013-12-21 12:24,Email notifications,2.4.2,"","","",0,2013-12-11 07:54,2013-12-21 12:24,関連している #1005,Fixed,2.4.1,"I added a relation to another ticket to an issue and the notification mail was sent out to users assigned to the task / watching the task.
+
+Inside the mail there is a link to the ticket that tells me that a new relation was added to the issue.
+the url is not fully qualified, it is relative /issues/123 should be http://(....)/issues/123
+This causes that a click at the link does not open the issue inside the browser because the url is incorrect.
+
+"
+15676,Redmine,Defect,"",New,Normal,"""Latest"" revisions on repository view is confused",Toru Haraguchi,"",2013-12-12 06:23,SCM,"","","","",0,2013-12-11 05:28,"","","","","  On repository view, when move from a ticket view by clicking on an associated revision, the revision list is titled as ""Latest revisions"", but actually the list does not include the latest revisions on the repository but does only until the revision selected on the ticket view.
+
+  A colleague of mine is claiming that this title is confusing in Japanese when it is translated straightly to ""最新リビジョン"".
+
+  Please let me suggest to remove the word ""最新"" from the label ""label_latest_revsion_plural"" in Japanese translation to avoid the confusion above.
+
+  I myself understand that the view is designed to be common among various context and that it will not be a problem once the colleague get accustomed with the latest revision control system, but as a correct process, I could not refuse this post."
+15674,Redmine,Defect,"",Closed,Normal,"After Importing my SQL dump, redmine does not work (503 error)",Edison X. Cerda,"",2013-12-11 02:54,Database,"","","","",0,2013-12-10 22:20,2013-12-11 02:54,"",Invalid,1.2.2,"After importing my SQL dump to redmine 1.2 database, I cannot access redmine and receive 503 error (GET/redmine error)."
+15667,Redmine,Defect,"",New,Normal,Fix shadowing variable,Ilya S,"",2013-12-10 14:10,Text formatting,"","","","",0,2013-12-10 11:34,"","","",2.4.1,"fix using two different objects with same name, may cause problems"
+15666,Redmine,Defect,"",Closed,Normal,Typo in parse_inline_attachments,Ilya S,"",2013-12-10 14:16,Text formatting,"","","","",0,2013-12-10 11:30,2013-12-10 12:11,"","",2.4.1,Fix typo
+15664,Redmine,Defect,"",Closed,Normal,"Unable to upload attachments without  add_issues, edit_issues or add_issue_notes permission",Pascal Jungblut,Jean-Philippe Lang,2014-02-06 18:59,Permissions and roles,2.4.3,"","","",0,2013-12-10 11:00,2014-02-06 18:59,"",Fixed,"","Users with the @manage_files@ permission are currently able to call @FilesController#new@ and @FilesController#create@. However, uploading files requires permission to call @AttachmentsController#upload@. If a user has none of the permissions @add_issues@, @edit_issues@ or @add_issue_notes@, they cannot upload files in the files tab.
+
+Proposed solution: allow users with the @manage_files@ permission to call @AttachmentsController#upload@."
+15634,Redmine,Defect,"",New,Low,"add watching users to a ticket should switch ""watch"" link to ""unwatch"" if own user was added",Florian S.,"",2013-12-11 02:58,Issues,"","","","",0,2013-12-09 15:16,"","","",2.4.1,"* add users via the link to add watchers in the sidebar
+* add the own user
+* the link at the top of the issue still offers ""watch""  - should be ""unwatch"" now.
+* same if you ""unwatch"" a ticket - your own username still is visible inside the list of ""watching"" users in the sidebar"
+15624,Redmine,Defect,"",Closed,Normal,Redmine fields inside mail notifications should be mime-encoded,Nikolay Didenko,"",2013-12-09 05:38,Email notifications,"","","","",0,2013-12-08 14:55,2013-12-09 05:38,"",Wont fix,1.2.1,"<pre>
+X-Redmine-Issue-Author: user
+Precedence: bulk
+X-Redmine-Issue-Assignee: user
+X-Redmine-Issue-Id: 19703
+X-Mailer: Redmine
+X-Redmine-Project: mobile-ios-baraholka
+Auto-Submitted: auto-generated
+X-Redmine-Site: Р“Р? ""Rugion""
+X-Redmine-Host: redmine.example.com
+</pre>
+
+
+There is *X-Redmine-Site* field consists non-ascii symbols, that should be *mime-encoded* like any other mail headers fields.
+
+<pre>
+[root@master current]# RAILS_ENV=production ruby script/about
+About your application's environment
+Ruby version              1.8.7 (x86_64-linux)
+RubyGems version          1.3.5
+Rack version              1.1
+Rails version             2.3.11
+Active Record version     2.3.11
+Active Resource version   2.3.11
+Action Mailer version     2.3.11
+Active Support version    2.3.11
+Edge Rails revision       unknown
+Application root          ---
+Environment               production
+Database adapter          mysql
+Database schema version   20110511000000
+</pre>"
+15623,Redmine,Defect,"",Closed,High,Timelog filtering by activity field does not handle project activity overrides,VD DV,Jean-Philippe Lang,2013-12-21 12:24,Time tracking,2.4.2,"","","",0,2013-12-08 12:44,2013-12-21 12:24,"",Fixed,2.4.1,"While filtering timelogs on all projects, it seems that filtering does not work as expected.
+In provided screenshot you can see that filtering on Activity field  by excluding values, generates result that also includes excluded values. Also you can see multiple occurance in result list for activity named ""Softver: PING - ELBA"".
+Please note that in screenshot ""Activity"" field is labeled as ""Activity on"" (it is our localization implemented through apps\redmine\htdocs\config\locales files).
+
+
+
+Environment is:
+  Redmine version                2.4.1.stable
+  Ruby version                   1.9.3-p231 (2012-05-25) [i386-mingw32]
+  Rails version                  3.2.16
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.8.4
+  Git                            1.8.3
+  Filesystem
+Redmine plugins:
+  no plugin installed"
+15622,Redmine,Defect,"",Needs feedback,Normal,Unable to add watcher who is not a member of the project,Daniel Hochman,"",2013-12-09 09:33,Issues,"","","","",0,2013-12-08 10:17,"","",Cant reproduce,2.3.1,"The feature described in #5159 (Ability to add Non-Member watchers to the watch list) is confirmed as not working in Redmine 2.3.1 and 2.3.3
+
+You can only add people who are members of the given project."
+15617,Redmine,Defect,"",Closed,Normal,Regional (i.e. sub) localization not correctly supported,J D,"",2013-12-07 03:49,I18n,"","","","",0,2013-12-07 03:11,2013-12-07 03:18,次のチケットと重複 #12900,Duplicate,"","
+<pre>
+Environment:
+  Redmine version                2.4.1.stable
+  Ruby version                   2.0.0-p247 (2013-06-27) [x86_64-linux]
+  Rails version                  3.2.15
+  Environment                    development
+  Database adapter               PostgreSQL
+</pre>
+
+I have encountered a reliably repeatable bug when using regional localization (like en-GB) within Redmine.
+
+The manifestation is a significant number of ""translation missing"" messages on screen, including for core labels like ""translation missing: en.label_project_plural"" and ""translation missing: en.label_logged"".
+
+To reproduce, create/utilise a plugin providing a sub-regional translation file (e.g. en-GB), in the knowledge that Redmine core does not ship with a corresponding locale file and will defer to the fallback locale (e.g. en).
+
+The bug can be observed by switching Language from the user ""MyAccount"" section, or during a login (when the user has a different regional locale to the installation's default locale).
+
+The cause appears to be that when Redmine initialises regional locales (e.g. ""en-GB""), it also loads the fallback locale (:en) - but only using files where a corresponding en-GB.yml file does not exist.
+
+This creates two keys in Redmine's i18n translations dictionary (""en"" and ""en-GB""), however only 1 of them (en-GB) is populated with data from all available en-GB files - the other key (en) is lacking all translation from files that were not required to satisfy renderings for en-GB.
+
+When the locale is subsequently switched from ""en-GB"" to ""en"" (or vice-versa depending on whichever locale was requested first by a user) due to a logon or a user selection, the alternative locale is considered already loaded since it's key exists even though the hash table is incomplete. This causes failed translation lookups.
+
+I would offer a fix if I knew ruby, i18n and Redmine well enough, but hopefully this information facilitates a patch.
+
+Interim solution (for me) is to not use sub-regional localisation (and remove this support from plugins that do)."
+15616,Redmine,Patch,"",New,Normal,Add a permission setting allowing members to delete their own projects,Anthony Mallet,"",2013-12-07 01:06,Project settings,"","","","",0,2013-12-07 01:06,"","","","","In order to delegate project subtrees to managers that are not admins, I found useful to implement this patch. It adds an extra permission setting that allows authorized users to delete their projects. (I could only add french/english translations to the permission label).
+
+I'm not a rails/redmine expert at all, so feedback is more than welcome. Could it be integrated in the official redmine, or does it raise some issue that I overlooked?
+
+Thanks
+"
+15613,Redmine,Defect,"",Closed,Normal,'Add watchers' within the new issue reveals all the accounts,David Hrb??,"",2013-12-06 14:50,Issues permissions,"","","","",0,2013-12-06 09:27,2013-12-06 14:50,次のチケットと重複 #15123,Duplicate,2.3.2,"Hi,
+
+'Add watchers' within the new issue reveals all the Redmine accounts, not only the project accounts. We consider it as a security issues and we had to remove the link from issue page. 
+
+Version:
+We are using Redmine 2.3.2.stable
+
+Expected behavior:
+Redmine should list only the accounts available to the logged user.
+
+Thanks,
+David Hrb??"
+15612,Redmine,Defect,"",Closed,Normal,Long message on update in journal_details where prop_key = 'send_notification',Samuel Samfra,"",2013-12-11 03:10,Email notifications,"","","","",0,2013-12-05 18:00,2013-12-11 03:10,関連している #19283,Cant reproduce,2.4.1,"Hello,
+
+I have just upgraded to the latest version available (2.4.1)
+
+and from now on, every time I update an issue I get a long message that is stored in  journal_details where prop_key = 'send_notification'
+and of course it is diplayed on the issue :
+
+*Updated by XXXX less than a minute ago*
+
+<pre>
+translation missing: en.field_send_notification changed from 0 to --- !ruby/object:Mail::Message body: !ruby/object:Mail::Body boundary: --==_mimepart_52a0ad837f377_63933fb8c3f4a54081298 preamble: epilogue: charset: US-ASCII part_sort_order: &1 - text/plain - text/html parts: !ruby/array:Mail::PartsList - !ruby/object:Mail::Part body: !ruby/object:Mail::Body boundary: preamble: epilogue: charset: part_sort_order: *1 parts: !ruby/array:Mail::PartsList [] raw_source: ! ""Cher client, cet email est une notification. Veuillez utiliser http://dev-center.xxxxxx.ch pour toute r?ponse.\r\nDear customer, this email is a notification. Please use http://dev-center.xxxxxx.ch for any answer. \nIssue #7567 has been reported by Carole Stefek.\n\n----------------------------------------\nBug #7567: Probl?me de CSS: fd rouge sur le choix de langues\nhttp://dev-center.xxxxxx.ch/issues/7567\n\n* Author: Carole Stefek\n* Status: New\n* Priority: Normal\n* Assignee: Jonathan Soliveres\n* Category: \n* Target version: \n* Environment: \n* SoldTime: \n* Release Note xxxxxx: \n* Sequence: 100\n* UPX Internal Description: \n* UPX Implementation : \n* Resolution Date: \n* Test visibilite: \n----------------------------------------\n[[http://psp.chopard.ch/#/highjewellery/favorites/list]]\n\n---Files--------------------------------\niidhcgih.png (565 KB)\n\n\n-- \nYou have received this notification because you have either subscribed to it, or are involved in it.\r\nTo change your notification preferences, please click here: http://dev-center.xxxxxx.ch/my/account\n"" encoding: 8bit body_raw: separate_parts: false text_part: html_part: errors: header: !ruby/object:Mail::Header errors: [] charset: UTF-8 raw_source: '' fields: !ruby/array:Mail::FieldList - !ruby/object:Mail::Field field: !ruby/object:Mail::ContentTypeField charset: main_type: text sub_type: plain parameters: !ruby/hash:Mail::ParameterHash charset: UTF-8 name: Content-Type length: tree: element: !ruby/object:Mail::ContentTypeElement main_type: text sub_type: plain parameters: [] value: text/plain filename: field_order_id: 23 - !ruby/object:Mail::Field field: !ruby/object:Mail::ContentTransferEncodingField charset: UTF-8 name: Content-Transfer-Encoding length: tree: element: !ruby/object:Mail::ContentTransferEncodingElement encoding: quoted-printable value: quoted-printable field_order_id: 24 charset: UTF-8 defaulted_charset: false smtp_envelope_from: smtp_envelope_to: perform_deliveries: true raise_delivery_errors: true delivery_handler: delivery_method: !ruby/object:Mail::SMTP settings: &2 :address: localhost :port: 25 :domain: localhost.localdomain :user_name: :password: :authentication: :enable_starttls_auto: true :openssl_verify_mode: :ssl: :tls: transport_encoding: &3 !ruby/class 'Mail::Encodings::SevenBit' mark_for_delete: false raw_source: '' - !ruby/object:Mail::Part body: !ruby/object:Mail::Body boundary: preamble: epilogue: charset: part_sort_order: *1 parts: !ruby/array:Mail::PartsList [] raw_source: ! ""<html>\n<head>\n<style>\nbody {\n font-family: Verdana, sans-serif;\n \ font-size: 0.8em;\n color:#484848;\n}\nh1, h2, h3 { font-family: \""Trebuchet MS\"", Verdana, sans-serif; margin: 0px; }\nh1 { font-size: 1.2em; }\nh2, h3 { font-size: 1.1em; }\na, a:link, a:visited { color: #2A5685;}\na:hover, a:active { color: #c61a1a; }\na.wiki-anchor { display: none; }\nfieldset.attachments {border-width: 1px 0 0 0;}\nhr {\n width: 100%;\n height: 1px;\n background: #ccc;\n border: 0;\n}\nspan.footer {\n font-size: 0.8em;\n font-style: italic;\n}\n</style>\n</head>\n<body>\n<span class=\""header\""><p>Cher client, \ cet email est une notification. Veuillez utiliser <a class=\""external\"" href=\""http://dev-center.xxxxxx.ch\"">http://dev-center.xxxxxx.ch</a> pour toute r?ponse.<br />Dear customer, this email is a notification. Please use <a class=\""external\"" href=\""http://dev-center.xxxxxx.ch\"">http://dev-center.xxxxxx.ch</a> for any answer.</p></span>\nIssue #7567 has been reported by Carole Stefek.\n<hr />\n<h1><a href=\""http://dev-center.xxxxxx.ch/issues/7567\"">Bug #7567: Probl?me de CSS: fd rouge sur le choix de langues</a></h1>\n\n<ul><li>Author: Carole Stefek</li>\n<li>Status: New</li>\n<li>Priority: Normal</li>\n<li>Assignee: Jonathan Soliveres</li>\n<li>Category: </li>\n<li>Target version: </li>\n<li>Environment: </li>\n<li>SoldTime: </li>\n<li>Release Note xxxxxx: </li>\n<li>Sequence: 100</li>\n<li>UPX Internal Description: </li>\n<li>UPX Implementation : </li>\n<li>Resolution Date: </li>\n<li>Test visibilite: </li></ul>\n\n<p>[[<a class=\""external\"" href=\""http://psp.chopard.ch/#/highjewellery/favorites/list\"">http://psp.chopard.ch/#/highjewellery/favorites/list</a>]]</p>\n\n \ <fieldset class=\""attachments\""><legend>Files</legend>\n <a href=\""http://dev-center.xxxxxx.ch/attachments/download/3611/iidhcgih.png\"">iidhcgih.png</a>\n \ (565 KB)<br />\n </fieldset>\n\n\n<hr />\n<span class=\""footer\""><p>You have received this notification because you have either subscribed to it, or are involved in it.<br />To change your notification preferences, please click here: <a class=\""external\"" href=\""http://dev-center.xxxxxx.ch/my/account\"">http://dev-center.xxxxxx.ch/my/account</a></p></span>\n</body>\n</html>\n"" encoding: 8bit body_raw: separate_parts: false text_part: html_part: errors: header: !ruby/object:Mail::Header errors: [] charset: UTF-8 raw_source: '' fields: !ruby/array:Mail::FieldList - !ruby/object:Mail::Field field: !ruby/object:Mail::ContentTypeField charset: main_type: text sub_type: html parameters: !ruby/hash:Mail::ParameterHash charset: UTF-8 name: Content-Type length: tree: element: !ruby/object:Mail::ContentTypeElement main_type: text sub_type: html parameters: [] value: text/html filename: field_order_id: 23 - !ruby/object:Mail::Field field: !ruby/object:Mail::ContentTransferEncodingField charset: UTF-8 name: Content-Transfer-Encoding length: tree: element: !ruby/object:Mail::ContentTransferEncodingElement encoding: quoted-printable value: quoted-printable field_order_id: 24 charset: UTF-8 defaulted_charset: false smtp_envelope_from: smtp_envelope_to: perform_deliveries: true raise_delivery_errors: true delivery_handler: delivery_method: !ruby/object:Mail::SMTP settings: *2 transport_encoding: *3 mark_for_delete: false raw_source: '' raw_source: '' encoding: 7bit body_raw: separate_parts: false text_part: html_part: errors: header: !ruby/object:Mail::Header errors: [] charset: UTF-8 raw_source: '' fields: !ruby/array:Mail::FieldList - !ruby/object:Mail::Field field: !ruby/object:Mail::DateField charset: UTF-8 name: Date length: tree: element: value: Thu, 05 Dec 2013 17:44:51 +0100 field_order_id: 9 - !ruby/object:Mail::Field field: !ruby/object:Mail::FromField charset: UTF-8 name: From length: tree: !ruby/object:Mail::AddressList address_nodes: - &26 !ruby/object:Treetop::Runtime::SyntaxNode input: dev-center@xxxxxx.ch interval: !ruby/range begin: 0 end: 20 excl: true elements: - &5 !ruby/object:Treetop::Runtime::SyntaxNode input: dev-center@xxxxxx.ch interval: !ruby/range begin: 0 end: 10 excl: true elements: - &4 !ruby/object:Treetop::Runtime::SyntaxNode input: dev-center@xxxxxx.ch interval: !ruby/range begin: 0 end: 0 excl: true elements: - &6 !ruby/object:Treetop::Runtime::SyntaxNode input: dev-center@xxxxxx.ch interval: !ruby/range begin: 0 end: 0 excl: true elements: [] parent: *4 comprehensive_elements: [] - &7 !ruby/object:Treetop::Runtime::SyntaxNode input: dev-center@xxxxxx.ch interval: !ruby/range begin: 0 end: 0 excl: true elements: parent: *4 parent: *5 comprehensive_elements: - *6 - *7 - &20 !ruby/object:Treetop::Runtime::SyntaxNode input: dev-center@xxxxxx.ch interval: !ruby/range begin: 0 end: 10 excl: true elements: - &8 !ruby/object:Treetop::Runtime::SyntaxNode input: dev-center@xxxxxx.ch interval: !ruby/range begin: 0 end: 10 excl: true elements: - &21 !ruby/object:Treetop::Runtime::SyntaxNode input: dev-center@xxxxxx.ch interval: !ruby/range begin: 0 end: 0 excl: true elements: [] parent: *8 comprehensive_elements: [] - &9 !ruby/object:Treetop::Runtime::SyntaxNode input: dev-center@xxxxxx.ch interval: !ruby/range begin: 0 end: 10 excl: true elements: - &10 !ruby/object:Treetop::Runtime::SyntaxNode input: dev-center@xxxxxx.ch interval: !ruby/range begin: 0 end: 1 excl: true elements: parent: *9 - &11 !ruby/object:Treetop::Runtime::SyntaxNode input: dev-center@xxxxxx.ch interval: !ruby/range begin: 1 end: 2 excl: true elements: parent: *9 - &12 !ruby/object:Treetop::Runtime::SyntaxNode input: dev-center@xxxxxx.ch interval: !ruby/range begin: 2 end: 3 excl: true elements: parent: *9 - &13 !ruby/object:Treetop::Runtime::SyntaxNode input: dev-center@xxxxxx.ch interval: !ruby/range begin: 3 end: 4 excl: true elements: parent: *9 - &14 !ruby/object:Treetop::Runtime::SyntaxNode input: dev-center@xxxxxx.ch interval: !ruby/range begin: 4 end: 5 excl: true elements: parent: *9 - &15 !ruby/object:Treetop::Runtime::SyntaxNode input: dev-center@xxxxxx.ch interval: !ruby/range begin: 5 end: 6 excl: true elements: parent: *9 - &16 !ruby/object:Treetop::Runtime::SyntaxNode input: dev-center@xxxxxx.ch interval: !ruby/range begin: 6 end: 7 excl: true elements: parent: *9 - &17 !ruby/object:Treetop::Runtime::SyntaxNode input: dev-center@xxxxxx.ch interval: !ruby/range begin: 7 end: 8 excl: true elements: parent: *9 - &18 !ruby/object:Treetop::Runtime::SyntaxNode input: dev-center@xxxxxx.ch interval: !ruby/range begin: 8 end: 9 excl: true elements: parent: *9 - &19 !ruby/object:Treetop::Runtime::SyntaxNode input: dev-center@xxxxxx.ch interval: !ruby/range begin: 9 end: 10 excl: true elements: parent: *9 parent: *8 comprehensive_elements: - *10 - *11 - *12 - *13 - *14 - *15 - *16 - *17 - *18 - *19 - &22 !ruby/object:Treetop::Runtime::SyntaxNode input: dev-center@xxxxxx.ch interval: !ruby/range begin: 10 end: 10 excl: true elements: [] parent: *8 comprehensive_elements: [] parent: *20 comprehensive_elements: - *21 - *9 - *22 parent: *5 comprehensive_elements: - *8 - &23 !ruby/object:Treetop::Runtime::SyntaxNode input: dev-center@xxxxxx.ch interval: !ruby/range begin: 10 end: 10 excl: true elements: - &24 !ruby/object:Treetop::Runtime::SyntaxNode input: dev-center@xxxxxx.ch interval: !ruby/range begin: 10 end: 10 excl: true elements: [] parent: *23 comprehensive_elements: [] - &25 !ruby/object:Treetop::Runtime::SyntaxNode input: dev-center@xxxxxx.ch interval: !ruby/range begin: 10 end: 10 excl: true elements: parent: *23 parent: *5 comprehensive_elements: - *24 - *25 parent: *26 comprehensive_elements: - *4 - *20 - *23 - &51 !ruby/object:Treetop::Runtime::SyntaxNode input: dev-center@xxxxxx.ch interval: !ruby/range begin: 10 end: 11 excl: true elements: parent: *26 - &28 !ruby/object:Treetop::Runtime::SyntaxNode input: dev-center@xxxxxx.ch interval: !ruby/range begin: 11 end: 20 excl: true elements: - &27 !ruby/object:Treetop::Runtime::SyntaxNode input: dev-center@xxxxxx.ch interval: !ruby/range begin: 11 end: 11 excl: true elements: - &29 !ruby/object:Treetop::Runtime::SyntaxNode input: dev-center@xxxxxx.ch interval: !ruby/range begin: 11 end: 11 excl: true elements: [] parent: *27 comprehensive_elements: [] - &30 !ruby/object:Treetop::Runtime::SyntaxNode input: dev-center@xxxxxx.ch interval: !ruby/range begin: 11 end: 11 excl: true elements: parent: *27 parent: *28 comprehensive_elements: - *29 - *30 - &39 !ruby/object:Treetop::Runtime::SyntaxNode input: dev-center@xxxxxx.ch interval: !ruby/range begin: 11 end: 20 excl: true elements: - &32 !ruby/object:Treetop::Runtime::SyntaxNode input: dev-center@xxxxxx.ch interval: !ruby/range begin: 11 end: 18 excl: true elements: - &31 !ruby/object:Treetop::Runtime::SyntaxNode input: dev-center@xxxxxx.ch interval: !ruby/range begin: 11 end: 17 excl: true elements: - &33 !ruby/object:Treetop::Runtime::SyntaxNode input: dev-center@xxxxxx.ch interval: !ruby/range begin: 11 end: 12 excl: true elements: parent: *31 - &34 !ruby/object:Treetop::Runtime::SyntaxNode input: dev-center@xxxxxx.ch interval: !ruby/range begin: 12 end: 13 excl: true elements: parent: *31 - &35 !ruby/object:Treetop::Runtime::SyntaxNode input: dev-center@xxxxxx.ch interval: !ruby/range begin: 13 end: 14 excl: true elements: parent: *31 - &36 !ruby/object:Treetop::Runtime::SyntaxNode input: dev-center@xxxxxx.ch interval: !ruby/range begin: 14 end: 15 excl: true elements: parent: *31 - &37 !ruby/object:Treetop::Runtime::SyntaxNode input: dev-center@xxxxxx.ch interval: !ruby/range begin: 15 end: 16 excl: true elements: parent: *31 - &38 !ruby/object:Treetop::Runtime::SyntaxNode input: dev-center@xxxxxx.ch interval: !ruby/range begin: 16 end: 17 excl: true elements: parent: *31 parent: *32 comprehensive_elements: - *33 - *34 - *35 - *36 - *37 - *38 - &40 !ruby/object:Treetop::Runtime::SyntaxNode input: dev-center@xxxxxx.ch interval: !ruby/range begin: 17 end: 18 excl: true elements: parent: *32 parent: *39 comprehensive_elements: - *31 - *40 - &42 !ruby/object:Treetop::Runtime::SyntaxNode input: dev-center@xxxxxx.ch interval: !ruby/range begin: 18 end: 20 excl: true elements: - &41 !ruby/object:Treetop::Runtime::SyntaxNode input: dev-center@xxxxxx.ch interval: !ruby/range begin: 18 end: 20 excl: true elements: - &43 !ruby/object:Treetop::Runtime::SyntaxNode input: dev-center@xxxxxx.ch interval: !ruby/range begin: 18 end: 19 excl: true elements: parent: *41 - &44 !ruby/object:Treetop::Runtime::SyntaxNode input: dev-center@xxxxxx.ch interval: !ruby/range begin: 19 end: 20 excl: true elements: parent: *41 parent: *42 comprehensive_elements: - *43 - *44 - &45 !ruby/object:Treetop::Runtime::SyntaxNode input: dev-center@xxxxxx.ch interval: !ruby/range begin: 20 end: 20 excl: true elements: parent: *42 parent: *39 comprehensive_elements: - *41 - *45 parent: *28 comprehensive_elements: - *32 - *42 - &46 !ruby/object:Treetop::Runtime::SyntaxNode input: dev-center@xxxxxx.ch interval: !ruby/range begin: 20 end: 20 excl: true elements: - &47 !ruby/object:Treetop::Runtime::SyntaxNode input: dev-center@xxxxxx.ch interval: !ruby/range begin: 20 end: 20 excl: true elements: [] parent: *46 comprehensive_elements: [] - &48 !ruby/object:Treetop::Runtime::SyntaxNode input: dev-center@xxxxxx.ch interval: !ruby/range begin: 20 end: 20 excl: true elements: parent: *46 parent: *28 comprehensive_elements: - *47 - *48 parent: *26 comprehensive_elements: - *27 - *39 - *46 parent: &49 !ruby/object:Treetop::Runtime::SyntaxNode input: dev-center@xxxxxx.ch interval: !ruby/range begin: 0 end: 20 excl: true elements: - *26 - &50 !ruby/object:Treetop::Runtime::SyntaxNode input: dev-center@xxxxxx.ch interval: !ruby/range begin: 20 end: 20 excl: true elements: [] parent: *49 comprehensive_elements: [] comprehensive_elements: - *26 - *50 comprehensive_elements: - *5 - *51 - *28 group_recipients: [] individual_recipients: - *26 addresses: - !ruby/object:Mail::Address output_type: :encode tree: *26 raw_text: *26 parsed: true domain_text: xxxxxx.ch comments: [] display_name: element: value: dev-center@xxxxxx.ch groups: {} field_order_id: 10 - !ruby/object:Mail::Field field: !ruby/object:Mail::ToField charset: UTF-8 name: To length: tree: !ruby/object:Mail::AddressList address_nodes: [] group_recipients: [] individual_recipients: [] addresses: [] element: value: '' field_order_id: 13 - !ruby/object:Mail::Field field: !ruby/object:Mail::CcField charset: UTF-8 name: Cc length: tree: !ruby/object:Mail::AddressList address_nodes: [] group_recipients: [] individual_recipients: [] addresses: [] element: value: '' field_order_id: 14 - !ruby/object:Mail::Field field: !ruby/object:Mail::BccField charset: UTF-8 name: Bcc length: tree: !ruby/object:Mail::AddressList address_nodes: - &86 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 0 end: 28 excl: true elements: - &53 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 0 end: 18 excl: true elements: - &52 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 0 end: 0 excl: true elements: - &54 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 0 end: 0 excl: true elements: [] parent: *52 comprehensive_elements: [] - &55 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 0 end: 0 excl: true elements: parent: *52 parent: *53 comprehensive_elements: - *54 - *55 - &68 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 0 end: 18 excl: true elements: - &56 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 0 end: 9 excl: true elements: - &69 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 0 end: 0 excl: true elements: [] parent: *56 comprehensive_elements: [] - &57 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 0 end: 8 excl: true elements: - &58 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 0 end: 1 excl: true elements: parent: *57 - &59 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 1 end: 2 excl: true elements: parent: *57 - &60 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 2 end: 3 excl: true elements: parent: *57 - &61 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 3 end: 4 excl: true elements: parent: *57 - &62 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 4 end: 5 excl: true elements: parent: *57 - &63 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 5 end: 6 excl: true elements: parent: *57 - &64 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 6 end: 7 excl: true elements: parent: *57 - &65 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 7 end: 8 excl: true elements: parent: *57 parent: *56 comprehensive_elements: - *58 - *59 - *60 - *61 - *62 - *63 - *64 - *65 - &66 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 8 end: 9 excl: true elements: - &67 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 8 end: 9 excl: true elements: parent: *66 parent: *56 comprehensive_elements: - *67 parent: *68 comprehensive_elements: - *69 - *57 - *66 - &70 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 9 end: 18 excl: true elements: - &81 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 9 end: 9 excl: true elements: [] parent: *70 comprehensive_elements: [] - &71 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 9 end: 18 excl: true elements: - &72 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 9 end: 10 excl: true elements: parent: *71 - &73 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 10 end: 11 excl: true elements: parent: *71 - &74 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 11 end: 12 excl: true elements: parent: *71 - &75 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 12 end: 13 excl: true elements: parent: *71 - &76 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 13 end: 14 excl: true elements: parent: *71 - &77 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 14 end: 15 excl: true elements: parent: *71 - &78 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 15 end: 16 excl: true elements: parent: *71 - &79 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 16 end: 17 excl: true elements: parent: *71 - &80 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 17 end: 18 excl: true elements: parent: *71 parent: *70 comprehensive_elements: - *72 - *73 - *74 - *75 - *76 - *77 - *78 - *79 - *80 - &82 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 18 end: 18 excl: true elements: [] parent: *70 comprehensive_elements: [] parent: *68 comprehensive_elements: - *81 - *71 - *82 parent: *53 comprehensive_elements: - *56 - *70 - &83 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 18 end: 18 excl: true elements: - &84 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 18 end: 18 excl: true elements: [] parent: *83 comprehensive_elements: [] - &85 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 18 end: 18 excl: true elements: parent: *83 parent: *53 comprehensive_elements: - *84 - *85 parent: *86 comprehensive_elements: - *52 - *68 - *83 - &169 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 18 end: 19 excl: true elements: parent: *86 - &88 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 19 end: 28 excl: true elements: - &87 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 19 end: 19 excl: true elements: - &89 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 19 end: 19 excl: true elements: [] parent: *87 comprehensive_elements: [] - &90 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 19 end: 19 excl: true elements: parent: *87 parent: *88 comprehensive_elements: - *89 - *90 - &99 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 19 end: 28 excl: true elements: - &92 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 19 end: 26 excl: true elements: - &91 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 19 end: 25 excl: true elements: - &93 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 19 end: 20 excl: true elements: parent: *91 - &94 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 20 end: 21 excl: true elements: parent: *91 - &95 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 21 end: 22 excl: true elements: parent: *91 - &96 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 22 end: 23 excl: true elements: parent: *91 - &97 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 23 end: 24 excl: true elements: parent: *91 - &98 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 24 end: 25 excl: true elements: parent: *91 parent: *92 comprehensive_elements: - *93 - *94 - *95 - *96 - *97 - *98 - &100 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 25 end: 26 excl: true elements: parent: *92 parent: *99 comprehensive_elements: - *91 - *100 - &102 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 26 end: 28 excl: true elements: - &101 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 26 end: 28 excl: true elements: - &103 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 26 end: 27 excl: true elements: parent: *101 - &104 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 27 end: 28 excl: true elements: parent: *101 parent: *102 comprehensive_elements: - *103 - *104 - &105 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 28 end: 28 excl: true elements: parent: *102 parent: *99 comprehensive_elements: - *101 - *105 parent: *88 comprehensive_elements: - *92 - *102 - &106 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 28 end: 28 excl: true elements: - &107 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 28 end: 28 excl: true elements: [] parent: *106 comprehensive_elements: [] - &108 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 28 end: 28 excl: true elements: parent: *106 parent: *88 comprehensive_elements: - *107 - *108 parent: *86 comprehensive_elements: - *87 - *99 - *106 parent: &168 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 0 end: 54 excl: true elements: - *86 - &164 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 28 end: 54 excl: true elements: - &109 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 28 end: 54 excl: true elements: - &165 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 28 end: 28 excl: true elements: [] parent: *109 - &166 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 28 end: 29 excl: true elements: parent: *109 - &167 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 29 end: 30 excl: true elements: - !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 29 end: 30 excl: true elements: - !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 29 end: 30 excl: true elements: - !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 29 end: 30 excl: true elements: - !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 30 end: 30 excl: true elements: [] parent: *109 - &140 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 30 end: 54 excl: true elements: - &111 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 30 end: 44 excl: true elements: - &110 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 30 end: 30 excl: true elements: - &112 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 30 end: 30 excl: true elements: [] parent: *110 comprehensive_elements: [] - &113 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 30 end: 30 excl: true elements: parent: *110 parent: *111 comprehensive_elements: - *112 - *113 - &126 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 30 end: 44 excl: true elements: - &114 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 30 end: 39 excl: true elements: - &127 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 30 end: 30 excl: true elements: [] parent: *114 comprehensive_elements: [] - &115 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 30 end: 38 excl: true elements: - &116 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 30 end: 31 excl: true elements: parent: *115 - &117 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 31 end: 32 excl: true elements: parent: *115 - &118 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 32 end: 33 excl: true elements: parent: *115 - &119 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 33 end: 34 excl: true elements: parent: *115 - &120 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 34 end: 35 excl: true elements: parent: *115 - &121 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 35 end: 36 excl: true elements: parent: *115 - &122 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 36 end: 37 excl: true elements: parent: *115 - &123 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 37 end: 38 excl: true elements: parent: *115 parent: *114 comprehensive_elements: - *116 - *117 - *118 - *119 - *120 - *121 - *122 - *123 - &124 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 38 end: 39 excl: true elements: - &125 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 38 end: 39 excl: true elements: parent: *124 parent: *114 comprehensive_elements: - *125 parent: *126 comprehensive_elements: - *127 - *115 - *124 - &128 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 39 end: 44 excl: true elements: - &135 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 39 end: 39 excl: true elements: [] parent: *128 comprehensive_elements: [] - &129 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 39 end: 44 excl: true elements: - &130 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 39 end: 40 excl: true elements: parent: *129 - &131 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 40 end: 41 excl: true elements: parent: *129 - &132 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 41 end: 42 excl: true elements: parent: *129 - &133 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 42 end: 43 excl: true elements: parent: *129 - &134 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 43 end: 44 excl: true elements: parent: *129 parent: *128 comprehensive_elements: - *130 - *131 - *132 - *133 - *134 - &136 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 44 end: 44 excl: true elements: [] parent: *128 comprehensive_elements: [] parent: *126 comprehensive_elements: - *135 - *129 - *136 parent: *111 comprehensive_elements: - *114 - *128 - &137 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 44 end: 44 excl: true elements: - &138 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 44 end: 44 excl: true elements: [] parent: *137 comprehensive_elements: [] - &139 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 44 end: 44 excl: true elements: parent: *137 parent: *111 comprehensive_elements: - *138 - *139 parent: *140 comprehensive_elements: - *110 - *126 - *137 - &163 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 44 end: 45 excl: true elements: parent: *140 - &142 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 45 end: 54 excl: true elements: - &141 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 45 end: 45 excl: true elements: - &143 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 45 end: 45 excl: true elements: [] parent: *141 comprehensive_elements: [] - &144 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 45 end: 45 excl: true elements: parent: *141 parent: *142 comprehensive_elements: - *143 - *144 - &153 !ruby/object:Treetop::Runtime::SyntaxNode input: jonathan.soliveres@xxxxxx.ch, benjamin.stoll@xxxxxx.ch interval: !ruby/range begin: 45 en
+</pre>"
+15610,Redmine,Defect,"",Closed,Normal,How to create Project.,Ahmad Raza,"",2013-12-06 04:22,Projects,"","","","",0,2013-12-05 14:53,2013-12-06 04:22,"",Invalid,"","How to create project here, Its not showing any option of create project."
+15602,Redmine,Defect,"",Closed,Normal,Can not filter issues with criteria assigned_to equal to an unaffected user who previously worked on the project,Fayez Naccache,"",2013-12-05 16:43,Issues,"","","","",0,2013-12-04 16:45,2013-12-05 16:43,次のチケットと重複 #15201,Duplicate,"","Can not filter issues with criteria assigned_to equal to an unaffected user who previously worked on the project.
+
+On the picture below, I can not select the user ""AY"".
+
+!bug.png!"
+15601,Redmine,Patch,"",Closed,Normal,Turkish translation update ,Mert Salih Kaplan,"",2013-12-05 06:28,Translations,2.4.2,"","","",0,2013-12-04 16:08,2013-12-05 06:28,"","","",I have translated a last version of Redmine.
+15600,Redmine,Defect,"",Closed,Urgent,Create ticket via mail through pop3,suhas rao,"",2013-12-05 06:49,"","","","","",0,2013-12-04 15:47,2013-12-05 06:49,"",Invalid,"","Hi,
+
+I am not receiving mails through pop3. Could you please help me to solve?
+
+I used the following line in cron job in centos.
+
+01 * * * * root rake -f /var/www/redmine-2.0.1/Rakefile redmine:email:receive_pop3 RAILS_ENV=""production"" host=xxx port=xxx ssl= true username=xxx password=xxx
+
+Thanks,
+Suhas Rao K.S"
+15599,Redmine,Defect,"",Closed,Normal,tickets that are related to each other block a declaration of parent task for them (error: invalid task),Florian S.,"",2014-04-25 13:42,Issues,"","","","",0,2013-12-04 15:24,2014-04-25 13:42,次のチケットと重複 #13654,"",2.4.1,"Ticket A has a relation to ticket B.
+Ticket C should be a parent task for A and B.
+So I create C.
+Then I try to add parent task C to A and B.
+Redmine tells me that the parent task is invalid.
+Then I remove the relation between A and B.
+Redmine allows me to add C as parent task to A and B now.
+Now I can re-add the relation between A and B again.
+Result: A and B have a relation and they have C as parent task.
+
+But: Why cannot I add the parent task C to A and B while they have a releation?
+IMHO this should be possible without the detour removing the relations and adding them again.
+"
+15590,Redmine,Defect,"",Closed,Normal,Database migration error from 2.1.4 to 2.4.1,Constantine Borodin,"",2013-12-07 09:52,Issues,"","","","",0,2013-12-04 03:18,2013-12-07 09:52,関連している #12707,Invalid,"","Hi,
+
+I trying to migrate database from v.2.1.4 to v.2.4.1 and when i had click to 'activity', 'issues', 'gant diagramm' and 'settings' i got an error 500.
+It's strange, because with db from v.2.4.1 it's working correctly and  when i had installed the Redmine v.2.4.1 and trying to migrate the database from latest Redmine version i had got an error.
+Please clarify, it's very strange for me.
+Thank you.
+
+The log is
+
+<pre>
+Connecting to database specified by database.yml
+Creating scope :system. Overwriting existing method Enumeration.system.
+Creating scope :sorted. Overwriting existing method Group.sorted.
+Creating scope :sorted. Overwriting existing method User.sorted.
+Started GET ""/"" for 86.57.190.115 at 2013-12-03 15:32:56 -0700
+Processing by WelcomeController#index as HTML
+  Current user: admin (id=1)
+  Rendered welcome/index.html.erb within layouts/base (828.5ms)
+Completed 200 OK in 1603.1ms (Views: 1178.1ms | ActiveRecord: 69.6ms)
+Started GET ""/projects/f2"" for 86.57.190.115 at 2013-12-03 15:33:02 -0700
+Processing by ProjectsController#show as HTML
+  Parameters: {""id""=>""f2""}
+  Current user: admin (id=1)
+  Rendered projects/_members_box.html.erb (5.2ms)
+  Rendered projects/show.html.erb within layouts/base (27.5ms)
+Completed 200 OK in 245.8ms (Views: 142.7ms | ActiveRecord: 52.1ms)
+Started GET ""/projects/f2/issues/new"" for 86.57.190.115 at 2013-12-03 15:33:05 -0700
+Processing by IssuesController#new as HTML
+  Parameters: {""project_id""=>""f2""}
+  Current user: admin (id=1)
+  Rendered issues/_form.html.erb (9.3ms)
+  Rendered issues/new.html.erb within layouts/base (14.0ms)
+Completed 500 Internal Server Error in 251.8ms
+
+ActionView::Template::Error (undefined local variable or method `fields_bits' for #<Tracker:0x00000004fb8bd8>):
+    1: <%= labelled_fields_for :issue, @issue do |f| %>
+    2: <%= call_hook(:view_issues_form_details_top, { :issue => @issue, :form => f }) %>
+    3: 
+    4: <% if @issue.safe_attribute? 'is_private' %>
+    5: <p style=""float:right; margin-right:1em;"">
+    6:   <%= f.check_box :is_private, :no_label => true %><label class=""inline"" for=""issue_is_private"" id=""issue_is_private_label""><%= l(:field_is_private) %></label>
+    7: </p>
+  app/models/tracker.rb:72:in `block in disabled_core_fields'
+  app/models/tracker.rb:72:in `select'
+  app/models/tracker.rb:72:in `disabled_core_fields'
+  app/models/issue.rb:474:in `disabled_core_fields'
+  app/models/issue.rb:412:in `safe_attribute_names'
+  lib/redmine/safe_attributes.rb:66:in `safe_attribute?'
+  app/views/issues/_form.html.erb:4:in `block in _app_views_issues__form_html_erb__3246576995207528411_41286820'
+  app/helpers/application_helper.rb:983:in `labelled_fields_for'
+  app/views/issues/_form.html.erb:1:in `_app_views_issues__form_html_erb__3246576995207528411_41286820'
+  app/views/issues/new.html.erb:11:in `block in _app_views_issues_new_html_erb__440174660043525585_32271180'
+  app/helpers/application_helper.rb:976:in `labelled_form_for'
+  app/views/issues/new.html.erb:5:in `_app_views_issues_new_html_erb__440174660043525585_32271180'
+  app/controllers/issues_controller.rb:139:in `block (2 levels) in new'
+  app/controllers/issues_controller.rb:138:in `new'
+</pre>"
+15581,Redmine,Defect,"",Closed,Normal,Another broken display of subtasks on parent issues,Farindra Tamin,"",2015-02-19 19:05,Issues,"","","","",0,2013-12-03 04:19,2015-02-19 19:05,関連している #6579,"",2.0.3,"We currently have a task with around 90+ sub tasks on our hosted redmine server. 
+
+The task and all of the subtasks are attached.
+2013_11_25_13_09_05_Group_6496.jpg
+2013_11_25_13_09_40_Group_6496.jpg
+
+The problem started when we recently added two tasks to the existing tree, 7062 and 7063.
+Both of these tasks are already created, and have their parent tasks set afterward.
+
+After adding both 7062 and 7063 to the parent 6512, we got the lower portion of the list (below task 6515) cut off and some tasks are missing from the list:
+!2013_11_25_13_45_41_Group_6496.jpg!
+
+Also if we open the task 6515, we can see this parent tree structure:
+!2013_11_25_13_47_10_Group_6515.jpg!
+
+We have checked that all all the tasks have the correct parent task assigned.
+
+We did a further investigation into the database table and found these facts:
+
+* Before adding 7062 and 7063 to parent task 6512:
+
+| Task # | lft | rgt |
+| 6496 | 1 | 180 |
+| 6512 | 106 | 111|
+|6515 | 130 | 179 |
+| 7062 | 1 | 2 |
+| 7063 | 1 | 2 |
+
+
+* After adding 7062 and 7063 to parent 6512:
+
+| Task # | lft | rgt |
+| 6496 | 1 | 114 |
+| 6512 | 106 | 115|
+| 6515 | 134 | 113 |
+| 7062 | 111 | 112 |
+| 7063 | 113 | 114 |
+
+* To fix the problem, we had to manually changed the rgt values to:
+
+| Task # | lft | rgt |
+| 6496 | 1 | *184* |
+| 6512 | 106 | 115|
+| 6515 | 134 | *183* |
+| 7062 | 111 | 112 |
+| 7063 | 113 | 114 |
+
+Seems when setting parent task of 7062 and 7063 to 6512, the wrong values of rgt are updated to 6496 and 6515.
+
+We can reproduce this problem again by removing parent task of 7062 and 7063 and assigned them back 6512.
+
+We think the problem is similar to #11011
+
+The redmine version that we are using is:
+!2013_11_25_13_57_19_Information.jpg!"
+15580,Redmine,Defect,"",Closed,Urgent,502 proxy error (get/redmine) after importing SQL database (release 1.2.1-1),Edison X. Cerda,"",2013-12-04 05:55,Database,"","","","",0,2013-12-02 23:23,2013-12-04 05:55,"",Invalid,1.2.1,"After importing a SQL dump using MySQL and restarting my PC, I receive the 502 Proxy Error when trying to open my Redmine database.
+I have tried opening it through the other ports (e.g. 3001, etc) but nothing seems to work.
+This is my apache2 error log:
+[Mon Dec 02 17:15:24 2013] [error] [client 192.168.8.142] (OS 10054)An existing connection was forcibly closed by the remote host.  : proxy: error reading status line from remote server 127.0.0.1:3001, referer: http://6yh38w1/
+[Mon Dec 02 17:15:24 2013] [error] [client 192.168.8.142] (OS 10054)An existing connection was forcibly closed by the remote host.  : proxy: error reading status line from remote server 127.0.0.1:3002, referer: http://6yh38w1/
+[Mon Dec 02 17:15:24 2013] [error] [client 192.168.8.142] proxy: Error reading from remote server returned by /redmine/, referer: http://6yh38w1/
+[Mon Dec 02 17:15:34 2013] [error] [client 192.168.8.142] (OS 10054)An existing connection was forcibly closed by the remote host.  : proxy: error reading status line from remote server 127.0.0.1:3001, referer: http://6yh38w1/redmine/
+[Mon Dec 02 17:15:34 2013] [error] [client 192.168.8.142] (OS 10054)An existing connection was forcibly closed by the remote host.  : proxy: error reading status line from remote server 127.0.0.1:3002, referer: http://6yh38w1/redmine/
+[Mon Dec 02 17:15:34 2013] [error] [client 192.168.8.142] proxy: Error reading from remote server returned by /redmine/, referer: http://6yh38w1/redmine/"
+15577,Redmine,Defect,"",Closed,Normal,Error 500 when create a new issue in V2.4.1,Mr. DTTH,"",2013-12-02 10:48,Issues,"","","","",0,2013-12-02 09:16,2013-12-02 10:48,関連している #15754,Invalid,2.4.1,"When I create a new issue , it throw error 500
+
+Rails 3.2.15
+Redmine 2.4.1
+
+Started POST ""/projects/myos/issues"" for 113.190.220.198 at 2013-12-02 15:11:19 +0700
+Processing by IssuesController#create as HTML
+  Parameters: {""utf8""=>""?"", ""authenticity_token""=>""ehVu36qmPlS0H8PLVh4ZRJ9i5kq6k8+y9OSJxxlLYsw="", ""issue""=>{""tracker_id""=>""4"", ""subject""=>""Task Title 1111"", ""description""=>""Content for task 111"", ""status_id""=>""2"", ""priority_id""=>""4"", ""assigned_to_id""=>""37"", ""fixed_version_id""=>""37"", ""start_date""=>""2013-12-02"", ""due_date""=>"""", ""estimated_hours""=>"""", ""done_ratio""=>""0""}, ""commit""=>""T?o m?i"", ""project_id""=>""myos""}
+  Current user: DTTH (id=37)
+Completed 500 Internal Server Error in 269.6ms
+
+ArgumentError (wrong number of arguments (3 for 1)):
+  app/models/mailer.rb:422:in `initialize'
+  app/models/mailer.rb:445:in `method_missing'
+  app/models/mailer.rb:52:in `block in deliver_issue_add'
+  app/models/issue.rb:821:in `each_notification'
+  app/models/mailer.rb:51:in `deliver_issue_add'
+  app/models/issue.rb:1514:in `send_notification'
+  app/models/issue.rb:163:in `create_or_update'
+  app/controllers/issues_controller.rb:146:in `create'"
+15574,Redmine,Defect,"",Closed,High,givenname,black sea,"",2013-12-13 18:52,LDAP,"","","","",0,2013-12-01 18:56,2013-12-13 18:52,"",Invalid,2.3.3,"Hello,
+We are trying to deploy Redmine in a small non profit institution. We are autheticating the users againts LDAP. However we would like the user's ""title"" be attached to their ""givenName"". It seems important issue for the people in our institution. People are asking for it. So how can we retrieve title and firstname information concatanated from LDAP for the tags ""title"" and ""givenName""
+Any help much appricated
+Thanks
+ "
+15572,Redmine,Defect,"",Closed,Normal,incoming e-mail triggers error,Anthony Mallet,"",2013-12-05 06:34,Email receiving,"","","","",0,2013-11-29 19:36,2013-12-05 06:34,"",Invalid,2.4.1,"I'm trying to setup incoming e-mails for redmine-2.4.1
+
+However, every processed e-mail triggers this error:
+
+RuntimeError (In order to use #url_for, you must include routing helpers explicitly. For instance, `include Rails.application.routes.url_helpers):
+  app/models/mailer.rb:42:in `issue_add'
+  app/models/mailer.rb:423:in `initialize'
+  app/models/mailer.rb:446:in `method_missing'
+  app/models/mailer.rb:53:in `deliver_issue_add'
+  app/models/issue.rb:821:in `each_notification'
+  app/models/mailer.rb:52:in `deliver_issue_add'
+  app/models/issue.rb:1514:in `send_notification'
+  app/models/issue.rb:163:in `create_or_update'
+  app/models/mail_handler.rb:196:in `receive_issue'
+  app/models/mail_handler.rb:174:in `dispatch_to_default'
+  app/models/mail_handler.rb:159:in `dispatch'
+  app/models/mail_handler.rb:134:in `receive'
+  app/models/mail_handler.rb:46:in `receive'
+  app/controllers/mail_handler_controller.rb:25:in `index'
+
+Of course, I tried to add the ""include"" directive for the Mailer class in mailer.rb, but this did not change anything.
+
+Any idea?
+"
+15571,Redmine,Defect,"",Closed,Normal,internal error after deleting custom field,Bart Wro,"",2013-12-15 09:57,Custom fields,"","","","",0,2013-11-29 11:32,2013-12-15 09:57,"",No feedback,2.2.4,"Hello,
+I had done some tests with redmine api and custom fields and after that I have problems viewing issues in project where the deleted custom field was used.
+
+Steps:
+1. create custom field (text) for project X
+2. update one issue in project X and set the custom field
+3. 3 times used apikey to change custom field value in this issue
+4. deleted custom field
+5. now all issues in project x are giving me internal error. other projects work fine
+
+
+
+logs when trying to check any issue in project X:
+
+<pre>
+
+Started GET ""/issues/1175"" for 192.168.76.97 at Fri Nov 29 11:19:11 +0100 2013
+Processing by IssuesController#show as HTML
+  Parameters: {""id""=>""1175""}
+  Current user: admin (id=1)
+  Rendered issues/_action_menu.html.erb (4.5ms)
+  Rendered issues/show.html.erb within layouts/base (22.5ms)
+Completed 500 Internal Server Error in 187ms
+
+ActionView::Template::Error (undefined method `to_i' for [nil]:Array):
+    64:     rows.right l(:label_spent_time), (@issue.total_spent_hours > 0 ? (link_to l_hours(@issue.total_spent_hours), {:controller => 'timelog', :action => 'index', :project_id => @project, :issue_id => @issue}) : ""-""), :class => 'spent-time'
+    65:   end
+    66: end %>
+    67: <%= render_custom_fields_rows(@issue) %>
+    68: <%= call_hook(:view_issues_show_details_bottom, :issue => @issue) %>
+    69: </table>
+    70:
+  lib/redmine/custom_field_format.rb:55:in `format_as_version'
+  lib/redmine/custom_field_format.rb:36:in `send'
+  lib/redmine/custom_field_format.rb:36:in `format'
+  lib/redmine/custom_field_format.rb:101:in `format_value'
+  app/helpers/issues_helper.rb:160:in `render_custom_fields_rows'
+  app/helpers/issues_helper.rb:158:in `each'
+  app/helpers/issues_helper.rb:158:in `render_custom_fields_rows'
+  app/views/issues/show.html.erb:67:in `_e7529ca14bc47e33f631b49fe65d7c81'
+  app/controllers/issues_controller.rb:119:in `show'
+  app/controllers/issues_controller.rb:116:in `show'
+
+</pre>
+
+I am working on redmine 2.2.4 on ubuntu server"
+15569,Redmine,Defect,"",Closed,Normal,Attach problem from a linux workstation,Gildo Caceres,"",2013-12-15 09:57,Attachments,"","","","",0,2013-11-28 23:56,2013-12-15 09:57,"",No feedback,2.3.1,"I have KUBUNTU as workstation and i can not attach file to a issue, there is a 500 internal error every time i try it with any browser(Firefox, Chrome)
+
+From another workstation with Windows using Chrome there is no problem.
+
+Any ideas about what is happening?"
+15567,Redmine,Defect,"",Closed,Normal,cookiestore / session management,Jan Niggemann (redmine.org team member),Jan Niggemann (redmine.org team member),2013-11-29 22:46,Security,"","","","",0,2013-11-28 17:49,2013-11-29 22:46,"","","","I don't know if this is a true threat or not, but redmine is explicitly mentioned here:
+http://maverickblogging.com/list-of-websites-using-ruby-on-rails-cookiestore-for-session-management/
+
+http://projects.webappsec.org/w/page/13246944/Insufficient%20Session%20Expiration
+
+Reply: ""No, Rails' CookieStore isn't broken"":https://www.coffeepowered.net/2013/09/26/rails-session-cookies/
+
+Do we need to to something about this?"
+15565,Redmine,Patch,"",New,Normal,Sidebar css,Ksenia Altbregen,"",2013-11-28 15:52,Code cleanup/refactoring,"","","","",0,2013-11-28 13:53,"","","","","Related to #13242.
+
+CSS for <ul> and <li> tags in #sidebar spoils our plugin.
+I suggest to add a special class for <ul> and <li> elements that need zero margins."

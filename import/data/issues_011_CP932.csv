@@ -1,0 +1,656 @@
+#,プロジェクト,トラッカー,親チケット,ステータス,優先度,題名,作成者,担当者,更新日,カテゴリ,対象バージョン,開始日,期日,予定工数,進捗率,作成日,終了日,関連するチケット,Resolution,Affected version,説明
+26549,Redmine,Defect,"",Closed,Normal,redminInstall problem ,carol Gao,"",2017-07-27 15:05,"","","","","",0,2017-07-27 11:42,2017-07-27 15:05,"",Fixed,"","Step 6 - Database schema objects creation
+
+Create the database structure, by running the following command under the application root directory:
+
+RAILS_ENV=production bundle exec *rails* db:migrate
+
+Maybe the command should be changed to RAILS_ENV=production bundle exec *rake* db:migrate"
+26548,Redmine,Patch,"",Closed,Normal,Rails5 acts_as_versioned fix,Pavel Rosick?,"",2017-07-27 06:05,Database,"","","","",0,2017-07-26 22:54,2017-07-27 06:05,"","","",fixed migration for r16889
+26544,Redmine,Defect,"",Closed,Normal,"SQL-Error occurs sometimes when clicking on ""calendar"" tab",Florian S.,"",2017-10-12 09:27,Calendar,"","","","",0,2017-07-26 16:09,2017-10-12 09:27,次のチケットと重複 #27153,Duplicate,3.4.2,"An error occurs sometimes (and mostly not) when clicking at calendar.
+Second (third and so on) click works fine but first does not. After a break the ""first"" click also does not work again.
+Maybe there is a caching problem, too?
+
+Extract from logfile:
+
+<pre>
+Query::StatementInvalid: Mysql2::Error: Not unique table/alias: 'enumerations': SELECT `issues`.`id` AS t0_r0, `issues`.`tracker_id` AS t0_r1, `issues`.`project_id` AS t0_r2, `issues`.`subject` AS t0_r3, `issues`.`description` AS t0_r4, `issues`.`due_date` AS t0_r5, `issues`.`category_id` AS t0_r6, `issues`.`status_id` AS t0_r7, `issues`.`assigned_to_id` AS t0_r8, `issues`.`priority_id` AS t0_r9, `issues`.`fixed_version_id` AS t0_r10, `issues`.`author_id` AS t0_r11, `issues`.`lock_version` AS t0_r12, `issues`.`created_on` AS t0_r13, `issues`.`updated_on` AS t0_r14, `issues`.`start_date` AS t0_r15, `issues`.`done_ratio` AS t0_r16, `issues`.`estimated_hours` AS t0_r17, `issues`.`parent_id` AS t0_r18, `issues`.`root_id` AS t0_r19, `issues`.`lft` AS t0_r20, `issues`.`rgt` AS t0_r21, `issues`.`is_private` AS t0_r22, `issues`.`closed_on` AS t0_r23, `issue_statuses`.`id` AS t1_r0, `issue_statuses`.`name` AS t1_r1, `issue_statuses`.`is_closed` AS t1_r2, `issue_statuses`.`position` AS t1_r3, `issue_statuses`.`default_done_ratio` AS t1_r4, `projects`.`id` AS t2_r0, `projects`.`name` AS t2_r1, `projects`.`description` AS t2_r2, `projects`.`homepage` AS t2_r3, `projects`.`is_public` AS t2_r4, `projects`.`parent_id` AS t2_r5, `projects`.`created_on` AS t2_r6, `projects`.`updated_on` AS t2_r7, `projects`.`identifier` AS t2_r8, `projects`.`status` AS t2_r9, `projects`.`lft` AS t2_r10, `projects`.`rgt` AS t2_r11, `projects`.`inherit_members` AS t2_r12, `projects`.`default_version_id` AS t2_r13, `projects`.`default_assigned_to_id` AS t2_r14, `trackers`.`id` AS t3_r0, `trackers`.`name` AS t3_r1, `trackers`.`is_in_chlog` AS t3_r2, `trackers`.`position` AS t3_r3, `trackers`.`is_in_roadmap` AS t3_r4, `trackers`.`fields_bits` AS t3_r5, `trackers`.`default_status_id` AS t3_r6, `users`.`id` AS t4_r0, `users`.`login` AS t4_r1, `users`.`hashed_password` AS t4_r2, `users`.`firstname` AS t4_r3, `users`.`lastname` AS t4_r4, `users`.`admin` AS t4_r5, `users`.`status` AS t4_r6, `users`.`last_login_on` AS t4_r7, `users`.`language` AS t4_r8, `users`.`auth_source_id` AS t4_r9, `users`.`created_on` AS t4_r10, `users`.`updated_on` AS t4_r11, `users`.`type` AS t4_r12, `users`.`identity_url` AS t4_r13, `users`.`mail_notification` AS t4_r14, `users`.`salt` AS t4_r15, `users`.`must_change_passwd` AS t4_r16, `users`.`passwd_changed_on` AS t4_r17, `enumerations`.`id` AS t5_r0, `enumerations`.`name` AS t5_r1, `enumerations`.`position` AS t5_r2, `enumerations`.`is_default` AS t5_r3, `enumerations`.`type` AS t5_r4, `enumerations`.`active` AS t5_r5, `enumerations`.`project_id` AS t5_r6, `enumerations`.`parent_id` AS t5_r7, `enumerations`.`position_name` AS t5_r8 FROM `issues` INNER JOIN `projects` ON `projects`.`id` = `issues`.`project_id` INNER JOIN `issue_statuses` ON `issue_statuses`.`id` = `issues`.`status_id` LEFT OUTER JOIN `trackers` ON `trackers`.`id` = `issues`.`tracker_id` LEFT OUTER JOIN `users` ON `users`.`id` = `issues`.`assigned_to_id` LEFT OUTER JOIN `enumerations` ON `enumerations`.`id` = `issues`.`priority_id` AND `enumerations`.`type` IN ('IssuePriority') LEFT OUTER JOIN enumerations ON enumerations.id = issues.priority_id WHERE (((projects.status <> 9 AND EXISTS (SELECT 1 AS one FROM enabled_modules em WHERE em.project_id = projects.id AND em.name='issue_tracking')) AND (((projects.is_public = 1 AND projects.id NOT IN (SELECT project_id FROM members WHERE user_id IN (6,47))) AND ((issues.is_private = 0 OR issues.author_id = 6 OR issues.assigned_to_id IN (6)))) OR (projects.id IN (1,4,6,7) AND ((issues.is_private = 0 OR issues.author_id = 6 OR issues.assigned_to_id IN (6))))))) AND ((issues.fixed_version_id IS NULL) AND issues.is_private IN (0) AND projects.id = 1) AND (((start_date BETWEEN '2017-06-26' AND '2017-08-06') OR (due_date BETWEEN '2017-06-26' AND '2017-08-06')))  ORDER BY enumerations.position DESC
+</pre>
+
+executing this query manually in mysql/mariadb I get the result
+<pre>
+ #1066 - Tabellenname/Alias 'enumerations' nicht eindeutig
+</pre>
+=> Table name / alias ""enumeration"" not unique"
+26537,Redmine,Defect,"",New,Normal,Column Project is not longer added by default to the list of default columns for time entries,Marius BALTEANU,Marius BALTEANU,2017-08-18 03:08,Time tracking,4.0.0,"","","",0,2017-07-26 08:25,"",関連している #26356,"","","After r16814, the column ""Project"" is no longer added by default to the list of default columns for time entries in the global view.  
+
+To reproduce:
+# Go to ""/time_entries""
+# Observe that the column Project is missing
+
+For issues#index and before this commit, the columns Project was shown by default in the global view.
+
+Attached is a patch that fixes this. "
+26534,Redmine,Patch,"",New,Normal,Allow project bulk edit of time entries,Marius BALTEANU,"",2017-08-24 13:11,Time tracking,4.1.0,"","","",0,2017-07-26 00:17,"","関連している #588, 次のチケットが重複 #27879","","","This issue follows #588#note-28 and adds the project field to bulk edit mode for time entries.
+
+- Activity field is updated on project change (actually, the entire form is replaced on project change)
+- Issue autocomplete is available only for bulk editing of time entries from the same project
+- Added the ""Clear"" checkbox to the issue field.
+- Moved the method ""bulk_edit_error_messages"" from issues_helper to application_helper because now it is used by both entities (issue and time entry)."
+26526,Redmine,Defect,"",Closed,Normal,Rails 5: production env: Search engine returns 500 error,Go MAEDA,"",2017-07-25 14:08,Search engine,"","","","",0,2017-07-25 13:04,2017-07-25 14:08,"",Fixed,"","<pre>
+Started GET ""/search?utf8=%E2%9C%93&q=aaa&scope=all&all_words=&all_words=1&titles_only=&issues=1&news=1&documents=1&changesets=1&wiki_pages=1&messages=1&projects=1&attachments=0&options=0&commit=Submit"" for 127.0.0.1 at 2017-07-25 19:58:29 +0900
+Processing by SearchController#index as HTML
+.
+(snip)
+.
+Completed 500 Internal Server Error in 54ms (ActiveRecord: 28.5ms)
+
+
+
+NameError (uninitialized constant Redmine::Database):
+
+lib/plugins/acts_as_searchable/lib/acts_as_searchable.rb:162:in `search_token_match_statement'
+lib/plugins/acts_as_searchable/lib/acts_as_searchable.rb:155:in `block in search_tokens_condition'
+lib/plugins/acts_as_searchable/lib/acts_as_searchable.rb:155:in `map'
+lib/plugins/acts_as_searchable/lib/acts_as_searchable.rb:155:in `search_tokens_condition'
+lib/plugins/acts_as_searchable/lib/acts_as_searchable.rb:93:in `search_result_ranks_and_ids'
+lib/redmine/search.rb:127:in `block in load_result_ids'
+.
+(snip)
+</pre>"
+26524,Redmine,Defect,"",Closed,Normal,Redmine 500 error,power chen,"",2017-07-25 15:49,My page,"","","","",0,2017-07-25 11:43,2017-07-25 15:49,"",Fixed,"","<pre>
+Internal error
+
+An error occurred on the page you were trying to access.
+If you continue to experience problems please contact your Redmine administrator for assistance.
+
+If you are the Redmine administrator, check your log files for details about the error.
+</pre>
+
+*log:*
+<pre>
+Started GET ""/my/page"" for 183.252.16.23 at 2017-07-25 17:41:58 +0800
+Processing by MyController#page as HTML
+  Current user: chenxy (id=1)
+Completed 500 Internal Server Error in 61ms (ActiveRecord: 40.0ms)
+  
+NameError (uninitialized constant Redmine::MyPage):
+  
+app/models/user_preference.rb:94:in `my_page_groups'
+app/controllers/my_controller.rb:40:in `page'
+lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+</pre>
+
+At revision 16877."
+26522,Redmine,Patch,"",New,Normal,repository routing bug when file path starts with (browse|entry|raw|changes|annotate|diff)/,Jens Kr?mer,"",2017-07-25 16:08,SCM,4.0.0,"","","",0,2017-07-25 11:43,"","","","","If the first component of a path in a repository equals one of the strings above, the wrong route gets selected in the case of links without @repository_id@ (as they are generated from wiki @source:@ links to the default repository of a project) and the intended action is mistaken for the @repository_id@ parameter. Attached is a patch to the repository routing test illustrating the issue.
+
+I would suggest to change repository#identifier_param to always return an identifier (see second patch) and remove the repository routes without repository_id (rows 280ff in current config/routes.rb)."
+26520,Redmine,Defect,"",Closed,Normal,"Blank ""Issue"" field on the ""Log time"" from the ""Spent time - Details"" page for an issue",Hiroshi YUKI,Jean-Philippe Lang,2017-10-15 13:17,Time tracking,3.4.3,"","","",0,2017-07-25 09:38,2017-10-15 13:17,"",Fixed,3.4.2,"When I tried to log time from a ""Spent time - Details"" page (like https://example.com/projects/project-identifier/time_entries?issue_id=%7E12345 ), I clicked the ""Log time"" link, and I saw an entry form for spent time with blank ""issue"" field and an orphan time entry was created unexpectedly.
+
+Steps to reproduce:
+
+1. Visit a list of issues under any project. (`/projects/project-identifier/issues`)
+2. Visit an issue.
+3. Click the ""Log time"" link.
+4. Fill ""Hours"" field with a value `1`.
+5. Choose any activity.
+6. Click the ""Create"" button.
+7. Then you'll see a list of spent time under the project.
+8. Back to the issue.
+9. Then you'll see a link like ""Spent time: 1.00h"".
+10. Click the ""Spent time: 1.00h"" link.
+11. Then you'll see a list of spent time for the issue. (`/projects/project-identifier/time_entries?issue_id=%7E123`)
+ 12. Click the ""Log time"" link in the page.
+
+Expected result:
+
+An entry form is shown with a ""Issue"" field filled with a value like `123` (or any issue number.) 
+
+Actual result:
+
+An entry form is shown with a blank ""Issue"" field. There is no issue number.
+
+Confrimed versions with unexpected behavior:
+
+ * Redmine 3.4.2
+ * Redmine 3.4.1
+ * Redmine 3.3.0
+
+At the step 12, the link URL is generated for the project itself, like: `/projects/project-identifier/time_entries/new`.
+
+Confirmed versions with expected behavior:
+
+ * Redmine 3.2.0
+
+At the step 12, the link URL is generated for the project itself, like: `/issues/123/time_entries/new`."
+26519,Redmine,Patch,"",Closed,Normal,Bulgarian translation,Ivan Cenov,"",2017-07-31 07:03,Translations,"","","","",0,2017-07-25 07:18,2017-07-31 07:03,"","","","Translated news strings, related to #24005
+* error_exceeds_maximum_hours_per_day
+* setting_time_entry_list_defaults
+* setting_timelog_accept_0_hours
+* setting_timelog_max_hours_per_day
+"
+26518,Redmine,Defect,"",Closed,Normal,"Rails 5: Adding a block in My Page causes ""Invalid form authenticity token.""",Go MAEDA,Jean-Philippe Lang,2017-07-25 19:25,My page,"","","","",0,2017-07-25 04:09,2017-07-25 19:25,関連している #23630,Fixed,"","Steps to reproduce:
+
+1. Open ""My Page"".
+2. Add an any block. You will see ""Invalid form authenticity token.""
+
+
+development.log:
+
+There is an error ""Can't verify CSRF token authenticity"".
+
+<pre>
+Started POST ""/my/add_block"" for 127.0.0.1 at 2017-07-25 11:00:28 +0900
+Processing by MyController#add_block as HTML
+  Parameters: {""utf8""=>""?"", ""block""=>""issuequery""}
+Can't verify CSRF token authenticity.
+  AnonymousUser Load (0.3ms)  SELECT  ""users"".* FROM ""users"" WHERE ""users"".""type"" IN ('AnonymousUser') ORDER BY ""users"".""id"" ASC LIMIT ?  [[""LIMIT"", 1]]
+  Rendering common/error.html.erb within layouts/base
+  Rendered common/error.html.erb within layouts/base (1.5ms)
+Filter chain halted as :verify_authenticity_token rendered or redirected
+Completed 422 Unprocessable Entity in 28ms (Views: 24.5ms | ActiveRecord: 0.3ms)
+</pre>"
+26515,Redmine,Defect,"",Needs feedback,Normal,Email not being sent for NEW issues using async_smtp AND non-standard emission address,Matthew Paul,"",2017-08-20 12:15,Email notifications,"","","","",0,2017-07-24 17:45,"","","",3.3.0,"This is similar to an old issue about async_smtp mail.  To reproduce -
+
+Project A - setup with inbound/outbound email the same like tracker@example.com
+Project B - setup with inbound email like test@example.com but outbound the same tracker@example.com
+
+On project A, new issues will cause emails to be sent fine
+On Project B, new issues will cause emails to NOT be sent for NEW issues. UPDATES however will work fine.
+
+So this is like similar issues I see. I fixed it by returning to smtp emails, but this is not as good, obviously.  It looks like when you fixed the original issue from a few years back, you fixed it for email UPDATES but not for NEW emails with an email address different from the inbound email address."
+26514,Redmine,Patch,"",Closed,Normal,German translation for 404-error-page is semantically not correct and misleading,Martin Hartung,"",2017-08-30 18:21,Translations,4.0.0,"","","",0,2017-07-24 16:06,2017-08-30 18:21,"","","","The german translation for the server's page-request-reply *404* is not correct and misleading. While the english statement describes that the page is missing or has been removed, the german translation tells the user that _""the attachment doesn't exist or has been deleted""_. This string is used for any wiki-page, issue but as well for real attachments.
+
+I recommend to either use different labels for certain requested sources or a better direct translation, which renders the german label to be semantically correct.
+
+
+* english
+ <pre>notice_file_not_found: The page you were trying to access doesn't exist or has been removed.</pre>
+* german
+ <pre>notice_file_not_found: Anhang existiert nicht oder ist gel?scht worden.</pre>
+** screenshot of a german redmine installation:
+ !redmine-404.png!
+
+h5. recommended translation:
+
+* DE:
+ <pre>notice_file_not_found: Die von Ihnen angefragte Seite existiert nicht oder wurde entfernt.</pre>"
+26513,Redmine,Defect,"",Closed,Normal,Rails5: production env: NameError (uninitialized constant Redmine::SortCriteria),Toshi MARUYAMA,"",2017-07-25 18:00,"","","","","",0,2017-07-24 15:38,2017-07-24 19:15,関連している #23630,Fixed,"","<pre>
+Started GET ""/test-trunk/projects/redmine-svn/issues"" for ::1 at 2017-07-24 22:33:49 +0900
+Processing by IssuesController#index as HTML
+  Parameters: {""project_id""=>""redmine-svn""}
+  Current user: admin (id=1)
+Completed 500 Internal Server Error in 258ms (ActiveRecord: 184.1ms)
+  
+NameError (uninitialized constant Redmine::SortCriteria):
+  
+app/models/query.rb:758:in `sort_criteria='
+app/models/query.rb:380:in `build_from_params'
+app/models/issue_query.rb:77:in `build_from_params'
+app/helpers/queries_helper.rb:299:in `retrieve_query'
+app/controllers/issues_controller.rb:43:in `index'
+lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+</pre>
+
+It is fine in test env."
+26509,Redmine,Defect,"",Closed,Normal,Page layout went crazy when migrating to 3.4.2.stable,Pedro Calvo,"",2017-07-24 11:56,UI,"","","","",0,2017-07-24 11:04,2017-07-24 11:50,"",Invalid,3.4.2,"Something wrong with styles/css? Menu layout is a complete mess... as you can see in attached picture.
+
+!Capture.PNG!
+
+Environment:
+  Redmine version                3.4.2.stable
+  Ruby version                   2.3.3-p222 (2016-11-21) [i386-mingw32]
+  Rails version                  4.2.8
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.6.12
+  Git                            2.7.0
+  Filesystem                     
+Redmine plugins:
+  no plugin installed
+Operating system: Windows
+Ruby-aware server used: Thin"
+26508,Redmine,Defect,"",Needs feedback,Normal,excel have wrong column name  at custom field,Randa Bustami,"",2017-08-23 09:43,"","","","","",0,2017-07-24 10:35,"","","",3.4.1,"i had added some custom fields , but when i export to excel it display beside the name of the field  "" translation missing: en.""
+pls check attached image
+"
+26507,Redmine,Defect,"",New,Normal,"""attachment:filename"" link syntax would not work if the file name contains ""@""",Go MAEDA,"",2017-10-15 13:48,Text formatting,4.0.0,"","","",0,2017-07-24 06:32,"",ブロックされている #26443,"","","A file name which contains ""@"" is treated as email address.
+
+Probably all versions that support ""attachment:filename"" syntax are affected. redmine.org is also affected. Please see this example: attachment:wrong-attachment-link@2x.png
+
+
+[Textile]
+
+<pre>
+attachment:image@2x.png
+</pre>
+
+[Expected output]
+
+<pre>
+<a class=""attachment"" href=""/attachments/***/image@2x.png"">image@2x.png</a>
+</pre>
+
+[Actual output]
+
+<pre>
+attachment:<a class=""email"" href=""mailto:image@2x.png"">image@2x.png</a>
+</pre>
+
+!{width: 330px; border: 1px solid #ccc;}.wrong-attachment-link@2x.png!"
+26506,Redmine,Defect,"",Closed,Normal,User link syntax causes an exception while sending email notification on Rails 5.1,Go MAEDA,Jean-Philippe Lang,2017-07-24 19:11,Text formatting,"","","","",0,2017-07-24 05:41,2017-07-24 19:00,関連している #23630,Fixed,"","Steps to reproduce:
+
+# Open ""New issue"" page.
+# Enter something in the subject field.
+# Enter ""@admin"" in the description field.
+# Press ""Create"" button. You will see ""NoMethodError"" exception (please see the attached screenshot).
+
+Affected version: r16859 and later"
+26504,Redmine,Defect,"",New,Normal,Rails 5 unit and functional tests,Toshi MARUYAMA,"",2017-11-23 21:58,"",4.0.0,"","","",0,2017-07-23 19:08,"","","","","On trunk r16872, ""rake test:units"" and ""rake test:functionals"" cannot run.
+Rails 5 changes directories.
+
+* test/unit       -> test/models
+* test/functional -> test/controllers
+
+http://guides.rubyonrails.org/testing.html#rails-sets-up-for-testing-from-the-word-go"
+26503,Redmine,Patch,"",Closed,Normal,Update nokogiri gem (~> 1.8.0),Go MAEDA,Jean-Philippe Lang,2017-07-25 19:29,Gems support,4.0.0,"","","",0,2017-07-23 16:58,2017-07-25 19:29,"関連している #27505, ブロックされている #25538","","","Now we can update Nokogiri to 1.8.0 because Ruby 2.1 support has been dropped by #25538 and #23630.
+
+Quotation from ""CHANGELOG of Nokogiri 1.8.0"":https://github.com/sparklemotion/nokogiri/blob/master/CHANGELOG.md#180--2017-06-04 :
+
+bq. This release ends support for Ruby 2.1 on Windows in the x86-mingw32 and x64-mingw32 platform gems (containing pre-compiled DLLs). Official support ended for Ruby 2.1 on 2017-04-01.
+
+
+<pre><code class=""diff"">
+Index: Gemfile
+===================================================================
+--- Gemfile	(revision 16868)
++++ Gemfile	(working copy)
+@@ -13,7 +13,7 @@
+ gem ""roadie"", ""~> 3.2.1""
+ gem ""mimemagic""
+
+-gem ""nokogiri"", ""~> 1.7.2""
++gem ""nokogiri"", ""~> 1.8.0""
+ gem ""i18n"", ""~> 0.7.0""
+
+ # Request at least rails-html-sanitizer 1.0.3 because of security advisories
+</code></pre>"
+26501,Redmine,Patch,"",New,Normal,Change English translation for setting_issue_list_default_columns,Go MAEDA,"",2017-07-23 07:49,Translations,"","","","",0,2017-07-23 07:49,"","","","","I found inconsistent English translation. Please see the attached screenshot.
+This patch changes English translation for setting_issue_list_default_columns from ""Issues list defaults"".
+
+!{width: 460px;}.inconsistent-translation@2x.png!"
+26500,Redmine,Patch,"",Closed,Normal,Japanese translation update (r16833),Go MAEDA,"",2017-07-24 09:49,Translations,"","","","",0,2017-07-23 06:44,2017-07-24 09:49,"","","","Translated the following strings:
+
+* error_exceeds_maximum_hours_per_day
+* setting_time_entry_list_defaults
+* setting_timelog_accept_0_hours
+* setting_timelog_max_hours_per_day"
+26499,Redmine,Defect,"",Closed,Normal,DEPRECATION WARNING due to changes in dirty attributes methods in Rails 5.1,Go MAEDA,"",2017-07-23 12:38,Rails support,"","","","",0,2017-07-23 02:48,2017-07-23 12:38,関連している #23630,"","","A lot of DEPRECATION WARNING messages are displayed while running @rake db:migrate@ (please see the attached file).
+This is due to a change of Rails: https://github.com/rails/rails/pull/25337#issuecomment-225166796"
+26498,Redmine,Defect,"",Closed,Normal,Rails5: scm entry *.html causes 404 Not Found,Toshi MARUYAMA,"",2017-07-22 12:49,SCM,"","","","",0,2017-07-22 12:38,2017-07-22 12:49,関連している #23630,"","","source:trunk/public/404.html
+
+r16848:
+
+<pre><code class=""diff"">
+=== (+9,-9) config/routes.rb ===
+@@ -244,7 +244,7 @@
+ 
+   get 'projects/:id/repository/:repository_id/changes(/*path)',
+       :to => 'repositories#changes',
+-      :format => false
++      :format => 'html'
+</code></pre>
+
+<pre>
+Started GET ""/projects/redmine-svn/repository/entry/trunk/public/404.html"" for 127.0.0.1 at 2017-07-22 19:29:57 +0900
+Processing by RepositoriesController#entry as HTML
+...
+Shelling out: 'svn' list --xml 'http://svn.redmine.org/redmine/trunk/public'@HEAD --no-auth-cache --non-interactive
+...
+Completed 404 Not Found in 3860ms (Views: 43.7ms | ActiveRecord: 3.2ms)
+</pre>
+"
+26492,Redmine,Patch,"",Closed,Normal,% is not valid without a format specifier,Pavel Rosick?,Jean-Philippe Lang,2017-07-22 09:12,Roadmap,3.4.3,"","","",0,2017-07-21 11:49,2017-07-22 09:12,"","","","roadmap overview raises ArgumentError: incomplete format specifier on ruby 2.5 dev
+
+as suggested on https://bugs.ruby-lang.org/issues/13761 it should be prepended with another '%'
+<pre>
+'%0.0f%' % 45 - wrong
+'%0.0f%%' % 45 - correct
+</pre>
+
+patch included
+
+<pre>
+Environment:
+  Redmine version                3.4.1.stable
+  Ruby version                   2.5.0-p-1 (2017-07-21) [x86_64-linux]
+  Rails version                  4.2.9
+  Environment                    production
+  Database adapter               PostgreSQL
+SCM:
+  Git                            2.13.0
+  Filesystem
+</pre>
+"
+26485,Redmine,Defect,"",Closed,Normal,Problems with any project settings and /my/page after upgrade to 3.4.2.stable.16838,Anton Oslyak,"",2017-08-04 10:44,"","","","","",0,2017-07-20 17:19,2017-07-20 17:28,"",Invalid,3.4.2,"After uprgrading to Redmine from 3.3.2.stable.16321 to 3.4.2.stable.16838
+
+Could not open setting in any projects.
+In log:
+<pre>
+Completed 200 OK in 28ms (Views: 6.6ms | ActiveRecord: 6.8ms)
+Started GET ""/projects/actionpipf/settings"" for 188.188.188.188 at 2017-07-20 18:10:53 +0300
+Processing by ProjectsController#settings as HTML
+  Parameters: {""id""=>""actionpipf""}
+  Current user: oslyak (id=1)
+  Rendered projects/_form.html.erb (66.7ms)
+  Rendered projects/_edit.html.erb (68.1ms)
+  Rendered common/_tabs.html.erb (72.9ms)
+  Rendered projects/settings.html.erb within layouts/base (74.6ms)
+Completed 500 Internal Server Error in 111ms (ActiveRecord: 14.0ms)
+
+ActionView::Template::Error (undefined method `default_assigned_to_id' for #<Project:0x007f1178a91628>
+Did you mean?  default_assigned_to
+               default_assigned_to=):
+    25: <% end %>
+    26: 
+    27: <% if @project.safe_attribute?('default_assigned_to_id') && (default_assigned_to_options = project_default_assigned_to_options(@project)).present? %>
+    28:   <p><%= f.select :default_assigned_to_id, default_assigned_to_options, include_blank: true %></p>
+    29: <% end %>
+    30: 
+    31: <%= wikitoolbar_for 'project_description' %>
+  lib/redmine/views/labelled_form_builder.rb:38:in `select'
+  app/views/projects/_form.html.erb:28:in `_d60d570444f22f8d01cecd08019f5840'
+  app/views/projects/_edit.html.erb:2:in `block in _4f48aeb04d4c09fd1953cb8e59f676ea'
+  app/helpers/application_helper.rb:1189:in `labelled_form_for'
+  app/views/projects/_edit.html.erb:1:in `_4f48aeb04d4c09fd1953cb8e59f676ea'
+  app/views/common/_tabs.html.erb:17:in `block in _a6ea0cdfca63321721e62d0a0aa7ddfb'
+  app/views/common/_tabs.html.erb:16:in `each'
+  app/views/common/_tabs.html.erb:16:in `_a6ea0cdfca63321721e62d0a0aa7ddfb'
+  app/helpers/application_helper.rb:344:in `render_tabs'
+  app/views/projects/settings.html.erb:3:in `_828eaa1555a354a1b693f5e69f8dbbdb'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+</pre>
+
+If I tried open */my/page*
+
+<pre>
+Started GET ""/my/page"" for 188.188.188.188 at 2017-07-20 18:16:43 +0300
+Processing by MyController#page as HTML
+  Current user: oslyak (id=1)
+  Rendered plugins/redmine_my_page_queries/app/views/my/page.html.erb within layouts/base (5.0ms)
+Completed 500 Internal Server Error in 33ms (ActiveRecord: 7.4ms)
+
+ActionView::Template::Error (No route matches {:action=>""page_layout"", :controller=>""my""}):
+    1: <%= stylesheet_link_tag 'my_page_queries', plugin: 'redmine_my_page_queries' %>
+    2: <%= javascript_include_tag 'my_page_queries', plugin: 'redmine_my_page_queries' %>
+    3: <div class=""contextual"">
+    4:   <%= link_to l(:label_personalize_page), action: 'page_layout' %>
+    5: </div>
+    6: 
+    7: <h2><%= l(:label_my_page) %></h2>
+  plugins/redmine_my_page_queries/app/views/my/page.html.erb:4:in `_021cd64d0a1434ca49f496031df87795'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+</pre>
+"
+26483,Redmine,Defect,"",Closed,Normal,REST api for issue doesn't work with sort,Mao H,"",2017-07-21 21:17,REST API,"","","","",0,2017-07-20 16:33,2017-07-21 21:17,"","",3.3.2,"Hi,
+
+The REST api for issue [[Rest_Issues]] states that it accepts a parameter 'sort'.
+I use the api and pass in the column name, e.g. issue_id, updated_on, created_on, tracker_id etc, but I get the same list in the same order. Even if I also pass in "":desc"", I still get the same list in the same order. The api doesn't support sort at all. Please add the support."
+26475,Redmine,Patch,"",Closed,Normal,Traditional Chinese translation (to r16837),ChunChang Lo,"",2017-07-20 05:44,Translations,"","","","",0,2017-07-20 04:22,2017-07-20 05:44,"コピー元 #25664, コピー先 #26664","","","* New
+** error_exceeds_maximum_hours_per_day, setting_time_entry_list_defaults, setting_timelog_accept_0_hours, setting_timelog_max_hours_per_day
+"
+26472,Redmine,Patch,"",Closed,Normal,Japanese translation update (r16698),Go MAEDA,"",2017-07-19 18:25,Translations,"","","","",0,2017-07-19 15:22,2017-07-19 18:25,"","","",Translated setting_close_duplicate_issues (#26192).
+26471,Redmine,Defect,"",Closed,Normal,Issue Query: inconsistency between spent_hours sum and sum of shown spent_hours values,Jens Kr?mer,Jean-Philippe Lang,2017-07-22 09:11,Issues list,3.4.3,"","","",0,2017-07-19 10:28,2017-07-22 09:11,"",Fixed,3.4.2,"Steps to reproduce:
+
+* Create two projects A and B, enable the spent time module only in A.
+* Create issues in A and log time for them.
+* Move one of these issues to B.
+* go to /issues, configure filters so all issues created in step two are shown, add the _Spent time_ column and also tick the _Spent time_ checkbox in the _Totals_ row.
+
+Result:
+
+The _Spent time_ sum shown above the table is the sum of the time logged in step two, though the issue moved to B shows _0_ in the Spent Time column. (because the module is disabled in Project B and thus it's time entries aren't @visible@ anymore).
+
+Expected Result:
+
+The total should be the sum of the values shown for each issue in the corresponding column.
+
+Easiest way to fix it would certainly be to fix the totals computation so it only includes hours from visible time entries. In addition to the module enabled / disabled situation described above, it might also be that, with an enabled spent time module in B, but given I do not have permission to see time entries in B, the moved issues' time entries are still counted. This issue would be fixed with above solution as well I think.
+
+The sum should (preferably only if we know it isn't complete) be amended with a hint (footnote or something else) informing the user that this sum is (or possibly is) not the complete sum due to permissions / modules not being enabled)."
+26468,Redmine,Defect,"",Closed,Normal,"Using custom fields of type ""File"" leads to unsolvable error if filetype is not allowed",Mischa Mundwiler,Jean-Philippe Lang,2017-07-22 09:12,Custom fields,3.4.3,"","","",0,2017-07-18 13:44,2017-07-22 09:12,"",Fixed,3.4.1,"I have setup the following custom field using the ""File"" format with the restriction of allowed filetypes:  doc, docx, pdf
+
+If I create a new ticket with any of the three types everything is fine.
+
+But if I upload a file of differnte file type I get the following message:
+
+- CR-Dokument is invalid (Allowed extensions: doc, docx, pdf)  -> this is OK
+
+BUT: I cannot change the document anymore nor can I remove it. Therefore I am stuck in the dialog and the only possiblity is to cancel everyhting (compare attached screenshot).
+
+Expected behavior: Upload another file or remove it should be possible.
+
+
+
+
+"
+26451,Redmine,Defect,"",Needs feedback,Normal,Error attach files,Anton Gubarev,"",2017-07-17 05:34,Attachments,"","","","",0,2017-07-16 14:41,"","","","","When i try attach any file in issue i have the error
+
+<pre>
+attachments.js:71 Uncaught TypeError: Cannot read property 'length' of undefined
+    at Object.<anonymous> (attachments.js:71)
+    at j (jquery-1.11.1-ui-1.11.0-ujs-3.1.4.js:2)
+    at Object.fireWith [as resolveWith] (jquery-1.11.1-ui-1.11.0-ujs-3.1.4.js:2)
+    at x (jquery-1.11.1-ui-1.11.0-ujs-3.1.4.js:4)
+    at XMLHttpRequest.b (jquery-1.11.1-ui-1.11.0-ujs-3.1.4.js:4)
+(anonymous)	@	attachments.js:71
+j	@	jquery-1.11.1-ui-1.11.0-ujs-3.1.4.js:2
+fireWith	@	jquery-1.11.1-ui-1.11.0-ujs-3.1.4.js:2
+x	@	jquery-1.11.1-ui-1.11.0-ujs-3.1.4.js:4
+b	@	jquery-1.11.1-ui-1.11.0-ujs-3.1.4.js:4
+
+</pre>
+
+attachments.js line 71
+
+redmine 3.4.1
+"
+26450,Redmine,Defect,"",Closed,Normal,user can enter more than 24 hours in the same day,Randa Bustami,"",2017-07-16 15:48,"","","","","",0,2017-07-16 14:26,2017-07-16 15:48,次のチケットと重複 #24005,Duplicate,"","user can enter more than 24 hours in the same day, can you make validation to prevent user from enrting more than 24 hours per day ? "
+26445,Redmine,Defect,"",Closed,Normal,Text formatting not applied to commit messages even if enabled in settings,Nils Grimm,Jean-Philippe Lang,2017-07-16 20:05,UI,3.4.2,"","","",0,2017-07-15 12:02,2017-07-16 20:05,"",Fixed,3.4.1,"Hello,
+
+The option textile rendering of the commit messages is enabled.
+The messages are shown as formatted but the commits aren't rendered in markdown or textile.
+
+I looked through the commit r16062 of #22758:
+
+<pre><code class=""ruby"">
+    if options[:formatting] == false
+      text = h(text)
+    else
+      formatting = options[:formatting] || Setting.text_formatting
+      text = Redmine::WikiFormatting.to_html(formatting, text, :object => obj, :attribute => attr)
+    end
+</code></pre>
+
+For me it seem that the doubled @options[:formatting]@ in the @if@ and @else@ part make no sense.
+Because of the lazy evaluation the @Setting.text_formatting@ isn't evaluated at all.
+
+I changed the code to:
+<pre><code class=""ruby"">
+    if options[:formatting] == false
+      text = h(text)
+    else
+      text = Redmine::WikiFormatting.to_html(Setting.text_formatting, text, :object => obj, :attribute => attr)
+    end
+</code></pre>
+
+And now the comments are correctly rendered again."
+26444,Redmine,Defect,"",Closed,Normal,The new reworked 'jump to project' doesn't work in the themes,Nils Grimm,"",2017-07-15 11:41,UI,"","","","",0,2017-07-15 09:37,2017-07-15 11:41,"",Invalid,3.4.1,"Hello,
+
+I upgrade to the new 3.4.1.
+If I select an alternate theme, the project list will printed completely in the blue headline.
+No dropdown is shown.
+This is happening in all themes, like 'alternate', 'classic' and my own.
+It seems that the new feature #23310 isn't working correctly with the provided default themes.
+
+Best regards,
+Nils"
+26443,Redmine,Defect,"",Confirmed,Normal,User link syntax (user:login) doesn't work for logins consisting of an email adress,Mischa The Evil,Marius BALTEANU,2017-10-15 13:47,Text formatting,4.0.0,"","","",0,2017-07-14 21:22,"","関連している #4179, ブロックしている #26507","",3.4.0,"From #4179#note-69:
+>Vu Anh wrote:
+>> Seem it isn't working well with syntax ""@user:abc@example.com@"" (Login name contain ""@"" character)
+
+I am able to confirm this issue. Important to note though, is that the short syntax (<code>@login</code>) works as it should.
+
+I'll attach a patch which adds explicit test coverage for this issue. It showcases what works and, after re-enabling the commented-out assertions, what currently fails.
+
+Patch and confirmation against source:/trunk@16479 (though it is present on 3.4.1 too).
+
+Environment:
+<pre>
+Environment:
+  Redmine version                3.4.0.devel@r16479
+  Ruby version                   2.3.3-p222 (2016-11-21) [x86_64-linux]
+  Rails version                  4.2.8
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.8.8
+  Git                            1.9.1
+  Filesystem                     
+Redmine plugins:
+  no plugin installed
+</pre>"
+26442,Redmine,Defect,"",Needs feedback,Normal,CSS formating classes like p(box). prepended with wiki-class-,Hal Glenn,Mischa The Evil,2017-07-29 07:50,Text formatting,"","","","",0,2017-07-14 18:33,"","","",3.4.1,"This worked in the 3.3 trunk, updated to 3.4 and box's are no longer there but text is still displayed.
+
+This method of text formatting was taken from the ""Mastering Redmine Book"" page 322."
+26439,Redmine,Patch,"",New,Normal, Plugin load order defined by plugin checks,Tiago Gon?alves,"",2017-08-11 06:11,Plugin API,"","","","",0,2017-07-14 15:36,"",関連している #23131,"","","This patch allows for a plugin to delay loading until a set of requirements is met. This could be because I need for other plugin to be loaded first.
+
+The ideia is to to have each plugin check at the top of init.rb for it's requirements and if they are not met to raise Redmine::Plugin::PluginDeferLoadError. This will signal the plugin load logic to try loading this plugin later.
+
+The algorithm prevents infinite looping (by direct or indirect circular dependencies) by loading plugins by iterations. In each iteration amount of plugins to load must be lower.
+
+The most common check made by plugins can be simplified by using at the top of the init.rb this line:
+
+<pre><code class=""ruby"">
+Redmine::Plugin.requires_plugin('redmine_plugin_name')
+</code></pre>
+
+Regards"
+26438,Redmine,Defect,"",Needs feedback,Normal,Issues on right click of issues should allow edit on status change event ,Shreyas Moolya,"",2017-07-14 11:19,Issues,"","","","",0,2017-07-14 09:11,"",関連している #23755,"",3.2.6,"When I try to change an issue status, *with right-click*, the views asks me to set a custom field and does not allow me to save the issue and the view also does not show the set custom field as per workflow.
+
+!direct edit of calls.png!
+
+But in the same scenario, when I *left-click* on the issue and then try to edit the call it asks me to set the custom field as per workflow with the view showing me to set the custom field.
+
+
+
+"
+26428,Redmine,Defect,"",Closed,Normal,Japanese Emoticon characters cause error in issue desc and journal,Matthew Paul,"",2017-07-26 14:49,Database,"","","","",0,2017-07-13 15:16,2017-07-13 16:13,"",Invalid,3.3.1,"When I add the following string to a new issue or the journal note for an issue it throws an error. Looking at documentation here I believe it is to do with the fact that my Bitnami stack creates the tables in mysql utf8 which is 3 byte not 4 byte.  This given, could we patch or add code or an option so that, in that case, it simply converts any bad characters to ? - I see code that does that anyway so I'm not sure why that isn't happening automatically.
+
+The text is this -
+
+Here is the character that causes a problem with mysql utf-8 tables  "
+26424,Redmine,Patch,"",Closed,Normal,Avatar Spacing in Headlines,Felix Gliesche,Jean-Philippe Lang,2017-07-16 13:53,UI,3.4.2,"","","",0,2017-07-13 11:54,2017-07-16 13:53,"","","","Currently the space between h2 and an avatar is not correct compared to the space between an avatar and a h3. You can see this problem in the news section. The headline of a news detail view is closer to the avatar than the headline to the avatar on the news index. This is due to a missing space. In addition to this discrepancy I have realized, that there is no need for negative margins for the avatar in h2, and h3 headlines. The only reason I do see for an avatar to have a negative margin within a headline is the case of a h4:
+
+!h4.jpg!
+
+I am attaching a patch series, which a) adds a space between the avatar and the text for h2 headline and b) removes negative margins for avatar images within h2 and h3 headlines. The following images show the difference. Please note, that the difference due to b) is visible in the vertical space to the text after the headline. Because the negative margins are removed the flow is more natural as the baseline is not moved up by some pixels.
+
+|before|after|
+|!h2-before.png!|!h2-after.png!|
+|!h3-before.png!|!h3-after.png!|"
+26410,Redmine,Defect,"",Closed,Normal,Gravatar icon is misaligned in gantt,Go MAEDA,Go MAEDA,2017-11-25 16:49,Gantt,3.3.6,"","","",0,2017-07-11 06:24,2017-11-25 16:42,"",Fixed,3.3.5,"The Gravatar icon is misaligned upward.
+Confirmed in 3.3 and 3.4.
+
+!misaligned-icon.png!"
+26407,Redmine,Defect,"",New,Normal,Unable to edit a comment on redmine.org,Guillaume Rossolini,"",2017-07-12 20:46,Website (redmine.org),"","","","",0,2017-07-10 21:06,"","","","","Hi,
+
+While commenting on an issue on this tracker, I wanted to edit a previous comment I made, but I get this error with both Preview and Save actions:
+<pre>
+POST /issues/preview/edit/26398?project_id=redmine HTTP/1.1
+Host: www.redmine.org
+Connection: keep-alive
+Content-Length: 3792
+Origin: https://www.redmine.org
+X-CSRF-Token: **ANON**
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36
+Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+Accept: */*
+X-Requested-With: XMLHttpRequest
+DNT: 1
+Referer: https://www.redmine.org/issues/26398
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en,fr;q=0.8,es;q=0.6
+Cookie: _redmine_session=**ANON**
+
+HTTP/1.1 500 Internal Server Error
+Date: Mon, 10 Jul 2017 18:57:51 GMT
+Server: Apache
+X-Request-Id: 8f2c681fa52833bab54e41e06c96b21b
+X-Runtime: 26.029286
+X-Rack-Cache: invalidate, pass
+Vary: Accept-Encoding
+Content-Encoding: gzip
+Content-Length: 416
+Connection: close
+Content-Type: text/html; charset=utf-8
+</pre>
+
+However, it works well for new issues and new comments."
+26403,Redmine,Defect,"",Closed,Normal,The second and subsequent lines of commit messages are not displayed in repository browser,Go MAEDA,Jean-Philippe Lang,2017-07-30 18:36,SCM,3.4.3,"","","",0,2017-07-10 15:43,2017-07-30 18:36,"",Fixed,3.4.0,"After r16062, only the first line of a commit message is displayed in revisions list of the repository browser.
+
+In my opinion, repository browser should not truncate commit messages because it often contain important information for developers.
+
+I hope that this change will be undone in 3.4.2.
+
+*Redmine 3.3:*
+!{width: 730px}.revisions-3_3@2x.png!
+
+*Redmine 3.4:*
+!{width: 730px}.revisions-3_4@2x.png!"
+26398,Redmine,Defect,"",Closed,Normal,Unable to upload attachments,Guillaume Rossolini,"",2017-07-12 07:43,Attachments,"","","","",0,2017-07-10 11:21,2017-07-11 18:47,"",Invalid,3.4.1,"Hi,
+
+We just upgraded from a 3.3.0 install and we found this in the logs when uploading attachments:
+<pre>
+Started POST ""/uploads.js?attachment_id=1&filename=Nouveau%20document%20texte.txt&content_type=text%2Fplain"" for **ANON** at 2017-07-10 10:55:02 +0200
+Processing by AttachmentsController#upload as JS
+  Parameters: {""attachment_id""=>""1"", ""filename""=>""Nouveau document texte.txt"", ""content_type""=>""text/plain""}
+  Current user: **ANON** (id=7)
+Saving attachment '/srv/www/redmine-3.4.1/files/2017/07/170710105502_6790b8cc76837a645a85dd36cf99e75f.txt' (0 bytes)
+Completed 500 Internal Server Error in 15ms (ActiveRecord: 2.3ms)
+
+ActiveRecord::StatementInvalid (Mysql2::Error: Data too long for column 'digest' at row 1: INSERT INTO `attachments` (`author_id`, `filename`, `content_type`, `created_on`, `disk_directory`, `disk_filename`, `digest`) VALUES (7, 'Nouveau document texte.txt', 'text/plain', '2017-07-10 10:55:02', '2017/07', '170710105502_6790b8cc76837a645a85dd36cf99e75f.txt', 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855')):
+  app/controllers/attachments_controller.rb:97:in `upload'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+</pre>
+
+
+A quickfix is to add this to database.yml:
+<pre>
+  strict: false
+</pre>
+
+But a better fix would probably be to change the table structure in the DB.
+(maybe I missed an upgrade script, but I didn't find any)"
+26395,Redmine,Patch,"",Closed,Normal,Jump to project autocomplete: focus selected project,Gabriel Cardoso,Jean-Philippe Lang,2017-07-22 08:42,UI,3.4.3,"","","",0,2017-07-10 10:39,2017-07-22 08:42,"","","","A small patch that could really enhance ""jump to project"" autocomplete experience: if a project is selected, then focus it when the project list expands and start from here when navigating with keyboard arrows.
+
+Usecase: when you have projects and subprojects, it's really painful when you want to quickly access parent or sibling project. It's nice to have the current project focused.
+
+I didn't go as far as positionning the widget's scroll bar so the selected project is on top"
+26393,Redmine,Defect,"",Closed,Normal,Error when unchecking all settings on some plugins configurations,Keith Dickmann,Jean-Philippe Lang,2017-07-16 13:48,Administration,3.4.2,"","","",0,2017-07-10 05:50,2017-07-16 13:48,"",Fixed,3.4.1,"To Reproduce
+1 - install a plugin that only as checkboxes on it settings page (or use uploaded test plugin)
+2 - check everything and save
+3 - uncheck everything and save
+4 - crash
+
+NoMethodError (undefined method `permit!' for nil:NilClass):
+  app/controllers/settings_controller.rb:70:in `plugin'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+"
+26391,Redmine,Patch,"",Closed,Normal,Drop Darcs SCM support,Go MAEDA,Jean-Philippe Lang,2017-07-25 19:33,SCM,4.0.0,"","","",0,2017-07-10 04:38,2017-07-25 19:33,関連している #13472,"","","Darcs support of Redmine is broken with Darcs >= 2.5 (#13472#note-1). Darcs 2.5 was released in 2010. It is very old version, so it can be said that virtually Redmine does not support Darcs.
+
+I think we can drop Darcs support because we have never seen complaints about broken Darcs support in recent years, probably no one uses this feature."
+26389,Redmine,Defect,"",Closed,Normal,summary issue list disappeared from project overview page,Randa Bustami,"",2017-07-10 07:57,"","","","","",0,2017-07-09 15:06,2017-07-10 07:57,次のチケットと重複 #26376,Duplicate,"","summary issue list disappeared from project overview page after upgrade to 3.4.0 for all users except admin
+"
+26388,Redmine,Defect,"",Closed,Normal,Remove unnecessary spaces from CHANGELOG,Go MAEDA,"",2017-07-09 09:24,Documentation,"","","","",0,2017-07-09 07:06,2017-07-09 09:24,"","","","Unnecessary spaces around a subject should be stripped when generating CHANGELOG (please see #25616#note-14).
+These patches will fix the changelog generator and CHANGELOG."

@@ -1,0 +1,763 @@
+#,ƒvƒƒWƒFƒNƒg,ƒgƒ‰ƒbƒJ[,eƒ`ƒPƒbƒg,ƒXƒe[ƒ^ƒX,—Dæ“x,‘è–¼,ì¬Ò,’S“–Ò,XV“ú,ƒJƒeƒSƒŠ,‘ÎÛƒo[ƒWƒ‡ƒ“,ŠJn“ú,Šú“ú,—\’èH”,i’»—¦,ì¬“ú,I—¹“ú,ŠÖ˜A‚·‚éƒ`ƒPƒbƒg,Resolution,Affected version,à–¾
+25146,Redmine,Defect,"",Closed,Normal,Issue while modifying subproject configuration without the permission to create a subproject,Philippe Lotterie,"",2017-02-22 05:46,Project settings,"","","","",0,2017-02-21 19:47,2017-02-22 05:46,Ÿ‚Ìƒ`ƒPƒbƒg‚Æd•¡ #20282,Duplicate,3.0.4,"Hi,
+
+When submitting changes for a subproject while the user doesn't have the permission to create a subproject, he gets an error telling that the value of the subproject field is not correct.
+The permissions he has for the projects are Modify project and Manage members.
+Of course granting Create subproject permission shows the subproject field in the configuration page and fixes this issue.
+
+Thank you for this great software,
+
+Best regards,
+
+Philippe
+
+<pre>
+Environment:
+  Redmine version                3.0.4.stable
+  Ruby version                   2.1.5-p273 (2014-11-13) [i386-linux-gnu]
+  Rails version                  4.2.3
+  Environment                    production
+  Database adapter               Mysql2 (mysqld  Ver 5.5.53-0+deb8u1 for debian-linux-gnu on i686 ((Debian)))
+SCM:
+  Subversion                     1.8.10
+  Git                            2.1.4
+  Filesystem                     
+Redmine plugins:
+  computed_custom_field          0.0.6
+  menu_link                      1.0.0
+  redmine_code_review            0.7.0
+  redmine_default_custom_query   1.0.0
+  redmine_knowledgebase          3.1.0
+  redmine_stats                  0.0.3
+</pre>"
+25145,Redmine,Defect,"",Closed,Normal,Disable Autocomplete in redmine login page,ajeesh b,"",2017-02-22 01:57,UI,"","","","",0,2017-02-21 18:50,2017-02-22 01:57,Ÿ‚Ìƒ`ƒPƒbƒg‚Æd•¡ #4043,Duplicate,"","Hi I would like to disable autocomplete feature to disabled. Login user fields have the autocomplete feature enabled.
+Worst Case Scenario
+User login credentials could be stolen in specific scenarios. There is high change of retrieving valid accounts
+when computers are shared between several users by double clicking the username field (""username"") in the
+login pages. Once the attacker has a valid set of users, those can be used in brute force attacks."
+25144,Redmine,Defect,"",Closed,Normal,Account Harvesting login issue,ajeesh b,"",2017-02-22 02:22,Accounts / authentication,"","","","",0,2017-02-21 18:44,2017-02-22 02:22,Ÿ‚Ìƒ`ƒPƒbƒg‚Æd•¡ #6254,Duplicate,"","Hi 
+
+Can I change the ""Unknown user"" error message to something else in case of lost_password promt.
+
+Dulicating my query:
+1. Go to the application login page and click on the Lost Password link.
+2. Type an in invalid email and click on the Submit button.
+3. Finally you will get a message saying Unknown user. With message this you can setup a script to
+distinguish valid accounts from the invalid ones.
+Recommendation
+An application should respond with a generic error message regardless of whether the user ID or password was
+incorrect. It should also give no indication to the status of an existing account.
+Send an authentication token to the users email in order to prompt the security questions.
+"
+25141,Redmine,Defect,"",New,Normal,Changing the scope and resetting the position of an acts_as_positioned object inserts it at the one-before-last position,Felix Sch?fer,"",2017-02-21 16:46,"","","","","",0,2017-02-21 16:46,"","","","","We have a model where objects should be appended to the list in the new scope when the list scope of the object is changed. We do this by setting the @self.position = nil@ before it is saved, unfortunately this inserts the object at the one-before-last position.
+
+The following patch solves this problem:
+
+<pre><code class=""diff"">
+diff --git a/lib/redmine/acts/positioned.rb b/lib/redmine/acts/positioned.rb
+index 75041fe38..d3959a335 100644
+--- a/lib/redmine/acts/positioned.rb
++++ b/lib/redmine/acts/positioned.rb
+@@ -67,7 +67,7 @@ module Redmine
+
+         def set_default_position
+           if position.nil?
+-            self.position = position_scope.maximum(:position).to_i + (new_record? ? 1 : 0)
++            self.position = position_scope.maximum(:position).to_i + ((new_record? || position_scope_changed?) ? 1 : 0)
+           end
+         end
+
+</code></pre>
+
+This affects trunk."
+25139,Redmine,Patch,"",New,Normal,"Project link on issues list, now redirects to project specific issues",Andrey Lobanov (RedSoft),"",2017-02-22 21:53,UI,"","","","",0,2017-02-21 14:17,"","","","","Project link on issues list, now redirects to projects/:project_id/issues instead of projects/:project_id
+!link_to_project_issues.png!"
+25138,Redmine,Defect,"",Closed,Normal,Redmine::I18nTest Fails,Stefan Rinkes,"",2017-02-21 14:38,"","","","","",0,2017-02-21 11:53,2017-02-21 12:05,"","",3.3.2,"I'm running in this reproducable test fail with Version redmine-3.3.2.tar.gz (md5: 8e403981dc3a19a42ee978f055be62ca)
+This test doesn't fail with redmine-3.3.0
+
+<pre>
+  1) Error:
+Redmine::I18nTest#test_languages_options_should_ignore_locales_without_general_lang_name_key:
+I18n::InvalidLocale: ""foo"" is not a valid locale
+    lib/redmine/i18n.rb:58:in `ll'
+    lib/redmine/i18n.rb:110:in `block in languages_options'
+    lib/redmine/i18n.rb:110:in `map'
+    lib/redmine/i18n.rb:110:in `languages_options'
+    test/unit/lib/redmine/i18n_test.rb:203:in `test_languages_options_should_ignore_locales_without_general_lang_name_key'
+</pre>
+
+I suspect it has something to do with the rails update from 3.3.0 (rails 4.2.6) and 3.3.2 (rails 4.2.7.1)
+"
+25137,Redmine,Defect,"",Closed,Normal,"Assigning a parent in issue properties does not work (Error ""Parent task is invalid"") although the Parent exists",Astrid Krafczyk-Kralitschka,"",2017-03-14 09:41,Issues,"","","","",0,2017-02-21 10:39,2017-03-04 04:47,Ÿ‚Ìƒ`ƒPƒbƒg‚Æd•¡ #13654,Duplicate,3.1.3,"Affected Version is 3.1.6stable 15842 (version is not in the drop-down..)
+
+The parent issue definitely exists. Another issue is assigned as subtask but the other subtask has been added via the parent (create subtaks)
+
+The second Issue has been created as the normal issue. After saving I wanted to add parent issue via the properties...and that failed (see attached screenshot)
+"
+25130,Redmine,Defect,"",New,Normal,support of agglutinative languages like Hungarian/Magyar,Greg T,"",2017-03-23 10:34,Translations,"","","","",0,2017-02-20 13:26,"",ŠÖ˜A‚µ‚Ä‚¢‚é #25402,"","","I tried to fix hu.yml, but the time related strings are used in to many contexts incompatibly, so even subtle/clumsy rewording can't help in all cases. We don't use plural form after numbers greater than one, but we use other forms for different expressions.
+
+E.g. _hour_ is _?ra_ in Magyar;
+[point in time] _x hour(s) ago_ is _x ?r?ja_ or _x ?r?val ezel?tt_;
+[present perfect continuous] _for x hour(s)_ is _x ?r?ja_;
+[past, future or undetermined tense] _for x hour(s)_ is _x ?r?ig_ or _x ?r?n_ ?t.
+
+Label_added_time_by needs point in time (and optional non-relative times, but that's a different issue, although a possible workaround);
+while e.g. setting_session_lifetime needs _?ra_ without agglutination.
+
+Filters:
+label_between: _between x [and] y_ should be _x ?s y k?z?tt_;
+day related filters are somewhat clumsy in English, too (e.g. _less than days ago ... days_), but I could improve it in Magyar: ""label_less_than_ago: nem r?gebbi, mint"" meaning _not older than_, but it must be followed by _x nap_ (base word of day), not _x napja_ (point in time);
+label_in_the_past_days: needs to be followed by _napban_ (base word of day + _in_ postfix), etc."
+25126,Redmine,Defect,"",Closed,High,How to install redmine 3.3 version on centos7 ,Rohit Nikharge,"",2017-02-21 03:08,Documentation,"","","","",0,2017-02-20 04:33,2017-02-21 03:08,"",Invalid,3.1.3,"Hi Team,
+
+
+How to Setup  redmine 3.3 version on centos7,i need to full installation step with supporting software and with version  "
+25118,Redmine,Defect,"",Closed,Normal,ThemesTest#test_without_theme_js may fail if third-party theme is installed,Go MAEDA,Jean-Philippe Lang,2017-03-02 19:20,Themes,3.4.0,"","","",0,2017-02-18 09:15,2017-03-02 19:20,"",Fixed,"","test/unit/lib/redmine/themes_test.rb may fail if third party theme which has javascripts/theme.js is installed.
+
+<pre>
+  1) Failure:
+ThemesTest#test_without_theme_js [test//integration/lib/redmine/themes_test.rb:43]:
+Expected exactly 0 elements matching ""script[src^=""/themes/redminecrm/javascripts/theme.js""]"", found 1..
+Expected: 0
+  Actual: 1
+</pre>
+
+This issue can be fixed by the following patch:
+
+<pre><code class=""diff"">
+Index: test/integration/lib/redmine/themes_test.rb
+===================================================================
+--- test/integration/lib/redmine/themes_test.rb	(revision 16332)
++++ test/integration/lib/redmine/themes_test.rb	(working copy)
+@@ -37,6 +37,8 @@
+   end
+
+   def test_without_theme_js
++    # simulate a state theme.js does not exists
++    @theme.javascripts.clear
+     get '/'
+
+     assert_response :success
+</code></pre>
+"
+25116,Redmine,Defect,"",Needs feedback,Normal,"redmine:email:receive_imap ""attachments is invalid"" At outlook file attach",Daniel Drexlmaier,"",2017-02-17 18:35,Email receiving,"","","","",0,2017-02-17 17:11,"","","",3.3.2,"
+Error:
+<pre>
+MailHandler: Validation failed: attachments is invalid
+  Rendered mailer/_issue.text.erb (4.4ms)
+  Rendered mailer/issue_add.text.erb within layouts/mailer (9.1ms)
+  Rendered mailer/_issue.html.erb (4.9ms)
+  Rendered mailer/issue_add.html.erb within layouts/mailer (6.4ms)
+</pre>
+
+
+Reproduce:
+
+Server: Exchange
+Client: Outlook 2016
+
+Reproduce:
+E-mail forward the e-mail as an attachment in the e-mail.
+"
+25115,Redmine,Patch,"",Closed,Normal,Support upload of empty files and fix invalid API response,Jens Kr?mer,Jean-Philippe Lang,2017-02-28 21:00,Attachments,3.3.3,"","","",0,2017-02-17 15:25,2017-02-28 21:00,ŠÖ˜A‚µ‚Ä‚¢‚é #5969,"","","When Uploading an empty file through the REST API (POST to /uploads.json), the response is 201 Created, and an invalid token (which that does not resolve to an attachment through @Attachment.find_by_token@ because it lacks the digest component) is returned. However an attachment record is still saved, but without a corresponding file in the file system.
+
+When looking into this I found that the easiest fix for this would be to change the two conditionals in attachment.rb that prevent an empty file from being treated like any non-empty file. I don't see any technical reason to not allow the uploading of empty files, and my change doesn't seem to cause any of the existing tests to fail.
+
+Attached is a patch which does that, including a test case illustrating the inconsistent API behavior I described above."
+25114,Redmine,Patch,"",Needs feedback,Normal,Context menu positioning inside positioned DOM elements,Serge Galanin,"",2017-10-16 17:14,UI,Candidate for next minor release,"","","",0,2017-02-17 14:23,"","","","","In my theme the #content element is positioned relatively. It leads to an incorrect positioning of the context menu wich living inside the #content. A most simple fix is to bubble the context menu up to the top of DOM. Can we use this way?
+
+Patch based on r16333."
+25109,Redmine,Defect,"",Closed,Normal,Installation Redmine 3.2 issue ,yy wong,"",2017-03-12 01:09,"","","","","",0,2017-02-17 09:32,2017-02-17 10:19,"",Invalid,"","Hi All,
+
+I have tested below command :
+RAILS_ENV=production bundle exec rake db:migrate 
+
+
+and errors:
+
+(in /var/www/redmine)
+/usr/local/lib/ruby/gems/2.4.0/gems/htmlentities-4.3.1/lib/htmlentities/mappings/expanded.rb:465: warning: key ""inodot"" is duplicated and overwritten on line 466
+/usr/local/lib/ruby/gems/2.4.0/gems/thread_safe-0.3.5/lib/thread_safe/cache.rb:155: warning: constant ::Fixnum is deprecated
+/usr/local/lib/ruby/gems/2.4.0/gems/activesupport-4.2.7.1/lib/active_support/core_ext/numeric/conversions.rb:121: warning: constant ::Fixnum is deprecated
+/usr/local/lib/ruby/gems/2.4.0/gems/activesupport-4.2.7.1/lib/active_support/core_ext/numeric/conversions.rb:121: warning: constant ::Bignum is deprecated
+rake aborted!
+SystemStackError: stack level too deep
+/var/www/redmine/config/environment.rb:14:in `<top (required)>'
+/usr/local/bin/bundle:22:in `load'
+/usr/local/bin/bundle:22:in `<main>'
+Tasks: TOP => db:migrate => environment
+(See full trace by running task with --trace)
+
+Solution tested: 1. uninstall rake and reinstall again. it still failed.
+
+Please kindly advices. Thank you"
+25106,Redmine,Defect,"",Confirmed,Normal,"""Spent time"" in all issues, show as 0 with no permission",Sergiy Melnychuk,"",2017-03-16 13:17,Time tracking,"","","","",0,2017-02-16 13:21,"","","",3.3.1,"*Step 1*: Create role ""Clients"" with those Permissions
+
+Path: Administration -> Roles and permissions (Roles) -> New role
+
+I`m uncheck all checkboxes on ""Time tracking"" area
+
+!{width:100px}roles_permissions.png!
+
+to see on full size picture press ""this""
+
+*Step 2*: I`m add User to Test Project with this Role
+
+Path: Projects -> Test Project -> Settings -> Members tab
+
+!projects_test_settings_members.png!
+
+*Step 3*: Go to my issues list in my Test project, and see this
+
+Path: Projects -> Test Project -> Issues
+
+!project_tasks.png!
+
+Its all right, i`m dont see ""Spent time""
+
+*Step 4*: Go to Path: Projects -> View all issues 
+
+Expected:  I Shoud not see the column ""Spent time"" and the values in it. Column ""Spent time"" is hidden
+Actual: I can see ""Spent time"" column and values in it
+
+!issues.png!"
+25077,Redmine,Defect,"",Closed,Normal,Issue description filter's 'none' operator does not match issues with blank descriptions,Mischa The Evil,Jean-Philippe Lang,2017-06-29 21:57,Issues filter,3.4.0,"","","",0,2017-02-15 09:57,2017-03-07 18:51,ŠÖ˜A‚µ‚Ä‚¢‚é #1159,Fixed,"","Use of the issue description filter with the 'none' operator always returns nothing as it does not include issues with blank descriptions. I think most users expect that issues with blank descriptions are going to be matched when using the filter with the 'none' operator, as such the actual results may be unexpected.
+
+Currently, the 'none' operator only matches issues that are assigned to trackers that have the description field disabled (which is not yet possible with the core, see #25052).
+"
+25076,Redmine,Defect,"",Closed,Normal,How is the session time out configured in Redmine ,Babu J,"",2017-02-15 08:39,"","","","","",0,2017-02-15 08:24,2017-02-15 08:39,"",Invalid,"",How is the session time out configured in Redmine .Meanwhile what is the default session timeout for Redmine.
+25068,Redmine,Patch,"",New,Normal,Versions show page summary moved to sidebar,Andrey Lobanov (RedSoft),"",2017-02-15 12:55,UI,"","","","",0,2017-02-14 14:23,"","","","","Also issues list wrapped in box.
+!ver_sum.png!"
+25066,Redmine,Patch,"",New,Normal,"Sort order with null placement (NULLS FIRST, NULLS LAST)",Andrey Lobanov (RedSoft),"",2017-11-17 09:37,Issues filter,"","","","",0,2017-02-14 13:05,"",ŠÖ˜A‚µ‚Ä‚¢‚é #6034,"","","Added ability to sort with null placement. Sometimes it's very useful.
+Tested on sqlite3, mysql, firebird, postgres."
+25064,Redmine,Defect,"",Closed,Normal,Issue description edit link corrupted in low resolution,Vasili Korol,Jean-Philippe Lang,2017-06-07 21:37,UI - Responsive,3.3.4,"","","",0,2017-02-14 10:20,2017-06-07 21:37,"",Fixed,3.2.4,"When editing an issue in a low resolution (width < 900px), the ""Edit"" link loses it's icon and is truncated to ""dit"" (see image)
+
+<pre>
+Environment:
+  Redmine version                3.2.4.stable
+  Ruby version                   2.0.0-p384 (2014-01-12) [x86_64-linux-gnu]
+  Rails version                  4.2.7.1
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.8.8
+  Git                            1.9.1
+  Filesystem                     
+Redmine plugins:
+  advanced_roadmap_v2            2.4.2
+</pre>
+
+!redmine-error.jpg!
+"
+25056,Redmine,Defect,"",Closed,Normal,Parent task issue,Steve Zhou,"",2017-02-15 07:15,Issues,"","","","",0,2017-02-13 03:48,2017-02-13 10:53,Ÿ‚Ìƒ`ƒPƒbƒg‚Æd•¡ #6687,Duplicate,3.3.2,"Hi,
+
+We found a ""Parent task"" issue by our user, please refer to the attachment.
+"
+25055,Redmine,Patch,"",Closed,Normal,Filter out current issue from the related issues autocomplete,Marius BALTEANU,Jean-Philippe Lang,2017-03-02 20:43,Issues,3.4.0,"","","",0,2017-02-12 16:20,2017-03-02 20:43,"","","","Related to #24877.
+
+Filter out the current issue (from which the search is made) from the issues proposed by related issues autocomplete.  "
+25049,Redmine,Defect,"",New,Normal,Issues which are assigned to group are not listed in reminders if 'users' parameter is specified,Go MAEDA,"",2017-03-07 08:05,Email notifications,"","","","",0,2017-02-11 09:49,"",ƒuƒƒbƒN‚µ‚Ä‚¢‚é #2477,"",3.2.5,"Assume the following situation:
+
+* John (id: 2) and Dave (id: 3) belong to a group.
+* The group is an assignee of an issue which subject is ""Assigned to group"".
+
+If you run ""rake redmine:send_reminders users=2"", the issue ""Assigned to group"" should be listed in the reminder which John receives. But in fact it is not.
+
+
+This is a test code to catch the problem:
+
+<pre><code class=""diff"">
+Index: test/unit/mailer_test.rb
+===================================================================
+--- test/unit/mailer_test.rb	(revision 16332)
++++ test/unit/mailer_test.rb	(working copy)
+@@ -645,11 +645,18 @@
+       ActionMailer::Base.deliveries.each do |mail|
+         assert_mail_body_match 'Assigned to group', mail
+       end
++
++      ActionMailer::Base.deliveries.clear
++
++      Mailer.reminders(:days => 7, :users => ['2'])
++      assert_equal 1, ActionMailer::Base.deliveries.size
++      assert_equal %w(jsmith@somenet.foo), ActionMailer::Base.deliveries.map(&:bcc).flatten.sort
++      assert_mail_body_match 'Assigned to group', ActionMailer::Base.deliveries.first
+     end
+   end
+
+   def test_reminders_with_version_option
+-    with_settings :default_language => 'en' do
++    with_settings :default_language => 'en' do
+       version = Version.generate!(:name => 'Acme', :project_id => 1)
+       Issue.generate!(:assigned_to => User.find(2), :due_date => 5.days.from_now)
+       Issue.generate!(:assigned_to => User.find(3), :due_date => 5.days.from_now, :fixed_version => version)
+</code></pre>"
+25027,Redmine,Defect,"",Closed,Normal,Missing information about limits in listing projects,Kinga Knapik,"",2017-03-07 06:50,Documentation,"","","","",0,2017-02-07 14:44,2017-03-07 06:50,"","","","There is no information in the documentation ([[Rest_Projects]]) that only 25 projects will be returned on GET /projects.json without 'limit' parameter, which also isn't mentioned as an available parameter."
+25025,Redmine,Defect,"",Closed,Normal,Redmine keeps crashing with any plugin installed,Colin McHugo,"",2017-02-07 11:50,"","","","","",0,2017-02-07 10:17,2017-02-07 11:50,"",Invalid,"","Hi,
+
+Id really appreciate anyone's insight into this continual issue. I am using bitnami redmine on aws and when i install it i then go to install a plugin following instructions. Every and any plugin will work for a while then it usually crashes and i have to reinstall redmine all over again. Its very frustrating as i have reinstalled it about 6 times now. It cant be the plugins as each time i try different plugins (most popular ones).
+
+thanks
+
+
+Colin"
+25022,Redmine,Patch,"",Closed,Normal,Add an index on attachments.disk_filename,Jens Kr?mer,Jean-Philippe Lang,2017-03-02 20:51,Performance,3.4.0,"","","",0,2017-02-07 08:21,2017-03-02 20:51,"","","","In a system with lots of attachments deleting one attachment can take very long due to the DB lookup in @Attachment#delete_from_disk@ which checks if the same physical file is used by any other attachment.
+
+We had this issue at Planio in a setup with more than 500k attachments, where deleting a single one could take up to half a second. This patch adds an index on @attachments.disk_filename@ that fixed the issue for us."
+25019,Redmine,Patch,"",Closed,Normal,Localization for Ukrainian language - completed,Anton Oslyak,"",2017-03-16 13:02,Translations,3.4.0,"","","",0,2017-02-06 19:41,2017-03-16 13:02,"","","","We fully transferred the file of localization for ukrainian language.
+
+attachment:uk.yml
+
+Redmine version                3.3.2.stable.16321
+
+Ask you to include this file to redmine release.
+"
+25014,Redmine,Patch,"",Closed,Normal,redmine/i18n.rb - languages_lookup class variable is rebuilt every time,Jens Kr?mer,Jean-Philippe Lang,2017-03-02 20:42,I18n,3.4.0,"","","",0,2017-02-06 11:56,2017-03-02 20:42,"","","","the @@@languages_lookup@ variable in @redmine/i18n.rb@ appears to be intended as a cache but is assigned to a new value everytime @find_language@ is called.
+
+Attached patch fixes this by using @||=@ instead of @=@."
+24999,Redmine,Defect,"",Closed,Normal,Mercurial 4.1 compatibility,Adrian Klaver,"",2017-02-05 18:23,SCM,3.2.6,"","","",0,2017-02-05 01:23,2017-02-05 12:53,"",Fixed,"","Environment:
+  Redmine version                3.2.4.stable
+  Ruby version                   1.9.3-p484 (2013-11-22) [x86_64-linux]
+  Rails version                  4.2.7.1
+  Environment                    production
+  Database adapter               PostgreSQL
+SCM:
+  Mercurial                      4.1
+  Git                            1.9.1
+  Filesystem                     
+Redmine plugins:
+  no plugin installed
+OS Ubuntu server 14.04.5 LTS
+Mercurial 4.1 from either Ubuntu repo's or PyPi.
+
+Moving to Mercurial 4.1 and opening a repo results in:
+
+""The entry or revision was not found in the repository.""
+
+and a log entry of:
+
+""Started GET ""/projects/hplc/repository"" for 174.21.203.58 at 2017-02-03 08:59:47 -0800
+Processing by RepositoriesController#show as HTML
+  Parameters: {""id""=>""hplc""}
+  Current user: aklaver (id=3)
+hg: error during getting info: hg exited with non-zero status: 1
+  Rendered common/error.html.erb within layouts/base (0.3ms)
+Completed 404 Not Found in 574ms (Views: 60.9ms | ActiveRecord: 206.4ms)
+""
+
+Restarting the Redmine server does not help. 
+The only thing that works is rolling back to Mercurial 4.0.2.
+
+"
+24995,Redmine,Defect,"",Closed,Normal,Custom query - error 500 if irrelevant field chosen,Yao Li,"",2017-02-13 16:34,Issues list,"","","","",0,2017-02-04 03:07,2017-02-13 16:34,"",Invalid,3.3.0,"Hi there,
+
+Now I'm using redmine 3.3.0. 
+
+1. In the issues page, filter issues with tracker
+2. Set columns in Options panel, choose a field which is irrelevant with the tracker
+3. Click apply, server returns Redmine 500 error with below information
+
+<pre>
+Internal error
+
+An error occurred on the page you were trying to access.
+If you continue to experience problems please contact your Redmine administrator for assistance.
+
+If you are the Redmine administrator, check your log files for details about the error.
+
+Back
+</pre>
+
+Compared with 2.3.0 version, if a irrelevant field is chosen, the column just leaves empty in result page, no 500 error occurred."
+24994,Redmine,Defect,"",Closed,Normal,Custom field's value can't be saved when updating an issue,Yao Li,"",2017-02-13 16:36,Issues,"","","","",0,2017-02-04 02:55,2017-02-13 16:36,"",Invalid,3.3.0,"Hi there,
+
+I updated redmine from 2.3.0 to 3.3.0. Now I met a problem, below are repro steps.
+
+1. Create a new issue
+2. Update the issue to another status, which has required field in my workflow configuration. The required field is List format configured in Custom fields.
+3. Choose a value in the list, save the issue successfully.
+4. The filed value leaves empty after a success save.
+
+Plus, I have some new findings. Let's call the custom field as Field-A, Field-A has three values a,b,c.
+
+1. Set Field-A to a, save the issue.
+2. The Field-A leaves empty.
+3. Update the issue, set Field-A to b, save the issue.
+4. The Field-A's value is successfully set to b
+5. Update the issue, set Field-A to a (which is initially value in step 1), save the issue.
+5. The Field-A's value is still b, but a is expected here.
+
+If the initial value is b, the repeat steps 2-5, you will find the initial value can't be saved. But if you change the value of this field the save the issue, it works well."
+24993,Redmine,Patch,"",Closed,Normal,Traditional Chinese translation (to r16326),ChunChang Lo,"",2017-02-04 12:01,Translations,"","","","",0,2017-02-03 19:38,2017-02-04 12:01,"ƒRƒs[Œ³ #24892, ƒRƒs[æ #25277","","","* New
+** field_full_width_layout
+"
+24992,Redmine,Defect,"",Needs feedback,Normal,MailHandler: an unexpected error occurred when receiving email: invalid byte sequence in UTF-8,Deoren Moor,"",2017-04-13 16:40,Email receiving,"","","","",0,2017-02-03 19:10,"",Ÿ‚Ìƒ`ƒPƒbƒg‚ªd•¡ #27361,"","","h5. Problem description
+
+We have set @RAILS_ENV@ to *@development@* for our email scraping, so we were fortunate enough to have this logged when we found that several emails had been rejected:
+
+<pre>
+MailHandler: an unexpected error occurred when receiving email: invalid byte sequence in UTF-8
+Message 190 can not be processed
+</pre>
+
+The subject line of the email had this text:
+
+<pre>
+Boleti?n de entomologi?a venezolana.
+</pre>
+
+h5. Redmine installation info
+
+@# bin/about@
+
+{{collapse
+<pre>
+/var/lib/gems/2.3.0/gems/htmlentities-4.3.1/lib/htmlentities/mappings/expanded.rb:465: warning: key ""inodot"" is duplicated and overwritten on line 466
+
+sh: 1: darcs: not found
+sh: 1: hg: not found
+sh: 1: cvs: not found
+sh: 1: bzr: not found
+sh: 1: git: not found
+Environment:
+  Redmine version                3.3.2.stable.16201
+  Ruby version                   2.3.1-p112 (2016-04-26) [x86_64-linux-gnu]
+  Rails version                  4.2.7.1
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.9.3
+  Filesystem
+Redmine plugins:
+  no plugin installed
+</pre>
+}}
+
+@# bundle list@
+
+{{collapse
+<pre>
+Gems included by the bundle:
+  * actionmailer (4.2.7.1)
+  * actionpack (4.2.7.1)
+  * actionpack-action_caching (1.1.1)
+  * actionpack-xml_parser (1.0.2)
+  * actionview (4.2.7.1)
+  * activejob (4.2.7.1)
+  * activemodel (4.2.7.1)
+  * activerecord (4.2.7.1)
+  * activesupport (4.2.7.1)
+  * addressable (2.4.0)
+  * arel (6.0.3)
+  * builder (3.2.2)
+  * bundler (1.11.2)
+  * coderay (1.1.1)
+  * concurrent-ruby (1.0.2)
+  * css_parser (1.4.5)
+  * erubis (2.7.0)
+  * globalid (0.3.7)
+  * htmlentities (4.3.1)
+  * i18n (0.7.0)
+  * jquery-rails (3.1.4)
+  * json (1.8.3)
+  * loofah (2.0.3)
+  * mail (2.6.4)
+  * mime-types (3.1)
+  * mime-types-data (3.2016.0521)
+  * mimemagic (0.3.2)
+  * mini_portile2 (2.1.0)
+  * minitest (5.9.1)
+  * mysql2 (0.3.21)
+  * net-ldap (0.12.1)
+  * nokogiri (1.6.8.1)
+  * protected_attributes (1.1.3)
+  * rack (1.6.4)
+  * rack-openid (1.4.2)
+  * rack-test (0.6.3)
+  * rails (4.2.7.1)
+  * rails-deprecated_sanitizer (1.0.3)
+  * rails-dom-testing (1.0.7)
+  * rails-html-sanitizer (1.0.3)
+  * railties (4.2.7.1)
+  * rake (11.3.0)
+  * rbpdf (1.19.0)
+  * rbpdf-font (1.19.0)
+  * rdoc (4.3.0)
+  * redcarpet (3.3.4)
+  * request_store (1.0.5)
+  * rmagick (2.16.0)
+  * roadie (3.2.0)
+  * roadie-rails (1.1.1)
+  * ruby-openid (2.3.0)
+  * sprockets (3.7.0)
+  * sprockets-rails (3.2.0)
+  * thor (0.19.1)
+  * thread_safe (0.3.5)
+  * tzinfo (1.2.2)
+  * yard (0.9.5)
+</pre>
+}}
+
+I don't know what the fix actually is, but this Stackoverflow.com[1] thread mentioned this:
+
+> The combination of using: <code>@file = IO.read(file).force_encoding(""ISO-8859-1"").encode(""utf-8"", replace: nil)</code> and <code>#encoding: UTF-8</code> solved the issue.
+
+I don't have Ruby knowledge, but I'll start digging through the code on my end to see if I can find where to make those changes. Please let me know if you need additional information.
+
+---
+
+fn1. http://stackoverflow.com/questions/9607554/ruby-invalid-byte-sequence-in-utf-8
+"
+24988,Redmine,Defect,"",Closed,Normal,Create New Issue,William  Julianto,"",2017-02-03 10:22,Issues,"","","","",0,2017-02-03 10:05,2017-02-03 10:22,"",Invalid,3.3.1,"Hello,
+
+I registered as a non-administrator user, when I will make a new issue, field tracker and his subject does not appear. 
+how to display it?
+
+thanks,
+William"
+24979,Redmine,Defect,"",New,Normal,"Email ""keyword"" lines deleted even if the sender doesn't have permission to edit that field",Felix Sch?fer,"",2017-02-13 05:20,Email receiving,"","","","",0,2017-02-02 16:53,"","","","","When receiving an email with keyword lines ([[RedmineReceivingEmails#Issue-attributes]]) Redmine will destructively remove these lines, even when the sender doesn't have the permission to edit those attributes. The value of the issue's attributes will not be changed as per the field permission (that is correct) but the line with that value will be removed nonetheless (this is surprising).
+
+One step further might even be to only remove lines with keywords if the value is a possible value for the attribute in question, but that's not quite the scope of my current issue."
+24972,Redmine,Defect,"",Closed,Normal,Installation issues,“½–¼ƒ†[ƒU[,"",2017-02-02 00:53,"","","","","",0,2017-02-01 21:15,2017-02-02 00:53,"",Invalid,"","Hello,
+Is there anyone who might be familiar with such installation errors? This never happened on another hosting servers, when installed Redmine software:
+___________________________________________________________________
+
+[!] There was an error parsing `Gemfile`: (<unknown>): mapping values are not allowed in this context at line 9 column 36. Bundler cannot continue.
+# from /var/www/vhosts/bernackis.com/redmine.bernackis.com/public/Gemfile:63
+# -------------------------------------------
+# if File.exist?(database_file)
+> database_config = YAML::load(ERB.new(IO.read(database_file)).result)
+# adapters = database_config.values.map {|c| c['adapter']}.compact.uniq
+# -------------------------------------------
+ERROR:rubymng:Command '['/usr/local/psa/admin/sbin/filemng', 'bernacki', 'exec', '/var/www/vhosts/bernackis.com/redmine.bernackis.com/public', '/bin/bash', '-l', '-c', 'bundle install --path vendor/bundle']' returned non-zero exit status 4
+
+_______________________________________________________________________________
+
+If someone knows how to handle these issues, kindly let me know,
+Thanks in advance!"
+24971,Redmine,Patch,"",Closed,Normal,Japanese translation update (r16318),Go MAEDA,"",2017-02-04 12:02,Translations,"","","","",0,2017-02-01 14:26,2017-02-04 12:02,"","","",Translated field_full_width_layout.
+24970,Redmine,Defect,"",Closed,Normal,Net::LDAP::LdapError is deprecated,Pavel Rosick?,Jean-Philippe Lang,2017-07-08 18:36,LDAP,4.0.0,"","","",0,2017-02-01 12:12,2017-07-08 15:47,"",Fixed,"","reference
+http://www.rubydoc.info/gems/net-ldap/Net/LDAP/LdapError
+Deprecation warning: Net::LDAP::LdapError is no longer used
+
+please use
+*Net::LDAP::Error*
+http://www.rubydoc.info/gems/net-ldap/Net/LDAP/Error
+
+<pre>
+class AuthSourceLdap < AuthSource
+  NETWORK_EXCEPTIONS = [
+    Net::LDAP::LdapError,
+    Errno::ECONNABORTED, Errno::ECONNREFUSED, Errno::ECONNRESET,
+    Errno::EHOSTDOWN, Errno::EHOSTUNREACH,
+    SocketError
+  ]
+</pre>"
+24959,Redmine,Defect,"",Closed,Normal,502 Proxy Error Occurred in Server.,Jay Modhera,"",2017-02-03 12:16,Issues,"","","","",0,2017-01-31 08:46,2017-01-31 09:01,"",Invalid,3.1.1,502 Proxy Error Occurred in Server.
+24957,Redmine,Defect,"",New,Normal,demo.redmine.org: wrong spelling,Peter Mortensen,Jean-Philippe Lang,2017-02-02 09:13,Website (redmine.org),"","","","",0,2017-01-30 20:34,"","","","","On page http://demo.redmine.org/ ""demo for uses to test"" should probably be ""demo for users to test"".
+"
+24949,Redmine,Patch,"",Closed,Normal,Bulgarian translation for 3.2-stable,Toshi MARUYAMA,"",2017-01-28 20:10,Translations,3.2.6,"","","",0,2017-01-28 14:08,2017-01-28 20:10,"","","","From #24923.
+
+<pre><code class=""diff"">
+=== (+2,-3) config/locales/bg.yml ===
+@@ -215,6 +215,7 @@
+   error_invalid_csv_file_or_settings: „U„p„z„|„Œ„„ „~„u „u CSV „†„p„z„| „y„|„y „~„u „ƒ„Œ„€„„„r„u„„„ƒ„„„r„p „~„p „x„p„t„p„t„u„~„€„„„€ „„€-„t„€„|„…
+   error_can_not_read_import_file: „C„‚„u„Š„{„p „„€ „r„‚„u„}„u „~„p „‰„u„„„u„~„u „~„p „y„}„„€„‚„„„y„‚„p„~„y„‘ „†„p„z„|
+   error_attachment_extension_not_allowed: „U„p„z„|„€„r„u „€„„ „„„y„ %{extension} „~„u „ƒ„p „„€„x„r„€„|„u„~„y
++  error_cannot_reassign_time_entries_to_an_issue_about_to_be_deleted: „T„„€„„„‚„u„q„u„~„€„„„€ „r„‚„u„}„u „~„u „}„€„w„u „t„p „q„Œ„t„u „„‚„u„‡„r„Œ„‚„|„u„~„€ „~„p „x„p„t„p„‰„p, „{„€„‘„„„€ „‹„u „q„Œ„t„u „y„x„„„‚„y„„„p
+ 
+   mail_subject_lost_password: ""„B„p„Š„p„„„p „„p„‚„€„|„p (%{value})""
+   mail_body_lost_password: '„H„p „t„p „ƒ„}„u„~„y„„„u „„p„‚„€„|„p„„„p „ƒ„y, „y„x„„€„|„x„r„p„z„„„u „ƒ„|„u„t„~„y„‘ „|„y„~„{:'
+@@ -1173,5 +1174,3 @@
+   description_date_from: „B„Œ„r„u„t„u„„„u „~„p„‰„p„|„~„p „t„p„„„p
+   description_date_to: „B„Œ„r„u„t„u„„„u „{„‚„p„z„~„p „t„p„„„p
+   text_repository_identifier_info: '„P„€„x„r„€„|„u„~„y „ƒ„p „}„p„|„{„y „q„…„{„r„y (a-z), „ˆ„y„†„‚„y, „„„y„‚„u„„„p „y _.<br />„P„‚„€„}„‘„~„p „ƒ„|„u„t „ƒ„Œ„x„t„p„r„p„~„u„„„€ „}„… „~„u „u „r„Œ„x„}„€„w„~„p.'
+-  error_cannot_reassign_time_entries_to_an_issue_about_to_be_deleted: Spent time cannot
+-    be reassigned to an issue that is about to be deleted
+</code></pre>"
+24948,Redmine,Patch,"",Closed,Normal,Bulgarian translation for 3.3-stable,Toshi MARUYAMA,"",2017-01-28 14:28,Translations,3.3.3,"","","",0,2017-01-28 13:54,2017-01-28 14:28,"","","","From #24400.
+<pre><code class=""diff"">
+=== (+2,-3) config/locales/bg.yml ===
+@@ -216,6 +216,7 @@
+   error_attachment_extension_not_allowed: „U„p„z„|„€„r„u „€„„ „„„y„ %{extension} „~„u „ƒ„p „„€„x„r„€„|„u„~„y
+   error_ldap_bind_credentials: „N„u„r„p„|„y„t„~„y LDAP „y„}„u/„„p„‚„€„|„p
+   error_no_tracker_allowed_for_new_issue_in_project: „P„‚„€„u„{„„„Œ„„ „~„‘„}„p „„„‚„p„{„u„‚„y, „x„p „{„€„y„„„€ „t„p „ƒ„Œ„x„t„p„r„p„„„u „x„p„t„p„‰„y
++  error_no_projects_with_tracker_allowed_for_new_issue: „N„‘„}„p „„‚„€„u„{„„„y „ƒ „„„‚„p„{„u„‚„y „x„p „{„€„y„„„€ „}„€„w„u„„„u „t„p „ƒ„Œ„x„t„p„r„p„„„u „x„p„t„p„‰„y
+ 
+   mail_subject_lost_password: ""„B„p„Š„p„„„p „„p„‚„€„|„p (%{value})""
+   mail_body_lost_password: '„H„p „t„p „ƒ„}„u„~„y„„„u „„p„‚„€„|„p„„„p „ƒ„y, „y„x„„€„|„x„r„p„z„„„u „ƒ„|„u„t„~„y„‘ „|„y„~„{:'
+@@ -1194,7 +1195,5 @@
+   description_date_from: „B„Œ„r„u„t„u„„„u „~„p„‰„p„|„~„p „t„p„„„p
+   description_date_to: „B„Œ„r„u„t„u„„„u „{„‚„p„z„~„p „t„p„„„p
+   text_repository_identifier_info: '„P„€„x„r„€„|„u„~„y „ƒ„p „}„p„|„{„y „q„…„{„r„y (a-z), „ˆ„y„†„‚„y, „„„y„‚„u„„„p „y _.<br />„P„‚„€„}„‘„~„p „ƒ„|„u„t „ƒ„Œ„x„t„p„r„p„~„u„„„€ „}„… „~„u „u „r„Œ„x„}„€„w„~„p.'
+-  error_no_projects_with_tracker_allowed_for_new_issue: There are no projects with trackers
+-    for which you can create an issue
+   error_cannot_reassign_time_entries_to_an_issue_about_to_be_deleted: Spent time cannot
+     be reassigned to an issue that is about to be deleted
+</code></pre>"
+24939,Redmine,Patch,"",New,Normal,Changing plugin loading order,Lucas Arnaud,"",2017-09-19 00:54,Plugin API,"","","","",0,2017-01-27 20:00,"",ŠÖ˜A‚µ‚Ä‚¢‚é #23131,"","","Hi,
+
+I have one plugin that depends on another, and I needed to specify the order plugins are loaded so the classes and migrations are loaded in the proper order, but the dependent plugin is loaded first because of alphabetical order of their names.
+
+I made this patch on lib/redmine/plugin.rb so I can determine plugins loading order by setting its priorities on a Hash in the file config/additional_environment.rb.
+
+This sorting relies that plugin directory name is equals to its id.
+
+Regards,"
+24938,Redmine,Patch,"",Closed,Normal,Update tr.yml for general_first_day_of_week,ozgur yazilimas,"",2017-03-01 05:33,I18n,3.4.0,"","","",0,2017-01-27 12:15,2017-03-01 05:33,"","","","In Turkey, first day of week is not Sunday, it is Monday. Could you please change general_first_day_of_week value is to ""1"" for new release?"
+24936,Redmine,Defect,"",Closed,Normal,Internal error,Abegail Benero,"",2017-01-27 05:04,"","","","","",0,2017-01-27 04:57,2017-01-27 05:04,"",Invalid,"","Hi, 
+
+I installed Redmine 3.3.2 on Debian 8, I'm able to login as admin, but when I try to create (Register) another user this Internal Error appear.
+
+""Internal error
+
+An error occurred on the page you were trying to access.
+If you continue to experience problems please contact your Redmine administrator for assistance.
+
+If you are the Redmine administrator, check your log files for details about the error.""
+
+
+Here is the tail of the log:
+
+<pre>
+Started GET ""/"" for 49.145.110.224 at 2017-01-25 07:06:18 +0000
+Processing by WelcomeController#index as HTML
+WARNING: Can't mass-assign protected attributes for AnonymousUser: login
+	app/models/user.rb:750:in `anonymous'
+	app/models/user.rb:742:in `current'
+	app/controllers/application_controller.rb:93:in `user_setup'
+  Current user: anonymous
+  Rendered welcome/index.html.erb within layouts/base (8.6ms)
+Completed 200 OK in 331ms (Views: 182.1ms | ActiveRecord: 29.3ms)
+Started GET ""/"" for 49.145.110.224 at 2017-01-26 07:20:09 +0000
+Processing by WelcomeController#index as HTML
+  Current user: anonymous
+  Rendered welcome/index.html.erb within layouts/base (8.5ms)
+Completed 200 OK in 288ms (Views: 190.3ms | ActiveRecord: 4.9ms)
+Migrating to CreateEasySettings (20150705172511)
+Migrating to CreateEntityAssignments (20160519161300)
+DEPRECATION WARNING: `#timestamps` was called without specifying an option for `null`. In Rails 5, this behavior will change to `null: false`. You should manually specify `null: true` to prevent the behavior of your existing migrations from changing. (called from measure at /usr/local/rvm/rubies/ruby-2.3.3/lib/ruby/2.3.0/benchmark.rb:293)
+Migrating to AddEasyBaselineForToProject (20150810233049)
+Migrating to CreateEasyBaselineSources (20150812122322)
+</pre>
+
+Anyone can help?"
+24935,Redmine,Defect,"",Closed,Normal,Gravatar icons in activity view are broken on r15858 and later,Go MAEDA,Jean-Philippe Lang,2017-01-27 09:00,Activity view,"","","","",0,2017-01-27 01:20,2017-01-27 08:40,ƒuƒƒbƒN‚µ‚Ä‚¢‚é #24927,Fixed,"","Bottom part of each icons is not displayed due to r15858.
+
+!broken-gravatar-icon.png!"
+24929,Redmine,Defect,"",Closed,Normal,How to upload the excle file by REST API,jibin lee,"",2017-01-26 16:21,"","","","","",0,2017-01-26 14:48,2017-01-26 16:21,"",Invalid,"","Hi:
+
+I follow the REST API document to upload a excel file by VBA
+
+When I run the post upload.xml and then login the redmine server to see that the file has existed, but it's name is bizarre.
+
+Then I use the token to run issues.xml, It's failed.
+
+My code is below:
+<pre>
+Private Sub uploadButton1_Click()
+    
+    respText = pvPostFile(""http://redmine.group.cn/redmine/uploads.xml?key=bb07446d032bba5505516cca7c115c89e7c5c25b"", ""d:\128393.csv"", ""application/octet-stream;"", False)
+    ThisWorkbook.Sheets(1).Cells(10, 1) = respText
+    MsgBox respText
+    
+End Sub
+
+Private Function pvPostFile(sUrl As String, sFileName As String, sContextType As String, Optional ByVal bAsync As Boolean) As String
+    Const STR_BOUNDARY  As String = ""3fbd04f5-b1ed-4060-99b9-fca7ff59c113""
+    Dim nFile           As Integer
+    Dim baBuffer()      As Byte
+    Dim sPostData       As String
+
+    '--- read file
+    nFile = FreeFile
+    Open sFileName For Binary Access Read As nFile
+    If LOF(nFile) > 0 Then
+        ReDim baBuffer(0 To LOF(nFile) - 1) As Byte
+        Get nFile, , baBuffer
+        sPostData = StrConv(baBuffer, vbUnicode)
+    End If
+    Close nFile
+
+
+    '--- post
+    With CreateObject(""Microsoft.XMLHTTP"")
+        .Open ""POST"", sUrl, bAsync
+        .setRequestHeader ""Content-Type"", sContextType 
+        .send pvToByteArray(sPostData)
+        If Not bAsync Then
+            pvPostFile = .Status & .responseText
+        End If
+    End With
+End Function
+
+Private Function pvToByteArray(sText As String) As Byte()
+    pvToByteArray = StrConv(sText, vbFromUnicode)
+End Function
+
+
+Private Sub issueButton_Click()
+    
+    respText = pvPostFile(""http://redmine.group.cn/redmine/issues.xml?key=bb07446d032bba5505516cca7c115c89e7c5c25b"", ""d:\issues.xml"", ""application/xml;"", False)
+
+    ThisWorkbook.Sheets(1).Cells(11, 1) = respText
+
+    MsgBox respText
+End Sub
+</pre>
+
+d:\issues.xml content like below:
+<pre><code class=""xml"">
+<?xml version=""1.0"" encoding=""UTF-8""?>
+<issue>
+  <project_id>70711</project_id>
+  <subject>Creating an issue with a uploaded file</subject>
+  <uploads type=""array"">
+    <upload>
+      <token>80906.d90224c27d502787136ee83866dfc71e</token>
+      <filename>128393.csv</filename>
+      <description>128393.csv</description>
+      <content_type>image/png</content_type>
+    </upload>
+  </uploads>
+</issue>
+</xml></pre>"
+24928,Redmine,Defect,"",Closed,Low,Wrong text in log/delete.me,Ronny .,Jean-Philippe Lang,2017-03-19 08:52,Code cleanup/refactoring,3.4.0,"","","",0,2017-01-26 13:27,2017-01-26 19:47,"",Fixed,3.3.2,"The text was copied from upload directory.
+Should be
+default directory for log files
+instead of
+default directory for uploaded files
+
+or even no such files, these files have no purpose in my eyes."
+24925,Redmine,Defect,"",Closed,Normal,setting wiki page for a project version invalidates all version links,Pavel Kveton,"",2017-01-27 00:27,"","","","","",0,2017-01-26 08:11,2017-01-27 00:27,"",Invalid,3.3.1,"in the project settings (Settings->Versions), as per the attached screenshot:
+
+in the first column (""Version""), you can click on the version (e.g. 3.1.0.p9, link https://myseerver/versions/186) and get the list of issues targeting this version).
+
+When I open the version settings (""Edit"" in the last column) and fill in the ""Wiki page"", the link https://myseerver/versions/186 becomes invalid (see ""invalid page"" screenshot).
+
+When I empty ""Wiki page"" for the version, the link becomes valid again.
+
+I'm not sure where the link https://myseerver/versions/186 should point when the version wiki page is filled, I'd expect it still should show the list of the issues.
+
+"
+24924,Redmine,Defect,"",Closed,Normal,Redmine installation produces different results depending on the date installed,Angelo Bertolli,"",2017-01-27 06:45,Gems support,"","","","",0,2017-01-25 21:59,2017-01-26 03:02,"",Wont fix,3.3.1,"h2. The general problem
+
+Redmine releases leave their dependencies open-ended, and assume that later versions of gems will always be backward compatible and can be installed with the release.
+
+If you install Redmine on a system using the instructions on the site, you will get a different result depending on what version of a gem happens to be available at that time.
+
+h2. A side effect, specific example of this being an issue
+
+When the Gemfile specifies a version like '>= x.x.x' it will throw an error during installation if the newest version of a gem has changed dependencies.
+
+e.g.
+
+* When Redmine 3.3.1 was released it could be installed on RHEL 7 using Ruby 2.0
+* At some point in time, nokogiri 1.7 was released that requires Ruby 2.1
+* When attempting to run bundler to install Redmine on an identical system after this point will generate an error requiring Ruby 2.1
+
+h2. Solution
+
+The current/correct practice for maintaining a Gemfile should be to use '~> x.x.x' whenever possible.  This ensures both that (1) the version of the gem that was verified with a particular release is used, and (2) future gem versions do not cause unresolved dependency problems.
+
+"

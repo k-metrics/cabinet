@@ -1,0 +1,856 @@
+#,プロジェクト,トラッカー,親チケット,ステータス,優先度,題名,作成者,担当者,更新日,カテゴリ,対象バージョン,開始日,期日,予定工数,進捗率,作成日,終了日,関連するチケット,Resolution,Affected version,説明
+23233,Redmine,Defect,"",Closed,Normal,redming changing port,Max Singian,"",2016-07-04 05:31,"","","","","",0,2016-07-04 05:01,2016-07-04 05:31,"",Invalid,"","Hello, how can i change the port on my redmine? can you guys give me steps? cause i tried on httpd.conf
+Listen 8008
+NameVirtualHost *:8008
+<VirtualHost *:8008>
+     DocumentRoot /var/www/redmine/public
+</VirtualHost>
+ it doesnt work"
+23224,Redmine,Defect,"",New,Normal,Datepicker doesn't obey the user's settings format,Maxim Kru?ina,"",2017-05-25 15:03,UI,"","","","",0,2016-07-01 16:20,"","関連している #23414, 関連している #23892, 次のチケットが重複 #24575","",3.3.0,"I would like to use date format: yyyy-mm-dd (so I have this time format in my settings), but redmine is displaying probably the browser's default langaue date format - see screenshots."
+23222,Redmine,Defect,"",Closed,Normal,Unable to assign ticket to other users in project,Craig Carnell,"",2016-07-01 16:17,"","","","","",0,2016-07-01 15:19,2016-07-01 16:17,"",Invalid,"","I upgraded from Redmine 2.x to 3.2.3 and now we have the following issue. In the Assignee: field when updating a task users can now only see in the drop down:
+
+<< me >>
+<< Author >>
+the person it is assigned to
+their own account
+
+In the previous version of Redmine, anybody in the project could be selected.
+
+We also have Easy Redmine 2016 installed.
+"
+23208,Redmine,Defect,"",Closed,Normal,Changing wiki parent crash,Milos Corak,"",2016-06-30 20:23,Wiki,"","","","",0,2016-06-30 15:21,2016-06-30 20:23,"",Invalid,3.2.0,"Redmine crash when I try to change parent id on wiki page.
+
+Internal error
+
+Log:
+
+<pre>
+  Parameters: {""utf8""=>""?"", ""authenticity_token""=>""3P/QNO4+5wWOcbRoqUy8vsnlvNT1iUXHjcpWQjNH+B4nfeZVcAFBo0n21/l44WcufN5F2+U4NIOBVFWaK
+D22kQ=="", ""content""=>{""version""=>""11"", ""text""=>""h1. PVv3xxx identification List\r\n\r\n\r\nh2. Lookup Table By FW Name (write to reg
+ister 0x007E)\r\n\r\n|_. FW |_. fw_id (hex) |_. fw_id (dec) |  \r\n| F77 | 0x464D | 17997 |\r\n| G77 | 0x474D | 18253 |\r\n| G81 | 0
+x4751 | 18257 |\r\n| H77 | 0x484D | 18509 |\r\n| J77 | 0x4A4D | 19021 |\r\n| K81 | 0x4B51 | 19281 |\r\n| K82 | 0x4B52 | 19282 |\r\n|
+ M80 | 0x4D50 | 19792 |\r\n| M83 | 0x4D53 | 19795 |\r\n| M84 | 0x4D54 | 19796 |\r\n| M85 | 0x4D55 | 19797 |\r\n| M87 | 0x4D57 | 1979
+9 |\r\n| M93 | 0x4D5D | 19805 |\r\n| N78 | 0x4E4E | 20046 |\r\n| P7A | 0x507A | 20602 |\r\n| P92 | 0x505C | 20572 |\r\n| S14 | 0x530
+E | 21262 |\r\n| S17 | 0x5311 | 21265 |\r\n| S18 | 0x5312 | 21266 |\r\n| S5D | 0x535D | 21341 |\r\n| S91 | 0x535B | 21339 |\r\n| T74
+ | 0x544A | 21578 |\r\n| W10 | 0x570A | 22282 |\r\n| X086 | 0x5856 | 22614 |\r\n\r\nh2. Equation (str -> id)\r\n\r\n<pre><code class
+=\""python\"">\r\nfw_string = 'F77'\r\nletter = ord(fw_string[0])\r\nnumber = None\r\n\r\nif re.search('[A-F]', fw_string[1:].upper())
+:\r\n    number = int(fw_string[1:], 16)\r\nelse:\r\n    number = int(fw_string[1:])\r\n\r\nfw_id = (letter << 8) + number\r\n</code
+></pre>"", ""comments""=>""""}, ""wiki_page""=>{""parent_id""=>""20"", ""tag_list""=>""""}, ""commit""=>""Save"", ""project_id""=>""firmware-modules"", ""id
+""=>""Pv3xxx_identification""}
+  Current user: corakm (id=1)
+Completed 500 Internal Server Error in 39ms (ActiveRecord: 5.7ms)
+
+NoMethodError (undefined method `scoped' for #<Class:0x00000002c75360>):
+  app/models/wiki_page.rb:216:in `block in save_with_content'
+  app/models/wiki_page.rb:215:in `save_with_content'
+  app/controllers/wiki_controller.rb:154:in `update'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+
+
+
+
+
+Environment:
+  Redmine version                3.2.0.stable
+  Ruby version                   2.1.8-p440 (2015-12-16) [x86_64-linux]
+  Rails version                  4.2.5
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.7.14
+  Git                            1.8.3.1
+  Filesystem                     
+Redmine plugins:
+  clipboard_image_paste          1.10
+  quick_edit                     0.0.9
+  quick_view                     0.2.0
+  redmine_base_deface            0.0.1
+  redmine_checklists             3.1.3
+  redmine_custom_reports         0.1.5
+  redmine_dashboard              2.7.0
+  redmine_dmsf                   1.5.6
+  redmine_documents              1.0.0
+  redmine_documents_short        0.4.0
+  redmine_editor_preview_tab     0.1.5
+  redmine_github_hook            2.2.0
+  redmine_highlightjs            1.0.3
+  redmine_issue_templates        0.1.1
+  redmine_jstoolbar_ext          0.2.1
+  redmine_jstoolbar_ext_coderay  0.2.0
+  redmine_jstoolbar_ext_images   0.3.1
+  redmine_mail_reminder          3.0.0.0001
+  redmine_maintenance_mode       2.0.1
+  redmine_mylyn_connector        2.8.2.stable
+  redmine_per_project_formatting 0.0.4
+  redmine_percent_done           1.0.0
+  redmine_revision_branches      0.3.1
+  redmine_silencer               0.4.1
+  redmine_tags                   3.1.1
+  redmine_tweaks                 0.5.7
+  redmine_wiki_extensions        0.7.0
+  redmine_wiki_toc               0.0.3
+  release_logs                   1.0.0
+  wiking                         1.0.0b
+</pre>"
+23206,Redmine,Defect,"",Closed,Normal,Wrong filters are applied when exporting issues to CSV with blank filter,Go MAEDA,Jean-Philippe Lang,2016-07-10 09:46,Issues filter,3.2.4,"","","",0,2016-06-30 08:48,2016-07-10 09:46,"",Fixed,3.2.1,"Steps to reproduce:
+
+1. Go to ""Issues"" page.
+2. Clear ""Status"" check box in ""Filters"" and click apply. You will see all (open and closed) issues in the project.
+3. Export issues to a CSV file by clicking ""CSV"" link. The CSV file should contain open and closed issues, but actually it contains open issues only.
+
+No problem in 3.1-stable. Maybe this is a regression caused by #22108.
+
+Attached a patch to fix this problem."
+23200,Redmine,Defect,"",Closed,Normal,"""Private Notes"" setting is removed on page reload",Jon Goldberg,"",2016-06-30 04:54,Issues,"","","","",0,2016-06-29 21:50,2016-06-30 04:54,"",Invalid,3.2.2,"When a user encounters the ""The issue has been updated by an other user while you were editing it."" dialog, the ""Private notes"" box is set to unchecked, even if the user has checked the box.  If that user selects ""Apply my changes anyway"" or ""Add my notes and discard my other changes"", they will submit a private note publicly, leading to much embarassment!
+
+Steps to replicate:
+
+    Have user A start a note on an issue.
+    Have user B start a note on an issue.
+    Have user A submit their comment.
+    Have user B submit their comment with the ""private note"" box checked.
+
+User B will be informed that another comment has been posted. Do they
+want to submit their changes anyway, or submit just the comment without
+other changes?
+
+    User B selects ""submit the comment without other changes"".
+
+Expected result:
+User B's comment is private.
+
+Actual result:
+User B's comment is public.
+
+On page reload, the ""Private Notes"" value should remain the same."
+23199,Redmine,Defect,"",Closed,Normal,redmine:email:receive_imap change status did not work,Mutsu Yakumo,"",2016-09-28 18:49,Email receiving,"","","","",0,2016-06-29 18:49,2016-06-29 19:09,"",Invalid,3.2.0,"Hello,
+
+when I or a customer create a ticket via email with the following command:
+rake redmine:email:receive_imap RAILS_ENV=""production"" host=*our host* port=993 ssl=SSL username=*Username* password=*password* project=it-test tracker=""Service Call"" status=""update"" allow_override=project,tracker,priority,category,status
+
+so everything works fine.
+The Ticket will be create with the Status ""update""
+
+The Problem will start now, after someone changed the Status of the Ticket, for Example ""in Progress"" or ""Resolved""
+and the costumer write an answer to his Ticket (in the Subjekt: ""AW: [IT-Test - #642] status2"")
+the status will not change to ""update"" back after I run my command again.
+
+The Comment will be updated, but not the Status,
+That is a big problem after a Ticket is closed... nobody see the update.
+
+Is this a bug that the status will not change by an update via Mail?
+And have anyone a solution for me? For example reopen a case after the status is closed, or open a new one?
+"
+23198,Redmine,Defect,"",New,Normal,Group by Category does not group across projects,@ go2null,"",2017-04-14 23:41,Issues filter,"","","","",0,2016-06-29 16:30,"","関連している #8192, 関連している #26023","","","Example: 
+* I have a category called ""Documentation"" in two different projects.
+* I go to '""Projects"":/projects and choose ""View all issues"":/issues
+* Then I expand *Options* and select *Group results by* @Category@.
+* There are two grouping for @Documentation@, one per project.
+
+It appears that the grouping is done by @category_id@, not @category.name@.
+
+
+"
+23197,Redmine,Defect,"",Closed,Normal,Error While executing rake db:migrate,Kamlesh Maurya,"",2016-06-29 15:51,"","","","","",0,2016-06-29 15:37,2016-06-29 15:51,"",Invalid,3.1.3,"Hi,
+While executing command'rake db:migrate_plugins RAILS_ENV=production' we encounter error
+""
+rake aborted!
+LoadError: cannot load such file -- holidays\ca
+C:/Sites/redmine-3.2.3/plugins/redmine_schedules/init.rb:4:in `<top (required)>'
+
+C:/Sites/redmine-3.2.3/lib/redmine/plugin.rb:155:in `block in load'
+C:/Sites/redmine-3.2.3/lib/redmine/plugin.rb:146:in `each'
+C:/Sites/redmine-3.2.3/lib/redmine/plugin.rb:146:in `load'
+C:/Sites/redmine-3.2.3/config/initializers/30-redmine.rb:21:in `<top (required)>""
+
+We setup the redmine with below configuration
+Environment:
+  Redmine version                3.2.3.stable
+  Ruby version                   2.2.4-p230 (2015-12-16) [i386-mingw32]
+  Rails version                  4.2.5.2
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Git                            1.9.4
+  Filesystem                     
+Redmine plugins:
+  easy_wbs                       2016-0.0
+  redmine_planning               1.0.0"
+23196,Redmine,Patch,"",Closed,Normal,Speed up Project.allowed_to_condition,Jan from Planio www.plan.io,Jan from Planio www.plan.io,2017-01-21 10:39,Performance,"","","","",0,2016-06-29 14:34,2017-01-21 10:39,関連している #21608,"","","In cases where there are many issues in a project and the Redmine instance has many projects with many enabled modules overall, @Project.allowed_to_condition@ can get painfully slow (>10 sec for a request in our tests on server grade hardware at ""Planio"":https://plan.io/redmine-hosting with large Redmine databases) because the subselect in source:trunk/app/models/project.rb@15586#L184 will get executed for each of the issues found in the project hierarchy. 
+
+Since the list of project ids returned by this query will be static for the scope of the call, it makes sense to cache it. In our tests, this results in a significant speedup (milliseconds vs. seconds).
+
+A patch against current trunk is attached."
+23195,Redmine,Defect,"",Closed,Normal,search occurred 500 error,Steven Wong,"",2016-08-18 17:11,Search engine,"","","","",0,2016-06-29 12:05,2016-08-18 17:11,"",Invalid,3.3.0,"A NoMethodError occurred in search#index:
+ 
+  undefined method `where' for #<Hash:0x007f0ff87135e0>
+  lib/plugins/acts_as_searchable/lib/acts_as_searchable.rb:93:in `search_result_ranks_and_ids'
+ 
+ 
+-------------------------------
+Request:
+-------------------------------
+ 
+* URL : http://192.168.1.41/search?utf8=%E2%9C%93&q=2644
+  * HTTP Method: GET
+  * IP address : 192.168.50.244
+  * Parameters : {""utf8""=>""?"", ""q""=>""2644"", ""controller""=>""search"", ""action""=>""index""}
+  * Timestamp  : 2016-06-29 09:52:59 UTC
+  * Server : jira
+  * Rails root : /opt/redmine-3.3
+  * Process: 20909
+ 
+-------------------------------
+Session:
+-------------------------------
+ 
+  * session id: ""b9d71b4319a467ce7b00af4eeb082b18""
+  * data: {""session_id""=>""b9d71b4319a467ce7b00af4eeb082b18"",
+   ""user_id""=>1,
+   ""tk""=>""50f6d45314017a00af2beb18e719f073122d4baa"",
+   ""sudo_timestamp""=>1467193748,
+   ""my_page_sort""=>""none"",
+   ""_csrf_token""=>""Oy6Z39B8D1SgHsaQAH/d5IA+g+l7OVTNzWD7oQvUwj4="",
+   ""recent_projects""=>[2]}
+ 
+-------------------------------
+Environment:
+-------------------------------
+ 
+  * GATEWAY_INTERFACE                              : CGI/1.2
+  * HTTP_ACCEPT                                    : text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+  * HTTP_ACCEPT_ENCODING                           : gzip, deflate, sdch
+  * HTTP_ACCEPT_LANGUAGE                           : zh-CN,zh;q=0.8,en-US;q=0.6,en;q=0.4
+  * HTTP_CONNECTION                                : keep-alive
+  * HTTP_COOKIE                                    : _redmine_session=Umkwd2xzQys0L0lpUFRWdTljb056R0tyZC9HdkNJVkVYdHpwVytXQm1VR0xpQkFvcVZKblNPT2dRTXRkMTVVZERIbWllZDF5WXgyc0pWWEZLQXZjLzBiMG5pSVErNlgrVHV2dzFXK0pzanA3cTA0ZkttU1RRdk5JS2s0N1pYMC9FVzlCSFR0YWV3OVhBWVQvZmFaQjRMUS9mZWFiNjdRZDNiUGxQZ3YwT1BWakp0cUhhTHl5RmVQaUVTSTNZb2lnczROUk1vMDJwMklaTkd4Y2J5SWZaQjVZNmpud3hrRTY5SG5aUmJVSHE0SFpGWWJQWjVodVRvcGJWRy9HdW9Hb1Y4WVRjQWpELysvYVl4RGdnK1E3MDhnTDVaeVZTMmIvN3BvbnJ4V05Qak1oeWMrdHdVS2RpVDRFZlU2Qi96S3JOSHpkTkN5MlpSZXUwdFRjN1JjeHhRTGhqdXdKUUY0ZW50MytQbmtNR3Nha3lDd0g3VCthb04yWGcvMi8rRDEzLS04ZmVhcmJPQW9VKys2RGkrdThJeHZ3PT0%3D--b7bf55dfb07971c473acdb060ec6b041e1380a6b
+  * HTTP_HOST                                      : 192.168.1.41
+* HTTP_REFERER : http://192.168.1.41/projects
+  * HTTP_UPGRADE_INSECURE_REQUESTS                 : 1
+  * HTTP_USER_AGENT                                : Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.94 Safari/537.36
+  * HTTP_VERSION                                   : HTTP/1.1
+  * ORIGINAL_FULLPATH                              : /search?utf8=%E2%9C%93&q=2644
+  * ORIGINAL_SCRIPT_NAME                           :
+  * PATH_INFO                                      : /search
+  * QUERY_STRING                                   : utf8=%E2%9C%93&q=2644
+  * REMOTE_ADDR                                    : 192.168.50.244
+  * REQUEST_METHOD                                 : GET
+  * REQUEST_PATH                                   : /search
+  * REQUEST_URI                                    : /search?utf8=%E2%9C%93&q=2644
+  * ROUTES_41629840_SCRIPT_NAME                    :
+  * SCRIPT_NAME                                    :
+  * SERVER_NAME                                    : 192.168.1.41
+  * SERVER_PORT                                    : 80
+  * SERVER_PROTOCOL                                : HTTP/1.1
+  * SERVER_SOFTWARE                                : thin 1.7.0 codename Dunder Mifflin
+  * action_controller.instance                     : #<SearchController:0x007f0fce636bd8>
+  * action_dispatch.backtrace_cleaner              : #<Rails::BacktraceCleaner:0x00000003feb958>
+  * action_dispatch.cookies                        : #<ActionDispatch::Cookies::CookieJar:0x007f1011362608>
+  * action_dispatch.cookies_digest                 :
+  * action_dispatch.cookies_serializer             :
+  * action_dispatch.encrypted_cookie_salt          : encrypted cookie
+  * action_dispatch.encrypted_signed_cookie_salt   : signed encrypted cookie
+  * action_dispatch.http_auth_salt                 : http authentication
+  * action_dispatch.key_generator                  : #<ActiveSupport::CachingKeyGenerator:0x00000004ad4c70>
+  * action_dispatch.logger                         : #<ActiveSupport::Logger:0x00000004e0b4c0>
+  * action_dispatch.parameter_filter               : [:password]
+  * action_dispatch.redirect_filter                : []
+  * action_dispatch.remote_ip                      : 192.168.50.244
+  * action_dispatch.request.content_type           :
+  * action_dispatch.request.formats                : [#<Mime::Type:0x0000000183afd0 @synonyms=[""application/xhtml+xml""], @symbol=:html, @string=""text/html"", @hash=-1372727287529389025>]
+  * action_dispatch.request.parameters             : {""utf8""=>""?"", ""q""=>""2644"", ""controller""=>""search"", ""action""=>""index""}
+  * action_dispatch.request.path_parameters        : {:controller=>""search"", :action=>""index""}
+  * action_dispatch.request.query_parameters       : {""utf8""=>""?"", ""q""=>""2644""}
+  * action_dispatch.request.request_parameters     : {}
+  * action_dispatch.request.unsigned_session_cookie: {""session_id""=>""b9d71b4319a467ce7b00af4eeb082b18"", ""user_id""=>1, ""tk""=>""50f6d45314017a00af2beb18e719f073122d4baa"", ""sudo_timestamp""=>1467193748, ""my_page_sort""=>""none"", ""_csrf_token""=>""Oy6Z39B8D1SgHsaQAH/d5IA+g+l7OVTNzWD7oQvUwj4="", ""recent_projects""=>[2]}
+  * action_dispatch.request_id                     : 179d5473-b9d5-4ad4-9bee-256f034e6460
+  * action_dispatch.routes                         : #<ActionDispatch::Routing::RouteSet:0x00000004f67120>
+  * action_dispatch.secret_key_base                : 59dda17a42803617f96151518b9aeecb94e132c6f140123f1982e1c8ae15d0103ffa854c4d8b0019
+  * action_dispatch.secret_token                   :
+  * action_dispatch.show_detailed_exceptions       : false
+  * action_dispatch.show_exceptions                : true
+  * action_dispatch.signed_cookie_salt             : signed cookie
+  * async.callback                                 : #<Method: Thin::Connection#post_process>
+  * async.close                                    : #<EventMachine::DefaultDeferrable:0x007f1008b206a0>
+  * rack.errors                                    : #<IO:0x000000007855a0>
+  * rack.input                                     : #<StringIO:0x007f0fed1967d0>
+  * rack.multiprocess                              : false
+  * rack.multithread                               : true
+  * rack.request.cookie_hash                       : {""_redmine_session""=>""Umkwd2xzQys0L0lpUFRWdTljb056R0tyZC9HdkNJVkVYdHpwVytXQm1VR0xpQkFvcVZKblNPT2dRTXRkMTVVZERIbWllZDF5WXgyc0pWWEZLQXZjLzBiMG5pSVErNlgrVHV2dzFXK0pzanA3cTA0ZkttU1RRdk5JS2s0N1pYMC9FVzlCSFR0YWV3OVhBWVQvZmFaQjRMUS9mZWFiNjdRZDNiUGxQZ3YwT1BWakp0cUhhTHl5RmVQaUVTSTNZb2lnczROUk1vMDJwMklaTkd4Y2J5SWZaQjVZNmpud3hrRTY5SG5aUmJVSHE0SFpGWWJQWjVodVRvcGJWRy9HdW9Hb1Y4WVRjQWpELysvYVl4RGdnK1E3MDhnTDVaeVZTMmIvN3BvbnJ4V05Qak1oeWMrdHdVS2RpVDRFZlU2Qi96S3JOSHpkTkN5MlpSZXUwdFRjN1JjeHhRTGhqdXdKUUY0ZW50MytQbmtNR3Nha3lDd0g3VCthb04yWGcvMi8rRDEzLS04ZmVhcmJPQW9VKys2RGkrdThJeHZ3PT0=--b7bf55dfb07971c473acdb060ec6b041e1380a6b""}
+  * rack.request.cookie_string                     : _redmine_session=Umkwd2xzQys0L0lpUFRWdTljb056R0tyZC9HdkNJVkVYdHpwVytXQm1VR0xpQkFvcVZKblNPT2dRTXRkMTVVZERIbWllZDF5WXgyc0pWWEZLQXZjLzBiMG5pSVErNlgrVHV2dzFXK0pzanA3cTA0ZkttU1RRdk5JS2s0N1pYMC9FVzlCSFR0YWV3OVhBWVQvZmFaQjRMUS9mZWFiNjdRZDNiUGxQZ3YwT1BWakp0cUhhTHl5RmVQaUVTSTNZb2lnczROUk1vMDJwMklaTkd4Y2J5SWZaQjVZNmpud3hrRTY5SG5aUmJVSHE0SFpGWWJQWjVodVRvcGJWRy9HdW9Hb1Y4WVRjQWpELysvYVl4RGdnK1E3MDhnTDVaeVZTMmIvN3BvbnJ4V05Qak1oeWMrdHdVS2RpVDRFZlU2Qi96S3JOSHpkTkN5MlpSZXUwdFRjN1JjeHhRTGhqdXdKUUY0ZW50MytQbmtNR3Nha3lDd0g3VCthb04yWGcvMi8rRDEzLS04ZmVhcmJPQW9VKys2RGkrdThJeHZ3PT0%3D--b7bf55dfb07971c473acdb060ec6b041e1380a6b
+  * rack.request.query_hash                        : {""utf8""=>""?"", ""q""=>""2644""}
+  * rack.request.query_string                      : utf8=%E2%9C%93&q=2644
+  * rack.run_once                                  : false
+  * rack.session                                   : #<ActionDispatch::Request::Session:0x007f1018ba4788>
+  * rack.session.options                           : #<ActionDispatch::Request::Session::Options:0x007f1018ba4648>
+  * rack.url_scheme                                : http
+  * rack.version                                   : [1, 0]
+ 
+-------------------------------
+Backtrace:
+-------------------------------
+ 
+  lib/plugins/acts_as_searchable/lib/acts_as_searchable.rb:93:in `search_result_ranks_and_ids'
+  lib/redmine/search.rb:127:in `block in load_result_ids'
+  lib/redmine/search.rb:125:in `each'
+  lib/redmine/search.rb:125:in `load_result_ids'
+  lib/redmine/search.rb:115:in `block in load_result_ids_from_cache'
+  lib/redmine/search.rb:114:in `load_result_ids_from_cache'
+  lib/redmine/search.rb:99:in `result_ids'
+  lib/redmine/search.rb:70:in `result_count'
+  app/controllers/search_controller.rb:75:in `index'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+ "
+23192,Redmine,Patch,"",Closed,Normal,Add the new pagination style in the activity page,Marius BALTEANU,Jean-Philippe Lang,2016-06-29 17:46,UI,3.4.0,"","","",0,2016-06-29 07:13,2016-06-29 17:46,関連している #21258,"","","In #21258 was added a new style for pagination in the issues page. The attached patch adds the same style also for the ""Previous"" and ""Next"" links from the activity page.
+
+Before the patch:
+!before.png!
+
+After applying the patch:
+!after.png!
+"
+23189,Redmine,Defect,"",New,High,"Spent time by filter, offset by one day",Mentel Inc,"",2017-04-17 05:02,Time tracking,"","","","",0,2016-06-28 21:50,"","関連している #22320, 関連している #16482, 次のチケットが重複 #24547","",3.3.0,"We just upgrade to 3.3.0.stable.
+
+If you log time today (June28) and then go in spent time, filter by today, the logged time isn't showing up. If you do yesterday, it shows up with the today's date (June28).
+
+Same issue in the project time logs.
+
+However, if you select All, it works.
+
+
+I tried to see if someone else had reported it, I couldn't find it, if it's the case I'm sorry in advance."
+23188,Redmine,Defect,"",Closed,Normal,integration problem,ravi varma,"",2016-06-28 15:38,"","","","","",0,2016-06-28 15:10,2016-06-28 15:38,"",Invalid,3.0.7,Ihave got problem integrating redmine to spark room
+23183,Redmine,Defect,"",Needs feedback,Normal,LDAP password policy not checked when changing password,Taron Asatryan,"",2016-06-28 13:30,LDAP,"","","","",0,2016-06-28 09:36,"","","",2.5.3,"Redmine has been configured to authenticate against LDAP and everything works fine. A password policy has been implemented in LDAP to ensure password complexity, expiration, etc. However, when LDAP user changes his/her password from Redmine, no complexity check is taking place. 
+
+Is there any solution to this problem?"
+23182,Redmine,Defect,"",Closed,Normal,url in email + sub uri = sub uri duplication,Evgeniy Dushistov,"",2016-06-28 04:33,Email notifications,"","","","",0,2016-06-28 00:05,2016-06-28 04:33,次のチケットと重複 #20192,Duplicate,3.2.1,"I configure redmine to be https://server/redmine via
+<pre>
+RedmineApp::Application.routes.default_scope =  { :path => '/redmine', :shallow_path => '/redmine' }
+#RedmineApp::Application.routes.default_scope = ""/redmine""
+# Initialize the Rails application
+Rails.application.initialize!
+Redmine::Utils::relative_url_root = ""/redmine""
+</pre>
+
+all works fine, except links in email - they looks like:
+https://server/redmine/redmine/issues/1#change-31
+
+I have set hostname to server, and protocol to https via
+Administration->Preference->General"
+23180,Redmine,Patch,"",Closed,Normal,Make the issue id from email notifications linkable to issue page,Marius BALTEANU,Jean-Philippe Lang,2016-07-10 09:54,Email notifications,3.3.1,"","","",0,2016-06-27 18:38,2016-07-10 09:54,"","","","The attached patch adds to the ""#issue_id"" from the email notifications a link to the issue page. This link is very useful when you read the emails on the phone or small screens and you want to quickly open the issue page. 
+
+Currently, you need to scroll down until the end of the email to find the line with the issue subject (h1 element). Also, some email clients (like Inbox from Google) hide that content after first reply because it find it duplicated. I have attached some examples:
+- inbox.png which contains a screenshot with the notification received from #7360 in Inbox. You can observe that in the respective screen, there is no link to the issue. 
+- office.png which an example from office 365 popup. Here I need to scroll down to find the issue.
+
+With the attached patch you can easily open the issue page:
+!office_with_link.png!
+
+If you consider that this change should contains a test, please let me know.
+
+I've added the link also on issue_add.html.erb only for consistency. 
+
+"
+23175,Redmine,Defect,"",Closed,High,Ticket overview table on project page (from 3.2) exposes trackers to user roles with insufficient permissions,Tobias Fischer,"",2016-07-17 04:23,Projects,"","","","",0,2016-06-27 12:15,2016-07-17 04:23,"",Fixed,3.2.0,"Let's say you have a project ""A"" with internal and external users.
+And then there's project ""B"" which is a subproject of ""A"" and only internal users are allowed.
+The internal project ""B"" uses the same trackers like project ""A"" plus some additional ones.
+
+When an external user accesses the project ""A"" project page (overview) it can see the project-""B""-only trackers in the ticket overview table.
+At least, the ticket counter is set to ""0"" in all columns, but still I would expect the tracker beeing hidden when the user role cannot access it!
+
+This problem exists since Redmine 3.2"
+23172,Redmine,Defect,"",Closed,Normal,Tickets can be assigned to users who are not available in specific tracker,Maxim Kru?ina,Jean-Philippe Lang,2016-08-20 13:46,Issues,3.3.1,"","","",0,2016-06-27 08:55,2016-08-20 13:46,関連している #24061,Fixed,3.3.0,"Hi, I so much appreciate the ability to configure permissions per role / per tracker.
+Anyway, there is a small bug - when I'm creating a new ticket, for example in our Customer Support tracker, I can assign - or at least I see - all users in Assignee field.
+Instead, I should see only users available in selected tracker."
+23171,Redmine,Patch,"",Closed,Normal,Simplified Chinese translation for 3.3-stable,Tigergm Wu,"",2016-07-20 03:38,Translations,3.3.1,"","","",0,2016-06-27 08:01,2016-07-20 03:38,関連している #20720,"","","Updated some translation files for Simplify Chinese and Traditional Chinese under revision 15582.
+h3. the locale items are:
+* earlier_than_minimum_start_date(both zh and zh-TW)
+* label_link(only zh)
+* label_only(only zh)
+* error_no_tracker_allowed_for_new_issue_in_project(only zh)
+* label_tracker_all(only zh)
+* setting_new_item_menu_tab(only zh)
+* label_new_object_tab_enabled(only zh)"
+23166,Redmine,Defect,"",Closed,High,Issue while accessing Activity view,Kamlesh Maurya,"",2016-06-24 16:34,Activity view,"","","","",0,2016-06-24 13:53,2016-06-24 16:34,"",Invalid,3.1.3,"While accessing the activity tab we encounter the error ""Internal error
+An error occurred on the page you were trying to access.
+If you continue to experience problems please contact your Redmine administrator for assistance.
+If you are the Redmine administrator, check your log files for details about the error.""
+
+Attaching the screenshot for more detail.
+Error log is as below
+""tarted GET ""/projects/bihar-maintenance/activity"" for 192.168.100.128 at 2016-06-24 17:15:27 +0530
+Processing by ActivitiesController#index as HTML
+  Parameters: {""id""=>""bihar-maintenance""}
+  Current user: admin (id=1)
+Completed 500 Internal Server Error in 78ms (ActiveRecord: 78.0ms)
+
+NameError (uninitialized constant Meeting):
+  lib/redmine/activity/fetcher.rb:106:in `map'
+  lib/redmine/activity/fetcher.rb:106:in `constantized_providers'
+  lib/redmine/activity/fetcher.rb:42:in `block in event_types'
+  lib/redmine/activity/fetcher.rb:40:in `select'
+  lib/redmine/activity/fetcher.rb:40:in `event_types'
+  lib/redmine/activity/fetcher.rb:30:in `initialize'
+  app/controllers/activities_controller.rb:37:in `new'
+  app/controllers/activities_controller.rb:37:in `index'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'""
+
+We had configure the redmine with below configuration
+Redmine 3.2.3
+Ruby 2.2
+mysql 5.7.2"
+23165,Redmine,Defect,"",Closed,Normal,Problem with resaving issue,Micha? Nowacki,"",2016-06-24 17:54,Issues,"","","","",0,2016-06-24 11:57,2016-06-24 17:54,"","","","Hi,
+
+We use redmine for a few years. We discovered two broken issues, which cannot be updated.
+
+Error log:
+<pre>
+[ 2016-06-24 11:49:13.4389 8941/b5a94b70 Pool2/Implementation.cpp:1182 ]: [App 9022 stderr] TypeError (can't convert Symbol into Integer):
+[ 2016-06-24 11:49:13.4389 8941/b5a94b70 Pool2/Implementation.cpp:1182 ]: [App 9022 stderr]   app/models/issue.rb:167:in `create_or_update'
+[ 2016-06-24 11:49:13.4389 8941/b5a94b70 Pool2/Implementation.cpp:1182 ]: [App 9022 stderr]   app/models/issue.rb:1409:in `recalculate_attributes_for'
+[ 2016-06-24 11:49:13.4389 8941/b5a94b70 Pool2/Implementation.cpp:1182 ]: [App 9022 stderr]   app/models/issue.rb:1371:in `update_parent_attributes'
+[ 2016-06-24 11:49:13.4389 8941/b5a94b70 Pool2/Implementation.cpp:1182 ]: [App 9022 stderr]   app/models/issue.rb:167:in `create_or_update'
+[ 2016-06-24 11:49:13.4389 8941/b5a94b70 Pool2/Implementation.cpp:1182 ]: [App 9022 stderr]   app/controllers/issues_controller.rb:150:in `create'
+</pre>
+
+Data of the issue:
+<pre>
+#<Issue id: 14729, tracker_id: 22, project_id: 254, subject: ""XXX"", description: """", due_date: ""2015-11-23"", category_id: nil, status_id: 1, assigned_to_id: 127, priority_id: 7, fixed_version_id: nil, author_id: 127, lock_version: 1850, created_on: ""2015-01-14 13:17:34"", updated_on: ""2016-05-24 06:27:15"", start_date: ""2015-01-14"", done_ratio: 91, estimated_hours: 1083.5099971741438, parent_id: nil, root_id: 14729, lft: 3, rgt: 1874, is_private: false, closed_on: nil, position: 727030, remaining_hours: 5.0, release_id: nil, story_points: nil, release_relationship: ""auto"">
+</pre>
+
+Redmine versions:
+<pre>
+Environment:
+  Redmine version                2.6.3.stable
+  Ruby version                   1.9.3-p448 (2013-06-27) [i686-linux]
+  Rails version                  3.2.21
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.6.6
+  Filesystem                     
+Redmine plugins:
+  localizable                    0.4.0
+  redmine_backlogs               v1.0.4
+  redmine_charts2                0.2.1
+  redmine_issue_checklist        2.0.5
+  redmine_release_notes          1.3.1
+</pre>
+
+I am not able to detect which attribute is trying to convert. Do you able to help as?
+
+Best regards,
+Micha?"
+23160,Redmine,Defect,"",Closed,Normal,New issues taking awhile to show,Derek Stana,"",2016-06-24 08:44,Issues,"","","","",0,2016-06-24 08:18,2016-06-24 08:44,"",Invalid,3.3.0,We've been submitting new issues and have noticed it can take up to an hour sometimes for new issues to appear when they've been created and assigned to another user.
+23155,Redmine,Defect,"",Closed,Normal,redmine.org does not redirect to www subdomain,Adam Liszkai,Jean-Philippe Lang,2016-06-23 23:14,Website (redmine.org),"","","","",0,2016-06-23 21:05,2016-06-23 23:14,"",Duplicate,"","In the past I always typed the redmine url address, and now when I typed redmine.org in to my browser and it showed a forbidden page, somehow the domain not redirected to the www subdomain. Please check it and make work the http://redmine.org link again :)"
+23153,Redmine,Patch,"",Closed,Normal,Plugin hooks for custom search results,okkez _,Jean-Philippe Lang,2016-07-10 09:53,Plugin API,3.3.1,"","","",0,2016-06-23 16:28,2016-07-10 09:53,"","","","I'm a developer https://github.com/okkez/redmine_full_text_search
+
+I want to add funcionality to sort by `upated_at` or `score`.
+
+Please apply these patches.
+
+Thank you."
+23152,Redmine,Defect,"",Closed,Normal,Distinguish closed subprojects on the project overview,Diego Gonzalez,Jean-Philippe Lang,2016-07-10 09:51,Projects,3.3.1,"","","",0,2016-06-23 16:16,2016-07-10 09:49,次のチケットが重複 #23327,Fixed,3.2.1,"I closed a subproject, however, Project Overview father still appears without reference to their status or ability to filter it.
+Agradeceria option for not listed closed subprojects."
+23151,Redmine,Defect,"",Closed,Normal,done_ratio calculation with multi-level sub tasks and estimated hours,Gregor Schmidt,"",2017-07-09 05:25,Issues,"","","","",0,2016-06-23 15:30,2017-07-09 05:25,次のチケットと重複 #23511,Duplicate,3.2.0,"Using the Setting @parent_issue_done_ratio=derived@ and given the following issue hierarchy:
+
+<pre>
+[1_0_0]             - (3h)
+ | |
+ | +- [1_1_0]       - 1h
+ |
+ +--- [1_2_0]       - (2h)
+       | |
+       | +- [1_2_1] - 1h
+       |
+       +--- [1_2_1] - 1h
+</pre>
+
+When I set @[1_1_0]@ to status closed, the done ratio of @[1_0_0]@ is recalculated. 
+
+Since 1h of 3h of work are done, the derived done ratio of @[1_0_0]@ should be 33%. In current Redmine trunk r15582 the actual value is 50%, since the done ratio is solely based on the direct children and their estimated hours. The code was introduced with version#102, r14875, #20995.
+
+
+It gets more complicated when adding estimates on parent nodes (introduced in version#90, r14272, #16092):
+
+<pre>
+[2_0_0]             - 1h (Total 5h)
+ | |
+ | +- [2_1_0]       - 1h (Total 1h)
+ |
+ +--- [2_2_0]       - 1h (Total 3h)
+       | |
+       | +- [2_2_1] - 1h (Total 1h)
+       |
+       +--- [2_2_1] - 1h (Total 1h)
+</pre>
+
+Estimated hours on parent tasks are added to the estimated hours of the issue's sub tasks. The total estimated hours is the sum of all issues within the sub tree.
+
+When I set @[2_1_0]@ to status closed, the done ratio of @[2_0_0]@ is recalculated. 
+
+Now 1h of 4h of work on the sub tasks are done, the derived done ratio of @[2_0_0]@ should therefore be 25%. Similarly one could argue that 1h of 5h on the whole issue tree are done, the derived done ratio of @[2_0_0]@ should therefore be 20%.
+
+But in current Redmine trunk r15582 the actual value is 50%, since the done ratio is solely based on the direct children and their estimated hours.
+
+
+Attached are some easy tests highlighting the problem."
+23146,Redmine,Patch,"",Closed,Normal,Show revision details using the same structure and look from the journals details,Marius BALTEANU,Jean-Philippe Lang,2016-08-30 23:12,UI,3.4.0,"","","",0,2016-06-23 12:26,2016-08-30 23:12,関連している #23027,"","","In #23027 was proposed to use lighter colors for revision details in order to make the commit messages more obvious. This patch integrates that changes and also adds the following changes:
+
+# move the committer author element above the revision details
+# show the revision details (ID, Parent, Child) with bullet points and indented to right in the same way how the issue attributes are shown in the journals
+# move the user avatar for commit author from revision number element to author element
+
+Current trunk:
+!before.png!
+
+Only with the patch from #23027:
+!23027.png!
+
+
+With the attached patch: 
+!after.png!
+
+Regarding the CSS rules, I preferred to add them to the existing journals rules and not to duplicates them."
+23134,Redmine,Patch,"",Closed,Normal,Updated Korean locale,Yonghwan SO,"",2016-07-19 16:52,Translations,3.3.1,"","","",0,2016-06-22 09:09,2016-07-19 16:52,"","","","Patch for Korean Locale, for current HEAD."
+23133,Redmine,Defect,"",Closed,Normal,New '+' button/menu in 3.3 not appearing in foreground,Jordan Piel,"",2016-06-22 23:50,UI,"","","","",0,2016-06-22 00:04,2016-06-22 23:50,"",Invalid,3.3.0,"This seems to be an issue with #15880, I seem to be having the same issue Rupesh J mentioned on 6-14. The problem appears to be the drop down menu is not always in the foreground, this seems to be the case with multiple themes, default included. I've attached a screenshot of the behavior while using the 'alternative' theme as it's the only one that visibly shows a hint of the misbehavior. With other themes the '+' appears to do nothing, but I assume the entire menu is behind the foreground.
+
+Environment:
+  Redmine version                3.3.0.stable
+  Ruby version                   2.2.5-p319 (2016-04-26) [x86_64-linux]
+  Rails version                  4.2.6
+  Environment                    production
+  Database adapter               Mysql2
+
+Redmine plugins:
+  redmine_banner                 0.1.1
+  redmine_checklists             3.1.3
+  redmine_ldap_sync              2.0.8.devel
+  redmine_local_avatars          0.2.0
+  redmine_logs                   0.1.0
+  redmine_slack                  0.1
+  redmine_theme_changer          0.2.0
+  sidebar_hide                   0.0.7"
+23126,Redmine,Defect,"",Closed,Low,Custom Workflows plugin,Robin HERVET,"",2016-06-21 11:52,"","","","","",0,2016-06-21 10:45,2016-06-21 11:52,"",Invalid,"","Hi,
+
+My problem is to create a condition (if...end) in a custom worflows about a project custom filed value.
+
+For an issue, it works : ""if @issue.custom_field_value(83)=...."" but not for a project with ""if @project.custom_field_value(83)=...."".
+
+I don't understand why...
+
+Thank you for your help."
+23124,Redmine,Defect,"",New,Normal,"if Time logs visibility: Time entries created by the user is turned on for the role, Issue's spent time is not displayed",Y Z,"",2016-10-10 13:10,Issues,"","","","",0,2016-06-21 01:25,"","","",3.1.2,"There is a good feature to show only time entries created by owner, however if this option is turned on, there is no ""Spent time"" available on issue page any more. 
+
+I honestly believe it doesn't make any sense to hide it (if User.current.allowed_to_view_all_time_entries?(@project)), so as soon as we talk about time entries, that's ok to hide the entries themselves, but what is the reason to hide the total amount of already spent time (the value itself) for the issue?
+
+I guess the ""Spent time"" could be displayed nevertheless the option and, for instance, not be a link (a href) to the times entries log if user has no permission to see all time log entries.
+
+It would be nice if you can adjust it accordingly."
+23120,Redmine,Defect,"",Closed,Normal,'Internal error' when LDAP server name not resolved,Vasili Korol,"",2016-06-20 15:12,LDAP,"","","","",0,2016-06-20 14:45,2016-06-20 15:12,次のチケットと重複 #5592,Duplicate,3.2.2,"Sometimes users see an 'internal error' page when trying to log in with their LDAP credentials. I noticed, that this correlates with some problems with the DNS server in our network - sometimes the name of the LDAP server can not be resolved, and if one tries to log in to redmine during these periods, they see the error. Problem is gone immediately after dns is up again.
+
+We are using LDAPS, with ""users on-the-fly creation"" enabled. LDAP users that fail to log in are not new ones - they already exist in the system.
+
+<pre>
+Environment:
+  Redmine version                3.2.2.stable
+  Ruby version                   2.0.0-p384 (2014-01-12) [x86_64-linux-gnu]
+  Rails version                  4.2.5.2
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.8.8
+  Git                            1.9.1
+  Filesystem                     
+Redmine plugins:
+  advanced_roadmap_v2            2.4.2
+</pre>"
+23118,Redmine,Defect,"",Closed,Normal,Redmine tabs appear broken,budo kaiman,"",2016-06-20 14:41,UI,"","","","",0,2016-06-20 12:55,2016-06-20 14:41,"",Invalid,3.3.0,"After updating to redmine 3.3.0 (tagged) the menu tabs appear broken in Chrome 51.0.2704.103 m.  The tabs all appear as white on white, the new '+' button is only showing one menu option.  Below is redmine info:
+
+<pre>
+Environment:
+  Redmine version                3.3.0.stable.15581
+  Ruby version                   2.2.0-p0 (2014-12-25) [armv7l-linux-eabihf]
+  Rails version                  4.2.6
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.8.10
+  Git                            1.9.1
+  Filesystem                     
+Redmine plugins:
+  a_common_libs                  1.1.5
+  redmine_agile                  1.4.0
+  redmine_assign_via_commit      0.0.5
+  redmine_auto_watch             1.0.0
+  redmine_issue_detailed_tabs_time 0.1.0
+  redmine_local_avatars          1.0.0
+  redmine_login_audit            0.1.1
+  redmine_mentions               0.0.1
+  redmine_theme_changer          0.2.0
+</pre>
+
+The only plugin that I have installed that adds a tab to the menu is redmine_agile plugin and I have already tried disabling that plugin, but did not see a change (aside from the one missing tab)."
+23117,Redmine,Patch,"",Closed,Normal,Traditional Chinese textile and markdown help translation,ChunChang Lo,"",2016-07-20 07:44,Translations,3.1.7,"","","",0,2016-06-20 09:58,2016-07-20 07:44,"","","","* New
+** wiki_syntax_markdown.html
+* Changed
+** wiki_syntax_textile.html
+"
+23112,Redmine,Defect,"",Closed,Normal,Adding new version to project using Ruby API,Marcin Garski,"",2016-06-20 09:09,"","","","","",0,2016-06-20 08:39,2016-06-20 09:09,"",Invalid,"","Hey, 
+How can I add new version object to Redmine project using Ruby API? I'd like to automate some processes in Ruby script. 
+I've add new class 
+<pre><code class=""ruby"">
+require_relative 'redmine_connection'
+class RedmineVersion < RedmineConnection
+  self.element_name = 'version'
+end
+</code></pre>
+
+RedmineConnection.rb stores credentials and inherits from ActiveResource::Base - that works good, I can connect to Redmine API and read, e.g., Issues. 
+
+<pre><code class=""ruby"">
+class RedmineConnection < ActiveResource::Base
+  self.site = 'http://redmine-test/'
+  self.user = 'tmpuser'
+  self.password = 'secret'
+  self.format = :xml
+</code></pre>
+
+Wiki says that Version needs only project_id and name, these are required.
+
+This doesn't work: 
+<pre><code class=""ruby"">
+version = RedmineVersion.new(
+  :project_id => 12,
+  :name => ""Another version"",
+)
+</code></pre>
+
+I've also tried to connect to Redmine from rails script/console option and create new Version - no problem with that, I've only passed project_id and name, save after that and new Version was added. 
+
+Can someone give me an example how to add Version object to Redmine project? 
+
+Thanks for help.
+Gary"
+23109,Redmine,Patch,"",Closed,Normal,Change Japanese translation for text_git_repository_note has regression,Toshi MARUYAMA,Go MAEDA,2016-06-19 14:10,Translations,"","","","",0,2016-06-19 14:01,2016-06-19 14:10,"","","",""
+23108,Redmine,Patch,"",Closed,Normal,Change Japanese translation for text_git_repository_note,Go MAEDA,"",2016-12-01 06:05,Translations,3.4.0,"","","",0,2016-06-19 10:48,2016-12-01 06:05,"","","","I suggest changing the translation from ""Bare、かつ、ローカルリポジトリ"" to ""ローカルのベアリポジトリ"".
+
+* In official Japanese reference of Git ""v1"":https://git-scm.com/book/ja/v1/Git-%E3%82%B5%E3%83%BC%E3%83%90%E3%83%BC-%E3%82%B5%E3%83%BC%E3%83%90%E3%83%BC%E7%94%A8%E3%81%AE-Git-%E3%81%AE%E5%8F%96%E5%BE%97 ""v2"":https://git-scm.com/book/ja/v2/Git%E3%82%B5%E3%83%BC%E3%83%90%E3%83%BC-%E3%83%97%E3%83%AD%E3%83%88%E3%82%B3%E3%83%AB , ""bare repository"" is translated as ""ベアリポジトリ"", not ""bareリポジトリ"".
+* Current translation have a little bit strange feeling.
+"
+23103,Redmine,Defect,"",New,Normal,Wiki in Markdown syntax mode improperly renders successive headers.,Jasmine Hegman,"",2016-07-12 17:00,Text formatting,"","","","",0,2016-06-18 22:06,"","","",3.2.2,"I have found when using Markdown syntax that the headers get wonky when used in succession. I have attached screenshots to illustrate.
+
+Given the input image, I expect First, Second, Third to appear uniformly
+
+but as seen in the output image First is treated as a sub-sub-sub-level heading
+
+In the respectively titled image, you can see that sub-sub-sub level headings are given underlines in this style.
+
+Environment Information:
+Environment:
+  Redmine version                3.2.2.stable
+  Ruby version                   2.2.5-p319 (2016-04-26) [x86_64-linux]
+  Rails version                  4.2.5.2
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.8.10
+  Mercurial                      3.1.2
+  Bazaar                         2.7.0
+  Git                            2.1.4
+  Filesystem
+Redmine plugins:
+  no plugin installed
+"
+23083,Redmine,Patch,"",Closed,Normal,Allow filtering for system-shared versions in version custom fields in the global issues view,Holger Just,Jean-Philippe Lang,2016-06-18 12:18,Issues filter,3.3.0,"","","",0,2016-06-16 14:17,2016-06-18 12:18,"","","","Given an issue custom field of type Version, it should be possible to filter issues by this field on the global issues view. The behavior should be compatible with the basic version filter.
+
+Right now, on the global issue screen, the list of available values for these custom fields is always empty.
+
+The attached patch adds the functionality to be able to filter system-shared versions in these custom fields, given the custom field has the following characteristics:
+
+* is is defined as a filter,
+* it is enabled on all projects,
+* there are system-shared version available
+
+The patch was developed by ""Planio"":https://plan.io/redmine-hosting/. It should apply cleanly against the current trunk."
+23080,Redmine,Defect,"",Closed,Normal,Problem with email integration to MS Office 365,Grzegorz ?liwi?ski,"",2016-06-16 12:50,Email notifications,"","","","",0,2016-06-16 12:44,2016-06-16 12:50,"",Invalid,3.2.0,"Hi I installed Redmine from TurnKey appliance. I create a dedicate mail on GMAIL and scribe that in GUI ""notification tab"". I have an users in different email domain and servers and everything works except users with mail on MS Office 365. Everybody (gmail, own postfix servers, hotmail) receive an notification except them. 
+
+Please help me with that issue. 
+
+Regards 
+
+Grreeg23"
+23067,Redmine,Defect,"",Closed,Normal,Custom field List Link values to URL breaks on entries with spaces,S?nke Noack,Jean-Philippe Lang,2016-08-09 12:27,Custom fields,3.1.7,"","","",0,2016-06-14 12:34,2016-06-18 12:17,関連している #23841,Fixed,"","+Situation+:
+You have a custom field of the type ""List"". 
+In your list are entries which run like ""entry"" and ""second entry"". 
+
+While ""entry"" will generate a link with the ""Link values to URL"" using %value%, ""second entry"" will not be clickable. 
+If I'd use ""second+entry"", it'll very well work though. 
+
++Suggested solution+: 
+Redmine is to parse blanks and substitute plusses for them automatically before outputting the link. 
+It will present the list entry in the custom field as a clickable link. 
+
++System info+:
+Environment:
+  Redmine version                3.2.3.stable
+  Ruby version                   2.0.0-p647 (2015-08-18) [x86_64-linux]
+  Rails version                  4.2.5.2
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.8.13
+  Git                            2.6.1
+  Filesystem                     
+Redmine plugins:
+  no plugin installed"
+23065,Redmine,Patch,"",Closed,Normal,Fix confusing Japanese translation for permission_manage_related_issues,Go MAEDA,"",2016-06-15 08:24,Translations,3.3.0,"","","",0,2016-06-14 08:14,2016-06-15 08:24,"","","","Both permission_manage_related_issues and permission_manage_issue_relations are translated as ""関連するチケットの管理"". It is confusing.
+
+I suggest changing the translation for permission_manage_related_issues to ""リビジョンとチケットの関連の管理"".
+
+*before:*
+
+|_. label |_. translation |
+| permission_manage_related_issues | 関連するチケットの管理 |
+| permission_manage_issue_relations | 関連するチケットの管理 |
+
+*after:*
+
+|_. label |_. translation |
+| permission_manage_related_issues | 関連するチケットの管理 |
+| permission_manage_issue_relations | リビジョンとチケットの関連の管理 |"
+23055,Redmine,Defect,"",Confirmed,Normal,Error with Fetch commits with Mercurial repository when log has invalid char,mole mole,Toshi MARUYAMA,2016-11-28 13:58,SCM,"","","","",0,2016-06-13 13:31,"","","",3.1.3,"Error with Fetch commits automatically with mercurial repository
+
+When I add a mercurial repository, redmine start to scan and add to Mysql. This take several minutes. When redmine finish to index  .Redmine show a error page. In production.log show this message. It happen with a huge repository about 70335 commits
+
+*production.log*
+<pre>
+Started GET ""/projects/iset/repository"" for 192.168.1.164 at 2016-06-13 10:56:04 +0000
+Processing by RepositoriesController#show as HTML
+  Parameters: {""id""=>""iset""}
+  Current user: admin (id=1)
+Completed 500 Internal Server Error in 2039ms (ActiveRecord: 4.8ms)
+
+NoMethodError (undefined method `[]' for nil:NilClass):
+  lib/redmine/scm/adapters/mercurial_adapter.rb:194:in `each_revision'
+  app/models/repository/mercurial.rb:187:in `block in fetch_changesets'
+  app/models/repository/mercurial.rb:186:in `step'
+  app/models/repository/mercurial.rb:186:in `fetch_changesets'
+  app/controllers/repositories_controller.rb:114:in `show'
+  lib/redmine/sudo_mode.rb:63:in `sudo_mode'
+</pre>
+
+If you exec a manual auto_fetch to refresh data with *rake -f Rakefile RAIL_ENV=production redmine:fetch_changesets --trace*
+Console shows:
+<pre>
+/usr/local/bundle/gems/htmlentities-4.3.1/lib/htmlentities/mappings/expanded.rb:465: warning: duplicated key at line 466 ignored: ""inodot""
+** Invoke redmine:fetch_changesets (first_time)
+** Invoke environment (first_time)
+** Execute environment
+** Execute redmine:fetch_changesets
+rake aborted!
+NoMethodError: undefined method `[]' for nil:NilClass
+/usr/src/redmine/lib/redmine/scm/adapters/mercurial_adapter.rb:194:in `each_revision'
+/usr/src/redmine/app/models/repository/mercurial.rb:187:in `block in fetch_changesets'
+/usr/src/redmine/app/models/repository/mercurial.rb:186:in `step'
+/usr/src/redmine/app/models/repository/mercurial.rb:186:in `fetch_changesets'
+/usr/src/redmine/app/models/repository.rb:344:in `block (2 levels) in fetch_changesets'
+/usr/local/bundle/gems/activerecord-4.2.5/lib/active_record/relation/delegation.rb:46:in `each'
+/usr/local/bundle/gems/activerecord-4.2.5/lib/active_record/relation/delegation.rb:46:in `each'
+/usr/src/redmine/app/models/repository.rb:342:in `block in fetch_changesets'
+/usr/local/bundle/gems/activerecord-4.2.5/lib/active_record/relation/delegation.rb:46:in `each'
+/usr/local/bundle/gems/activerecord-4.2.5/lib/active_record/relation/delegation.rb:46:in `each'
+/usr/src/redmine/app/models/repository.rb:341:in `fetch_changesets'
+/usr/src/redmine/lib/tasks/redmine.rake:47:in `block (2 levels) in <top (required)>'
+/usr/local/bundle/gems/rake-10.5.0/lib/rake/task.rb:240:in `call'
+/usr/local/bundle/gems/rake-10.5.0/lib/rake/task.rb:240:in `block in execute'
+/usr/local/bundle/gems/rake-10.5.0/lib/rake/task.rb:235:in `each'
+/usr/local/bundle/gems/rake-10.5.0/lib/rake/task.rb:235:in `execute'
+/usr/local/bundle/gems/rake-10.5.0/lib/rake/task.rb:179:in `block in invoke_with_call_chain'
+/usr/local/lib/ruby/2.2.0/monitor.rb:211:in `mon_synchronize'
+/usr/local/bundle/gems/rake-10.5.0/lib/rake/task.rb:172:in `invoke_with_call_chain'
+/usr/local/bundle/gems/rake-10.5.0/lib/rake/task.rb:165:in `invoke'
+/usr/local/bundle/gems/rake-10.5.0/lib/rake/application.rb:150:in `invoke_task'
+/usr/local/bundle/gems/rake-10.5.0/lib/rake/application.rb:106:in `block (2 levels) in top_level'
+/usr/local/bundle/gems/rake-10.5.0/lib/rake/application.rb:106:in `each'
+/usr/local/bundle/gems/rake-10.5.0/lib/rake/application.rb:106:in `block in top_level'
+/usr/local/bundle/gems/rake-10.5.0/lib/rake/application.rb:115:in `run_with_threads'
+/usr/local/bundle/gems/rake-10.5.0/lib/rake/application.rb:100:in `top_level'
+/usr/local/bundle/gems/rake-10.5.0/lib/rake/application.rb:78:in `block in run'
+/usr/local/bundle/gems/rake-10.5.0/lib/rake/application.rb:176:in `standard_exception_handling'
+/usr/local/bundle/gems/rake-10.5.0/lib/rake/application.rb:75:in `run'
+/usr/local/bundle/gems/rake-10.5.0/bin/rake:33:in `<top (required)>'
+/usr/local/bundle/bin/rake:16:in `load'
+/usr/local/bundle/bin/rake:16:in `<main>'
+Tasks: TOP => redmine:fetch_changesets
+</pre>
+
+
+<pre>
+  Redmine version                3.1.3.stable
+  Ruby version                   2.2.4-p230 (2015-12-16) [x86_64-linux-gnu]
+  Rails version                  4.2.5
+  Environment                    production
+  Database adapter               Mysql2
+SCM:
+  Subversion                     1.8.13
+  Mercurial                      3.1.2
+  Git                            2.1.4
+  Bazaar                         2.7.0
+  Filesystem                     
+Redmine plugins:
+  no plugin installed
+</pre>"
+23054,Redmine,Defect,"",Closed,Normal,Clearing time entry custom fields while bulk editing results in values set to __none__,Felix Sch?fer,Jean-Philippe Lang,2016-06-18 08:02,Time tracking,3.2.4,"","","",0,2016-06-13 11:46,2016-06-18 08:02,"",Fixed,"",""
+23053,Redmine,Defect,"",Closed,Normal,Secure cookie not working,Rodrigo Valladares,"",2016-06-13 15:33,Security,"","","","",0,2016-06-13 11:42,2016-06-13 15:33,"","",2.6.5,"Hi,
+
+I'm using Redmine 2.6.5. We've tried to set the redmine_session cookie as secure in application.rb like this:
+
+<pre>
+config.session_store :cookie_store, :key => '_redmine_session', :secure => true
+</pre>
+
+However, when we try to login in Redmine, a 422 error happens:
+
+!error_422.png!
+
+Is this the correct way to achieve this? Or is this solved in another version?
+
+Thank you."
+23051,Redmine,Defect,"",Closed,Normal,"Got Problem, And no resolution for this: Don't know how to build task 'test:scm:units' (see --tasks)",guidi zeng,"",2016-06-16 16:31,Issues,"","","","",0,2016-06-13 10:26,2016-06-13 15:37,"",Invalid,3.2.3,"when i installing redmine follow this link:[[http://www.redmine.org/projects/redmine/wiki/RedmineInstall]]
+Environment:
+   System: Linux version 3.10.0-327.10.1.el7.x86_64 (builder@kbuilder.dev.centos.org) (gcc version 4.
+           8.3 20140911 (Red Hat 4.8.3-9) (GCC) ) #1 SMP Tue Feb 16 17:03:50 UTC 2016)
+
+   Ruby:   ruby 2.2.5p319 (2016-04-26 revision 54774) [x86_64-linux]
+   Rails 4.2.5.2
+   rake, version 11.2.0
+
+1. process database.yml
+2. modify source to https://gems.taobao.org/ in Gemfile.
+3. bundle install --without test development
+   (completed: Bundle complete! 31 Gemfile dependencies, 56 gems now installed.)
+4. bundle exec rake generate_secret_token
+   [root@Kz redmine]# bundle exec rake generate_secret_token
+   /usr/local/ruby2.2/lib/ruby/gems/2.2.0/gems/htmlentities-4.3.1/lib/htmlentities/mappings/e
+   xpanded.rb:465: warning: duplicated key at line 466 ignored: ""inodot""rake aborted!
+   Don't know how to build task 'test:scm:units' (see --tasks)
+   /usr/local/redmine/lib/tasks/testing.rake:87:in `block (2 levels) in <top (required)>'
+   /usr/local/redmine/lib/tasks/testing.rake:22:in `block in <top (required)>'
+   /usr/local/redmine/lib/tasks/testing.rake:1:in `<top (required)>'
+   /usr/local/redmine/Rakefile:7:in `<top (required)>'
+   /usr/local/ruby2.2/bin/bundle:23:in `load'
+   /usr/local/ruby2.2/bin/bundle:23:in `<main>'
+   (See full trace by running task with --trace)
+   [root@Kz redmine]# 
+
+Some one can help me?"
+23050,Redmine,Patch,"",Closed,Normal,Bulgarian translation (jstoolbar-bg.js),Ivan Cenov,"",2016-06-14 06:16,Translations,"","","","",0,2016-06-13 08:53,2016-06-14 06:16,"","","","Translated
+* jsToolBar.strings['Highlighted code']"
+23048,Redmine,Patch,"",Closed,Normal,Bulgarian translation (r15509),Ivan Cenov,"",2016-06-13 08:45,Translations,"","","","",0,2016-06-13 07:27,2016-06-13 07:48,"","","","Translated two strings related to #15880
+* setting_new_item_menu_tab
+* label_new_object_tab_enabled"
+23046,Redmine,Patch,"",Closed,Normal,Traditional Chinese translation (to r15521),ChunChang Lo,"",2016-06-13 07:24,Translations,"","","","",0,2016-06-13 03:29,2016-06-13 07:24,"コピー元 #23013, コピー先 #23637","","","* New
+** setting_new_item_menu_tab, label_new_object_tab_enabled
+* Changed
+** label_new_project_issue_tab_enabled
+"

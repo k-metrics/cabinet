@@ -1,0 +1,830 @@
+#,ÉvÉçÉWÉFÉNÉg,ÉgÉâÉbÉJÅ[,êeÉ`ÉPÉbÉg,ÉXÉeÅ[É^ÉX,óDêÊìx,ëËñº,çÏê¨é“,íSìñé“,çXêVì˙,ÉJÉeÉSÉä,ëŒè€ÉoÅ[ÉWÉáÉì,äJénì˙,ä˙ì˙,ó\íËçHêî,êiíªó¶,çÏê¨ì˙,èIóπì˙,ä÷òAÇ∑ÇÈÉ`ÉPÉbÉg,Resolution,Affected version,ê‡ñæ
+15153,Redmine,Patch,"",New,Normal,Show more information about subtasks,Daniel Ritz,"",2013-10-18 13:48,Issues,"","","","",0,2013-10-18 13:48,"","","","","Issues with subtasks show fields like start date, due date, estimated time, etc. as the sum from the subtask. The subtask list only includes a few fields (subject, assignee, status, %done). To improve this overview so everyone can see where the start/due date, estimated time etc. come from, it would make sense to display these fields for each subtask.
+
+A patch implementing our requirements is attached. Against Redmine 2.3.3, but should apply cleanly to 2.4/trunk."
+15143,Redmine,Defect,"",Closed,Normal,Email Reminder,Daniel Koch,"",2013-10-19 05:27,Email notifications,"","","","",0,2013-10-16 15:51,2013-10-19 05:27,éüÇÃÉ`ÉPÉbÉgÇ∆èdï° #9676,Duplicate,2.3.3,"when i set 2 Reminders:
+
+first: 2 dayÅLs before event
+sencond on event date
+
+users alwayÅLs get 2 Emails 
+
+one for on event and one for in 2 dayÅLs with the same content.
+
+is there a fix to say that i can exclude overdate for example if 2 dayÅLs is passed it doenst remind?"
+15142,Redmine,Defect,"",Closed,Normal,Wrong project name in email notification subject after moving issue to other project,Pavel Potcheptsov,"",2013-10-29 05:35,Email notifications,"","","","",0,2013-10-16 14:30,2013-10-29 05:35,"",Cant reproduce,2.3.0,"Project1 - issue1.
+Issue1 has moved to Project2.
+Email notification after updating issue1 come with email subject as Project1.
+As you see on picture, after changing project, notification still show old project."
+15135,Redmine,Defect,"",Closed,Low,Issue#update_nested_set_attributes comparing nil with empty string,Rafa? Lisowski,Jean-Philippe Lang,2013-10-20 11:30,Code cleanup/refactoring,2.4.0,"","","",0,2013-10-15 16:39,2013-10-20 11:30,"",Fixed,2.3.3,"I had problem with slow issue update. Issue have ~20 subtasks and 1 related issue. Update on that task always ended with timeout error.
+It's appears that Issue#update_nested_set_attributes (after_save hook) there is ""comparision _parent_issue_id != parent_id_"":http://www.redmine.org/projects/redmine/repository/entry/branches/2.3-stable/app/models/issue.rb#L1277. 
+In my case _parent_issue_id_ was nil and _parent_id_ empty string, it's leads to unnecessary code execution.
+When I change:
+<pre>
+elsif parent_issue_id != parent_id
+</pre>
+to 
+<pre>
+elsif parent_issue_id.to_i != parent_id.to_i
+</pre>
+update is now 4 times faster.
+
+Ruby: 1.9.3-p429
+Rails: 3.2.13
+Redmine: 2.3.3"
+15125,Redmine,Defect,"",Closed,Normal,Task properties are reverted when doing a task update from firefox.,Mehmet Soyturk,"",2013-10-20 11:41,"","","","","",0,2013-10-14 10:33,2013-10-20 11:41,"ä÷òAÇµÇƒÇ¢ÇÈ #14621, éüÇÃÉ`ÉPÉbÉgÇ™èdï° #18011",Wont fix,2.3.1,"We many unintended task property changes (the changes of one user is unintendedly reverted by another user).
+
+To reproduce:
+* Open an issue from firefox.
+* Open the same issue in another tab / browser / computer.
+* From the second tab, update task properties that are selected from dropdown lists, such as ""Status"", ""Priority"", ""Assignee"" or ""% Done"".
+* Hit F5 from the first tab. You will see that the task properties were updated successfully.
+* Then, still in the second tab, click the ""Update"" link. You will see that still the old values are selected. Add some message and send the form, and the properties are now reverted.
+
+It seems that Firefox, even after a page refresh, tries to remember the options selected by the user. To avoid this, a ctrl-F5 is needed. See also http://stackoverflow.com/questions/1479233/why-doesnt-firefox-show-the-correct-default-select-option"
+15123,Redmine,Defect,"",Closed,Normal,"""Add watcher"" leaks all active users",Felix Sch?fer,"",2013-10-22 13:58,Security,"","","","",0,2013-10-14 10:11,2013-10-20 17:50,"ä÷òAÇµÇƒÇ¢ÇÈ #9500, ä÷òAÇµÇƒÇ¢ÇÈ #5159, éüÇÃÉ`ÉPÉbÉgÇ∆èdï° #11724, éüÇÃÉ`ÉPÉbÉgÇ™èdï° #15613",Duplicate,"","When adding watchers, all active users of the current installation are visible (on new issues from the get-go, on existing issues you might have to type a few characters to trigger the autocomplete).
+
+All other places in Redmine exposing users go to great lengths to only show users that are ""visible"" to the current user. Attached is a patch that limits the proposed users in the watcher autocomplete to users that are members of projects visible to the current user.
+
+(This patch was written on behalf of and contributed by ""Planio"":http://plan.io)"
+15118,Redmine,Patch,"",New,Normal,Deprecate and rename rss_* methods to atom_* methods,Mischa The Evil,"",2013-10-14 01:59,Code cleanup/refactoring,Candidate for next major release,"","","",0,2013-10-14 01:34,"",ä÷òAÇµÇƒÇ¢ÇÈ #13460,"","","This issue is extracted from #13460-2 after 2.4 feature freeze.
+
+Relevant history:
+
+> Daniel Felix wrote in #13460-2 (note-2):
+> > * *File* Attachment:functional_renaming_rss_to_atom.diff added
+> >
+> > I'll provide two patches.
+> > [...]
+> > Number 2: functional renaming. Deprecation of old rss_* methods and redefining them as atom_* methods. Old methods are still available and give deprecation warnings. Please test Number 2, too. But it seems to work in the first test.
+> 
+> Jean-Philippe Lang wrote in #13460-7 (note-7):
+> > I've committed the translations in r11654 but I think it's a bit late to change the methods for 2.3.0.
+"
+15113,Redmine,Defect,"",Closed,Normal,The mail method should return a Mail::Message,Florian Schwab,Florian Schwab,2013-10-13 09:59,Code cleanup/refactoring,2.4.0,"","","",0,2013-10-12 14:19,2013-10-13 09:59,"",Fixed,"",The overwritten _mail_ method (_ActionMailer::Base_) in source:trunk/app/models/mailer.rb should return a _Mail_ object instead of a symbol (the locale set/returned by _set_language_if_valid_) to be compliant with the original _mail_ method.
+15110,Redmine,Defect,"",New,Normal,Wiki annotate is showing wrong versions in which lines were last changed,Mischa The Evil,Jean-Philippe Lang,2015-07-04 05:04,Website (redmine.org),"","","","",0,2013-10-12 04:22,"","","","","I haven't tested this personally; I only observed the issue on redmine.org and thought it might be good to report it.
+
+Goto the annotate view of [[RedmineTextFormatting]], check lines 63 to 70 (repository files linking syntax). These lines were not changed/introduced in version 1 of the page (see ""it"":/projects/redmine/wiki/RedmineTextFormatting?version=1), instead their history is: 14, 15, 24, 26, 39, 77."
+15105,Redmine,Defect,"",Closed,Normal,Redmine::Helpers::Diff missing require,Felix B?nemann,"",2013-10-12 12:32,"","","","","",0,2013-10-10 22:26,2013-10-12 12:32,"",Fixed,"","The @lib/redmine/helpers/diff.rb@ is missing a @require 'diff'@ to load @lib/diff.rb@ so it fails to call diff on an array in inititialize:
+<pre><code class=""ruby"">
+>> Redmine::Helpers::Diff.new(""foo"", ""bar"")
+NoMethodError: undefined method `diff' for [""foo"", ""bar""]:Array
+</code></pre>
+
+This can be reproduced by changing the description of an issue and then clicking on the diff link."
+15075,Redmine,Patch,"",Closed,Normal,"Fix typo in the Dutch ""label_user_mail_option_all"" translation",Toshi MARUYAMA,"",2013-10-09 20:20,Translations,2.4.0,"","","",0,2013-10-09 20:14,2013-10-09 20:20,"","","","https://github.com/redmine/redmine/pull/19
+
+<pre><code class=""diff"">
+diff --git a/config/locales/nl.yml b/config/locales/nl.yml
+index da86aa8..e9459be 100644
+--- a/config/locales/nl.yml
++++ b/config/locales/nl.yml
+@@ -583,7 +583,7 @@ nl:
+   label_user: Gebruiker
+   label_user_activity: ""%{value}'s activiteit""
+   label_user_mail_no_self_notified: Ik wil niet op de hoogte gehouden worden van mijn eigen wijzigingen
+-  label_user_mail_option_all: ""Bij elk gebeurtenis in al mijn projecten...""
++  label_user_mail_option_all: ""Bij elke gebeurtenis in al mijn projecten...""
+   label_user_mail_option_selected: ""Enkel bij elke gebeurtenis op het geselecteerde project...""
+   label_user_new: Nieuwe gebruiker
+   label_user_plural: Gebruikers
+</code></pre>"
+15073,Redmine,Patch,"",Closed,Normal,list custom fields : multiple select filter wider,J?r?me BATAILLE,"",2017-04-29 22:19,Custom fields,2.4.0,"","","",0,2013-10-09 12:34,2013-10-13 10:42,"","","","If there are more than 4 option values, increase teh size from 4 to 10"
+15072,Redmine,Patch,"",Closed,Normal,Optimization of issues journal custom fields display,J?r?me BATAILLE,Jean-Philippe Lang,2017-04-29 20:28,Code cleanup/refactoring,2.4.0,"","","",0,2013-10-09 12:22,2013-10-13 12:05,"","","","Custom filed is reloaded for each detail
+even if cached by active record, we can avoid to reload them"
+15058,Redmine,Defect,"",Closed,Normal,Project authorization EnabledModule N+1 queries,Felix B?nemann,"",2013-10-21 00:20,Code cleanup/refactoring,2.4.0,"","","",0,2013-10-07 21:51,2013-10-20 18:05,"",Fixed,"","There's a problem with project authorization that causes N+1 queries (one per project in @projects).
+
+In ApplicationController#authorize redmine checks authorization on <notextile>@project or @projects</notextile>. This triggers the code in Project#allowed_permissions which calls @enabled_modules.pluck(:name)@.
+
+The problem here is that pluck circumvents preloading, so no matter wether we do @@projects = Project.includes(:enabled_modules).where(conditions)@ in a controller, it will still trigger one extra query per project.
+
+Given that the EnableModule model is tiny, this could be prevented by using @enabled_modules.map(&:name)@ instead."
+15057,Redmine,Defect,"",Closed,Normal,Can't change status from new if project have no members,Elena Mitkina,"",2013-10-14 03:59,"","","","","",0,2013-10-07 20:14,2013-10-14 03:59,"",Invalid,"","I create project, if it have not members - status cant be change from new to any one another"
+15056,Redmine,Defect,"",Closed,Low,Command missing in the RedmineInstall page,Yann PENIGUEL,"",2013-10-08 10:28,Documentation,"","","","",0,2013-10-07 17:21,2013-10-07 21:10,"",Invalid,"","Hello there,
+
+At step 4 of the RedmineInstall guide, it seem to miss a command.
+If you follow the instructions, you will get a Bundler::GemfileNotFound when trying to use ""bundle install --without development test"".
+It is because you need to use ""bundle init"" first, which initiate the required Gemfile.
+
+Yann PENIGUEL"
+15055,Redmine,Defect,"",Closed,Normal,branches not properly displayed in IE8,Elvys Melo Duarte Almeida,"",2016-01-13 14:38,SCM,"","","","",0,2013-10-07 16:39,2016-01-13 14:38,"",Wont fix,"","IE8 doesn't show well GIT-Repository-Branches. 
+
+S. Picture below (Left IE8, Right Chrome)
+
+!Clipboard01.jpg!
+
+With other Browser (tested with Firefox 24.0 and Chrome 30.0) there was no problem in the view.
+"
+15050,Redmine,Defect,"",Closed,Normal,redmine:migrate_from_mantis  fails to migrate projects with all upper case name,Vikram Lele,Jean-Philippe Lang,2013-10-13 12:08,Importers,2.4.0,"","","",0,2013-10-07 08:16,2013-10-13 12:08,"",Fixed,"","redmine:migrate_from_mantis does not migrate data of mantis projects with full upper case names. For example - a project with name MY PROJECT does not get migrated at all without indicating any error.
+
+An easy work around for this is to change the project name to mixed case in mantis database."
+15047,Redmine,Defect,"",New,Normal,Issue edit view does not show description and notes,Sebastian Helbig,"",2013-10-06 11:35,Issues,"","","","",0,2013-10-06 11:35,"","","",2.3.3,"Whenever I rightclick on an issue and use edit, I get to the ticket edit view, but I see no description and notes of the ticket. This is in contrast to opening the ticket directly and clicking on updates which shows description and notes."
+15046,Redmine,Defect,"",Closed,Normal,500 Error on add Project,Soner Sanane,"",2013-10-05 11:37,"","","","","",0,2013-10-05 02:20,2013-10-05 11:37,"",Invalid,"","Hello,
+i have installed redmine. When i add Project i have a 500 Internal Server Error:""Internal error
+
+An error occurred on the page you were trying to access.
+If you continue to experience problems please contact your Redmine administrator for assistance.
+
+If you are the Redmine administrator, check your log files for details about the error.
+
+Back""
+
+http://pastebin.com/4XGTSdJL there is the log.
+
+Please help me.
+
+Regards,
+Soner
+"
+15045,Redmine,Defect,"",New,Normal,Filter by custom field (only) doesn't work in REST API,Bruno Medeiros,"",2013-10-04 23:17,REST API,"","","","",0,2013-10-04 23:17,"","","",2.3.3,"> cf_x: get issues with the given value for custom field with an ID of x. (Custom field must have 'used as a filter' checked.)
+
+I tried to filter issues by custom field and initially I tried to put only this filter in the URL. I issued the following request on my Redmine instance:
+
+<pre>
+http://hq.company.com.br/redminetest/issues.xml?cf_24=1&limit=25&key=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+</pre>
+The query above fetch all the issues on my instance, regardless of the custom field 24's value.
+
+<pre>
+http://hq.company.com.br/redminetest/issues.xml?project_id=176&cf_24=1&limit=25&key=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+</pre>
+The query above works perfectly, filters by project and by custom field.
+
+The REST is only working properly if there is a project filter together with the custom field filter, it doesn't work alone.
+My field is marked with 'use as filter' only."
+15044,Redmine,Defect,"",Closed,Normal,Patch for giving controller_issues_edit_after_save api hook the correct context,Jordan Hollinger,Jean-Philippe Lang,2013-10-13 12:32,Plugin API,2.4.0,"","","",0,2013-10-04 23:14,2013-10-13 12:32,"",Fixed,2.3.3,"The API hooks ""controller_issues_edit_before/after_save"" are not given the correct context (i.e. the same context that ""controller_issues_new_before/after_save"" get.)
+
+Expected behavior: ""controller_issues_new_after_save"" and ""controller_issues_edit_after_save"" should be given the same context.
+
+Actual behavior: ""controller_issues_edit_after_save""'s context lacks a  controller, project, request, and hook_caller. Plugins must use crazy work-arounds to gain access to them.
+
+Fix: Issue#save_issue_with_child_records has no particular need to be in the Issue model. Moving it to IssuesController allows for a simple fix with minimal impact.
+
+This is my first Redmine patch, and I'm happy to submit it through github, svn, etc, but I've attached it here for comment.
+"
+15041,Redmine,Defect,"",Reopened,Normal,Issues list bad ordering by Subject,Victor Sinceac,Jean-Philippe Lang,2014-05-23 14:47,Issues,"","","","",0,2013-10-04 13:51,2013-10-13 20:24,"",Invalid,"","Sorting the list by column Subject returns unexpected results.
+
+Steps to reproduce:
+- Display All Issues; by default the list is ordered by Subject;
+- Click two times on the column Subject;
+- The screen copy in attachments shows the bad ordering by Subject. The resulting order is as follows:
+* Cy...
+* ...some items not in [A-Z, a-z]...
+* Se...
+* Ye...
+* Ya...
+* XP
+* XM...
+* xm...
+* Wr
+* 
+
+"
+15039,Redmine,Defect,"",Closed,Normal,Custom fields in spent time details are not shown,Agust? Rivero,"",2013-10-26 02:08,Custom fields,"","","","",0,2013-10-04 13:04,2013-10-26 02:08,"",Invalid,2.3.3,"If you have a custom field in your trackers, in Spent time view, in ""options"" section you can add this ""column"" to details view.
+
+Misteriously the content is not shown in html view but if you click CSV you can see it there. This happens with either text or select content."
+15038,Redmine,Defect,"",Closed,Normal,Email test failed: no implicit conversion of true into String,Sergey Katasonov,"",2013-11-12 10:05,Email notifications,"","","","",0,2013-10-04 12:34,2013-10-08 10:58,"","","","Hi,
+I tray to set up e-mail on Redmine 2.3.3, and after click  on ""e-mail test"" I get: error (no implicit conversion of true into String)
+
+Email server MS Exchange.
+I have 2 instalation of Redmine 1.1.3 and 2.0.3 both of them work fine with this server.
+Now I tray to upgrade 1.1.3 to 2.3.3 - all work fine except e-mail 
+
+configuration.yml:
+development:
+ email_delivery:
+  delivery_method: :smtp
+  smtp_settings:
+#   tls: false
+   enable_starttls_auto: true
+   address: ""MS Exchange server""
+   port: 587
+   authentication: :login
+   domain: ""domain""
+   user_name: ""xxx""
+   password: ""xxx""
+ 
+attachments_storage_path: /opt/redmine/files
+"
+15037,Redmine,Defect,"",Closed,Urgent,Redmine not rendering any page!!!  HELP!,Jack Reacher,"",2013-10-04 14:45,"","","","","",0,2013-10-04 10:43,2013-10-04 14:45,"",Invalid,2.3.2,"Hi!
+
+Yesterday our Redmine worked great, but today from outside the redmine is not render the page, instead send a part of the source code to the client. 
+So if I visit redmine from internal network (192.168.x.xx) then it works perfectly but when I try to reach it from outside (mail.unit.hu:7200) than instead of rendering the page is send a part of the HTML sourcecode. 
+
+Comparing a working page sourcecode and the not workins site it cut the start of the sourcecode, the entire head tag and a little from body and insert a number instad of the missing code. And enter the missing code the bottom of the page with http headers
+
+Working login page
+<pre>
+
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+<meta charset=""utf-8"" />
+<title>Redmine</title>
+<meta name=""description"" content=""Redmine"" />
+<meta name=""keywords"" content=""issue,bug,tracker"" />
+<meta content=""authenticity_token"" name=""csrf-param"" />
+<meta content=""He8PeBopIl8wfuBLkWqYap2FfSmQ7LbQtUCd8kojMFA="" name=""csrf-token"" />
+<link rel='shortcut icon' href='/favicon.ico?1373820670' />
+<link href=""/stylesheets/jquery/jquery-ui-1.9.2.css?1373820670"" media=""all"" rel=""stylesheet"" type=""text/css"" />
+<link href=""/stylesheets/application.css?1373820670"" media=""all"" rel=""stylesheet"" type=""text/css"" />
+
+<script src=""/javascripts/jquery-1.8.3-ui-1.9.2-ujs-2.0.3.js?1373820670"" type=""text/javascript""></script>
+<script src=""/javascripts/application.js?1373820670"" type=""text/javascript""></script>
+<script type=""text/javascript"">
+//<![CDATA[
+$(window).load(function(){ warnLeavingUnsaved('A jelenlegi oldal nem mentett m?dos?t?sokat tartalmaz, ami elv?sz, ha elhagyja az oldalt.'); });
+//]]>
+</script>
+
+
+<!-- page specific tags -->
+</head>
+<body class=""controller-account action-login"">
+<div id=""wrapper"">
+<div id=""wrapper2"">
+<div id=""wrapper3"">
+<div id=""top-menu"">
+    <div id=""account"">
+        <ul><li><a href=""/login"" class=""login"">Bejelentkez?s</a></li></ul>    </div>
+    
+    </div>
+
+<div id=""header"">
+
+    <h1>Redmine</h1>
+
+</div>
+
+<div id=""main"" class=""nosidebar"">
+    <div id=""sidebar"">
+        
+        
+    </div>
+
+    <div id=""content"">
+        
+        
+<div id=""login-form"">
+<form accept-charset=""UTF-8"" action=""/login"" method=""post""><div style=""margin:0;padding:0;display:inline""><input name=""utf8"" type=""hidden"" value=""&#x2713;"" /><input name=""authenticity_token"" type=""hidden"" value=""He8PeBopIl8wfuBLkWqYap2FfSmQ7LbQtUCd8kojMFA="" /></div>
+<input name=""back_url"" type=""hidden"" value=""http://svr2008:7200/"" />
+<table>
+<tr>
+    <td align=""right""><label for=""username"">Azonos?t?:</label></td>
+    <td align=""left""><input id=""username"" name=""username"" tabindex=""1"" type=""text"" /></td>
+</tr>
+<tr>
+    <td align=""right""><label for=""password"">Jelsz?:</label></td>
+    <td align=""left""><input id=""password"" name=""password"" tabindex=""2"" type=""password"" /></td>
+</tr>
+<tr>
+    <td></td>
+    <td align=""left"">
+        <label for=""autologin""><input id=""autologin"" name=""autologin"" tabindex=""4"" type=""checkbox"" value=""1"" /> Eml?kezzen r?m</label>
+    </td>
+</tr>
+<tr>
+    <td align=""left"">
+            <a href=""/account/lost_password"">Elfelejtett jelsz?</a>
+    </td>
+    <td align=""right"">
+        <input type=""submit"" name=""login"" value=""Bejelentkez?s &#187;"" tabindex=""5""/>
+    </td>
+</tr>
+</table>
+</form></div>
+
+
+<script type=""text/javascript"">
+//<![CDATA[
+$('#username').focus();
+//]]>
+</script>
+
+        
+        <div style=""clear:both;""></div>
+    </div>
+</div>
+</div>
+
+<div id=""ajax-indicator"" style=""display:none;""><span>Bet?lt?s...</span></div>
+<div id=""ajax-modal"" style=""display:none;""></div>
+
+<div id=""footer"">
+  <div class=""bgl""><div class=""bgr"">
+    Powered by <a href=""http://www.redmine.org/"">Redmine</a> &copy; 2006-2013 Jean-Philippe Lang
+  </div></div>
+</div>
+</div>
+</div>
+
+</body>
+</html>
+
+</pre>
+
+Not working loginpage
+<pre>
+848
+ion-login"">
+<div id=""wrapper"">
+<div id=""wrapper2"">
+<div id=""wrapper3"">
+<div id=""top-menu"">
+    <div id=""account"">
+        <ul><li><a href=""/login"" class=""login"">Bejelentkez??s</a></li></ul>    </div>
+    
+    </div>
+
+<div id=""header"">
+
+    <h1>Redmine</h1>
+
+</div>
+
+<div id=""main"" class=""nosidebar"">
+    <div id=""sidebar"">
+        
+        
+    </div>
+
+    <div id=""content"">
+        
+        
+<div id=""login-form"">
+<form accept-charset=""UTF-8"" action=""/login"" method=""post""><div style=""margin:0;padding:0;display:inline""><input name=""utf8"" type=""hidden"" value=""&#x2713;"" /><input name=""authenticity_token"" type=""hidden"" value=""gGbumwH9Od9JNvFA7dHD3IZFeLFt5TiYUXy32RpS7k8="" /></div>
+<input name=""back_url"" type=""hidden"" value=""http://mail.unit.hu:7200/"" />
+<table>
+<tr>
+    <td align=""right""><label for=""username"">Azonos??t??:</label></td>
+    <td align=""left""><input id=""username"" name=""username"" tabindex=""1"" type=""text"" /></td>
+</tr>
+<tr>
+    <td align=""right""><label for=""password"">Jelsz??:</label></td>
+    <td align=""left""><input id=""password"" name=""password"" tabindex=""2"" type=""password"" /></td>
+</tr>
+<tr>
+    <td></td>
+    <td align=""left"">
+        <label for=""autologin""><input id=""autologin"" name=""autologin"" tabindex=""4"" type=""checkbox"" value=""1"" /> Eml??kezzen r??m</label>
+    </td>
+</tr>
+<tr>
+    <td align=""left"">
+            <a href=""/account/lost_password"">Elfelejtett jelsz??</a>
+    </td>
+    <td align=""right"">
+        <input type=""submit"" name=""login"" value=""Bejelentkez??s &#187;"" tabindex=""5""/>
+    </td>
+</tr>
+</table>
+</form></div>
+
+
+<script type=""text/javascript"">
+//<![CDATA[
+$('#username').focus();
+//]]>
+</script>
+
+        
+        <div style=""clear:both;""></div>
+    </div>
+</div>
+</div>
+
+<div id=""ajax-indicator"" style=""display:none;""><span>Bet??lt??s...</span></div>
+<div id=""ajax-modal"" style=""display:none;""></div>
+
+<div id=""footer"">
+  <div class=""bgl""><div class=""bgr"">
+    Powered by <a href=""http://www.redmine.org/"">Redmine</a> &copy; 2006-2013 Jean-Philippe Lang
+  </div></div>
+</div>
+</div>
+</div>
+
+</body>
+</html>
+HTTP/1.1 500 ( Meghat??rozatlan hiba  )
+Connection: close
+Prag
+808
+ma: no-cache
+Cache-Control: no-cache
+Content-Type: text/html
+Content-Length: 1966  
+
+<!DOCTYPE HTML PUBLIC ""-//W3C//DTD HTML 4.0 Transitional//EN"">
+<HTML dir=ltr><HEAD><TITLE>The page cannot be displayed</TITLE>
+<STYLE id=L_defaultr_1>A:link {
+	FONT: 8pt/11pt verdana; COLOR: #ff0000
+}
+A:visited {
+	FONT: 8pt/11pt verdana; COLOR: #4e4e4e
+}
+</STYLE>
+
+<META content=NOINDEX name=ROBOTS>
+<META http-equiv=Content-Type content=""text-html; charset=UTF-8"">
+
+<META content=""MSHTML 5.50.4522.1800"" name=GENERATOR></HEAD>
+<BODY bgColor=#ffffff>
+<TABLE cellSpacing=5 cellPadding=3 width=410>
+  <TBODY>
+  <TR>
+    <TD vAlign=center align=left width=360>
+      <H1 id=L_defaultr_2 style=""FONT: 13pt/15pt verdana; COLOR: #000000""><ID id=L_defaultr_3><!--Problem-->The page cannot be displayed
+</ID></H1></TD></TR>
+  <TR>
+    <TD width=400 colSpan=2><FONT id=L_defaultr_4
+      style=""FONT: 8pt/11pt verdana; COLOR: #000000""><ID id=L_defaultr_5><B>Explanation: </B>There is a problem with the page you are trying to reach and it cannot be displayed.</ID></FONT></TD></TR>
+  <TR>
+    <TD width=400 colSpan=2><FONT id=L_defaultr_6 
+      style=""FONT: 8pt/11pt verdana; COLOR: #000000"">
+      <HR color=#c0c0c0 noShade>
+
+      <P id=L_defaultr_7><B>Try the following:</B></P>
+      <UL>
+        <LI id=L_defaultr_8><B>Refresh page:</B> Search for the page again by clicking the Refresh button. The timeout may have occurred due to Internet congestion.
+<LI id=L_defaultr_9><B>Check spelling:</B> Check that you typed the Web page address correctly. The address may have been mistyped.
+<LI id=L_defaultr_10><B>Access from a link:</B> If there is a link to the page you are looking for, try accessing the page from that link.
+
+      </UL>
+      <HR color=#c0c0c0 noShade>
+
+      <P id=L_defaultr_11>Technical Information (for support personnel)</P>
+      <UL>
+        <LI id=L_defaultr_12>Error Code: 500 Internal Server Error. Meghat??rozatlan hiba (-2147467259)
+
+        </UL></FONT></TD></TR></TBODY></TABLE></BODY></HTML>
+
+
+0
+
+</pre>
+
+It seems the not working site try to send me an error page. It is in the sourcecode: 
+The page cannot be displayed
+Explanation: There is a problem with the page you are trying to reach and it cannot be displayed.
+Try the following:
+Refresh page: Search for the page again by clicking the Refresh button. The timeout may have occurred due to Internet congestion.
+Check spelling: Check that you typed the Web page address correctly. The address may have been mistyped.
+Access from a link: If there is a link to the page you are looking for, try accessing the page from that link.
+
+
+Any help appricated! Thanks!"
+15028,Redmine,Patch,"",Closed,Normal,German translation for r12168,Daniel Felix,"",2013-10-02 15:32,Translations,"","","","",0,2013-10-02 13:47,2013-10-02 15:32,"","","","Hi there,
+
+this is the german translation for r12168.
+
+@setting_mail_handler_excluded_filenames: Anh?nge nach Namen ausschlie?en@
+"
+15027,Redmine,Defect,"",Closed,Normal,"Italian ""Assigned to changed from A in B"" is confused",oscar benedetti,"",2013-10-02 11:41,Translations,"","","","",0,2013-10-02 09:46,2013-10-02 11:41,"","","","Hi,
+in redmine 1.3 and 2.3.2 stable when I assigned task to another person (eg. assigned from A to B)
+B received a mail with body like this ""Assigned to changed from A in B""
+
+I think this isn't correct. 
+How can I change the template of this message?
+
+Thanks."
+15026,Redmine,Defect,"",Closed,Normal,CSV Export of 700 lines exports only 500 lines,Philippe B.,"",2013-10-02 09:23,Issues,"","","","",0,2013-10-02 09:15,2013-10-02 09:23,"",Invalid,2.3.1,"Hi,
+
+One user has the following filter for his project:
+* Status: any
+* Tracker: is [Bug,Feature]
+* Created: >= 2013-01-01
+* Group results by: Priority
+
+When the user applies this filter, it generates about 700 rows (7 pages of 100 records) when he exports it gives him only 500 records in the CSV. I checked that the last ticket number in page 5 matches the last line in the CSV.
+
+Thanks for your help
+
+Philippe
+"
+15025,Redmine,Defect,"",New,Normal,Receive IMAP error on empty mailbox,Toshi MARUYAMA,"",2018-04-20 06:12,Email receiving,"","","","",0,2013-10-02 08:47,"","",Cant reproduce,2.3.3,"From #14101#note-3.
+
+<pre>
+sudo -u redmine bundle exec rake -f /var/lib/redmine/Rakefile redmine:email:receive_imap RAILS_ENV=""production"" host=imap.yandex.ru ssl=YES username=username@dezigner.ru password=password project=project1 no_permission_check=1 unknown_user=accept port=993 --trace
+** Invoke redmine:email:receive_imap (first_time)
+** Invoke environment (first_time)
+** Execute environment
+** Execute redmine:email:receive_imap
+rake aborted!
+undefined method `[]' for nil:NilClass
+/usr/lib64/ruby/1.9.1/net/imap.rb:1332:in `block in search_internal'
+/usr/lib64/ruby/1.9.1/monitor.rb:211:in `mon_synchronize'
+/usr/lib64/ruby/1.9.1/net/imap.rb:1326:in `search_internal'
+/usr/lib64/ruby/1.9.1/net/imap.rb:757:in `uid_search'
+/var/lib/redmine/lib/redmine/imap.rb:32:in `check'
+/var/lib/redmine/lib/tasks/email.rake:141:in `block (3 levels) in <top (required)>'
+/var/lib/redmine/vendor/bundle/ruby/1.9.1/gems/rake-10.1.0/lib/rake/task.rb:236:in `call'
+/var/lib/redmine/vendor/bundle/ruby/1.9.1/gems/rake-10.1.0/lib/rake/task.rb:236:in `block in execute'
+/var/lib/redmine/vendor/bundle/ruby/1.9.1/gems/rake-10.1.0/lib/rake/task.rb:231:in `each'
+/var/lib/redmine/vendor/bundle/ruby/1.9.1/gems/rake-10.1.0/lib/rake/task.rb:231:in `execute'
+/var/lib/redmine/vendor/bundle/ruby/1.9.1/gems/rake-10.1.0/lib/rake/task.rb:175:in `block in invoke_with_call_chain'
+/usr/lib64/ruby/1.9.1/monitor.rb:211:in `mon_synchronize'
+/var/lib/redmine/vendor/bundle/ruby/1.9.1/gems/rake-10.1.0/lib/rake/task.rb:168:in `invoke_with_call_chain'
+/var/lib/redmine/vendor/bundle/ruby/1.9.1/gems/rake-10.1.0/lib/rake/task.rb:161:in `invoke'
+/var/lib/redmine/vendor/bundle/ruby/1.9.1/gems/rake-10.1.0/lib/rake/application.rb:149:in `invoke_task'
+/var/lib/redmine/vendor/bundle/ruby/1.9.1/gems/rake-10.1.0/lib/rake/application.rb:106:in `block (2 levels) in top_level'
+/var/lib/redmine/vendor/bundle/ruby/1.9.1/gems/rake-10.1.0/lib/rake/application.rb:106:in `each'
+/var/lib/redmine/vendor/bundle/ruby/1.9.1/gems/rake-10.1.0/lib/rake/application.rb:106:in `block in top_level'
+/var/lib/redmine/vendor/bundle/ruby/1.9.1/gems/rake-10.1.0/lib/rake/application.rb:115:in `run_with_threads'
+/var/lib/redmine/vendor/bundle/ruby/1.9.1/gems/rake-10.1.0/lib/rake/application.rb:100:in `top_level'
+/var/lib/redmine/vendor/bundle/ruby/1.9.1/gems/rake-10.1.0/lib/rake/application.rb:78:in `block in run'
+/var/lib/redmine/vendor/bundle/ruby/1.9.1/gems/rake-10.1.0/lib/rake/application.rb:165:in `standard_exception_handling'
+/var/lib/redmine/vendor/bundle/ruby/1.9.1/gems/rake-10.1.0/lib/rake/application.rb:75:in `run'
+/var/lib/redmine/vendor/bundle/ruby/1.9.1/gems/rake-10.1.0/bin/rake:33:in `<top (required)>'
+/var/lib/redmine/vendor/bundle/ruby/1.9.1/bin/rake:23:in `load'
+/var/lib/redmine/vendor/bundle/ruby/1.9.1/bin/rake:23:in `<main>'
+Tasks: TOP => redmine:email:receive_imap
+</pre>
+
+Configuration:
+
+<pre>
+Environment:
+  Redmine version                2.3.3.stable
+  Ruby version                   1.9.3-p448 (2013-06-27) [x86_64-linux]
+  Rails version                  3.2.13
+  Environment                    production
+  Database adapter               Mysql2
+Redmine plugins:
+  no plugin installed
+</pre>"
+15022,Redmine,Patch,"",Closed,Normal,Traditional Chinese translation (to r12193),ChunChang Lo,"",2013-10-02 06:45,Translations,"","","","",0,2013-10-02 05:31,2013-10-02 06:45,"ÉRÉsÅ[å≥ #14684, ÉRÉsÅ[êÊ #15376","","","* Added translations:
+** setting_mail_handler_excluded_filenames
+"
+15017,Redmine,Defect,"",Closed,Normal,Search results show only the last page when using MSSQL,Olivier Houdas,"",2015-10-21 19:20,Search engine,"","","","",0,2013-10-01 13:22,2015-10-21 19:20,"","",2.3.3,"We have setup Redmine 2.3.3 on CentOS and MS SQL 2008, running on Rails 2.0.-p247 (but also tested with Rails 1.9.3).
+I have tested *without any plugin*.
+I created the DB from scratch with redmine MIGRATE commands.
+I created a new project, with one version and one category.
+
+Then,
+1. I added 15 bugs, all containing ""mot cl?"" in the description.
+2. I entered ""mot"" in the search area (top right of redmine screen)
+
+Results: I got a page listing 10 bugs from ""Bug 11"" down to ""Bug 02"".
+
+Expected results: start with ""Bug 15"" on top.
+
+If I look in debug logs, I can see the following requests:
+
+  [1m[35mSQL (58.5ms)[0m  EXEC sp_executesql N'SELECT TOP (11) [issues].id FROM [issues] LEFT OUTER JOIN [projects] ON [projects].[id] = [issues].[project_id] 
+  LEFT OUTER JOIN [journals] ON [journals].[journalized_id] = [issues].[id] AND (journals.private_notes = 0 
+  OR (projects.status <> 9 AND projects.id IN (SELECT em.project_id FROM enabled_modules em WHERE em.name=''issue_tracking''))) AND [journals].[journalized_type] = N''Issue'' 
+  WHERE (projects.status <> 9 AND projects.id IN (SELECT em.project_id FROM enabled_modules em WHERE em.name=''issue_tracking'')) AND (issues.project_id IN (1)) 
+  AND (((LOWER(subject) LIKE N''%mot%'') OR (LOWER(issues.description) LIKE N''%mot%'') OR (LOWER(journals.notes) LIKE N''%mot%''))) 
+  GROUP BY [issues].id *ORDER BY MAX(issues.id)*'
+
+  [1m[36mSQL (20.5ms)[0m  [1mEXEC sp_executesql N'SELECT [issues].[id] AS t0_r0, [issues].[tracker_id] AS t0_r1, [issues].[project_id] AS t0_r2, [issues].[subject] AS t0_r3, [issues].[description] AS t0_r4, [issues].[due_date] AS t0_r5, [issues].[category_id] AS t0_r6, [issues].[status_id] AS t0_r7, [issues].[assigned_to_id] AS t0_r8, [issues].[priority_id] AS t0_r9, [issues].[fixed_version_id] AS t0_r10, [issues].[author_id] AS t0_r11, [issues].[lock_version] AS t0_r12, [issues].[created_on] AS t0_r13, [issues].[updated_on] AS t0_r14, [issues].[start_date] AS t0_r15, [issues].[done_ratio] AS t0_r16, [issues].[estimated_hours] AS t0_r17, [issues].[parent_id] AS t0_r18, [issues].[root_id] AS t0_r19, [issues].[lft] AS t0_r20, [issues].[rgt] AS t0_r21, [issues].[is_private] AS t0_r22, [issues].[closed_on] AS t0_r23, [projects].[id] AS t1_r0, [projects].[name] AS t1_r1, [projects].[description] AS t1_r2, [projects].[homepage] AS t1_r3, [projects].[is_public] AS t1_r4, [projects].[parent_id] AS t1_r5, [projects].[created_on] AS t1_r6, [projects].[updated_on] AS t1_r7, [projects].[identifier] AS t1_r8, [projects].[status] AS t1_r9, [projects].[lft] AS t1_r10, [projects].[rgt] AS t1_r11, [projects].[inherit_members] AS t1_r12, [journals].[id] AS t2_r0, [journals].[journalized_id] AS t2_r1, [journals].[journalized_type] AS t2_r2, [journals].[user_id] AS t2_r3, [journals].[notes] AS t2_r4, [journals].[created_on] AS t2_r5, [journals].[private_notes] AS t2_r6 FROM [issues] LEFT OUTER JOIN [projects] ON [projects].[id] = [issues].[project_id] LEFT OUTER JOIN [journals] ON [journals].[journalized_id] = [issues].[id] AND (journals.private_notes = 0 OR (projects.status <> 9 AND projects.id IN (SELECT em.project_id FROM enabled_modules em WHERE em.name=''issue_tracking''))) AND [journals].[journalized_type] = N''Issue'' 
+   WHERE [issues].[id] IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11) AND (projects.status <> 9 AND projects.id IN (SELECT em.project_id FROM enabled_modules em WHERE em.name=''issue_tracking'')) AND (issues.project_id IN (1)) AND (((LOWER(subject) LIKE N''%mot%'') OR (LOWER(issues.description) LIKE N''%mot%'') OR (LOWER(journals.notes) LIKE N''%mot%''))) 
+  ORDER BY issues.id DESC'
+
+Whereas when I do it on a MYSQL database, I get the correct results, and the query to search for issues sorts by ""issues.id *DESC*"", correctly as expected (shown here on keyword ""gps"" with a database filled with several issues) :
+
+  [1m[36mSQL (20839.9ms)[0m  [1mSELECT DISTINCT `issues`.id FROM `issues` LEFT OUTER JOIN `projects` ON `projects`.`id` = `issues`.`project_id` LEFT OUTER JOIN `journals` ON `journals`.`journalized_id` = `issues`.`id` AND (journals.private_notes = 0 OR (projects.status <> 9 AND projects.id IN (SELECT em.project_id FROM enabled_modules em WHERE em.name='issue_tracking'))) AND `journals`.`journalized_type` = 'Issue' WHERE (projects.status <> 9 AND projects.id IN (SELECT em.project_id FROM enabled_modules em WHERE em.name='issue_tracking')) AND (((LOWER(subject) LIKE '%gps%') OR (LOWER(issues.description) LIKE '%gps%') OR (LOWER(journals.notes) LIKE '%gps%') OR issues.id IN (SELECT customized_id FROM custom_values WHERE customized_type='Issue' AND customized_id=issues.id AND LOWER(value) LIKE '%gps%' AND custom_values.custom_field_id IN (2,10,12)))) 
+   ORDER BY *issues.id* *DESC* *LIMIT* 11
+
+  [1m[35mSQL (127.9ms)[0m  SELECT `issues`.`id` AS t0_r0, `issues`.`tracker_id` AS t0_r1, `issues`.`project_id` AS t0_r2, `issues`.`subject` AS t0_r3, `issues`.`description` AS t0_r4, `issues`.`due_date` AS t0_r5, `issues`.`category_id` AS t0_r6, `issues`.`status_id` AS t0_r7, `issues`.`assigned_to_id` AS t0_r8, `issues`.`priority_id` AS t0_r9, `issues`.`fixed_version_id` AS t0_r10, `issues`.`author_id` AS t0_r11, `issues`.`lock_version` AS t0_r12, `issues`.`created_on` AS t0_r13, `issues`.`updated_on` AS t0_r14, `issues`.`start_date` AS t0_r15, `issues`.`done_ratio` AS t0_r16, `issues`.`estimated_hours` AS t0_r17, `issues`.`parent_id` AS t0_r18, `issues`.`root_id` AS t0_r19, `issues`.`lft` AS t0_r20, `issues`.`rgt` AS t0_r21, `issues`.`is_private` AS t0_r22, `issues`.`closed_on` AS t0_r23, `projects`.`id` AS t1_r0, `projects`.`name` AS t1_r1, `projects`.`description` AS t1_r2, `projects`.`homepage` AS t1_r3, `projects`.`is_public` AS t1_r4, `projects`.`parent_id` AS t1_r5, `projects`.`created_on` AS t1_r6, `projects`.`updated_on` AS t1_r7, `projects`.`identifier` AS t1_r8, `projects`.`status` AS t1_r9, `projects`.`lft` AS t1_r10, `projects`.`rgt` AS t1_r11, `projects`.`inherit_members` AS t1_r12, `journals`.`id` AS t2_r0, `journals`.`journalized_id` AS t2_r1, `journals`.`journalized_type` AS t2_r2, `journals`.`user_id` AS t2_r3, `journals`.`notes` AS t2_r4, `journals`.`created_on` AS t2_r5, `journals`.`private_notes` AS t2_r6 FROM `issues` LEFT OUTER JOIN `projects` ON `projects`.`id` = `issues`.`project_id` LEFT OUTER JOIN `journals` ON `journals`.`journalized_id` = `issues`.`id` AND (journals.private_notes = 0 OR (projects.status <> 9 AND projects.id IN (SELECT em.project_id FROM enabled_modules em WHERE em.name='issue_tracking'))) AND `journals`.`journalized_type` = 'Issue' WHERE `issues`.`id` IN (19084, 18950, 18709, 18691, 18466, 18358, 18304, 18255, 18141, 18140, 18086) AND (projects.status <> 9 AND projects.id IN (SELECT em.project_id FROM enabled_modules em WHERE em.name='issue_tracking')) AND (((LOWER(subject) LIKE '%gps%') OR (LOWER(issues.description) LIKE '%gps%') OR (LOWER(journals.notes) LIKE '%gps%') OR issues.id IN (SELECT customized_id FROM custom_values WHERE customized_type='Issue' AND customized_id=issues.id AND LOWER(value) LIKE '%gps%' AND custom_values.custom_field_id IN (2,10,12)))) ORDER BY issues.id DESC
+"
+15015,Redmine,Defect,"",Closed,Normal,Multiple categories for issue creation,poornima dhanasekaran,"",2013-10-01 12:39,"","","","","",0,2013-10-01 12:00,2013-10-01 12:39,"",Invalid,"","Hi,
+
+I've changed the select option as multiple select for accepting multiple categories for creating as single issue. Changed the category_id as string from int and modified the code as <%= f.select :category_id, (@project.issue_categories.collect {|c| [c.name, c.id]}), {:include_blank => true}, {:multiple => true, :style => ""width:350px;"",:size => 4 }%>. 
+
+In issues_controller, 
+
+ category_ids = []  
+  if params[:issue][:category_id].length > 1
+    params[:issue][:category_id].each do|category|
+     category_ids << category
+   end
+  else
+   category_ids = params[:issue][:category_id]
+  end
+
+The values stored in db as,
+
+   select category_id from issues where id= 18824;
++---------------------+
+| category_id         |
++---------------------+
+| --- 
+- ""69""
+- ""72""
+ |
+
+I don't know why it stored like this. Can anyone help me out?.
+
+
+
+"
+15012,Redmine,Defect,"",Closed,Normal,R6034,Luis Miguel Ruiz,"",2013-09-30 20:36,"","","","","",0,2013-09-30 16:22,2013-09-30 20:36,"",Invalid,2.0.1,"I have 64 bit W8, and a new install of QGIS 2.0.1, with an error on start, when or after ""Restoring loaded plugins"". I have C++ 2005, 2008 and 2010 loaded.
+
+The error window reads:
+
+""Microsoft Visual C++ Runtime Library
+Runtime Error!
+PROGRAM: C:\PROGRA~1\QGISDU~1\bin\qgis-bin.exe
+R6034
+An application has made an attempt to load the C runtime library incorrectly.
+Please contact the application's support team for more information.""
+
+QGIS does load after I close the error window, so I suspect some of the modules/plugins will fail, but which ones and why? Even I installed any pluggins and they doesn't work
+Thanks."
+15011,Redmine,Patch,"",Closed,Normal,Japanese translation update (r12168),Go MAEDA,"",2013-09-30 13:27,Translations,"","","","",0,2013-09-30 12:07,2013-09-30 13:27,"","","",Translated 'setting_mail_handler_excluded_filenames' and updated 'setting_mail_handler_body_delimiters'.
+15007,Redmine,Patch,"",Closed,Normal,Bulgarian translation (r12171),Ivan Cenov,"",2013-09-30 04:42,Translations,"","","","",0,2013-09-29 19:10,2013-09-30 04:42,"","","","Added:
+* setting_mail_handler_excluded_filenames"
+14997,Redmine,Defect,"",Closed,Normal,Unable to successfully install redmine_charts2 plugin,Andy Hewitt,"",2013-09-28 22:29,"","","","","",0,2013-09-27 23:00,2013-09-28 22:29,"",Invalid,"","Hello,
+
+We have a production Redmine environment that is running fine.
+
+I'm trying to install redmine_charts2 plugin, to be able to display burndown charts.
+
+This is my first time installing a Redmine plugin, and I'm unable to get plugin to install successfully.
+
+Any guidance or help would be much appreciated!
+
+My environment is:
+
+Linux version 2.6.32-5-amd64 (Debian 2.6.32.41)
+
+Environment:
+  Redmine version                          2.3.0.stable
+  Ruby version                             2.0.0 (x86_64-linux)
+  Rails version                            3.2.13
+  Environment                              production
+  Database adapter                         Mysql2
+Redmine plugins:
+  no plugin installed
+
+The steps I followed:
+
+1. install redmine_charts2 in /opt/redmine/plugins/redmine_charts
+2. install open_flash_chart in /opt/redmine/plugins/open_flash_chart
+3. cd /opt/redmine; cp -r plugins/open_flash_chart/assets public/plugin_assets/open_flash_chart
+4. cd /opt/redmine; rake redmine:plugins RAIL_ENV=production
+
+The error I get is: ""rake aborted! database configuration does not specify adapter""
+
+What am I missing?
+
+Thank you,
+Andy
+"
+14995,Redmine,Defect,"",Closed,Normal,"Japanese ""notice_not_authorized"" translation is incorrect",Akihiro MATOBA,"",2013-09-30 04:45,Translations,2.4.0,"","","",0,2013-09-27 07:04,2013-09-30 04:45,"",Fixed,2.3.3,"source:trunk/config/locales/ja.yml#L191
+
+incorrect:
+notice_not_authorized: Ç±ÇÃÉyÅ[ÉWÇ…ÉAÉNÉZÉXÇ∑ÇÈÇ…ÇÕîFèÿÇ™ïKóvÇ≈Ç∑ÅB
+
+correct:
+notice_not_authorized: Ç±ÇÃÉyÅ[ÉWÇ…ÉAÉNÉZÉXÇ∑ÇÈÇ…ÇÕîFâ¬Ç™ïKóvÇ≈Ç∑ÅB
+
+reproduce procedure:
+Log in an account not have administrator role, then try to open /admin."
+14991,Redmine,Defect,"",Closed,Normal,Lots of extra br's before each table,Ali Mualla,"",2013-10-17 14:27,Text formatting,"","",2013-10-15,"",0,2013-09-26 17:03,2013-10-17 14:27,"",Cant reproduce,2.3.0,"When creating a table using RedCloth markdown in a redmine issue, lots of br's are inserted before the table.
+
+In the limited testing I've done, it ranges from 5 br's in a single cell, to 26 br's in a 4 columns and 3 rows table.
+"
+14990,Redmine,Defect,"",New,High,Time entries sort by updated_on,Juozapis Juozapauskiksi,"",2014-02-19 13:44,REST API,"","","","",0,2013-09-26 16:19,"","","","","Does this sort work for you?: 
+time_entries.xml?limit=25&offset=0&project_id=ztestredmi&sort=updated_on:desc"
+14986,Redmine,Defect,"",Closed,Normal,500 error when viewing a wiki page without WikiContent,Rob D,Jean-Philippe Lang,2013-10-13 13:21,Wiki,2.4.0,"","","",0,2013-09-26 06:19,2013-10-13 13:21,"",Fixed,2.3.3,"A *500 internal error* occurs when viewing a particular wiki page, the following appears in the log:
+
+<pre>
+Started GET ""/redmine/projects/projName/wiki/SomeWikiPage"" for <IP ADR> at Thu Sep 26 13:57:39 +1000 2013
+Processing by WikiController#show as HTML
+  Parameters: {""project_id""=>""projName"", ""id""=>""SomeWikiPage""}
+  Current user: userName(id=3)
+Completed 500 Internal Server Error in 19ms
+
+NoMethodError (undefined method `current_version?' for nil:NilClass):
+  app/controllers/wiki_controller.rb:96:in `show'
+</pre>
+
+The error is 100% repeatable when viewing this particular page, although other wiki pages are rendered ok.
+We believe it may have happened after deleting a revision on the wiki history page.
+We tried to repeat it on the redmine demo site with no luck, although the demo site says it was running 2.3.1.devel.11915, we are using 2.3.3.stable.
+
+Environment:
+  Redmine version                2.3.3.stable
+  Ruby version                   1.8.7-p253 (2010-04-19) [i686-linux]
+  Rails version                  3.2.13
+  Environment                    production
+  Database adapter               Mysql2
+Redmine plugins:
+  redmine_github_hook            0.2.0"
+14982,Redmine,Defect,"",Closed,Normal,"""Please Reply Above This Line"" Included On Reminder E-Mails",William Roush,"",2013-10-05 05:21,Email notifications,"","","","",0,2013-09-25 16:06,2013-10-05 05:21,éüÇÃÉ`ÉPÉbÉgÇ∆èdï° #8213,Duplicate,"","See this feature:
+
+http://www.redmine.org/projects/redmine/wiki/RedmineReminderEmails
+
+>--- Please reply above this line to respond to this issue ---
+
+The problem is that people are replying to reminders (ughhhhhh) and causing new tickets to be submitted....
+
+
+The e-mail should probably detail to not reply to it."
+14981,Redmine,Patch,"",Closed,Normal,Italian translation,Alberto Cennini,"",2013-09-30 09:15,Translations,2.4.0,"","","",0,2013-09-25 12:57,2013-09-30 09:15,"","","","I propose a different italian translation for correlation types, mainly because 'segnalazione' in italian is female and singolar noun.   
+correlata alla (instead of: correlato a)
+duplica la (instead of: duplicati)
+duplicata dalla (instead of: duplica da)  
+blocca la (instead of: blocchi)
+bloccata dalla (instead of: bloccato da)
+precede la (instead of: precede) 
+segue la (instead of: segue)  
+copia la (instead of: copia a)
+copiata dalla (instead of: copia da) 
+Best regards
+"
+14979,Redmine,Defect,"",Needs feedback,Urgent,Delete Issues Relation,Mohamed EL MOKHTARI,"",2017-04-17 07:45,Issues,"","","","",0,2013-09-25 09:59,"","","",2.3.2,"Reproduce Hints:
+
+# open a Ticket view, go down to 'Related issues' and [Add] an issue
+# select 'Related to', type another valid ticket no. of same project and [Add] => everything ok!
+# Now try to [Delete Relation] of that issue in same view
+# Dialog 'Are you sure?', press [Ok] => relation is still active!
+
+see defect #14023"
+14977,Redmine,Defect,"",Closed,Normal, Internal Server Error while uploading file,Valentina Kozimirova,Jean-Philippe Lang,2014-04-21 06:55,Attachments,2.3.4,"","","",0,2013-09-24 15:40,2013-10-13 10:28,"",Fixed,"","Hello,
+
+Sometimes Redmine stops uploading files and shows Internal Server Error when I try to attach file to issue. Application restart fixes it, but after some time problem comes again (now once a day).
+
+Environment:
+  Redmine version                          2.3.1.stable
+  Ruby version                             1.9.3 (x86_64-linux)
+  Rails version                            3.2.13
+  Environment                              production
+  Database adapter                         PostgreSQL 9.1
+
+Http server - Ngnix with Passenger
+
+In production.log:
+
+Started POST ""/uploads.js?attachment_id=1&filename=ocenki.png"" for <ip_address> at 2013-09-24 15:52:08 +0400
+Processing by AttachmentsController#upload as JS
+  Parameters: {""attachment_id""=>""1"", ""filename""=>""ocenki.png""}
+  Current user: <user.name> (id=28)
+Completed 500 Internal Server Error in 41ms
+
+NoMethodError (undefined method `info' for nil:NilClass):
+  app/models/attachment.rb:105:in `files_to_final_location'
+  app/controllers/attachments_controller.rb:88:in `upload'
+"
+14976,Redmine,Defect,"",New,Normal,authentication required configurable,Huang Ruhua,"",2014-01-20 16:07,Accounts / authentication,"","","","",0,2013-09-24 13:59,"","","","","when authentication required option is checked, all url required logined. but i expect some url is accessible to anonymous users, like '/attachments/download/3029/picture431-1.png', or else these image can't be displayed in email"
+14975,Redmine,Defect,"",Closed,Urgent,ELSA CFD : Fatal error during the post,Marjorie Clottes,"",2013-09-24 12:59,"","","","","",0,2013-09-24 10:37,2013-09-24 12:59,"",Invalid,"","Hello,
+
+I have launched 4 ELSA calculations this week-end. Only one was correctly repatriated. The 3 other ones have a fatal error during the post. The 3 elsa calculations ran correctly, only the post has failed. 
+I have launched retrieve_elsa.ksh post but same error message during the post : fatal error
+Could you regenerate the damas database, please ?
+You will find hereafter the path of the 3 calculations:
+- /home/A320neo_Desin_04/CFD_HIGH_SPEED/CALCUL/Conf_A320_wingSAS5W102673_Sharklet5_UBFmod_PG129_M32EXP39/DI
+- /home/A320neo_Desin_04/CFD_HIGH_SPEED/CALCUL/Conf_A320_wingSAS5W102673_Sharklet5_UBFmod_PG129_M32EXP39/GI
+- /home/A320neo_Desin_04/CFD_HIGH_SPEED/CALCUL/Conf_A320_wingSAS5W102673_Sharklet5_UBFmod_PG129_M32EXP39/MTO
+
+Thanks in advance for your support
+Marjorie
+
+
+"
+14972,Redmine,Patch,"",Closed,Normal,French locale update,Alexis Blandin,Jean-Philippe Lang,2013-09-25 19:19,Translations,"","","","",0,2013-09-23 14:17,2013-09-25 19:19,"","","",Some typo errors.
+14971,Redmine,Patch,"",New,Normal,Plugin rollback migration,J?r?me BATAILLE,"",2014-07-30 11:40,Database,"","","","",0,2013-09-23 12:50,"","","","","The first migration is not rollback-able
+with :
+@rake redmine:plugins:migrate NAME=<plugin_name> VERSION=<version_name>
+
+because there is no previous migration to migrate to.
+
+Here is a patch to be able to rollback plugins, with a steps parameter
+
+
+"
+14969,Redmine,Defect,"",New,Urgent,ActiceSupport::TimeWithZone failed in migrate_from_mantis.rake,Mac Chang,"",2018-02-01 15:56,Importers,"","","","",0,2013-09-23 05:30,"",ä÷òAÇµÇƒÇ¢ÇÈ #15175,"",2.3.3,"The Redmine installation information as below:
+
+@Information
+
+Redmine 2.3.3.stable
+
+Default administrator account changed True
+Attachments directory writable True
+Plugin assets directory writable True
+RMagick available (optional) True
+
+Environment:
+Redmine version 2.3.3.stable
+Ruby version 1.9.3-p231 (2012-05-25) [i386-mingw32]
+Rails version 3.2.13
+Environment production
+Database adapter Mysql2
+Redmine plugins:
+no plugin installed
+
+
+Mantis Bug Tracker version: 1.2.15
+@
+
+I referred from this page's SQL coding (http://www.webismymind.be/upload/documents/migrate_from_mantis_1_2.sql), altered and update my Mantis database time format.
+
+Also, I edited the migrate_from_mantis.rake script, connection seems fine on a fresh installed Redmine until I encounter this error:
+
+""*comparison of Fixnum with ActiveSupport::TimeWithZone failed*""
+
+
+Please advice me what is the error and what I have to edit on my migrate_from_mantis.rake script. See attachment for more information. Thank you."
