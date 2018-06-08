@@ -79,11 +79,26 @@ Affected version | 影響のあるバージョン             | 文字型
 　  
 
 ```{r}
-(redmien <- "./data/redmine.csv" %>% 
+(redmine <- "./data/redmine.csv" %>% 
   readr::read_csv(local = locale(encoding = "UTF-8")))
 ```
 
+　  
 
+## 分析のための前処理
+分析に必要な前処理を行っておきます。作成日と終了日のデータは実際は日時データになっていますので日データに変換して、必要な項目のみを抽出しておきます。  
+　  
+
+```{r}
+redmine %>% 
+  dplyr::select(no = `#`, tracker = `トラッカー`, status = `ステータス`,
+                priority = `優先度`, category = `カテゴリ`,
+                version = `対象バージョン`, affected = `Affected version`, 
+                open = `作成日`, close = `終了日`) %>% 
+  dplyr::mutate(open = lubridate::date(open), close = lubridate::date(close))
+```
+
+　  
 
 # 欠損の分布を可視化する
 データ内のどの位置に欠損があるかを確認するには`VIM`パッケージを用いるのが便利です。  
