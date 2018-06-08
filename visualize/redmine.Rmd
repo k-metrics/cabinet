@@ -74,34 +74,13 @@ Affected version | 影響のあるバージョン             | 文字型
 
 　  
 
-## 実際のチケット
+## チケットデータ
+実際のデータは以下のような四千レコード弱のデータです。  
+　  
 
 ```{r}
-col_type <- list(readr::col_integer(), readr::col_character(),
-                 readr::col_character(), readr::col_character(),
-                 readr::col_character(), readr::col_character(),
-                 readr::col_character(), readr::col_character(),
-                 readr::col_character(), readr::col_datetime(format = ""),
-                 readr::col_character(), readr::col_character(),
-                 readr::col_date(), readr::col_date(), readr::col_double(),
-                 readr::col_double(), readr::col_datetime(format = ""),
-                 readr::col_datetime(format = ""), readr::col_character(),
-                 readr::col_character(), readr::col_character(),
-                 readr::col_character())
-
-tmp <- "./data/" %>% 
-  list.files(path = ., pattern = "(issues_)", full.names = TRUE) %>% 
-  lapply(X = ., FUN = readr::read_csv,
-         locale = readr::locale(encoding = "cp932"), col_types = col_type) %>% 
-  do.call(what = dplyr::bind_rows, args = .) %>%
-  dplyr::distinct()
-
-x <- tmp %>% 
-  dplyr::select(no = `#`, tracker = `トラッカー`, status = `ステータス`,
-                priority = `優先度`, category = `カテゴリ`,
-                version = `対象バージョン`, affected = `Affected version`, 
-                open = `作成日`, close = `終了日`) %>% 
-  dplyr::mutate(open = lubridate::date(open), close = lubridate::date(close))
+(redmien <- "./data/redmine.csv" %>% 
+  readr::read_csv(local = locale(encoding = "UTF-8")))
 ```
 
 
