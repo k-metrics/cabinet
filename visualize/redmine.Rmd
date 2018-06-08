@@ -1,0 +1,226 @@
+---
+title: "バグチケットを可視化する"
+output:
+  html_document:
+    df_print: paged
+    code_folding: none
+    css: style.css
+---
+
+<!-- shared Links -->
+```{r index, child="../shared/links.Rmd", include=FALSE}
+```
+
+```{r setup, include=FALSE, warning=FALSE, message=FALSE}
+require(tidyverse)
+```
+
+バグトラッキングシステム（以降、BTS）のチケットデータには様々な情報が記録されており品質分析に使わない手はありません。バグチケットの分析は個々のチケットに対する定性分析を行うことが多いですが、ODC分析のようにクロス集計を用いる方法もあります。ODC分析にはODC分析用のタグが必要ですが、ここでは基本的なバグチケットにある情報（項目）を用いた可視化の方法を探って行きます。  
+　  
+
+なお、本ページでは`r R.version$version.string`の標準パッケージ以外に以下の追加パッケージを用いています。  
+　  
+
+Package   | Version |Description
+----------|---------|----------------------------------------------------------
+tidyverse | `r packageVersion('tidyverse')` | Easily Install and Load the ‘Tidyverse’
+
+　  
+また、本ページでは以下のデータセットを用いています。  
+　  
+
+Dataset    | Package  | Version | Description
+-----------|----------|---------|----------------------------------------------
+redmine    | N/A      | N/A     | [Redmine Issues <i class="fa fa-external-link"></i>](http://www.redmine.org/projects/redmine/issues){target="_blank" title="redmine.org"}
+
+　  
+
+バグチケットは[Redmine <i class="fa fa-external-link"></i>](http://www.redmine.org/){target="_blank" title="Redmine.org"}が公開しているRedmine自体のバグチケットを用います。RedmineはGPL v2ライセンスの下で提供されているオープンソースのプロジェクト管理ソフトウェアです。上の表の場所でチケットを公開していますが、一度に50レコードまでしかダウンロードできないため事前にこちらで取得したレコードをデータフレーム形式にまとめたものを利用します。
+
+　  
+
+# チケット情報のインポート
+前述のように今回は事前に整理したデータフレーム形式のチケット情報を用いますが、実際にはBTSのAPI機能やBTSのDBMSから直接取得することをおすゝめします。直接取得できない場合は、CSVファイルへエクスポートするなどの方法を取ってください。  
+　  
+
+## チケットの項目
+今回用いるRedmineのバグチケットの項目を簡単に説明してます。基本的な項目のみが用意されています。実際は因子型になっている項目をここでは文字型として扱っている点に注意してください。  
+　  　  
+
+項目             | 概要                             | データ型
+-----------------|----------------------------------|-----------------
+\#               | 識別番号（Primary Key）          | 整数型
+プロジェクト     | 属するプロジェクト               | 文字型（因子型）
+トラッカー       | 大分類                           | 文字型（因子型）
+親チケット       | 親子関係を定義したい場合に用いる | 文字型
+ステータス       | 対応状況                         | 文字型（因子型）
+優先度           | 対応優先度                       | 文字型（因子型）
+題名             | タイトル                         | 文字型
+作成者           | 作成者                           | 文字型（因子型）
+担当者           | 対応担当者                       | 文字型（因子型）
+更新日           | 更新日時                         | 日時型（POSIXct）
+カテゴリ         | 分類（任意に利用設定できる）     | 文字型（因子型）
+対象バージョン   | チケット対処したバージョン       | 文字型
+開始日           | 対応を開始した日                 | 日付型
+期日             | 対応予定期間                     | 日付型
+予定工数         | 対応予定工数                     | 数値型
+進捗率           | 対応の進捗率                     | 数値型（%表記）
+作成日           | 作成日時                         | 日時型（POSIXct）
+終了日           | 対応完了日時                     | 日時型（POSIXct）
+関連するチケット | 関係するチケット番号             | 文字型
+Resolution       | 解決結果（非標準）               | 文字型（因子型）
+Affected version | 影響のあるバージョン             | 文字型
+説明             | 詳細                             | 文字型
+
+　  
+
+## 実際のチケット
+
+```{r}
+col_type <- list(readr::col_integer(), readr::col_character(),
+                 readr::col_character(), readr::col_character(),
+                 readr::col_character(), readr::col_character(),
+                 readr::col_character(), readr::col_character(),
+                 readr::col_character(), readr::col_datetime(format = ""),
+                 readr::col_character(), readr::col_character(),
+                 readr::col_date(), readr::col_date(), readr::col_double(),
+                 readr::col_double(), readr::col_datetime(format = ""),
+                 readr::col_datetime(format = ""), readr::col_character(),
+                 readr::col_character(), readr::col_character(),
+                 readr::col_character())
+
+tmp <- "./data/" %>% 
+  list.files(path = ., pattern = "(issues_)", full.names = TRUE) %>% 
+  lapply(X = ., FUN = readr::read_csv,
+         locale = readr::locale(encoding = "cp932"), col_types = col_type) %>% 
+  do.call(what = dplyr::bind_rows, args = .) %>%
+  dplyr::distinct()
+
+x <- tmp %>% 
+  dplyr::select(no = `#`, tracker = `トラッカー`, status = `ステータス`,
+                priority = `優先度`, category = `カテゴリ`,
+                version = `対象バージョン`, affected = `Affected version`, 
+                open = `作成日`, close = `終了日`) %>% 
+  dplyr::mutate(open = lubridate::date(open), close = lubridate::date(close))
+```
+
+
+
+# 欠損の分布を可視化する
+データ内のどの位置に欠損があるかを確認するには`VIM`パッケージを用いるのが便利です。  
+　  
+
+## 箱ひげ図による可視化
+箱ひげ図を用いた可視化には`VIM::pbox`関数を使います。データフレームの最初にある変数を縦軸に縦軸に配置します（今ひとつ変数の指定方法が分からないので分かりましたら追記します）。  
+　  
+
+```{r}
+airquality %>% 
+  # dplyr::select(-Month, -Day) %>%
+  tibble::rowid_to_column("days") %>%
+  VIM::pbox()
+```
+
+　  
+
+## ヒートマップによる可視化
+ヒートマップを用いた可視化には`VIM::matrixplot`関数を使います。欠損の位置をヒートマップ上にプロットしてくれます。ヒートマップですので各変数の値の変化も把握できます。縦軸は表示の通りインデックスで、赤色の部分が欠損です。グレーの部分は値がある部分で、色の濃さにより数値の大小を表しています。  
+　  
+
+```{r}
+airquality %>% 
+  dplyr::select(-Month, -Day) %>% 
+  VIM::matrixplot()
+```
+
+　  
+
+# 欠損の組み合わせを可視化する
+データ内の特定の組み合わせで欠損が発生しているか否かを可視化するには`mice::md.pattern`関数または`VIM::aggr`関数が便利です。  
+　  
+
+## マトリクス（タイル）による可視化
+`mice::md.pattern`関数はテキスト表とタイルグラフの二種類の出力してくれます。グラフの出力を抑制したい場合には`plot = FALSE`オプションを指定してください。  
+　  
+グラフ出力では欠損がある部分をマゼンタ、欠損がない部分をシアンで表示し、どのような組み合わせで欠損が発生しているかを視覚的に把握することができます。  
+　  
+
+```{r}
+airquality %>%
+  mice::md.pattern()
+```
+
+　  
+テキスト表の場合は「0:欠損あり、1:欠損なし」という表示になっていますので注意してください。  
+　  
+　  
+## タイルとヒストグラムによる可視化
+`VIM::aggr`関数は前述の`mice::md.pattern`関数と同様の可視化に加えて欠損数も可視化してくれるの関数です。ただし、`mice::md.pattern`関数とは逆の表示になっているので注意してください。また、デフォルトパラメータで使うよりも以下のオプションを指定した方が傾向を把握しやすいと思います。  
+　  
+
+```{r}
+airquality %>%
+  VIM::aggr(prop = FALSE, number = TRUE)
+```
+
+　  
+# 欠損の関連性を可視化する
+欠損の発生が他の変数と関連がありそうな場合、他の変数が取る値と欠損の関係性を確認するための可視化には`VIM`パッケージが便利です。  
+　  
+
+## ヒストグラムによる可視化
+ヒストグラムを用いた可視化には`VIM::barMiss`関数を使います。`VIM::barMiss`関数は縦軸に欠損を含む変数の度数、横軸に関係性を確認したい変数を配置することで、関係性を確認したい変数の特定の値で欠損が発生しているか否かを把握できるようにしています。  
+データフレームにある最初の変数を横軸、二番目の変数を縦軸に配置しますので`dplyr::select`関数と組み合わせて明示的に変数を指定した方が分かりやすいと思います。  
+　  
+
+```{r}
+airquality %>% 
+  VIM::barMiss(only.miss = FALSE, main = "データフレームを指定した場合")
+
+airquality %>% 
+  dplyr::select(Ozone, Solar.R) %>% 
+  VIM::barMiss(only.miss = FALSE, main = "OzoneとSolar.Rだけを明示的に指定した場合")
+
+airquality %>% 
+  dplyr::select(Wind, Ozone) %>% 
+  VIM::barMiss(only.miss = FALSE)
+```
+
+
+## 散布図行列による可視化
+散布図行列を用いた可視化には`VIM::scattmatrixMiss`関数を使います。散布図に使われている当該変数を除いた変数に欠損がある場合は赤色の印で表示します。これにより欠損が他の変数の影響を受けているか否かを確認することができます。  
+　  
+
+```{r}
+airquality %>% 
+  dplyr::select(-Month, -Day) %>% 
+  VIM::scattmatrixMiss()
+```
+
+　  
+
+## 散布図による可視化
+散布図を用いた可視化には`VIM::marginplot`関数を用います。散布図ですので**二変数間**における欠損の関係を把握する場合に使います。欠損が変数の特定の値に集中しているかどうかが一目で分かります。  
+　  
+
+```{r}
+airquality %>% 
+  dplyr::select(Ozone, Solar.R) %>%
+  VIM::marginplot()
+```
+
+　  
+
+# 参考資料
+
+* [R 欠損値の対応（missing value treatment） <i class="fa fa-external-link"></i>](http://jojoshin.hatenablog.com/entry/2017/02/03/220118){target="_blank" title="統計学と疫学と時々、助教生活"}
+* [Rで解析：欠損値を制するモノは解析も制す？「VIM」パッケージの紹介 <i class="fa fa-external-link"></i>](https://www.karada-good.net/analyticsr/r-147){target="_blank" title="からだにいいもの"}
+* [欠損値があるデータの分析 <i class="fa fa-external-link"></i>](http://norimune.net/1811){target="_blank" title="Sunny side up!"}
+
+　  
+
+---
+
+<!-- Footer -->
+```{r child="../shared/footer.Rmd"}
+```
