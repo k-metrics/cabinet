@@ -18,21 +18,7 @@ require(stringi)
 require(tidyverse)
 ```
 
-[R <i class="fa fa-external-link"></i>][R]では下表にあるようなデータベースからSQL文を利用してデータを直接インポートすることが可能です。  
-
-　  
-
-DBMS       | Package                  | Description
------------|--------------------------|----------------------------------------
-SQLite     | RSQLite, RODBC, SQLiteDF | 組込向けのファイル型軽量DBMS
-MySQL      | RMySQL, RODBC            | マルチプラットフォームのDBMS
-PostgreSQL | RPgSWL, RODBC            | BSDライセンスの大規模向けDBMS
-MS SQL Server | RODBC                 | Windows環境のみで動くDBMS
-Oracle DB  | ROracle, RODBC           | DBMS界の大御所（高杉やろ）
-
-　  
-
-上記以外にもODBC(Open Database Connectivity)を利用することでMS Access, MS Excel, FileMaker, LibreOffice Baseなどのファイル型データベースなども扱うことが可能です。  
+SQLiteはMySQLやPostgreSQLなどのクライアント・サーバ型のDBMSとは異なりデータベース・ファイルを直接読み書きする軽量なデータベース・システム（以降、DBMS）です。初めてDBMSを利用する場合や小規模DBMSに向いています。SQLiteは複数のパッケージがサポートしていますが`RSQLite`パッケージを利用するのが最もベーシックです。  
 　  
 
 なお、本ページでは`r R.version$version.string`の標準パッケージ以外に以下の追加パッケージを用いています。  
@@ -56,18 +42,17 @@ redmine    | N/A      | N/A     | [Redmine Issues <i class="fa fa-external-link"
 
 　  
 
-# SQLite
-SQLiteはMySQLやPostgreSQLなどのクライアント・サーバ型のデータベースとは異なるファイルを直接読み書きする軽量なファイル型のデータベースです。初めてデータベースを利用する場合や小規模データベースの場合向いています
-
-## RSQLiteパッケージ
-[R <i class="fa fa-external-link"></i>][R]からSQLiteを利用する場合には`RSQLite`パッケージを利用するのが便利です
+# RSQLite
+`RSQLite`パッケージは`DBI`パッケージに準拠したインタフェースを提供してくれるSQLite専用のパッケージです。SQL文を利用したDBMS操作が可能になります。
 　  
 
 
 　  
 
 # 参考資料
-* [ <i class="fa fa-external-link"></i>](){target="_blank" title=""}
+* [RからSQLiteを使う <i class="fa fa-external-link"></i>](https://oku.edu.mie-u.ac.jp/~okumura/stat/sqlite.html){target="_blank" title=""}
+* [RSQLite の使い方 (1) <i class="fa fa-external-link"></i>](http://www.singularpoint.org/blog/r/r-tips-rsqlite-1/){target="_blank" title=""}
+* [RSQLite パッケージ  <i class="fa fa-external-link"></i>](https://www.kunihikokaneko.com/free/r/rsqlite.html){target="_blank" title=""}
 
 ---
 
