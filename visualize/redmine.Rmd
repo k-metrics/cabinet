@@ -105,12 +105,11 @@ Affected version | 影響のあるバージョン             | 文字型
 
 　  
 
-# チケットの分析
-
+# チケットの集計
 　  
 
-## データの確認
-はじめにデータを確認します。トラッカー（チケットの分類）のステータス（対応状況）を確認するためにクロス集計をしてみます。  
+## ステータスごとの集計
+各トラッカー（チケットの分類）のステータス（対応状況）を確認するためにクロス集計をしてみます。  
 　  
 
 ```{r}
@@ -122,7 +121,10 @@ x %>%
 
 　  
 `Defect`チケットで約75%、`Patch`チケットで約80%がクローズしていることが分かります。以降、`Closed`なチケットを除くオープンチケットに対してクロス集計を行います。  
-トラッカーごとの優先度は  
+　  
+
+## 優先度ごとの集計
+各トラッカーの優先度を確認してみます。  
 　 
 
 ```{r}
@@ -145,8 +147,8 @@ x %>%
 ```
 
 　  
-です。緊急の対応を要するチケットの９割の進捗が芳しくないことが分かります。また、優先度があまり高くないチケットも`Needs feedback`状態であることから対応の整理が必要なことが推測できます。
-
+です。緊急の対応を要するチケットの９割の進捗が芳しくないことが分かります。また、優先度があまり高くないチケットも`Needs feedback`状態であることから対応の整理が必要なことが推測できます。  
+　  
 
 緊急の対応を要する対応に急を要するチケットは以下の通りです。  
 　  
@@ -169,7 +171,11 @@ x %>%
 ```
 
 　  
-こちらも同様に担当者がアサインされているチケットの方が圧倒的に少ない状況です。では、担当者の割当状況を確認してみます。  
+こちらも同様に担当者がアサインされているチケットの方が圧倒的に少ない状況です。  
+　  
+
+## 担当者ごとの集計
+チケットの担当者への割当状況を確認してみます。  
 　  
 
 ```{r}
@@ -182,6 +188,9 @@ x %>%
 
 　  
 この担当状況を元に担当者が割り当てられていないチケットに担当者をどのように割り当てるかを考えることができます。  
+　  
+
+## カテゴリごとの集計
 では各カテゴリ（分類）における対応優先がどのようになっているかも確認しておきます。  
 　  
 
@@ -194,37 +203,131 @@ x %>%
 ```
 
 このように特定のカテゴリにバグが集中していないことは分かります。  
+　  
 
-では、チケットがどれだけ放置されているか確認してみましょう。
+# チケットの可視化
+
+　  
+
+## 放置期間の可視化
+優先度ごとにチケットがどれだけ放置されているか可視化してみます。  
+　  
+
 ```{r}
 x %>% 
   dplyr::filter(status != "Closed") %>% 
-  dplyr::mutate(days = lubridate::today() - open) %>% 
+  dplyr::mutate(days = lubridate::today() - open + 1) %>% 
+  dplyr::group_by(priority) %>% 
+  dplyr::summarise(min = min(days), med = median(days), max = max(days),
+                   mode = which.max(table(days)))
+
+x %>% 
+  dplyr::filter(status != "Closed") %>% 
+  dplyr::mutate(days = lubridate::today() - open + 1) %>% 
   ggplot2::ggplot(ggplot2::aes(x = priority, y = days)) + 
     ggplot2::geom_boxplot()
 ```
 
+　  
+同様にカテゴリごとの放置期間を可視化してみます。
 ```{r}
 x %>% 
   dplyr::filter(status != "Closed") %>% 
-  dplyr::mutate(days = lubridate::today() - open) %>% 
-  ggplot2::ggplot(ggplot2::aes(x = days, fill = priority)) + 
-    ggplot2::geom_histogram(alpha = 0.4, position = "identity")
+  dplyr::mutate(days = lubridate::today() - open + 1) %>% 
+  dplyr::group_by(category) %>% 
+  dplyr::summarise(min = min(days), med = median(days), max = max(days),
+                   mode = which.max(table(days)))
+
+x %>% 
+  dplyr::filter(status != "Closed") %>% 
+  dplyr::mutate(days = lubridate::today() - open + 1) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = category, y = days)) + 
+    ggplot2::geom_boxplot()
 ```
-
-
-
-## 時系列の変化
-
-
 
 　  
 
+## 対処期間の可視化
+カテゴリごとのチケット対処期間（開始日から終了日までの期間）を可視化してみます。  
+　  
+
+```{r}
+x %>% 
+  dplyr::filter(status == "Closed") %>% 
+  dplyr::mutate(days = close - open + 1) %>% 
+  dplyr::group_by(category) %>% 
+  dplyr::summarise(min = min(days), med = median(days), max = max(days),
+                   mode = which.max(table(days)))
+  
+x %>% 
+  dplyr::filter(status == "Closed") %>% 
+  dplyr::mutate(days = close - open + 1) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = category, y = days)) + 
+    ggplot2::geom_boxplot()
+```
+
+　  
+
+
+
+## 対処推移の可視化
+チケットのオープン数とクローズ数の推移を可視化してみます。データ数が多いので2018年4月1日以降のチケットのみを対象としています。  
+　  
+
+```{r}
+df_date <- seq(from = range(x$open)[1], to = range(x$open)[2], by = 1) %>%
+  as.data.frame()
+names(df_date) <- c("Date")
+df_date <- df_date %>% 
+  dplyr::filter(Date >= "2018-4-1")
+
+open <- x %>% 
+  dplyr::select(ID = no, Tracker = tracker, Status = status,
+                OpenDateTime = open, CloseDateTime = close) %>% 
+  dplyr::mutate_at(vars(Status),
+                   funs(replace(., (. != "Closed"), "Open"))) %>% 
+  dplyr::filter(Tracker == "Defect" & Status != "Closed") %>% 
+  dplyr::mutate(Date = dplyr::if_else(Status == "Closed", 
+                                      lubridate::as_date(CloseDateTime),
+                                      lubridate::as_date(OpenDateTime))) %>% 
+  dplyr::arrange(Date) %>% 
+  dplyr::count(Date, Status) %>% 
+  dplyr::right_join(df_date, by = "Date") %>% 
+  dplyr::mutate_at(vars(n), funs(replace(., is.na(.), 0))) %>% 
+  dplyr::mutate_at(vars(Status), funs(replace(., is.na(.), "Open"))) %>% 
+  dplyr::mutate(Cumsum = cumsum(n))
+
+closed <- x %>% 
+  dplyr::select(ID = no, Tracker = tracker, Status = status,
+                OpenDateTime = open, CloseDateTime = close) %>% 
+  dplyr::mutate_at(vars(Status),
+                   funs(replace(., (. != "Closed"), "Open"))) %>% 
+  dplyr::filter(Tracker == "Defect" & Status == "Closed") %>% 
+  dplyr::mutate(Date = dplyr::if_else(Status == "Closed", 
+                                      lubridate::as_date(CloseDateTime),
+                                      lubridate::as_date(OpenDateTime))) %>% 
+  dplyr::arrange(Date) %>% 
+  dplyr::count(Date, Status) %>% 
+  dplyr::right_join(df_date, by = "Date") %>% 
+  dplyr::mutate_at(vars(n), funs(replace(., is.na(.), 0))) %>% 
+  dplyr::mutate_at(vars(Status), funs(replace(., is.na(.), "Closed"))) %>% 
+  dplyr::mutate(Cumsum = cumsum(n))
+
+open %>% 
+  dplyr::bind_rows(closed) %>% 
+  dplyr::arrange(Date) %>% 
+  ggplot2::ggplot(aes(x = Date, y = Cumsum)) +
+    # ggplot2::geom_area(aes(fill = Status), alpha = 0.5, position = "stack")
+    # ggplot2::geom_area(aes(fill = Status), alpha = 0.5, position = "identity") +
+    ggplot2::geom_line(aes(colour = Status)) +
+    ggplot2::geom_bar(aes(y = n, fill = Status), stat = "identity") + 
+    ggplot2::labs(x = "days", y = "Number of tickets",
+                  title = "Open - Closed Chart") + 
+    NULL
+```
+
 # 参考資料
 
-* [R 欠損値の対応（missing value treatment） <i class="fa fa-external-link"></i>](http://jojoshin.hatenablog.com/entry/2017/02/03/220118){target="_blank" title="統計学と疫学と時々、助教生活"}
-* [Rで解析：欠損値を制するモノは解析も制す？「VIM」パッケージの紹介 <i class="fa fa-external-link"></i>](https://www.karada-good.net/analyticsr/r-147){target="_blank" title="からだにいいもの"}
-* [欠損値があるデータの分析 <i class="fa fa-external-link"></i>](http://norimune.net/1811){target="_blank" title="Sunny side up!"}
 
 　  
 
