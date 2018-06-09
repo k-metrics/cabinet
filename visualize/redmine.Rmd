@@ -1,0 +1,338 @@
+---
+title: "バグチケットを可視化する"
+output:
+  html_document:
+    df_print: paged
+    code_folding: hide
+    css: style.css
+---
+
+<!-- shared Links -->
+```{r index, child="../shared/links.Rmd", include=FALSE}
+```
+
+```{r setup, include=FALSE, warning=FALSE, message=FALSE}
+knitr::opts_chunk$set(warning = FALSE, echo = TRUE, message = FALSE)
+
+require(tidyverse)
+```
+
+バグトラッキングシステム（以降、BTS）のチケットデータには様々な情報が記録されており品質分析に使わない手はありません。バグチケットの分析は個々のチケットに対する定性分析を行うことが多いですが、ODC分析のようにクロス集計を用いる方法もあります。ODC分析にはODC分析用のタグが必要ですが、ここでは基本的なバグチケットにある情報（項目）を用いた可視化の方法を探って行きます。  
+　  
+
+なお、本ページでは`r R.version$version.string`の標準パッケージ以外に以下の追加パッケージを用いています。  
+　  
+
+Package   | Version |Description
+----------|---------|----------------------------------------------------------
+tidyverse | `r packageVersion('tidyverse')` | Easily Install and Load the ‘Tidyverse’
+
+　  
+また、本ページでは以下のデータセットを用いています。  
+　  
+
+Dataset    | Package  | Version | Description
+-----------|----------|---------|----------------------------------------------
+redmine    | N/A      | N/A     | [Redmine Issues <i class="fa fa-external-link"></i>](http://www.redmine.org/projects/redmine/issues){target="_blank" title="redmine.org"}
+
+　  
+
+バグチケットは[Redmine <i class="fa fa-external-link"></i>](http://www.redmine.org/){target="_blank" title="Redmine.org"}が公開しているRedmine自体のバグチケットを用います。RedmineはGPL v2ライセンスの下で提供されているオープンソースのプロジェクト管理ソフトウェアです。上の表の場所でチケットを公開していますが、一度に50レコードまでしかダウンロードできないため事前にこちらで取得したレコードをデータフレーム形式にまとめたものを利用します。
+
+　  
+
+# チケット情報のインポート
+前述のように今回は事前に整理したデータフレーム形式のチケット情報を用いますが、実際にはBTSのAPI機能やBTSのDBMSから直接取得することをおすゝめします。直接取得できない場合は、CSVファイルへエクスポートするなどの方法を取ってください。  
+　  
+
+## チケットの項目
+今回用いるRedmineのバグチケットの項目を簡単に説明してます。基本的な項目のみが用意されています。実際は因子型になっている項目をここでは文字型として扱っている点に注意してください。  
+　  　  
+
+項目             | 概要                             | データ型
+-----------------|----------------------------------|-----------------
+\#               | 識別番号（Primary Key）          | 整数型
+プロジェクト     | 属するプロジェクト               | 文字型（因子型）
+トラッカー       | 大分類                           | 文字型（因子型）
+親チケット       | 親子関係を定義したい場合に用いる | 文字型
+ステータス       | 対応状況                         | 文字型（因子型）
+優先度           | 対応優先度                       | 文字型（因子型）
+題名             | タイトル                         | 文字型
+作成者           | 作成者                           | 文字型（因子型）
+担当者           | 対応担当者                       | 文字型（因子型）
+更新日           | 更新日時                         | 日時型（POSIXct）
+カテゴリ         | 分類（任意に利用設定できる）     | 文字型（因子型）
+対象バージョン   | チケット対処したバージョン       | 文字型
+開始日           | 対応を開始した日                 | 日付型
+期日             | 対応予定期間                     | 日付型
+予定工数         | 対応予定工数                     | 数値型
+進捗率           | 対応の進捗率                     | 数値型（%表記）
+作成日           | 作成日時                         | 日時型（POSIXct）
+終了日           | 対応完了日時                     | 日時型（POSIXct）
+関連するチケット | 関係するチケット番号             | 文字型
+Resolution       | 解決結果（非標準）               | 文字型（因子型）
+Affected version | 影響のあるバージョン             | 文字型
+説明             | 詳細                             | 文字型
+
+<!-- #	Project	Tracker	Parent task	Status	Priority	Subject	Author	Assignee	Updated	Category	Target version	Start date	Due date	Estimated time	% Done	Created	Closed	Related issues -->
+
+　  
+
+## チケットデータ
+実際のデータは以下のような四千レコード弱のデータです。  
+　  
+
+```{r}
+(redmine <- "./data/redmine.csv" %>% 
+  readr::read_csv(local = locale(encoding = "UTF-8")))
+```
+
+　  
+
+## 分析のための前処理
+分析に必要な前処理を行っておきます。作成日と終了日のデータは実際は日時データになっていますので日データに変換して、必要な項目のみを抽出しておきます。  
+　  
+
+```{r}
+(x <- redmine %>% 
+  dplyr::select(no = `#`, tracker = `トラッカー`, status = `ステータス`,
+                priority = `優先度`, category = `カテゴリ`,
+                version = `対象バージョン`, affected = `Affected version`, 
+                open = `作成日`, close = `終了日`, subject = `題名`,
+                assignee = `担当者`) %>% 
+  dplyr::mutate(open = lubridate::date(open), close = lubridate::date(close)))
+```
+
+　  
+
+# チケットの集計
+　  
+
+## ステータスごとの集計
+各トラッカー（チケットの分類）のステータス（対応状況）を確認するためにクロス集計をしてみます。  
+　  
+
+```{r}
+x %>% 
+  dplyr::group_by(tracker, status) %>% 
+  dplyr::summarise(n = n()) %>% 
+  tidyr::spread(key = tracker, value = n)
+```
+
+　  
+`Defect`チケットで約75%、`Patch`チケットで約80%がクローズしていることが分かります。以降、`Closed`なチケットを除くオープンチケットに対してクロス集計を行います。  
+　  
+
+## 優先度ごとの集計
+各トラッカーの優先度を確認してみます。  
+　 
+
+```{r}
+x %>% 
+  dplyr::filter(status != "Closed") %>% 
+  dplyr::group_by(tracker, priority) %>% 
+  dplyr::summarise(n = n()) %>% 
+  tidyr::spread(key = tracker, value = n)
+```
+
+　  
+となっており、優先度ごとの状態は
+
+```{r}
+x %>% 
+  dplyr::filter(status != "Closed") %>% 
+  dplyr::group_by(priority, status) %>% 
+  dplyr::summarise(n = n()) %>% 
+  tidyr::spread(key = priority, value = n)
+```
+
+　  
+です。緊急の対応を要するチケットの９割の進捗が芳しくないことが分かります。また、優先度があまり高くないチケットも`Needs feedback`状態であることから対応の整理が必要なことが推測できます。  
+　  
+
+緊急の対応を要する対応に急を要するチケットは以下の通りです。  
+　  
+
+```{r}
+x %>% 
+  dplyr::filter(status != "Closed") %>% 
+  dplyr::filter(priority == "Urgent") %>% 
+  dplyr::select(no, tracker, status, subject, assignee)
+```
+
+　  
+このように緊急対応を要する案件でありながら担当者がアサインされていないことが分かります。次に対応優先度の高いオープンチケットは以下の通りです。  
+　  
+
+```{r}
+x %>% 
+  dplyr::filter(priority == "High" & status != "Closed") %>% 
+  dplyr::select(no, tracker, status, subject, assignee)
+```
+
+　  
+こちらも同様に担当者がアサインされているチケットの方が圧倒的に少ない状況です。  
+　  
+
+## 担当者ごとの集計
+チケットの担当者への割当状況を確認してみます。  
+　  
+
+```{r}
+x %>% 
+  dplyr::filter(status != "Closed") %>% 
+  dplyr::group_by(priority, assignee) %>% 
+  dplyr::summarise(n = n()) %>% 
+  tidyr::spread(key = priority, value = n)
+```
+
+　  
+この担当状況を元に担当者が割り当てられていないチケットに担当者をどのように割り当てるかを考えることができます。  
+　  
+
+## カテゴリごとの集計
+では各カテゴリ（分類）における対応優先がどのようになっているかも確認しておきます。  
+　  
+
+```{r}
+x %>% 
+  dplyr::filter(status != "Closed") %>% 
+  dplyr::group_by(priority, category) %>% 
+  dplyr::summarise(n = n()) %>% 
+  tidyr::spread(key = priority, value = n)
+```
+
+このように特定のカテゴリにバグが集中していないことは分かります。  
+　  
+
+# チケットの可視化
+
+　  
+
+## 放置期間の可視化
+優先度ごとにチケットがどれだけ放置されているか可視化してみます。  
+　  
+
+```{r}
+x %>% 
+  dplyr::filter(status != "Closed") %>% 
+  dplyr::mutate(days = lubridate::today() - open + 1) %>% 
+  dplyr::group_by(priority) %>% 
+  dplyr::summarise(min = min(days), med = median(days), max = max(days),
+                   mode = which.max(table(days)))
+
+x %>% 
+  dplyr::filter(status != "Closed") %>% 
+  dplyr::mutate(days = lubridate::today() - open + 1) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = priority, y = days)) + 
+    ggplot2::geom_boxplot()
+```
+
+　  
+同様にカテゴリごとの放置期間を可視化してみます。
+```{r}
+x %>% 
+  dplyr::filter(status != "Closed") %>% 
+  dplyr::mutate(days = lubridate::today() - open + 1) %>% 
+  dplyr::group_by(category) %>% 
+  dplyr::summarise(min = min(days), med = median(days), max = max(days),
+                   mode = which.max(table(days)))
+
+x %>% 
+  dplyr::filter(status != "Closed") %>% 
+  dplyr::mutate(days = lubridate::today() - open + 1) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = category, y = days)) + 
+    ggplot2::geom_boxplot()
+```
+
+　  
+
+## 対処期間の可視化
+カテゴリごとのチケット対処期間（開始日から終了日までの期間）を可視化してみます。  
+　  
+
+```{r}
+x %>% 
+  dplyr::filter(status == "Closed") %>% 
+  dplyr::mutate(days = close - open + 1) %>% 
+  dplyr::group_by(category) %>% 
+  dplyr::summarise(min = min(days), med = median(days), max = max(days),
+                   mode = which.max(table(days)))
+  
+x %>% 
+  dplyr::filter(status == "Closed") %>% 
+  dplyr::mutate(days = close - open + 1) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = category, y = days)) + 
+    ggplot2::geom_boxplot()
+```
+
+　  
+
+
+
+## 対処推移の可視化
+チケットのオープン数とクローズ数の推移を可視化してみます。データ数が多いので2018年4月1日以降のチケットのみを対象としています。  
+　  
+
+```{r}
+df_date <- seq(from = range(x$open)[1], to = range(x$open)[2], by = 1) %>%
+  as.data.frame()
+names(df_date) <- c("Date")
+df_date <- df_date %>% 
+  dplyr::filter(Date >= "2018-4-1")
+
+open <- x %>% 
+  dplyr::select(ID = no, Tracker = tracker, Status = status,
+                OpenDateTime = open, CloseDateTime = close) %>% 
+  dplyr::mutate_at(vars(Status),
+                   funs(replace(., (. != "Closed"), "Open"))) %>% 
+  dplyr::filter(Tracker == "Defect" & Status != "Closed") %>% 
+  dplyr::mutate(Date = dplyr::if_else(Status == "Closed", 
+                                      lubridate::as_date(CloseDateTime),
+                                      lubridate::as_date(OpenDateTime))) %>% 
+  dplyr::arrange(Date) %>% 
+  dplyr::count(Date, Status) %>% 
+  dplyr::right_join(df_date, by = "Date") %>% 
+  dplyr::mutate_at(vars(n), funs(replace(., is.na(.), 0))) %>% 
+  dplyr::mutate_at(vars(Status), funs(replace(., is.na(.), "Open"))) %>% 
+  dplyr::mutate(Cumsum = cumsum(n))
+
+closed <- x %>% 
+  dplyr::select(ID = no, Tracker = tracker, Status = status,
+                OpenDateTime = open, CloseDateTime = close) %>% 
+  dplyr::mutate_at(vars(Status),
+                   funs(replace(., (. != "Closed"), "Open"))) %>% 
+  dplyr::filter(Tracker == "Defect" & Status == "Closed") %>% 
+  dplyr::mutate(Date = dplyr::if_else(Status == "Closed", 
+                                      lubridate::as_date(CloseDateTime),
+                                      lubridate::as_date(OpenDateTime))) %>% 
+  dplyr::arrange(Date) %>% 
+  dplyr::count(Date, Status) %>% 
+  dplyr::right_join(df_date, by = "Date") %>% 
+  dplyr::mutate_at(vars(n), funs(replace(., is.na(.), 0))) %>% 
+  dplyr::mutate_at(vars(Status), funs(replace(., is.na(.), "Closed"))) %>% 
+  dplyr::mutate(Cumsum = cumsum(n))
+
+open %>% 
+  dplyr::bind_rows(closed) %>% 
+  dplyr::arrange(Date) %>% 
+  ggplot2::ggplot(aes(x = Date, y = Cumsum)) +
+    # ggplot2::geom_area(aes(fill = Status), alpha = 0.5, position = "stack")
+    # ggplot2::geom_area(aes(fill = Status), alpha = 0.5, position = "identity") +
+    ggplot2::geom_line(aes(colour = Status)) +
+    ggplot2::geom_bar(aes(y = n, fill = Status), stat = "identity") + 
+    ggplot2::labs(x = "days", y = "Number of tickets",
+                  title = "Open - Closed Chart") + 
+    NULL
+```
+
+# 参考資料
+
+
+　  
+
+---
+
+<!-- Footer -->
+```{r child="../shared/footer.Rmd"}
+```
