@@ -206,14 +206,51 @@ x %>%
 
 ## 週次の集計
 ```{r}
-x %>% 
-  dplyr::filter(open >= "2018-4-1") %>% 
+open <- x %>% 
+  dplyr::filter(open >= "2018-1-1") %>% 
   dplyr::mutate(week = lubridate::week(open)) %>% 
-  dplyr::mutate(o = ifelse(is.na(open), 0, 1),
-                c = ifelse(is.na(close), 0, 1)) %>% 
+  dplyr::mutate(flag = ifelse(is.na(open), 0, 1)) %>% 
   dplyr::group_by(week) %>% 
-  dplyr::summarise(open = sum(o), close = sum(c), still = sum(!c)) %>% 
-  dplyr::mutate(cumopen = cumsum(open), cumclose = cumsum(close))
+  dplyr::summarise(open = sum(flag)) %>% 
+  dplyr::arrange(week) %>% 
+  dplyr::mutate(cumopen = cumsum(open), diff = open - dplyr::lag(open))
+
+close <- x %>% 
+  dplyr::filter(close >= "2018-1-1") %>% 
+  dplyr::mutate(week = lubridate::week(close)) %>% 
+  dplyr::mutate(flag = ifelse(is.na(close), 0, 1)) %>% 
+  dplyr::group_by(week) %>% 
+  dplyr::summarise(close = sum(flag)) %>% 
+  dplyr::arrange(week) %>% 
+  dplyr::mutate(cumclose = cumsum(close), diff = close -dplyr::lag(close))
+
+open
+close
+
+open %>% 
+  ggplot2::ggplot(ggplot2::aes(x = week)) +
+    ggplot2::geom_bar(ggplot2::aes(y = open), stat = "identity", alpha = 0.5) + 
+    ggplot2::geom_line(ggplot2::aes(y = diff))
+
+close %>% 
+  ggplot2::ggplot(ggplot2::aes(x = week)) +
+    ggplot2::geom_bar(ggplot2::aes(y = close), stat = "identity", alpha = 0.5) + 
+    ggplot2::geom_line(ggplot2::aes(y = diff))
+
+open_ticket <- open %>% 
+  dplyr::full_join(close, by = "week") %>% 
+  dplyr::select(week, open, close) %>%
+  tidyr::gather(key, value, -week)
+
+open %>% 
+  dplyr::full_join(close, by = "week") %>% 
+  dplyr::select(week, cumopen, cumclose) %>%
+  tidyr::gather(key, value, -week) %>% 
+  dplyr::left_join(open_ticket, by = "week") %>% 
+  ggplot2::ggplot(ggplot2::aes(x = week)) + 
+    ggplot2::geom_bar(ggplot2::aes(y = value.y, fill = key.y), stat = "identity", alpha = 0.5,
+                      position = "dodge") +
+    ggplot2::geom_line(ggplot2::aes(y = value.x, colour = key.x), stat = "identity")
 ```
 
 ## 四半期毎の集計
