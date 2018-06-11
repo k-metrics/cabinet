@@ -204,7 +204,36 @@ x %>%
 このように特定のカテゴリにバグが集中していないことは分かります。  
 　  
 
-## 週次の集計
+## 四半期毎の集計
+```{r}
+open <- x %>% 
+  dplyr::mutate(quarter = lubridate::quarter(open, with_year = TRUE)) %>% 
+  dplyr::mutate(o = ifelse(is.na(open), 0, 1),
+                c = ifelse(is.na(close), 0, 1)) %>% 
+  dplyr::group_by(quarter) %>% 
+  dplyr::summarise(open = sum(o)) %>% 
+  dplyr::mutate(cumopen = cumsum(open))
+
+close <- x %>% 
+  dplyr::mutate(quarter = lubridate::quarter(close, with_year = TRUE)) %>% 
+  dplyr::mutate(o = ifelse(is.na(open), 0, 1),
+                c = ifelse(is.na(close), 0, 1)) %>% 
+  dplyr::group_by(quarter) %>% 
+  dplyr::summarise(close = sum(c)) %>% 
+  dplyr::mutate(cumclose = cumsum(close))
+
+open %>%
+  dplyr::full_join(close, by = "quarter") %>% 
+  dplyr::arrange(quarter)
+
+```
+
+
+# チケットの可視化
+
+　  
+
+## 週次傾向の可視化
 ```{r}
 open <- x %>% 
   dplyr::filter(open >= "2018-1-1") %>% 
@@ -252,33 +281,6 @@ open %>%
                       position = "dodge") +
     ggplot2::geom_line(ggplot2::aes(y = value.x, colour = key.x), stat = "identity")
 ```
-
-## 四半期毎の集計
-```{r}
-open <- x %>% 
-  dplyr::mutate(quarter = lubridate::quarter(open, with_year = TRUE)) %>% 
-  dplyr::mutate(o = ifelse(is.na(open), 0, 1),
-                c = ifelse(is.na(close), 0, 1)) %>% 
-  dplyr::group_by(quarter) %>% 
-  dplyr::summarise(open = sum(o)) %>% 
-  dplyr::mutate(cumopen = cumsum(open))
-
-close <- x %>% 
-  dplyr::mutate(quarter = lubridate::quarter(close, with_year = TRUE)) %>% 
-  dplyr::mutate(o = ifelse(is.na(open), 0, 1),
-                c = ifelse(is.na(close), 0, 1)) %>% 
-  dplyr::group_by(quarter) %>% 
-  dplyr::summarise(close = sum(c)) %>% 
-  dplyr::mutate(cumclose = cumsum(close))
-
-open %>%
-  dplyr::full_join(close, by = "quarter") %>% 
-  dplyr::arrange(quarter)
-
-```
-
-
-# チケットの可視化
 
 　  
 
