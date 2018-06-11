@@ -37,8 +37,7 @@ redmine    | N/A      | N/A     | [Redmine Issues <i class="fa fa-external-link"
 
 　  
 
-バグチケットは[Redmine <i class="fa fa-external-link"></i>](http://www.redmine.org/){target="_blank" title="Redmine.org"}が公開しているRedmine自体のバグチケットを用います。RedmineはGPL v2ライセンスの下で提供されているオープンソースのプロジェクト管理ソフトウェアです。上の表の場所でチケットを公開していますが、一度に50レコードまでしかダウンロードできないため事前にこちらで取得したレコードをデータフレーム形式にまとめたものを利用します。
-
+バグチケットは[Redmine <i class="fa fa-external-link"></i>](http://www.redmine.org/){target="_blank" title="Redmine.org"}が公開しているRedmine自体のバグチケットを用います。RedmineはGPL v2ライセンスの下で提供されているオープンソースのプロジェクト管理ソフトウェアです。上の表の場所でチケットを公開していますが、一度に50レコードまでしかダウンロードできないため事前にこちらで取得したレコードをデータフレーム形式にまとめたものを利用します。なお、[Redmine <i class="fa fa-external-link"></i>](http://www.redmine.org/){target="_blank" title="Redmine.org"}ではREST APIを利用してJSON形式でのチケットう情報の取得が可能ですが、REST APIでは一度に25件しかチケットを取得できない点に注意してください。  
 　  
 
 # チケット情報のインポート
@@ -205,6 +204,43 @@ x %>%
 このように特定のカテゴリにバグが集中していないことは分かります。  
 　  
 
+## 週次の集計
+```{r}
+x %>% 
+  dplyr::filter(open >= "2018-4-1") %>% 
+  dplyr::mutate(week = lubridate::week(open)) %>% 
+  dplyr::mutate(o = ifelse(is.na(open), 0, 1),
+                c = ifelse(is.na(close), 0, 1)) %>% 
+  dplyr::group_by(week) %>% 
+  dplyr::summarise(open = sum(o), close = sum(c), still = sum(!c)) %>% 
+  dplyr::mutate(cumopen = cumsum(open), cumclose = cumsum(close))
+```
+
+## 四半期毎の集計
+```{r}
+open <- x %>% 
+  dplyr::mutate(quarter = lubridate::quarter(open, with_year = TRUE)) %>% 
+  dplyr::mutate(o = ifelse(is.na(open), 0, 1),
+                c = ifelse(is.na(close), 0, 1)) %>% 
+  dplyr::group_by(quarter) %>% 
+  dplyr::summarise(open = sum(o)) %>% 
+  dplyr::mutate(cumopen = cumsum(open))
+
+close <- x %>% 
+  dplyr::mutate(quarter = lubridate::quarter(close, with_year = TRUE)) %>% 
+  dplyr::mutate(o = ifelse(is.na(open), 0, 1),
+                c = ifelse(is.na(close), 0, 1)) %>% 
+  dplyr::group_by(quarter) %>% 
+  dplyr::summarise(close = sum(c)) %>% 
+  dplyr::mutate(cumclose = cumsum(close))
+
+open %>%
+  dplyr::full_join(close, by = "quarter") %>% 
+  dplyr::arrange(quarter)
+
+```
+
+
 # チケットの可視化
 
 　  
@@ -218,8 +254,7 @@ x %>%
   dplyr::filter(status != "Closed") %>% 
   dplyr::mutate(days = lubridate::today() - open + 1) %>% 
   dplyr::group_by(priority) %>% 
-  dplyr::summarise(min = min(days), med = median(days), max = max(days),
-                   mode = which.max(table(days)))
+  dplyr::summarise(min = min(days), med = median(days), max = max(days))
 
 x %>% 
   dplyr::filter(status != "Closed") %>% 
@@ -317,11 +352,12 @@ closed <- x %>%
 open %>% 
   dplyr::bind_rows(closed) %>% 
   dplyr::arrange(Date) %>% 
-  ggplot2::ggplot(aes(x = Date, y = Cumsum)) +
+  ggplot2::ggplot(ggplot2::aes(x = Date, y = Cumsum)) +
     # ggplot2::geom_area(aes(fill = Status), alpha = 0.5, position = "stack")
     # ggplot2::geom_area(aes(fill = Status), alpha = 0.5, position = "identity") +
-    ggplot2::geom_line(aes(colour = Status)) +
-    ggplot2::geom_bar(aes(y = n, fill = Status), stat = "identity") + 
+    ggplot2::geom_line(ggplot2::aes(colour = Status)) +
+    # ggplot2::geom_smooth(ggplot2::aes(colour = Status)) +
+    ggplot2::geom_bar(ggplot2::aes(y = n, fill = Status), stat = "identity") + 
     ggplot2::labs(x = "days", y = "Number of tickets",
                   title = "Open - Closed Chart") + 
     NULL
