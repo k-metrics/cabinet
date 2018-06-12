@@ -105,6 +105,20 @@ Affected version | 影響のあるバージョン             | 文字型
 　  
 
 # チケットの集計
+データフレームに対する集計を行うには`dplyr::group_by`関数＋`dplyr::summarise`関数または`dplyr::count`関数を用いるのが便利です。`tidyr::spread`関数と組み合わせることでクロス集計表を作成しやすくします。  
+　  
+なお、以下の二つのコードは共に`data`に含まれる`key`の水準毎に個数を数える処理で結果は等価になります。  
+　  
+
+```{r, eval=FALSE}
+dplyr::group_by(data, key) %>% 
+  dplyr::summarise(n = n())
+```
+
+```{r, eval=FALSE}
+dplyr::count(data, kye)
+```
+
 　  
 
 ## ステータスごとの集計
@@ -113,9 +127,10 @@ Affected version | 影響のあるバージョン             | 文字型
 
 ```{r}
 x %>% 
-  dplyr::group_by(tracker, status) %>% 
-  dplyr::summarise(n = n()) %>% 
-  tidyr::spread(key = tracker, value = n)
+  dplyr::count(tracker, status) %>% 
+  tidyr::spread(key = tracker, value = n) %>% 
+  dplyr::mutate(Sum = ifelse(is.na(Defect), 0, Defect) + 
+                  ifelse(is.na(Patch), 0, Patch))
 ```
 
 　  
