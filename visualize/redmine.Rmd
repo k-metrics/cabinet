@@ -498,6 +498,7 @@ x %>%
 同様にカテゴリごとの滞留期間を可視化してみます。
 ```{r}
 x %>% 
+  dplyr::filter(open >= "2018-1-1") %>% 
   dplyr::filter(status != "Closed") %>% 
   dplyr::mutate(days = lubridate::today() - open + 1) %>% 
   dplyr::group_by(category) %>% 
