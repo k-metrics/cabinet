@@ -103,6 +103,14 @@ Affected version | 影響のあるバージョン             | 文字型
 ```
 
 　  
+データの概要は以下の通りです。  
+　  
+
+```{r, comment=""}
+summary(x)
+```
+
+　  
 
 # チケットの集計
 データフレームに対する集計を行うには`dplyr::group_by`関数＋`dplyr::summarise`関数または`dplyr::count`関数を用いるのが便利です。  
@@ -122,12 +130,7 @@ dplyr::count(data, kye)
 　  
 
 ## 単純集計
-以下のように`summary`関数では表示されない文字型（因子型）のデータの傾向を見るために単純集計を行ってみます。
-
-```{r, comment=""}
-summary(x)
-```
-
+単純集計は一つの変数に対して集計を行います。  
 　  
 
 ### Tracker
@@ -168,6 +171,7 @@ x %>%
 ```
 
 　  
+
 ### Affected
 ```{r}
 x %>% 
@@ -182,13 +186,14 @@ x %>%
   dplyr::count(open)
 ```
 
+　  
 
 ## クロス集計
 単純集計では見えにくい傾向はクロス集計を行いことで見えてくることもあります。クロス集計は`dplyr::count`関数または`dplyr::group_by`関数に複数の変数を指定し、`tidyr::spread`関数で変形することで簡単にクロス集計表が作成できます。  
 
 ```
 dplyr::count(x, key1, key2) %>% 
-  tidyr::spread(key1, value = n)
+  tidyr::spread(key = key1, value = n)
 ```
 
 　  
@@ -309,6 +314,8 @@ x %>%
                 `前週との差` = ticket - dplyr::lag(ticket))
 ```
 
+　  
+
 #### 完了したチケットの推移
 ```{r}
 x %>% 
@@ -378,11 +385,11 @@ x %>%
                 `前年との差` = ticket - dplyr::lag(ticket))
 ```
 
-
-
-
+　  
 
 # チケットの可視化
+
+　  
 
 ## 分布の可視化
 分布を可視化する代表的な方法としてはヒストグラム、箱ひげ図などがあります。  
@@ -392,8 +399,68 @@ x %>%
 集計結果を可視化する方法としては棒グラフ、円グラフ、それらの層別グラフなどがあります。  
 　  
 
+### Priority vs Category, Open Tickets
+```{r}
+x %>% 
+  dplyr::filter(status != "Closed" & tracker == "Defect") %>% 
+  dplyr::mutate(year = lubridate::year(open)) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = priority, fill = category)) + 
+    ggplot2::geom_bar(alpha = 0.5) + 
+    ggplot2::facet_wrap(~ year)
+```
+
+　  
+
+### Priority vs Category, Closed Tickets
+```{r}
+x %>% 
+  dplyr::filter(status == "Closed" & tracker == "Defect") %>% 
+  dplyr::mutate(year = lubridate::year(close)) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = priority, fill = category)) + 
+    ggplot2::geom_bar(alpha = 0.5) + 
+    ggplot2::facet_wrap(~ year)
+```
+
+　  
+
+### Affected vs Status
+バージョンごとのチケットの完了状況をチケット起票年ごとに分けて表示することで過去バグと最近のバグの発生状況を俯瞰できるようになります。  
+　  
+
+```{r}
+x %>% 
+  dplyr::filter(tracker == "Defect") %>% 
+  dplyr::mutate(flag = ifelse(status == "Closed", "Closed", "Open")) %>% 
+  dplyr::mutate(year = lubridate::year(open)) %>% 
+  dplyr::filter(!is.na(affected)) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = affected, fill = flag)) + 
+    ggplot2::geom_bar(alpha = 0.75) + 
+    ggplot2::facet_wrap(~ year)
+```
+
+　  
+
 ## 推移の可視化
 推移を可視化する代表的な方法としては折れ線グラフ、棒グラフがあります。  
+　  
+
+### 四半期枚の完了チケット数
+```{r}
+x %>% 
+  dplyr::mutate(quarter = lubridate::quarter(close, with_year = TRUE,
+                                             fiscal_start = 1)) %>% 
+  dplyr::mutate(flag = ifelse(is.na(open), 0, 1)) %>% 
+  dplyr::group_by(quarter, priority) %>% 
+  dplyr::summarise(ticket = sum(flag)) %>% 
+  dplyr::arrange(quarter) %>% 
+  dplyr::filter(!is.na(quarter)) %>% 
+  dplyr::mutate(`累計` = cumsum(ticket),
+                `前四半期との差` = ticket - dplyr::lag(ticket)) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = as.character(quarter))) + 
+    ggplot2::geom_bar(ggplot2::aes(y = ticket, fill = priority),
+                      stat = "identity", alpha = 0.5)
+```
+
 　  
 
 ### 週次傾向の可視化
