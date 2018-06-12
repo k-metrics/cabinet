@@ -105,150 +105,302 @@ Affected version | 影響のあるバージョン             | 文字型
 　  
 
 # チケットの集計
-データフレームに対する集計を行うには`dplyr::group_by`関数＋`dplyr::summarise`関数または`dplyr::count`関数を用いるのが便利です。`tidyr::spread`関数と組み合わせることでクロス集計表を作成しやすくします。  
+データフレームに対する集計を行うには`dplyr::group_by`関数＋`dplyr::summarise`関数または`dplyr::count`関数を用いるのが便利です。  
 　  
-なお、以下の二つのコードは共に`data`に含まれる`key`の水準毎に個数を数える処理で結果は等価になります。  
+なお、以下の二つのコードは共に`data`に含まれる`key`変数の水準毎に個数を数えるもので結果は等価になります。  
 　  
 
-```{r, eval=FALSE}
+```
 dplyr::group_by(data, key) %>% 
   dplyr::summarise(n = n())
 ```
 
-```{r, eval=FALSE}
+```
 dplyr::count(data, kye)
 ```
 
 　  
 
-## ステータスごとの集計
-各トラッカー（チケットの分類）のステータス（対応状況）を確認するためにクロス集計をしてみます。  
-　  
+## 単純集計
+以下のように`summary`関数では表示されない文字型（因子型）のデータの傾向を見るために単純集計を行ってみます。
 
-```{r}
-x %>% 
-  dplyr::count(tracker, status) %>% 
-  tidyr::spread(key = tracker, value = n) %>% 
-  dplyr::mutate(Sum = ifelse(is.na(Defect), 0, Defect) + 
-                  ifelse(is.na(Patch), 0, Patch))
+```{r, comment=""}
+summary(x)
 ```
 
 　  
-`Defect`チケットで約75%、`Patch`チケットで約80%がクローズしていることが分かります。以降、`Closed`なチケットを除くオープンチケットに対してクロス集計を行います。  
-　  
 
-## 優先度ごとの集計
-各トラッカーの優先度を確認してみます。  
-　 
-
+### Tracker
 ```{r}
 x %>% 
-  dplyr::filter(status != "Closed") %>% 
-  dplyr::group_by(tracker, priority) %>% 
-  dplyr::summarise(n = n()) %>% 
+  dplyr::count(tracker)
+```
+
+　  
+
+### Status 
+```{r}
+x %>% 
+  dplyr::count(status)
+```
+
+　  
+
+### Priority
+```{r}
+x %>% dplyr::count(priority)
+```
+
+　  
+
+### Category
+```{r}
+x %>% 
+  dplyr::count(category)
+```
+
+　  
+
+### Version
+```{r}
+x %>% 
+  dplyr::count(version)
+```
+
+　  
+### Affected
+```{r}
+x %>% 
+  dplyr::count(affected)
+```
+
+　  
+
+### Open
+```{r}
+x %>% 
+  dplyr::count(open)
+```
+
+
+## クロス集計
+単純集計では見えにくい傾向はクロス集計を行いことで見えてくることもあります。クロス集計は`dplyr::count`関数または`dplyr::group_by`関数に複数の変数を指定し、`tidyr::spread`関数で変形することで簡単にクロス集計表が作成できます。  
+
+```
+dplyr::count(x, key1, key2) %>% 
+  tidyr::spread(key1, value = n)
+```
+
+　  
+
+### Tracker and Status
+```{r}
+x %>% 
+  dplyr::count(tracker, status) %>% 
   tidyr::spread(key = tracker, value = n)
 ```
 
 　  
-となっており、優先度ごとの状態は
+
+### Tracker and Priority
+大半のチケットがステータスが`Closed`な対応が完了しているチケットですので、`Closed`を除くチケットに対する優先度を見て見ます。  
+　  
 
 ```{r}
 x %>% 
   dplyr::filter(status != "Closed") %>% 
-  dplyr::group_by(priority, status) %>% 
-  dplyr::summarise(n = n()) %>% 
+  dplyr::count(tracker, priority) %>% 
+  tidyr::spread(key = tracker, value = n)
+```
+
+　  
+
+### Priority and Status
+
+#### Defectチケット
+```{r}
+x %>% 
+  dplyr::filter(status != "Closed" & tracker == "Defect") %>% 
+  dplyr::count(priority, status) %>% 
   tidyr::spread(key = priority, value = n)
 ```
 
 　  
-です。緊急の対応を要するチケットの９割の進捗が芳しくないことが分かります。また、優先度があまり高くないチケットも`Needs feedback`状態であることから対応の整理が必要なことが推測できます。  
-　  
 
-緊急の対応を要する対応に急を要するチケットは以下の通りです。  
+#### Patchチケット
+```{r}
+x %>% 
+  dplyr::filter(status != "Closed" & tracker == "Patch") %>% 
+  dplyr::count(priority, status) %>% 
+  tidyr::spread(key = priority, value = n)
+```
+
+#### 対象レコードの抽出
+クロス集計の結果優先度が`Urgent`であるチケットがあることが分かりましたので、対象が何かを表示させてみます。クロス集計で検索条件が分かっていますので絞り込むだけです。  
 　  
 
 ```{r}
 x %>% 
-  dplyr::filter(status != "Closed") %>% 
+  dplyr::filter(status != "Closed" & tracker == "Defect") %>% 
   dplyr::filter(priority == "Urgent") %>% 
   dplyr::select(no, tracker, status, subject, assignee)
 ```
 
 　  
-このように緊急対応を要する案件でありながら担当者がアサインされていないことが分かります。次に対応優先度の高いオープンチケットは以下の通りです。  
-　  
 
+### Priority and Category
 ```{r}
 x %>% 
-  dplyr::filter(priority == "High" & status != "Closed") %>% 
-  dplyr::select(no, tracker, status, subject, assignee)
-```
-
-　  
-こちらも同様に担当者がアサインされているチケットの方が圧倒的に少ない状況です。  
-　  
-
-## 担当者ごとの集計
-チケットの担当者への割当状況を確認してみます。  
-　  
-
-```{r}
-x %>% 
-  dplyr::filter(status != "Closed") %>% 
-  dplyr::group_by(priority, assignee) %>% 
-  dplyr::summarise(n = n()) %>% 
+  dplyr::filter(status != "Closed" & tracker == "Defect") %>% 
+  dplyr::count(category, priority) %>% 
   tidyr::spread(key = priority, value = n)
 ```
 
 　  
-この担当状況を元に担当者が割り当てられていないチケットに担当者をどのように割り当てるかを考えることができます。  
-　  
 
-## カテゴリごとの集計
-では各カテゴリ（分類）における対応優先がどのようになっているかも確認しておきます。  
-　  
-
+### Priority and Assignee
 ```{r}
 x %>% 
-  dplyr::filter(status != "Closed") %>% 
-  dplyr::group_by(priority, category) %>% 
-  dplyr::summarise(n = n()) %>% 
+  dplyr::filter(status != "Closed" & tracker == "Defect") %>% 
+  dplyr::count(priority, assignee) %>% 
   tidyr::spread(key = priority, value = n)
 ```
 
-このように特定のカテゴリにバグが集中していないことは分かります。  
+　  
+このデータでは`Urgent`なチケットに担当者が割り当てられていないことが分かります。  
 　  
 
-## 四半期毎の集計
+## 期間集計
+ある一定期間ごとに集計する場合は日時データを日、週、月、四半期、年などに変換し変換後のデータを`dplyr::count`関数で集計することで期間の変化を確認できるようになります。  
+　  
+
+### 日次集計
+日次で集計する場合は日時の場合は`lubridate::date`関数で日付に変換しておきます。データがない日は集計対象外となります。稼働が発生していてデータがないのか、稼働が発生していないからデータがないのかで意味が変わってきますので集計の際には注意してください。  
+　  
+
+#### 起票されたチケットの推移
 ```{r}
-open <- x %>% 
-  dplyr::mutate(quarter = lubridate::quarter(open, with_year = TRUE)) %>% 
-  dplyr::mutate(o = ifelse(is.na(open), 0, 1),
-                c = ifelse(is.na(close), 0, 1)) %>% 
-  dplyr::group_by(quarter) %>% 
-  dplyr::summarise(open = sum(o)) %>% 
-  dplyr::mutate(cumopen = cumsum(open))
-
-close <- x %>% 
-  dplyr::mutate(quarter = lubridate::quarter(close, with_year = TRUE)) %>% 
-  dplyr::mutate(o = ifelse(is.na(open), 0, 1),
-                c = ifelse(is.na(close), 0, 1)) %>% 
-  dplyr::group_by(quarter) %>% 
-  dplyr::summarise(close = sum(c)) %>% 
-  dplyr::mutate(cumclose = cumsum(close))
-
-open %>%
-  dplyr::full_join(close, by = "quarter") %>% 
-  dplyr::arrange(quarter)
-
+x %>% 
+  dplyr::filter(open >= "2018-1-1") %>% 
+  dplyr::mutate(flag = ifelse(is.na(open), 0, 1)) %>% 
+  dplyr::group_by(open) %>% 
+  dplyr::summarise(ticket = sum(flag)) %>% 
+  dplyr::arrange(open) %>% 
+  dplyr::mutate(`累計` = cumsum(ticket),
+                `前日との差` = ticket - dplyr::lag(ticket))
 ```
+
+　  
+
+### 週次集計
+"週"を求めるには`lubridate::week`関数を用います。ただし、`lubridate::week`関数は1から53までの値しか返しませんので、年をまたぐ際は`lubridate::year`関数などを用いて年の識別ができるようにしてください。  
+　  
+
+#### 起票されたチケットの推移
+```{r}
+x %>% 
+  dplyr::filter(open >= "2018-1-1") %>% 
+  dplyr::mutate(week = lubridate::week(open)) %>% 
+  dplyr::mutate(flag = ifelse(is.na(open), 0, 1)) %>% 
+  dplyr::group_by(week) %>% 
+  dplyr::summarise(ticket = sum(flag)) %>% 
+  dplyr::arrange(week) %>% 
+  dplyr::mutate(`累計` = cumsum(ticket),
+                `前週との差` = ticket - dplyr::lag(ticket))
+```
+
+#### 完了したチケットの推移
+```{r}
+x %>% 
+  dplyr::filter(close >= "2018-1-1") %>% 
+  dplyr::mutate(week = lubridate::week(close)) %>% 
+  dplyr::mutate(flag = ifelse(is.na(close), 0, 1)) %>% 
+  dplyr::group_by(week) %>% 
+  dplyr::summarise(ticket = sum(flag)) %>% 
+  dplyr::arrange(week) %>% 
+  dplyr::mutate(`累計` = cumsum(ticket),
+                `前週との差` = ticket - dplyr::lag(ticket))
+```
+
+　  
+
+### 月次集計
+"月"を求めるには`lubridate::month`関数を用います。ただし、`lubridate::month`関数は1から12までの値しか返しませんので、年をまたぐ際は`lubridate::year`関数などを用いて年の識別ができるようにしてください。  
+　  
+
+#### 起票されたチケットの推移
+```{r}
+x %>% 
+  dplyr::filter(open >= "2018-1-1") %>% 
+  dplyr::mutate(month = lubridate::month(open)) %>% 
+  dplyr::mutate(flag = ifelse(is.na(open), 0, 1)) %>% 
+  dplyr::group_by(month) %>% 
+  dplyr::summarise(ticket = sum(flag)) %>% 
+  dplyr::arrange(month) %>% 
+  dplyr::mutate(`累計` = cumsum(ticket),
+                `前月との差` = ticket - dplyr::lag(ticket))
+```
+
+　  
+
+### 四半期次集計
+"四半期"を求めるには`lubridate::quarter`関数を用います。年をまたぐ際は`with_year`オプションを使用すると年の識別ができるようになります。また、第一四半期が1月以外から始まる場合は`fiscal_start`オプションを使用してください。  
+　  
+
+#### 起票されたチケットの推移
+```{r}
+x %>% 
+  dplyr::mutate(quarter = lubridate::quarter(open, with_year = TRUE,
+                                             fiscal_start = 1)) %>% 
+  dplyr::mutate(flag = ifelse(is.na(open), 0, 1)) %>% 
+  dplyr::group_by(quarter) %>% 
+  dplyr::summarise(ticket = sum(flag)) %>% 
+  dplyr::arrange(quarter) %>% 
+  dplyr::mutate(`累計` = cumsum(ticket),
+                `前四半期との差` = ticket - dplyr::lag(ticket))
+```
+
+　  
+
+### 年次集計
+"年"を求めるには`lubridate::year`関数を用います。  
+　  
+
+#### 起票されたチケットの推移
+```{r}
+x %>% 
+  dplyr::mutate(year = lubridate::year(open)) %>% 
+  dplyr::mutate(flag = ifelse(is.na(open), 0, 1)) %>% 
+  dplyr::group_by(year) %>% 
+  dplyr::summarise(ticket = sum(flag)) %>% 
+  dplyr::arrange(year) %>% 
+  dplyr::mutate(`累計` = cumsum(ticket),
+                `前年との差` = ticket - dplyr::lag(ticket))
+```
+
+
+
 
 
 # チケットの可視化
 
+## 分布の可視化
+分布を可視化する代表的な方法としてはヒストグラム、箱ひげ図などがあります。  
 　  
 
-## 週次傾向の可視化
+## 集計の可視化
+集計結果を可視化する方法としては棒グラフ、円グラフ、それらの層別グラフなどがあります。  
+　  
+
+## 推移の可視化
+推移を可視化する代表的な方法としては折れ線グラフ、棒グラフがあります。  
+　  
+
+### 週次傾向の可視化
+前出の週次集計を可視化してみます。加えて平均起票数を基準として前週との起票数の差を折れ線グラフで表示しています。  
+　  
+
+#### 起票されたチケットの推移
 ```{r}
 open <- x %>% 
   dplyr::filter(open >= "2018-1-1") %>% 
@@ -259,6 +411,20 @@ open <- x %>%
   dplyr::arrange(week) %>% 
   dplyr::mutate(cumopen = cumsum(open), diff = open - dplyr::lag(open))
 
+open %>% 
+  dplyr::mutate(diff_offset = diff + round(mean(open, na.rm = TRUE))) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = week)) +
+    ggplot2::geom_bar(ggplot2::aes(y = open), stat = "identity", alpha = 0.25) + 
+    ggplot2::geom_hline(yintercept = round(mean(open$open, na.rm = TRUE)),
+                        colour = "#00bfc4", linetype = "dashed") + 
+    ggplot2::geom_line(ggplot2::aes(y = diff_offset), colour = "#00bfc4",
+                       size = 0.75)
+```
+
+　  
+
+#### 完了したチケットの推移
+```{r}
 close <- x %>% 
   dplyr::filter(close >= "2018-1-1") %>% 
   dplyr::mutate(week = lubridate::week(close)) %>% 
@@ -268,19 +434,23 @@ close <- x %>%
   dplyr::arrange(week) %>% 
   dplyr::mutate(cumclose = cumsum(close), diff = close -dplyr::lag(close))
 
-open
-close
-
-open %>% 
-  ggplot2::ggplot(ggplot2::aes(x = week)) +
-    ggplot2::geom_bar(ggplot2::aes(y = open), stat = "identity", alpha = 0.5) + 
-    ggplot2::geom_line(ggplot2::aes(y = diff))
-
 close %>% 
+  dplyr::mutate(diff_offset = diff + round(mean(close, na.rm = TRUE))) %>% 
   ggplot2::ggplot(ggplot2::aes(x = week)) +
-    ggplot2::geom_bar(ggplot2::aes(y = close), stat = "identity", alpha = 0.5) + 
-    ggplot2::geom_line(ggplot2::aes(y = diff))
+    ggplot2::geom_bar(ggplot2::aes(y = close), stat = "identity", alpha = 0.25) + 
+    ggplot2::geom_hline(yintercept = round(mean(close$close, na.rm = TRUE)),
+                        colour = "#f8766d", linetype = "dashed") + 
+    ggplot2::geom_line(ggplot2::aes(y = diff_offset), colour = "#f8766d",
+                       size = 0.75)
+```
 
+　  
+
+### オープン・クローズチャート
+前出の週次の集計から累計データに着目したものがオープン・クローズチャートです。オープン・クローズチャートはチケットの対応状況が一目で分かるグラフです。
+　  
+
+```{r}
 open_ticket <- open %>% 
   dplyr::full_join(close, by = "week") %>% 
   dplyr::select(week, open, close) %>%
@@ -292,9 +462,14 @@ open %>%
   tidyr::gather(key, value, -week) %>% 
   dplyr::left_join(open_ticket, by = "week") %>% 
   ggplot2::ggplot(ggplot2::aes(x = week)) + 
-    ggplot2::geom_bar(ggplot2::aes(y = value.y, fill = key.y), stat = "identity", alpha = 0.5,
-                      position = "dodge") +
-    ggplot2::geom_line(ggplot2::aes(y = value.x, colour = key.x), stat = "identity")
+    ggplot2::geom_bar(ggplot2::aes(y = value.y, fill = key.y),
+                      stat = "identity", alpha = 0.5, position = "dodge") +
+    ggplot2::geom_line(ggplot2::aes(y = value.x, colour = key.x),
+                       stat = "identity", size = 0.75) + 
+    ggplot2::scale_color_hue(name = "累計",
+                             labels = c(cumclose = "Closed", cumopen = "Open")) +
+    ggplot2::scale_fill_hue(name = "週次",
+                            labels = c(close = "Closed", open = "Open"))
 ```
 
 　  
@@ -305,12 +480,14 @@ open %>%
 
 ```{r}
 x %>% 
+  dplyr::filter(open >= "2018-1-1") %>% 
   dplyr::filter(status != "Closed") %>% 
   dplyr::mutate(days = lubridate::today() - open + 1) %>% 
   dplyr::group_by(priority) %>% 
   dplyr::summarise(min = min(days), med = median(days), max = max(days))
 
 x %>% 
+  dplyr::filter(open >= "2018-1-1") %>% 
   dplyr::filter(status != "Closed") %>% 
   dplyr::mutate(days = lubridate::today() - open + 1) %>% 
   ggplot2::ggplot(ggplot2::aes(x = priority, y = days)) + 
@@ -328,6 +505,7 @@ x %>%
                    mode = which.max(table(days)))
 
 x %>% 
+  dplyr::filter(open >= "2018-1-1") %>% 
   dplyr::filter(status != "Closed") %>% 
   dplyr::mutate(days = lubridate::today() - open + 1) %>% 
   ggplot2::ggplot(ggplot2::aes(x = category, y = days)) + 
@@ -415,6 +593,27 @@ open %>%
     ggplot2::labs(x = "days", y = "Number of tickets",
                   title = "Open - Closed Chart") + 
     NULL
+```
+
+
+# Tips
+## 集計を加える
+```{r}
+row_sum <- x %>% 
+  dplyr::count(tracker, status) %>% 
+  tidyr::spread(key = tracker, value = n) %>% 
+  dplyr::mutate(Sum = ifelse(is.na(Defect), 0, Defect) + 
+                  ifelse(is.na(Patch), 0, Patch)) %>% 
+  dplyr::summarise_if(is.numeric, sum, na.rm = TRUE) %>% 
+  dplyr::mutate(status = NA) %>% 
+  dplyr::select(status, Defect, Patch, Sum)
+
+x %>% 
+  dplyr::count(tracker, status) %>% 
+  tidyr::spread(key = tracker, value = n) %>% 
+  dplyr::mutate(Sum = ifelse(is.na(Defect), 0, Defect) + 
+                  ifelse(is.na(Patch), 0, Patch)) %>% 
+  dplyr::bind_rows(row_sum)
 ```
 
 # 参考資料
