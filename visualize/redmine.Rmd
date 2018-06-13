@@ -37,7 +37,7 @@ redmine    | N/A      | N/A     | [Redmine Issues <i class="fa fa-external-link"
 
 　  
 
-バグチケットは[Redmine <i class="fa fa-external-link"></i>](http://www.redmine.org/){target="_blank" title="Redmine.org"}が公開しているRedmine自体のバグチケットを用います。RedmineはGPL v2ライセンスの下で提供されているオープンソースのプロジェクト管理ソフトウェアです。上の表の場所でチケットを公開していますが、一度に50レコードまでしかダウンロードできないため事前にこちらで取得したレコードをデータフレーム形式にまとめたものを利用します。なお、[Redmine <i class="fa fa-external-link"></i>](http://www.redmine.org/){target="_blank" title="Redmine.org"}ではREST APIを利用してJSON形式でのチケットう情報の取得が可能ですが、REST APIでは一度に25件しかチケットを取得できない点に注意してください。  
+バグチケットは[Redmine <i class="fa fa-external-link"></i>](http://www.redmine.org/){target="_blank" title="Redmine.org"}が公開しているRedmine自体のバグチケットを用います。RedmineはGPL v2ライセンスの下で提供されているオープンソースのプロジェクト管理ソフトウェアです。上の表の場所でチケットを公開していますが、一度に50レコードまでしかダウンロードできないため事前にこちらで取得したレコードをデータフレーム形式にまとめたものを利用しています。なお、[Redmine <i class="fa fa-external-link"></i>](http://www.redmine.org/){target="_blank" title="Redmine.org"}ではREST APIを利用してJSON形式でのチケット情報の取得が可能ですが、REST APIでは一度に25件しかチケットを取得できない点に注意してください。  
 　  
 
 # チケット情報のインポート
@@ -222,6 +222,8 @@ x %>%
 
 ### Priority and Status
 
+　  
+
 #### Defectチケット
 ```{r}
 x %>% 
@@ -239,6 +241,8 @@ x %>%
   dplyr::count(priority, status) %>% 
   tidyr::spread(key = priority, value = n)
 ```
+
+　  
 
 #### 対象レコードの抽出
 クロス集計の結果優先度が`Urgent`であるチケットがあることが分かりましたので、対象が何かを表示させてみます。クロス集計で検索条件が分かっていますので絞り込むだけです。  
@@ -423,7 +427,7 @@ x %>%
 
 　  
 
-### Affected vs Status
+### Affected version vs Status
 バージョンごとのチケットの完了状況をチケット起票年ごとに分けて表示することで過去バグと最近のバグの発生状況を俯瞰できるようになります。  
 　  
 
@@ -541,73 +545,8 @@ open %>%
 
 　  
 
-## 滞留期間の可視化
-優先度ごとにチケットがどれだけ滞留されているか可視化してみます。  
-　  
-
-```{r}
-x %>% 
-  dplyr::filter(open >= "2018-1-1") %>% 
-  dplyr::filter(status != "Closed") %>% 
-  dplyr::mutate(days = lubridate::today() - open + 1) %>% 
-  dplyr::group_by(priority) %>% 
-  dplyr::summarise(min = min(days), med = median(days), max = max(days))
-
-x %>% 
-  dplyr::filter(open >= "2018-1-1") %>% 
-  dplyr::filter(status != "Closed") %>% 
-  dplyr::mutate(days = lubridate::today() - open + 1) %>% 
-  ggplot2::ggplot(ggplot2::aes(x = priority, y = days)) + 
-    ggplot2::geom_boxplot()
-```
-
-　  
-同様にカテゴリごとの滞留期間を可視化してみます。
-```{r}
-x %>% 
-  dplyr::filter(open >= "2018-1-1") %>% 
-  dplyr::filter(status != "Closed") %>% 
-  dplyr::mutate(days = lubridate::today() - open + 1) %>% 
-  dplyr::group_by(category) %>% 
-  dplyr::summarise(min = min(days), med = median(days), max = max(days),
-                   mode = which.max(table(days)))
-
-x %>% 
-  dplyr::filter(open >= "2018-1-1") %>% 
-  dplyr::filter(status != "Closed") %>% 
-  dplyr::mutate(days = lubridate::today() - open + 1) %>% 
-  ggplot2::ggplot(ggplot2::aes(x = category, y = days)) + 
-    ggplot2::geom_boxplot()
-```
-
-滞留期間のヒストグラム
-　  
-
-## 対処期間の可視化
-カテゴリごとのチケット対処期間（開始日から終了日までの期間）を可視化してみます。  
-　  
-
-```{r}
-x %>% 
-  dplyr::filter(status == "Closed") %>% 
-  dplyr::mutate(days = close - open + 1) %>% 
-  dplyr::group_by(category) %>% 
-  dplyr::summarise(min = min(days), med = median(days), max = max(days),
-                   mode = which.max(table(days)))
-  
-x %>% 
-  dplyr::filter(status == "Closed") %>% 
-  dplyr::mutate(days = close - open + 1) %>% 
-  ggplot2::ggplot(ggplot2::aes(x = category, y = days)) + 
-    ggplot2::geom_boxplot()
-```
-
-　  
-
-
-
-## 対処推移の可視化
-チケットのオープン数とクローズ数の推移を可視化してみます。データ数が多いので2018年4月1日以降のチケットのみを対象としています。  
+### 日次のオープン・クローズチャート
+日次の場合は試験稼働が発生していない日はチケット起票がゼロとは言えず、無稼働日を除かないとチャートが横に寝てしまい正しい傾向が掴めませんので注意してください。  
 　  
 
 ```{r}
@@ -653,19 +592,88 @@ open %>%
   dplyr::bind_rows(closed) %>% 
   dplyr::arrange(Date) %>% 
   ggplot2::ggplot(ggplot2::aes(x = Date, y = Cumsum)) +
-    # ggplot2::geom_area(aes(fill = Status), alpha = 0.5, position = "stack")
-    # ggplot2::geom_area(aes(fill = Status), alpha = 0.5, position = "identity") +
-    ggplot2::geom_line(ggplot2::aes(colour = Status)) +
-    # ggplot2::geom_smooth(ggplot2::aes(colour = Status)) +
-    ggplot2::geom_bar(ggplot2::aes(y = n, fill = Status), stat = "identity") + 
+    ggplot2::geom_line(ggplot2::aes(colour = Status), size = 0.75) +
+    ggplot2::geom_bar(ggplot2::aes(y = n, fill = Status), stat = "identity",
+                      position = "dodge") + 
     ggplot2::labs(x = "days", y = "Number of tickets",
                   title = "Open - Closed Chart") + 
     NULL
 ```
 
+　  
+
+## 滞留期間の可視化
+優先度ごとにチケットがどれだけ滞留されているか可視化してみます。  
+　  
+
+```{r}
+x %>% 
+  dplyr::filter(open >= "2018-1-1") %>% 
+  dplyr::filter(status != "Closed") %>% 
+  dplyr::mutate(days = lubridate::today() - open + 1) %>% 
+  dplyr::group_by(priority) %>% 
+  dplyr::summarise(min = min(days), med = median(days), max = max(days))
+
+x %>% 
+  dplyr::filter(open >= "2018-1-1") %>% 
+  dplyr::filter(status != "Closed") %>% 
+  dplyr::mutate(days = lubridate::today() - open + 1) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = priority, y = days, colour = priority)) + 
+    ggplot2::geom_boxplot() + 
+    ggplot2::geom_jitter()
+```
+
+　  
+
+同様にカテゴリごとの滞留期間を可視化してみます。
+```{r}
+x %>% 
+  dplyr::filter(open >= "2018-1-1") %>% 
+  dplyr::filter(status != "Closed") %>% 
+  dplyr::mutate(days = lubridate::today() - open + 1) %>% 
+  dplyr::group_by(category) %>% 
+  dplyr::summarise(min = min(days), med = median(days), max = max(days),
+                   mode = which.max(table(days)))
+
+x %>% 
+  dplyr::filter(open >= "2018-1-1") %>% 
+  dplyr::filter(status != "Closed") %>% 
+  dplyr::mutate(days = lubridate::today() - open + 1) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = category, y = days)) + 
+    ggplot2::geom_boxplot()
+```
+
+　  
+
+## 対処期間の可視化
+カテゴリごとのチケット対処期間（開始日から終了日までの期間）を可視化してみます。  
+　  
+
+```{r}
+x %>% 
+  dplyr::filter(status == "Closed") %>% 
+  dplyr::mutate(days = close - open + 1) %>% 
+  dplyr::group_by(category) %>% 
+  dplyr::summarise(min = min(days), med = median(days), max = max(days),
+                   mode = which.max(table(days)))
+  
+x %>% 
+  dplyr::filter(status == "Closed") %>% 
+  dplyr::mutate(days = close - open + 1) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = category, y = days)) + 
+    ggplot2::geom_boxplot()
+```
+
+　  
 
 # Tips
-## 集計を加える
+
+　  
+
+## 小計を加える
+`dplyr`パッケージでクロス集計に小計を加える場合は以下のコードを参考にしてください。  
+　  
+
 ```{r}
 row_sum <- x %>% 
   dplyr::count(tracker, status) %>% 
@@ -683,6 +691,8 @@ x %>%
                   ifelse(is.na(Patch), 0, Patch)) %>% 
   dplyr::bind_rows(row_sum)
 ```
+
+　  
 
 # 参考資料
 
