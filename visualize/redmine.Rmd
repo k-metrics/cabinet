@@ -434,6 +434,47 @@ x %>%
 
 　  
 
+同様にカテゴリごとの滞留期間を可視化してみます。
+```{r}
+x %>% 
+  dplyr::filter(open >= "2018-1-1") %>% 
+  dplyr::filter(status != "Closed") %>% 
+  dplyr::mutate(days = lubridate::today() - open + 1) %>% 
+  dplyr::group_by(category) %>% 
+  dplyr::summarise(min = min(days), med = median(days), max = max(days),
+                   mode = which.max(table(days)))
+
+x %>% 
+  dplyr::filter(open >= "2018-1-1") %>% 
+  dplyr::filter(status != "Closed") %>% 
+  dplyr::mutate(days = lubridate::today() - open + 1) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = category, y = days)) + 
+    ggplot2::geom_boxplot()
+```
+
+　  
+
+### 対処期間の可視化
+カテゴリごとのチケット対処期間（開始日から終了日までの期間）を可視化してみます。  
+　  
+
+```{r}
+x %>% 
+  dplyr::filter(status == "Closed") %>% 
+  dplyr::mutate(days = close - open + 1) %>% 
+  dplyr::group_by(category) %>% 
+  dplyr::summarise(min = min(days), med = median(days), max = max(days),
+                   mode = which.max(table(days)))
+  
+x %>% 
+  dplyr::filter(status == "Closed") %>% 
+  dplyr::mutate(days = close - open + 1) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = category, y = days)) + 
+    ggplot2::geom_boxplot()
+```
+
+　  
+
 ## 比率の可視化
 集計結果の比率（割合）を可視化する方法としては棒グラフ、円グラフ、およびそれらの層別グラフなどがあります。層別するメリットは因子の水準ごとの違いの有無が把握できるようになることです。  
 　  
@@ -502,7 +543,7 @@ x %>%
   ggplot2::ggplot(ggplot2::aes(x = as.character(quarter))) + 
     ggplot2::geom_bar(ggplot2::aes(y = ticket, fill = priority),
                       stat = "identity", alpha = 0.5) + 
-    ggplot2::labs(x = "", y = "Number of Defect 'Closed' Ticket",
+    ggplot2::labs(x = "", y = "Number of 'Closed' Defect Ticket",
                   title = "四半期ごとの完了バグチケット数の推移")
 ```
 
@@ -520,6 +561,7 @@ open <- x %>%
 
 close <- x %>% 
   dplyr::filter(open >= "2018-1-1" & tracker == "Defect") %>% 
+  dplyr::filter(close >= "2018-1-1") %>% 
   dplyr::mutate(week = lubridate::week(close)) %>% 
   dplyr::filter(!is.na(week))
 
@@ -553,7 +595,7 @@ open %>%
   dplyr::mutate(diff_offset = diff + round(mean(open, na.rm = TRUE))) %>% 
   ggplot2::ggplot(ggplot2::aes(x = week)) +
     ggplot2::geom_bar(ggplot2::aes(y = open), stat = "identity", alpha = 0.25) + 
-    ggplot2::geom_hline(yintercept = round(mean(open$open, na.rm = TRUE)),
+    ggplot2::geom_hline(yintercept = round(mean(open$open, na.rm = TRUE), 1),
                         colour = "#00bfc4", linetype = "dashed") + 
     ggplot2::geom_line(ggplot2::aes(y = diff_offset), colour = "#00bfc4",
                        size = 0.75)
@@ -568,6 +610,7 @@ open %>%
 ```{r}
 close <- x %>% 
   dplyr::filter(open >= "2018-1-1" & tracker == "Defect") %>% 
+  dplyr::filter(close >= "2018-1-1") %>% 
   dplyr::mutate(week = lubridate::week(close)) %>% 
   dplyr::filter(!is.na(week))
   
@@ -583,7 +626,7 @@ close %>%
   dplyr::rename(`週` = week, `チケットクローズ数` = close, `累計` = cumclose,
                 `前週との差` = diff)
 close %>% 
-  dplyr::mutate(diff_offset = diff + round(mean(close, na.rm = TRUE))) %>% 
+  dplyr::mutate(diff_offset = diff + round(mean(close, na.rm = TRUE)), 1) %>% 
   ggplot2::ggplot(ggplot2::aes(x = week)) +
     ggplot2::geom_bar(ggplot2::aes(y = close), stat = "identity", alpha = 0.25) + 
     ggplot2::geom_hline(yintercept = round(mean(close$close, na.rm = TRUE)),
@@ -619,11 +662,14 @@ open %>%
     ggplot2::scale_color_hue(name = "累計",
                              labels = c(cumclose = "Closed", cumopen = "Open")) +
     ggplot2::scale_fill_hue(name = "週次",
-                            labels = c(close = "Closed", open = "Open"))
+                            labels = c(close = "Closed", open = "Open")) +
+    ggplot2::labs(y = "Number of Defect Ticket",
+                  title = "週次のバグチケット数の推移")
 ```
 
 　  
 個別にチャートを描いた場合に見えたようにクローズ傾向が低調なため処理が完了しないチケットが増えていることが分かります。  
+このグラフに試験項目数（計画、実績）のバーンダウンチャートを加えれば週次管理表になります。  
 　  
 
 ### 日次のオープン・クローズチャート
@@ -631,118 +677,66 @@ open %>%
 　  
 
 ```{r}
-df_date <- seq(from = range(x$open)[1], to = range(x$open)[2], by = 1) %>%
-  as.data.frame()
-names(df_date) <- c("Date")
-df_date <- df_date %>% 
-  dplyr::filter(Date >= "2018-4-1")
-
 open <- x %>% 
-  dplyr::select(ID = no, Tracker = tracker, Status = status,
-                OpenDateTime = open, CloseDateTime = close) %>% 
-  dplyr::mutate_at(vars(Status),
-                   funs(replace(., (. != "Closed"), "Open"))) %>% 
-  dplyr::filter(Tracker == "Defect" & Status != "Closed") %>% 
-  dplyr::mutate(Date = dplyr::if_else(Status == "Closed", 
-                                      lubridate::as_date(CloseDateTime),
-                                      lubridate::as_date(OpenDateTime))) %>% 
-  dplyr::arrange(Date) %>% 
-  dplyr::count(Date, Status) %>% 
-  dplyr::right_join(df_date, by = "Date") %>% 
-  dplyr::mutate_at(vars(n), funs(replace(., is.na(.), 0))) %>% 
-  dplyr::mutate_at(vars(Status), funs(replace(., is.na(.), "Open"))) %>% 
-  dplyr::mutate(Cumsum = cumsum(n))
+  dplyr::filter(open >= "2018-1-1" & tracker == "Defect") %>% 
+  dplyr::filter(!is.na(open))
 
-closed <- x %>% 
-  dplyr::select(ID = no, Tracker = tracker, Status = status,
-                OpenDateTime = open, CloseDateTime = close) %>% 
-  dplyr::mutate_at(vars(Status),
-                   funs(replace(., (. != "Closed"), "Open"))) %>% 
-  dplyr::filter(Tracker == "Defect" & Status == "Closed") %>% 
-  dplyr::mutate(Date = dplyr::if_else(Status == "Closed", 
-                                      lubridate::as_date(CloseDateTime),
-                                      lubridate::as_date(OpenDateTime))) %>% 
-  dplyr::arrange(Date) %>% 
-  dplyr::count(Date, Status) %>% 
-  dplyr::right_join(df_date, by = "Date") %>% 
-  dplyr::mutate_at(vars(n), funs(replace(., is.na(.), 0))) %>% 
-  dplyr::mutate_at(vars(Status), funs(replace(., is.na(.), "Closed"))) %>% 
-  dplyr::mutate(Cumsum = cumsum(n))
+close <- x %>% 
+  dplyr::filter(open >= "2018-1-1" & tracker == "Defect") %>% 
+  dplyr::filter(close >= "2018-1-1") %>% 
+  dplyr::filter(!is.na(close))
 
-open %>% 
-  dplyr::bind_rows(closed) %>% 
-  dplyr::arrange(Date) %>% 
-  ggplot2::ggplot(ggplot2::aes(x = Date, y = Cumsum)) +
-    ggplot2::geom_line(ggplot2::aes(colour = Status), size = 0.75) +
-    ggplot2::geom_bar(ggplot2::aes(y = n, fill = Status), stat = "identity",
-                      position = "dodge") + 
-    ggplot2::labs(x = "days", y = "Number of tickets",
-                  title = "Open - Closed Chart") + 
-    NULL
-```
+start <- ifelse(range(open$open)[1] <= range(close$close)[1],
+                range(open$open)[1], range(close$close)[1]) %>%
+  lubridate::as_date()
+                
+end <- ifelse(range(open$open)[2] <= range(close$close)[2],
+              range(open$open)[2], range(close$close)[2]) %>%
+  lubridate::as_date()
 
-　  
+df_days <- 
+  seq(start, end, by = 1) %>% as.data.frame()
+names(df_days) <- c("days")
 
-## 滞留期間の可視化
-優先度ごとにチケットがどれだけ滞留されているか可視化してみます。  
-　  
+open_ticket <- df_days %>% 
+  dplyr::left_join(open, by = c("days" = "open")) %>% 
+  dplyr::mutate(flag = ifelse(is.na(no), 0, 1)) %>% 
+  dplyr::group_by(days) %>% 
+  dplyr::summarise(open = sum(flag)) %>% 
+  dplyr::arrange(days) %>% 
+  dplyr::mutate(cumopen = cumsum(open))
 
-```{r}
-x %>% 
-  dplyr::filter(open >= "2018-1-1") %>% 
-  dplyr::filter(status != "Closed") %>% 
-  dplyr::mutate(days = lubridate::today() - open + 1) %>% 
-  dplyr::group_by(priority) %>% 
-  dplyr::summarise(min = min(days), med = median(days), max = max(days))
+close_ticket <- df_days %>% 
+  dplyr::left_join(close, by = c("days" = "close")) %>%
+  dplyr::mutate(flag = ifelse(is.na(no), 0, 1)) %>% 
+  dplyr::group_by(days) %>% 
+  dplyr::summarise(close = sum(flag)) %>% 
+  dplyr::arrange(days) %>% 
+  dplyr::mutate(cumclose = cumsum(close))
 
-x %>% 
-  dplyr::filter(open >= "2018-1-1") %>% 
-  dplyr::filter(status != "Closed") %>% 
-  dplyr::mutate(days = lubridate::today() - open + 1) %>% 
-  ggplot2::ggplot(ggplot2::aes(x = priority, y = days, colour = priority)) + 
-    ggplot2::geom_boxplot() + 
-    ggplot2::geom_jitter()
-```
+bar_data <- open_ticket %>% 
+  dplyr::left_join(close_ticket, by = "days") %>% 
+  dplyr::select(days, open, close) %>% 
+  tidyr::gather(key, value , -days)
 
-　  
+line_data <- open_ticket %>% 
+  dplyr::left_join(close_ticket, by = "days") %>% 
+  dplyr::select(days, cumopen, cumclose) %>% 
+  tidyr::gather(key, value , -days)
 
-同様にカテゴリごとの滞留期間を可視化してみます。
-```{r}
-x %>% 
-  dplyr::filter(open >= "2018-1-1") %>% 
-  dplyr::filter(status != "Closed") %>% 
-  dplyr::mutate(days = lubridate::today() - open + 1) %>% 
-  dplyr::group_by(category) %>% 
-  dplyr::summarise(min = min(days), med = median(days), max = max(days),
-                   mode = which.max(table(days)))
-
-x %>% 
-  dplyr::filter(open >= "2018-1-1") %>% 
-  dplyr::filter(status != "Closed") %>% 
-  dplyr::mutate(days = lubridate::today() - open + 1) %>% 
-  ggplot2::ggplot(ggplot2::aes(x = category, y = days)) + 
-    ggplot2::geom_boxplot()
-```
-
-　  
-
-## 対処期間の可視化
-カテゴリごとのチケット対処期間（開始日から終了日までの期間）を可視化してみます。  
-　  
-
-```{r}
-x %>% 
-  dplyr::filter(status == "Closed") %>% 
-  dplyr::mutate(days = close - open + 1) %>% 
-  dplyr::group_by(category) %>% 
-  dplyr::summarise(min = min(days), med = median(days), max = max(days),
-                   mode = which.max(table(days)))
-  
-x %>% 
-  dplyr::filter(status == "Closed") %>% 
-  dplyr::mutate(days = close - open + 1) %>% 
-  ggplot2::ggplot(ggplot2::aes(x = category, y = days)) + 
-    ggplot2::geom_boxplot()
+bar_data %>% 
+  dplyr::left_join(line_data, by = "days") %>% 
+  ggplot2::ggplot(ggplot2::aes(x = days)) + 
+    ggplot2::geom_bar(ggplot2::aes(y = value.x, fill = key.x),
+                      stat = "identity", alpha = 0.5, position = "dodge") +
+    ggplot2::geom_line(ggplot2::aes(y = value.y, colour = key.y),
+                       stat = "identity", size = 0.75) + 
+    ggplot2::scale_color_hue(name = "累計",
+                             labels = c(cumclose = "Closed", cumopen = "Open")) +
+    ggplot2::scale_fill_hue(name = "日次",
+                            labels = c(close = "Closed", open = "Open")) +
+    ggplot2::labs(y = "Number of Defect Ticket",
+                  title = "日次のバグチケット数の推移")
 ```
 
 　  
@@ -752,7 +746,7 @@ x %>%
 　  
 
 ## 小計を加える
-`dplyr`パッケージでクロス集計に小計を加える場合は以下のコードを参考にしてください。  
+`dplyr`パッケージでクロス集計に小計を加える場合は以下のコードを参考にしてください。`Sum`列が行方向（各列）の小計、`status`の`NA`行が列方向（各行）の小計になります。  
 　  
 
 ```{r}
