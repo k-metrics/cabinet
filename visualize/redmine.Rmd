@@ -17,7 +17,7 @@ knitr::opts_chunk$set(warning = FALSE, echo = TRUE, message = FALSE)
 require(tidyverse)
 ```
 
-バグトラッキングシステム（以降、BTS）のチケットデータには様々な情報が記録されており品質分析に使わない手はありません。バグチケットの分析は個々のチケットに対する定性分析を行うことが多いですが、ODC分析のようにクロス集計を用いる方法もあります。ODC分析にはODC分析用のタグが必要ですが、ここでは基本的なバグチケットにある情報（項目）を用いた可視化の方法を探って行きます。  
+バグトラッキングシステム（以降、BTS）のチケットデータには様々な情報が記録されており品質分析に使わない手はありません。バグチケットの分析は個々のチケットに対する定性分析を行うことが多いですが、定量分析の面から考えるとバグチケット自体はカテゴリカルデータの塊ですのでODC分析のようにクロス集計を用いる方法が考えられます。ODC分析ではODC分析用のタグに基づいた分析を行いますが、ここではバグチケットにある基本的な情報（項目）を用いた可視化の方法を探って行きます。  
 　  
 
 なお、本ページでは`r R.version$version.string`の標準パッケージ以外に以下の追加パッケージを用いています。  
@@ -37,11 +37,11 @@ redmine    | N/A      | N/A     | [Redmine Issues <i class="fa fa-external-link"
 
 　  
 
-バグチケットは[Redmine <i class="fa fa-external-link"></i>](http://www.redmine.org/){target="_blank" title="Redmine.org"}が公開しているRedmine自体のバグチケットを用います。RedmineはGPL v2ライセンスの下で提供されているオープンソースのプロジェクト管理ソフトウェアです。上の表の場所でチケットを公開していますが、一度に50レコードまでしかダウンロードできないため事前にこちらで取得したレコードをデータフレーム形式にまとめたものを利用しています。なお、[Redmine <i class="fa fa-external-link"></i>](http://www.redmine.org/){target="_blank" title="Redmine.org"}ではREST APIを利用してJSON形式でのチケット情報の取得が可能ですが、REST APIでは一度に25件しかチケットを取得できない点に注意してください。  
+バグチケットは[Redmine <i class="fa fa-external-link"></i>](http://www.redmine.org/){target="_blank" title="Redmine.org"}が公開しているRedmine自体のバグチケットを用います。RedmineはGPL v2ライセンスの下で提供されているオープンソースのプロジェクト管理ソフトウェアです。上表のリンク先でチケットを公開していますが、一度に50レコードまでしかダウンロードできないため事前にこちらで取得したレコードをデータフレーム形式にまとめたものを利用しています。なお、[Redmine <i class="fa fa-external-link"></i>](http://www.redmine.org/){target="_blank" title="Redmine.org"}はREST APIを提供しておりJSON形式でチケット情報取得が可能ですが、REST APIは一度に25件しかチケット情報を取得できない点に注意してください。  
 　  
 
 # チケット情報のインポート
-前述のように今回は事前に整理したデータフレーム形式のチケット情報を用いますが、実際にはBTSのAPI機能やBTSのDBMSから直接取得することをおすゝめします。直接取得できない場合は、CSVファイルへエクスポートするなどの方法を取ってください。  
+前述のように今回は事前に整理したデータフレーム形式のチケット情報を用いますが、実際にはBTSのAPI機能やBTSのDBMSから直接データを取得することをおすゝめします。直接取得できない場合は、今回のようにCSVファイルへエクスポートするなどの方法を取ってください。  
 　  
 
 ## チケットの項目
@@ -112,7 +112,7 @@ summary(x)
 
 　  
 
-# チケットの集計
+# 集計による可視化
 データフレームに対する集計を行うには`dplyr::group_by`関数＋`dplyr::summarise`関数または`dplyr::count`関数を用いるのが便利です。  
 　  
 なお、以下の二つのコードは共に`data`に含まれる`key`変数の水準毎に個数を数えるもので結果は等価になります。  
@@ -290,7 +290,7 @@ x %>%
 #### 起票されたチケットの推移
 ```{r}
 x %>% 
-  dplyr::filter(open >= "2018-1-1") %>% 
+  dplyr::filter(open >= "2018-1-1" & tracker == "Defect") %>% 
   dplyr::mutate(flag = ifelse(is.na(open), 0, 1)) %>% 
   dplyr::group_by(open) %>% 
   dplyr::summarise(ticket = sum(flag)) %>% 
@@ -308,8 +308,9 @@ x %>%
 #### 起票されたチケットの推移
 ```{r}
 x %>% 
-  dplyr::filter(open >= "2018-1-1") %>% 
+  dplyr::filter(open >= "2018-1-1" & tracker == "Defect") %>% 
   dplyr::mutate(week = lubridate::week(open)) %>% 
+  dplyr::filter(!is.na(week)) %>% 
   dplyr::mutate(flag = ifelse(is.na(open), 0, 1)) %>% 
   dplyr::group_by(week) %>% 
   dplyr::summarise(ticket = sum(flag)) %>% 
@@ -323,8 +324,9 @@ x %>%
 #### 完了したチケットの推移
 ```{r}
 x %>% 
-  dplyr::filter(close >= "2018-1-1") %>% 
+  dplyr::filter(open >= "2018-1-1" & tracker == "Defect") %>% 
   dplyr::mutate(week = lubridate::week(close)) %>% 
+  dplyr::filter(!is.na(week)) %>% 
   dplyr::mutate(flag = ifelse(is.na(close), 0, 1)) %>% 
   dplyr::group_by(week) %>% 
   dplyr::summarise(ticket = sum(flag)) %>% 
@@ -342,7 +344,7 @@ x %>%
 #### 起票されたチケットの推移
 ```{r}
 x %>% 
-  dplyr::filter(open >= "2018-1-1") %>% 
+  dplyr::filter(open >= "2018-1-1" & tracker == "Defect") %>% 
   dplyr::mutate(month = lubridate::month(open)) %>% 
   dplyr::mutate(flag = ifelse(is.na(open), 0, 1)) %>% 
   dplyr::group_by(month) %>% 
@@ -361,6 +363,7 @@ x %>%
 #### 起票されたチケットの推移
 ```{r}
 x %>% 
+  dplyr::filter(tracker == "Defect") %>% 
   dplyr::mutate(quarter = lubridate::quarter(open, with_year = TRUE,
                                              fiscal_start = 1)) %>% 
   dplyr::mutate(flag = ifelse(is.na(open), 0, 1)) %>% 
@@ -380,6 +383,7 @@ x %>%
 #### 起票されたチケットの推移
 ```{r}
 x %>% 
+  dplyr::filter(tracker == "Defect") %>% 
   dplyr::mutate(year = lubridate::year(open)) %>% 
   dplyr::mutate(flag = ifelse(is.na(open), 0, 1)) %>% 
   dplyr::group_by(year) %>% 
@@ -391,16 +395,47 @@ x %>%
 
 　  
 
-# チケットの可視化
-
+# グラフによる可視化
+可視化にグラフを用いると変化や差異が把握しやすくなりますので分析の目的にあったグラフを持ちいることが大切です。  
 　  
 
 ## 分布の可視化
 分布を可視化する代表的な方法としてはヒストグラム、箱ひげ図などがあります。  
 　  
 
-## 集計の可視化
-集計結果を可視化する方法としては棒グラフ、円グラフ、それらの層別グラフなどがあります。  
+### 滞留期間の可視化
+2018年のチケットが優先度ごとにどれだけ期間滞留しているかを可視化してみます。分布を把握したい場合はヒストグラム、分布範囲を把握した場合は箱ひげ図が便利です。    
+　  
+
+```{r}
+x %>% 
+  dplyr::filter(open >= "2018-1-1" & tracker == "Defect") %>% 
+  dplyr::filter(status != "Closed") %>% 
+  dplyr::mutate(days = lubridate::today() - open + 1) %>% 
+  dplyr::group_by(priority) %>% 
+  dplyr::summarise(min = min(days), med = median(days), max = max(days))
+
+x %>% 
+  dplyr::filter(open >= "2018-1-1" & tracker == "Defect") %>% 
+  dplyr::filter(status != "Closed") %>% 
+  dplyr::mutate(days = lubridate::today() - open + 1) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = days, fill = priority)) + 
+    ggplot2::geom_histogram(alpha = 0.5, position = "identity")
+
+x %>% 
+  dplyr::filter(open >= "2018-1-1" & tracker == "Defect") %>% 
+  dplyr::filter(status != "Closed") %>% 
+  dplyr::mutate(days = lubridate::today() - open + 1) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = priority, y = days, colour = priority)) + 
+    ggplot2::geom_boxplot() + 
+    ggplot2::geom_jitter() +
+    ggplot2::coord_flip()
+```
+
+　  
+
+## 比率の可視化
+集計結果の比率（割合）を可視化する方法としては棒グラフ、円グラフ、およびそれらの層別グラフなどがあります。層別するメリットは因子の水準ごとの違いの有無が把握できるようになることです。  
 　  
 
 ### Priority vs Category, Open Tickets
@@ -428,7 +463,7 @@ x %>%
 　  
 
 ### Affected version vs Status
-バージョンごとのチケットの完了状況をチケット起票年ごとに分けて表示することで過去バグと最近のバグの発生状況を俯瞰できるようになります。  
+比率の可視化に利用する棒グラフも時系列で層別に描くと推移もみえるようになります。例えば、バージョンごとのチケットの完了状況をチケット起票年ごとに分けて表示することで過去バグと最近のバグの発生状況が俯瞰できるようになります。  
 　  
 
 ```{r}
@@ -445,15 +480,19 @@ x %>%
 　  
 
 ## 推移の可視化
-推移を可視化する代表的な方法としては折れ線グラフ、棒グラフがあります。  
+（主に時系列の）推移を可視化する代表的な方法としては折れ線グラフ、棒グラフがあります。  
 　  
 
 ### 四半期ごとの完了チケット数
+棒グラフを用いると時系列による比率の変化がみえるようになります。  
+　  
+
 ```{r}
 x %>% 
+  dplyr::filter(tracker == "Defect") %>% 
   dplyr::mutate(quarter = lubridate::quarter(close, with_year = TRUE,
                                              fiscal_start = 1)) %>% 
-  dplyr::mutate(flag = ifelse(is.na(open), 0, 1)) %>% 
+  dplyr::mutate(flag = ifelse(is.na(close), 0, 1)) %>% 
   dplyr::group_by(quarter, priority) %>% 
   dplyr::summarise(ticket = sum(flag)) %>% 
   dplyr::arrange(quarter) %>% 
@@ -462,7 +501,9 @@ x %>%
                 `前四半期との差` = ticket - dplyr::lag(ticket)) %>% 
   ggplot2::ggplot(ggplot2::aes(x = as.character(quarter))) + 
     ggplot2::geom_bar(ggplot2::aes(y = ticket, fill = priority),
-                      stat = "identity", alpha = 0.5)
+                      stat = "identity", alpha = 0.5) + 
+    ggplot2::labs(x = "", y = "Number of Defect 'Closed' Ticket",
+                  title = "四半期ごとの完了バグチケット数の推移")
 ```
 
 　  
@@ -471,16 +512,42 @@ x %>%
 前出の週次集計を可視化してみます。加えて平均起票数を基準として前週との起票数の差を折れ線グラフで表示しています。  
 　  
 
+```{r}
+open <- x %>% 
+  dplyr::filter(open >= "2018-1-1" & tracker == "Defect") %>% 
+  dplyr::mutate(week = lubridate::week(open)) %>% 
+  dplyr::filter(!is.na(week))
+
+close <- x %>% 
+  dplyr::filter(open >= "2018-1-1" & tracker == "Defect") %>% 
+  dplyr::mutate(week = lubridate::week(close)) %>% 
+  dplyr::filter(!is.na(week))
+
+df_week <- 
+  seq(ifelse(min(open$week) <= min(close$week), min(open$week), min(close$week)),
+      ifelse(max(open$week) >= max(close$week), max(open$week), max(close$week)),
+      by = 1) %>% as.data.frame()
+names(df_week) <- c("week")
+```
+
 #### 起票されたチケットの推移
 ```{r}
 open <- x %>% 
-  dplyr::filter(open >= "2018-1-1") %>% 
+  dplyr::filter(open >= "2018-1-1" & tracker == "Defect") %>% 
   dplyr::mutate(week = lubridate::week(open)) %>% 
+  dplyr::filter(!is.na(week))
+
+open <- df_week %>% 
+  dplyr::left_join(open, by = "week") %>% 
   dplyr::mutate(flag = ifelse(is.na(open), 0, 1)) %>% 
   dplyr::group_by(week) %>% 
   dplyr::summarise(open = sum(flag)) %>% 
   dplyr::arrange(week) %>% 
   dplyr::mutate(cumopen = cumsum(open), diff = open - dplyr::lag(open))
+
+open %>% 
+  dplyr::rename(`週` = week, `チケットオープン数` = open, `累計` = cumopen,
+                `前週との差` = diff)
 
 open %>% 
   dplyr::mutate(diff_offset = diff + round(mean(open, na.rm = TRUE))) %>% 
@@ -493,18 +560,28 @@ open %>%
 ```
 
 　  
+ここではチケット数のみグラフにしていますが、試験実施数を試験種別などで色分けした棒グラフなどを重ね合わせることで実施に対してどれだけのバグが摘出できているかがみえてくるようになる可能性があります。  
+　  
 
 #### 完了したチケットの推移
+同様に対処が完了したチケット数をグラフにしてみます。
 ```{r}
 close <- x %>% 
-  dplyr::filter(close >= "2018-1-1") %>% 
+  dplyr::filter(open >= "2018-1-1" & tracker == "Defect") %>% 
   dplyr::mutate(week = lubridate::week(close)) %>% 
+  dplyr::filter(!is.na(week))
+  
+close <- df_week %>% 
+  dplyr::left_join(close, by = "week") %>%
   dplyr::mutate(flag = ifelse(is.na(close), 0, 1)) %>% 
   dplyr::group_by(week) %>% 
   dplyr::summarise(close = sum(flag)) %>% 
   dplyr::arrange(week) %>% 
   dplyr::mutate(cumclose = cumsum(close), diff = close -dplyr::lag(close))
 
+close %>% 
+  dplyr::rename(`週` = week, `チケットクローズ数` = close, `累計` = cumclose,
+                `前週との差` = diff)
 close %>% 
   dplyr::mutate(diff_offset = diff + round(mean(close, na.rm = TRUE))) %>% 
   ggplot2::ggplot(ggplot2::aes(x = week)) +
@@ -516,13 +593,15 @@ close %>%
 ```
 
 　  
+チケットのオープン数と比べるとクローズ数の方がかなり低調に見えます。
+　  
 
 ### オープン・クローズチャート
 前出の週次の集計から累計データに着目したものがオープン・クローズチャートです。オープン・クローズチャートはチケットの対応状況が一目で分かるグラフです。
 　  
 
 ```{r}
-open_ticket <- open %>% 
+week_ticket <- open %>% 
   dplyr::full_join(close, by = "week") %>% 
   dplyr::select(week, open, close) %>%
   tidyr::gather(key, value, -week)
@@ -531,7 +610,7 @@ open %>%
   dplyr::full_join(close, by = "week") %>% 
   dplyr::select(week, cumopen, cumclose) %>%
   tidyr::gather(key, value, -week) %>% 
-  dplyr::left_join(open_ticket, by = "week") %>% 
+  dplyr::left_join(week_ticket, by = "week") %>% 
   ggplot2::ggplot(ggplot2::aes(x = week)) + 
     ggplot2::geom_bar(ggplot2::aes(y = value.y, fill = key.y),
                       stat = "identity", alpha = 0.5, position = "dodge") +
@@ -543,6 +622,8 @@ open %>%
                             labels = c(close = "Closed", open = "Open"))
 ```
 
+　  
+個別にチャートを描いた場合に見えたようにクローズ傾向が低調なため処理が完了しないチケットが増えていることが分かります。  
 　  
 
 ### 日次のオープン・クローズチャート
