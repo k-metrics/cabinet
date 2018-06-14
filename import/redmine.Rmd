@@ -241,51 +241,10 @@ tmp <- "./data/" %>%
 
 　  
 
-## トラッカー
-```{r}
-x %>% 
-  dplyr::group_by(tracker) %>% 
-  dplyr::summarise(n = n())
-```
+# 参考資料
 
-　  
+---
 
-## ステータス
-```{r}
-x %>% 
-  dplyr::group_by(tracker, status) %>% 
-  dplyr::summarise(n = n()) %>% 
-  tidyr::spread(key = tracker, value = n)
-```
-
-　  
-以降、ステータスとのクロス集計で各項目を見ていきます。  
-　   
-
-## 対象バージョン
-```{r}
-x %>% 
-  dplyr::group_by(status, version) %>% 
-  dplyr::summarise(n = n()) %>% 
-  tidyr::spread(key = status, value = n)
-```
-
-　  
-
-## 影響のあるバージョン
-```{r}
-x %>% 
-  dplyr::group_by(status, affected) %>% 
-  dplyr::summarise(n = n()) %>% 
-  tidyr::spread(key = status, value = n)
-```
-
-　  
-
-## 優先度
-```{r}
-x %>% 
-  dplyr::group_by(status, priority) %>% 
-  dplyr::summarise(n = n()) %>% 
-  tidyr::spread(key = status, value = n)
+<!-- Footer -->
+```{r child="../shared/footer.Rmd"}
 ```
