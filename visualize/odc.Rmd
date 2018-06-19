@@ -1,0 +1,192 @@
+---
+title: "ODC分析"
+output:
+  html_document:
+    df_print: paged
+    code_folding: show
+    css: style.css
+---
+
+```{r setup, include=FALSE}
+# 共通chunkオプションの指定
+knitr::opts_chunk$set(warning = FALSE, echo = TRUE)
+
+require(tidyverse)
+
+odc <- "./data/odc.csv" %>% 
+  readr::read_csv(locale = locale(encoding = "CP932"), progress = FALSE)
+```
+
+「dplyrのすゝめ」ではデータの扱い方を学びましたが、本チュートリアルではODC分析における可視化を例にして[R][R]で可視化処理するために必要な基礎知識を学びます。なお、本チュートリアルを実行するための必要な環境については[こちら](https://k-metrics.github.io/cabinet/program/basics/#チュートリアル資料について)で確認して下さい。
+
+なお、本ページでは`r R.version$version.string`の標準パッケージ以外に以下の追加パッケージを用いています。  
+　  
+
+Package   | Version |Description
+----------|---------|----------------------------------------------------------
+tidyverse | `r packageVersion('tidyverse')` | Easily Install and Load the ‘Tidyverse’
+
+　  
+また、本ページでは以下のデータセットを用いています。  
+　  
+
+Dataset   | Package  | Version | Description
+----------|----------|---------|----------------------------------------------
+odc       | N/A      | N/A     | ODC分析用ダミーデータ
+
+　  
+
+# ODC分析
+
+## 対象データ
+```{r}
+odc
+```
+
+Id             | ID
+要約           | Abstruct or Subject or Title
+ステータス     | Status
+解決状況       | Result
+発生日         | Date
+更新日         | Update
+障害ランク     | Rank
+再現性         | Reproducibility
+欠陥検出工程   | Step
+発生トリガー   | Trigger
+欠陥実装タイプ | I_Type or Qualifier
+欠陥混入時期   | D_Step or Age
+欠陥タイプ     | D_Type
+デグレード     | Degrade
+テスト番号     | Test_No
+
+## 欠陥検出工程x欠陥タイプ
+```{r}
+odc %>% 
+  dplyr::select(Step = '欠陥検出工程', D_Type = '欠陥タイプ') %>% 
+  # dplyr::filter(D_Type != "（障害ではない）") %>% 
+  dplyr::count(Step, D_Type) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = Step, y = n, fill = D_Type)) +
+    ggplot2::geom_bar(stat = "identity", alpha = 0.75)
+```
+
+
+## 欠陥検出工程x障害ランク
+```{r}
+odc %>% 
+  dplyr::select(Step = '欠陥検出工程', Rank = '障害ランク',
+                D_Type = '欠陥タイプ') %>% 
+  dplyr::filter(D_Type != "（障害ではない）") %>%
+  dplyr::count(Step, Rank) %>% 
+  print() %>% 
+  ggplot2::ggplot(ggplot2::aes(x = Step, y = n, fill = Rank)) +
+    ggplot2::geom_bar(stat = "identity", alpha = 0.75)
+```
+
+
+## 欠陥タイプx発生トリガー
+```{r}
+odc %>% 
+  dplyr::select(D_Type = '欠陥タイプ', Trigger = '発生トリガー') %>% 
+  # dplyr::filter(D_Type != "（障害ではない）") %>% 
+  dplyr::count(D_Type, Trigger) %>% 
+  print() %>% 
+  ggplot2::ggplot(ggplot2::aes(x = Trigger, y = n, fill = D_Type)) +
+    ggplot2::geom_bar(stat = "identity", alpha = 0.75) +
+    ggplot2::coord_flip()
+```
+
+
+## 積み重ね棒グラフ
+
+```{r, eval=FALSE}
+odc %>% 
+  dplyr::select(Status = 'ステータス', Result = '解決状況', Date = '発生日',
+                Rank = '障害ランク', Step = '欠陥検出工程',
+                Trigger = '発生トリガー', Type = '欠陥実装タイプ') %>% 
+  dplyr::count(Date, Trigger) %>% 
+  print() %>% 
+  ggplot2::ggplot(aes(x = Date, y = n)) + 
+    ggplot2::geom_bar(aes(fill = Trigger), stat = "identity")
+```
+
+## 累計
+
+```{r, eval=FALSE}
+odc %>% 
+  dplyr::select(Status = 'ステータス', Result = '解決状況', Date = '発生日',
+                Rank = '障害ランク', Step = '欠陥検出工程',
+                Trigger = '発生トリガー', Type = '欠陥実装タイプ') %>% 
+  dplyr::count(Date, Trigger) %>% 
+  tidyr::spread(key = Trigger, value = n) %>% 
+  dplyr::mutate_if(is.numeric, funs(replace(., is.na(.), 0))) %>% 
+  dplyr::mutate_if(is.numeric, cumsum) %>%
+  tidyr::gather(key = Trigger, value = n, -Date) %>% 
+  ggplot2::ggplot(aes(x = Date, y = n)) + 
+    ggplot2::geom_bar(aes(fill = Trigger), stat = "identity")
+```
+
+
+```{r, eval=FALSE}
+odc %>% 
+  dplyr::select(Status = 'ステータス', Result = '解決状況', Date = '発生日',
+                Rank = '障害ランク', Step = '欠陥検出工程',
+                Trigger = '発生トリガー', Type = '欠陥実装タイプ') %>% 
+  dplyr::filter(Type != "（障害ではない）") %>% 
+  print() %>% 
+  dplyr::count(Date, Trigger) %>% 
+  print() %>% 
+  tidyr::spread(key = Trigger, value = n) %>% 
+  dplyr::mutate_if(is.numeric, funs(replace(., is.na(.), 0))) %>% 
+  dplyr::mutate_if(is.numeric, cumsum) %>%
+  tidyr::gather(key = Trigger, value = n, -Date) %>% 
+  ggplot2::ggplot(aes(x = Date, y = n)) + 
+    ggplot2::geom_bar(aes(fill = Trigger), stat = "identity")
+```
+
+```{r, eval=FALSE}
+odc %>% 
+  dplyr::select(Status = 'ステータス', Result = '解決状況', Date = '発生日',
+                Rank = '障害ランク', Step = '欠陥検出工程',
+                Trigger = '発生トリガー', Type = '欠陥実装タイプ') %>% 
+  dplyr::filter(Type != "（障害ではない）") %>% 
+  dplyr::count(Date, Rank) %>% 
+  tidyr::spread(key = Rank, value = n) %>% 
+  dplyr::mutate_if(is.numeric, funs(replace(., is.na(.), 0))) %>% 
+  dplyr::mutate_if(is.numeric, cumsum) %>%
+  tidyr::gather(key = Rank, value = n, -Date) %>% 
+  ggplot2::ggplot(aes(x = Date, y = n)) + 
+    ggplot2::geom_bar(aes(fill = Rank), stat = "identity")
+```
+
+```{r, eval=FALSE}
+odc %>% 
+  dplyr::select(Status = 'ステータス', Result = '解決状況', Date = '発生日',
+                Rank = '障害ランク', Step = '欠陥検出工程',
+                Trigger = '発生トリガー', Type = '欠陥実装タイプ') %>% 
+  dplyr::filter(Type != "（障害ではない）") %>% 
+  dplyr::count(Date, Step) %>% 
+  tidyr::spread(key = Step, value = n) %>% 
+  dplyr::mutate_if(is.numeric, funs(replace(., is.na(.), 0))) %>% 
+  dplyr::mutate_if(is.numeric, cumsum) %>%
+  tidyr::gather(key = Step, value = n, -Date) %>% 
+  ggplot2::ggplot(aes(x = Date, y = n)) + 
+    ggplot2::geom_bar(aes(fill = Step), stat = "identity")
+```
+
+
+```{r, eval=FALSE}
+odc %>% 
+  dplyr::select(Status = 'ステータス', Result = '解決状況', Date = '発生日',
+                Rank = '障害ランク', Step = '欠陥検出工程',
+                Trigger = '発生トリガー', Type = '欠陥実装タイプ') %>% 
+  dplyr::filter(Type != "（障害ではない）") %>% 
+  dplyr::count(Date, Type) %>% 
+  tidyr::spread(key = Type, value = n) %>% 
+  dplyr::mutate_if(is.numeric, funs(replace(., is.na(.), 0))) %>% 
+  dplyr::mutate_if(is.numeric, cumsum) %>%
+  tidyr::gather(key = Type, value = n, -Date) %>% 
+  ggplot2::ggplot(aes(x = Date, y = n)) + 
+    ggplot2::geom_bar(aes(fill = Type), stat = "identity")
+```
+
+
