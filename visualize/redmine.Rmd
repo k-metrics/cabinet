@@ -521,7 +521,7 @@ x %>%
 　  
 
 ## 推移の可視化
-（主に時系列の）推移を可視化する代表的な方法としては折れ線グラフ、棒グラフがあります。  
+（主に時系列の）推移を可視化する代表的な方法としては折れ線グラフ、棒グラフ、ヒートマップがあります。  
 　  
 
 ### 四半期ごとの完了チケット数
@@ -739,6 +739,29 @@ bar_data %>%
                             labels = c(close = "Closed", open = "Open")) +
     ggplot2::labs(y = "Number of Defect Ticket",
                   title = "日次のバグチケット数の推移")
+```
+
+　  
+
+### ヒートマップ
+推移を見るには前述のように折れ線グラフや棒グラフを利用することが多いですが、対象期間が長くなるとグラフが見難くなる場合があります。そんな時に便利なグラフがヒートマップです。数値の大小を色で表で表しますので、特にピークやボトムの推移を把握するのに向いています。
+　  
+
+```{r}
+x %>% 
+  dplyr::filter(tracker == "Defect") %>% 
+  dplyr::count(open) %>% 
+  dplyr::mutate(year = lubridate::year(open), month = lubridate::month(open),
+                week = lubridate::week(open),
+                wday = lubridate::wday(open, label = TRUE),
+                mweek = week - 
+                  lubridate::week(lubridate::floor_date(open, "month")) + 1) %>%
+  ggplot2::ggplot(ggplot2::aes(x = mweek, y = wday, fill = n)) + 
+    ggplot2::facet_grid(year ~ month) + 
+    ggplot2::geom_tile() + 
+    ggplot2::scale_fill_gradient(low = "gray", high = "red") + 
+    ggplot2::labs(x = "", y = "") + 
+    ggplot2::theme_bw()
 ```
 
 　  
