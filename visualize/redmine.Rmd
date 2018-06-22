@@ -750,16 +750,25 @@ bar_data %>%
 ```{r}
 x %>% 
   dplyr::filter(tracker == "Defect") %>% 
-  dplyr::count(open) %>% 
-  dplyr::mutate(year = lubridate::year(open), month = lubridate::month(open),
-                week = lubridate::week(open),
-                wday = lubridate::wday(open, label = TRUE),
-                mweek = week - 
-                  lubridate::week(lubridate::floor_date(open, "month")) + 1) %>%
+  dplyr::select(date = open) %>% 
+  dplyr::count(date) %>% 
+# ヒートマップに項目に応じて年、月、週、日、曜日などを求める
+  dplyr::mutate(year = lubridate::year(date), month = lubridate::month(date),
+                week = lubridate::isoweek(date), day = lubridate::day(date),
+                wday = lubridate::wday(date, label = TRUE, week_start = 1),
+                tweek = lubridate::isoweek(lubridate::floor_date(date, "month"))) %>% 
+# ISO 8601に特有の処理
+  dplyr::mutate(offset = ifelse(tweek == 53, 54, 1)) %>% 
+  dplyr::mutate(offset = ifelse(tweek == 52, 53, offset)) %>% 
+  dplyr::mutate(offset = ifelse(tweek > week, tweek - week + 1, offset)) %>%
+# 例外処理
+  dplyr::mutate(offset = ifelse(tweek == week, 1, offset)) %>%
+# 月内の週数を計算する
+  dplyr::mutate(mweek = week - tweek + offset) %>% 
   ggplot2::ggplot(ggplot2::aes(x = mweek, y = wday, fill = n)) + 
     ggplot2::facet_grid(year ~ month) + 
     ggplot2::geom_tile() + 
-    ggplot2::scale_fill_gradient(low = "gray", high = "red") + 
+    ggplot2::scale_fill_gradient(low = "lightyellow", high = "red") + 
     ggplot2::labs(x = "", y = "") + 
     ggplot2::theme_bw()
 ```
@@ -772,8 +781,8 @@ x %>%
 
 関数            | 処理概要                              | 備考
 ----------------|---------------------------------------|-----
-`lubridate::week` | 1月1日を基準に7日単位で週数を計算する | 
-`lubridate::isoweek` | ISO 8601にしたがって週数を計算する | 月曜開始
+`lubridate::week` | 1月1日を基準に7日単位で週番号を計算する | 
+`lubridate::isoweek` | ISO 8601にしたがって週番号を計算する | 月曜開始
 `lubridate::epiweek` | epidemiological week               | 日曜開始
 
 　  
@@ -788,7 +797,7 @@ x %>%
 　  
 月内週数は以下の計算で求められます。  
 
-$$指定日の週番号 - 月初日の週番号 + 1$$
+$$月内週数を求めたい日（指定日）の週番号 - 月初日の週番号 + 1$$
 
 [R][R]で計算する場合は`lubridate`パッケージを用います。ISO 8601で計算しますので、上記の注意事項を考慮して以下のようなコードになります。`x`は月内週数を計算したい日（指定日）です。  
 
@@ -826,10 +835,11 @@ x %>%
   dplyr::mutate(offset = ifelse(tweek == week, 1, offset)) %>%
 # 月内の週数を計算する
   dplyr::mutate(mweek = week - tweek + offset) %>%
+# 縦横軸でクロス集計する
   dplyr::count(mweek, wday) %>% 
   ggplot2::ggplot(ggplot2::aes(x = mweek, y = wday, fill = n)) + 
     ggplot2::geom_tile() + 
-    ggplot2::scale_fill_gradient(low = "white", high = "red") +
+    ggplot2::scale_fill_gradient(low = "lightyellow", high = "red") +
     ggplot2::labs(x = "", y = "曜日") +
     ggplot2::theme_bw() + ggplot2::coord_flip()
 ```
