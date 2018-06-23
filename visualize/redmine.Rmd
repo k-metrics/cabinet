@@ -143,13 +143,27 @@ dplyr::count(data, kye)
 　  
 
 ## 単純集計
-単純集計は一つの変数に対して集計を行います。  
+単純集計は一つの変数に対して集計を行います。単純集計は`dplyr::count`関数で処理することができます。  
+　  
+
+```
+dplyr::count(x, key)
+```
+
+　  
+単純集計を可視化するには比率が見やすい円グラフや積み上げ棒グラフが便利です。  
 　  
 
 ### Tracker
 ```{r}
 x %>% 
   dplyr::count(tracker)
+
+x %>% 
+  dplyr::count(tracker) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = "tracker", y = n, fill = tracker)) + 
+    ggplot2::geom_bar(stat = "identity") +
+    ggplot2::coord_polar(theta = "y", direction = 1)
 ```
 
 　  
@@ -158,21 +172,44 @@ x %>%
 ```{r}
 x %>% 
   dplyr::count(status)
+
+x %>% 
+  dplyr::count(status) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = "status", y = n, fill = status)) + 
+    ggplot2::geom_bar(stat = "identity") +
+    ggplot2::coord_polar(theta = "y", direction = 1)
 ```
 
 　  
 
 ### Priority
 ```{r}
-x %>% dplyr::count(priority)
+x %>% 
+  dplyr::count(priority)
+
+x %>% 
+  dplyr::count(priority) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = "priority", y = n, fill = priority)) + 
+    ggplot2::geom_bar(stat = "identity") +
+    ggplot2::coord_polar(theta = "y", direction = 1)
 ```
 
 　  
 
 ### Category
+カテゴリ数が多い場合、円グラフや積み上げ棒グラフによる可視化はあまり好ましくありません。  
+　  
+
 ```{r}
 x %>% 
   dplyr::count(category)
+
+x %>% 
+  dplyr::count(category) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = "category", y = n, fill = category)) + 
+    ggplot2::geom_bar(stat = "identity") +
+    ggplot2::coord_polar(theta = "y", direction = 1)
+
 ```
 
 　  
@@ -181,6 +218,13 @@ x %>%
 ```{r}
 x %>% 
   dplyr::count(version)
+
+x %>% 
+  dplyr::count(version) %>% 
+  dplyr::filter(!is.na(version)) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = "version", y = n, fill = version)) + 
+    ggplot2::geom_bar(stat = "identity") +
+    ggplot2::coord_polar(theta = "y", direction = 1)
 ```
 
 　  
@@ -189,14 +233,30 @@ x %>%
 ```{r}
 x %>% 
   dplyr::count(affected)
+
+x %>% 
+  dplyr::count(affected) %>% 
+  dplyr::filter(!is.na(affected)) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = "affected", y = n, fill = affected)) + 
+    ggplot2::geom_bar(stat = "identity") +
+    ggplot2::coord_polar(theta = "y", direction = 1)
 ```
 
 　  
 
 ### Open
+`ggplot2`パッケージでは日付は連続量として扱われるため円グラフで表現するのはあまりおすゝめできません。    
+　  
+
 ```{r}
 x %>% 
   dplyr::count(open)
+
+x %>% 
+  dplyr::count(open) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = "open", y = n, fill = open)) + 
+    ggplot2::geom_bar(stat = "identity") +
+    ggplot2::coord_polar(theta = "y", direction = 1)
 ```
 
 　  
