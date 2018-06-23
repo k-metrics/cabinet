@@ -272,7 +272,7 @@ dplyr::count(x, key1, key2) %>%
 ```
 
 　  
-なお、クロス集計を可視化するにはヒートマップ（`ggplot2::gemo_tile`）が便利です。  
+なお、クロス集計を可視化するにはヒートマップ（`ggplot2::gemo_tile`）や同心円グラフが便利です。  
 　  
 
 ### Tracker and Status
@@ -287,6 +287,13 @@ x %>%
     ggplot2::geom_tile() + 
     ggplot2::scale_fill_gradient(low = "lightyellow", high = "red") +
     ggplot2::geom_text(ggplot2::aes(label = n)) + 
+    ggplot2::theme_bw()
+
+x %>% 
+  dplyr::count(tracker, status) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = tracker, y = n, fill = status)) + 
+    ggplot2::geom_bar(stat = "identity") + 
+    ggplot2::coord_polar(theta = "y", direction = 1) +
     ggplot2::theme_bw()
 ```
 
@@ -309,6 +316,14 @@ x %>%
     ggplot2::geom_tile() + 
     ggplot2::scale_fill_gradient(low = "lightyellow", high = "red") +
     ggplot2::geom_text(ggplot2::aes(label = n)) +
+    ggplot2::theme_bw()
+
+x %>% 
+  dplyr::filter(status != "Closed") %>% 
+  dplyr::count(tracker, priority) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = tracker, y = n, fill = priority)) + 
+    ggplot2::geom_bar(stat = "identity") + 
+    ggplot2::coord_polar(theta = "y", direction = 1) +
     ggplot2::theme_bw()
 ```
 
@@ -333,6 +348,14 @@ x %>%
     ggplot2::scale_fill_gradient(low = "lightyellow", high = "red") +
     ggplot2::geom_text(ggplot2::aes(label = n)) +
     ggplot2::theme_bw()
+
+x %>% 
+  dplyr::filter(status != "Closed" & tracker == "Defect") %>% 
+  dplyr::count(priority, status) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = priority, y = n, fill = status)) + 
+    ggplot2::geom_bar(stat = "identity") + 
+    ggplot2::coord_polar(theta = "y", direction = 1) +
+    ggplot2::theme_bw()
 ```
 
 　  
@@ -351,6 +374,14 @@ x %>%
     ggplot2::geom_tile() + 
     ggplot2::scale_fill_gradient(low = "lightyellow", high = "red") +
     ggplot2::geom_text(ggplot2::aes(label = n)) +
+    ggplot2::theme_bw()
+
+x %>% 
+  dplyr::filter(status != "Closed" & tracker == "Patch") %>% 
+  dplyr::count(priority, status) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = priority, y = n, fill = status)) + 
+    ggplot2::geom_bar(stat = "identity") + 
+    ggplot2::coord_polar(theta = "y", direction = 1) +
     ggplot2::theme_bw()
 ```
 
@@ -384,6 +415,14 @@ x %>%
     ggplot2::scale_fill_gradient(low = "lightyellow", high = "red") +
     ggplot2::theme_bw() +
     ggplot2::coord_flip()
+
+x %>% 
+  dplyr::filter(status != "Closed" & tracker == "Defect") %>% 
+  dplyr::count(category, priority) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = category, y = n, fill = priority)) + 
+    ggplot2::geom_bar(stat = "identity") + 
+    ggplot2::coord_polar(theta = "x", direction = 1) +
+    ggplot2::theme_bw()
 ```
 
 　  
@@ -403,6 +442,14 @@ x %>%
     ggplot2::scale_fill_gradient(low = "lightyellow", high = "red") +
     ggplot2::theme_bw() +
     ggplot2::coord_flip()
+
+x %>% 
+  dplyr::filter(status != "Closed" & tracker == "Defect") %>% 
+  dplyr::count(priority, assignee) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = priority, y = n, fill = assignee)) + 
+    ggplot2::geom_bar(stat = "identity") + 
+    ggplot2::coord_polar(theta = "y", direction = 1) +
+    ggplot2::theme_bw()
 ```
 
 　  
