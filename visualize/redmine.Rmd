@@ -103,6 +103,19 @@ Affected version | 影響のあるバージョン             | 文字型
 ```
 
 　  
+また、`status`や`priority`のようなデータは順位尺度として扱えるように順序付きの因子に変換しておきます。  
+　  
+
+```{r}
+x <- x %>% 
+  dplyr::mutate(status = ordered(status, levels = c("New", "Needs feedback",
+                                            "Confirmed", "Resolved", "Closed",
+                                            "Reopened"))) %>% 
+  dplyr::mutate(priority = ordered(priority, levels = c("Low", "Normal",
+                                                        "High", "Urgent")))
+```
+
+　  
 データの概要は以下の通りです。  
 　  
 
@@ -130,13 +143,27 @@ dplyr::count(data, kye)
 　  
 
 ## 単純集計
-単純集計は一つの変数に対して集計を行います。  
+単純集計は一つの変数に対して集計を行います。単純集計は`dplyr::count`関数で処理することができます。  
+　  
+
+```
+dplyr::count(x, key)
+```
+
+　  
+単純集計を可視化するには比率が見やすい円グラフや積み上げ棒グラフが便利です。  
 　  
 
 ### Tracker
 ```{r}
 x %>% 
   dplyr::count(tracker)
+
+x %>% 
+  dplyr::count(tracker) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = "tracker", y = n, fill = tracker)) + 
+    ggplot2::geom_bar(stat = "identity") +
+    ggplot2::coord_polar(theta = "y", direction = 1)
 ```
 
 　  
@@ -145,21 +172,44 @@ x %>%
 ```{r}
 x %>% 
   dplyr::count(status)
+
+x %>% 
+  dplyr::count(status) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = "status", y = n, fill = status)) + 
+    ggplot2::geom_bar(stat = "identity") +
+    ggplot2::coord_polar(theta = "y", direction = 1)
 ```
 
 　  
 
 ### Priority
 ```{r}
-x %>% dplyr::count(priority)
+x %>% 
+  dplyr::count(priority)
+
+x %>% 
+  dplyr::count(priority) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = "priority", y = n, fill = priority)) + 
+    ggplot2::geom_bar(stat = "identity") +
+    ggplot2::coord_polar(theta = "y", direction = 1)
 ```
 
 　  
 
 ### Category
+カテゴリ数が多い場合、円グラフや積み上げ棒グラフによる可視化はあまり好ましくありません。  
+　  
+
 ```{r}
 x %>% 
   dplyr::count(category)
+
+x %>% 
+  dplyr::count(category) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = "category", y = n, fill = category)) + 
+    ggplot2::geom_bar(stat = "identity") +
+    ggplot2::coord_polar(theta = "y", direction = 1)
+
 ```
 
 　  
@@ -168,6 +218,13 @@ x %>%
 ```{r}
 x %>% 
   dplyr::count(version)
+
+x %>% 
+  dplyr::count(version) %>% 
+  dplyr::filter(!is.na(version)) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = "version", y = n, fill = version)) + 
+    ggplot2::geom_bar(stat = "identity") +
+    ggplot2::coord_polar(theta = "y", direction = 1)
 ```
 
 　  
@@ -176,20 +233,37 @@ x %>%
 ```{r}
 x %>% 
   dplyr::count(affected)
+
+x %>% 
+  dplyr::count(affected) %>% 
+  dplyr::filter(!is.na(affected)) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = "affected", y = n, fill = affected)) + 
+    ggplot2::geom_bar(stat = "identity") +
+    ggplot2::coord_polar(theta = "y", direction = 1)
 ```
 
 　  
 
 ### Open
+`ggplot2`パッケージでは日付は連続量として扱われるため円グラフで表現するのはあまりおすゝめできません。    
+　  
+
 ```{r}
 x %>% 
   dplyr::count(open)
+
+x %>% 
+  dplyr::count(open) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = "open", y = n, fill = open)) + 
+    ggplot2::geom_bar(stat = "identity") +
+    ggplot2::coord_polar(theta = "y", direction = 1)
 ```
 
 　  
 
 ## クロス集計
 単純集計では見えにくい傾向はクロス集計を行いことで見えてくることもあります。クロス集計は`dplyr::count`関数または`dplyr::group_by`関数に複数の変数を指定し、`tidyr::spread`関数で変形することで簡単にクロス集計表が作成できます。  
+　  
 
 ```
 dplyr::count(x, key1, key2) %>% 
@@ -197,12 +271,22 @@ dplyr::count(x, key1, key2) %>%
 ```
 
 　  
+なお、クロス集計を可視化するにはヒートマップ（`ggplot2::gemo_tile`）が便利です。  
+　  
 
 ### Tracker and Status
 ```{r}
 x %>% 
   dplyr::count(tracker, status) %>% 
   tidyr::spread(key = tracker, value = n)
+
+x %>% 
+  dplyr::count(tracker, status) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = tracker, y = status, fill = n)) + 
+    ggplot2::geom_tile() + 
+    ggplot2::scale_fill_gradient(low = "lightyellow", high = "red") +
+    ggplot2::geom_text(ggplot2::aes(label = n)) + 
+    ggplot2::theme_bw()
 ```
 
 　  
@@ -216,6 +300,15 @@ x %>%
   dplyr::filter(status != "Closed") %>% 
   dplyr::count(tracker, priority) %>% 
   tidyr::spread(key = tracker, value = n)
+
+x %>% 
+  dplyr::filter(status != "Closed") %>% 
+  dplyr::count(tracker, priority) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = tracker, y = priority, fill = n)) + 
+    ggplot2::geom_tile() + 
+    ggplot2::scale_fill_gradient(low = "lightyellow", high = "red") +
+    ggplot2::geom_text(ggplot2::aes(label = n)) +
+    ggplot2::theme_bw()
 ```
 
 　  
@@ -230,6 +323,15 @@ x %>%
   dplyr::filter(status != "Closed" & tracker == "Defect") %>% 
   dplyr::count(priority, status) %>% 
   tidyr::spread(key = priority, value = n)
+
+x %>% 
+  dplyr::filter(status != "Closed" & tracker == "Defect") %>% 
+  dplyr::count(priority, status) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = status, y = priority, fill = n)) + 
+    ggplot2::geom_tile() + 
+    ggplot2::scale_fill_gradient(low = "lightyellow", high = "red") +
+    ggplot2::geom_text(ggplot2::aes(label = n)) +
+    ggplot2::theme_bw()
 ```
 
 　  
@@ -240,6 +342,15 @@ x %>%
   dplyr::filter(status != "Closed" & tracker == "Patch") %>% 
   dplyr::count(priority, status) %>% 
   tidyr::spread(key = priority, value = n)
+
+x %>% 
+  dplyr::filter(status != "Closed" & tracker == "Patch") %>% 
+  dplyr::count(priority, status) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = status, y = priority, fill = n)) + 
+    ggplot2::geom_tile() + 
+    ggplot2::scale_fill_gradient(low = "lightyellow", high = "red") +
+    ggplot2::geom_text(ggplot2::aes(label = n)) +
+    ggplot2::theme_bw()
 ```
 
 　  
@@ -263,6 +374,15 @@ x %>%
   dplyr::filter(status != "Closed" & tracker == "Defect") %>% 
   dplyr::count(category, priority) %>% 
   tidyr::spread(key = priority, value = n)
+
+x %>% 
+  dplyr::filter(status != "Closed" & tracker == "Defect") %>% 
+  dplyr::count(category, priority) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = category, y = priority, fill = n)) + 
+    ggplot2::geom_tile() + 
+    ggplot2::scale_fill_gradient(low = "lightyellow", high = "red") +
+    ggplot2::theme_bw() +
+    ggplot2::coord_flip()
 ```
 
 　  
@@ -273,6 +393,15 @@ x %>%
   dplyr::filter(status != "Closed" & tracker == "Defect") %>% 
   dplyr::count(priority, assignee) %>% 
   tidyr::spread(key = priority, value = n)
+
+x %>% 
+  dplyr::filter(status != "Closed" & tracker == "Defect") %>% 
+  dplyr::count(priority, assignee) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = assignee, y = priority, fill = n)) + 
+    ggplot2::geom_tile() + 
+    ggplot2::scale_fill_gradient(low = "lightyellow", high = "red") +
+    ggplot2::theme_bw() +
+    ggplot2::coord_flip()
 ```
 
 　  
@@ -280,7 +409,7 @@ x %>%
 　  
 
 ## 期間集計
-ある一定期間ごとに集計する場合は日時データを日、週、月、四半期、年などに変換し変換後のデータを`dplyr::count`関数で集計することで期間の変化を確認できるようになります。  
+ある一定期間ごとに集計する場合は日時データを日、週、月、四半期、年などに変換し変換後のデータを`dplyr::count`関数で集計することで期間の変化を確認できるようになります。なお、期間集計は時系列の集計ですので可視化する場合には棒グラフ、折れ線グラフを利用することが多いです。    
 　  
 
 ### 日次集計
@@ -297,12 +426,49 @@ x %>%
   dplyr::arrange(open) %>% 
   dplyr::mutate(`累計` = cumsum(ticket),
                 `前日との差` = ticket - dplyr::lag(ticket))
+
+gg_bar <- x %>% 
+  dplyr::filter(open >= "2018-1-1" & tracker == "Defect") %>% 
+  dplyr::mutate(flag = ifelse(is.na(open), 0, 1)) %>% 
+  dplyr::group_by(open) %>% 
+  dplyr::summarise(ticket = sum(flag)) %>% 
+  dplyr::arrange(open) %>% 
+  dplyr::mutate(`累計` = cumsum(ticket),
+                `前日との差` = ticket - dplyr::lag(ticket)) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = open)) + 
+    ggplot2::geom_bar(ggplot2::aes(y = ticket), stat = "identity")
+
+gg_line <- x %>% 
+  dplyr::filter(open >= "2018-1-1" & tracker == "Defect") %>% 
+  dplyr::mutate(flag = ifelse(is.na(open), 0, 1)) %>% 
+  dplyr::group_by(open) %>% 
+  dplyr::summarise(ticket = sum(flag)) %>% 
+  dplyr::arrange(open) %>% 
+  dplyr::mutate(`累計` = cumsum(ticket),
+                `前日との差` = ticket - dplyr::lag(ticket)) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = open)) + 
+    ggplot2::geom_line(ggplot2::aes(y = `累計`))
+
+gg_line_2 <- x %>% 
+  dplyr::filter(open >= "2018-1-1" & tracker == "Defect") %>% 
+  dplyr::mutate(flag = ifelse(is.na(open), 0, 1)) %>% 
+  dplyr::group_by(open) %>% 
+  dplyr::summarise(ticket = sum(flag)) %>% 
+  dplyr::arrange(open) %>% 
+  dplyr::mutate(`累計` = cumsum(ticket),
+                `前日との差` = ticket - dplyr::lag(ticket)) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = open)) + 
+    ggplot2::geom_line(ggplot2::aes(y = `前日との差`))
+
+layout <- rbind(c(1, 1), c(2, 3))
+gridExtra::grid.arrange(gg_bar, gg_line, gg_line_2, layout_matrix = layout)
 ```
 
 　  
 
 ### 週次集計
 "週"を求めるには`lubridate::week`関数を用います。ただし、`lubridate::week`関数は1から53までの値しか返しませんので、年をまたぐ際は`lubridate::year`関数などを用いて年の識別ができるようにしてください。  
+なお、`lubridate::week`関数が返す週番号は１月１日を基準に単純に７日単位で計算した週番号です。ISOの週番号とは異なりますので注意してください。  
 　  
 
 #### 起票されたチケットの推移
@@ -317,6 +483,48 @@ x %>%
   dplyr::arrange(week) %>% 
   dplyr::mutate(`累計` = cumsum(ticket),
                 `前週との差` = ticket - dplyr::lag(ticket))
+
+gg_bar <- x %>% 
+  dplyr::filter(open >= "2018-1-1" & tracker == "Defect") %>% 
+  dplyr::mutate(week = lubridate::week(open)) %>% 
+  dplyr::filter(!is.na(week)) %>% 
+  dplyr::mutate(flag = ifelse(is.na(open), 0, 1)) %>% 
+  dplyr::group_by(week) %>% 
+  dplyr::summarise(ticket = sum(flag)) %>% 
+  dplyr::arrange(week) %>% 
+  dplyr::mutate(`累計` = cumsum(ticket),
+                `前週との差` = ticket - dplyr::lag(ticket)) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = week)) + 
+    ggplot2::geom_bar(ggplot2::aes(y = ticket), stat = "identity")
+
+gg_line <- x %>% 
+  dplyr::filter(open >= "2018-1-1" & tracker == "Defect") %>% 
+  dplyr::mutate(week = lubridate::week(open)) %>% 
+  dplyr::filter(!is.na(week)) %>% 
+  dplyr::mutate(flag = ifelse(is.na(open), 0, 1)) %>% 
+  dplyr::group_by(week) %>% 
+  dplyr::summarise(ticket = sum(flag)) %>% 
+  dplyr::arrange(week) %>% 
+  dplyr::mutate(`累計` = cumsum(ticket),
+                `前週との差` = ticket - dplyr::lag(ticket)) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = week)) + 
+    ggplot2::geom_line(ggplot2::aes(y = `累計`))
+
+gg_line_2 <- x %>% 
+  dplyr::filter(open >= "2018-1-1" & tracker == "Defect") %>% 
+  dplyr::mutate(week = lubridate::week(open)) %>% 
+  dplyr::filter(!is.na(week)) %>% 
+  dplyr::mutate(flag = ifelse(is.na(open), 0, 1)) %>% 
+  dplyr::group_by(week) %>% 
+  dplyr::summarise(ticket = sum(flag)) %>% 
+  dplyr::arrange(week) %>% 
+  dplyr::mutate(`累計` = cumsum(ticket),
+                `前週との差` = ticket - dplyr::lag(ticket)) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = week)) + 
+    ggplot2::geom_line(ggplot2::aes(y = `前週との差`))
+
+layout <- rbind(c(1, 1), c(2, 3))
+gridExtra::grid.arrange(gg_bar, gg_line, gg_line_2, layout_matrix = layout)
 ```
 
 　  
@@ -333,6 +541,48 @@ x %>%
   dplyr::arrange(week) %>% 
   dplyr::mutate(`累計` = cumsum(ticket),
                 `前週との差` = ticket - dplyr::lag(ticket))
+
+gg_bar <- x %>% 
+  dplyr::filter(open >= "2018-1-1" & tracker == "Defect") %>% 
+  dplyr::mutate(week = lubridate::week(close)) %>% 
+  dplyr::filter(!is.na(week)) %>% 
+  dplyr::mutate(flag = ifelse(is.na(close), 0, 1)) %>% 
+  dplyr::group_by(week) %>% 
+  dplyr::summarise(ticket = sum(flag)) %>% 
+  dplyr::arrange(week) %>% 
+  dplyr::mutate(`累計` = cumsum(ticket),
+                `前週との差` = ticket - dplyr::lag(ticket)) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = week)) + 
+    ggplot2::geom_bar(ggplot2::aes(y = ticket), stat = "identity")
+
+gg_line <- x %>% 
+  dplyr::filter(open >= "2018-1-1" & tracker == "Defect") %>% 
+  dplyr::mutate(week = lubridate::week(close)) %>% 
+  dplyr::filter(!is.na(week)) %>% 
+  dplyr::mutate(flag = ifelse(is.na(close), 0, 1)) %>% 
+  dplyr::group_by(week) %>% 
+  dplyr::summarise(ticket = sum(flag)) %>% 
+  dplyr::arrange(week) %>% 
+  dplyr::mutate(`累計` = cumsum(ticket),
+                `前週との差` = ticket - dplyr::lag(ticket)) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = week)) + 
+    ggplot2::geom_line(ggplot2::aes(y = `累計`))
+
+gg_line_2 <- x %>% 
+  dplyr::filter(open >= "2018-1-1" & tracker == "Defect") %>% 
+  dplyr::mutate(week = lubridate::week(close)) %>% 
+  dplyr::filter(!is.na(week)) %>% 
+  dplyr::mutate(flag = ifelse(is.na(close), 0, 1)) %>% 
+  dplyr::group_by(week) %>% 
+  dplyr::summarise(ticket = sum(flag)) %>% 
+  dplyr::arrange(week) %>% 
+  dplyr::mutate(`累計` = cumsum(ticket),
+                `前週との差` = ticket - dplyr::lag(ticket)) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = week)) + 
+    ggplot2::geom_line(ggplot2::aes(y = `前週との差`))
+
+layout <- rbind(c(1, 1), c(2, 3))
+gridExtra::grid.arrange(gg_bar, gg_line, gg_line_2, layout_matrix = layout)
 ```
 
 　  
@@ -352,6 +602,45 @@ x %>%
   dplyr::arrange(month) %>% 
   dplyr::mutate(`累計` = cumsum(ticket),
                 `前月との差` = ticket - dplyr::lag(ticket))
+
+gg_bar <- x %>% 
+  dplyr::filter(open >= "2018-1-1" & tracker == "Defect") %>% 
+  dplyr::mutate(month = lubridate::month(open)) %>% 
+  dplyr::mutate(flag = ifelse(is.na(open), 0, 1)) %>% 
+  dplyr::group_by(month) %>% 
+  dplyr::summarise(ticket = sum(flag)) %>% 
+  dplyr::arrange(month) %>% 
+  dplyr::mutate(`累計` = cumsum(ticket),
+                `前月との差` = ticket - dplyr::lag(ticket)) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = month)) + 
+    ggplot2::geom_bar(ggplot2::aes(y = ticket), stat = "identity")
+
+gg_line <- x %>% 
+  dplyr::filter(open >= "2018-1-1" & tracker == "Defect") %>% 
+  dplyr::mutate(month = lubridate::month(open)) %>% 
+  dplyr::mutate(flag = ifelse(is.na(open), 0, 1)) %>% 
+  dplyr::group_by(month) %>% 
+  dplyr::summarise(ticket = sum(flag)) %>% 
+  dplyr::arrange(month) %>% 
+  dplyr::mutate(`累計` = cumsum(ticket),
+                `前月との差` = ticket - dplyr::lag(ticket)) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = month)) + 
+    ggplot2::geom_line(ggplot2::aes(y = `累計`))
+
+gg_line_2 <- x %>% 
+  dplyr::filter(open >= "2018-1-1" & tracker == "Defect") %>% 
+  dplyr::mutate(month = lubridate::month(open)) %>% 
+  dplyr::mutate(flag = ifelse(is.na(open), 0, 1)) %>% 
+  dplyr::group_by(month) %>% 
+  dplyr::summarise(ticket = sum(flag)) %>% 
+  dplyr::arrange(month) %>% 
+  dplyr::mutate(`累計` = cumsum(ticket),
+                `前月との差` = ticket - dplyr::lag(ticket)) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = month)) + 
+    ggplot2::geom_line(ggplot2::aes(y = `前月との差`))
+
+layout <- rbind(c(1, 1), c(2, 3))
+gridExtra::grid.arrange(gg_bar, gg_line, gg_line_2, layout_matrix = layout)
 ```
 
 　  
@@ -362,6 +651,51 @@ x %>%
 
 #### 起票されたチケットの推移
 ```{r}
+x %>% 
+  dplyr::filter(tracker == "Defect") %>% 
+  dplyr::mutate(quarter = lubridate::quarter(open, with_year = TRUE,
+                                             fiscal_start = 1)) %>% 
+  dplyr::mutate(flag = ifelse(is.na(open), 0, 1)) %>% 
+  dplyr::group_by(quarter) %>% 
+  dplyr::summarise(ticket = sum(flag)) %>% 
+  dplyr::arrange(quarter) %>% 
+  dplyr::mutate(`累計` = cumsum(ticket),
+                `前四半期との差` = ticket - dplyr::lag(ticket))
+```
+
+　  
+
+`lubridate::quarter`関数の返り値は`numeric`型ですので棒グラフにする場合は文字列型または因子型に変換する必要がある点に注意してください。  
+　  
+
+```{r}
+x %>% 
+  dplyr::filter(tracker == "Defect") %>% 
+  dplyr::mutate(quarter = lubridate::quarter(open, with_year = TRUE,
+                                             fiscal_start = 1)) %>% 
+  dplyr::mutate(flag = ifelse(is.na(open), 0, 1)) %>% 
+  dplyr::group_by(quarter) %>% 
+  dplyr::summarise(ticket = sum(flag)) %>% 
+  dplyr::arrange(quarter) %>% 
+  dplyr::mutate(quarter = as.character(quarter),
+                `累計` = cumsum(ticket),
+                `前四半期との差` = ticket - dplyr::lag(ticket)) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = quarter)) + 
+    ggplot2::geom_bar(ggplot2::aes(y = ticket), stat = "identity")
+```
+
+　  
+同様に折れ線グラフにする場合にも`quarter`の扱いには注意が必要です。  
+
+```{r}
+# x_name <- x %>% 
+#   dplyr::filter(tracker == "Defect") %>% 
+#   dplyr::mutate(quarter = lubridate::quarter(open, with_year = TRUE,
+#                                              fiscal_start = 1)) %>% 
+#   dplyr::mutate(quarter = as.character(quarter)) %>% 
+#   dplyr::distinct(quarter) %>% 
+#   dplyr::arrange(quarter)
+
 x %>% 
   dplyr::filter(tracker == "Defect") %>% 
   dplyr::mutate(quarter = lubridate::quarter(open, with_year = TRUE,
@@ -391,6 +725,45 @@ x %>%
   dplyr::arrange(year) %>% 
   dplyr::mutate(`累計` = cumsum(ticket),
                 `前年との差` = ticket - dplyr::lag(ticket))
+
+gg_bar <- x %>% 
+  dplyr::filter(tracker == "Defect") %>% 
+  dplyr::mutate(year = lubridate::year(open)) %>% 
+  dplyr::mutate(flag = ifelse(is.na(open), 0, 1)) %>% 
+  dplyr::group_by(year) %>% 
+  dplyr::summarise(ticket = sum(flag)) %>% 
+  dplyr::arrange(year) %>% 
+  dplyr::mutate(`累計` = cumsum(ticket),
+                `前年との差` = ticket - dplyr::lag(ticket)) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = year)) + 
+    ggplot2::geom_bar(ggplot2::aes(y = ticket), stat = "identity")
+
+gg_line <- x %>% 
+  dplyr::filter(tracker == "Defect") %>% 
+  dplyr::mutate(year = lubridate::year(open)) %>% 
+  dplyr::mutate(flag = ifelse(is.na(open), 0, 1)) %>% 
+  dplyr::group_by(year) %>% 
+  dplyr::summarise(ticket = sum(flag)) %>% 
+  dplyr::arrange(year) %>% 
+  dplyr::mutate(`累計` = cumsum(ticket),
+                `前年との差` = ticket - dplyr::lag(ticket)) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = year)) + 
+    ggplot2::geom_line(ggplot2::aes(y = `累計`))
+
+gg_lien_2 <- x %>% 
+  dplyr::filter(tracker == "Defect") %>% 
+  dplyr::mutate(year = lubridate::year(open)) %>% 
+  dplyr::mutate(flag = ifelse(is.na(open), 0, 1)) %>% 
+  dplyr::group_by(year) %>% 
+  dplyr::summarise(ticket = sum(flag)) %>% 
+  dplyr::arrange(year) %>% 
+  dplyr::mutate(`累計` = cumsum(ticket),
+                `前年との差` = ticket - dplyr::lag(ticket)) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = year)) + 
+    ggplot2::geom_line(ggplot2::aes(y = `前年との差`))
+
+layout <- rbind(c(1, 1), c(2, 3))
+gridExtra::grid.arrange(gg_bar, gg_line, gg_line_2, layout_matrix = layout)
 ```
 
 　  
@@ -415,14 +788,14 @@ x %>%
   dplyr::group_by(priority) %>% 
   dplyr::summarise(min = min(days), med = median(days), max = max(days))
 
-x %>% 
+gg_bar <- x %>% 
   dplyr::filter(open >= "2018-1-1" & tracker == "Defect") %>% 
   dplyr::filter(status != "Closed") %>% 
   dplyr::mutate(days = lubridate::today() - open + 1) %>% 
   ggplot2::ggplot(ggplot2::aes(x = days, fill = priority)) + 
     ggplot2::geom_histogram(alpha = 0.5, position = "identity")
 
-x %>% 
+gg_boxplot <- x %>% 
   dplyr::filter(open >= "2018-1-1" & tracker == "Defect") %>% 
   dplyr::filter(status != "Closed") %>% 
   dplyr::mutate(days = lubridate::today() - open + 1) %>% 
@@ -430,6 +803,8 @@ x %>%
     ggplot2::geom_boxplot() + 
     ggplot2::geom_jitter() +
     ggplot2::coord_flip()
+
+gridExtra::grid.arrange(gg_bar, gg_boxplot, nrow = 2)
 ```
 
 　  
