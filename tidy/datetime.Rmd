@@ -1,0 +1,68 @@
+---
+title: "日時データを操作する"
+output:
+  html_document:
+    df_print: paged
+    code_folding: none
+    css: style.css
+---
+
+<!-- shared Links -->
+```{r index, child="../shared/links.Rmd", include=FALSE}
+```
+
+```{r setup, include=FALSE, warning=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+require(tidyverse)
+```
+
+日時情報は数値扱いでであったり文字列扱いであったり、さらに書式が一定しておらず分析処理する場合には厄介なデータです。このような日時データを扱う場合は`tidyverse`パッケージファミリーである`lubridate`パッケージを利用するのがおすゝめです。  
+
+　  
+なお、本ページでは`r R.version$version.string`の標準パッケージ以外に以下の追加パッケージを用いています。  
+　  
+
+Package   | Version |Description
+----------|---------|----------------------------------------------------------
+tidyverse | `r packageVersion('tidyverse')` | Easily Install and Load the ‘Tidyverse’
+
+　  
+
+また、本ページでは以下のデータセットを用いています。  
+　  
+
+Dataset    | Package  | Version | Description
+-----------|----------|---------|----------------------------------------------
+airquality | datasets | `r packageVersion('datasets')`| New York Air Quality Measurements
+
+　  
+
+# Rにおける日時情報
+[R][R]では日付（オブジェクト）を扱うための`Data`クラスと年月日時分秒（オブジェクト）を扱うための`POSIX`クラスがあります。`POSIX`クラスには以下のクラスがあります。  
+　  
+
+クラス  | 概要                                               | 備考
+--------|----------------------------------------------------|-----
+POSIXct^1^ | 1970年1月1日からの経過秒を用いて年月日時分秒を表す | ANSI C "Calender Time"
+POSIXlt | 名前ラベルを持つ文字列リスト（可読性が高い）       | ANSI C "Local Time"
+POSIXt  | POSIXctとPOSIXltの両者を含む                       | [R][R]では扱いなし
+
+　  
+^1^ `POSIXct`クラスは、UNIXタイム（UNIX時間、UNIX時刻）と呼ばれるものと同じ定義の時刻表現です。  
+　  
+
+# 年
+
+
+# 参考資料
+
+* [lubridateパッケージ入門 <i class="fa fa-external-link"></i>](https://qiita.com/nozma/items/01725761d980a0110027){target="_blank" title="Qiita"}
+* [日付・時間関数Tips大全 <i class="fa fa-external-link"></i>](http://www.okadajp.org/RWiki/?%E6%97%A5%E4%BB%98%E3%80%81%E6%99%82%E9%96%93%E9%96%A2%E6%95%B0Tips%E5%A4%A7%E5%85%A8){target="_blank" title="RjpWiki"}
+
+　  
+
+---
+
+<!-- Footer -->
+```{r child="../shared/footer.Rmd"}
+```
