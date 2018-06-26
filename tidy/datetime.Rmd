@@ -1,0 +1,175 @@
+---
+title: "日時データを操作する"
+output:
+  html_document:
+    df_print: paged
+    code_folding: none
+    css: style.css
+---
+
+<!-- shared Links -->
+```{r index, child="../shared/links.Rmd", include=FALSE}
+```
+
+```{r setup, include=FALSE, warning=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+
+require(lubridate)
+require(tidyverse)
+```
+
+日時は数値扱いでであったり文字列扱いであったり、さらに書式が一定しておらず分析処理する場合には厄介なデータです。このような日時データを扱う場合は`tidyverse`パッケージファミリーである`lubridate`パッケージを利用するのがおすゝめです。  
+
+　  
+なお、本ページでは`r R.version$version.string`の標準パッケージ以外に以下の追加パッケージを用いています。  
+　  
+
+Package   | Version |Description
+----------|---------|----------------------------------------------------------
+tidyverse | `r packageVersion('tidyverse')` | Easily Install and Load the ‘Tidyverse’
+
+　  
+
+また、本ページでは以下のデータセットを用いています。  
+　  
+
+Dataset    | Package  | Version | Description
+-----------|----------|---------|----------------------------------------------
+redmine    | N/A      | N/A     | [Redmine Issues <i class="fa fa-external-link"></i>](http://www.redmine.org/projects/redmine/issues){target="_blank" title="redmine.org"}
+
+　  
+
+# Rにおける日時情報
+[R][R]では日付（オブジェクト）を扱うための`Data`クラスと年月日時分秒（オブジェクト）を扱うための`POSIX`クラスがあります。`POSIX`クラスには以下のクラスがあります。  
+　  
+
+クラス  | 概要                                               | 備考
+--------|----------------------------------------------------|-----
+POSIXct^1^ | 1970年1月1日からの経過秒を用いて年月日時分秒を表す | ANSI C "Calender Time"
+POSIXlt | 名前ラベルを持つ文字列リスト（可読性が高い）       | ANSI C "Local Time"
+POSIXt  | POSIXctとPOSIXltの両者を含む                       | [R][R]では扱いなし
+
+　  
+^1^ `POSIXct`クラスは、UNIXタイム（UNIX時間、UNIX時刻）と呼ばれるものと同じ時刻表現です。  
+　  
+
+# 基本的な処理
+`yyyy-mm-dd`形式の日付を`POSIXct`形式に変換するために下記の関数が用意されています。  
+　  
+
+関数                 | 概要                                | 備考
+---------------------|-------------------------------------|---
+`lubridate::as_date` | タイムゾーンの日付を返します        | 
+`as.Date`            | UTC（協定世界時）での日付を返します | 
+
+　  
+
+## フォーマット変換
+日付はロケールにより様々な書式（フォーマット）で扱われています。`yyyy-mm-dd`形式でない日付を`yyyy-mm-dd`形式に変換するには下記の補助関数を用います。  
+　  
+
+関数             | 概要                       | 備考
+-----------------|----------------------------|-----
+`lubridate::dmy` | dd-mm-yyyy形式用           | セパレータは`/`も可
+`lubridate::dym` | dd-yyyy-mm形式用           | 同上
+`lubridate::mdy` | mm-dd-yyyy形式用           | 同上
+`lubridate::myd` | mm-yyyy-dd形式用           | 同上
+`lubridate::ydm` | yyyy-dd-mm形式用           | 同上 
+`lubridate::ymd` | yyyy-mm-dd形式用           | 同上
+`as.Date`        | オプションで上記関数と同様の処理が可 | セパレータはオプション指定
+
+　  
+なお、日本語形式（例：2017年12月26日）の場合でも変換可能です。また、日付に時刻が含まれる場合でも上記の補助関数に以下のサフィックスがついた補助関数を使うことで同様の処理が可能です。  
+
+
+関数             | 概要                       | 備考
+-----------------|----------------------------|-----
+`_h`             | 時までを返します           | 
+`_hm`            | 時分までを返します         | 
+`_hms`           | 時分秒までを返します       | 
+
+　  
+
+## タイムゾーン
+タイムゾーンを指定する場合は、各関数、各補助関数に対して`tz`オプションを指定します。`tz`オプションで使えるタイムゾーンは`OlsonNames()`で一覧を取得できます。  
+　  
+
+# 特定の情報を抽出する
+日時情報から特定の情報を抽出することも可能です。  
+　  
+
+情報   | 関数                         | 備考
+-------|------------------------------|-----
+年     | `year`, `isoyear`, `epiyear` | 年、ISO 8601、epidemiological
+四半期 | `quarter`                    | 返り値は数値型
+月     | `month`                      | 表示はロケールに依存
+週     | `week`, `isoweek`, `epiweek` | 元旦からの週番号、ISO 8601、epidemiological
+曜日   | `wday`                       | 表示はロケールに依存
+日     | `day`, `mday`, `yday`        | 日、月初からの日番号、年初からの日番号
+時     | `hour`                       | 
+分     | `minute`                     | 
+秒     | `second`                     | 
+
+　  
+
+## 週（週番号）
+年初から第何週目なのか、いわゆる週番号を求めるには、いくつかの方法がありますので目的に応じて方法を選択してください。 
+
+関数            | 処理概要                              | 備考
+----------------|---------------------------------------|-----
+`lubridate::week` | 1月1日を基準に7日単位で週番号を計算する | 
+`lubridate::isoweek` | ISO 8601にしたがって週番号を計算する | 月曜開始
+`lubridate::epiweek` | epidemiological week             | 日曜開始
+
+　  
+
+## 週（月内の週数）
+月初から第何週目（以降、月内週数と呼称）なのかを求める関数はありませんので、週番号から月初日（当月の1日）の週番号を差し引いて求める必要があります。しかし、週番号は前述のように様々な定義がありますので注意してください。  
+　  
+特にカレンダーをイメージした月内週数を得たい場合には`lubridate::isoweek`関数を使用してください。ただし、[ISO 8601 <i class="fa fa-external-link"></i>](https://ja.wikipedia.org/wiki/ISO_8601){target="_blank" title="Wikipedia"}の定義を理解しておく必要があります。  
+　  
+特に以下の点に注意してください。  
+　  
+
+* 週の始まりは**月曜日**
+* 1月の最初の週は第52週や第53週になる場合がある（例：2016年1月）
+* 12月の最終週は第1週になる場合がある（例：2013年12月30日）
+
+　  
+月内週数は以下の計算で求められます。  
+　  
+
+$$月内週数を求めたい日の週番号 - 月初日の週番号 + offset$$
+
+　  
+
+```
+lubridate::isoweek(x) - lubridate::isoweek(lubridate::floor_date(x), "month") + offset
+```
+
+　  
+
+`offset`は条件により値が異なる点に注意してください。（確認中）  
+　  
+
+条件                         | offsetの値 | 備考
+-----------------------------|------------|-----
+月初日の週番号が第52週の場合 | 53         | 
+月初日の週番号が第53週の場合 | 54         | 
+月初日の週番号が求めたい日の週番号より大きな場合 | 月初日の週番号 - 求めたい日の週番号 + 1 | 
+上記以外                     | 1          | 
+
+　  
+
+# 参考資料
+
+* [lubridateパッケージ入門 <i class="fa fa-external-link"></i>](https://qiita.com/nozma/items/01725761d980a0110027){target="_blank" title="Qiita"}
+* [日付・時間関数Tips大全 <i class="fa fa-external-link"></i>](http://www.okadajp.org/RWiki/?%E6%97%A5%E4%BB%98%E3%80%81%E6%99%82%E9%96%93%E9%96%A2%E6%95%B0Tips%E5%A4%A7%E5%85%A8){target="_blank" title="RjpWiki"}
+
+　  
+
+---
+
+<!-- Footer -->
+```{r child="../shared/footer.Rmd"}
+```
