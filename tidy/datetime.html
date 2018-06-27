@@ -666,7 +666,7 @@ div.tocify {
 </tr>
 <tr class="even">
 <td><code>lubridate::isoweek</code></td>
-<td>ISO 8601にしたがって週番号を計算する</td>
+<td><a href="https://ja.wikipedia.org/wiki/ISO_8601" target="_blank" title="Wikipedia">ISO 8601 <i class="fa fa-external-link"></i></a>にしたがって週番号を計算する</td>
 <td>月曜開始</td>
 </tr>
 <tr class="odd">
@@ -682,12 +682,11 @@ div.tocify {
 <h2>週（月内の週数）</h2>
 <p>月初から第何週目（以降、月内週数と呼称）なのかを求める関数はありませんので、週番号から月初日（当月の1日）の週番号を差し引いて求める必要があります。しかし、週番号は前述のように様々な定義がありますので注意してください。<br />
 　<br />
-特にカレンダーをイメージした月内週数を得たい場合には<code>lubridate::isoweek</code>関数を使用してください。ただし、<a href="https://ja.wikipedia.org/wiki/ISO_8601" target="_blank" title="Wikipedia">ISO 8601 <i class="fa fa-external-link"></i></a>の定義を理解しておく必要があります。<br />
-　<br />
-特に以下の点に注意してください。<br />
+特にカレンダーをイメージした月内週数を得たい場合には<code>lubridate::isoweek</code>関数または<code>lubridate::epiweek</code>関数を使用してください。ただし、以下の点に注意してください。<br />
 　</p>
 <ul>
-<li>週の始まりは<strong>月曜日</strong></li>
+<li><code>lubridate::isoweek</code>の場合、週の始まりは<strong>月曜日</strong></li>
+<li><code>lubridate::epiweek</code>の場合、週の始まりは<strong>日曜日</strong></li>
 <li>1月の最初の週は第52週や第53週になる場合がある（例：2016年1月）</li>
 <li>12月の最終週は第1週になる場合がある（例：2013年12月30日）</li>
 </ul>
@@ -695,10 +694,16 @@ div.tocify {
 月内週数は以下の計算で求められます。<br />
 　</p>
 <p><span class="math display">\[月内週数を求めたい日の週番号 - 月初日の週番号 + offset\]</span></p>
-<p>　</p>
+<p>　<br />
+月初日（1日）は<code>lubridate::floor_date</code>関数で求めることができますので上記の式は以下のコードとなります。<br />
+　<br />
+ISO weeksの場合</p>
 <pre><code>lubridate::isoweek(x) - lubridate::isoweek(lubridate::floor_date(x), &quot;month&quot;) + offset</code></pre>
-<p>　</p>
-<p><code>offset</code>は条件により値が異なる点に注意してください。（確認中）<br />
+<p>　<br />
+Epidemiological weeksの場合</p>
+<pre><code>lubridate::epiweek(x) - lubridate::isoweek(lubridate::floor_date(x), &quot;month&quot;) + offset</code></pre>
+<p>　<br />
+<code>offset</code>は条件により値が異なる点に注意してください。（確認中）<br />
 　</p>
 <table>
 <thead>
@@ -743,7 +748,7 @@ div.tocify {
 <p>　</p>
 <hr />
 <!-- Footer -->
-<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-06-26 22:30(JST)]</p>
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-06-27 22:55(JST)]</p>
 </div>
 
 

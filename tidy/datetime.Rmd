@@ -118,7 +118,7 @@ POSIXt  | POSIXctとPOSIXltの両者を含む                       | [R][R]で�
 関数            | 処理概要                              | 備考
 ----------------|---------------------------------------|-----
 `lubridate::week` | 1月1日を基準に7日単位で週番号を計算する | 
-`lubridate::isoweek` | ISO 8601にしたがって週番号を計算する | 月曜開始
+`lubridate::isoweek` | [ISO 8601 <i class="fa fa-external-link"></i>](https://ja.wikipedia.org/wiki/ISO_8601){target="_blank" title="Wikipedia"}にしたがって週番号を計算する | 月曜開始
 `lubridate::epiweek` | epidemiological week             | 日曜開始
 
 　  
@@ -126,12 +126,11 @@ POSIXt  | POSIXctとPOSIXltの両者を含む                       | [R][R]で�
 ## 週（月内の週数）
 月初から第何週目（以降、月内週数と呼称）なのかを求める関数はありませんので、週番号から月初日（当月の1日）の週番号を差し引いて求める必要があります。しかし、週番号は前述のように様々な定義がありますので注意してください。  
 　  
-特にカレンダーをイメージした月内週数を得たい場合には`lubridate::isoweek`関数を使用してください。ただし、[ISO 8601 <i class="fa fa-external-link"></i>](https://ja.wikipedia.org/wiki/ISO_8601){target="_blank" title="Wikipedia"}の定義を理解しておく必要があります。  
-　  
-特に以下の点に注意してください。  
+特にカレンダーをイメージした月内週数を得たい場合には`lubridate::isoweek`関数または`lubridate::epiweek`関数を使用してください。ただし、以下の点に注意してください。  
 　  
 
-* 週の始まりは**月曜日**
+* `lubridate::isoweek`の場合、週の始まりは**月曜日**
+* `lubridate::epiweek`の場合、週の始まりは**日曜日**
 * 1月の最初の週は第52週や第53週になる場合がある（例：2016年1月）
 * 12月の最終週は第1週になる場合がある（例：2013年12月30日）
 
@@ -142,13 +141,20 @@ POSIXt  | POSIXctとPOSIXltの両者を含む                       | [R][R]で�
 $$月内週数を求めたい日の週番号 - 月初日の週番号 + offset$$
 
 　  
-
+月初日（1日）は`lubridate::floor_date`関数で求めることができますので上記の式は以下のコードとなります。  
+　  
+ISO weeksの場合
 ```
 lubridate::isoweek(x) - lubridate::isoweek(lubridate::floor_date(x), "month") + offset
 ```
 
 　  
+Epidemiological weeksの場合
+```
+lubridate::epiweek(x) - lubridate::isoweek(lubridate::floor_date(x), "month") + offset
+```
 
+　  
 `offset`は条件により値が異なる点に注意してください。（確認中）  
 　  
 
