@@ -47,3 +47,41 @@ thumbnail <- function(title, img, href, caption = TRUE) {
       )
   )
 }
+
+# その月の週数を計算する関数（ベクトル対応できていない）
+# require(lubridate)
+# mweek <- function(date, option = "epiweek") {
+#   if (missing(date)) {
+#     warning("日付が指定されていません")
+#     return(-1L)
+#   } else {
+#     date <- lubridate::as_date(date) 
+#   }
+#   
+#   if (option == "EPI" | option == "epi" | option == "epiweek") {
+#     week <-  lubridate::epiweek(date)
+#     tweek <-  lubridate::epiweek(lubridate::floor_date(date, "month"))
+#   } else if (option == "ISO" | option == "iso" | option == "isoweek") {
+#     week <-  lubridate::isoweek(date)
+#     tweek <-  lubridate::isoweek(lubridate::floor_date(date, "month"))
+#   } else {
+#     week <-  lubridate::week(date)
+#     tweek <-  lubridate::week(lubridate::floor_date(date, "month"))
+#   }
+#   
+#   # オフセットを求める
+#   if (tweek == week) {
+#     offset <- 1
+#   } else if (tweek > week) {
+#     offset <- 53
+#   } else if(tweek == 53) {
+#     offset <- 54
+#   } else {
+#     offset <- 1
+#   }
+# 
+#   
+#   
+#   mweek <- week - tweek + offset
+#   return(mweek)
+# }
