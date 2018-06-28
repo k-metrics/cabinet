@@ -27,15 +27,7 @@ require(tidyverse)
 Package   | Version |Description
 ----------|---------|----------------------------------------------------------
 tidyverse | `r packageVersion('tidyverse')` | Easily Install and Load the ‘Tidyverse’
-
-　  
-
-また、本ページでは以下のデータセットを用いています。  
-　  
-
-Dataset    | Package  | Version | Description
------------|----------|---------|----------------------------------------------
-redmine    | N/A      | N/A     | [Redmine Issues <i class="fa fa-external-link"></i>](http://www.redmine.org/projects/redmine/issues){target="_blank" title="redmine.org"}
+lubridate | `r packageVersion('lubridate')` | Make Dealing with Dates a Little Easier
 
 　  
 
@@ -113,29 +105,32 @@ POSIXt  | POSIXctとPOSIXltの両者を含む                       | [R][R]で�
 　  
 
 ## 週（週番号）
-年初から第何週目なのか、いわゆる週番号を求めるには、いくつかの方法がありますので目的に応じて方法を選択してください。 
+年初から第何週目なのか、いわゆる週番号を求めるには、いくつかの方法がありますので目的に応じて選択してください。  
+　  
 
 関数            | 処理概要                              | 備考
 ----------------|---------------------------------------|-----
+`lubridate::epiweek` | epidemiological week（EPI weeks, CDC weeks） | 日曜開始
+`lubridate::isoweek` | [ISO 8601 <i class="fa fa-external-link"></i>](https://ja.wikipedia.org/wiki/ISO_8601){target="_blank" title="Wikipedia"}の週番号（ISO weeks） | 月曜開始
 `lubridate::week` | 1月1日を基準に7日単位で週番号を計算する | 
-`lubridate::isoweek` | [ISO 8601 <i class="fa fa-external-link"></i>](https://ja.wikipedia.org/wiki/ISO_8601){target="_blank" title="Wikipedia"}にしたがって週番号を計算する | 月曜開始
-`lubridate::epiweek` | epidemiological week             | 日曜開始
 
 　  
 
 ## 週（月内の週数）
-月初から第何週目（以降、月内週数と呼称）なのかを求める関数はありませんので、週番号から月初日（当月の1日）の週番号を差し引いて求める必要があります。しかし、週番号は前述のように様々な定義がありますので注意してください。  
+月初から第何週目（以降、月内週数と呼称）なのかを求める関数はありませんので、月内週数を求めたい日の週番号から月初日（当月の1日）の週番号を差し引いて求める必要があります。しかし、週番号は前述のように様々な定義がありますので計算方法には注意してください。  
 　  
-特にカレンダーをイメージした月内週数を得たい場合には`lubridate::isoweek`関数または`lubridate::epiweek`関数を使用してください。ただし、以下の点に注意してください。  
+特にカレンダーをイメージした月内週数を得たい場合には`lubridate::isoweek`関数または`lubridate::epiweek`関数を使用する必要があります。  
 　  
 
 * `lubridate::isoweek`の場合、週の始まりは**月曜日**
+    * 1月の最初の週は前年の最終週（第52または53週）になる場合がある（例：2016年1月）
+        * その年の最初の木曜日を含む週がその年の第1週という定義のため
+    * 12月の最終週は翌年の第1週になる場合がある（例：2014年12月）
 * `lubridate::epiweek`の場合、週の始まりは**日曜日**
-* 1月の最初の週は第52週や第53週になる場合がある（例：2016年1月）
-* 12月の最終週は第1週になる場合がある（例：2013年12月30日）
+    * 週の開始以外はISO weekに準拠
 
 　  
-月内週数は以下の計算で求められます。  
+上記の条件を考慮して月内週数は以下の計算で求めます。  
 　  
 
 $$月内週数を求めたい日の週番号 - 月初日の週番号 + offset$$
@@ -149,21 +144,63 @@ lubridate::isoweek(x) - lubridate::isoweek(lubridate::floor_date(x), "month") + 
 ```
 
 　  
-Epidemiological weeksの場合
+EPIdemiological weeksの場合
 ```
-lubridate::epiweek(x) - lubridate::isoweek(lubridate::floor_date(x), "month") + offset
+lubridate::epiweek(x) - lubridate::epiweek(lubridate::floor_date(x), "month") + offset
 ```
 
 　  
-`offset`は条件により値が異なる点に注意してください。（確認中）  
+`offset`は条件により値が異なる点に注意してください。
 　  
 
 条件                         | offsetの値 | 備考
 -----------------------------|------------|-----
-月初日の週番号が第52週の場合 | 53         | 
-月初日の週番号が第53週の場合 | 54         | 
-月初日の週番号が求めたい日の週番号より大きな場合 | 月初日の週番号 - 求めたい日の週番号 + 1 | 
+月初日の週番号が第52週の場合 | 53         | 1月のみ
+月初日の週番号が第53週の場合 | 54         | 1月のみ
+月初日週番号 > 求めたい日の週番号 | 53    | 12月の最終週が第1週の場合
 上記以外                     | 1          | 
+
+　  
+
+### 処理コード例
+上記の処理コード例を以下に示しますが、引数の厳密なチェックを行っていませんので、もし、コードを利用する場合は引数に注意してください。  
+　  
+
+```{r, eval=FALSE}
+require(lubridate)
+
+mweek <- function(date, option = "epiweek") {
+  if (missing(date)) {
+    warning("日付が指定されていません")
+    return(-1L)
+  } else {
+    date <- lubridate::as_date(date) 
+  }
+  
+  if (option == "EPI" | option == "epi" | option == "epiweek") {
+    week <-  lubridate::epiweek(date)
+    tweek <-  lubridate::epiweek(lubridate::floor_date(date, "month"))
+  } else if (option == "ISO" | option == "iso" | option == "isoweek") {
+    week <-  lubridate::isoweek(date)
+    tweek <-  lubridate::isoweek(lubridate::floor_date(date, "month"))
+  } else {
+    week <-  lubridate::week(date)
+    tweek <-  lubridate::week(lubridate::floor_date(date, "month"))
+  }
+
+  # オフセットを求める
+  if (tweek == 52 | tweek > week) {
+    offset <- 53
+  } else if(tweek == 53) {
+    offset <- 54
+  } else {
+    offset <- 1
+  }
+  
+  mweek <- week - tweek + offset
+  return(mweek)
+}
+```
 
 　  
 
@@ -171,6 +208,8 @@ lubridate::epiweek(x) - lubridate::isoweek(lubridate::floor_date(x), "month") + 
 
 * [lubridateパッケージ入門 <i class="fa fa-external-link"></i>](https://qiita.com/nozma/items/01725761d980a0110027){target="_blank" title="Qiita"}
 * [日付・時間関数Tips大全 <i class="fa fa-external-link"></i>](http://www.okadajp.org/RWiki/?%E6%97%A5%E4%BB%98%E3%80%81%E6%99%82%E9%96%93%E9%96%A2%E6%95%B0Tips%E5%A4%A7%E5%85%A8){target="_blank" title="RjpWiki"}
+* [ISO 8601概説 <i class="fa fa-external-link"></i>](https://ja.wikipedia.org/wiki/ISO_8601){target="_blank" title="Wikipedia"}
+* [What is an "EPI Week"? <i class="fa fa-external-link"></i>](https://www.cmmcp.org/season-summary-data/pages/what-epi-week){target="_blank" title="Central Mass. Mosquite Control Project"}
 
 　  
 
