@@ -15,6 +15,8 @@ output:
 knitr::opts_chunk$set(warning = FALSE, echo = TRUE, message = FALSE)
 
 require(tidyverse)
+
+# source("../shared/common.R")
 ```
 
 バグトラッキングシステム（以降、BTS）のチケットデータには様々な情報が記録されており品質分析に使わない手はありません。バグチケットの分析は個々のチケットに対する定性分析を行うことが多いですが、定量分析の面から考えるとバグチケット自体はカテゴリカルデータの塊ですのでODC分析のようにクロス集計を用いる方法が考えられます。ODC分析ではODC分析用のタグに基づいた分析を行いますが、ここではバグチケットにある基本的な情報（項目）を用いた可視化の方法を探って行きます。  
@@ -1177,18 +1179,21 @@ x %>%
   dplyr::count(date) %>% 
 # ヒートマップに項目に応じて年、月、週、日、曜日などを求める
   dplyr::mutate(year = lubridate::year(date), month = lubridate::month(date),
-                week = lubridate::isoweek(date), day = lubridate::day(date),
-                wday = lubridate::wday(date, label = TRUE, week_start = 1),
-                tweek = lubridate::isoweek(lubridate::floor_date(date, "month"))) %>% 
-# ISO 8601に特有の処理
-  dplyr::mutate(offset = ifelse(tweek == 53, 54, 1)) %>% 
-  dplyr::mutate(offset = ifelse(tweek == 52, 53, offset)) %>% 
+                week = lubridate::epiweek(date), day = lubridate::day(date),
+                wday = lubridate::wday(date, label = TRUE, week_start = 7),
+                tweek = lubridate::epiweek(lubridate::floor_date(date, "month"))) %>%
+# 特有の処理
+  dplyr::mutate(offset = ifelse(tweek == 53, 54, 1)) %>%
+  dplyr::mutate(offset = ifelse(tweek == 52, 53, offset)) %>%
   dplyr::mutate(offset = ifelse(tweek > week, tweek - week + 1, offset)) %>%
 # 例外処理
   dplyr::mutate(offset = ifelse(tweek == week, 1, offset)) %>%
 # 月内の週数を計算する
-  dplyr::mutate(mweek = week - tweek + offset) %>% 
-  ggplot2::ggplot(ggplot2::aes(x = mweek, y = wday, fill = n)) + 
+  dplyr::mutate(mweek = week - tweek + offset) %>%
+  # dplyr::filter(year == 2016) %>%
+  # dplyr::mutate(mweek = mweek(date)) %>%      # ベクトル対応できていない
+  # print()
+  ggplot2::ggplot(ggplot2::aes(x = wday, y = mweek, fill = n)) + 
     ggplot2::facet_grid(year ~ month) + 
     ggplot2::geom_tile() + 
     ggplot2::scale_fill_gradient(low = "lightyellow", high = "red") + 
