@@ -162,48 +162,6 @@ lubridate::epiweek(x) - lubridate::epiweek(lubridate::floor_date(x), "month") + 
 
 　  
 
-### 処理コード例
-上記の処理コード例を以下に示しますが、引数の厳密なチェックを行っていませんので、もし、コードを利用する場合は引数に注意してください。  
-　  
-
-```{r, eval=FALSE}
-require(lubridate)
-
-mweek <- function(date, option = "epiweek") {
-  if (missing(date)) {
-    warning("日付が指定されていません")
-    return(-1L)
-  } else {
-    date <- lubridate::as_date(date) 
-  }
-  
-  if (option == "EPI" | option == "epi" | option == "epiweek") {
-    week <-  lubridate::epiweek(date)
-    tweek <-  lubridate::epiweek(lubridate::floor_date(date, "month"))
-  } else if (option == "ISO" | option == "iso" | option == "isoweek") {
-    week <-  lubridate::isoweek(date)
-    tweek <-  lubridate::isoweek(lubridate::floor_date(date, "month"))
-  } else {
-    week <-  lubridate::week(date)
-    tweek <-  lubridate::week(lubridate::floor_date(date, "month"))
-  }
-
-  # オフセットを求める
-  if (tweek == 52 | tweek > week) {
-    offset <- 53
-  } else if(tweek == 53) {
-    offset <- 54
-  } else {
-    offset <- 1
-  }
-  
-  mweek <- week - tweek + offset
-  return(mweek)
-}
-```
-
-　  
-
 # 参考資料
 
 * [lubridateパッケージ入門 <i class="fa fa-external-link"></i>](https://qiita.com/nozma/items/01725761d980a0110027){target="_blank" title="Qiita"}
