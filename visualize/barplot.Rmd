@@ -1,0 +1,144 @@
+---
+title: "棒グラフ"
+output:
+  html_document:
+    code_folding: show
+    css: style.css
+---
+
+```{r boxplot, child="../shared/links.Rmd"}
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+
+require(tidyverse)
+```
+
+棒グラフは横軸に因子の水準を縦軸にその値や度数などを配置することで水準ごとの違いを可視化して比較することができます。横軸に時系列データを取ることで時系列の推移を可視化することも可能です。  
+　  
+
+```{r, echo=FALSE}
+barplot()
+```
+
+　  
+なお、本ページでは`r R.version$version.string`の標準パッケージ以外に以下の追加パッケージを用いています。  
+　  
+
+Package   | Version |Description
+----------|---------|----------------------------------------------------------
+tidyverse | `r packageVersion('tidyverse')` | Easily Install and Load the ‘Tidyverse’
+
+　  
+また、本ページでは以下のデータセットを用いています。  
+　  
+
+Dataset    | Package  | Version | Description
+-----------|----------|---------|----------------------------------------------
+mpg        | ggplot2  | `r packageVersion('ggplot2')` | Fuel economy data from 1999 and 2008 for 38 popular models of car
+
+　  
+
+# 標準パッケージを用いる方法
+標準パッケージを用いて箱ひげ図を描くには`boxplot`関数を用います。`boxplot`関数は引数の指定方法を変えることで二種類の箱ひげ図を描くことができます。  
+　  
+
+
+
+# 追加パッケージを用いる方法
+`ggplot2`パッケージには`ggplot2::geom_bar`という棒グラフを描くための関数が用意されています。  
+　  
+
+## 基本的な棒グラフ
+`ggplot2::geom_bar`関数のデフォルトオプションは因子の水準ごとの度数を描くようになっています。例えば`ggplot2::mpg`データセットの`ckass`データを指定すると度数がグラフ化されていることが分かります。  
+　  
+
+```{r}
+ggplot2::mpg %>% 
+  ggplot2::ggplot(ggplot2::aes(x = class)) +
+    ggplot2::geom_bar()
+
+ggplot2::mpg %>% 
+  dplyr::count(class) %>% 
+  tidyr::spread(key = class, value = n)
+```
+
+　  
+
+## 統計量を比較する
+`ggplot2::geom_bar`関数で描く棒グラフの縦軸はデフォルトで度数ですが、縦軸を統計量として描く場合は`stat`オプションを指定する必要があります。  
+例えば縦軸を`cty`の平均値にしたい場合は、`stat`オプションに`"identitiy"`を指定してください。  
+　  
+
+```{r}
+ggplot2::mpg %>% 
+  dplyr::group_by(class) %>% 
+  dplyr::summarise(mean = mean(cty)) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = class, y = mean)) + 
+    ggplot2::geom_bar(stat = "identity") +
+    ggplot2::labs(y = "Cityモードでの平均燃費")
+
+ggplot2::mpg %>% 
+  dplyr::group_by(class) %>% 
+  dplyr::summarise(mean = mean(cty, na.rm = TRUE)) %>% 
+  tidyr::spread(key = class, value = mean)
+
+ggplot2::mpg %>% 
+  dplyr::group_by(class) %>% 
+  dplyr::summarise(mean = mean(hwy)) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = class, y = mean)) + 
+    ggplot2::geom_bar(stat = "identity") +
+    ggplot2::labs(y = "Highwayモードでの平均燃費")
+
+ggplot2::mpg %>% 
+  dplyr::group_by(class) %>% 
+  dplyr::summarise(mean = mean(hwy, na.rm = TRUE)) %>% 
+  tidyr::spread(key = class, value = mean)
+```
+
+　  
+### 統計量
+`ggplot2::stat_summary`関数を
+
+```{r}
+ggplot2::mpg %>% 
+  ggplot2::ggplot(ggplot2::aes(x = class, y = cty)) + 
+    ggplot2::stat_summary(geom = "bar", fun.y = "mean") +
+    ggplot2::labs(y = "City燃費の平均値")
+```
+
+
+## 層別に描く
+縦軸が度数の場合は`fill`オプションを指定する。
+
+```{r}
+ggplot2::mpg %>% 
+  ggplot2::ggplot(ggplot2::aes(x = class, fill = trans)) +
+    ggplot2::geom_bar(alpha = 0.5)
+
+ggplot2::mpg %>% 
+  dplyr::count(class, trans) %>% 
+  tidyr::spread(key = class, value = n)
+```
+
+　  
+
+```{r}
+ggplot2::mpg %>% 
+  ggplot2::ggplot(ggplot2::aes(x = class, y = cty, fill = as.factor(trans))) + 
+    ggplot2::stat_summary(geom = "bar", fun.y = "mean", position = "dodge",
+                          na.rm = TRUE, alpha = 0.5)
+
+ggplot2::mpg %>% 
+  dplyr::group_by(class, trans) %>% 
+  dplyr::summarise(mean = mean(cty, na.rm = TRUE)) %>% 
+  tidyr::spread(key = class, value = mean)
+
+```
+
+---
+
+```{r, child="../shared/footer.Rmd"}
+
+```
