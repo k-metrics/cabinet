@@ -14,6 +14,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 
 require(beanplot)
 require(beeswarm)
+require(ggbeeswarm)
 require(tidyverse)
 source("./geom_flat_violin.R")
 ```
@@ -49,6 +50,7 @@ Package   | Version |Description
 tidyverse | `r packageVersion('tidyverse')` | Easily Install and Load the 'Tidyverse’
 beanplot  | `r packageVersion('beanplot')` | Visualization via Beanplots
 beeswarm  | `r packageVersion('beeswarm')` | The Bee Swarm Plot, an Alternative to Stripchart
+ggbeeswarm | `r packageVersion('ggbeeswarm')` | Categorical Scatter (Violin Point) Plots
 
 　  
 また、本ページでは以下のデータセットを用いています。  
@@ -295,13 +297,36 @@ iris %>%
 　  
 
 ## ビーン・プロット
-ヴァイオリン・プロットと箱ひげ図を組み合わせたようなグラフです。  
-（執筆中）  
+ビーン・プロットはヴァイオリン・プロットとストリップチャートを組み合わせたようなグラフで`beanplot`パッケージを用いて描くことができます。デフォルトでは密度推定のカーネル関数に"gaussian"が用いられています。同じく"gaussian"を用いている`ggplot2::geom_violin`関数と若干形状が異なるのはバンド幅など他のデフォルト値が異なっていることに起因しているようです。  
 　  
 
-## ビー・スウォーム
-ビー・スウォーム（Bee Swarm）はデータの分布を実際の点として点同士が重ならないようにプロットするグラフです。  
-（執筆中）  
+```{r}
+iris %>% 
+  beanplot::beanplot(Sepal.Length ~ Species, data = ., method = "jitter")
+```
+
+　  
+
+## ビー・スウォーム・プロット
+ビー・スウォーム（Bee Swarm）プロットはデータの分布を実際の点として点同士が重ならないようにプロットするグラフで、`beeswarm`パッケージを用いて描くことができます。  
+　  
+
+```{r}
+iris %>% 
+  beeswarm::beeswarm(Sepal.Length ~ Species, data = ., method = "swarm")
+```
+
+　  
+
+## ggplot2用beeswarm
+`ggplot2`パッケージでビー・スウォーム・プロットを描きたい場合は`ggbeeswarm`パッケージを用います。  
+
+```{r}
+iris %>% 
+  ggplot2::ggplot(ggplot2::aes(x = Species, y = Sepal.Length, colour = Species)) + 
+  ggbeeswarm::geom_beeswarm()
+```
+
 　  
 
 # 参考文献

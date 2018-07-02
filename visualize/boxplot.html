@@ -523,6 +523,11 @@ div.tocify {
 <td>0.2.3</td>
 <td>The Bee Swarm Plot, an Alternative to Stripchart</td>
 </tr>
+<tr class="even">
+<td>ggbeeswarm</td>
+<td>0.6.0</td>
+<td>Categorical Scatter (Violin Point) Plots</td>
+</tr>
 </tbody>
 </table>
 <p>　<br />
@@ -747,15 +752,30 @@ axis(1, at = 1:length(type)+1, labels = type, tick = TRUE)</code></pre>
 </div>
 <div id="ビーンプロット" class="section level2">
 <h2>ビーン・プロット</h2>
-<p>ヴァイオリン・プロットと箱ひげ図を組み合わせたようなグラフです。<br />
-（執筆中）<br />
+<p>ビーン・プロットはヴァイオリン・プロットとストリップチャートを組み合わせたようなグラフで<code>beanplot</code>パッケージを用いて描くことができます。デフォルトでは密度推定のカーネル関数に“gaussian”が用いられています。同じく“gaussian”を用いている<code>ggplot2::geom_violin</code>関数と若干形状が異なるのはバンド幅など他のデフォルト値が異なっていることに起因しているようです。<br />
 　</p>
+<pre class="r"><code>iris %&gt;% 
+  beanplot::beanplot(Sepal.Length ~ Species, data = ., method = &quot;jitter&quot;)</code></pre>
+<p><img src="boxplot_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<p>　</p>
 </div>
-<div id="ビースウォーム" class="section level2">
-<h2>ビー・スウォーム</h2>
-<p>ビー・スウォーム（Bee Swarm）はデータの分布を実際の点として点同士が重ならないようにプロットするグラフです。<br />
-（執筆中）<br />
+<div id="ビースウォームプロット" class="section level2">
+<h2>ビー・スウォーム・プロット</h2>
+<p>ビー・スウォーム（Bee Swarm）プロットはデータの分布を実際の点として点同士が重ならないようにプロットするグラフで、<code>beeswarm</code>パッケージを用いて描くことができます。<br />
 　</p>
+<pre class="r"><code>iris %&gt;% 
+  beeswarm::beeswarm(Sepal.Length ~ Species, data = ., method = &quot;swarm&quot;)</code></pre>
+<p><img src="boxplot_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+<p>　</p>
+</div>
+<div id="ggplot2用beeswarm" class="section level2">
+<h2>ggplot2用beeswarm</h2>
+<p><code>ggplot2</code>パッケージでビー・スウォーム・プロットを描きたい場合は<code>ggbeeswarm</code>パッケージを用います。</p>
+<pre class="r"><code>iris %&gt;% 
+  ggplot2::ggplot(ggplot2::aes(x = Species, y = Sepal.Length, colour = Species)) + 
+  ggbeeswarm::geom_beeswarm()</code></pre>
+<p><img src="boxplot_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
+<p>　</p>
 </div>
 </div>
 <div id="参考文献" class="section level1">
@@ -768,7 +788,7 @@ axis(1, at = 1:length(type)+1, labels = type, tick = TRUE)</code></pre>
 </ul>
 <p>　</p>
 <hr />
-<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-07-02 14:43(JST)]</p>
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-07-02 15:57(JST)]</p>
 </div>
 
 
