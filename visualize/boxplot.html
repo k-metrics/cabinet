@@ -448,7 +448,7 @@ div.tocify {
 <!-- RStudio -->
 <!-- Docker -->
 <!-- Cabinet Pages -->
-<p>箱ひげ図（ボックスプロット）はヒストグラムと同様にデータの分布を確認するために利用される基本的なグラフです。ヒストグラムと最も異なるのは要約統計量に基づいたグラフを描く点です。</p>
+<p>箱ひげ図（ボックスプロット）はヒストグラムと同様にデータの分布を確認するために利用される基本的なグラフです。ヒストグラムと異なるのは要約統計量（五数要約）に基づいたグラフを描く点で、データの偏りが把握しやすくなっています。ただし、データ数が少ない場合でも箱ひげ図を描くことができますので、データ数が少ない場合は実際のデータ分布に注意する必要があります。</p>
 <p><img src="boxplot_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
 <p>箱ひげ図には様々なバリエーションがありますが<a href="https://www.r-project.org/" target="_blank" title="The R Project">R <i class="fa fa-external-link"></i></a>の箱ひげ図は下表の要約統計量を元に描かれます。</p>
 <table>
@@ -492,29 +492,41 @@ div.tocify {
 <sup>注3</sup> <span class="math inline">\(IQR = 上側25\%点 - 下側25\%点\)</span></p>
 <p>上側極値と下側極値の外側にあるデータは外れ値になります。<br />
 　</p>
-<div id="必要なパッケージ" class="section level1">
-<h1>必要なパッケージ</h1>
-<p>本ページのコードを実行するには標準パッケージ以外に以下の追加パッケージを読み込んでおく必要があります。<br />
+<p>なお、本ページではR version 3.4.4 (2018-03-15)の標準パッケージ以外に以下の追加パッケージを用いています。<br />
 　</p>
 <table>
 <thead>
 <tr class="header">
-<th>Packages</th>
+<th>Package</th>
+<th>Version</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td>tidyverse</td>
+<td>1.2.1</td>
 <td>Easily Install and Load the ‘Tidyverse’</td>
+</tr>
+<tr class="even">
+<td>beanplot</td>
+<td>1.2</td>
+<td>Visualization via Beanplots</td>
+</tr>
+<tr class="odd">
+<td>beeswarm</td>
+<td>0.2.3</td>
+<td>The Bee Swarm Plot, an Alternative to Stripchart</td>
+</tr>
+<tr class="even">
+<td>ggbeeswarm</td>
+<td>0.6.0</td>
+<td>Categorical Scatter (Violin Point) Plots</td>
 </tr>
 </tbody>
 </table>
-<p>　</p>
-</div>
-<div id="対象データ" class="section level1">
-<h1>対象データ</h1>
-<p>標準パッケージに組み込まれている以下のデータセットを用います。<br />
+<p>　<br />
+また、本ページでは以下のデータセットを用いています。<br />
 　</p>
 <table>
 <thead>
@@ -531,7 +543,6 @@ div.tocify {
 </tbody>
 </table>
 <p>　</p>
-</div>
 <div id="標準パッケージを用いる方法" class="section level1">
 <h1>標準パッケージを用いる方法</h1>
 <p>標準パッケージを用いて箱ひげ図を描くには<code>boxplot</code>関数を用います。<code>boxplot</code>関数は引数の指定方法を変えることで二種類の箱ひげ図を描くことができます。<br />
@@ -662,7 +673,7 @@ axis(1, at = 1:length(type)+1, labels = type, tick = TRUE)</code></pre>
 </div>
 <div id="進化系箱ひげ図" class="section level1">
 <h1>進化系？箱ひげ図</h1>
-<p>箱ひげ図は要約統計量（四分位値）を利用してるため頑健ではありますが、データの分布形状を見ることにはあまり適していません。そこで、箱ひげ図の特徴を利用しながらデータ分布の確率密度（カーネル密度推定）を表示させる進化系箱ひげ図とも言えるバイオリンプロットがあります。<br />
+<p>箱ひげ図は要約統計量（五数要約）を利用してるため頑健ではありますが、ヒストグラムのデータの分布形状を見ることにはあまり適していません。そこで、箱ひげ図の特徴を利用しながらデータ分布が見れるいくつかの方法があります。<br />
 　</p>
 <div id="バイオリンプロット" class="section level2">
 <h2>バイオリンプロット</h2>
@@ -682,9 +693,8 @@ axis(1, at = 1:length(type)+1, labels = type, tick = TRUE)</code></pre>
     ggplot2::geom_violin(draw_quantiles = c(0.25, 0.5, 0.75))</code></pre>
 <p><img src="boxplot_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 <p>　</p>
-</div>
-<div id="バイオリンプロットと平均値" class="section level2">
-<h2>バイオリンプロットと平均値</h2>
+<div id="バイオリンプロットと平均値" class="section level3">
+<h3>バイオリンプロットと平均値</h3>
 <p>四分位に加えて平均値をプロットしたい場合は、箱ひげ図の場合と同様に<code>ggplot2::stat_summary</code>関数を用いてください。<br />
 　</p>
 <pre class="r"><code>iris %&gt;% 
@@ -694,8 +704,8 @@ axis(1, at = 1:length(type)+1, labels = type, tick = TRUE)</code></pre>
 <p><img src="boxplot_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 <p>　</p>
 </div>
-<div id="バイオリンプロットと箱ひげ図" class="section level2">
-<h2>バイオリンプロットと箱ひげ図</h2>
+<div id="バイオリンプロットと箱ひげ図" class="section level3">
+<h3>バイオリンプロットと箱ひげ図</h3>
 <p>見慣れた箱ひげ図の方がいいという場合は<code>ggplot2::geom_boxplot</code>関数に引数<code>width</code>を指定してください。加えて<code>ggplot2::stat_summary</code>関数で平均値を描画することもできます。</p>
 <pre class="r"><code>iris %&gt;% 
   ggplot2::ggplot(ggplot2::aes(x = Species, y = Sepal.Length)) + 
@@ -705,8 +715,8 @@ axis(1, at = 1:length(type)+1, labels = type, tick = TRUE)</code></pre>
 <p><img src="boxplot_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 <p>　</p>
 </div>
-<div id="バイオリンプロットと頻度分布" class="section level2">
-<h2>バイオリンプロットと頻度分布</h2>
+<div id="バイオリンプロットと頻度分布" class="section level3">
+<h3>バイオリンプロットと頻度分布</h3>
 <p>やっぱり実際の頻度分布も見たいという場合は箱ひげ図の場合と同様に<code>ggplot2::geom_dotplot</code>関数を用いてください。この時に<code>position</code>オプションで描画をオフセットさせると複数の描画を重ねても見やすいグラフにすることができます。<br />
 　</p>
 <pre class="r"><code>iris %&gt;% 
@@ -719,8 +729,9 @@ axis(1, at = 1:length(type)+1, labels = type, tick = TRUE)</code></pre>
 <p><img src="boxplot_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
 <p>　</p>
 </div>
-<div id="雨雲プロット" class="section level2">
-<h2>雨雲プロット</h2>
+</div>
+<div id="レインドロッププロット" class="section level2">
+<h2>レインドロップ・プロット</h2>
 <p>GitHubで<a href="https://gist.github.com/dgrtwo/eb7750e74997891d7c20" target="_blank" title="David Robinson"><code>geom_flat_violin</code>という関数のコード <i class="fa fa-external-link"></i></a>が公開されています。<code>geom_flat_violine</code>関数はバイオリンプロットを半分だけ描く関数です。このプロットとドットプロットを組み合わせることで雨雲のようなプロットを描くことができます。<br />
 　</p>
 <pre class="r"><code>iris %&gt;% 
@@ -733,9 +744,46 @@ axis(1, at = 1:length(type)+1, labels = type, tick = TRUE)</code></pre>
     ggplot2::coord_flip()</code></pre>
 <p><img src="boxplot_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
 <p>　</p>
-<hr />
-<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-06-20 22:41(JST)]</p>
 </div>
+<div id="ビーンプロット" class="section level2">
+<h2>ビーン・プロット</h2>
+<p>ビーン・プロットはヴァイオリン・プロットとストリップチャートを組み合わせたようなグラフで<code>beanplot</code>パッケージを用いて描くことができます。デフォルトでは密度推定のカーネル関数に“gaussian”が用いられています。同じく“gaussian”を用いている<code>ggplot2::geom_violin</code>関数と若干形状が異なるのはバンド幅など他のデフォルト値が異なっていることに起因しているようです。<br />
+　</p>
+<pre class="r"><code>iris %&gt;% 
+  beanplot::beanplot(Sepal.Length ~ Species, data = ., method = &quot;jitter&quot;)</code></pre>
+<p><img src="boxplot_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<p>　</p>
+</div>
+<div id="ビースウォームプロット" class="section level2">
+<h2>ビー・スウォーム・プロット</h2>
+<p>ビー・スウォーム（Bee Swarm）プロットはデータの分布を実際の点として点同士が重ならないようにプロットするグラフで、<code>beeswarm</code>パッケージを用いて描くことができます。<br />
+　</p>
+<pre class="r"><code>iris %&gt;% 
+  beeswarm::beeswarm(Sepal.Length ~ Species, data = ., method = &quot;swarm&quot;)</code></pre>
+<p><img src="boxplot_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+<p>　</p>
+</div>
+<div id="ggplot2用" class="section level2">
+<h2>ggplot2用</h2>
+<p><code>ggplot2</code>パッケージでビー・スウォーム・プロットを描きたい場合は<code>ggbeeswarm</code>パッケージを用います。</p>
+<pre class="r"><code>iris %&gt;% 
+  ggplot2::ggplot(ggplot2::aes(x = Species, y = Sepal.Length, colour = Species)) + 
+  ggbeeswarm::geom_beeswarm()</code></pre>
+<p><img src="boxplot_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
+<p>　</p>
+</div>
+</div>
+<div id="参考文献" class="section level1">
+<h1>参考文献</h1>
+<ul>
+<li><a href="https://syodokukai.exblog.jp/20389248/" target="_blank" title="一人抄読会">ボックスプロット(箱ひげ図)作成のためのオープンソースアプリケーション：BoxPlotR <i class="fa fa-external-link"></i></a></li>
+<li><a href="https://cis-jp.blogspot.com/2012/08/blog-post_3858.html" target="_blank" title="色々と考えてみる">文系のための「数の可視化」（７） <i class="fa fa-external-link"></i></a></li>
+<li><a href="https://www.pediatricsurgery.site/entry/2018/03/04/133703" target="_blank" title="Note of Pediatric Surgery">ggplot2でviolin plotとdotplotの両方で可視化する <i class="fa fa-external-link"></i></a></li>
+<li><a href="https://stats.biopapyrus.jp/r/graph/beeswarm.html" target="_blank" title="biostatistics">ビースウォーム <i class="fa fa-external-link"></i></a></li>
+</ul>
+<p>　</p>
+<hr />
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-07-02 22:33(JST)]</p>
 </div>
 
 
