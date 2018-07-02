@@ -28,7 +28,9 @@
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 <link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
 <script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
-<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.0.13/css/fa-svg-with-js.css" rel="stylesheet" />
+<script src="site_libs/font-awesome-5.0.13/js/fontawesome-all.min.js"></script>
+<script src="site_libs/font-awesome-5.0.13/js/fa-v4-shims.min.js"></script>
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
@@ -97,6 +99,9 @@ img {
 }
 .tabbed-pane {
   padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
 }
 button.code-folding-btn:focus {
   outline: none;
@@ -448,7 +453,7 @@ div.tocify {
 <!-- RStudio -->
 <!-- Docker -->
 <!-- Cabinet Pages -->
-<p>箱ひげ図（ボックスプロット）はヒストグラムと同様にデータの分布を確認するために利用される基本的なグラフです。ヒストグラムと最も異なるのは要約統計量に基づいたグラフを描く点です。</p>
+<p>箱ひげ図（ボックスプロット）はヒストグラムと同様にデータの分布を確認するために利用される基本的なグラフです。ヒストグラムと異なるのは要約統計量（五数要約）に基づいたグラフを描く点で、データの偏りが把握しやすくなっています。ただし、データ数が少ない場合でも箱ひげ図を描くことができますので、データ数が少ない場合は実際のデータ分布に注意する必要があります。</p>
 <p><img src="boxplot_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
 <p>箱ひげ図には様々なバリエーションがありますが<a href="https://www.r-project.org/" target="_blank" title="The R Project">R <i class="fa fa-external-link"></i></a>の箱ひげ図は下表の要約統計量を元に描かれます。</p>
 <table>
@@ -662,7 +667,7 @@ axis(1, at = 1:length(type)+1, labels = type, tick = TRUE)</code></pre>
 </div>
 <div id="進化系箱ひげ図" class="section level1">
 <h1>進化系？箱ひげ図</h1>
-<p>箱ひげ図は要約統計量（四分位値）を利用してるため頑健ではありますが、データの分布形状を見ることにはあまり適していません。そこで、箱ひげ図の特徴を利用しながらデータ分布の確率密度（カーネル密度推定）を表示させる進化系箱ひげ図とも言えるバイオリンプロットがあります。<br />
+<p>箱ひげ図は要約統計量（五数要約）を利用してるため頑健ではありますが、ヒストグラムのデータの分布形状を見ることにはあまり適していません。そこで、箱ひげ図の特徴を利用しながらデータ分布が見れるいくつかの方法があります。<br />
 　</p>
 <div id="バイオリンプロット" class="section level2">
 <h2>バイオリンプロット</h2>
@@ -733,9 +738,31 @@ axis(1, at = 1:length(type)+1, labels = type, tick = TRUE)</code></pre>
     ggplot2::coord_flip()</code></pre>
 <p><img src="boxplot_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
 <p>　</p>
-<hr />
-<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-06-20 22:41(JST)]</p>
 </div>
+<div id="ビーンプロット" class="section level2">
+<h2>ビーン・プロット</h2>
+<p>ヴァイオリン・プロットと箱ひげ図を組み合わせたようなグラフです。<br />
+（執筆中）<br />
+　</p>
+</div>
+<div id="ビースウォーム" class="section level2">
+<h2>ビー・スウォーム</h2>
+<p>ビー・スウォーム（Bee Swarm）はデータの分布を実際の点として点同士が重ならないようにプロットするグラフです。<br />
+（執筆中）<br />
+　</p>
+</div>
+</div>
+<div id="参考文献" class="section level1">
+<h1>参考文献</h1>
+<ul>
+<li><a href="https://syodokukai.exblog.jp/20389248/" target="_blank" title="一人抄読会">ボックスプロット(箱ひげ図)作成のためのオープンソースアプリケーション：BoxPlotR <i class="fa fa-external-link"></i></a></li>
+<li><a href="https://cis-jp.blogspot.com/2012/08/blog-post_3858.html" target="_blank" title="色々と考えてみる">文系のための「数の可視化」（７） <i class="fa fa-external-link"></i></a></li>
+<li><a href="https://www.pediatricsurgery.site/entry/2018/03/04/133703" target="_blank" title="Note of Pediatric Surgery">ggplot2でviolin plotとdotplotの両方で可視化する <i class="fa fa-external-link"></i></a></li>
+<li><a href="https://stats.biopapyrus.jp/r/graph/beeswarm.html" target="_blank" title="biostatistics">ビースウォーム <i class="fa fa-external-link"></i></a></li>
+</ul>
+<p>　</p>
+<hr />
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-07-02 13:10(JST)]</p>
 </div>
 
 

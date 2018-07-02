@@ -16,7 +16,7 @@ require(tidyverse)
 source("./geom_flat_violin.R")
 ```
 
-箱ひげ図（ボックスプロット）はヒストグラムと同様にデータの分布を確認するために利用される基本的なグラフです。ヒストグラムと最も異なるのは要約統計量に基づいたグラフを描く点です。  
+箱ひげ図（ボックスプロット）はヒストグラムと同様にデータの分布を確認するために利用される基本的なグラフです。ヒストグラムと異なるのは要約統計量（五数要約）に基づいたグラフを描く点で、データの偏りが把握しやすくなっています。ただし、データ数が少ない場合でも箱ひげ図を描くことができますので、データ数が少ない場合は実際のデータ分布に注意する必要があります。  
 
 ```{r, echo=FALSE}
 boxplot(Sepal.Length ~ Species, data = iris)
@@ -206,7 +206,7 @@ iris %>%
 　  
 
 # 進化系？箱ひげ図
-箱ひげ図は要約統計量（四分位値）を利用してるため頑健ではありますが、データの分布形状を見ることにはあまり適していません。そこで、箱ひげ図の特徴を利用しながらデータ分布の確率密度（カーネル密度推定）を表示させる進化系箱ひげ図とも言えるバイオリンプロットがあります。  
+箱ひげ図は要約統計量（五数要約）を利用してるため頑健ではありますが、ヒストグラムのデータの分布形状を見ることにはあまり適していません。そこで、箱ひげ図の特徴を利用しながらデータ分布が見れるいくつかの方法があります。  
 　  
 
 ## バイオリンプロット
@@ -290,6 +290,24 @@ iris %>%
                           binwidth = 0.1, position = position_nudge(-0.05)) + 
     ggplot2::coord_flip()
 ```
+
+　  
+
+## ビーン・プロット
+ヴァイオリン・プロットと箱ひげ図を組み合わせたようなグラフです。  
+（執筆中）  
+　  
+
+## ビー・スウォーム
+ビー・スウォーム（Bee Swarm）はデータの分布を実際の点として点同士が重ならないようにプロットするグラフです。  
+（執筆中）  
+　  
+
+# 参考文献
+* [ボックスプロット(箱ひげ図)作成のためのオープンソースアプリケーション：BoxPlotR <i class="fa fa-external-link"></i>](https://syodokukai.exblog.jp/20389248/){target="_blank" title="一人抄読会"}
+* [文系のための「数の可視化」（７）  <i class="fa fa-external-link"></i>](https://cis-jp.blogspot.com/2012/08/blog-post_3858.html){target="_blank" title="色々と考えてみる"}
+* [ggplot2でviolin plotとdotplotの両方で可視化する <i class="fa fa-external-link"></i>](https://www.pediatricsurgery.site/entry/2018/03/04/133703){target="_blank" title="Note of Pediatric Surgery"}
+* [ビースウォーム <i class="fa fa-external-link"></i>](https://stats.biopapyrus.jp/r/graph/beeswarm.html){target="_blank" title="biostatistics"}
 
 　  
 
