@@ -15,14 +15,10 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 require(tidyverse)
 ```
 
-棒グラフは横軸に因子の水準を縦軸にその値や度数などを配置することで水準ごとの違いを可視化して比較することができます。横軸に時系列データを取ることで時系列の推移を可視化することも可能です。  
+棒グラフはデータの値を可視化して比較するために使われることが多いグラフです。また、横軸を時系列データとすることで時系列の推移を可視化することもできます。ヒストグラムと異なり棒グラフの面積には意味がありません。  
+`ggplot2`パッケージの棒グラフはデフォルトで横軸に因子の水準を縦軸に度数表示します。ですので、度数以外の統計量などを表示する場合にはオプション指定が必要です。  
 　  
 
-```{r, echo=FALSE}
-barplot()
-```
-
-　  
 なお、本ページでは`r R.version$version.string`の標準パッケージ以外に以下の追加パッケージを用いています。  
 　  
 
@@ -41,7 +37,14 @@ mpg        | ggplot2  | `r packageVersion('ggplot2')` | Fuel economy data from 1
 　  
 
 # 標準パッケージを用いる方法
-標準パッケージを用いて箱ひげ図を描くには`boxplot`関数を用います。`boxplot`関数は引数の指定方法を変えることで二種類の箱ひげ図を描くことができます。  
+標準パッケージを用いて箱ひげ図を描くには`barplot`関数を用います。
+```{r}
+ggplot2::mpg %>% 
+  dplyr::group_by(class) %>% 
+  dplyr::summarise(cty = mean(cty, na.rm = TRUE)) %>% 
+  with(., barplot(cty, names.arg = class))
+```
+
 　  
 
 
