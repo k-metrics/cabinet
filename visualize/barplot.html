@@ -28,7 +28,9 @@
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 <link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
 <script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
-<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.0.13/css/fa-svg-with-js.css" rel="stylesheet" />
+<script src="site_libs/font-awesome-5.0.13/js/fontawesome-all.min.js"></script>
+<script src="site_libs/font-awesome-5.0.13/js/fa-v4-shims.min.js"></script>
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
@@ -97,6 +99,9 @@ img {
 }
 .tabbed-pane {
   padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
 }
 button.code-folding-btn:focus {
   outline: none;
@@ -448,11 +453,9 @@ div.tocify {
 <!-- RStudio -->
 <!-- Docker -->
 <!-- Cabinet Pages -->
-<p>棒グラフは横軸に因子の水準を縦軸にその値や度数などを配置することで水準ごとの違いを可視化して比較することができます。横軸に時系列データを取ることで時系列の推移を可視化することも可能です。<br />
+<p>棒グラフは複数の値を比較するために使われることが多いグラフです。棒の高さ、または、長さで値の大小を比較します。また、横軸に時系列データを取ることで時系列の推移を見るためにも使われる場合があります。なお、ヒストグラムと異なり棒グラフの面積に意味はありません。<br />
 　</p>
-<pre class="r"><code>barplot()</code></pre>
-<p>　<br />
-なお、本ページではR version 3.4.4 (2018-03-15)の標準パッケージ以外に以下の追加パッケージを用いています。<br />
+<p>なお、本ページではR version 3.4.4 (2018-03-15)の標準パッケージ以外に以下の追加パッケージを用いています。<br />
 　</p>
 <table>
 <thead>
@@ -500,16 +503,23 @@ div.tocify {
 <p>　</p>
 <div id="標準パッケージを用いる方法" class="section level1">
 <h1>標準パッケージを用いる方法</h1>
-<p>標準パッケージを用いて箱ひげ図を描くには<code>boxplot</code>関数を用います。<code>boxplot</code>関数は引数の指定方法を変えることで二種類の箱ひげ図を描くことができます。<br />
+<p>標準パッケージを用いて箱ひげ図を描くには<code>barplot</code>関数を用います。<code>barplot</code>関数は引数に高さ（<code>height</code>）、すなわち、Y軸の値を取りますのであらかじめY軸の値を計算しておく必要があります。<br />
+　</p>
+<pre class="r"><code>ggplot2::mpg %&gt;% 
+  dplyr::group_by(class) %&gt;% 
+  dplyr::summarise(cty = mean(cty, na.rm = TRUE)) %&gt;% 
+  with(., barplot(cty, names.arg = class, ylab = &quot;Ctyモードでの平均燃費&quot;))</code></pre>
+<p><img src="barplot_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p>残念ながらあまり使い勝手のいい関数とは言えません。<br />
 　</p>
 </div>
 <div id="追加パッケージを用いる方法" class="section level1">
 <h1>追加パッケージを用いる方法</h1>
-<p><code>ggplot2</code>パッケージには<code>ggplot2::geom_bar</code>という棒グラフを描くための関数が用意されています。<br />
+<p><code>ggplot2</code>パッケージには<code>ggplot2::geom_bar</code>という棒グラフを描くための関数が用意されています。<code>ggplot2::geom_bar</code>関数はデフォルトで横軸に因子水準を縦軸に度数を取ります。縦軸に統計量などを取りたい場合にはオプション指定が必要です。<br />
 　</p>
 <div id="基本的な棒グラフ" class="section level2">
 <h2>基本的な棒グラフ</h2>
-<p><code>ggplot2::geom_bar</code>関数のデフォルトオプションは因子の水準ごとの度数を描くようになっています。例えば<code>ggplot2::mpg</code>データセットの<code>ckass</code>データを指定すると度数がグラフ化されていることが分かります。<br />
+<p>前述のように<code>ggplot2::geom_bar</code>関数は縦軸に度数を取ります。例えば<code>ggplot2::mpg</code>データセットの<code>class</code>データを指定すると以下のように度数がグラフ化されていることが分かります。<br />
 　</p>
 <pre class="r"><code>ggplot2::mpg %&gt;% 
   ggplot2::ggplot(ggplot2::aes(x = class)) +
@@ -525,14 +535,9 @@ div.tocify {
 </div>
 <p>　</p>
 </div>
-<div id="統計量を比較する" class="section level2">
-<h2>統計量を比較する</h2>
-<p>（要約）統計量を棒グラフで比較する場合には<code>ggplot2::geom_bar</code>関数を用いる方法と<code>ggplot2::stat_summary</code>関数を用いる方法があります。<code>ggplot2::geom_bar</code>関数を使う場合には予め統計量を計算しておく必要がありますが、<code>ggplot2::stat_summary</code>関数では統計量を計算する関数を指定します。<br />
-　</p>
-<div id="ggplot2geom_bar" class="section level3">
-<h3><code>ggplot2::geom_bar</code></h3>
-<p><code>ggplot2::geom_bar</code>関数がデフォルトで描く棒グラフの縦軸は度数です。縦軸を統計量として描く場合は<code>stat</code>オプションを指定する必要があります。<br />
-例えば縦軸を<code>cty</code>の平均値にしたい場合は、<code>stat</code>オプションに<code>&quot;identitiy&quot;</code>を指定してください。<br />
+<div id="統計量で描く" class="section level2">
+<h2>統計量で描く</h2>
+<p>（要約）統計量を棒グラフで比較する場合には<code>ggplot2::geom_bar</code>関数の<code>stat</code>オプションに<code>&quot;identitiy&quot;</code>を指定します。<br />
 　</p>
 <pre class="r"><code>ggplot2::mpg %&gt;% 
   dplyr::group_by(class) %&gt;% 
@@ -544,44 +549,26 @@ div.tocify {
 <pre class="r"><code>ggplot2::mpg %&gt;% 
   dplyr::group_by(class) %&gt;% 
   dplyr::summarise(mean = mean(cty, na.rm = TRUE)) %&gt;% 
+  dplyr::mutate(mean = round(mean, 1)) %&gt;% 
   tidyr::spread(key = class, value = mean)</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["2seater"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["compact"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["midsize"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["minivan"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["pickup"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["subcompact"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["suv"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"15.4","2":"20.12766","3":"18.7561","4":"15.81818","5":"13","6":"20.37143","7":"13.5"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["2seater"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["compact"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["midsize"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["minivan"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["pickup"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["subcompact"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["suv"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"15.4","2":"20.1","3":"18.8","4":"15.8","5":"13","6":"20.4","7":"13.5"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
-<pre class="r"><code>ggplot2::mpg %&gt;% 
-  dplyr::group_by(class) %&gt;% 
-  dplyr::summarise(mean = mean(hwy)) %&gt;% 
-  ggplot2::ggplot(ggplot2::aes(x = class, y = mean)) + 
-    ggplot2::geom_bar(stat = &quot;identity&quot;) +
-    ggplot2::labs(y = &quot;Highwayモードでの平均燃費&quot;)</code></pre>
-<p><img src="barplot_files/figure-html/unnamed-chunk-3-2.png" width="672" /></p>
-<pre class="r"><code>ggplot2::mpg %&gt;% 
-  dplyr::group_by(class) %&gt;% 
-  dplyr::summarise(mean = mean(hwy, na.rm = TRUE)) %&gt;% 
-  tidyr::spread(key = class, value = mean)</code></pre>
-<div data-pagedtable="false">
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":["2seater"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["compact"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["midsize"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["minivan"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["pickup"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["subcompact"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["suv"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"24.8","2":"28.29787","3":"27.29268","4":"22.36364","5":"16.87879","6":"28.14286","7":"18.12903"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
-  </script>
-</div>
-<p>　<br />
-### 統計量 <code>ggplot2::stat_summary</code>関数を</p>
-<pre class="r"><code>ggplot2::mpg %&gt;% 
-  ggplot2::ggplot(ggplot2::aes(x = class, y = cty)) + 
-    ggplot2::stat_summary(geom = &quot;bar&quot;, fun.y = &quot;mean&quot;) +
-    ggplot2::labs(y = &quot;City燃費の平均値&quot;)</code></pre>
-<p><img src="barplot_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-</div>
+<p>　</p>
 </div>
 <div id="層別に描く" class="section level2">
 <h2>層別に描く</h2>
-<p>縦軸が度数の場合は<code>fill</code>オプションを指定する。</p>
+<p><code>ggplot2::geom_bar</code>関数を用いて層別棒グラフを描く場合には縦軸に何を指定しているかをで描き方が異なりますので注意してください。</p>
+<div id="度数の場合" class="section level3">
+<h3>度数の場合</h3>
+<p>縦軸が度数の場合は他の<code>ggplot2::geom_</code>系関数と同様に<code>fill</code>オプションを指定することで積上げ棒グラフを描くことができます。<br />
+　</p>
 <pre class="r"><code>ggplot2::mpg %&gt;% 
   ggplot2::ggplot(ggplot2::aes(x = class, fill = trans)) +
-    ggplot2::geom_bar(alpha = 0.5)</code></pre>
-<p><img src="barplot_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+    ggplot2::geom_bar(alpha = 0.75)</code></pre>
+<p><img src="barplot_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 <pre class="r"><code>ggplot2::mpg %&gt;% 
   dplyr::count(class, trans) %&gt;% 
   tidyr::spread(key = class, value = n)</code></pre>
@@ -590,23 +577,89 @@ div.tocify {
 {"columns":[{"label":["trans"],"name":[1],"type":["chr"],"align":["left"]},{"label":["2seater"],"name":[2],"type":["int"],"align":["right"]},{"label":["compact"],"name":[3],"type":["int"],"align":["right"]},{"label":["midsize"],"name":[4],"type":["int"],"align":["right"]},{"label":["minivan"],"name":[5],"type":["int"],"align":["right"]},{"label":["pickup"],"name":[6],"type":["int"],"align":["right"]},{"label":["subcompact"],"name":[7],"type":["int"],"align":["right"]},{"label":["suv"],"name":[8],"type":["int"],"align":["right"]}],"data":[{"1":"auto(av)","2":"NA","3":"2","4":"3","5":"NA","6":"NA","7":"NA","8":"NA"},{"1":"auto(l3)","2":"NA","3":"1","4":"NA","5":"1","6":"NA","7":"NA","8":"NA"},{"1":"auto(l4)","2":"1","3":"8","4":"14","5":"8","6":"12","7":"11","8":"29"},{"1":"auto(l5)","2":"NA","3":"4","4":"5","5":"NA","6":"8","7":"4","8":"18"},{"1":"auto(l6)","2":"NA","3":"NA","4":"NA","5":"2","6":"NA","7":"NA","8":"4"},{"1":"auto(s4)","2":"NA","3":"2","4":"1","5":"NA","6":"NA","7":"NA","8":"NA"},{"1":"auto(s5)","2":"NA","3":"2","4":"NA","5":"NA","6":"NA","7":"NA","8":"1"},{"1":"auto(s6)","2":"1","3":"5","4":"6","5":"NA","6":"NA","7":"1","8":"3"},{"1":"manual(m5)","2":"NA","3":"18","4":"9","5":"NA","6":"8","7":"16","8":"7"},{"1":"manual(m6)","2":"3","3":"5","4":"3","5":"NA","6":"5","7":"3","8":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
-<p>　</p>
+<p>　<br />
+これを比率で描きたい場合は<code>ggplot2::geom_bar</code>関数で<code>position = &quot;fill&quot;</code>を指定してください。<br />
+　</p>
 <pre class="r"><code>ggplot2::mpg %&gt;% 
-  ggplot2::ggplot(ggplot2::aes(x = class, y = cty, fill = as.factor(trans))) + 
+  ggplot2::ggplot(ggplot2::aes(x = class, fill = trans)) +
+    ggplot2::geom_bar(position = &quot;fill&quot;, alpha = 0.75)</code></pre>
+<p><img src="barplot_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>　</p>
+</div>
+<div id="統計量の場合" class="section level3">
+<h3>統計量の場合</h3>
+<p>縦軸が統計量の場合は積上げ棒グラフを描く意味はありませんので集合棒グラフとして描きます。集合棒グラフを描くには<code>position = &quot;dodge&quot;</code>オプションを指定してください。<br />
+　</p>
+<pre class="r"><code>ggplot2::mpg %&gt;% 
+  ggplot2::ggplot(ggplot2::aes(x = class, y = cty, fill = trans)) + 
     ggplot2::stat_summary(geom = &quot;bar&quot;, fun.y = &quot;mean&quot;, position = &quot;dodge&quot;,
-                          na.rm = TRUE, alpha = 0.5)</code></pre>
+                          na.rm = TRUE, alpha = 0.75) + 
+    ggplot2::labs(y = &quot;Cityモードでの平均燃費&quot;)</code></pre>
 <p><img src="barplot_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <pre class="r"><code>ggplot2::mpg %&gt;% 
   dplyr::group_by(class, trans) %&gt;% 
   dplyr::summarise(mean = mean(cty, na.rm = TRUE)) %&gt;% 
+  dplyr::mutate(mean = round(mean, 1)) %&gt;% 
   tidyr::spread(key = class, value = mean)</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["trans"],"name":[1],"type":["chr"],"align":["left"]},{"label":["2seater"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["compact"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["midsize"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["minivan"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["pickup"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["subcompact"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["suv"],"name":[8],"type":["dbl"],"align":["right"]}],"data":[{"1":"auto(av)","2":"NA","3":"19.50","4":"20.33333","5":"NA","6":"NA","7":"NA","8":"NA"},{"1":"auto(l3)","2":"NA","3":"24.00","4":"NA","5":"18.0","6":"NA","7":"NA","8":"NA"},{"1":"auto(l4)","2":"15.00000","3":"20.25","4":"18.57143","5":"15.5","6":"12.91667","7":"20.45455","8":"13.17241"},{"1":"auto(l5)","2":"NA","3":"16.25","4":"17.80000","5":"NA","6":"12.62500","7":"20.00000","8":"13.27778"},{"1":"auto(l6)","2":"NA","3":"NA","4":"NA","5":"16.0","6":"NA","7":"NA","8":"12.50000"},{"1":"auto(s4)","2":"NA","3":"20.00","4":"16.00000","5":"NA","6":"NA","7":"NA","8":"NA"},{"1":"auto(s5)","2":"NA","3":"20.00","4":"NA","5":"NA","6":"NA","7":"NA","8":"12.00000"},{"1":"auto(s6)","2":"15.00000","3":"20.20","4":"17.50000","5":"NA","6":"NA","7":"20.00000","8":"12.33333"},{"1":"manual(m5)","2":"NA","3":"21.00","4":"19.44444","5":"NA","6":"13.75000","7":"21.06250","8":"16.71429"},{"1":"manual(m6)","2":"15.66667","3":"19.40","4":"21.00000","5":"NA","6":"12.60000","7":"17.00000","8":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["trans"],"name":[1],"type":["chr"],"align":["left"]},{"label":["2seater"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["compact"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["midsize"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["minivan"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["pickup"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["subcompact"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["suv"],"name":[8],"type":["dbl"],"align":["right"]}],"data":[{"1":"auto(av)","2":"NA","3":"19.5","4":"20.3","5":"NA","6":"NA","7":"NA","8":"NA"},{"1":"auto(l3)","2":"NA","3":"24.0","4":"NA","5":"18.0","6":"NA","7":"NA","8":"NA"},{"1":"auto(l4)","2":"15.0","3":"20.2","4":"18.6","5":"15.5","6":"12.9","7":"20.5","8":"13.2"},{"1":"auto(l5)","2":"NA","3":"16.2","4":"17.8","5":"NA","6":"12.6","7":"20.0","8":"13.3"},{"1":"auto(l6)","2":"NA","3":"NA","4":"NA","5":"16.0","6":"NA","7":"NA","8":"12.5"},{"1":"auto(s4)","2":"NA","3":"20.0","4":"16.0","5":"NA","6":"NA","7":"NA","8":"NA"},{"1":"auto(s5)","2":"NA","3":"20.0","4":"NA","5":"NA","6":"NA","7":"NA","8":"12.0"},{"1":"auto(s6)","2":"15.0","3":"20.2","4":"17.5","5":"NA","6":"NA","7":"20.0","8":"12.3"},{"1":"manual(m5)","2":"NA","3":"21.0","4":"19.4","5":"NA","6":"13.8","7":"21.1","8":"16.7"},{"1":"manual(m6)","2":"15.7","3":"19.4","4":"21.0","5":"NA","6":"12.6","7":"17.0","8":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>　<br />
+集合棒グラフが見難い場合には<code>ggplot2::facet_</code>関数群を利用してください。<br />
+　</p>
+<pre class="r"><code>ggplot2::mpg %&gt;% 
+  dplyr::group_by(class, trans) %&gt;% 
+  dplyr::summarise(mean = mean(cty)) %&gt;% 
+  ggplot2::ggplot(ggplot2::aes(x = class, y = mean, fill = class)) + 
+    ggplot2::geom_bar(stat = &quot;identity&quot;) +
+    ggplot2::labs(y = &quot;Cityモードでの平均燃費&quot;) + 
+    ggplot2::facet_wrap(~ trans)</code></pre>
+<p><img src="barplot_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>　</p>
+</div>
+</div>
+<div id="円グラフ" class="section level2">
+<h2>円グラフ</h2>
+<p><code>ggplot2</code>パッケージにおける円グラフは棒グラフのY軸を円周方向に変換したものです。軸変換には<code>ggplot2::coord_polar</code>関数を用います。<br />
+　</p>
+<pre class="r"><code>ggplot2::mpg %&gt;% 
+  ggplot2::ggplot(ggplot2::aes(x = &quot;&quot;, fill = class)) +
+    ggplot2::geom_bar(width = 1, alpha = 0.75) +
+    ggplot2::coord_polar(theta = &quot;y&quot;)</code></pre>
+<p><img src="barplot_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<pre class="r"><code>ggplot2::mpg %&gt;% 
+  dplyr::count(class) %&gt;% 
+  tidyr::spread(key = class, value = n)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["2seater"],"name":[1],"type":["int"],"align":["right"]},{"label":["compact"],"name":[2],"type":["int"],"align":["right"]},{"label":["midsize"],"name":[3],"type":["int"],"align":["right"]},{"label":["minivan"],"name":[4],"type":["int"],"align":["right"]},{"label":["pickup"],"name":[5],"type":["int"],"align":["right"]},{"label":["subcompact"],"name":[6],"type":["int"],"align":["right"]},{"label":["suv"],"name":[7],"type":["int"],"align":["right"]}],"data":[{"1":"5","2":"47","3":"41","4":"11","5":"33","6":"35","7":"62"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>　<br />
+なので、層別円グラフを描く場合でも層別棒グラフを軸変換するだけです。<br />
+　</p>
+<pre class="r"><code>ggplot2::mpg %&gt;% 
+  ggplot2::ggplot(ggplot2::aes(x = class, fill = trans)) +
+    ggplot2::geom_bar(width = 1, alpha = 0.75) +
+    ggplot2::coord_polar(theta = &quot;y&quot;)</code></pre>
+<p><img src="barplot_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<pre class="r"><code>ggplot2::mpg %&gt;% 
+  ggplot2::ggplot(ggplot2::aes(x = class, fill = trans)) +
+    ggplot2::geom_bar(position = &quot;fill&quot;, width = 1, alpha = 0.75) +
+    ggplot2::coord_polar(theta = &quot;y&quot;)</code></pre>
+<p><img src="barplot_files/figure-html/unnamed-chunk-9-2.png" width="672" /></p>
+<pre class="r"><code>ggplot2::mpg %&gt;% 
+  dplyr::count(class, trans) %&gt;% 
+  tidyr::spread(key = class, value = n)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["trans"],"name":[1],"type":["chr"],"align":["left"]},{"label":["2seater"],"name":[2],"type":["int"],"align":["right"]},{"label":["compact"],"name":[3],"type":["int"],"align":["right"]},{"label":["midsize"],"name":[4],"type":["int"],"align":["right"]},{"label":["minivan"],"name":[5],"type":["int"],"align":["right"]},{"label":["pickup"],"name":[6],"type":["int"],"align":["right"]},{"label":["subcompact"],"name":[7],"type":["int"],"align":["right"]},{"label":["suv"],"name":[8],"type":["int"],"align":["right"]}],"data":[{"1":"auto(av)","2":"NA","3":"2","4":"3","5":"NA","6":"NA","7":"NA","8":"NA"},{"1":"auto(l3)","2":"NA","3":"1","4":"NA","5":"1","6":"NA","7":"NA","8":"NA"},{"1":"auto(l4)","2":"1","3":"8","4":"14","5":"8","6":"12","7":"11","8":"29"},{"1":"auto(l5)","2":"NA","3":"4","4":"5","5":"NA","6":"8","7":"4","8":"18"},{"1":"auto(l6)","2":"NA","3":"NA","4":"NA","5":"2","6":"NA","7":"NA","8":"4"},{"1":"auto(s4)","2":"NA","3":"2","4":"1","5":"NA","6":"NA","7":"NA","8":"NA"},{"1":"auto(s5)","2":"NA","3":"2","4":"NA","5":"NA","6":"NA","7":"NA","8":"1"},{"1":"auto(s6)","2":"1","3":"5","4":"6","5":"NA","6":"NA","7":"1","8":"3"},{"1":"manual(m5)","2":"NA","3":"18","4":"9","5":"NA","6":"8","7":"16","8":"7"},{"1":"manual(m6)","2":"3","3":"5","4":"3","5":"NA","6":"5","7":"3","8":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <hr />
-<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-07-02 22:53(JST)]</p>
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-07-03 18:54(JST)]</p>
 </div>
 </div>
 
