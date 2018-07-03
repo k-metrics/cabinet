@@ -160,7 +160,7 @@ ggplot2::mpg %>%
 
 ```{r}
 ggplot2::mpg %>% 
-  ggplot2::ggplot(ggplot2::aes(x = "", fill = class)) +
+  ggplot2::ggplot(ggplot2::aes(x = NA, fill = class)) +
     ggplot2::geom_bar(width = 1, alpha = 0.75) +
     ggplot2::coord_polar(theta = "y")
 
@@ -180,13 +180,24 @@ ggplot2::mpg %>%
     ggplot2::coord_polar(theta = "y")
 
 ggplot2::mpg %>% 
+  dplyr::count(class, trans) %>% 
+  tidyr::spread(key = class, value = n)
+
+ggplot2::mpg %>% 
   ggplot2::ggplot(ggplot2::aes(x = class, fill = trans)) +
     ggplot2::geom_bar(position = "fill", width = 1, alpha = 0.75) +
     ggplot2::coord_polar(theta = "y")
 
 ggplot2::mpg %>% 
   dplyr::count(class, trans) %>% 
-  tidyr::spread(key = class, value = n)
+  tidyr::spread(key = class, value = n) %>% 
+  tidyr::gather(key, value, -trans) %>% 
+  dplyr::mutate(value = dplyr::if_else(is.na(value), 0L, value)) %>% 
+  tidyr::spread(key, value) %>% 
+  dplyr::mutate_if(is.numeric, prop.table) %>% 
+  tidyr::gather(key, value, -trans) %>% 
+  dplyr::mutate(value = dplyr::if_else(value == 0, NA_real_, round(value, 2))) %>% 
+  tidyr::spread(key, value)
 ```
 
 ---
