@@ -26,9 +26,7 @@ Linuxには様々なディストリビューションと呼ばれる配布形態
 **注意**
 
 * 本ページは**_16.04LTS_**を対象として記述しています
-* 後述のRStudioの日本語入力パッチは**_16.04LTS用_**で、他のバージョンでは利用できません
-* **_18.04LTS_**ではデフォルトのインプットメソッドであるIBusを利用すればRStudioで日本語入力ができるそうです
-* **_18.04LTSでFcitx_**を使いたい場合は**_18.04LTS用_**の日本語入力パッチを適用してください
+    * 後述のRStudioの日本語入力パッチは16.04LTS用で、他のバージョンでは利用できません
 * BIOS（含む互換モード）でインストールする場合は必ずISOイメージを焼いたDVD媒体を利用してください
     * USBメモリでインストール媒体を作成するとUEFIモードでインストールされます  
 　  
@@ -224,10 +222,12 @@ Ubuntu Softwareのウィンドウが開いてインストールするかどう�
 RStudioのインストールが完了しましたら、RStudioで日本語入力ができるように[Ubuntu 16.04 + Fcitx + RStudio 1.0で日本語を入力する方法 <i class="fa fa-external-link"></i>](http://blog.goo.ne.jp/ikunya/e/8508d21055503d0560efc245aa787831){target="_blank" title="いくやの斬鉄日記"}で公開されているパッケージをインストールします。
 ［Ctrl+Alt+t］を押下して起動させたターミナル（端末）から当該ページに記載されているコマンドを実行します。  
 
-**注意**
-RStudio **1.0.153以降**の場合は「[Ubuntu 16.04 + Fcitx + RStudio 1.0.153以降で日本語を入力する方法 <i class="fa fa-external-link"></i>](http://blog.goo.ne.jp/ikunya/e/48b3e547dd2b8c7cfbe2a8dadc0b962a){target="_blank" title="いくやの斬鉄日記"}」を参照してください。  
+**注意**  
+RStudio **1.0.153以降**の場合は[Ubuntu 16.04 + Fcitx + RStudio 1.0.153以降で日本語を入力する方法 <i class="fa fa-external-link"></i>](http://blog.goo.ne.jp/ikunya/e/48b3e547dd2b8c7cfbe2a8dadc0b962a){target="_blank" title="いくやの斬鉄日記"}を参照してください。  
+**_Ubuntu 18.04LTS_**ではデフォルトのインプットメソッドであるIBusを利用すればRStudioで日本語入力ができるそうです。ただし、16.04LTSから18.04LTSにアップグレードした場合はibus-mozcがインストールされず日本語入力が使えないそうなので、別途、ibus-mozcをインストールしてください。なお、18.04LTSでFcitxを使いたい場合は18.04LTS用の日本語入力パッチを適用する必要があります。  
+　  
 
-なお、ダウンロードしたファイルが不安な方はハッシュ値（SHA256）を確認してからインストールして下さい。また、ソースからビルドしたい方は同ページを参照してビルドして下さい。SHA256の確認方法は以下の以下の通りで詳細は`man sha256sum`  
+ダウンロードしたファイルが不安な方はハッシュ値（SHA256）を確認してからインストールして下さい。また、ソースからビルドしたい方は同ページを参照してビルドして下さい。  
 
 ```
 sha256sum fcitx-qt5-rstudio.tar.gz
@@ -355,8 +355,8 @@ git config --global user.email "hoge@hoge.com"
 　  
 
 ## Git GUI Client
-Gitはコマンドライン操作になりますので、GUIで操作できるソフトウェアをインストールすることをおすゝめします。RStudioはGitの基本的な部分はGUI操作できますが細かいところまで操作が可能なGit GUIクライアントを準備しておくことをおすゝめします。  
-MacやWindows環境では[SourceTree <i class="fa fa-external-link"></i>](https://www.sourcetreeapp.com/){target="_blank" title="Free Git GUI for Mac and Windows"}が有名ですがUbuntu環境では利用できませんので、以下から好みに応じて選択してください。Ubuntu環境以外にMacやWindows環境を利用する場合はGUI環境を統一しておくことをおすゝめします。  
+Gitはコマンドライン操作が基本です。RStudioはGitの基本的なコマンドに関してはGUI操作できますが、細かいところまで操作が可能なGit GUIクライアントを準備しておくことをおすゝめします。  
+MacやWindows環境では[SourceTree <i class="fa fa-external-link"></i>](https://www.sourcetreeapp.com/){target="_blank" title="Free Git GUI for Mac and Windows"}が有名ですがSourceTreeはUbuntu環境では利用できませんので、以下から好みに応じて選択してください。Ubuntu環境以外にMacやWindows環境を利用する場合はGUI環境を統一しておくことをおすゝめします。  
 
 Git GUI                  | Ubuntu | Mac | Windows | Memo
 -------------------------|:---:|:---:|:---:|---------
@@ -417,7 +417,7 @@ sudo apt-get install oracle-java8-installer
 　  
 
 # TeX Live
-R Markdownを使ってPDFを作成する場合にはTeX/LaTeX環境が必要です。WindowsでもMac OSでも使えるTeX Liveをインストールしておくのがおすゝめです。TeX Liveは巨大なディストリビューションですので軽量の派生ディストリビューションである`TinyTeX`をインストールするのがおすゝめです。インストール方法は[こちら](./env_install_tex.html)から。  
+R Markdownを使ってPDFを作成する場合にはTeX/LaTeX環境が必要です。WindowsでもMac OSでも使えるTeX Liveをインストールしておくのがおすゝめですが、TeX Liveは巨大なディストリビューションなので軽量の派生ディストリビューションである`TinyTeX`がおすゝめです。インストール方法は[こちら](./env_install_tex.html)から。  
 
 <!-- には様々なTeX/LaTeXが含まれていますが、ディスク容量を必要とするもののFullインストールしておくのが何かと便利です。   -->
 <!-- 　   -->
@@ -477,15 +477,16 @@ R Markdownを使ってPDFを作成する場合にはTeX/LaTeX環境が必要で�
 　  
 
 # Fonts
-Ubuntuに標準でインストールされている日本語フォントはあまり豊富でないので[フォントのインストール <i class="fa fa-external-link"></i>](https://wiki.ubuntulinux.jp/UbuntuTips/Desktop/InstallFont){target="_blank" title="UbuntuTips"}から好みのフォントをインストールしておくことをおすすめします。使えるフォントはTrueTypeフォントまたはOpenTypeフォントです。
-特にR Markdownを使ってPDFファイルを作成するのであれば`IPAフォント`や`Notoフォント`を必要に応じてインストールしておくことをおすゝめします。  
+Ubuntuに標準でインストールされている日本語フォントはあまりバリエーションがありませんので[フォントのインストール <i class="fa fa-external-link"></i>](https://wiki.ubuntulinux.jp/UbuntuTips/Desktop/InstallFont){target="_blank" title="UbuntuTips"}からお好みのフォントをインストールすることをおすすめします。使えるフォントはTrueTypeフォントまたはOpenTypeフォントです。
+特にR Markdownを使ってPDFファイルを作成するのであれば`IPAフォント`や`Notoフォント`をインストールすることをおすゝめします。  
 　  
 
 # Utilities
-R/RStudioを使う上で必須ではありませんがインストールしておくと便利なユーティリティを紹介しておきます。
+R/RStudioを使う上で必須ではありませんがインストールしておくと便利なユーティリティを紹介しておきます。  
+　  
 
 ## Dropbox
-Dropboxのインストールは任意ですがUbuntuで利用できる数少ないクラウドストレージのクライアントですのでインストールしておくことをおすゝめします。インストールする場合はUbuntu Softwareから行います。Ubuntu Softwareを起動したら検索ボックスに`Dropbox`と入力して検索結果に表示される`Dropbox`をインストールするか[Dropboxからダウンロード <i class="fa fa-external-link"></i>](https://www.dropbox.com/ja/install){target="_blank" title="Dropbox"}してインストールして下さい。インストール方法はRStudioと同様です。  
+Ubuntuで利用できる数少ないクラウドストレージ・クライアントですのでインストールしておくことをおすゝめします。インストールはUbuntu Softwareから行えます。[Dropboxのサイトからダウンロード <i class="fa fa-external-link"></i>](https://www.dropbox.com/ja/install){target="_blank" title="Dropbox"}してインストールすることも可能です。  
 　  
 
 ## wine
@@ -498,6 +499,9 @@ Dropboxのインストールは任意ですがUbuntuで利用できる数少な�
 
 ## Redshift
 （準備中）  
+　  
+
+# Tips
 　  
 
 ## Ubuntu Software
@@ -529,6 +533,8 @@ rm -rf ~/.local/share/gnome-software/
 <!-- ## Helperのインストール -->
 
 # Appendix
+　  
+
 ## Ubuntu
 
 * [Ubuntu Desktop 日本語 Remix <i class="fa fa-external-link"></i>](https://www.ubuntulinux.jp/download/ja-remix){target="_blank" title="ubuntu Japanese Team"}  
@@ -553,14 +559,13 @@ rm -rf ~/.local/share/gnome-software/
 
 * [インストールガイド <i class="fa fa-external-link"></i>](https://texwiki.texjp.org/?Linux#texlive){target="_blank" title="TeX Wiki"}  
 * [ISOイメージをダウンロード <i class="fa fa-external-link"></i>](https://texwiki.texjp.org/?TeX%20Live#iso){target="_blank" title="TeX Wiki"}  
-* [インストールガイド <i class="fa fa-external-link"></i>](https://texwiki.texjp.org/?Linux#texlive){target="_blank" title="TeX Wiki"}  
 
 　  
 
 ## Fonts
 
 * [フォントのインストール <i class="fa fa-external-link"></i>](https://wiki.ubuntulinux.jp/UbuntuTips/Desktop/InstallFont){target="_blank" title="ubuntu Japanese Team"}  
-
+* [Google Noto Fonts <i class="fa fa-external-link"></i>](https://www.google.com/get/noto/){target="_blank" title="Beautiful and free fonts for all languages"}
 ---
 
 <!-- Include Footer -->

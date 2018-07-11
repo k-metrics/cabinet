@@ -501,10 +501,10 @@ Linuxには様々なディストリビューションと呼ばれる配布形態
 <p>日本語環境に必要なパッケージ全てが含まれている<a href="https://www.ubuntulinux.jp/japanese" target="_blank" title="Ubuntu Desktop Japanese Remix">Ubuntu Desktop Japanese Remix <i class="fa fa-external-link"></i></a>を入手するのが最も簡単です。複数のバージョンが提供されていますがサポート期限の長いLTS(Long Term Support)版のISOイメージを入手するのがベストです。</p>
 <p><strong>注意</strong></p>
 <ul>
-<li>本ページは<strong><em>16.04LTS</em></strong>を対象として記述しています</li>
-<li>後述のRStudioの日本語入力パッチは<strong><em>16.04LTS用</em></strong>で、他のバージョンでは利用できません</li>
-<li><strong><em>18.04LTS</em></strong>ではデフォルトのインプットメソッドであるIBusを利用すればRStudioで日本語入力ができるそうです</li>
-<li><strong><em>18.04LTSでFcitx</em></strong>を使いたい場合は<strong><em>18.04LTS用</em></strong>の日本語入力パッチを適用してください</li>
+<li>本ページは<strong><em>16.04LTS</em></strong>を対象として記述しています
+<ul>
+<li>後述のRStudioの日本語入力パッチは16.04LTS用で、他のバージョンでは利用できません</li>
+</ul></li>
 <li>BIOS（含む互換モード）でインストールする場合は必ずISOイメージを焼いたDVD媒体を利用してください
 <ul>
 <li>USBメモリでインストール媒体を作成するとUEFIモードでインストールされます<br />
@@ -706,8 +706,11 @@ sudo apt-get install libjpeg62</code></pre>
 <div id="日本語入力のためのパッチ" class="section level2">
 <h2>日本語入力のためのパッチ</h2>
 <p>RStudioのインストールが完了しましたら、RStudioで日本語入力ができるように<a href="http://blog.goo.ne.jp/ikunya/e/8508d21055503d0560efc245aa787831" target="_blank" title="いくやの斬鉄日記">Ubuntu 16.04 + Fcitx + RStudio 1.0で日本語を入力する方法 <i class="fa fa-external-link"></i></a>で公開されているパッケージをインストールします。 ［Ctrl+Alt+t］を押下して起動させたターミナル（端末）から当該ページに記載されているコマンドを実行します。</p>
-<p><strong>注意</strong> RStudio <strong>1.0.153以降</strong>の場合は「<a href="http://blog.goo.ne.jp/ikunya/e/48b3e547dd2b8c7cfbe2a8dadc0b962a" target="_blank" title="いくやの斬鉄日記">Ubuntu 16.04 + Fcitx + RStudio 1.0.153以降で日本語を入力する方法 <i class="fa fa-external-link"></i></a>」を参照してください。</p>
-<p>なお、ダウンロードしたファイルが不安な方はハッシュ値（SHA256）を確認してからインストールして下さい。また、ソースからビルドしたい方は同ページを参照してビルドして下さい。SHA256の確認方法は以下の以下の通りで詳細は<code>man sha256sum</code></p>
+<p><strong>注意</strong><br />
+RStudio <strong>1.0.153以降</strong>の場合は<a href="http://blog.goo.ne.jp/ikunya/e/48b3e547dd2b8c7cfbe2a8dadc0b962a" target="_blank" title="いくやの斬鉄日記">Ubuntu 16.04 + Fcitx + RStudio 1.0.153以降で日本語を入力する方法 <i class="fa fa-external-link"></i></a>を参照してください。<br />
+<strong><em>Ubuntu 18.04LTS</em></strong>ではデフォルトのインプットメソッドであるIBusを利用すればRStudioで日本語入力ができるそうです。ただし、16.04LTSから18.04LTSにアップグレードした場合はibus-mozcがインストールされず日本語入力が使えないそうなので、別途、ibus-mozcをインストールしてください。なお、18.04LTSでFcitxを使いたい場合は18.04LTS用の日本語入力パッチを適用する必要があります。<br />
+　</p>
+<p>ダウンロードしたファイルが不安な方はハッシュ値（SHA256）を確認してからインストールして下さい。また、ソースからビルドしたい方は同ページを参照してビルドして下さい。</p>
 <pre><code>sha256sum fcitx-qt5-rstudio.tar.gz</code></pre>
 <p><code>sha256sum</code>の使い方の詳細は以下のコマンドで確認してください。</p>
 <pre><code>man sha256sum</code></pre>
@@ -823,8 +826,8 @@ git config --global user.email &quot;hoge@hoge.com&quot;</code></pre>
 </div>
 <div id="git-gui-client" class="section level2">
 <h2>Git GUI Client</h2>
-<p>Gitはコマンドライン操作になりますので、GUIで操作できるソフトウェアをインストールすることをおすゝめします。RStudioはGitの基本的な部分はGUI操作できますが細かいところまで操作が可能なGit GUIクライアントを準備しておくことをおすゝめします。<br />
-MacやWindows環境では<a href="https://www.sourcetreeapp.com/" target="_blank" title="Free Git GUI for Mac and Windows">SourceTree <i class="fa fa-external-link"></i></a>が有名ですがUbuntu環境では利用できませんので、以下から好みに応じて選択してください。Ubuntu環境以外にMacやWindows環境を利用する場合はGUI環境を統一しておくことをおすゝめします。</p>
+<p>Gitはコマンドライン操作が基本です。RStudioはGitの基本的なコマンドに関してはGUI操作できますが、細かいところまで操作が可能なGit GUIクライアントを準備しておくことをおすゝめします。<br />
+MacやWindows環境では<a href="https://www.sourcetreeapp.com/" target="_blank" title="Free Git GUI for Mac and Windows">SourceTree <i class="fa fa-external-link"></i></a>が有名ですがSourceTreeはUbuntu環境では利用できませんので、以下から好みに応じて選択してください。Ubuntu環境以外にMacやWindows環境を利用する場合はGUI環境を統一しておくことをおすゝめします。</p>
 <table>
 <thead>
 <tr class="header">
@@ -914,7 +917,7 @@ sudo apt-get install oracle-java8-installer</code></pre>
 </div>
 <div id="tex-live" class="section level1">
 <h1>TeX Live</h1>
-<p>R Markdownを使ってPDFを作成する場合にはTeX/LaTeX環境が必要です。WindowsでもMac OSでも使えるTeX Liveをインストールしておくのがおすゝめです。TeX Liveは巨大なディストリビューションですので軽量の派生ディストリビューションである<code>TinyTeX</code>をインストールするのがおすゝめです。インストール方法は<a href="./env_install_tex.html">こちら</a>から。</p>
+<p>R Markdownを使ってPDFを作成する場合にはTeX/LaTeX環境が必要です。WindowsでもMac OSでも使えるTeX Liveをインストールしておくのがおすゝめですが、TeX Liveは巨大なディストリビューションなので軽量の派生ディストリビューションである<code>TinyTeX</code>がおすゝめです。インストール方法は<a href="./env_install_tex.html">こちら</a>から。</p>
 <!-- には様々なTeX/LaTeXが含まれていますが、ディスク容量を必要とするもののFullインストールしておくのが何かと便利です。   -->
 <!-- 　   -->
 <!-- ## Ubuntuリポジトリを使う場合 -->
@@ -958,15 +961,16 @@ sudo apt-get install oracle-java8-installer</code></pre>
 </div>
 <div id="fonts" class="section level1">
 <h1>Fonts</h1>
-<p>Ubuntuに標準でインストールされている日本語フォントはあまり豊富でないので<a href="https://wiki.ubuntulinux.jp/UbuntuTips/Desktop/InstallFont" target="_blank" title="UbuntuTips">フォントのインストール <i class="fa fa-external-link"></i></a>から好みのフォントをインストールしておくことをおすすめします。使えるフォントはTrueTypeフォントまたはOpenTypeフォントです。 特にR Markdownを使ってPDFファイルを作成するのであれば<code>IPAフォント</code>や<code>Notoフォント</code>を必要に応じてインストールしておくことをおすゝめします。<br />
+<p>Ubuntuに標準でインストールされている日本語フォントはあまりバリエーションがありませんので<a href="https://wiki.ubuntulinux.jp/UbuntuTips/Desktop/InstallFont" target="_blank" title="UbuntuTips">フォントのインストール <i class="fa fa-external-link"></i></a>からお好みのフォントをインストールすることをおすすめします。使えるフォントはTrueTypeフォントまたはOpenTypeフォントです。 特にR Markdownを使ってPDFファイルを作成するのであれば<code>IPAフォント</code>や<code>Notoフォント</code>をインストールすることをおすゝめします。<br />
 　</p>
 </div>
 <div id="utilities" class="section level1">
 <h1>Utilities</h1>
-<p>R/RStudioを使う上で必須ではありませんがインストールしておくと便利なユーティリティを紹介しておきます。</p>
+<p>R/RStudioを使う上で必須ではありませんがインストールしておくと便利なユーティリティを紹介しておきます。<br />
+　</p>
 <div id="dropbox" class="section level2">
 <h2>Dropbox</h2>
-<p>Dropboxのインストールは任意ですがUbuntuで利用できる数少ないクラウドストレージのクライアントですのでインストールしておくことをおすゝめします。インストールする場合はUbuntu Softwareから行います。Ubuntu Softwareを起動したら検索ボックスに<code>Dropbox</code>と入力して検索結果に表示される<code>Dropbox</code>をインストールするか<a href="https://www.dropbox.com/ja/install" target="_blank" title="Dropbox">Dropboxからダウンロード <i class="fa fa-external-link"></i></a>してインストールして下さい。インストール方法はRStudioと同様です。<br />
+<p>Ubuntuで利用できる数少ないクラウドストレージ・クライアントですのでインストールしておくことをおすゝめします。インストールはUbuntu Softwareから行えます。<a href="https://www.dropbox.com/ja/install" target="_blank" title="Dropbox">Dropboxのサイトからダウンロード <i class="fa fa-external-link"></i></a>してインストールすることも可能です。<br />
 　</p>
 </div>
 <div id="wine" class="section level2">
@@ -984,6 +988,10 @@ sudo apt-get install oracle-java8-installer</code></pre>
 <p>（準備中）<br />
 　</p>
 </div>
+</div>
+<div id="tips" class="section level1">
+<h1>Tips</h1>
+<p>　</p>
 <div id="ubuntu-software" class="section level2">
 <h2>Ubuntu Software</h2>
 <p>Ubuntu Softwareが起動しなくなることがあります。起動しなくなった場合は以下のコマンドを実行して再インストール後にキャッシュファイルなどを削除してみてください。<br />
@@ -1008,6 +1016,7 @@ rm -rf ~/.local/share/gnome-software/</code></pre>
 </div>
 <div id="appendix" class="section level1">
 <h1>Appendix</h1>
+<p>　</p>
 <div id="ubuntu-1" class="section level2">
 <h2>Ubuntu</h2>
 <ul>
@@ -1041,20 +1050,19 @@ rm -rf ~/.local/share/gnome-software/</code></pre>
 <ul>
 <li><a href="https://texwiki.texjp.org/?Linux#texlive" target="_blank" title="TeX Wiki">インストールガイド <i class="fa fa-external-link"></i></a><br />
 </li>
-<li><a href="https://texwiki.texjp.org/?TeX%20Live#iso" target="_blank" title="TeX Wiki">ISOイメージをダウンロード <i class="fa fa-external-link"></i></a><br />
-</li>
-<li><a href="https://texwiki.texjp.org/?Linux#texlive" target="_blank" title="TeX Wiki">インストールガイド <i class="fa fa-external-link"></i></a></li>
+<li><a href="https://texwiki.texjp.org/?TeX%20Live#iso" target="_blank" title="TeX Wiki">ISOイメージをダウンロード <i class="fa fa-external-link"></i></a></li>
 </ul>
 <p>　</p>
 </div>
 <div id="fonts-1" class="section level2">
 <h2>Fonts</h2>
 <ul>
-<li><a href="https://wiki.ubuntulinux.jp/UbuntuTips/Desktop/InstallFont" target="_blank" title="ubuntu Japanese Team">フォントのインストール <i class="fa fa-external-link"></i></a></li>
+<li><a href="https://wiki.ubuntulinux.jp/UbuntuTips/Desktop/InstallFont" target="_blank" title="ubuntu Japanese Team">フォントのインストール <i class="fa fa-external-link"></i></a><br />
+</li>
+<li><h2 id="google-noto-fonts"><a href="https://www.google.com/get/noto/" target="_blank" title="Beautiful and free fonts for all languages">Google Noto Fonts <i class="fa fa-external-link"></i></a></h2></li>
 </ul>
-<hr />
 <!-- Include Footer -->
-<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-07-11 12:22(JST)]</p>
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-07-11 16:21(JST)]</p>
 </div>
 </div>
 
