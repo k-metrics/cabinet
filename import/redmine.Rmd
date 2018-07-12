@@ -224,6 +224,16 @@ tmp <- "./data/" %>%
   dplyr::distinct()
 ```
 
+```{r, include=FALSE, eval=FALSE}
+# purrrパッケージを用いる方法
+tmp <- "./data/" %>% 
+  list.files(path = ., pattern = "(issues_)", full.names = TRUE) %>% 
+  purrr::map_df(readr::read_csv,
+                locale = readr::locale(encoding = "cp932"),
+                col_types = col_type) %>% 
+  dplyr::distinct()
+```
+
 　  
 
 # データの確認
