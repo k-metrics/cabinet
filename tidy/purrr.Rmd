@@ -5,6 +5,7 @@ output:
     df_print: paged
     code_folding: none
     css: style.css
+    highlight: pygment
 ---
 
 <!-- shared Links -->
@@ -43,9 +44,18 @@ tidyverse | `r packageVersion('tidyverse')` | Easily Install and Load the ‘Tid
 
 　  
 
+また、本ページでは以下のデータセットを用いています。  
+　  
+
+Dataset   | Package  | Version | Description
+----------|----------|---------|----------------------------------------------
+iris      | datasets | `r packageVersion('datasets')`| Edgar Anderson's Iris Data
+
+　  
+
 # purrr
 `purrr`パッケージは[R for Data Science <i class="fa fa-external-link"></i>][R4DS]{target="_blank" title=""}の「21. Iteration」に分類されているように反復処理（ループ処理）をモダンなコーディングで実現するためのパッケージです。  
-例えば`iris`データセットを品種（Species）毎に要約するような処理、すなわち要約統計量の計算は`dplyr`パッケージで記述することは以下のように可能です。  
+例えば`iris`データセットを品種（Species）毎に要約するような処理は`dplyr`パッケージを用いることで以下のようにで記述することが可能です。  
 　  
 
 ```{r}
@@ -55,17 +65,19 @@ iris %>%
 ```
 
 　  
-しかし、`dplyr`パッケージの場合、複数の返り値がある場合はデータフレーム型の制約から単純には処理ができません。  
+しかし、`dplyr`パッケージの場合、複数の返り値がある場合はデータフレーム型の制約から処理ができません。  
 　  
 
 ```{r, error=TRUE}
 iris %>% 
   dplyr::group_by(Species) %>% 
-  dplyr::summarise_all(fivenum)
+  dplyr::summarise_all(quantile)
 ```
 
 　  
-このような計算を行う場合には`dplyr::do`関数を用いて書きのように処理する必要があります。
+このような計算を行うには`dplyr::do`関数を用いて以下のように処理する必要があります。  
+　  
+
 ```{r}
 iris %>% 
   tidyr::gather(part, value, -Species) %>% 
@@ -75,26 +87,175 @@ iris %>%
   dplyr::select(-qt)
 ```
 
+　  
+しかし、`dplyr::do`関数の後処理は慣れていないと記述が難しく可読性や保守性が高いとは言えません。ところが、`purrr`パッケージを用いると同様の処理は以下のように記述でき`dplyr::do`に比べると少し冗長なコードになりますが可読性や保守性が上がります。  
+　  
+
 ```{r}
 iris %>% 
   tidyr::gather(part, value, -Species) %>% 
-  split(.$Species) %>% 
-  purrr::map()
-```
+  tidyr::unite("group", c(Species, part)) %>% 
+  split(.$group) %>% 
+  purrr::map(~ quantile(.$value)) %>% 
+  purrr::map_dfr(broom::tidy, .id = "id") %>% 
+  dplyr::mutate(names = forcats::as_factor(names), x = round(x, 2)) %>% 
+  tidyr::spread(key = names, value = x) %>% 
+  tidyr::separate(id, into = c("Species", "part"), sep = "_")
 
+iris %>% 
+  tidyr::gather(part, value, -Species) %>% 
+  tidyr::unite("group", c(Species, part)) %>% 
+  dplyr::group_by(group) %>% 
+  tidyr::nest() %>%
+  dplyr::mutate(out = purrr::map(data, ~ quantile(.$value)),
+                out = purrr::map(out, broom::tidy)) %>% 
+  tidyr::unnest(out) %>% 
+  dplyr::mutate(names = forcats::as_factor(names), x = round(x, 2)) %>% 
+  tidyr::spread(key = names, value = x) %>% 
+  tidyr::separate(group, into = c("Species", "part"), sep = "_")
+```
 
 　  
-# map
+このように複数の返り値があり`dplyr`パッケージだけでは処理しきれない場合に力を発揮するのが`purrr`パッケージです。  
+　  
 
-```{r, echo=FALSE}
-# purrrを使う場合
-require(purrr)
+## `purrr::map`関数
+`purrr::map`関数は`purrr`パッケージの中心となる関数です。`purrr::map`関数の考え方自体はシンプルで、第一引数で指定するベクトルまたはリストの各要素に対して、第二引数で指定する関数を適用するものです。  
+例えば、`iris`データセットの品種（`Species`）ごとに回帰直線を計算する場合は以下のように記述します。  
+　  
+
+```{r}
+iris %>% 
+  split(.$Species) %>% 
+  purrr::map(.x = .,
+             .f = function(df) {
+                    lm(Sepal.Width ~ Sepal.Length, data = df)
+                  })
+```
+
+　  
+ただ、これではp値などが分からないので、`summary`関数に`lm`関数の計算結果を渡します。  
+　  
+
+```{r}
+iris %>% 
+  split(.$Species) %>% 
+  purrr::map(.x = .,
+             .f = function(df) {
+               lm(Sepal.Width ~ Sepal.Length, data = df) %>% summary()
+             })
+```
+
+　  
+
+ここまでの説明で気が付いた方もいらっしゃると思いますが、`lapply`関数でも同様の処理が可能ですが、`purrr::map`関数を使うメリットは別途説明します。  
+　  
+
+```{r}
+iris %>% 
+  split(.$Species) %>% 
+  lapply(X = .,
+         FUN = function(df){
+           lm(Sepal.Width ~ Sepal.Length, data = df) %>% broom::tidy() #summary()
+         })
+```
+
+　  
+
+### 簡略表記
+このように`purrr::map`関数は各要素に対する計算を行ってくれますが、コーディングが少し難解です。無名関数を用いるとコーディングを簡略化できます。  
+　  
+
+```{r}
+iris %>% 
+  split(.$Species) %>% 
+  purrr::map(.x = .,
+             .f = ~ lm(Sepal.Width ~ Sepal.Length, data = .x) %>% summary())
+```
+
+　  
+
+### データフレーム化
+ここまで見てきたように`purrr::map`関数の返り値はリスト型になり、その後の扱いが少々厄介です。`purrr::map_dfr`関数と`broom`パッケージを用いると返り値をひとつのデータフレーム型にまとめることができます。  
+　  
+
+```{r}
 iris %>%
-  split(.$Species) %>%
-# リストの因子（Species）水準毎に処理をしデータフレームにまとめる
-  purrr::map_dfr(~ lm(Sepal.Length ~ Sepal.Width, data = .) %>% broom::tidy(),
+  base::split(.$Species) %>%
+  purrr::map_dfr(~ lm(Sepal.Length ~ Sepal.Width, data = .x) %>% broom::tidy(),
                  .id = "Species")
 ```
+
+
+```{r, error=TRUE}
+# dplyr::do
+iris %>% 
+  dplyr::group_by(Species) %>% 
+  dplyr::do(lm_res = lm(Sepal.Length ~ Sepal.Width, data = .)) %>% 
+  broom::tidy(lm_res)
+
+# purrr::map
+iris %>%
+  base::split(.$Species) %>%
+  purrr::map_dfr(~ lm(Sepal.Length ~ Sepal.Width, data = .x) %>% broom::tidy(),
+                 .id = "Species")
+# purrr::map
+iris %>% 
+  base::split(.$Species) %>% 
+  purrr::map(~ lm(Sepal.Length ~ Sepal.Width, data = .x)) %>%
+  purrr::map_dfr(broom::tidy, .id = "Species") 
+```
+
+　  
+
+### `dplyr::group_by`と併用する
+`tidyverse`なモダンなコーディングなのだから`dplyr::group_by`を使って`purrr::map`処理をしたい！という場合には、`tidyr::nest`関数を用います。  
+
+```{r}
+# group_byを使う場合は一度nestする
+iris %>% 
+  dplyr::group_by(Species) %>%
+  tidyr::nest() %>% 
+  dplyr::mutate(out = purrr::map(data,
+                                 ~ lm(Sepal.Length ~ Sepal.Width, data = .x) %>% 
+                                   broom::tidy())) %>%
+  tidyr::unnest(out)
+
+
+iris %>% 
+  dplyr::group_by(Species) %>%
+  tidyr::nest() %>% 
+  dplyr::mutate(out = purrr::map(data,
+                                 ~ lm(Sepal.Length ~ Sepal.Width, data = .x))) %>% 
+  dplyr::mutate(out2 = purrr::map(out, broom::tidy)) %>% 
+  tidyr::unnest(out2)
+
+
+iris %>% 
+  dplyr::group_by(Species) %>%
+  tidyr::nest() %>% 
+  dplyr::mutate(out = purrr::map(data,
+                                 ~ lm(Sepal.Length ~ Sepal.Width, data = .x)),
+                out = purrr::map(out, broom::tidy)) %>% 
+  tidyr::unnest(out)
+
+
+iris %>% 
+  tidyr::gather(part, value, -Species) %>% 
+  tidyr::unite("group", c(Species, part)) %>% 
+  dplyr::group_by(group) %>% 
+  tidyr::nest() %>%
+  dplyr::mutate(out = purrr::map(data, ~ quantile(.$value)),
+                out = purrr::map(out, broom::tidy)) %>% 
+  tidyr::unnest(out) %>% 
+  dplyr::mutate(names = forcats::as_factor(names), x = round(x, 2)) %>% 
+  tidyr::spread(key = names, value = x) %>% 
+  tidyr::separate(group, into = c("Species", "part"), sep = "_")
+
+
+```
+
+
 ```{r}
 0:5 %>% 
   purrr::map_dfc(rnorm, n = 1000) %>% 
@@ -122,6 +283,16 @@ ggplot2::mpg %>%
   tidyr::spread(key, value)
 ```
 
+　  
+
+## purrr::map2関数
+
+# 応用例
+## 複数のファイルに対する処理
+### ファイルデータの結合
+### 任意の列の抽出
+
+http://www.r-bloggers.com/use-quick-formula-functions-in-purrrmap-base-vs-tidtyverse-idiom-comparisonsexamples/
 　  
 
 # 参考資料
