@@ -1,0 +1,145 @@
+---
+title: "purrr"
+output:
+  html_document:
+    df_print: paged
+    code_folding: none
+    css: style.css
+---
+
+<!-- shared Links -->
+```{r index, child="../shared/links.Rmd", include=FALSE}
+```
+
+```{r setup, include=FALSE, warning=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+
+require(tidyverse)
+```
+
+`purrr`パッケージは`apply`関数群が行うような反復処理をモダンなコーディングで実現するためのパッケージですが、比較的新しいパッケージであることや考え方が独特に見えることからあまり知られていないとパッケージだと思います。しかし、`dplyr::do`が将来的にディスコンになりそうなことや`broom`パッケージなどとの親和性が高いこと、`tidyverse`パッケージを読み込むと自動的に読み込まれることを考えると使わない手はありません。  
+　  
+
+```{r, eval=FALSE}
+> library(tidyverse)
+-- Attaching packages --------------------------------------- tidyverse 1.2.1 --
+√ ggplot2 3.0.0     √ purrr   0.2.5
+√ tibble  1.4.2     √ dplyr   0.7.6
+√ tidyr   0.8.1     √ stringr 1.3.1
+√ readr   1.1.1     √ forcats 0.3.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x .GlobalEnv::%||%() masks purrr::%||%()
+x dplyr::filter()    masks stats::filter()
+x dplyr::lag()       masks stats::lag()
+```
+
+　  　  
+なお、本ページでは`r R.version$version.string`の標準パッケージ以外に以下の追加パッケージを用いています。  
+　  
+
+Package   | Version |Description
+----------|---------|----------------------------------------------------------
+tidyverse | `r packageVersion('tidyverse')` | Easily Install and Load the ‘Tidyverse’
+
+　  
+
+# purrr
+`purrr`パッケージは[R for Data Science <i class="fa fa-external-link"></i>][R4DS]{target="_blank" title=""}の「21. Iteration」に分類されているように反復処理（ループ処理）をモダンなコーディングで実現するためのパッケージです。  
+例えば`iris`データセットを品種（Species）毎に要約するような処理、すなわち要約統計量の計算は`dplyr`パッケージで記述することは以下のように可能です。  
+　  
+
+```{r}
+iris %>% 
+  dplyr::group_by(Species) %>% 
+  dplyr::summarise_all(mean)
+```
+
+　  
+しかし、`dplyr`パッケージの場合、複数の返り値がある場合はデータフレーム型の制約から単純には処理ができません。  
+　  
+
+```{r, error=TRUE}
+iris %>% 
+  dplyr::group_by(Species) %>% 
+  dplyr::summarise_all(fivenum)
+```
+
+　  
+このような計算を行う場合には`dplyr::do`関数を用いて書きのように処理する必要があります。
+```{r}
+iris %>% 
+  tidyr::gather(part, value, -Species) %>% 
+  dplyr::group_by(Species, part) %>% 
+  dplyr::do(qt = quantile(.$value)) %>%
+  cbind(do.call(rbind, .$qt)) %>%
+  dplyr::select(-qt)
+```
+
+```{r}
+iris %>% 
+  tidyr::gather(part, value, -Species) %>% 
+  split(.$Species) %>% 
+  purrr::map()
+```
+
+
+　  
+# map
+
+```{r, echo=FALSE}
+# purrrを使う場合
+require(purrr)
+iris %>%
+  split(.$Species) %>%
+# リストの因子（Species）水準毎に処理をしデータフレームにまとめる
+  purrr::map_dfr(~ lm(Sepal.Length ~ Sepal.Width, data = .) %>% broom::tidy(),
+                 .id = "Species")
+```
+```{r}
+0:5 %>% 
+  purrr::map_dfc(rnorm, n = 1000) %>% 
+  # purrr::map_dfc(round, digits = 2) %>% 
+  tidyr::gather(key = "key", value = "value") %>% 
+  ggplot2::ggplot(ggplot2::aes(x = value, y = ..density.., fill = key)) + 
+    # ggplot2::geom_histogram(alpha = 0.5, position = "identity") + 
+    ggplot2::geom_density(alpha = 0.5)
+```
+
+```{r}
+mtcars %>% 
+  base::split(.$cyl) %>% 
+  purrr::map(~ lm(mpg ~ wt, data = .x)) %>%
+  purrr::map_dfr(broom::tidy, .id = "id") 
+```
+
+```{r}
+ggplot2::mpg %>% 
+  base::split(.$manufacturer) %>% 
+  purrr::map(~ lm(cty ~ displ, data = .x)) %>%
+  purrr::map_dfr(broom::tidy, .id = "id") %>% 
+  tidyr::gather(key = "key", value = "value", -id, -term) %>% 
+  dplyr::mutate(value = round(value, 2)) %>% 
+  tidyr::spread(key, value)
+```
+
+　  
+
+# 参考資料
+
+* [purrr part of the tidyverse <i class="fa fa-external-link"></i>](https://purrr.tidyverse.org/){target="_blank" title="tidyverse.org"}
+* [そろそろ手を出すpurrr <i class="fa fa-external-link"></i>](https://speakerdeck.com/s_uryu/nekosky){target="_blank" title="Speaker Deck"}
+* [purrr — ループ処理やapply系関数の決定版 <i class="fa fa-external-link"></i>](https://heavywatal.github.io/rstats/purrr.html){target="_blank" title="Heavy Watal"}
+* [{purrr} でリストデータを操作する <1> <i class="fa fa-external-link"></i>](http://sinhrks.hatenablog.com/entry/2015/11/26/220956){target="_blank" title="StatsFragments"}
+* [{purrr} でリストデータを操作する <2> <i class="fa fa-external-link"></i>](http://sinhrks.hatenablog.com/entry/2015/11/28/213859){target="_blank" title="StatsFragments"}
+* [メモ: multi-gatherをpurrrでやってみる <i class="fa fa-external-link"></i>](https://notchained.hatenablog.com/entry/2017/12/06/131248){target="_blank" title="Technically, technophobic."}
+* [do()とかrowwise()は今から覚える必要はない（たぶん） <i class="fa fa-external-link"></i>](https://notchained.hatenablog.com/entry/2017/11/15/212117){target="_blank" title="Technically, technophobic."}
+* [purrr 0.2.3を使ってみる <i class="fa fa-external-link"></i>](https://notchained.hatenablog.com/entry/2017/08/04/104256){target="_blank" title="Technically, technophobic."}
+* [purrrの使い方 <i class="fa fa-external-link"></i>](http://delta0726.web.fc2.com/packages/data/00_purrr.html){target="_blank" title="FC2 Web"}
+
+　  
+
+---
+
+<!-- Footer -->
+```{r child="../shared/footer.Rmd"}
+```
