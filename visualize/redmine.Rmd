@@ -165,8 +165,9 @@ x %>%
 x %>% 
   dplyr::count(tracker) %>% 
   ggplot2::ggplot(ggplot2::aes(x = "tracker", y = n, fill = tracker)) + 
-    ggplot2::geom_bar(stat = "identity") +
-    ggplot2::coord_polar(theta = "y", direction = 1)
+    ggplot2::geom_bar(stat = "identity", width = 1, alpha = 0.75) +
+    ggplot2::coord_polar(theta = "y", direction = 1) +
+    ggplot2::guides(fill = guide_legend(reverse = TRUE))
 ```
 
 　  
@@ -179,8 +180,9 @@ x %>%
 x %>% 
   dplyr::count(status) %>% 
   ggplot2::ggplot(ggplot2::aes(x = "status", y = n, fill = status)) + 
-    ggplot2::geom_bar(stat = "identity") +
-    ggplot2::coord_polar(theta = "y", direction = 1)
+    ggplot2::geom_bar(stat = "identity", width = 1, alpha = 0.75) +
+    ggplot2::coord_polar(theta = "y", direction = 1) +
+    ggplot2::guides(fill = guide_legend(reverse = TRUE))
 ```
 
 　  
@@ -193,8 +195,9 @@ x %>%
 x %>% 
   dplyr::count(priority) %>% 
   ggplot2::ggplot(ggplot2::aes(x = "priority", y = n, fill = priority)) + 
-    ggplot2::geom_bar(stat = "identity") +
-    ggplot2::coord_polar(theta = "y", direction = 1)
+    ggplot2::geom_bar(stat = "identity", width = 1, alpha = 0.75) +
+    ggplot2::coord_polar(theta = "y", direction = 1) +
+    ggplot2::guides(fill = guide_legend(reverse = TRUE))
 ```
 
 　  
@@ -210,9 +213,9 @@ x %>%
 x %>% 
   dplyr::count(category) %>% 
   ggplot2::ggplot(ggplot2::aes(x = "category", y = n, fill = category)) + 
-    ggplot2::geom_bar(stat = "identity") +
-    ggplot2::coord_polar(theta = "y", direction = 1)
-
+    ggplot2::geom_bar(stat = "identity", width = 1, alpha = 0.75) +
+    ggplot2::coord_polar(theta = "y", direction = 1) +
+    ggplot2::guides(fill = guide_legend(reverse = TRUE))
 ```
 
 　  
@@ -226,8 +229,9 @@ x %>%
   dplyr::count(version) %>% 
   dplyr::filter(!is.na(version)) %>% 
   ggplot2::ggplot(ggplot2::aes(x = "version", y = n, fill = version)) + 
-    ggplot2::geom_bar(stat = "identity") +
-    ggplot2::coord_polar(theta = "y", direction = 1)
+    ggplot2::geom_bar(stat = "identity", width = 1, alpha = 0.75) +
+    ggplot2::coord_polar(theta = "y", direction = 1) +
+    ggplot2::guides(fill = guide_legend(reverse = TRUE))
 ```
 
 　  
@@ -241,14 +245,15 @@ x %>%
   dplyr::count(affected) %>% 
   dplyr::filter(!is.na(affected)) %>% 
   ggplot2::ggplot(ggplot2::aes(x = "affected", y = n, fill = affected)) + 
-    ggplot2::geom_bar(stat = "identity") +
-    ggplot2::coord_polar(theta = "y", direction = 1)
+    ggplot2::geom_bar(stat = "identity", width = 1, alpha = 0.75) +
+    ggplot2::coord_polar(theta = "y", direction = 1) +
+    ggplot2::guides(fill = guide_legend(reverse = TRUE))
 ```
 
 　  
 
 ### Open
-`ggplot2`パッケージでは日付は連続量として扱われるため円グラフで表現するのはあまりおすゝめできません。    
+`ggplot2`パッケージでは日付は連続量として扱われるため円グラフで表現するのはおすゝめできません。    
 　  
 
 ```{r}
@@ -258,8 +263,9 @@ x %>%
 x %>% 
   dplyr::count(open) %>% 
   ggplot2::ggplot(ggplot2::aes(x = "open", y = n, fill = open)) + 
-    ggplot2::geom_bar(stat = "identity") +
-    ggplot2::coord_polar(theta = "y", direction = 1)
+    ggplot2::geom_bar(stat = "identity", width = 1, alpha = 0.75) +
+    ggplot2::coord_polar(theta = "y", direction = 1) +
+    ggplot2::guides(fill = guide_legend(reverse = TRUE))
 ```
 
 　  
@@ -294,9 +300,10 @@ x %>%
 x %>% 
   dplyr::count(tracker, status) %>% 
   ggplot2::ggplot(ggplot2::aes(x = tracker, y = n, fill = status)) + 
-    ggplot2::geom_bar(stat = "identity") + 
+    ggplot2::geom_bar(stat = "identity", alpha = 0.75) + 
     ggplot2::coord_polar(theta = "y", direction = 1) +
-    ggplot2::theme_bw()
+    ggplot2::theme_bw() + 
+    ggplot2::guides(fill = guide_legend(reverse = TRUE))
 ```
 
 　  
@@ -324,9 +331,10 @@ x %>%
   dplyr::filter(status != "Closed") %>% 
   dplyr::count(tracker, priority) %>% 
   ggplot2::ggplot(ggplot2::aes(x = tracker, y = n, fill = priority)) + 
-    ggplot2::geom_bar(stat = "identity") + 
+    ggplot2::geom_bar(stat = "identity", alpha = 0.75) + 
     ggplot2::coord_polar(theta = "y", direction = 1) +
-    ggplot2::theme_bw()
+    ggplot2::theme_bw() +
+    ggplot2::guides(fill = guide_legend(reverse = TRUE))
 ```
 
 　  
@@ -355,9 +363,10 @@ x %>%
   dplyr::filter(status != "Closed" & tracker == "Defect") %>% 
   dplyr::count(priority, status) %>% 
   ggplot2::ggplot(ggplot2::aes(x = priority, y = n, fill = status)) + 
-    ggplot2::geom_bar(stat = "identity") + 
+    ggplot2::geom_bar(stat = "identity", alpha = 0.75) + 
     ggplot2::coord_polar(theta = "y", direction = 1) +
-    ggplot2::theme_bw()
+    ggplot2::theme_bw() + 
+    ggplot2::guides(fill = guide_legend(reverse = TRUE))
 ```
 
 　  
@@ -382,9 +391,10 @@ x %>%
   dplyr::filter(status != "Closed" & tracker == "Patch") %>% 
   dplyr::count(priority, status) %>% 
   ggplot2::ggplot(ggplot2::aes(x = priority, y = n, fill = status)) + 
-    ggplot2::geom_bar(stat = "identity") + 
+    ggplot2::geom_bar(stat = "identity", alpha = 0.75) + 
     ggplot2::coord_polar(theta = "y", direction = 1) +
-    ggplot2::theme_bw()
+    ggplot2::theme_bw() +
+    ggplot2::guides(fill = guide_legend(reverse = TRUE))
 ```
 
 　  
@@ -422,9 +432,10 @@ x %>%
   dplyr::filter(status != "Closed" & tracker == "Defect") %>% 
   dplyr::count(category, priority) %>% 
   ggplot2::ggplot(ggplot2::aes(x = category, y = n, fill = priority)) + 
-    ggplot2::geom_bar(stat = "identity") + 
+    ggplot2::geom_bar(stat = "identity", alpha = 0.75) + 
     ggplot2::coord_polar(theta = "x", direction = 1) +
-    ggplot2::theme_bw()
+    ggplot2::theme_bw() +
+    ggplot2::guides(fill = guide_legend(reverse = TRUE))
 ```
 
 　  
@@ -449,9 +460,10 @@ x %>%
   dplyr::filter(status != "Closed" & tracker == "Defect") %>% 
   dplyr::count(priority, assignee) %>% 
   ggplot2::ggplot(ggplot2::aes(x = priority, y = n, fill = assignee)) + 
-    ggplot2::geom_bar(stat = "identity") + 
+    ggplot2::geom_bar(stat = "identity", alpha = 0.75) + 
     ggplot2::coord_polar(theta = "y", direction = 1) +
-    ggplot2::theme_bw()
+    ggplot2::theme_bw() +
+    ggplot2::guides(fill = guide_legend(reverse = TRUE))
 ```
 
 　  
