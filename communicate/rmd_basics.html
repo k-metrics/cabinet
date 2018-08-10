@@ -27,7 +27,9 @@
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 <link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
 <script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
-<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.0.13/css/fa-svg-with-js.css" rel="stylesheet" />
+<script src="site_libs/font-awesome-5.0.13/js/fontawesome-all.min.js"></script>
+<script src="site_libs/font-awesome-5.0.13/js/fa-v4-shims.min.js"></script>
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
@@ -96,6 +98,9 @@ img {
 }
 .tabbed-pane {
   padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
 }
 button.code-folding-btn:focus {
   outline: none;
@@ -834,26 +839,27 @@ output:
 </div>
 <div id="インラインチャンク" class="section level3">
 <h3>インライン・チャンク</h3>
-<p>ドキュメント中で<a href="https://www.r-project.org/" target="_blank" title="The R Project">R <i class="fa fa-external-link"></i></a>のコード実行したい場合にはインライン・チャンクを用います。インライン・チャンクはバッククォートで囲んだ（<span class="math inline">\(`r `\)</span>）中にコードを記述します。例えば、チャンクの中で円の面積を求めた以下のようなコードがある場合<br />
+<p>文中（行中）で<a href="https://www.r-project.org/" target="_blank" title="The R Project">R <i class="fa fa-external-link"></i></a>のコード実行する場合にはインライン・チャンクを用います。インライン・チャンクはシングル・バッククォートで囲んだコードチャンク（<span class="math inline">\(`r `\)</span>）中にコードを記述します。例えば、チャンクの中で円の面積を求める以下のようなコードがある場合<br />
 　</p>
-<pre class="r"><code>r &lt;- 5.0                    # 半径5cm
-area_of_circle &lt;- pi * r^2  # 面積を求める
-area_of_circle</code></pre>
+<pre class="r"><code>pi * 5.0 ^ 2    # 円の面積を求める</code></pre>
 <pre><code>## [1] 78.53982</code></pre>
 <p>　<br />
-その計算結果をインラインで小数点第1位までを参照する場合には、バッククォートで囲んだ中で<br />
+その計算結果を文中（行中）に小数点第1位までの桁で表示する場合には、文書中に以下のようなコードチャンクを記述します。<br />
 　</p>
-<pre class="r"><code>r round(area_of_circle, 1)</code></pre>
-<p>というコードを記述します。これを実際に実行すると以下のよう円の面積を文書中で参照することができます。<br />
+<pre class="r"><code>円の面積は`r round(pi * 5.0 ^ 2, digits = 1)`平方センチとなります。</code></pre>
+<p>　<br />
+これを実際にR Markdown文書の中で実行すると以下のように計算結果などを文中（行中）で参照することが可能です。<br />
 　</p>
 <blockquote>
 <p>円の面積は78.5平方センチとなります。</p>
 </blockquote>
-<p>　</p>
+<p>　<br />
+ただし、グラフ（<code>plot</code>関数）や回帰モデル（<code>lm</code>関数）など返り値が複雑な場合は処理できません。<br />
+　</p>
 </div>
 <div id="セットアップチャンク" class="section level3">
 <h3>セットアップ・チャンク</h3>
-<p>チャンク名が<code>setup</code>であるチャンクは、セットアップ・チャンクと呼ばれる<a href="https://www.rstudio.com/products/RStudio/" target="_blank" title="RStudio">RStudio <i class="fa fa-external-link"></i></a>環境において特殊な動作をするチャンクです。<a href="https://www.rstudio.com/products/RStudio/" target="_blank" title="RStudio">RStudio <i class="fa fa-external-link"></i></a>のエディタはチャンク単位での実行をサポートしており、任意のチャンクが実行されると自動的に<code>setup</code>チャンクを呼び出し初期処理を実行してからチャンクを実行します。この動作が行われるのは<a href="https://www.rstudio.com/products/RStudio/" target="_blank" title="RStudio">RStudio <i class="fa fa-external-link"></i></a>エディタで<a href="http://rmarkdown.rstudio.com/" target="_blank" title="R Markdown from RStudio Inc">R Markdown <i class="fa fa-external-link"></i></a>文書を開き最初に任意のチャンクを実行させたときのみです。なので、セットアップ・チャンクには後述の共通チャンク・オプションの設定や分析に必要なパッケージの読み込み、ローカル定義関数などを記述しておくようにしてください。<br />
+<p>チャンク名が<code>setup</code>であるチャンクは、セットアップ・チャンクと呼ばれる<a href="https://www.rstudio.com/products/RStudio/" target="_blank" title="RStudio">RStudio <i class="fa fa-external-link"></i></a>環境において特殊な動作をするチャンクです。<a href="https://www.rstudio.com/products/RStudio/" target="_blank" title="RStudio">RStudio <i class="fa fa-external-link"></i></a>のエディタはチャンク単位での実行をサポートしており、任意のチャンクが実行されると自動的に<code>setup</code>チャンクを呼び出し初期処理を実行してからチャンクを実行します。この動作が行われるのは<a href="https://www.rstudio.com/products/RStudio/" target="_blank" title="RStudio">RStudio <i class="fa fa-external-link"></i></a>エディタで<a href="http://rmarkdown.rstudio.com/" target="_blank" title="R Markdown from RStudio Inc">R Markdown <i class="fa fa-external-link"></i></a>文書を開き最初に任意のチャンクを実行させたときのみです。セットアップ・チャンクには後述の共通チャンク・オプションの設定や分析に必要なパッケージの読み込み、ローカル定義関数などを記述しておくと便利です。<br />
 　<br />
 <img src="fig/rmd_setup_chunk.png" /></p>
 <p>　</p>
@@ -1248,7 +1254,7 @@ area_of_circle</code></pre>
 <p>　</p>
 <hr />
 <!-- Include Footer -->
-<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-04-24 23:25(JST)]</p>
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-08-10 23:28(JST)]</p>
 <!-- Default Support Formats -->
 <!-- Document -->
 <!-- Presentation -->
