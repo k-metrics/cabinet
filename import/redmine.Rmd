@@ -176,6 +176,17 @@ do.call(what = dplyr::bind_rows, args = 'リスト形式の引数')
 
 　  
 
+### purrrパッケージによる結合
+`lapply`関数と`do.call`関数の処理は`purrr::map_df`関数を用いることでよりシンプルに記述することができます。`purrr`パッケージの詳細については()[../tidy/purrr.html]をご覧ください。
+```{r}
+"./data/" %>% 
+  list.files(path = ., pattern = "(issues_)", full.names = TRUE) %>% 
+  purrr::map_df(.x = ., .f = readr::read_csv,
+                locale = readr::locale(encoding = "cp932"), col_types = col_type)
+```
+
+　  
+
 ## 重複行の削除
 複数のCSVファイルを結合処理しましたのでレコード（行）が重複している可能性があります。このような場合は`dplyr::distinct`関数を用いて重複行を削除しておきます。  
 　  
