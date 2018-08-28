@@ -18,7 +18,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 require(tidyverse)
 ```
 
-`purrr`パッケージは`apply`関数群が行うような反復処理をモダンなコーディングで実現するためのパッケージですが、比較的新しいパッケージであることや考え方が独特に見えることからあまり知られていないとパッケージだと思います。しかし、`dplyr::do`が将来的にディスコンになりそうなことや`broom`パッケージなどとの親和性が高いこと、`tidyverse`パッケージを読み込むと自動的に読み込まれることを考えると使わない手はありません。  
+`purrr`パッケージは`apply`関数群が行うような反復処理をモダンなコーディングで実現するためのパッケージですが、比較的新しいパッケージであることや考え方が独特に見えることからあまり広く使われていないパッケージだと思います。しかし、`dplyr::do`関数が将来的にディスコンになりそうなこと、`broom`パッケージなどとの親和性が高いこと、`tidyverse`パッケージを読み込むと自動的に読み込まれることなどを考えると使わない手はありません。  
 　  
 
 ```{r, eval=FALSE}
@@ -54,8 +54,7 @@ iris      | datasets | `r packageVersion('datasets')`| Edgar Anderson's Iris Dat
 　  
 
 # purrr
-`purrr`パッケージは[R for Data Science <i class="fa fa-external-link"></i>][R4DS]{target="_blank" title=""}の「21. Iteration」に分類されているように反復処理（ループ処理）をモダンなコーディングで実現するためのパッケージです。  
-例えば`iris`データセットを品種（Species）毎に要約するような処理は`dplyr`パッケージを用いることで以下のようにで記述することが可能です。  
+`purrr`パッケージは[R for Data Science <i class="fa fa-external-link"></i>](http://r4ds.had.co.nz/){target="_blank" title="Hadley Wickham"} の「21. Iteration」に分類されているように反復処理（ループ処理）をモダンなコーディングで実現するためのパッケージです。例えば`iris`データセットを品種（Species）毎に要約するような処理は`dplyr`パッケージを用いることで以下のようにで記述することが可能です。  
 　  
 
 ```{r}
@@ -65,13 +64,13 @@ iris %>%
 ```
 
 　  
-しかし、`dplyr`パッケージの場合、複数の返り値がある場合はデータフレーム型の制約から処理ができません。  
+しかし、`dplyr`パッケージの場合、返り値がデータフレーム型になることから返り値の長さが1を超える場合にはデータフレーム型の制約で処理ができません。  
 　  
 
 ```{r, error=TRUE}
 iris %>% 
   dplyr::group_by(Species) %>% 
-  dplyr::summarise_all(quantile)
+  dplyr::summarise_all(quantile)    # 四分位数を求める（返り値の長さは5）
 ```
 
 　  
@@ -88,7 +87,7 @@ iris %>%
 ```
 
 　  
-しかし、`dplyr::do`関数の後処理は慣れていないと記述が難しく可読性や保守性が高いとは言えません。ところが、`purrr`パッケージを用いると同様の処理は以下のように記述でき`dplyr::do`に比べると少し冗長なコードになりますが可読性や保守性が上がります。  
+しかし、`dplyr::do`関数の後処理は慣れていないと記述が難しく可読性や保守性が高いとは言えないところがあります。このような場合、`purrr`パッケージを用いると同様の処理は以下のように記述でき`dplyr::do`に比べると少し冗長なコードにはなりますが可読性や保守性が上がります。  
 　  
 
 ```{r}
@@ -116,7 +115,7 @@ iris %>%
 ```
 
 　  
-このように複数の返り値があり`dplyr`パッケージだけでは処理しきれない場合に力を発揮するのが`purrr`パッケージです。  
+このように複数の返り値がある反復処理に力を発揮するのが`purrr`パッケージです。  
 　  
 
 ## `purrr::map`関数
@@ -148,7 +147,7 @@ iris %>%
 
 　  
 
-ここまでの説明で気が付いた方もいらっしゃると思いますが、`lapply`関数でも同様の処理が可能ですが、`purrr::map`関数を使うメリットは別途説明します。  
+`lapply`関数でも同様の処理が可能ですが、`purrr::map`関数を使うメリットは別途説明します。  
 　  
 
 ```{r}
@@ -186,6 +185,9 @@ iris %>%
                  .id = "Species")
 ```
 
+　  
+`dplyr::do`関数でも同様の処理は記述可能です。  
+　  
 
 ```{r, error=TRUE}
 # dplyr::do
@@ -194,12 +196,13 @@ iris %>%
   dplyr::do(lm_res = lm(Sepal.Length ~ Sepal.Width, data = .)) %>% 
   broom::tidy(lm_res)
 
-# purrr::map
+# purrr::map_dfr
 iris %>%
   base::split(.$Species) %>%
   purrr::map_dfr(~ lm(Sepal.Length ~ Sepal.Width, data = .x) %>% broom::tidy(),
                  .id = "Species")
-# purrr::map
+
+# purrr::map, map_dfr
 iris %>% 
   base::split(.$Species) %>% 
   purrr::map(~ lm(Sepal.Length ~ Sepal.Width, data = .x)) %>%
@@ -209,8 +212,10 @@ iris %>%
 　  
 
 ### `dplyr::group_by`と併用する
-`tidyverse`なモダンなコーディングなのだから`dplyr::group_by`を使って`purrr::map`処理をしたい！という場合には、`tidyr::nest`関数を用います。  
+`tidyverse`なモダンなコーディングなのだから`dplyr::group_by`を使って`purrr::map`処理をしたい！という場合には、`tidyr::nest`関数を用いてグループごとリスト化しデータフレーム内にネストします。  
+　  
 
+#### 層別に回帰モデルを求める場合
 ```{r}
 # group_byを使う場合は一度nestする
 iris %>% 
@@ -220,8 +225,9 @@ iris %>%
                                  ~ lm(Sepal.Length ~ Sepal.Width, data = .x) %>% 
                                    broom::tidy())) %>%
   tidyr::unnest(out)
+```
 
-
+```{r, include=FALSE, eval=FALSE}
 iris %>% 
   dplyr::group_by(Species) %>%
   tidyr::nest() %>% 
@@ -238,8 +244,12 @@ iris %>%
                                  ~ lm(Sepal.Length ~ Sepal.Width, data = .x)),
                 out = purrr::map(out, broom::tidy)) %>% 
   tidyr::unnest(out)
+```
 
+　  
 
+#### 層別に四分位数を求める場合
+```{r}
 iris %>% 
   tidyr::gather(part, value, -Species) %>% 
   tidyr::unite("group", c(Species, part)) %>% 
@@ -251,8 +261,6 @@ iris %>%
   dplyr::mutate(names = forcats::as_factor(names), x = round(x, 2)) %>% 
   tidyr::spread(key = names, value = x) %>% 
   tidyr::separate(group, into = c("Species", "part"), sep = "_")
-
-
 ```
 
 
