@@ -1,0 +1,105 @@
+---
+title: "カテゴリカルデータを操作する"
+output:
+  html_document:
+    df_print: paged
+    code_folding: none
+    css: style.css
+    highlight: pygment
+---
+
+<!-- shared Links -->
+```{r index, child="../shared/links.Rmd", include=FALSE}
+```
+
+```{r setup, include=FALSE, warning=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+
+require(tidyverse)
+```
+
+　  　  
+なお、本ページでは`r R.version$version.string`の標準パッケージ以外に以下の追加パッケージを用いています。  
+　  
+
+Package   | Version |Description
+----------|---------|----------------------------------------------------------
+tidyverse | `r packageVersion('tidyverse')` | A sample of categorical variables from the General Social survey
+
+　  
+
+また、本ページでは以下のデータセットを用いています。  
+　  
+
+Dataset   | Package  | Version | Description
+----------|----------|---------|----------------------------------------------
+gss_cat   | forcats | `r packageVersion('forcats')`| Edgar Anderson's Iris Data
+
+　  
+
+# `forcats`パッケージとは
+[R][R]にはカテゴリカルデータを扱うために因子型変数と呼ばれる変数型（データ構造）があります。因子型には順序なし水準（`levels`）を扱う`factor`型と順序あり水準を扱う`order`型の二種類があります。  
+水準は因子型変数を作成する際に自動的に定義されアルファニューメリック順にインデックスを割り当てられます。例えば、"EDCBA"という5文字を因子型にした場合、  
+　  
+
+```{r}
+factor(c("E", "A", "A", "C", "D", "0"))
+```
+
+　  
+因子型変数内部で水準はアルファニューメリック順に割り当てられます。しかし、残念ながら因子型変数では水準にない値を置き換えたり追加することはできません。  
+　  
+
+```{r}
+x <- factor(c("E", "A", "A", "C", "D", "0"))
+x[6:7] <- c("F", "E")
+x
+```
+
+　  
+`forcats`パッケージを使えば簡単に水準を追加することができます。
+```{r}
+x <- factor(c("E", "A", "A", "C", "D", "0"))
+x
+x <- forcats::fct_expand(x, c("F"))
+x[6:7] <- c("F", "E")
+x
+```
+
+このように標準の[R][R]ではカテゴリカルデータの扱いが少々厄介ですが`forcats`パッケージを使用することで、このような厄介な処理を簡単にこなせるようになります。  
+　  
+
+# カテゴリカルデータを扱う
+使用するデータは前述にあるように`forcats`パッケージに包含されている`gss_cat`データセットを用います。`gss_cat`は九つの変数からなるデータセットで、内、六つの変数が`factor`型、すなわちカテゴリカルデータです。データの詳細については`forcats`のヘルプをご覧ください。  
+　  
+
+```{r}
+forcats::gss_cat %>% 
+  skimr::skim_to_wide()
+```
+
+## 因子型変数の水準を確認する
+因子型変数の水準を確認するには`levels`関数、`unique`関数または`forcats::fct_unique`関数を用います。`levels`関数と`forcats::fct_unique`関数の動作は等価で水準は水準順に表示されます。一方、`unique`関数は水準の出現順に水準を表示します。  
+　  
+```{r}
+forcats::gss_cat$marital %>%
+  levels()
+
+forcats::gss_cat$marital %>%
+  unique()
+
+forcats::gss_cat$marital %>%
+  forcats::fct_unique()
+```
+
+
+# 参考資料
+* [公式リファレンス（英語） <i class="fa fa-external-link"></i>](https://forcats.tidyverse.org/reference/index.html){target="_blank" title="tidyverse.org"}  
+* [{forcats}パッケージでカテゴリカル変数(factor型データ)をいじってみる <i class="fa fa-external-link"></i>](https://kazutan.github.io/kazutanR/forcats_test.html){target="_blank" title="Kazutan.R"}  
+　  
+
+---
+
+<!-- Footer -->
+```{r child="../shared/footer.Rmd"}
+```
