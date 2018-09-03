@@ -87,19 +87,59 @@ x
 　  
 
 ## 水準を追加する
-
-
+[Base R][R]で水準を追加する場合には`levels`関数を用いて以下のように行います。
 ```{r}
 x <- factor(c("E", "A", "A", "C", "D", "0"))
 x
-x <- forcats::fct_expand(x, c("F"))
+levels(x)[6] <- "F"
+x
+```
+
+　  
+このように`levels`関数では、指定した位置に水準を追加するため指定位置を間違えるとデータの値も入れ替わってしまいます。
+```{r}
+x <- factor(c("E", "A", "A", "C", "D", "0"))
+x
+levels(x)[5] <- "G"
+x
+```
+
+　  
+`forcats`パッケージを利用すると位置を指定する必要がなく指定間違いよりデータの値が入れ替わってしまうリスクもありません。  
+```{r}
+x <- factor(c("E", "A", "A", "C", "D", "0"))
+x
+x <- forcats::fct_expand(x, c("G", "F"))
+x
 x[6:7] <- c("F", "E")
 x
 ```
 
-## 水準の順番を変える
+
+## 水準を並べ替える
 
 ```{r}
+# 手動で並べ替える
+x
+forcats::fct_relevel(x, "G", after = 7)
+
+# 出現順に並べ替える
+f <- forcats::factor(c("b", "b", "a", "c", "c", "c"))
+f
+forcats::fct_inorder(f)
+
+# レベルにあってもデータにないとエラーになる
+x
+forcats::fct_inorder(x)
+
+forcats::fct_inorder(factor(c("E", "A", "A", "C", "D", "0")))
+
+x
+as.character(sort(unique(x)))
+sort(levels(x))
+
+diff()
+
 x <- ordered(c("E", "A", "A", "C", "D", "0"))
 x
 x <- forcats::fct_expand(x, c("F", "1"))
