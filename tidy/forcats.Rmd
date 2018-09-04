@@ -16,6 +16,18 @@ output:
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 
 require(tidyverse)
+
+# チャンクオプション{r results='asis'}で使うこと
+df_summary <- function(df) {
+  summarytools::st_options('footnote', NA)
+  if (is.data.frame(df)) {
+    summarytools::view(summarytools::dfSummary(df, plain.ascii = FALSE,
+                                               style = "grid"),
+                       method = 'render', omit.headings = FALSE)
+  } else {
+    return(NULL)
+  }
+}
 ```
 
 
@@ -29,6 +41,8 @@ require(tidyverse)
 Package   | Version |Description
 ----------|---------|----------------------------------------------------------
 tidyverse | `r packageVersion('tidyverse')` | A sample of categorical variables from the General Social survey
+skimr     | `r packageVersion('skimr')` | Compact and Flexible Summaries of Data
+summarytools | `r packageVersion('summarytools')` | Tools to Quickly and Neatly Summarize Data
 
 　  
 
@@ -41,8 +55,18 @@ gss_cat   | forcats  | `r packageVersion('forcats')`| A sample of categorical va
 
 　  
 
-```{r}
+```{r, echo=FALSE}
 skimr::skim_to_wide(forcats::gss_cat)
+```
+
+　  
+
+```{r, results='asis', echo=FALSE}
+# summarytools::st_options('footnote', NA)
+# summarytools::view(summarytools::dfSummary(forcats::gss_cat,
+#                                            plain.ascii = FALSE, style = "grid"),
+#                    method = 'render', omit.headings = TRUE)
+df_summary(forcats::gss_cat)
 ```
 
 　  
