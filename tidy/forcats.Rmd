@@ -15,17 +15,21 @@ output:
 ```{r setup, include=FALSE, warning=FALSE, message=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 
+require(summarytools)
+require(skimr)
 require(tidyverse)
 
 # チャンクオプション{r results='asis'}で使うこと
 df_summary <- function(df) {
-  summarytools::st_options('footnote', NA)
-  if (is.data.frame(df)) {
+  if (missing(df)){
+    stop("No argument") 
+  } else if (!is.data.frame(df)) {
+    stop("invalid argument")
+  } else {
+    summarytools::st_options('footnote', NA)
     summarytools::view(summarytools::dfSummary(df, plain.ascii = FALSE,
                                                style = "grid"),
-                       method = 'render', omit.headings = FALSE)
-  } else {
-    return(NULL)
+                       method = 'render', omit.headings = TRUE)
   }
 }
 ```
@@ -54,19 +58,13 @@ gss_cat   | forcats  | `r packageVersion('forcats')`| A sample of categorical va
 
 　  
 
-```{r, echo=FALSE}
-skimr::skim_to_wide(forcats::gss_cat)
-```
-
-　  
-
 ```{r, results='asis', echo=FALSE}
 df_summary(forcats::gss_cat)
 ```
 
 　  
 
-# 因子型変数
+# 因子型変数の基本
 因子型変数を作成するには、名義尺度は`factor`関数、順序尺度は`ordered`関数を用います。因子型変数が作成される場合、作成に使用したデータから自動的にユニークなデータをソートしたものを抽出して水準（levels）として割り当てます。水準（levels）はデータベースにおけるインデックステーブルのようなものだと考えてください。  
 　  
 
@@ -105,12 +103,77 @@ x
 　  
 
 # forcatsパッケージ
-前述のような処理を行うにのに便利なのが`forcats`パッケージです。`forcats`パッケージは
+前述のような場合に便利なのが`forcats`パッケージです。`forcats`パッケージには
 
-`forcats`パッケージは水準にないデータを追加する場合や水準を操作する場合など因子型変数を扱うための関数が多数用意された便利なパッケージです。  
+* 水準の順番を変える
+* 水準の値を変える
+* 新たな水準を追加する
+* ヘルパー関数群
+
+などの関数が多数用意されています。  
 　  
 
-## 水準を追加する
+## 水準の順番を変える
+`forcats::gss_cat`データセットの`rincome`(reported income)は因子型変数ですが、その水準は以下のようになっています。  
+　  
+
+```{r}
+forcats::gss_cat$rincome %>% 
+  levels()
+```
+
+　  
+これを逆にして収入の低い順から並べかえ、金額以外の回答を最後に並べるには`forcats::fct_rev`関数と`forcats::fct_relevel`関数を用います。
+```{r}
+x <- forcats::gss_cat
+
+(x$rincome <- x$rincome %>% 
+  forcats::fct_rev() %>%
+  forcats::fct_relevel("Don't know", "Not applicable", "Refused", "No answer",
+                       after = Inf)) %>% 
+  levels()
+```
+
+　  
+本当に水準（`levels`）が変更されているか層別グラフを描いて確認してみます。  
+　  
+
+```{r}
+forcats::gss_cat %>% 
+  ggplot2::ggplot(ggplot2::aes(x = rincome, y = tvhours)) +
+    ggplot2::geom_boxplot() +
+    ggplot2::coord_flip()
+
+x %>% 
+  ggplot2::ggplot(ggplot2::aes(x = rincome, y = tvhours)) +
+    ggplot2::geom_boxplot() +
+    ggplot2::coord_flip()
+```
+
+　  
+
+## 水準の値を変える
+`forcats::gss_cat$rincome`の水準は$10000を境に区切り幅が異なっています。これを均等な区切り幅（$5000）に統一し、ついでに未回答などをまとめてみます。水準をまとめるには`forcats::fct_collapse`関数を用います。  
+　  
+
+```{r}
+(x$rincome <- x$rincome %>% 
+  forcats::fct_collapse(
+    `to $4999` = c("Lt $1000", "$1000 to 2999", "$3000 to 3999","$4000 to 4999"),
+    `$5000 to 9999` = c("$5000 to 5999", "$6000 to 6999", "$7000 to 7999",
+                        "$8000 to 9999"),
+    missing = c("Don't know", "Not applicable", "No answer")
+  )) %>% levels()
+
+x %>% 
+  ggplot2::ggplot(ggplot2::aes(x = rincome, y = tvhours)) +
+    ggplot2::geom_boxplot() +
+    ggplot2::coord_flip()
+```
+
+　  
+
+## 新たな水準を追加する
 [Base R][R]で水準を追加する場合には`levels`関数を用いて以下のように行います。
 ```{r}
 x <- factor(c("E", "A", "A", "C", "D", "0"))
