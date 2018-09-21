@@ -3,7 +3,7 @@ title: "カテゴリカルデータを操作する"
 output:
   html_document:
     df_print: paged
-    code_folding: none
+    code_folding: show
     css: style.css
     highlight: pygment
 ---
@@ -17,6 +17,8 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 
 require(summarytools)
 require(skimr)
+require(magrittr)
+require(ggridges)
 require(tidyverse)
 
 # チャンクオプション{r results='asis'}で使うこと
@@ -151,9 +153,11 @@ x %>%
 ```
 
 　  
+このように収入の低い順から高い順に並べ替えられているのが確認できます。  
+　  
 
 ## 水準の値を変える
-`forcats::gss_cat$rincome`の水準は$10000を境に区切り幅が異なっています。これを均等な区切り幅（$5000）に統一し、ついでに未回答などをまとめてみます。水準をまとめるには`forcats::fct_collapse`関数を用います。  
+`forcats::gss_cat$rincome`の水準は\$10,000を境に区切り幅が異なっています。これを均等な区切り幅（\$5,000）に統一し、未回答などをまとめてみます。水準をまとめるには`forcats::fct_collapse`関数を用います。  
 　  
 
 ```{r}
@@ -166,9 +170,15 @@ x %>%
   )) %>% levels()
 
 x %>% 
-  ggplot2::ggplot(ggplot2::aes(x = rincome, y = tvhours)) +
-    ggplot2::geom_boxplot() +
-    ggplot2::coord_flip()
+  tidyr::drop_na(tvhours) %>% 
+  # ggplot2::ggplot(ggplot2::aes(x = rincome, y = tvhours)) +
+    # ggplot2::geom_boxplot() +
+    # ggplot2::coord_flip()
+  ggplot2::ggplot(ggplot2::aes(x = tvhours, y = rincome, fill = rincome)) +
+    # ggridges::geom_density_ridges_gradient(alpha = 0.65)
+    # ggridges::geom_density_ridges(alpha = 0.65)
+    ggridges::stat_density_ridges(quantile_lines = TRUE, quantiles = 2,
+                                  alpha = 0.65)
 ```
 
 　  
@@ -247,7 +257,7 @@ forcats::gss_cat %>%
 ```
 
 ## 因子型変数の水準を確認する
-因子型変数の水準を確認するには`levels`関数、`unique`関数または`forcats::fct_unique`関数を用います。`levels`関数と`forcats::fct_unique`関数の動作は等価で水準は水準順に表示されます。一方、`unique`関数は水準の出現順に水準を表示します。  
+因子型変数の水準を確認するには`levels`関数、`unique`関数または`forcats::fct_unique`関数を用います。`levels`関数と`forcats::fct_unique`関数の動作は等価で水準は水準順に表示されます。一方、`unique`関数は水準の出現順に水準を表示することに注意してください。  
 　  
 ```{r}
 forcats::gss_cat$marital %>%
