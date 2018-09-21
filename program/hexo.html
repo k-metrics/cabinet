@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="k-metrics" />
+
+
+<title>Build and Manage Blogs</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cerulean.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+<link href="site_libs/font-awesome-5.0.13/css/fa-svg-with-js.css" rel="stylesheet" />
+<script src="site_libs/font-awesome-5.0.13/js/fontawesome-all.min.js"></script>
+<script src="site_libs/font-awesome-5.0.13/js/fa-v4-shims.min.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = false;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Program</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-laptop"></span>
+     
+    R Setup
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="./env_index.html">Overall</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="./env_install.html">Install R</a>
+    </li>
+    <li>
+      <a href="./env_install_tls.html">Install Rtools</a>
+    </li>
+    <li>
+      <a href="./env_install_rcmdr.html">Install Rcmdr Package</a>
+    </li>
+    <li>
+      <a href="./env_install_dtp.html">Install RStudio Desktop</a>
+    </li>
+    <li>
+      <a href="./env_install_pkg.html">Install R Packages</a>
+    </li>
+    <li>
+      <a href="./env_update_r.html">Update R</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Install RStudio Server</li>
+    <li>
+      <a href="./env_install_vscode.html">Install Visual Studio Code</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="./env_install_tex.html">Install TeX</a>
+    </li>
+    <li>
+      <a href="./env_install_git.html">Install Git</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-info-circle"></span>
+     
+    R Basics
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="./basics_index.html">Overall</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="./basics_coding_style.html">Coding Style</a>
+    </li>
+    <li>
+      <a href="./basics_r.html">R Basics</a>
+    </li>
+    <li>
+      <a href="./basics_r_2.html">R Basics part2</a>
+    </li>
+    <li>
+      <a href="./basics_rstudio.html">RStudio Basics</a>
+    </li>
+    <li>
+      <a href="./basics_dplyr.html">dplyr Basics</a>
+    </li>
+    <li>
+      <a href="./basics_ggplot2.html">ggplot2 Basics</a>
+    </li>
+    <li>
+      <a href="./basics_packrat.html">Collaboration work</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-commenting"></span>
+     
+    Others
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="./env_install_ubuntu_os.html">Install Ubuntu</a>
+    </li>
+    <li>
+      <a href="./about.html">About</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-github"></span>
+     
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../index.html">Cabinet</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="../import/index.html">Import</a>
+    </li>
+    <li>
+      <a href="../tidy/index.html">Tidy/Transform</a>
+    </li>
+    <li>
+      <a href="../model/index.html">Model/Infer</a>
+    </li>
+    <li>
+      <a href="../visualize/index.html">Visualize</a>
+    </li>
+    <li>
+      <a href="../communicate/index.html">Communicate/Automate</a>
+    </li>
+    <li>
+      <a href="./index.html">
+        <span class="fa fa-home"></span>
+         
+        Program
+      </a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="https://github.com/k-metrics/cabinet">
+        <span class="fa fa-github"></span>
+         
+        GitHub Repository
+      </a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="https://sites.google.com/site/kantometrics/home">
+        <span class="fa fa-google"></span>
+         
+        データ分析勉強会
+      </a>
+    </li>
+  </ul>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Build and Manage Blogs</h1>
+
+</div>
+
+
+<!-- shared Links -->
+<!-- SQiP and others -->
+<!-- Books -->
+<!-- 共立出版 -->
+<!-- 日科技連出版 -->
+<!-- O'Reilly Japan -->
+<!-- 東京図書 -->
+<!-- Docker -->
+<!-- eBooks -->
+<!-- Net Community -->
+<!-- Style Guide -->
+<!-- Creative Commons -->
+<!-- Others -->
+<!-- R -->
+<!-- R Packages -->
+<!-- RStudio -->
+<!-- Docker -->
+<!-- Cabinet Pages -->
+<p>静的なブログを作るための手順まとめです。<br />
+　<br />
+[R Markdown Websites][RmdWebsites]機能で勉強会のページを作成していますが、ページ数が増えてくると構成管理が面倒なため、Blogのタグ機能を使うことで構成管理の代わりにできないかと考えています。このきっかけになったのは、Twitterでバズっていた「<a href="https://nabettu.hatenablog.com/entry/staticsite" target="_blank" title="フロントエンドの地獄">静的サイトを公開するならどこがいいの？ #技術書典 <i class="fa fa-external-link"></i></a>」という記事です。この記事に書いてある情報を元にググってみたところ「<a href="https://tech.qookie.jp/posts/info-static-site-generator/" target="_blank" title="Qookie TECH">静的サイトジェネレーターは脱CMSなブログが作れるツール <i class="fa fa-external-link"></i></a>」という構築の参考になりそうなページに辿りつきましたので、そのあたりの情報を元に静的なブログを作るための情報を忘備録として整理しておきます。<br />
+　</p>
+<div id="静的ブログ作成のプロセス" class="section level1">
+<h1>静的ブログ作成のプロセス</h1>
+<p><a href="https://www.r-project.org/" target="_blank" title="The R Project">R</a>には<a href="http://rmarkdown.rstudio.com/" target="_blank" title="R Markdown from RStudio Inc">R Markdown <i class="fa fa-external-link"></i></a>で静的ブログを作成できる<a href="https://bookdown.org/yihui/blogdown/" target="_blank" title="Creating Websites with R Markdown">blogdown <i class="fa fa-external-link"></i></a>という静的ジェネレータ的なパッケージが公開されています。最新版ではDeploy工程までマニュアルに記載されており「<a href="https://tech.qookie.jp/posts/info-static-site-generator/" target="_blank" title="Qookie TECH">静的サイトジェネレーターは脱CMSなブログが作れるツール <i class="fa fa-external-link"></i></a>」で説明されている内容と親和性が高いと判断し、下表の構成で静的ブログの作成に挑戦してみます。<br />
+　</p>
+<table>
+<thead>
+<tr class="header">
+<th>Process</th>
+<th>Service or Tools</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Page Create</td>
+<td><a href="https://bookdown.org/yihui/blogdown/" target="_blank" title="Creating Websites with R Markdown">blogdown <i class="fa fa-external-link"></i></a></td>
+</tr>
+<tr class="even">
+<td>Generator</td>
+<td><a href="#hugo">Hugo <i class="fa fa-external-link"></i></a> or <a href="#hexo">Hexo <i class="fa fa-external-link"></i></a></td>
+</tr>
+<tr class="odd">
+<td>Version Control</td>
+<td><a href="">GitHub <i class="fa fa-external-link"></i></a></td>
+</tr>
+<tr class="even">
+<td>Deploy</td>
+<td><a href="#netlify">Netlify <i class="fa fa-external-link"></i></a></td>
+</tr>
+</tbody>
+</table>
+<p>　</p>
+<div id="blogdown" class="section level2">
+<h2>blogdown</h2>
+<p><a href="https://bookdown.org/yihui/blogdown/" target="_blank" title="Creating Websites with R Markdown">blogdown <i class="fa fa-external-link"></i></a>はジェネレータとして<a href="#hugo">Hugo <i class="fa fa-external-link"></i></a>を利用していますので、これだけでも静的ブログの作成は可能です。<br />
+　</p>
+</div>
+<div id="hugo" class="section level2">
+<h2>Hugo</h2>
+<p><a href="#hugo">Hugo <i class="fa fa-external-link"></i></a>はGo言語で作成されておりジェネレート速度が格段に速いのが特徴です。使用するテーマにより設定できる機能が異なるなど注意点も多々あるようです。 　</p>
+</div>
+<div id="hexo" class="section level2">
+<h2>Hexo</h2>
+<p><a href="#hexo">Hexo <i class="fa fa-external-link"></i></a>はプラグインを追加することで気軽に機能拡張ができるジェネレータです。生成速度が<a href="#hugo">Hugo <i class="fa fa-external-link"></i></a>に劣るもののそこそこ早いそうです。日本語ドキュメントが少ないのが難点。 　</p>
+</div>
+<div id="github" class="section level2">
+<h2>GitHub</h2>
+<p>[GitHub Pages <i class="fa fa-external-link"></i>][GitHub Pages]は、ご存知、GitHubリポジトリを利用してWebページを公開できる機能です。ただし、Webページのジェネレートは予め行ってHTMLファイルを用意しておく必要があります。<br />
+　</p>
+</div>
+<div id="netlify" class="section level2">
+<h2>Netlify</h2>
+<p><a href="#netlify">Netlify <i class="fa fa-external-link"></i></a>は最近注目の静的サイトのホスティングサービスです。[GitHub Pages <i class="fa fa-external-link"></i>][GitHub Pages]などと異なりホスティングサービス内で静的サイトジェネレータを用いて自動的にビルドしてデプロイする機能が無料プランでも提供されているのが特徴です。<br />
+　</p>
+<ul>
+<li><a href="https://tech.qookie.jp/posts/info-netlify-static-web-deploy/" target="_blank" title="Qookie TECH">NetlifyはGitHubなどからデプロイできる静的Webホスティングサービス <i class="fa fa-external-link"></i></a></li>
+</ul>
+<p>　</p>
+</div>
+</div>
+<div id="環境構築" class="section level1">
+<h1>環境構築</h1>
+<div id="ローカル環境の構築" class="section level2">
+<h2>ローカル環境の構築</h2>
+<p>ホスティングサービス上にいきなりサイトを構築するのはハードルが高いため、まずは、ローカルで環境を構築してサイト構築に必要な厚生や手順を把握しておきます。<br />
+　</p>
+<div id="blogdownのインストール" class="section level3">
+<h3>blogdownのインストール</h3>
+<p><a href="https://www.r-project.org/" target="_blank" title="The R Project">R</a>/<a href="https://www.rstudio.com/products/RStudio/#Desktopx" target="_blank" title="RStudio Desktop">RStudio</a>環境の構築は終わっていることを前提とし、まずは、<a href="https://bookdown.org/yihui/blogdown/" target="_blank" title="Creating Websites with R Markdown">blogdown <i class="fa fa-external-link"></i></a>パッケージを<a href="https://cran.r-project.org/" target="_blank" title="CRAN, The Comprehensive R Archive Network">CRAN</a>からインストールします。<br />
+　</p>
+<pre class="r"><code>install.packages(&quot;blogdown&quot;)</code></pre>
+<p>　</p>
+</div>
+<div id="hugoのインストール" class="section level3">
+<h3>Hugoのインストール</h3>
+<p>パッケージのインストールが完了しましたら、次に<a href="#hugo">Hugo <i class="fa fa-external-link"></i></a>をインストールします。<a href="#hugo">Hugo <i class="fa fa-external-link"></i></a>は<a href="https://bookdown.org/yihui/blogdown/" target="_blank" title="Creating Websites with R Markdown">blogdown <i class="fa fa-external-link"></i></a>パッケージを利用して最新版をインストールすることができます。<br />
+　</p>
+<pre class="r"><code>blogdown::install_hugo()</code></pre>
+<p>　<br />
+再インストールやアップデートしたい場合には、以下を実行してください。<br />
+　</p>
+<pre class="r"><code>blogdown::update_hugo()</code></pre>
+</div>
+</div>
+<div id="hexoのインストール" class="section level2">
+<h2>Hexoのインストール</h2>
+</div>
+<div id="section" class="section level2">
+<h2></h2>
+</div>
+</div>
+<div id="参考資料" class="section level1">
+<h1>参考資料</h1>
+<ul>
+<li><a href="https://kazutan.github.io/blog/2017/04/blogdown-tips/" target="_blank" title="日々是独想">blogdownのTips <i class="fa fa-external-link"></i></a></li>
+<li><a href="http://amber.rbind.io/blog/2016/12/19/creatingsite/" target="_blank" title="Amber Thomas">Making a Website Using Blogdown, Hugo, and GitHub pages. <i class="fa fa-external-link"></i></a></li>
+<li><a href="https://qiita.com/masato_t/items/7bbfa74f8de0dc06c91c" target="_blank" title="Qiita">Rとblogdownでかんたんにgithub.io上にブログを使ってみよう！！ <i class="fa fa-external-link"></i></a></li>
+</ul>
+<hr />
+<!-- Footer -->
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-09-21 15:34(JST)]</p>
+<p>[GitHub Pages] <a href="https://pages.github.com/" class="uri">https://pages.github.com/</a> {target=“_blank&quot; title=“Websites for you and your projects.”}<a href="#hexo">Hexo</a>: <a href="https://hexo.io/" class="uri">https://hexo.io/</a> {target=“_blank&quot; title=“A fast, simple &amp; powerful blog framework”} <a href="#hugo">Hugo</a>: <a href="https://gohugo.io/" class="uri">https://gohugo.io/</a> {target=“_blank&quot; title=“The world’s fastest framework for building websites”} <a href="#netlify">Netlify</a>: <a href="https://www.netlify.com/" class="uri">https://www.netlify.com/</a> {target=“_blank&quot; title=“Build, deploy, and manage modern web projects”} [RmdWebsites]: <a href="https://rmarkdown.rstudio.com/lesson-13.html" class="uri">https://rmarkdown.rstudio.com/lesson-13.html</a> {target=“_blank&quot; title=“R Markdown from RStudio”}</p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
