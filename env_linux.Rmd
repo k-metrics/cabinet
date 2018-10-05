@@ -1,0 +1,117 @@
+---
+title: "Linuxへのインストール"
+output:
+  html_document:
+    css: style.css
+---
+
+### Ubuntuでのインストール
+Linuxのディストリビューションに合わせたインストールを行う必要があります。ここでは、Ubuntu(16.04LTS)を前提に説明します。個々のディストリビューションにより手順が異なる場合がありますので、その際は、ググってみてください。  
+　  
+
+#### インストール方法
+Linxuにおけるソフトウェア（パッケージ）のインストール方法はディストリビューションにより異なる場合があります。基本的にはターミナル（端末）からのコマンドラインによる方法ですが、GUIに慣れている場合にはターミナルを利用するCUI(Character User Interface)に抵抗があると思います。
+
+ただ、Linuxを使っていく上で、かゆいところに手が届く方法ですのでCUIでの操作は慣れておくと便利です。  
+　  
+
+### 事前設定
+WindowsやMacOSと異なりLinuxではRをインストールする前に以下の事前設定が必要です。また、管理者権限も必要となりますので事前に把握しておいてください。
+
+1. リポジトリの登録
+1. 公開鍵の設定
+
+　  
+
+#### リポジトリの登録
+システム管理者（root）権限でエディタを起動し、Rのインストールに必要な[CRAN <i class="fa fa-external-link"></i>][CRAN]または[CRANのミラーサイト <i class="fa fa-external-link"></i>][ISM]のリポジトリをリストに登録します。  
+　  
+
+##### ターミナルから登録する場合
+```
+sudo add-apt-repository 'deb https://cran.ism.ac.jp/bin/linux/ubuntu xenial/'
+```
+##### GUIツールで登録する場合
+GUIツールを用いて登録するには［システム設定］-［ソフトウェアのアップデート］-［他のソフトウェア］で以下のサイトを追加します。
+  
+```
+deb https://cran.ism.ac.jp/bin/linux/ubuntu xenial/
+```
+
+　  
+
+##### エディタで登録する場合
+Ubuntu標準の`gedit`を使う場合です。他のエディタでも登録可能です。
+
+```
+sudo gedit /etc/apt/sources.list  
+```
+　  
+ファイルが開いたら以下の一行を追加して保存します。
+```
+deb https://cran.ism.ac.jp/bin/linux/ubuntu xenial/
+```
+　  
+以降、アップデートなどもリポジトリの情報を元に行われますので、インストール後にリポジトリの削除などはせずにそのままにしておいてください。  
+　  
+
+#### 公開鍵の設定
+ターミナル（端末）から以下のコマンドを実行して公開鍵を入手してインストールします。公開鍵を入手するために必要な`Key ID`は執筆点では`E084DAB9`ですが変わる可能性もありますので、上手くいかない場合は[CRANのREADME](https://cran.ism.ac.jp/bin/linux/ubuntu/README.html)で確認して下さい。
+```
+gpg --keyserver keyserver.ubuntu.com --recv-key E084DAB9
+gpg -a --export E084DAB9 | sudo apt-key add -
+```
+
+　  
+
+### Rのインストール
+ターミナル（端末）から以下のコマンドを実行してRをインストールします。
+```
+sudo apt-get update
+sudo apt-get install r-base
+```
+　  
+
+#### インストール後の確認
+`apt-get`でインストールした場合は必要なパッケージ群(`r-base-*`)が全てインストールされるはずですが、念の為にターミナルから以下のコマンドを実行してインストールされているパッケージを確認します。
+```
+dpkg -l | grep r-base
+dpkg -l | grep r-cran
+```
+
+以下のパッケージがインストールされていればインストール完了ですので、Rを起動してみてください。
+
+1. baseパッケージ群
+  * r-base
+  * r-base-core
+  * r-base-dev
+  * r-base-html
+1. CRANパッケージ群
+  * r-cran-*
+  * r-doc-html
+  * r-recommended
+
+　  
+
+#### 追加のインストール
+Rcmdrのみを利用する場合はインストール不要ですが、広く利用されているパッケージをインストールする際に備えて以下のUbuntuのライブラリをインストールすることをおすゝめします。
+
+```
+sudo apt-get install libcurl4-openssl-dev
+sudo apt-get install libssl-dev
+sudo apt-get install libssh2-1-dev
+sudo apt-get install libxml2-dev
+sudo apt-get install libudunits2-dev
+sudo apt-get install unixodbc-dev
+sudo apt-get install xclip
+```
+
+これらのUbuntuライブラリは主に`tidyverse`パッケージ関連をインストール時に必要となるライブラリです。
+
+---
+
+### R Commanderのインストール
+[R Commander(Rcmdr) <i class="fa fa-external-link"></i>][Rcmdr]のインストールと動作確認については[パッケージのインストール](./env_install_pkg.html)をご覧ください。  
+　  
+
+---
