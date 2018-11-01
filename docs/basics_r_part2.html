@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="k-metrics" />
+
+
+<title>R Basics part2</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cerulean.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+<link href="site_libs/font-awesome-5.0.13/css/fa-svg-with-js.css" rel="stylesheet" />
+<script src="site_libs/font-awesome-5.0.13/js/fontawesome-all.min.js"></script>
+<script src="site_libs/font-awesome-5.0.13/js/fa-v4-shims.min.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="shared\style.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = false;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Project Cabinet</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-laptop"></span>
+     
+    Setup
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="./env_overall.html">Overall</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="./env_install_r.html">Install R</a>
+    </li>
+    <li>
+      <a href="./env_install_tls.html">Install Rtools</a>
+    </li>
+    <li>
+      <a href="./env_install_dtp.html">Install RStudio</a>
+    </li>
+    <li>
+      <a href="./env_install_pkg.html">Install R Packages</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="./env_install_tex.html">Install TeX</a>
+    </li>
+    <li>
+      <a href="./env_install_git.html">Install Git</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-info-circle"></span>
+     
+    Basics
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="./basics_overall.html">Overall</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="./basics_rstudio.html">RStudio Basics</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="./basics_rmd.html">R Markdown Basics</a>
+    </li>
+    <li>
+      <a href="./basics_rmdtable.html">　R Markdown Table</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="./basics_r.html">R Basics</a>
+    </li>
+    <li>
+      <a href="./basics_r_part2.html">　R Basics part2</a>
+    </li>
+    <li>
+      <a href="./basics_coding_style.html">　Coding Style</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Tidyverse Basics</li>
+    <li>
+      <a href="./basics_dplyr.html">　dplyr Basics</a>
+    </li>
+    <li class="dropdown-header">　tidyr Basics</li>
+    <li>
+      <a></a>
+    </li>
+    <li>
+      <a href="./basics_ggplot2.html">　ggplot2 Basics</a>
+    </li>
+    <li class="dropdown-header">　purrr Basics</li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-github"></span>
+     
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="https://github.com/k-metrics/cabinet/">
+        <span class="fa fa-github"></span>
+         
+        GitHub Repository
+      </a>
+    </li>
+    <li>
+      <a href="https://k-metrics.netlify.com/post/">
+        <span class="fa fa-rss-square"></span>
+         
+        Project Cabinet blog
+      </a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="https://sites.google.com/site/kantometrics/home/">
+        <span class="fa fa-google"></span>
+         
+        データ分析勉強会
+      </a>
+    </li>
+  </ul>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">R Basics part2</h1>
+
+</div>
+
+
+<!-- shared Links -->
+<!-- SQiP and others -->
+<!-- Books -->
+<!-- 共立出版 -->
+<!-- 日科技連出版 -->
+<!-- O'Reilly Japan -->
+<!-- 東京図書 -->
+<!-- Docker -->
+<!-- eBooks -->
+<!-- Net Community -->
+<!-- Style Guide -->
+<!-- Creative Commons -->
+<!-- Others -->
+<!-- R -->
+<!-- R Packages -->
+<!-- RStudio -->
+<!-- Docker -->
+<!-- Cabinet Pages -->
+<p>本資料は<a href="https://sites.google.com/site/kantometrics/" target="_blank" title="データ分析勉強会">データ分析勉強会 <i class="fa fa-external-link"></i></a> で使用した「RStudioのすゝめ」の講義資料を再整理したものです。<br />
+　</p>
+<div id="はじめに" class="section level1">
+<h1>はじめに</h1>
+<p><a href="https://www.r-project.org/" target="_blank" title="The R Project">R <i class="fa fa-external-link"></i></a> の基本は他の言語と同じですが、R特有の部分もあります。「Rの一番良いところは統計学者が作っているところだ。 Rの一番悪いところは統計学者が作っているところだ。（<a href="https://www.slideshare.net/shuyo/r-4022379">出典</a>）」と言われることが多いようですが、その特徴はなんといっても統計処理に特化している点です。この特徴によりデータ構造の変換や特定の分析に対する数々のパッケージが用意され、さらにコマンド一つでグラフが描ける高度なグラフィクス、更には分析結果をレポーティングするための仕組みも用意されています。このような点が他の言語と大きく異る点だと思います。</p>
+<p><a href="https://www.r-project.org/" target="_blank" title="The R Project">R <i class="fa fa-external-link"></i></a> を学ぶ際には統計知識は最低限必要ですが基本的なプログラミングのマスターにはどちらかというと統計の知識よりは <a href="https://www.r-project.org/" target="_blank" title="The R Project">R <i class="fa fa-external-link"></i></a> が得意とするベクトル処理を理解するのが一番のポイントだと思います。 <a href="https://www.r-project.org/" target="_blank" title="The R Project">R <i class="fa fa-external-link"></i></a> 単体ではエディタが貧弱ですが <a href="https://www.rstudio.com/products/RStudio/" target="_blank" title="RStudio">RStudio <i class="fa fa-external-link"></i></a> という統合開発環境(IDE)を用いればコーディング自体をサポートしてくれますし、より便利に使うための様々なパッケージが用意されていますので恐れる必要はありません。気軽に <a href="https://www.r-project.org/" target="_blank" title="The R Project">R <i class="fa fa-external-link"></i></a> の世界に触れて見ましょう。<br />
+　</p>
+</div>
+<div id="基本的な関数" class="section level1">
+<h1>基本的な関数</h1>
+<p>追加パッケージなしでも使える <a href="https://www.r-project.org/" target="_blank" title="The R Project">R <i class="fa fa-external-link"></i></a> の基本的な関数を <a href="https://socialsciences.mcmaster.ca/jfox/Misc/Rcmdr/" target="_blank" title="The R Commander: A Basic-Statistics GUI for R">R Commander <i class="fa fa-external-link"></i></a> のメニューを元に見ていきましょう。<br />
+　</p>
+<div id="統計量" class="section level2">
+<h2>統計量</h2>
+<p>統計量や主な数学関数はBase Rと呼ばれる<strong><code>base</code></strong>パッケージや<strong><code>stats</code></strong>パッケージに用意されています。</p>
+<p><strong><code>base</code></strong>パッケージ</p>
+<table>
+<thead>
+<tr class="header">
+<th>関数名</th>
+<th>説明</th>
+<th>備考</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>abs</td>
+<td>絶対値</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>cos</td>
+<td>三角関数（コサイン）</td>
+<td>余弦</td>
+</tr>
+<tr class="odd">
+<td>exp</td>
+<td>指数関数</td>
+<td>ネイピア数 <span class="math inline">\(e^x=\exp(x)\)</span></td>
+</tr>
+<tr class="even">
+<td>log</td>
+<td>対数関数（自然対数）</td>
+<td>ネイピア数 <span class="math inline">\(e=\exp(1)\)</span> を底とする</td>
+</tr>
+<tr class="odd">
+<td>log10</td>
+<td>対数関数（常用対数）</td>
+<td>整数<span class="math inline">\(10\)</span>を底とする</td>
+</tr>
+<tr class="even">
+<td>log1p</td>
+<td>対数関数</td>
+<td><span class="math inline">\(log(1+x)\)</span>, |<span class="math inline">\(x\)</span>| <span class="math inline">\(\ll 1\)</span></td>
+</tr>
+<tr class="odd">
+<td>log2</td>
+<td>対数関数（二進対数）</td>
+<td>整数<span class="math inline">\(2\)</span>を底とする</td>
+</tr>
+<tr class="even">
+<td>mean</td>
+<td>平均値（<span class="math inline">\(\bar{x}\)</span>）</td>
+<td>算術平均</td>
+</tr>
+<tr class="odd">
+<td>max</td>
+<td>最大値</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>min</td>
+<td>最小値</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>pi</td>
+<td>円周率（<span class="math inline">\(\pi\)</span>）</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>range</td>
+<td>範囲（最小値、最大値）</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>sin</td>
+<td>三角関数（サイン）</td>
+<td>正弦</td>
+</tr>
+<tr class="even">
+<td>sqrt</td>
+<td>ルート（<span class="math inline">\(\sqrt[2]{x}\)</span>）</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>sum</td>
+<td>合計値</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>summary</td>
+<td>データフレームのサマリー</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>tan</td>
+<td>三角関数（タンジェント）</td>
+<td>正接</td>
+</tr>
+</tbody>
+</table>
+<p><strong><code>stats</code></strong>パッケージ</p>
+<table>
+<thead>
+<tr class="header">
+<th>関数名　</th>
+<th>説明</th>
+<th>備考</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>fivenum</td>
+<td>五数要約</td>
+<td>四分位数とは異なる場合もあるので注意</td>
+</tr>
+<tr class="even">
+<td>IQR</td>
+<td>四分位範囲</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>median</td>
+<td>中央値</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>quantile</td>
+<td>四分位数</td>
+<td>計算方法は9種類から指定可能</td>
+</tr>
+<tr class="odd">
+<td>sd</td>
+<td>標準偏差</td>
+<td>不変分散から計算される標準偏差</td>
+</tr>
+<tr class="even">
+<td>var</td>
+<td>分散</td>
+<td>不偏分散（標本分散の関数はない）</td>
+</tr>
+</tbody>
+</table>
+<p>　</p>
+</div>
+<div id="グラフ" class="section level2">
+<h2>グラフ</h2>
+<p>基本的なグラフィック関数は<strong><code>graphics</code></strong>パッケージで提供されています。特に<strong><code>graphics::plot</code></strong>関数は引数を変えることで様々なグラフを描画することができます。</p>
+<table>
+<thead>
+<tr class="header">
+<th>関数名　</th>
+<th>説明</th>
+<th>備考</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>boxplot</td>
+<td>箱ひげ図の描画</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>plot</td>
+<td>様々なグラフの描画</td>
+<td>データに応じたグラフを描く</td>
+</tr>
+</tbody>
+</table>
+<p>　</p>
+</div>
+<div id="モデル" class="section level2">
+<h2>モデル</h2>
+<p>基本的な分析モデルは<strong><code>stats</code></strong>パッケージで提供されています。その他、様々な分析モデル用の関数はパッケージとして提供されていますので、必要に応じてパッケージをインストールして下さい。</p>
+<p><strong><code>stats</code></strong>パッケージ</p>
+<table>
+<thead>
+<tr class="header">
+<th>関数名　</th>
+<th>説明</th>
+<th>備考</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>glm</td>
+<td>一般化線形モデル</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>lm</td>
+<td>線形モデル</td>
+<td>線形回帰</td>
+</tr>
+</tbody>
+</table>
+<p>　</p>
+</div>
+<div id="その他" class="section level2">
+<h2>その他</h2>
+<p>その他、便利な関数としては<strong><code>base</code></strong>パッケージや<strong><code>util</code></strong>パッケージで提供される以下のような関数があります。</p>
+<table>
+<thead>
+<tr class="header">
+<th>関数名</th>
+<th>説明</th>
+<th>備考</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>cut</td>
+<td>階級の作成</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>floor</td>
+<td>切り捨て</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>length</td>
+<td>データの長さを知る</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>levels</td>
+<td>因子の水準を知る</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>pretty</td>
+<td>階級幅の計算</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>rep</td>
+<td>値の複製</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>round</td>
+<td>数値の丸め</td>
+<td>四捨五入ではなくIEC 60559による丸め</td>
+</tr>
+<tr class="even">
+<td>seq</td>
+<td>規則的な数列の作成</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong><code>utils</code></strong>パッケージ</p>
+<table>
+<thead>
+<tr class="header">
+<th>関数名</th>
+<th>説明</th>
+<th>備考</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>head</td>
+<td>データの先頭から任意の行だけ表示する</td>
+<td>行数は指定可</td>
+</tr>
+<tr class="even">
+<td>tail</td>
+<td>データの末尾から任意の行だけ表示する</td>
+<td>同上</td>
+</tr>
+</tbody>
+</table>
+<p>　</p>
+</div>
+</div>
+<div id="パッケージを使う" class="section level1">
+<h1>パッケージを使う</h1>
+<p><a href="https://www.r-project.org/" target="_blank" title="The R Project">R <i class="fa fa-external-link"></i></a> ではパッケージを追加することで様々な関数が使えるようになります。正規パッケージとも言える <a href="https://cran.r-project.org/" target="_blank" title="CRAN, The Comprehensive R Archive Network">CRAN <i class="fa fa-external-link"></i></a> から提供されているパッケージ数は2017年7月の時点で1万を超えています。これらのパッケージを利用する場合は目的のパッケージをインストールする必要があります。インストール方法については <a href="./env_install_pkg.html">パッケージのインストール</a> をご覧下さい。提供されているパッケージの一覧は <a href="https://cran.r-project.org/web/packages/available_packages_by_name.html" target="_blank" title="CRAN Packages List">CRAN Packages <i class="fa fa-external-link"></i></a> で検索できます。一部日本語に翻訳された <a href="http://www.trifields.jp/statistical-analysis-r-cran-packages-341" target="_blank" title="CRANパッケージリスト(非公式)">CRANパッケージ一覧 <i class="fa fa-external-link"></i></a> も公開されています。<br />
+　</p>
+<div id="cran-task-views" class="section level2">
+<h2>CRAN Task Views</h2>
+<p>パッケージの開発分野については <a href="https://cran.r-project.org/web/views/" target="_blank" title="CRAN Task View">CRAN Task Views <i class="fa fa-external-link"></i></a> で確認することができます。こちらも一部日本語に翻訳された <a href="http://www.trifields.jp/r-cran-task-views-639" target="_blank" title="CRAN Task View(非公式日本語版)">CRANタスクビュー <i class="fa fa-external-link"></i></a> も公開されています。代表的なタスクには以下のようなものがあります。</p>
+<table>
+<thead>
+<tr class="header">
+<th>Task</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Bayesian</td>
+<td>ベイズ推論</td>
+</tr>
+<tr class="even">
+<td>Cluster</td>
+<td>クラスター分析</td>
+</tr>
+<tr class="odd">
+<td>ExperimentalDesign</td>
+<td>実験計画法</td>
+</tr>
+<tr class="even">
+<td>Finance</td>
+<td>ファイナンス</td>
+</tr>
+<tr class="odd">
+<td>Graphics</td>
+<td>グラフィクス、可視化</td>
+</tr>
+<tr class="even">
+<td>HighPerformanceComputing</td>
+<td>高性能並列処理</td>
+</tr>
+<tr class="odd">
+<td>MachineLearning</td>
+<td>機械学習</td>
+</tr>
+<tr class="even">
+<td>Multivariate</td>
+<td>多変量統計</td>
+</tr>
+<tr class="odd">
+<td>NaturalLanguageProcessing</td>
+<td>自然言語処理</td>
+</tr>
+<tr class="even">
+<td>ReproducibleResearch</td>
+<td>再現性のある分析</td>
+</tr>
+<tr class="odd">
+<td>Spatial</td>
+<td>空間データ</td>
+</tr>
+<tr class="even">
+<td>SpatioTemporal</td>
+<td>時空間データ</td>
+</tr>
+<tr class="odd">
+<td>Survival</td>
+<td>生存時間解析</td>
+</tr>
+<tr class="even">
+<td>TimeSeries</td>
+<td>時系列分析</td>
+</tr>
+</tbody>
+</table>
+<p>　</p>
+</div>
+<div id="パッケージの読み込み" class="section level2">
+<h2>パッケージの読み込み</h2>
+<p>インストールしたパッケージを利用するには以下の二つの方法があります。</p>
+<ul>
+<li>パッケージを明示的に読み込む</li>
+<li>パッケージ名を明示的に指定して関数を呼び出す</li>
+</ul>
+<p>基本的には前者を使うのが何かと便利です。<br />
+　</p>
+<div id="パッケージを明示的に読み込む" class="section level3">
+<h3>パッケージを明示的に読み込む</h3>
+<p>パッケージを読み込むには<code>base::library</code>関数を使います。パッケージの検索順もオプションで明示的に指定することが可能です。</p>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<p>　</p>
+<div id="もう一つの読み込み方" class="section level4">
+<h4>もう一つの読み込み方</h4>
+<p>パッケージを読み込む関数には<code>base::require</code>という関数もあります。この関数はパッケージを読み込む動作自体は同じですが指定したパッケージが既に読み込まれていた場合にはパッケージの読み込み動作を行いません。なので、自作関数内でのパッケージ呼び出しやR Notebook, R Markdownを利用する場合には便利な関数です。なお、<code>base::library</code>関数は常にパッケージの読み込みを行います。</p>
+<pre class="r"><code>require(tidyverse)</code></pre>
+</div>
+<div id="libraryとrequireの違い" class="section level4">
+<h4><code>library</code>と<code>require</code>の違い</h4>
+<p><code>library</code>と<code>require</code>は厳密には以下のような違いがあります。</p>
+<p><a href="http://justdoit.hatenablog.jp/entry/2015/01/11/231208" class="uri">http://justdoit.hatenablog.jp/entry/2015/01/11/231208</a> <a href="https://mumu.jpn.ph/forest/computer/2016/05/04/3895/" class="uri">https://mumu.jpn.ph/forest/computer/2016/05/04/3895/</a></p>
+<pre class="r"><code>if (!require(&#39;openxlsx&#39;)){
+  install.packages(&#39;openxlsx&#39;)
+}</code></pre>
+<pre><code>## Loading required package: openxlsx</code></pre>
+<pre class="r"><code>library(&#39;openxlsx&#39;)</code></pre>
+<p>　</p>
+</div>
+</div>
+<div id="パッケージ名を明示的に指定して関数を呼び出す" class="section level3">
+<h3>パッケージ名を明示的に指定して関数を呼び出す</h3>
+<p>パッケージを読み込まなくてもパッケージで定義されている関数を利用するには以下のように記述します。関数が定義されているパッケージ名を明示的に指定することで直接パッケージから関数を呼び出します。</p>
+<pre class="r"><code>tidyverse::tidyverse_conflicts()</code></pre>
+<p>　</p>
+<p><a href="https://www.r-project.org/" target="_blank" title="The R Project">R <i class="fa fa-external-link"></i></a> では明示的に読み込み位置を指定しない限り最後に読み込んだパッケージからオブジェクト（関数や変数）を検索しますので、この呼び出し方法は複数のパッケージを読み込んだことにより関数がマスクされてしまっている場合で使えます。<br />
+例えばモダンなプログラミングで必須ともいえる<code>dplyr</code>パッケージにある<code>filter関数</code>は、基本パッケージ<code>stats</code>にある時系列フィルタリングを行う<code>filter</code>関数をマスクしてしまいますので、<code>stats:filter</code>関数を使う場合は以下のように明示的にパッケージ名を指定して記述します。</p>
+<pre class="r"><code>library(dplyr)
+filter(mtcars, cyl == 6)              # dplyrパッケージのfilter関数が呼び出される</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["mpg"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["cyl"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["disp"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["hp"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["drat"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["wt"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["qsec"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["vs"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["am"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["gear"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["carb"],"name":[11],"type":["dbl"],"align":["right"]}],"data":[{"1":"21.0","2":"6","3":"160.0","4":"110","5":"3.90","6":"2.620","7":"16.46","8":"0","9":"1","10":"4","11":"4"},{"1":"21.0","2":"6","3":"160.0","4":"110","5":"3.90","6":"2.875","7":"17.02","8":"0","9":"1","10":"4","11":"4"},{"1":"21.4","2":"6","3":"258.0","4":"110","5":"3.08","6":"3.215","7":"19.44","8":"1","9":"0","10":"3","11":"1"},{"1":"18.1","2":"6","3":"225.0","4":"105","5":"2.76","6":"3.460","7":"20.22","8":"1","9":"0","10":"3","11":"1"},{"1":"19.2","2":"6","3":"167.6","4":"123","5":"3.92","6":"3.440","7":"18.30","8":"1","9":"0","10":"4","11":"4"},{"1":"17.8","2":"6","3":"167.6","4":"123","5":"3.92","6":"3.440","7":"18.90","8":"1","9":"0","10":"4","11":"4"},{"1":"19.7","2":"6","3":"145.0","4":"175","5":"3.62","6":"2.770","7":"15.50","8":"0","9":"1","10":"5","11":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<pre class="r"><code>stats::filter(c(1:100), rep(1, 3))    # statsパッケージのfilter関数を呼び出している</code></pre>
+<pre><code>## Time Series:
+## Start = 1 
+## End = 100 
+## Frequency = 1 
+##   [1]  NA   6   9  12  15  18  21  24  27  30  33  36  39  42  45  48  51
+##  [18]  54  57  60  63  66  69  72  75  78  81  84  87  90  93  96  99 102
+##  [35] 105 108 111 114 117 120 123 126 129 132 135 138 141 144 147 150 153
+##  [52] 156 159 162 165 168 171 174 177 180 183 186 189 192 195 198 201 204
+##  [69] 207 210 213 216 219 222 225 228 231 234 237 240 243 246 249 252 255
+##  [86] 258 261 264 267 270 273 276 279 282 285 288 291 294 297  NA</code></pre>
+<p>　</p>
+<p>また、あまり一般的でないパッケージで定義されているオブジェクト（関数や変数）を利用する場合、あえてこのような記述をすることにでコードの可読性向上につなげることも可能です。<br />
+　</p>
+</div>
+</div>
+<div id="パッケージの更新" class="section level2">
+<h2>パッケージの更新</h2>
+<p>追加でパッケージをインストールした場合は以下のコマンドを用いて定期的にパッケージを更新しておくことをおすゝめします。</p>
+<pre class="r"><code>update.packages()</code></pre>
+<p>　</p>
+<hr />
+<!-- Footer -->
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-11-01(JST)]</p>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
