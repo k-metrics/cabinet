@@ -1,0 +1,54 @@
+---
+title: "Google ioslides"
+author: "Anonymous"
+date: "`r Sys.Date()`"
+output:
+  ioslides_presentation:
+    df_print: paged
+    widescreen: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+require(formattable)
+```
+
+
+## df_print: kable
+```{r}
+knitr::kable(head(mtcars))
+```
+
+## df_print: paged
+```{r}
+mtcars
+```
+
+## formattable::formattable
+```{r}
+formattable(head(mtcars), 
+            list(
+              mpg = color_tile("white", "green"),
+              cyl = formatter("span",
+                              style = x ~ ifelse(x == "8",
+                                                 style(color = "red",
+                                                       font.weight = "bold"),
+                                                 NA)),
+              area(col = c(hp)) ~ normalize_bar("pink", 0.2),
+              area(col = c(drat)) ~ normalize_bar("orange", 0.1),
+              area(col = c(wt)) ~ normalize_bar("cyan", 0.2),
+              am = formatter("span",
+                             style = x ~ style(color = ifelse(x, "green", "red")),
+                             x ~ icontext(ifelse(x, "ok", "remove"),
+                                          ifelse(x, "Automatic", "Manual")))
+
+            ))
+```
+
+## DT::datatable
+```{r}
+DT::datatable(mtcars, option = list(pageLength = 6))
+```
+
+## Back
+[戻る](../rmd_table.html#ioslides)
