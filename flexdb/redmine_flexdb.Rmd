@@ -1,0 +1,95 @@
+---
+title: "Redmine"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+require(DT)
+require(flexdashboard)
+require(plotly)
+require(redmineR)
+require(tidyverse)    # tidyverseは最後に呼び出す方がコンフリクトの影響小
+
+load("./_redmine_issues_all.RData_")
+
+# Local Function
+map_if_chr <- function(.x, .f) {
+  purrr::map_if(.x, !is.na(.x), .f) %>% 
+    purrr::map_chr(1L) %>% return()
+}
+```
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+### **New** Bug Tickets in 2018
+
+```{r, echo=FALSE}
+issues %>% 
+  dplyr::select(id, created_on, tracker, status, priority, author, 
+                assigned_to, category) %>% 
+  dplyr::mutate_if(is.list, map_if_chr, 'name') %>% 
+  dplyr::mutate(open = lubridate::as_date(created_on)) %>% 
+  dplyr::filter(open >= "2018-1-1" & tracker == "Defect" & status == "New") %>% 
+  dplyr::select(id, open, status, priority, category) %>% 
+  DT::datatable()
+```
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Stays in **OPEN** in 2018
+
+```{r, message = FALSE, warning=FALSE}
+(issues %>% 
+  dplyr::select(id, created_on, tracker, status, priority) %>% 
+  dplyr::mutate_if(is.list, map_if_chr, 'name') %>% 
+  dplyr::mutate(open = lubridate::as_date(created_on)) %>% 
+  dplyr::filter(open >= "2018-1-1" & tracker == "Defect" & status != "Closed") %>% 
+  dplyr::mutate(days = lubridate::today() - open + 1) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = days, fill = priority)) + 
+    ggplot2::geom_histogram(alpha = 0.5, position = "identity") + 
+    ggplot2::labs(x = "滞留日数", y = "")) %>% 
+  plotly::ggplotly()
+```
+
+### Weekly Bug Open-Close chart in 2018
+
+```{r}
+# 対象チケットの洗い出し
+tmp_issues <- issues %>%
+  dplyr::select(id, created_on, closed_on, tracker, status) %>% 
+  dplyr::mutate_if(is.list, map_if_chr, 'name') %>% 
+  dplyr::mutate(open = lubridate::as_date(created_on),
+                close = lubridate::as_date(closed_on)) %>% 
+  dplyr::mutate(status = dplyr::if_else(status == "Closed", status, "Open"),
+                open = lubridate::week(open),
+                close = lubridate::week(close)) %>% 
+  dplyr::filter(open >= "2018-1-1" & tracker == "Defect") %>% 
+  dplyr::select(id, open, close, status)
+
+# チケットオープンの集計
+open <- tmp_issues %>% 
+  dplyr::count(open) %>% 
+  dplyr::mutate(cum_open = cumsum(n)) %>% 
+  dplyr::rename(week = open, open = n)
+
+close <- tmp_issues %>% 
+  dplyr::filter(status == "Closed") %>% 
+  dplyr::count(close) %>% 
+  dplyr::mutate(cum_close = cumsum(n)) %>% 
+  dplyr::rename(week = close, close = n)
+
+(data.frame(week = c(1:53)) %>% 
+  dplyr::full_join(open, by = c("week")) %>% 
+  dplyr::full_join(close, by = c("week")) %>% 
+  dplyr::mutate_if(is.integer, dplyr::na_if, 0) %>% 
+  tidyr::gather(key, value, -week) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = week)) + 
+    ggplot2::geom_line(ggplot2::aes(y = value, colour = key))) %>% 
+  plotly::ggplotly()
+```
+
