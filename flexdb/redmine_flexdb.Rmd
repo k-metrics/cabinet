@@ -56,7 +56,7 @@ Column {data-width=350}
   plotly::ggplotly()
 ```
 
-### Weekly Bug Open-Close chart in 2018
+### Weekly Bug's Open-Close chart in 2018
 
 ```{r}
 # 対象チケットの洗い出し
@@ -65,28 +65,35 @@ tmp_issues <- issues %>%
   dplyr::mutate_if(is.list, map_if_chr, 'name') %>% 
   dplyr::mutate(open = lubridate::as_date(created_on),
                 close = lubridate::as_date(closed_on)) %>% 
+  dplyr::filter(open >= "2018-1-1" & tracker == "Defect") %>% 
   dplyr::mutate(status = dplyr::if_else(status == "Closed", status, "Open"),
                 open = lubridate::week(open),
                 close = lubridate::week(close)) %>% 
-  dplyr::filter(open >= "2018-1-1" & tracker == "Defect") %>% 
   dplyr::select(id, open, close, status)
 
+# 
+weeks <- data.frame(week = c(1:53))
+                    
 # チケットオープンの集計
 open <- tmp_issues %>% 
   dplyr::count(open) %>% 
-  dplyr::mutate(cum_open = cumsum(n)) %>% 
-  dplyr::rename(week = open, open = n)
+  dplyr::rename(week = open, open = n) %>% 
+  dplyr::full_join(weeks, .,by = "week") %>% 
+  dplyr::mutate(open = dplyr::if_else(is.na(open), 0L, open)) %>% 
+  dplyr::mutate(cum_open = cumsum(open)) 
 
 close <- tmp_issues %>% 
   dplyr::filter(status == "Closed") %>% 
   dplyr::count(close) %>% 
-  dplyr::mutate(cum_close = cumsum(n)) %>% 
-  dplyr::rename(week = close, close = n)
+  dplyr::rename(week = close, close = n) %>% 
+  dplyr::full_join(weeks, .,by = "week") %>% 
+  dplyr::mutate(close = dplyr::if_else(is.na(close), 0L, close)) %>% 
+  dplyr::mutate(cum_close = cumsum(close)) 
 
-(data.frame(week = c(1:53)) %>% 
-  dplyr::full_join(open, by = c("week")) %>% 
-  dplyr::full_join(close, by = c("week")) %>% 
-  dplyr::mutate_if(is.integer, dplyr::na_if, 0) %>% 
+
+(open %>% 
+  dplyr::full_join(close, by = "week") %>% 
+  dplyr::select(week, open = cum_open, close = cum_close) %>% 
   tidyr::gather(key, value, -week) %>% 
   ggplot2::ggplot(ggplot2::aes(x = week)) + 
     ggplot2::geom_line(ggplot2::aes(y = value, colour = key))) %>% 
