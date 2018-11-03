@@ -35,18 +35,25 @@ issues_2018 <- issues %>%
 weeks <- data.frame(week = c(1:53))
 ```
 
-# Overall
+# Summary
 
 ## Coloumn {data-width=650} {.tabset}
 
-### Summary
+### Overall
 ```{r}
 issues_2018 %>% 
   dplyr::count(tracker, status) %>% 
   tidyr::spread(tracker, n) %>% knitr::kable(caption = "All isseues")
   # DT::datatable(caption = "All issues")
 ```
+```{r}
+issues_2018 %>% 
+  dplyr::count(status, priority) %>% 
+  tidyr::spread(priority, n) %>% knitr::kable(caption = "All isseues")
+  # DT::datatable(caption = "All issues")
+```
 
+### Defect
 ```{r}
 issues_2018 %>% 
   dplyr::filter(tracker == "Defect") %>% 
@@ -55,33 +62,41 @@ issues_2018 %>%
   # DT::datatable(caption = "Defect issues")
 ```
 
-### Status by Category
+### Feature
 ```{r}
 issues_2018 %>% 
-  dplyr::filter(tracker == "Defect") %>% 
-  dplyr::count(category, status) %>% 
-  tidyr::spread(status, n) %>% 
-  DT::datatable(options = list(pageLength = 25), caption = "Defect issues")
+  dplyr::filter(tracker == "Feature") %>% 
+  dplyr::count(status, priority) %>% 
+  tidyr::spread(priority, n) %>% knitr::kable(caption = "Feature issues")
+  # DT::datatable(caption = "Defect issues")
+```
+
+### Patch
+```{r}
+issues_2018 %>% 
+  dplyr::filter(tracker == "Patch") %>% 
+  dplyr::count(status, priority) %>% 
+  tidyr::spread(priority, n) %>% knitr::kable(caption = "Feature issues")
+  # DT::datatable(caption = "Defect issues")
 ```
 
 
 ### New issues
 ```{r, echo=FALSE}
 issues_2018 %>% 
-  dplyr::filter(tracker == "Defect" & status == "New") %>% 
+  dplyr::filter(status == "New") %>% 
   dplyr::select(id, open, priority, category, subject) %>% 
   DT::datatable(options = list(pageLength = 25))
 ```
 
 
-## Column {data-width=350}
+## Column {data-width=350}  {.tabset}
 
-### Open-Closed
-
+### Overall
 ```{r}
 # 対象チケットの洗い出し
 tmp_issues <- issues_2018 %>% 
-  dplyr::filter(open >= "2018-1-1" & tracker == "Defect") %>% 
+  # dplyr::filter(tracker == "Defect") %>% 
   dplyr::mutate(status = dplyr::if_else(status == "Closed", status, "Open"),
                 open = lubridate::week(open),
                 close = lubridate::week(close)) %>% 
@@ -113,24 +128,143 @@ close <- tmp_issues %>%
   tidyr::gather(key = "Status", value, -week) %>% 
   ggplot2::ggplot(ggplot2::aes(x = week)) + 
     ggplot2::geom_line(ggplot2::aes(y = value, colour = Status)) + 
-    ggplot2::labs(y = "", title = "Defect")) %>% 
+    ggplot2::labs(y = "", title = "All issues") ) %>% 
   plotly::ggplotly()
 ```
 
-### Stays in **OPEN**
+### Defect
+```{r}
+# 対象チケットの洗い出し
+tmp_issues <- issues_2018 %>% 
+  dplyr::filter(tracker == "Defect") %>% 
+  dplyr::mutate(status = dplyr::if_else(status == "Closed", status, "Open"),
+                open = lubridate::week(open),
+                close = lubridate::week(close)) %>% 
+  dplyr::select(id, open, close, status)
 
+# チケット最終週
+max_week <- max(tmp_issues$open, tmp_issues$close, na.rm = TRUE)
+
+# チケットオープンの集計
+open <- tmp_issues %>% 
+  dplyr::count(open) %>% 
+  dplyr::rename(week = open, open = n) %>% 
+  dplyr::full_join(weeks, .,by = "week") %>% 
+  dplyr::mutate(open = dplyr::if_else(is.na(open) & week <= max_week, 0L, open)) %>% 
+  dplyr::mutate(cum_open = cumsum(open)) 
+
+close <- tmp_issues %>% 
+  dplyr::filter(status == "Closed") %>% 
+  dplyr::count(close) %>% 
+  dplyr::rename(week = close, close = n) %>% 
+  dplyr::full_join(weeks, .,by = "week") %>% 
+  dplyr::mutate(close = dplyr::if_else(is.na(close) & week <= max_week, 0L, close)) %>% 
+  dplyr::mutate(cum_close = cumsum(close)) 
+
+
+(open %>% 
+  dplyr::full_join(close, by = "week") %>% 
+  dplyr::select(week, open = cum_open, closed = cum_close) %>% 
+  tidyr::gather(key = "Status", value, -week) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = week)) + 
+    ggplot2::geom_line(ggplot2::aes(y = value, colour = Status)) + 
+    ggplot2::labs(y = "", title = "Defect") ) %>% 
+  plotly::ggplotly()
+```
+
+### Feature
+```{r}
+# 対象チケットの洗い出し
+tmp_issues <- issues_2018 %>% 
+  dplyr::filter(tracker == "Feature") %>% 
+  dplyr::mutate(status = dplyr::if_else(status == "Closed", status, "Open"),
+                open = lubridate::week(open),
+                close = lubridate::week(close)) %>% 
+  dplyr::select(id, open, close, status)
+
+# チケット最終週
+max_week <- max(tmp_issues$open, tmp_issues$close, na.rm = TRUE)
+
+# チケットオープンの集計
+open <- tmp_issues %>% 
+  dplyr::count(open) %>% 
+  dplyr::rename(week = open, open = n) %>% 
+  dplyr::full_join(weeks, .,by = "week") %>% 
+  dplyr::mutate(open = dplyr::if_else(is.na(open) & week <= max_week, 0L, open)) %>% 
+  dplyr::mutate(cum_open = cumsum(open)) 
+
+close <- tmp_issues %>% 
+  dplyr::filter(status == "Closed") %>% 
+  dplyr::count(close) %>% 
+  dplyr::rename(week = close, close = n) %>% 
+  dplyr::full_join(weeks, .,by = "week") %>% 
+  dplyr::mutate(close = dplyr::if_else(is.na(close) & week <= max_week, 0L, close)) %>% 
+  dplyr::mutate(cum_close = cumsum(close)) 
+
+
+(open %>% 
+  dplyr::full_join(close, by = "week") %>% 
+  dplyr::select(week, open = cum_open, closed = cum_close) %>% 
+  tidyr::gather(key = "Status", value, -week) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = week)) + 
+    ggplot2::geom_line(ggplot2::aes(y = value, colour = Status)) + 
+    ggplot2::labs(y = "", title = "Feature") ) %>% 
+  plotly::ggplotly()
+```
+
+### Patch
+```{r}
+# 対象チケットの洗い出し
+tmp_issues <- issues_2018 %>% 
+  dplyr::filter(tracker == "Patch") %>% 
+  dplyr::mutate(status = dplyr::if_else(status == "Closed", status, "Open"),
+                open = lubridate::week(open),
+                close = lubridate::week(close)) %>% 
+  dplyr::select(id, open, close, status)
+
+# チケット最終週
+max_week <- max(tmp_issues$open, tmp_issues$close, na.rm = TRUE)
+
+# チケットオープンの集計
+open <- tmp_issues %>% 
+  dplyr::count(open) %>% 
+  dplyr::rename(week = open, open = n) %>% 
+  dplyr::full_join(weeks, .,by = "week") %>% 
+  dplyr::mutate(open = dplyr::if_else(is.na(open) & week <= max_week, 0L, open)) %>% 
+  dplyr::mutate(cum_open = cumsum(open)) 
+
+close <- tmp_issues %>% 
+  dplyr::filter(status == "Closed") %>% 
+  dplyr::count(close) %>% 
+  dplyr::rename(week = close, close = n) %>% 
+  dplyr::full_join(weeks, .,by = "week") %>% 
+  dplyr::mutate(close = dplyr::if_else(is.na(close) & week <= max_week, 0L, close)) %>% 
+  dplyr::mutate(cum_close = cumsum(close)) 
+
+(open %>% 
+  dplyr::full_join(close, by = "week") %>% 
+  dplyr::select(week, open = cum_open, closed = cum_close) %>% 
+  tidyr::gather(key = "Status", value, -week) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = week)) + 
+    ggplot2::geom_line(ggplot2::aes(y = value, colour = Status)) + 
+    ggplot2::labs(y = "", title = "Patch") ) %>% 
+  plotly::ggplotly()
+```
+
+
+### Stays
 ```{r, message = FALSE, warning=FALSE}
 (issues_2018 %>% 
-  dplyr::filter(tracker == "Defect" & status != "Closed") %>% 
+  dplyr::filter(status != "Closed") %>% 
   dplyr::mutate(days = lubridate::today() - open + 1) %>% 
   ggplot2::ggplot(ggplot2::aes(x = days, fill = priority)) + 
     ggplot2::geom_histogram(alpha = 0.6, position = "identity") + 
-    ggplot2::labs(x = "滞留日数", y = "", title = "Defect")) %>% 
+    ggplot2::labs(x = "滞留日数", y = "", title = "Open issues")) %>% 
   plotly::ggplotly()
 ```
 
 
-# Defects
+# Defect
 
 ## Coloumn {data-width=20}
 
@@ -190,6 +324,14 @@ issues_2018 %>%
 ```{r}
 issues_2018 %>% 
   dplyr::filter(tracker == "Defect") %>% 
+  dplyr::count(category, status) %>% 
+  tidyr::spread(status, n) %>% 
+  DT::datatable(options = list(pageLength = 25), caption = "Defect issues")
+```
+
+```{r, eval=FALSE}
+issues_2018 %>% 
+  dplyr::filter(tracker == "Defect") %>% 
   dplyr::count(status) %>% 
   ggplot2::ggplot(ggplot2::aes(x = "status", y = n, fill = status)) + 
     ggplot2::geom_bar(stat = "identity", width = 1, alpha = 0.75) +
@@ -201,6 +343,16 @@ issues_2018 %>%
 
 ### New
 
+#### 分割可能？
+```{r}
+summary(issues_2018) %>% broom::tidy()
+```
+
+#### 分割可能？
+```{r}
+summary(iris)
+````
+
 ### Needs feedback
 
 ### Responsed
@@ -210,3 +362,7 @@ issues_2018 %>%
 ### Reolved
 
 ### Closed
+
+# Feature
+
+# Patch
