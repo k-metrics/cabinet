@@ -1,9 +1,10 @@
 ---
-title: "Redmine issues in 2018"
+title: "Redmine project in 2018"
 output: 
   flexdashboard::flex_dashboard:
     orientation: columns
     vertical_layout: fill
+    # theme: flatly
 ---
 
 ```{r setup, include=FALSE}
@@ -185,6 +186,8 @@ close <- tmp_issues %>%
   dplyr::full_join(close, by = "week") %>% 
   dplyr::select(week, open = cum_open, closed = cum_close) %>% 
   tidyr::gather(key = "Status", value, -week) %>% 
+  dplyr::mutate(Status = as.factor(Status),
+                Status = forcats::fct_relevel(Status, "open", "closed")) %>% 
   ggplot2::ggplot(ggplot2::aes(x = week)) + 
     ggplot2::geom_line(ggplot2::aes(y = value, colour = Status)) + 
     ggplot2::labs(y = "", title = "All issues") ) %>% 
@@ -225,6 +228,8 @@ close <- tmp_issues %>%
   dplyr::full_join(close, by = "week") %>% 
   dplyr::select(week, open = cum_open, closed = cum_close) %>% 
   tidyr::gather(key = "Status", value, -week) %>% 
+  dplyr::mutate(Status = as.factor(Status),
+                Status = forcats::fct_relevel(Status, "open", "closed")) %>% 
   ggplot2::ggplot(ggplot2::aes(x = week)) + 
     ggplot2::geom_line(ggplot2::aes(y = value, colour = Status)) + 
     ggplot2::labs(y = "", title = "Defect") ) %>% 
@@ -264,6 +269,8 @@ close <- tmp_issues %>%
   dplyr::full_join(close, by = "week") %>% 
   dplyr::select(week, open = cum_open, closed = cum_close) %>% 
   tidyr::gather(key = "Status", value, -week) %>% 
+  dplyr::mutate(Status = as.factor(Status),
+                Status = forcats::fct_relevel(Status, "open", "closed")) %>% 
   ggplot2::ggplot(ggplot2::aes(x = week)) + 
     ggplot2::geom_line(ggplot2::aes(y = value, colour = Status)) + 
     ggplot2::labs(y = "", title = "Patch") ) %>% 
@@ -304,6 +311,8 @@ close <- tmp_issues %>%
   dplyr::full_join(close, by = "week") %>% 
   dplyr::select(week, open = cum_open, closed = cum_close) %>% 
   tidyr::gather(key = "Status", value, -week) %>% 
+  dplyr::mutate(Status = as.factor(Status),
+                Status = forcats::fct_relevel(Status, "open", "closed")) %>% 
   ggplot2::ggplot(ggplot2::aes(x = week)) + 
     ggplot2::geom_line(ggplot2::aes(y = value, colour = Status)) + 
     ggplot2::labs(y = "", title = "Feature") ) %>% 
@@ -311,16 +320,10 @@ close <- tmp_issues %>%
 ```
 
 
+
 ## Coloumn R {data-width=450} {.tabset}
 
 ### Overall
-```{r}
-issues_2018 %>% 
-  dplyr::count(tracker, status) %>% 
-  tidyr::spread(tracker, n) %>% knitr::kable(caption = "All isseues")
-  # DT::datatable(caption = "All issues")
-```
-
 ```{r}
 issues_2018 %>% 
   dplyr::count(status, priority) %>% 
@@ -328,7 +331,6 @@ issues_2018 %>%
   # DT::datatable(caption = "All issues")
 ```
 
-### Defect
 ```{r}
 issues_2018 %>% 
   dplyr::filter(tracker == "Defect") %>% 
@@ -337,16 +339,14 @@ issues_2018 %>%
   # DT::datatable(caption = "Defect issues")
 ```
 
-### Patch
 ```{r}
 issues_2018 %>% 
   dplyr::filter(tracker == "Patch") %>% 
   dplyr::count(status, priority) %>% 
-  tidyr::spread(priority, n) %>% knitr::kable(caption = "Feature issues")
+  tidyr::spread(priority, n) %>% knitr::kable(caption = "Patch issues")
   # DT::datatable(caption = "Defect issues")
 ```
 
-### Feature
 ```{r}
 issues_2018 %>% 
   dplyr::filter(tracker == "Feature") %>% 
@@ -355,12 +355,13 @@ issues_2018 %>%
   # DT::datatable(caption = "Defect issues")
 ```
 
+
 ### New issues
 ```{r, echo=FALSE}
 issues_2018 %>% 
   dplyr::filter(status == "New") %>% 
-  dplyr::select(id, open, priority, category, subject) %>% 
-  DT::datatable(options = list(pageLength = 25))
+  dplyr::select(id, open, tracker, priority, category, subject) %>% 
+  DT::datatable(options = list(pageLength = 15))
 ```
 
 
@@ -423,7 +424,7 @@ issues_2018 %>%
 issues_2018 %>% 
   dplyr::filter(tracker == "Defect" & status == "Resolved") %>% 
   dplyr::count() %>% 
-  flexdashboard::valueBox(caption = "Resolved", color = "success")
+  flexdashboard::valueBox(caption = "Resolved", color = "primary")
 ```
 
 ### Closed
@@ -435,86 +436,72 @@ issues_2018 %>%
 ```
 
 
-## Coloumn R {data-width=900} {.tabset}
+## Coloumn M {data-width=450}
 
-### Overall
+### Open-Close
 ```{r, ref.label="defect_openclose"}
 
 ```
 
-```{r, eval=FALSE}
-issues_2018 %>% 
+
+## Coloumn R {data-width=450}
+```{r}
+# 対象チケットの洗い出し
+tmp_issues <- issues_2018 %>% 
   dplyr::filter(tracker == "Defect") %>% 
-  dplyr::count(category, status) %>% 
-  tidyr::spread(status, n) %>% 
-  DT::datatable(options = list(pageLength = 15), caption = "Defect issues")
-```
+  dplyr::mutate(flag = dplyr::if_else(status == "Closed", as.character(status), "Open"),
+                open = lubridate::week(open),
+                close = lubridate::week(close)) %>% 
+  dplyr::select(id, open, close, flag)
 
-```{r, eval=FALSE}
-issues_2018 %>% 
-  dplyr::filter(tracker == "Defect") %>% 
-  dplyr::count(status) %>% 
-  ggplot2::ggplot(ggplot2::aes(x = "status", y = n, fill = status)) + 
-    ggplot2::geom_bar(stat = "identity", width = 1, alpha = 0.75) +
-    ggplot2::coord_polar(theta = "y", direction = 1) +
-    ggplot2::guides(fill = guide_legend(reverse = TRUE)) + 
-    ggplot2::labs(x = "", y = "")
+# チケット最終週
+max_week <- max(tmp_issues$open, tmp_issues$close, na.rm = TRUE)
 ```
 
 
-### New
+### Weekly open
 ```{r}
-issues_2018 %>% 
-  dplyr::filter(tracker == "Defect" & status == "New") %>% 
-  dplyr::count(category, priority) %>% 
-  tidyr::spread(priority, n) %>% 
-  DT::datatable(options = list(pageLength = 15), caption = "Defect issues")
+# チケットオープンの集計
+open <- tmp_issues %>% 
+  dplyr::count(open) %>% 
+  dplyr::rename(week = open, open = n) %>% 
+  dplyr::full_join(weeks, .,by = "week") %>% 
+  dplyr::mutate(open = dplyr::if_else(is.na(open) & week <= max_week, 0L, open)) %>% 
+  dplyr::mutate(cum_open = cumsum(open), diff = open - dplyr::lag(open)) 
+
+(open %>% 
+  dplyr::mutate(diff_offset = diff + round(mean(open, na.rm = TRUE))) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = week)) +
+    ggplot2::geom_bar(ggplot2::aes(y = open), stat = "identity", alpha = 0.25) + 
+    ggplot2::geom_hline(yintercept = round(mean(open$open, na.rm = TRUE), 1),
+                        colour = "#f8766d", linetype = "dashed") + 
+    ggplot2::geom_line(ggplot2::aes(y = diff_offset), colour = "#f8766d",
+                       size = 0.75)) %>% 
+  plotly::ggplotly()
 ```
 
-### Reopened
+
+### Weekly closed
 ```{r}
-issues_2018 %>% 
-  dplyr::filter(tracker == "Defect" & status == "Reopened") %>% 
-  dplyr::count(category, priority) %>% 
-  tidyr::spread(priority, n) %>% 
-  DT::datatable(options = list(pageLength = 15), caption = "Defect issues")
+close <- tmp_issues %>% 
+  dplyr::filter(flag == "Closed") %>% 
+  dplyr::count(close) %>% 
+  dplyr::rename(week = close, close = n) %>% 
+  dplyr::full_join(weeks, .,by = "week") %>% 
+  dplyr::mutate(close = dplyr::if_else(is.na(close) & week <= max_week, 0L, close)) %>% 
+  dplyr::mutate(cum_close = cumsum(close), diff = close - dplyr::lag(close))
+
+(close %>% 
+  dplyr::mutate(diff_offset = diff + round(mean(close, na.rm = TRUE)), 1) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = week)) +
+    ggplot2::geom_bar(ggplot2::aes(y = close), stat = "identity", alpha = 0.25) + 
+    ggplot2::geom_hline(yintercept = round(mean(close$close, na.rm = TRUE)),
+                        colour = "#00bfc4", linetype = "dashed") + 
+    ggplot2::geom_line(ggplot2::aes(y = diff_offset), colour = "#00bfc4",
+                       size = 0.75)) %>% 
+  plotly::ggplotly()
 ```
 
-### Needs feedback
-```{r}
-issues_2018 %>% 
-  dplyr::filter(tracker == "Defect" & status == "Needs feedback") %>% 
-  dplyr::count(category, priority) %>% 
-  tidyr::spread(priority, n) %>% 
-  DT::datatable(options = list(pageLength = 15), caption = "Defect issues")
-```
-
-### Confirmed
-```{r}
-issues_2018 %>% 
-  dplyr::filter(tracker == "Defect" & status == "Confirmed") %>% 
-  dplyr::count(category, priority) %>% 
-  tidyr::spread(priority, n) %>% 
-  DT::datatable(options = list(pageLength = 15), caption = "Defect issues")
-```
-
-### Resolved
-```{r}
-issues_2018 %>% 
-  dplyr::filter(tracker == "Defect" & status == "Resolved") %>% 
-  dplyr::count(category, priority) %>% 
-  tidyr::spread(priority, n) %>% 
-  DT::datatable(options = list(pageLength = 15), caption = "Defect issues")
-```
-
-### Closed
-```{r}
-issues_2018 %>% 
-  dplyr::filter(tracker == "Defect" & status == "Closed") %>% 
-  dplyr::count(category, priority) %>% 
-  tidyr::spread(priority, n) %>% 
-  DT::datatable(options = list(pageLength = 15), caption = "Defect issues")
-```
 
 
 # Patch
@@ -562,7 +549,7 @@ issues_2018 %>%
 issues_2018 %>% 
   dplyr::filter(tracker == "Patch" & status == "Resolved") %>% 
   dplyr::count() %>% 
-  flexdashboard::valueBox(caption = "Resolved", color = "success")
+  flexdashboard::valueBox(caption = "Resolved", color = "primary")
 ```
 
 ### Closed
@@ -573,19 +560,70 @@ issues_2018 %>%
   flexdashboard::valueBox(caption = "Closed", color = "success")
 ```
 
-## Coloumn R {data-width=900} {.tabset}
+## Coloumn M {data-width=450}
 
 ### Overall
 ```{r, ref.label="patch_openclose"}
 
 ```
 
-```{r, eval=FALSE}
-issues_2018 %>% 
+
+## Coloumn R {data-width=450}
+```{r}
+# 対象チケットの洗い出し
+tmp_issues <- issues_2018 %>% 
   dplyr::filter(tracker == "Patch") %>% 
-  dplyr::count(category, status) %>% 
-  tidyr::spread(status, n) %>% 
-  DT::datatable(options = list(pageLength = 15), caption = "Patch issues")
+  dplyr::mutate(flag = dplyr::if_else(status == "Closed", as.character(status), "Open"),
+                open = lubridate::week(open),
+                close = lubridate::week(close)) %>% 
+  dplyr::select(id, open, close, flag)
+
+# チケット最終週
+max_week <- max(tmp_issues$open, tmp_issues$close, na.rm = TRUE)
+```
+
+
+### Weekly open
+```{r}
+# チケットオープンの集計
+open <- tmp_issues %>% 
+  dplyr::count(open) %>% 
+  dplyr::rename(week = open, open = n) %>% 
+  dplyr::full_join(weeks, .,by = "week") %>% 
+  dplyr::mutate(open = dplyr::if_else(is.na(open) & week <= max_week, 0L, open)) %>% 
+  dplyr::mutate(cum_open = cumsum(open), diff = open - dplyr::lag(open)) 
+
+(open %>% 
+  dplyr::mutate(diff_offset = diff + round(mean(open, na.rm = TRUE))) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = week)) +
+    ggplot2::geom_bar(ggplot2::aes(y = open), stat = "identity", alpha = 0.25) + 
+    ggplot2::geom_hline(yintercept = round(mean(open$open, na.rm = TRUE), 1),
+                        colour = "#f8766d", linetype = "dashed") + 
+    ggplot2::geom_line(ggplot2::aes(y = diff_offset), colour = "#f8766d",
+                       size = 0.75)) %>% 
+  plotly::ggplotly()
+```
+
+
+### Weekly closed
+```{r}
+close <- tmp_issues %>% 
+  dplyr::filter(flag == "Closed") %>% 
+  dplyr::count(close) %>% 
+  dplyr::rename(week = close, close = n) %>% 
+  dplyr::full_join(weeks, .,by = "week") %>% 
+  dplyr::mutate(close = dplyr::if_else(is.na(close) & week <= max_week, 0L, close)) %>% 
+  dplyr::mutate(cum_close = cumsum(close), diff = close - dplyr::lag(close))
+
+(close %>% 
+  dplyr::mutate(diff_offset = diff + round(mean(close, na.rm = TRUE)), 1) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = week)) +
+    ggplot2::geom_bar(ggplot2::aes(y = close), stat = "identity", alpha = 0.25) + 
+    ggplot2::geom_hline(yintercept = round(mean(close$close, na.rm = TRUE)),
+                        colour = "#00bfc4", linetype = "dashed") + 
+    ggplot2::geom_line(ggplot2::aes(y = diff_offset), colour = "#00bfc4",
+                       size = 0.75)) %>% 
+  plotly::ggplotly()
 ```
 
 
@@ -636,7 +674,7 @@ issues_2018 %>%
 issues_2018 %>% 
   dplyr::filter(tracker == "Feature" & status == "Resolved") %>% 
   dplyr::count() %>% 
-  flexdashboard::valueBox(caption = "Resolved", color = "success")
+  flexdashboard::valueBox(caption = "Resolved", color = "primary")
 ```
 
 ### Closed
@@ -647,17 +685,68 @@ issues_2018 %>%
   flexdashboard::valueBox(caption = "Closed", color = "success")
 ```
 
-## Coloumn R {data-width=900} {.tabset}
+## Coloumn M {data-width=450}
 
 ### Overall
 ```{r, ref.label="feature_openclose"}
 
 ```
 
-```{r, eval=FALSE}
-issues_2018 %>% 
+
+## Coloumn R {data-width=450}
+```{r}
+# 対象チケットの洗い出し
+tmp_issues <- issues_2018 %>% 
   dplyr::filter(tracker == "Feature") %>% 
-  dplyr::count(category, status) %>% 
-  tidyr::spread(status, n) %>% 
-  DT::datatable(options = list(pageLength = 15), caption = "Feature issues")
+  dplyr::mutate(flag = dplyr::if_else(status == "Closed", as.character(status), "Open"),
+                open = lubridate::week(open),
+                close = lubridate::week(close)) %>% 
+  dplyr::select(id, open, close, flag)
+
+# チケット最終週
+max_week <- max(tmp_issues$open, tmp_issues$close, na.rm = TRUE)
+```
+
+
+### Weekly open
+```{r}
+# チケットオープンの集計
+open <- tmp_issues %>% 
+  dplyr::count(open) %>% 
+  dplyr::rename(week = open, open = n) %>% 
+  dplyr::full_join(weeks, .,by = "week") %>% 
+  dplyr::mutate(open = dplyr::if_else(is.na(open) & week <= max_week, 0L, open)) %>% 
+  dplyr::mutate(cum_open = cumsum(open), diff = open - dplyr::lag(open)) 
+
+(open %>% 
+  dplyr::mutate(diff_offset = diff + round(mean(open, na.rm = TRUE))) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = week)) +
+    ggplot2::geom_bar(ggplot2::aes(y = open), stat = "identity", alpha = 0.25) + 
+    ggplot2::geom_hline(yintercept = round(mean(open$open, na.rm = TRUE), 1),
+                        colour = "#f8766d", linetype = "dashed") + 
+    ggplot2::geom_line(ggplot2::aes(y = diff_offset), colour = "#f8766d",
+                       size = 0.75)) %>% 
+  plotly::ggplotly()
+```
+
+
+### Weekly closed
+```{r}
+close <- tmp_issues %>% 
+  dplyr::filter(flag == "Closed") %>% 
+  dplyr::count(close) %>% 
+  dplyr::rename(week = close, close = n) %>% 
+  dplyr::full_join(weeks, .,by = "week") %>% 
+  dplyr::mutate(close = dplyr::if_else(is.na(close) & week <= max_week, 0L, close)) %>% 
+  dplyr::mutate(cum_close = cumsum(close), diff = close - dplyr::lag(close))
+
+(close %>% 
+  dplyr::mutate(diff_offset = diff + round(mean(close, na.rm = TRUE)), 1) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = week)) +
+    ggplot2::geom_bar(ggplot2::aes(y = close), stat = "identity", alpha = 0.25) + 
+    ggplot2::geom_hline(yintercept = round(mean(close$close, na.rm = TRUE)),
+                        colour = "#00bfc4", linetype = "dashed") + 
+    ggplot2::geom_line(ggplot2::aes(y = diff_offset), colour = "#00bfc4",
+                       size = 0.75)) %>% 
+  plotly::ggplotly()
 ```
