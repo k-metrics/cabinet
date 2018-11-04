@@ -371,8 +371,8 @@ issues_2018 %>%
   dplyr::filter(status != "Closed") %>% 
   dplyr::mutate(days = lubridate::today() - open + 1) %>% 
   ggplot2::ggplot(ggplot2::aes(x = days, fill = tracker)) + 
-    # ggplot2::geom_histogram(alpha = 0.6, position = "identity") + 
-    ggplot2::geom_histogram(alpha = 0.6, position = "stack") + 
+    ggplot2::geom_histogram(alpha = 0.6, position = "identity") +
+    # ggplot2::geom_histogram(alpha = 0.6, position = "stack") + 
     ggplot2::labs(x = "滞留日数", y = "", title = "Open issues")) %>% 
   plotly::ggplotly()
 ```
