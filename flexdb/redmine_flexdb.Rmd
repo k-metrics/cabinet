@@ -24,15 +24,19 @@ map_if_chr <- function(.x, .f) {
 load("./_redmine_issues_all.RData_")
 
 issues_2018_org <- issues %>% 
-  dplyr::select(id, created_on, closed_on, tracker, status, priority,
-                category, author, assigned_to, subject, fixed_version) %>% 
+  dplyr::select(id, created_on, closed_on, updated_on, tracker, status,
+                priority, category, author, assigned_to, subject,
+                fixed_version) %>% 
   dplyr::mutate_if(is.list, map_if_chr, 'name') %>% 
   dplyr::mutate(open = lubridate::as_date(created_on),
-                close = lubridate::as_date(closed_on)) %>% 
+                close = lubridate::as_date(closed_on),
+                update = lubridate::as_date(updated_on)) %>% 
   dplyr::mutate(created_on = lubridate::ymd_hms(created_on),
-                closed_on = lubridate::ymd_hms(closed_on)) %>% 
+                closed_on = lubridate::ymd_hms(closed_on),
+                updated_on = lubridate::ymd_hms(updated_on)) %>% 
   dplyr::mutate(open_h = lubridate::hour(created_on),
-                close_h = lubridate::hour(closed_on)) %>% 
+                close_h = lubridate::hour(closed_on),
+                update_h = lubridate::hour(updated_on)) %>% 
   # dplyr::select(-created_on, -closed_on) %>%
   dplyr::filter(open >= "2018-1-1")
 
@@ -494,6 +498,41 @@ issues_2018 %>%
 ```{r, ref.label="defect_openclose"}
 
 ```
+
+### Open-Close Stacked
+```{r}
+# 対象チケットの洗い出し
+tmp_issues <- issues_2018 %>% 
+  dplyr::filter(tracker == "Defect") %>% 
+  dplyr::mutate(open = lubridate::week(open),
+                close = lubridate::week(close)) %>% 
+  dplyr::select(id, open, close, status)
+
+# チケット最終週
+max_week <- data.frame(week = c(1:max(tmp_issues$open,
+                                      tmp_issues$close, na.rm = TRUE)))
+
+# 積み上げ面グラフ化（これではNG）
+(tmp_issues %>% 
+  dplyr::full_join(max_week, ., by = c("week" = "open")) %>% 
+  dplyr::count(week, status) %>% 
+  tidyr::drop_na(status) %>% 
+  tidyr::spread(key = status, value = n) %>% 
+  dplyr::mutate_if(is.integer, tidyr::replace_na, 0L) %>% 
+  dplyr::mutate_if(is.integer, cumsum) %>% 
+  tidyr::gather(key = "status", value = "n", -week) %>% 
+  dplyr::mutate(status = forcats::fct_relevel(status, "New", "Reopend",
+                                              "Needs feedback", "Confirmed",
+                                              "Resolved")) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = week)) + 
+    ggplot2::geom_area(ggplot2::aes(y = n, fill = status)) +
+    ggplot2::scale_fill_brewer(palette = "Set3")
+    # ggplot2::scale_fill_manual(values = c("#FB4870", "#FB4870", "#990066", "#000000", "#FF00FF"))
+) %>% 
+  plotly::ggplotly()
+```
+
+
 
 ### Pareto
 ```{r}
