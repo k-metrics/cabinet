@@ -25,7 +25,7 @@ load("./_redmine_issues_all.RData_")
 
 issues_2018_org <- issues %>% 
   dplyr::select(id, created_on, closed_on, tracker, status, priority,
-                category, author, assigned_to, subject) %>% 
+                category, author, assigned_to, subject, fixed_version) %>% 
   dplyr::mutate_if(is.list, map_if_chr, 'name') %>% 
   dplyr::mutate(open = lubridate::as_date(created_on),
                 close = lubridate::as_date(closed_on)) %>% 
