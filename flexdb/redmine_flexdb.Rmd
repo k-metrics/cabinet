@@ -499,7 +499,7 @@ issues_2018 %>%
 
 ```
 
-### Open-Close Stacked
+### Stacked
 ```{r}
 # 対象チケットの洗い出し
 tmp_issues <- issues_2018 %>% 
@@ -526,8 +526,9 @@ max_week <- data.frame(week = c(1:max(tmp_issues$open,
                                               "Resolved")) %>% 
   ggplot2::ggplot(ggplot2::aes(x = week)) + 
     ggplot2::geom_area(ggplot2::aes(y = n, fill = status)) +
-    ggplot2::scale_fill_brewer(palette = "Set3")
-    # ggplot2::scale_fill_manual(values = c("#FB4870", "#FB4870", "#990066", "#000000", "#FF00FF"))
+    ggplot2::scale_fill_brewer(palette = "Set3") + 
+    ggplot2::labs(x = "Created on [week]", y = "",
+                  title = "Status ratio, Not open-close")
 ) %>% 
   plotly::ggplotly()
 ```
@@ -921,11 +922,23 @@ close <- tmp_issues %>%
 ### Open at
 ```{r}
 (issues_2018 %>% 
-  dplyr::select(tracker, category, open_h, close_h) %>% 
+  dplyr::select(tracker, category, open_h) %>% 
   dplyr::mutate(tracker = forcats::fct_relevel(tracker, "Feature", "Patch")) %>% 
   ggplot2::ggplot(ggplot2::aes(x = open_h)) + 
     ggplot2::geom_bar(ggplot2::aes(fill = tracker)) + 
-    ggplot2::labs(x = "Open time [H]", y = "Number of issues") +
+    ggplot2::labs(x = "Open hour [H]", y = "Number of issues") +
+    ggplot2::scale_fill_brewer(palette = "Accent")) %>% 
+  plotly::ggplotly()
+```
+
+### Update at
+```{r}
+(issues_2018 %>% 
+  dplyr::select(tracker, category, update_h) %>% 
+  dplyr::mutate(tracker = forcats::fct_relevel(tracker, "Feature", "Patch")) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = update_h)) + 
+    ggplot2::geom_bar(ggplot2::aes(fill = tracker)) + 
+    ggplot2::labs(x = "Update hour [H]", y = "Number of issues") +
     ggplot2::scale_fill_brewer(palette = "Accent")) %>% 
   plotly::ggplotly()
 ```
@@ -933,11 +946,11 @@ close <- tmp_issues %>%
 ### Close at
 ```{r}
 (issues_2018 %>% 
-  dplyr::select(tracker, category, open_h, close_h) %>% 
+  dplyr::select(tracker, category, close_h) %>% 
   dplyr::mutate(tracker = forcats::fct_relevel(tracker, "Feature", "Patch")) %>% 
   ggplot2::ggplot(ggplot2::aes(x = close_h)) + 
     ggplot2::geom_bar(ggplot2::aes(fill = tracker)) + 
-    ggplot2::labs(x = "Close time [H]", y = "Number of issues") +
+    ggplot2::labs(x = "Close hour [H]", y = "Number of issues") +
     ggplot2::scale_fill_brewer(palette = "Accent")) %>% 
   plotly::ggplotly()
 ```
@@ -960,13 +973,19 @@ issues_2018 %>%
   dplyr::filter(open_h > close_at | open_h < open_at) %>% 
   dplyr::count(author) %>% 
   dplyr::arrange(dplyr::desc(n)) %>% 
-  dplyr::top_n(5) %>% knitr::kable(caption = "Open at extra hours, Worst 5")
+  dplyr::top_n(3) %>% knitr::kable(caption = "Open at extra hours, Worst 3")
+
+issues_2018 %>% 
+  dplyr::filter(update_h > close_at | update_h < open_at) %>% 
+  dplyr::count(author) %>% 
+  dplyr::arrange(dplyr::desc(n)) %>% 
+  dplyr::top_n(3) %>% knitr::kable(caption = "Update at extra hours, Worst 3")
 
 issues_2018 %>% 
   dplyr::filter(close_h > close_at | close_h < open_at) %>% 
   dplyr::count(assigned_to) %>% 
   dplyr::arrange(dplyr::desc(n)) %>% 
-  dplyr::top_n(5) %>% knitr::kable(caption = "Close at extra hours, Worst 5")
+  dplyr::top_n(3) %>% knitr::kable(caption = "Close at extra hours, Worst 3")
 ```
 
 ### Open
@@ -977,12 +996,54 @@ issues_2018 %>%
   DT::datatable(options = list(pageLength = 10))
 ```
 
+### Update
+```{r}
+issues_2018 %>% 
+  dplyr::filter(update_h > close_at | update_h < open_at) %>% 
+  dplyr::select(id, created_on, tracker, category, author, subject) %>% 
+  DT::datatable(options = list(pageLength = 10))
+```
+
 ### Close
 ```{r}
 issues_2018 %>% 
   dplyr::filter(close_h > open_at | close_h < close_at) %>% 
   dplyr::select(id, closed_on, tracker, category, assigned_to, subject) %>% 
   DT::datatable(options = list(pageLength = 10))
+```
+
+
+
+# Bubble
+
+## Coloumn L {data-width=500}
+
+### Priority
+```{r}
+(issues_2018 %>% 
+  dplyr::select(open_h, close_h, priority) %>% 
+  tidyr::drop_na(close_h) %>% 
+  dplyr::count(open_h, close_h, priority) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = open_h, y = close_h)) + 
+    ggplot2::geom_point(ggplot2::aes(colour = priority, size = n)) +
+    ggplot2::labs(x = "Open at", y = "Close at")
+) %>% 
+  plotly::ggplotly()
+```
+
+## Coloumn R {data-width=500}
+
+### Category
+```{r}
+(issues_2018 %>% 
+  dplyr::select(open_h, close_h, category) %>% 
+  tidyr::drop_na(close_h) %>% 
+  dplyr::count(open_h, close_h, category) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = open_h, y = close_h)) + 
+    ggplot2::geom_point(ggplot2::aes(colour = category, size = n)) +
+    ggplot2::labs(x = "Open at", y = "Close at")
+) %>% 
+  plotly::ggplotly()
 ```
 
 
