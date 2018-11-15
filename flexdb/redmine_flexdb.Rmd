@@ -4,14 +4,17 @@ output:
   flexdashboard::flex_dashboard:
     orientation: columns
     vertical_layout: fill
-    # theme: flatly
+    theme: flatly
 ---
+
+<!-- "default", "cerulean", "journal", "flatly", "readable", "spacelab", "united", "cosmo", "lumen", "paper", "sandstone", "simplex", "yeti" -->
 
 ```{r setup, include=FALSE}
 require(DT)
 require(flexdashboard)
 require(plotly)
 # require(redmineR)
+require(skimr)
 require(tidyverse)    # tidyverseは最後に呼び出す方がコンフリクトの影響小
 
 # Local Function
@@ -21,18 +24,24 @@ map_if_chr <- function(.x, .f) {
 }
 
 # Issuesの事前展開
-load("./_redmine_issues_all.RData_")
+# load("./_redmine_issues_all.RData_")
+load("./redmine_issues_all_1114.RData")
 
 issues_2018_org <- issues %>% 
-  dplyr::select(id, created_on, closed_on, tracker, status, priority,
-                category, author, assigned_to, subject, fixed_version) %>% 
+  dplyr::select(id, created_on, closed_on, updated_on, tracker, status,
+                priority, category, author, assigned_to, subject,
+                fixed_version) %>% 
   dplyr::mutate_if(is.list, map_if_chr, 'name') %>% 
   dplyr::mutate(open = lubridate::as_date(created_on),
-                close = lubridate::as_date(closed_on)) %>% 
+                close = lubridate::as_date(closed_on),
+                update = lubridate::as_date(updated_on)) %>% 
   dplyr::mutate(created_on = lubridate::ymd_hms(created_on),
-                closed_on = lubridate::ymd_hms(closed_on)) %>% 
+                closed_on = lubridate::ymd_hms(closed_on),
+                updated_on = lubridate::ymd_hms(updated_on)) %>% 
   dplyr::mutate(open_h = lubridate::hour(created_on),
-                close_h = lubridate::hour(closed_on)) %>% 
+                close_h = lubridate::hour(closed_on),
+                update_h = lubridate::hour(updated_on)) %>% 
+  tidyr::replace_na(list(category = "Uncategorized")) %>% 
   # dplyr::select(-created_on, -closed_on) %>%
   dplyr::filter(open >= "2018-1-1")
 
@@ -232,6 +241,7 @@ close <- tmp_issues %>%
 (open %>% 
   dplyr::full_join(close, by = "week") %>% 
   dplyr::select(week, open = cum_open, closed = cum_close) %>% 
+  # dplyr::mutate(ratio = round(closed / open * 100, 1)) %>% 
   tidyr::gather(key = "Status", value, -week) %>% 
   dplyr::mutate(Status = as.factor(Status),
                 Status = forcats::fct_relevel(Status, "open", "closed")) %>% 
@@ -363,9 +373,9 @@ issues_2018 %>%
 ### Pareto
 ```{r}
 # チケット数の降順の水準を作る
-cat_levels <- issues_2018 %>% 
-  dplyr::count(category) %>% 
-  dplyr::arrange(dplyr::desc(n)) %>% 
+cat_levels <- issues_2018 %>%
+  dplyr::count(category) %>%
+  dplyr::arrange(dplyr::desc(n)) %>%
   dplyr::mutate(category = as.character(category),
                 category = dplyr::if_else(is.na(category), "Uncategorized",
                                           category),
@@ -375,10 +385,10 @@ cat_levels <- issues_2018 %>%
 # 構成比率データを作る
 cum_rate <- issues_2018 %>% 
   dplyr::count(category) %>% 
-  dplyr::arrange(dplyr::desc(n)) %>% 
+  dplyr::arrange(dplyr::desc(n)) %>%
   dplyr::mutate(category = as.character(category),
                 category = dplyr::if_else(is.na(category), "Uncategorized",
-                                          category)) %>% 
+                                          category)) %>%
   dplyr::mutate(cum = cumsum(n), cumrate = round(cum / dplyr::last(cum) * 100, 1))
                 
 # 積上げ棒グラフを描く
@@ -386,9 +396,9 @@ cum_rate <- issues_2018 %>%
   dplyr::select(tracker, status, category) %>% 
   dplyr::mutate(category = as.character(category),
               category = dplyr::if_else(is.na(category), "Uncategorized",
-                                        category),
-              category = forcats::fct_relevel(category, cat_levels),
-              tracker = forcats::fct_relevel(tracker, "Feature", "Patch")) %>% 
+                                        category)) %>% 
+  dplyr::mutate(category = forcats::fct_relevel(category, cat_levels)) %>%
+  dplyr::mutate(tracker = forcats::fct_relevel(tracker, "Feature", "Patch")) %>% 
   ggplot2::ggplot(ggplot2::aes(x = category)) + 
     ggplot2::geom_bar(ggplot2::aes(fill = tracker)) +
     ggplot2::geom_path(data = cum_rate,
@@ -443,7 +453,8 @@ issues_2018 %>%
   dplyr::filter(tracker == "Defect" & status == "New") %>% 
   dplyr::count() %>% 
   # flexdashboard::valueBox(caption = "New", color = "danger")
-  flexdashboard::valueBox(color = "danger")
+  # Captionを省略した場合は見出しがキャプションとして使われる
+  flexdashboard::valueBox(color = "danger", icon = "glyphicon-unchecked")
 ```
 
 ### Reopened
@@ -452,7 +463,7 @@ issues_2018 %>%
   dplyr::filter(tracker == "Defect" & status == "Reopened") %>% 
   dplyr::count() %>% 
   # flexdashboard::valueBox(caption = "Reopened", color = "danger")
-  flexdashboard::valueBox(color = "danger")
+  flexdashboard::valueBox(color = "danger", icon = "glyphicon-repeat")
 ```
 
 ### Needs feedback
@@ -460,7 +471,7 @@ issues_2018 %>%
 issues_2018 %>% 
   dplyr::filter(tracker == "Defect" & status == "Needs feedback") %>% 
   dplyr::count() %>% 
-  flexdashboard::valueBox(caption = "Needs feedback", color = "warning")
+  flexdashboard::valueBox(color = "warning", icon = "glyphicon-earphone")
 ```
 
 ### Confirmed
@@ -468,7 +479,7 @@ issues_2018 %>%
 issues_2018 %>% 
   dplyr::filter(tracker == "Defect" & status == "Confirmed") %>% 
   dplyr::count() %>% 
-  flexdashboard::valueBox(caption = "Confirmed", color = "primary")
+  flexdashboard::valueBox(color = "primary", icon = "glyphicon glyphicon-edit")
 ```
 
 ### Resolved
@@ -476,7 +487,7 @@ issues_2018 %>%
 issues_2018 %>% 
   dplyr::filter(tracker == "Defect" & status == "Resolved") %>% 
   dplyr::count() %>% 
-  flexdashboard::valueBox(caption = "Resolved", color = "primary")
+  flexdashboard::valueBox(color = "primary", icon = "glyphicon-log-in")
 ```
 
 ### Closed
@@ -484,7 +495,7 @@ issues_2018 %>%
 issues_2018 %>% 
   dplyr::filter(tracker == "Defect" & status == "Closed") %>% 
   dplyr::count() %>% 
-  flexdashboard::valueBox(caption = "Closed", color = "success")
+  flexdashboard::valueBox(color = "success", icon = "glyphicon-check")
 ```
 
 
@@ -495,6 +506,179 @@ issues_2018 %>%
 
 ```
 
+
+### Category
+```{r}
+# 対象チケットの洗い出し
+tmp_issues <- issues_2018 %>% 
+  dplyr::filter(tracker == "Defect") %>% 
+  dplyr::mutate(open = lubridate::week(open)) %>% 
+  dplyr::select(id, status, priority, category, open)
+
+# チケット最終週
+max_week <- data.frame(week = c(1:max(tmp_issues$open,
+                                      tmp_issues$open, na.rm = TRUE)))
+
+(tmp_issues %>% 
+  dplyr::full_join(max_week, ., by = c("week" = "open")) %>% 
+  dplyr::mutate(category = as.character(category)) %>%
+  tidyr::replace_na(list(category = "Uncategorized")) %>%
+  ggplot2::ggplot(ggplot2::aes(x = week)) + 
+    ggplot2::geom_bar(ggplot2::aes(fill = category), alpha = 0.75)
+) %>% 
+  plotly::ggplotly()
+```
+
+
+### Category
+```{r}
+# 対象チケットの洗い出し
+tmp_issues <- issues_2018 %>% 
+  dplyr::filter(tracker == "Defect") %>% 
+  dplyr::mutate(open = lubridate::week(open),
+                close = lubridate::week(close)) %>% 
+  dplyr::select(id, open, close, category)
+
+# チケット最終週
+max_week <- data.frame(week = c(1:max(tmp_issues$open,
+                                      tmp_issues$close, na.rm = TRUE)))
+
+# 積み上げ面グラフ化（これではNG）
+(tmp_issues %>% 
+  dplyr::full_join(max_week, ., by = c("week" = "open")) %>% 
+  dplyr::count(week, category) %>% 
+  tidyr::drop_na(category) %>% 
+  tidyr::spread(key = category, value = n) %>% 
+  dplyr::mutate_if(is.integer, tidyr::replace_na, 0L) %>% 
+  dplyr::mutate_if(is.integer, cumsum) %>%
+  tidyr::gather(key = "category", value = "n", -week) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = week)) + 
+    ggplot2::geom_area(ggplot2::aes(y = n, fill = category)) +
+    ggplot2::labs(x = "Created on [week]", y = "",
+                  title = "Category ratio")
+) %>% 
+  plotly::ggplotly()
+```
+
+
+### Status
+```{r}
+# 対象チケットの洗い出し
+tmp_issues <- issues_2018 %>% 
+  dplyr::filter(tracker == "Defect") %>% 
+  dplyr::mutate(open = lubridate::week(open)) %>% 
+  dplyr::select(id, status, priority, category, open)
+
+# チケット最終週
+max_week <- data.frame(week = c(1:max(tmp_issues$open,
+                                      tmp_issues$open, na.rm = TRUE)))
+
+(tmp_issues %>% 
+  dplyr::full_join(max_week, ., by = c("week" = "open")) %>% 
+  dplyr::mutate(category = as.character(category)) %>%
+  tidyr::replace_na(list(category = "Uncategorized")) %>%
+  ggplot2::ggplot(ggplot2::aes(x = week)) + 
+    ggplot2::geom_bar(ggplot2::aes(fill = status), alpha = 1.0) +
+    ggplot2::scale_fill_brewer(palette = "Set3")
+) %>% 
+  plotly::ggplotly()
+```
+
+
+### Status
+```{r}
+# 対象チケットの洗い出し
+tmp_issues <- issues_2018 %>% 
+  dplyr::filter(tracker == "Defect") %>% 
+  dplyr::mutate(open = lubridate::week(open),
+                close = lubridate::week(close)) %>% 
+  dplyr::select(id, open, close, status)
+
+# チケット最終週
+max_week <- data.frame(week = c(1:max(tmp_issues$open,
+                                      tmp_issues$close, na.rm = TRUE)))
+
+# 積み上げ面グラフ化（これではNG）
+(tmp_issues %>% 
+  dplyr::full_join(max_week, ., by = c("week" = "open")) %>% 
+  dplyr::count(week, status) %>% 
+  tidyr::drop_na(status) %>% 
+  tidyr::spread(key = status, value = n) %>% 
+  dplyr::mutate_if(is.integer, tidyr::replace_na, 0L) %>% 
+  dplyr::mutate_if(is.integer, cumsum) %>%
+  tidyr::gather(key = "status", value = "n", -week) %>% 
+  dplyr::mutate(status = forcats::fct_relevel(status, "New", "Reopend",
+                                              "Needs feedback", "Confirmed",
+                                              "Resolved")) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = week)) + 
+    ggplot2::geom_area(ggplot2::aes(y = n, fill = status)) +
+    # ggplot2::geom_bar(ggplot2::aes(y = n, fill = status), stat = "identity") +
+    ggplot2::scale_fill_brewer(palette = "Set3") + 
+    ggplot2::labs(x = "Created on [week]", y = "",
+                  title = "Status ratio, Not open-close")
+) %>% 
+  plotly::ggplotly()
+```
+
+
+### Priority
+```{r}
+# 対象チケットの洗い出し
+tmp_issues <- issues_2018 %>% 
+  dplyr::filter(tracker == "Defect") %>% 
+  dplyr::mutate(open = lubridate::week(open)) %>% 
+  dplyr::select(id, status, priority, category, open)
+
+# チケット最終週
+max_week <- data.frame(week = c(1:max(tmp_issues$open,
+                                      tmp_issues$open, na.rm = TRUE)))
+
+(tmp_issues %>% 
+  dplyr::full_join(max_week, ., by = c("week" = "open")) %>% 
+  dplyr::mutate(category = as.character(category)) %>%
+  tidyr::replace_na(list(category = "Uncategorized")) %>%
+  ggplot2::ggplot(ggplot2::aes(x = week)) + 
+    ggplot2::geom_bar(ggplot2::aes(fill = priority), alpha = 0.65) +
+    ggplot2::scale_fill_brewer(palette = "Set1")
+) %>% 
+  plotly::ggplotly()
+```
+
+
+### Priority
+```{r}
+# 対象チケットの洗い出し
+tmp_issues <- issues_2018 %>% 
+  dplyr::filter(tracker == "Defect") %>% 
+  dplyr::mutate(open = lubridate::week(open),
+                close = lubridate::week(close)) %>% 
+  dplyr::select(id, open, close, priority)
+
+# チケット最終週
+max_week <- data.frame(week = c(1:max(tmp_issues$open,
+                                      tmp_issues$close, na.rm = TRUE)))
+
+# 積み上げ面グラフ化（これではNG）
+(tmp_issues %>% 
+  dplyr::full_join(max_week, ., by = c("week" = "open")) %>% 
+  dplyr::count(week, priority) %>% 
+  tidyr::drop_na(priority) %>% 
+  tidyr::spread(key = priority, value = n) %>% 
+  dplyr::mutate_if(is.integer, tidyr::replace_na, 0L) %>% 
+  dplyr::mutate_if(is.integer, cumsum) %>%
+  tidyr::gather(key = "priority", value = "n", -week) %>% 
+  dplyr::mutate(priority = forcats::fct_relevel(priority, "Urgent", "High",
+                                              "Normal", "Low")) %>%
+  ggplot2::ggplot(ggplot2::aes(x = week)) + 
+    ggplot2::geom_area(ggplot2::aes(y = n, fill = priority), alpha = 0.65) +
+    ggplot2::scale_fill_brewer(palette = "Set1") + 
+    ggplot2::labs(x = "Created on [week]", y = "",
+                  title = "Priority ratio")
+) %>% 
+  plotly::ggplotly()
+```
+
+
 ### Pareto
 ```{r}
 (issues_2018 %>% 
@@ -503,7 +687,7 @@ issues_2018 %>%
   dplyr::arrange(dplyr::desc(n)) %>% 
   dplyr::mutate(category = as.character(category),
                 category = dplyr::if_else(is.na(category), "Uncategorized",
-                                          category)) %>% 
+                                          category)) %>%
   dplyr::mutate(cum = cumsum(n), cumrate = round(cum / dplyr::last(cum) * 100, 1),
                 category = forcats::as_factor(category)) %>% 
   ggplot2::ggplot(ggplot2::aes(x = category)) + 
@@ -519,6 +703,7 @@ issues_2018 %>%
   plotly::ggplotly()
 ```
 
+
 ## Coloumn R {data-width=450}
 ```{r}
 # 対象チケットの洗い出し
@@ -532,7 +717,6 @@ tmp_issues <- issues_2018 %>%
 # チケット最終週
 max_week <- max(tmp_issues$open, tmp_issues$close, na.rm = TRUE)
 ```
-
 
 ### Weekly open
 ```{r}
@@ -650,7 +834,7 @@ issues_2018 %>%
   dplyr::arrange(dplyr::desc(n)) %>% 
   dplyr::mutate(category = as.character(category),
                 category = dplyr::if_else(is.na(category), "Uncategorized",
-                                          category)) %>% 
+                                          category)) %>%
   dplyr::mutate(cum = cumsum(n), cumrate = round(cum / dplyr::last(cum) * 100, 1),
                 category = forcats::as_factor(category)) %>% 
   ggplot2::ggplot(ggplot2::aes(x = category)) + 
@@ -798,7 +982,7 @@ issues_2018 %>%
   dplyr::arrange(dplyr::desc(n)) %>% 
   dplyr::mutate(category = as.character(category),
                 category = dplyr::if_else(is.na(category), "Uncategorized",
-                                          category)) %>% 
+                                          category)) %>%
   dplyr::mutate(cum = cumsum(n), cumrate = round(cum / dplyr::last(cum) * 100, 1),
                 category = forcats::as_factor(category)) %>% 
   ggplot2::ggplot(ggplot2::aes(x = category)) + 
@@ -882,11 +1066,23 @@ close <- tmp_issues %>%
 ### Open at
 ```{r}
 (issues_2018 %>% 
-  dplyr::select(tracker, category, open_h, close_h) %>% 
+  dplyr::select(tracker, category, open_h) %>% 
   dplyr::mutate(tracker = forcats::fct_relevel(tracker, "Feature", "Patch")) %>% 
   ggplot2::ggplot(ggplot2::aes(x = open_h)) + 
     ggplot2::geom_bar(ggplot2::aes(fill = tracker)) + 
-    ggplot2::labs(x = "Open time [H]", y = "Number of issues") +
+    ggplot2::labs(x = "Open hour [H]", y = "Number of issues") +
+    ggplot2::scale_fill_brewer(palette = "Accent")) %>% 
+  plotly::ggplotly()
+```
+
+### Update at
+```{r}
+(issues_2018 %>% 
+  dplyr::select(tracker, category, update_h) %>% 
+  dplyr::mutate(tracker = forcats::fct_relevel(tracker, "Feature", "Patch")) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = update_h)) + 
+    ggplot2::geom_bar(ggplot2::aes(fill = tracker)) + 
+    ggplot2::labs(x = "Update hour [H]", y = "Number of issues") +
     ggplot2::scale_fill_brewer(palette = "Accent")) %>% 
   plotly::ggplotly()
 ```
@@ -894,11 +1090,11 @@ close <- tmp_issues %>%
 ### Close at
 ```{r}
 (issues_2018 %>% 
-  dplyr::select(tracker, category, open_h, close_h) %>% 
+  dplyr::select(tracker, category, close_h) %>% 
   dplyr::mutate(tracker = forcats::fct_relevel(tracker, "Feature", "Patch")) %>% 
   ggplot2::ggplot(ggplot2::aes(x = close_h)) + 
     ggplot2::geom_bar(ggplot2::aes(fill = tracker)) + 
-    ggplot2::labs(x = "Close time [H]", y = "Number of issues") +
+    ggplot2::labs(x = "Close hour [H]", y = "Number of issues") +
     ggplot2::scale_fill_brewer(palette = "Accent")) %>% 
   plotly::ggplotly()
 ```
@@ -921,19 +1117,33 @@ issues_2018 %>%
   dplyr::filter(open_h > close_at | open_h < open_at) %>% 
   dplyr::count(author) %>% 
   dplyr::arrange(dplyr::desc(n)) %>% 
-  dplyr::top_n(5) %>% knitr::kable(caption = "Open at extra hours, Worst 5")
+  dplyr::top_n(3) %>% knitr::kable(caption = "Open at extra hours, Worst 3")
+
+issues_2018 %>% 
+  dplyr::filter(update_h > close_at | update_h < open_at) %>% 
+  dplyr::count(author) %>% 
+  dplyr::arrange(dplyr::desc(n)) %>% 
+  dplyr::top_n(3) %>% knitr::kable(caption = "Update at extra hours, Worst 3")
 
 issues_2018 %>% 
   dplyr::filter(close_h > close_at | close_h < open_at) %>% 
   dplyr::count(assigned_to) %>% 
   dplyr::arrange(dplyr::desc(n)) %>% 
-  dplyr::top_n(5) %>% knitr::kable(caption = "Close at extra hours, Worst 5")
+  dplyr::top_n(3) %>% knitr::kable(caption = "Close at extra hours, Worst 3")
 ```
 
 ### Open
 ```{r}
 issues_2018 %>% 
   dplyr::filter(open_h > close_at | open_h < open_at) %>% 
+  dplyr::select(id, created_on, tracker, category, author, subject) %>% 
+  DT::datatable(options = list(pageLength = 10))
+```
+
+### Update
+```{r}
+issues_2018 %>% 
+  dplyr::filter(update_h > close_at | update_h < open_at) %>% 
   dplyr::select(id, created_on, tracker, category, author, subject) %>% 
   DT::datatable(options = list(pageLength = 10))
 ```
@@ -945,6 +1155,54 @@ issues_2018 %>%
   dplyr::select(id, closed_on, tracker, category, assigned_to, subject) %>% 
   DT::datatable(options = list(pageLength = 10))
 ```
+
+
+
+# Bubble
+
+## Coloumn L {data-width=500}
+
+### Priority
+```{r}
+(issues_2018 %>% 
+  dplyr::select(open_h, close_h, priority) %>% 
+  tidyr::drop_na(close_h) %>% 
+  dplyr::count(open_h, close_h, priority) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = open_h, y = close_h)) + 
+    ggplot2::geom_point(ggplot2::aes(colour = priority, size = n)) +
+    ggplot2::labs(x = "Open at", y = "Close at")
+) %>% 
+  plotly::ggplotly()
+```
+
+## Coloumn R {data-width=500}
+
+### Category
+```{r}
+(issues_2018 %>% 
+  dplyr::select(open_h, close_h, category) %>% 
+  tidyr::drop_na(close_h) %>% 
+  dplyr::count(open_h, close_h, category) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = open_h, y = close_h)) + 
+    ggplot2::geom_point(ggplot2::aes(colour = category, size = n)) +
+    ggplot2::labs(x = "Open at", y = "Close at")
+) %>% 
+  plotly::ggplotly()
+```
+
+
+
+
+# skimr
+
+## Coloumn {data-width=1000}
+
+### Overall
+```{r}
+issues_2018 %>% 
+  skimr::skim_to_wide() %>% knitr::kable()
+```
+
 
 
 
