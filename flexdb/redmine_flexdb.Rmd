@@ -241,6 +241,7 @@ close <- tmp_issues %>%
 (open %>% 
   dplyr::full_join(close, by = "week") %>% 
   dplyr::select(week, open = cum_open, closed = cum_close) %>% 
+  # dplyr::mutate(ratio = round(closed / open * 100, 1)) %>% 
   tidyr::gather(key = "Status", value, -week) %>% 
   dplyr::mutate(Status = as.factor(Status),
                 Status = forcats::fct_relevel(Status, "open", "closed")) %>% 
@@ -505,42 +506,8 @@ issues_2018 %>%
 
 ```
 
-### Stacked
-```{r}
-# 対象チケットの洗い出し
-tmp_issues <- issues_2018 %>% 
-  dplyr::filter(tracker == "Defect") %>% 
-  dplyr::mutate(open = lubridate::week(open),
-                close = lubridate::week(close)) %>% 
-  dplyr::select(id, open, close, status)
 
-# チケット最終週
-max_week <- data.frame(week = c(1:max(tmp_issues$open,
-                                      tmp_issues$close, na.rm = TRUE)))
-
-# 積み上げ面グラフ化（これではNG）
-(tmp_issues %>% 
-  dplyr::full_join(max_week, ., by = c("week" = "open")) %>% 
-  dplyr::count(week, status) %>% 
-  tidyr::drop_na(status) %>% 
-  tidyr::spread(key = status, value = n) %>% 
-  dplyr::mutate_if(is.integer, tidyr::replace_na, 0L) %>% 
-  dplyr::mutate_if(is.integer, cumsum) %>% 
-  tidyr::gather(key = "status", value = "n", -week) %>% 
-  dplyr::mutate(status = forcats::fct_relevel(status, "New", "Reopend",
-                                              "Needs feedback", "Confirmed",
-                                              "Resolved")) %>% 
-  ggplot2::ggplot(ggplot2::aes(x = week)) + 
-    ggplot2::geom_area(ggplot2::aes(y = n, fill = status)) +
-    ggplot2::scale_fill_brewer(palette = "Set3") + 
-    ggplot2::labs(x = "Created on [week]", y = "",
-                  title = "Status ratio, Not open-close")
-) %>% 
-  plotly::ggplotly()
-```
-
-
-### Weekly
+### Category
 ```{r}
 # 対象チケットの洗い出し
 tmp_issues <- issues_2018 %>% 
@@ -561,6 +528,156 @@ max_week <- data.frame(week = c(1:max(tmp_issues$open,
 ) %>% 
   plotly::ggplotly()
 ```
+
+
+### Category
+```{r}
+# 対象チケットの洗い出し
+tmp_issues <- issues_2018 %>% 
+  dplyr::filter(tracker == "Defect") %>% 
+  dplyr::mutate(open = lubridate::week(open),
+                close = lubridate::week(close)) %>% 
+  dplyr::select(id, open, close, category)
+
+# チケット最終週
+max_week <- data.frame(week = c(1:max(tmp_issues$open,
+                                      tmp_issues$close, na.rm = TRUE)))
+
+# 積み上げ面グラフ化（これではNG）
+(tmp_issues %>% 
+  dplyr::full_join(max_week, ., by = c("week" = "open")) %>% 
+  dplyr::count(week, category) %>% 
+  tidyr::drop_na(category) %>% 
+  tidyr::spread(key = category, value = n) %>% 
+  dplyr::mutate_if(is.integer, tidyr::replace_na, 0L) %>% 
+  dplyr::mutate_if(is.integer, cumsum) %>%
+  tidyr::gather(key = "category", value = "n", -week) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = week)) + 
+    ggplot2::geom_area(ggplot2::aes(y = n, fill = category)) +
+    ggplot2::labs(x = "Created on [week]", y = "",
+                  title = "Category ratio")
+) %>% 
+  plotly::ggplotly()
+```
+
+
+### Status
+```{r}
+# 対象チケットの洗い出し
+tmp_issues <- issues_2018 %>% 
+  dplyr::filter(tracker == "Defect") %>% 
+  dplyr::mutate(open = lubridate::week(open)) %>% 
+  dplyr::select(id, status, priority, category, open)
+
+# チケット最終週
+max_week <- data.frame(week = c(1:max(tmp_issues$open,
+                                      tmp_issues$open, na.rm = TRUE)))
+
+(tmp_issues %>% 
+  dplyr::full_join(max_week, ., by = c("week" = "open")) %>% 
+  dplyr::mutate(category = as.character(category)) %>%
+  tidyr::replace_na(list(category = "Uncategorized")) %>%
+  ggplot2::ggplot(ggplot2::aes(x = week)) + 
+    ggplot2::geom_bar(ggplot2::aes(fill = status), alpha = 1.0) +
+    ggplot2::scale_fill_brewer(palette = "Set3")
+) %>% 
+  plotly::ggplotly()
+```
+
+
+### Stacked Status
+```{r}
+# 対象チケットの洗い出し
+tmp_issues <- issues_2018 %>% 
+  dplyr::filter(tracker == "Defect") %>% 
+  dplyr::mutate(open = lubridate::week(open),
+                close = lubridate::week(close)) %>% 
+  dplyr::select(id, open, close, status)
+
+# チケット最終週
+max_week <- data.frame(week = c(1:max(tmp_issues$open,
+                                      tmp_issues$close, na.rm = TRUE)))
+
+# 積み上げ面グラフ化（これではNG）
+(tmp_issues %>% 
+  dplyr::full_join(max_week, ., by = c("week" = "open")) %>% 
+  dplyr::count(week, status) %>% 
+  tidyr::drop_na(status) %>% 
+  tidyr::spread(key = status, value = n) %>% 
+  dplyr::mutate_if(is.integer, tidyr::replace_na, 0L) %>% 
+  dplyr::mutate_if(is.integer, cumsum) %>%
+  tidyr::gather(key = "status", value = "n", -week) %>% 
+  dplyr::mutate(status = forcats::fct_relevel(status, "New", "Reopend",
+                                              "Needs feedback", "Confirmed",
+                                              "Resolved")) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = week)) + 
+    ggplot2::geom_area(ggplot2::aes(y = n, fill = status)) +
+    # ggplot2::geom_bar(ggplot2::aes(y = n, fill = status), stat = "identity") +
+    ggplot2::scale_fill_brewer(palette = "Set3") + 
+    ggplot2::labs(x = "Created on [week]", y = "",
+                  title = "Status ratio, Not open-close")
+) %>% 
+  plotly::ggplotly()
+```
+
+
+### Priority
+```{r}
+# 対象チケットの洗い出し
+tmp_issues <- issues_2018 %>% 
+  dplyr::filter(tracker == "Defect") %>% 
+  dplyr::mutate(open = lubridate::week(open)) %>% 
+  dplyr::select(id, status, priority, category, open)
+
+# チケット最終週
+max_week <- data.frame(week = c(1:max(tmp_issues$open,
+                                      tmp_issues$open, na.rm = TRUE)))
+
+(tmp_issues %>% 
+  dplyr::full_join(max_week, ., by = c("week" = "open")) %>% 
+  dplyr::mutate(category = as.character(category)) %>%
+  tidyr::replace_na(list(category = "Uncategorized")) %>%
+  ggplot2::ggplot(ggplot2::aes(x = week)) + 
+    ggplot2::geom_bar(ggplot2::aes(fill = priority), alpha = 0.65) +
+    ggplot2::scale_fill_brewer(palette = "Set1")
+) %>% 
+  plotly::ggplotly()
+```
+
+
+### Stacked Priority
+```{r}
+# 対象チケットの洗い出し
+tmp_issues <- issues_2018 %>% 
+  dplyr::filter(tracker == "Defect") %>% 
+  dplyr::mutate(open = lubridate::week(open),
+                close = lubridate::week(close)) %>% 
+  dplyr::select(id, open, close, priority)
+
+# チケット最終週
+max_week <- data.frame(week = c(1:max(tmp_issues$open,
+                                      tmp_issues$close, na.rm = TRUE)))
+
+# 積み上げ面グラフ化（これではNG）
+(tmp_issues %>% 
+  dplyr::full_join(max_week, ., by = c("week" = "open")) %>% 
+  dplyr::count(week, priority) %>% 
+  tidyr::drop_na(priority) %>% 
+  tidyr::spread(key = priority, value = n) %>% 
+  dplyr::mutate_if(is.integer, tidyr::replace_na, 0L) %>% 
+  dplyr::mutate_if(is.integer, cumsum) %>%
+  tidyr::gather(key = "priority", value = "n", -week) %>% 
+  dplyr::mutate(priority = forcats::fct_relevel(priority, "Urgent", "High",
+                                              "Normal", "Low")) %>%
+  ggplot2::ggplot(ggplot2::aes(x = week)) + 
+    ggplot2::geom_area(ggplot2::aes(y = n, fill = priority), alpha = 0.65) +
+    ggplot2::scale_fill_brewer(palette = "Set1") + 
+    ggplot2::labs(x = "Created on [week]", y = "",
+                  title = "Priority ratio")
+) %>% 
+  plotly::ggplotly()
+```
+
 
 ### Pareto
 ```{r}
