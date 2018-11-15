@@ -1,0 +1,1634 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="k-metrics" />
+
+
+<title>R Basics</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cerulean.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+<link href="site_libs/font-awesome-5.0.13/css/fa-svg-with-js.css" rel="stylesheet" />
+<script src="site_libs/font-awesome-5.0.13/js/fontawesome-all.min.js"></script>
+<script src="site_libs/font-awesome-5.0.13/js/fa-v4-shims.min.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="shared\style.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = false;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Project Cabinet</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-laptop"></span>
+     
+    Setup
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="./env_overall.html">Overall</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="./env_install_r.html">Install R</a>
+    </li>
+    <li>
+      <a href="./env_install_tls.html">Install Rtools</a>
+    </li>
+    <li>
+      <a href="./env_install_dtp.html">Install RStudio</a>
+    </li>
+    <li>
+      <a href="./env_install_pkg.html">Install R Packages</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="./env_install_tex.html">Install TeX</a>
+    </li>
+    <li>
+      <a href="./env_install_git.html">Install Git</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-info-circle"></span>
+     
+    Basics
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="./basics_overall.html">Overall</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="./basics_rstudio.html">RStudio Basics</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="./basics_rmd.html">R Markdown Basics</a>
+    </li>
+    <li>
+      <a href="./basics_rmdtable.html">　R Markdown Table</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="./basics_r.html">R Basics</a>
+    </li>
+    <li>
+      <a href="./basics_r_part2.html">　R Basics part2</a>
+    </li>
+    <li>
+      <a href="./basics_coding_style.html">　Coding Style</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Tidyverse Basics</li>
+    <li>
+      <a href="./basics_dplyr.html">　dplyr Basics</a>
+    </li>
+    <li class="dropdown-header">　tidyr Basics</li>
+    <li>
+      <a></a>
+    </li>
+    <li>
+      <a href="./basics_ggplot2.html">　ggplot2 Basics</a>
+    </li>
+    <li class="dropdown-header">　purrr Basics</li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-github"></span>
+     
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="https://github.com/k-metrics/cabinet/">
+        <span class="fa fa-github"></span>
+         
+        GitHub Repository
+      </a>
+    </li>
+    <li>
+      <a href="https://k-metrics.netlify.com/post/">
+        <span class="fa fa-rss-square"></span>
+         
+        Project Cabinet blog
+      </a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="https://sites.google.com/site/kantometrics/home/">
+        <span class="fa fa-google"></span>
+         
+        データ分析勉強会
+      </a>
+    </li>
+  </ul>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">R Basics</h1>
+
+</div>
+
+
+<!-- shared Links -->
+<!-- SQiP and others -->
+<!-- Books -->
+<!-- 共立出版 -->
+<!-- 日科技連出版 -->
+<!-- O'Reilly Japan -->
+<!-- 東京図書 -->
+<!-- Docker -->
+<!-- eBooks -->
+<!-- Net Community -->
+<!-- Style Guide -->
+<!-- Creative Commons -->
+<!-- Others -->
+<!-- R -->
+<!-- R Packages -->
+<!-- RStudio -->
+<!-- Docker -->
+<!-- Cabinet Pages -->
+<p>本資料は <a href="https://sites.google.com/site/kantometrics/" target="_blank" title="データ分析勉強会">データ分析勉強会 <i class="fa fa-external-link"></i></a> で使用した「RStudioのすゝめ」の講義資料を再整理したものです。<br />
+　</p>
+<div id="はじめに" class="section level1">
+<h1>はじめに</h1>
+<p><a href="https://www.r-project.org/" target="_blank" title="The R Project">R <i class="fa fa-external-link"></i></a> の基本は他の言語と同じですが、R特有の部分もあります。「Rの一番良いところは統計学者が作っているところだ。 Rの一番悪いところは統計学者が作っているところだ。 <a href="https://www.slideshare.net/shuyo/r-4022379">出典</a> 」と言われることが多いようですが、その特徴はなんといっても統計処理に特化している点です。この特徴によりデータ構造の変換や特定の分析に対する数々のパッケージが用意され、さらにコマンド一つでグラフが描ける高度なグラフィクス、更には分析結果をレポーティングするための仕組みも用意されています。このような点が他の言語と大きく異る点だと思います。</p>
+<p><a href="https://www.r-project.org/" target="_blank" title="The R Project">R <i class="fa fa-external-link"></i></a> を学ぶ際には統計知識は最低限必要ですが基本的なプログラミングのマスターにはどちらかというと統計の知識よりは <a href="https://www.r-project.org/" target="_blank" title="The R Project">R <i class="fa fa-external-link"></i></a> が得意とするベクトル処理を理解するのが一番のポイントだと思います。 <a href="https://www.r-project.org/" target="_blank" title="The R Project">R <i class="fa fa-external-link"></i></a> 単体ではエディタが貧弱ですが <a href="https://www.rstudio.com/products/RStudio/" target="_blank" title="RStudio">RStudio <i class="fa fa-external-link"></i></a> という統合開発環境(IDE)を用いればコーディング自体をサポートしてくれますし、より便利に使うための様々なパッケージが用意されていますので恐れる必要はありません。気軽に <a href="https://www.r-project.org/" target="_blank" title="The R Project">R <i class="fa fa-external-link"></i></a> の世界に触れて見ましょう。</p>
+<p><a href="https://www.r-project.org/" target="_blank" title="The R Project">R <i class="fa fa-external-link"></i></a> の環境整備については [こちら][PE0] 、コーディングスタイルについては [こちら][PB1] を参照してください。<br />
+　</p>
+</div>
+<div id="rの基本" class="section level1">
+<h1>Rの基本</h1>
+<p><a href="https://www.r-project.org/" target="_blank" title="The R Project">R <i class="fa fa-external-link"></i></a> の基本は前述したように他の言語と同じです。変数と演算子、そして関数を用いてコーディングします。まず、最も基本的な四則演算をコンソールから実行してみましょう。以降、上段がコンソールで実行するコード、（##で始まっている）下段が実行結果になります。なおコンソールの行の最後では［Enter］キーを押下してください。<br />
+　</p>
+<div id="四則演算" class="section level2">
+<h2>四則演算</h2>
+<p>説明する必要はないと思いますが加減乗除算です。</p>
+<pre class="r"><code>1 + 2</code></pre>
+<pre><code>## [1] 3</code></pre>
+<pre class="r"><code>2 - 3</code></pre>
+<pre><code>## [1] -1</code></pre>
+<pre class="r"><code>3 * 4</code></pre>
+<pre><code>## [1] 12</code></pre>
+<pre class="r"><code>4 / 5</code></pre>
+<pre><code>## [1] 0.8</code></pre>
+<p>　</p>
+</div>
+<div id="四則演算結果の代入" class="section level2">
+<h2>四則演算結果の代入</h2>
+<p>次に各演算を変数に代入し変数同士の演算を行ってみます。 <a href="https://www.r-project.org/" target="_blank" title="The R Project">R <i class="fa fa-external-link"></i></a> での代入演算子は<code>&lt;-</code>を使います。また、変数を使うための宣言は不要です。また、変数の値を確認する場合は変数名だけを入力して［Enter］キーを押下します。</p>
+<pre class="r"><code>w &lt;- 1 + 2
+w</code></pre>
+<pre><code>## [1] 3</code></pre>
+<pre class="r"><code>x &lt;- 2 * 3
+x</code></pre>
+<pre><code>## [1] 6</code></pre>
+<pre class="r"><code>y &lt;- 3 - 4
+y</code></pre>
+<pre><code>## [1] -1</code></pre>
+<pre class="r"><code>z &lt;- 4 / 5
+z</code></pre>
+<pre><code>## [1] 0.8</code></pre>
+<p>　</p>
+</div>
+<div id="変数同士の演算" class="section level2">
+<h2>変数同士の演算</h2>
+<p>更に変数同士の演算を行ってみます。</p>
+<pre class="r"><code>w + x</code></pre>
+<pre><code>## [1] 9</code></pre>
+<pre class="r"><code>x - y</code></pre>
+<pre><code>## [1] 7</code></pre>
+<pre class="r"><code>y * z</code></pre>
+<pre><code>## [1] -0.8</code></pre>
+<pre class="r"><code>z / w</code></pre>
+<pre><code>## [1] 0.2666667</code></pre>
+<p>　</p>
+</div>
+</div>
+<div id="予約語" class="section level1">
+<h1>予約語</h1>
+<p>どの言語にも予約語といわれるものがあり、 <a href="https://www.r-project.org/" target="_blank" title="The R Project">R <i class="fa fa-external-link"></i></a> では以下が予約語になっており変数名や関数名として使えませんので注意してください。</p>
+<blockquote>
+<p>if, else, for, while, repeat, in, next, break, function<br />
+TRUE, FALSE, NULL, NA, NaN, Inf<br />
+NA_integer_, NA_real_, NA_complex_, NA_character_</p>
+</blockquote>
+<p><code>TRUE</code>と<code>FALSE</code>の省略形として<code>T</code>と<code>F</code>が使えますが、この省略形を使うことはおすすめできません。理由は以下のコードを実行して確認してください。</p>
+<pre class="r"><code>T             # Tの中身を確認する</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code>F             # Fの中身を確認する</code></pre>
+<pre><code>## [1] FALSE</code></pre>
+<pre class="r"><code>class(T)            # Tの型を確認する</code></pre>
+<pre><code>## [1] &quot;logical&quot;</code></pre>
+<pre class="r"><code>find(&quot;T&quot;)           # 定義されている場所を確認する</code></pre>
+<pre><code>## [1] &quot;package:base&quot;</code></pre>
+<pre class="r"><code>T &lt;- 0              # Tに任意の値を代入する（数値でなく文字列でも可）
+T             # 代入結果を確認する</code></pre>
+<pre><code>## [1] 0</code></pre>
+<pre class="r"><code>class(T)            # Tの型を確認する</code></pre>
+<pre><code>## [1] &quot;numeric&quot;</code></pre>
+<pre class="r"><code>find(&quot;T&quot;)           # Tの定義を再確認する</code></pre>
+<pre><code>## [1] &quot;.GlobalEnv&quot;   &quot;package:base&quot;</code></pre>
+<pre class="r"><code>base::T         # 元の定義はどうなった？</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<p>　<br />
+では、予約語である<code>TRUE</code>に対して同様のことをするとどうなるでしょう？</p>
+<pre class="r"><code>TRUE</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code>class(TRUE)     # 念の為に確認する</code></pre>
+<pre><code>## [1] &quot;logical&quot;</code></pre>
+<p>　<br />
+以下は実際にご自分のコンソールで実行してみてください。</p>
+<pre class="r"><code>TRUE &lt;- 1         # 代入してみる
+rm(T)         # 最後に掃除する</code></pre>
+<p>　</p>
+</div>
+<div id="変数" class="section level1">
+<h1>変数</h1>
+<p><a href="https://www.r-project.org/" target="_blank" title="The R Project">R <i class="fa fa-external-link"></i></a> の基本の項で簡単に触れましたが <a href="https://www.r-project.org/" target="_blank" title="The R Project">R <i class="fa fa-external-link"></i></a> で変数を扱うには変数の型宣言や変数定義は必要ありません。何らかの値を代入した時点で値に応じた型の変数が自動的に作成されます。変数名の大文字/小文字は自動的に区別されますが数字から始まる変数名は作成できません。</p>
+<pre class="r"><code>var_num &lt;- 100        # 実数型
+var_NUM &lt;- 7L         # 整数を明示的に指定したい場合は数字に`L`をつける
+VAR_num &lt;- 13.5       # &quot;135e-1&quot;としても同じ
+var_cmp &lt;- 1 + 2i     # 複素数も扱えます
+
+var_str &lt;- &quot;Strings&quot;  # 文字列
+var_STR &lt;- &quot;TRUE&quot;     # &quot;&quot;で囲っているのでこれも文字列
+
+var_bool &lt;- TRUE      # 予約語として扱われるので論理型 
+var_BOOL &lt;- TRUE      # 変数の大文字小文字は一文字でも異なれば異なる変数
+VAR_bool &lt;- FALSE     # 同上
+
+var_date &lt;- as.Date(&quot;2016/1/1&quot;)
+                      # 日付型も扱えます</code></pre>
+<p>　<br />
+　</p>
+<div id="データ型" class="section level2">
+<h2>データ型</h2>
+<p>前述のコードを見てもわかるように変数を作成した場合はエラーがない限り何も応答がありませんので、変数の型（変数に入っているデータの型）を知るための基本的な方法を覚えておいてください。 <a href="https://www.rstudio.com/products/RStudio/" target="_blank" title="RStudio">RStudio <i class="fa fa-external-link"></i></a> を利用してる場合は［Environment］パネルで参照する方法ですが、コマンドラインで確認するには<code>base::class</code>関数を利用します。先程作成した変数を確認してみましょう。</p>
+<pre class="r"><code>class(var_num)</code></pre>
+<pre><code>## [1] &quot;numeric&quot;</code></pre>
+<pre class="r"><code>class(var_NUM)</code></pre>
+<pre><code>## [1] &quot;integer&quot;</code></pre>
+<pre class="r"><code>class(VAR_num)</code></pre>
+<pre><code>## [1] &quot;numeric&quot;</code></pre>
+<pre class="r"><code>class(var_cmp)</code></pre>
+<pre><code>## [1] &quot;complex&quot;</code></pre>
+<pre class="r"><code>class(var_str)</code></pre>
+<pre><code>## [1] &quot;character&quot;</code></pre>
+<pre class="r"><code>class(var_STR)</code></pre>
+<pre><code>## [1] &quot;character&quot;</code></pre>
+<pre class="r"><code>class(var_bool)</code></pre>
+<pre><code>## [1] &quot;logical&quot;</code></pre>
+<pre class="r"><code>class(var_BOOL)</code></pre>
+<pre><code>## [1] &quot;logical&quot;</code></pre>
+<pre class="r"><code>class(VAR_bool)</code></pre>
+<pre><code>## [1] &quot;logical&quot;</code></pre>
+<pre class="r"><code>class(var_date)</code></pre>
+<pre><code>## [1] &quot;Date&quot;</code></pre>
+<p>　<br />
+表示されたものは型（クラス）名です。変数型との対応は以下の通りになります。数字を代入した場合は自動的に<code>numeric</code>クラスになりますので、明示的に整数<code>integer</code>として扱いたい場合は前述のように<code>nL</code>(n: 整数)と<code>L</code>を添えて代入するか後述の<code>base::as.intger</code>関数を用いてください。</p>
+<table>
+<thead>
+<tr class="header">
+<th>型</th>
+<th>クラス名</th>
+<th>備考</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>数値型</td>
+<td><code>numeric</code></td>
+<td>実数、整数、まとめて複素数型を数値型と言う場合もあります</td>
+</tr>
+<tr class="even">
+<td>実数型</td>
+<td><code>numeric</code></td>
+<td>倍精度実数</td>
+</tr>
+<tr class="odd">
+<td>整数型</td>
+<td><code>integer</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>複素数型</td>
+<td><code>complex</code></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>論理型</td>
+<td><code>logical</code></td>
+<td>Boolean型</td>
+</tr>
+<tr class="even">
+<td>文字型</td>
+<td><code>character</code></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>日付型</td>
+<td><code>Date</code></td>
+<td>POSIX型もあります</td>
+</tr>
+</tbody>
+</table>
+<p>　</p>
+</div>
+<div id="特殊な定数" class="section level2">
+<h2>特殊な定数</h2>
+<p><a href="https://www.r-project.org/" target="_blank" title="The R Project">R <i class="fa fa-external-link"></i></a> には予約語である<code>TRUE</code>や<code>FALSE</code>以外にも変数に代入できる特別な意味をもった定数があります。</p>
+<table>
+<thead>
+<tr class="header">
+<th>定数</th>
+<th>説明</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>NULL</code></td>
+<td>空 ＝ 何もない（何も存在しない）で、0(zero)や下記の<code>NA</code>とは異なります</td>
+</tr>
+<tr class="even">
+<td><code>NA</code></td>
+<td>欠損値（Not Available）。データの欠損（データが無いことを意味するデータです）</td>
+</tr>
+<tr class="odd">
+<td><code>NaN</code></td>
+<td>非数（Not a Number）。数値では表現できないもの例えば<code>log(-1)</code>とか<code>0/0</code>が該当します</td>
+</tr>
+<tr class="even">
+<td><code>Inf</code></td>
+<td>0(zero)除算時等は、<code>NaN</code>ではなく<code>Inf/-Inf</code>（無限大）になります</td>
+</tr>
+</tbody>
+</table>
+<p>上記の特殊な定数を変数に代入してみましょう。</p>
+<pre class="r"><code>var_null &lt;- NULL
+var_na &lt;- NA
+var_nan &lt;- NaN
+var_inf &lt;- Inf</code></pre>
+<p>　<br />
+作成した変数のクラスを確認してみます。</p>
+<pre class="r"><code>class(var_null)</code></pre>
+<pre><code>## [1] &quot;NULL&quot;</code></pre>
+<pre class="r"><code>class(var_na)</code></pre>
+<pre><code>## [1] &quot;logical&quot;</code></pre>
+<pre class="r"><code>class(var_nan)</code></pre>
+<pre><code>## [1] &quot;numeric&quot;</code></pre>
+<pre class="r"><code>class(var_inf)</code></pre>
+<pre><code>## [1] &quot;numeric&quot;</code></pre>
+<p>　<br />
+このように特殊な定数にも型（クラス）があることに留意しておいてください。<br />
+　</p>
+<div id="型を持ったna" class="section level3">
+<h3>型を持ったNA</h3>
+<p>欠損値を示す<code>NA</code>には明示的に型を示すためのバリエーションがあります。これらも全て予約語になっています。<br />
+　</p>
+<table>
+<thead>
+<tr class="header">
+<th>NA</th>
+<th>データ型</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>NA_integer_</td>
+<td>整数型</td>
+</tr>
+<tr class="even">
+<td>NA_real_</td>
+<td>実数型</td>
+</tr>
+<tr class="odd">
+<td>NA_complex_</td>
+<td>複素数型</td>
+</tr>
+<tr class="even">
+<td>NA_character_</td>
+<td>文字型</td>
+</tr>
+</tbody>
+</table>
+<p>　</p>
+</div>
+</div>
+</div>
+<div id="VarType" class="section level1">
+<h1>変数型（変数の構造）</h1>
+<p><a href="https://www.r-project.org/" target="_blank" title="The R Project">R <i class="fa fa-external-link"></i></a> は前述のような単純な変数（いわゆるスカラー型）だけでなく様々な構造をもった変数が扱えます。厳密にいえば <a href="https://www.r-project.org/" target="_blank" title="The R Project">R <i class="fa fa-external-link"></i></a> ではいわゆるスカラー型の変数はなく、複数の値を入れられるベクトル型の変数が基本となります。今までの実行結果の頭に<code>[1]</code>というような表示があるのは変数に入っている値の数を示すためのインデックスです。いわゆるスカラー型はデータの個数が一つのベクトル型です。 <a href="https://www.r-project.org/" target="_blank" title="The R Project">R <i class="fa fa-external-link"></i></a> で扱える基本的な変数型は以下の通りです。</p>
+<table>
+<thead>
+<tr class="header">
+<th>変数の型</th>
+<th>説明</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>ベクトル型</td>
+<td>一つのデータ型を任意の個数扱える変数</td>
+</tr>
+<tr class="even">
+<td>マトリクス型（行列型）</td>
+<td>ベクトル型の一形態（特殊なベクトル型ともいえます）</td>
+</tr>
+<tr class="odd">
+<td>アレイ型（配列型）</td>
+<td>同上</td>
+</tr>
+<tr class="even">
+<td>データフレーム型</td>
+<td>データ型の異なるデータ数が同じ複数のベクトルを扱える変数</td>
+</tr>
+<tr class="odd">
+<td>リスト型</td>
+<td>データ型が異なりデータ数も異なる複数のベクトルを扱える変数</td>
+</tr>
+</tbody>
+</table>
+<p>　</p>
+<div id="ベクトル型" class="section level2">
+<h2>ベクトル型</h2>
+<p>ベクトル型は最も基本となる変数型（変数の構造）です。ベクトル型変数を作成するには<code>base::c</code>関数を利用します。</p>
+<pre class="r"><code>vec_num &lt;- c(1:10)                # 連続した整数（1～10）として扱われます
+vec_NUM &lt;- c(1, 2, 3)             # c(1:3)とはことなり実数値とした扱われます
+vec_cmp &lt;- c(1 + 0i, 2 + 3i, 3 + 5i)
+                              # 複素数型
+
+
+vec_str &lt;- c(&quot;TRUE&quot;, &quot;FALSE&quot;, &quot;VOID&quot;)
+                              # &quot;&quot;で囲んでいるので文字列
+
+vec_bool &lt;- c(TRUE, FALSE)      # 予約語として扱われる
+vec_BOOL &lt;- c(TRUE, FALSE, TRUE)</code></pre>
+<p>　<br />
+作成した変数の変数型と変数の値を確認してみましょう。同時に確認するには<code>base::class</code>関数ではなく<code>base::str</code>関数を使います。</p>
+<pre class="r"><code>str(vec_num)</code></pre>
+<pre><code>##  int [1:10] 1 2 3 4 5 6 7 8 9 10</code></pre>
+<pre class="r"><code>str(vec_NUM)</code></pre>
+<pre><code>##  num [1:3] 1 2 3</code></pre>
+<pre class="r"><code>str(vec_cmp)</code></pre>
+<pre><code>##  cplx [1:3] 1+0i 2+3i 3+5i</code></pre>
+<pre class="r"><code>str(vec_str)</code></pre>
+<pre><code>##  chr [1:3] &quot;TRUE&quot; &quot;FALSE&quot; &quot;VOID&quot;</code></pre>
+<pre class="r"><code>str(vec_bool)</code></pre>
+<pre><code>##  logi [1:2] TRUE FALSE</code></pre>
+<pre class="r"><code>str(vec_BOOL)</code></pre>
+<pre><code>##  logi [1:3] TRUE FALSE TRUE</code></pre>
+<p>　<br />
+ベクトル型変数は単一のデータ型しか格納できない点に注意してください。データ型の異なる値を代入した場合は後述の<a href="#ForcedConversion">強制型変換</a>が行われます。 　</p>
+</div>
+<div id="マトリクス型" class="section level2">
+<h2>マトリクス型</h2>
+<p>マトリクス型は二次元配列のベクトル型変数と言えます。作成するには<code>base::matrix</code>関数を利用します。関数によってはベクトル型でなくマトリクス型の変数を引数にする必要がある場合がありますので、覚えておいてください。</p>
+<pre class="r"><code>mat_num &lt;- matrix(c(10, 20, 30, 40, 50, 60), 2, 3)
+mat_num</code></pre>
+<pre><code>##      [,1] [,2] [,3]
+## [1,]   10   30   50
+## [2,]   20   40   60</code></pre>
+<pre class="r"><code>mat_str &lt;- matrix(c(&quot;a&quot;, &quot;b&quot;, &quot;x&quot;, &quot;y&quot;), 2, 2)
+mat_str</code></pre>
+<pre><code>##      [,1] [,2]
+## [1,] &quot;a&quot;  &quot;x&quot; 
+## [2,] &quot;b&quot;  &quot;y&quot;</code></pre>
+<p>　</p>
+</div>
+<div id="アレイ型" class="section level2">
+<h2>アレイ型</h2>
+<p>アレイ型は多次元配列を扱える変数です。作成するには<code>base::array</code>関数を利用します。</p>
+<pre class="r"><code># アレイ型
+ary_num &lt;- array(c(1:12), c(2, 3, 2))
+ary_num</code></pre>
+<pre><code>## , , 1
+## 
+##      [,1] [,2] [,3]
+## [1,]    1    3    5
+## [2,]    2    4    6
+## 
+## , , 2
+## 
+##      [,1] [,2] [,3]
+## [1,]    7    9   11
+## [2,]    8   10   12</code></pre>
+<p>　</p>
+</div>
+<div id="データフレーム型" class="section level2">
+<h2>データフレーム型</h2>
+<p>データフレーム型は <a href="https://www.r-project.org/" target="_blank" title="The R Project">R <i class="fa fa-external-link"></i></a> の特徴でもありベクトル型と並んで最も重要な変数型です。データフレーム型ではデータ数の同じ異なるデータ型のベクトル変数を複数まとめて格納できる変数型です。イメージとししてはスプレッドシートを用いたデータテーブルのようなものです。<br />
+データフレーム型を作成するには<code>base::data.frame</code>関数を用います。デフォルトでは文字型変数は後述の<a href="#Factor">因子型(Factor)</a>として扱われます。</p>
+<pre class="r"><code>dataset &lt;- data.frame(vec_NUM, vec_str, vec_BOOL, vec_cmp)
+dataset</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["vec_NUM"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["vec_str"],"name":[2],"type":["fctr"],"align":["left"]},{"label":["vec_BOOL"],"name":[3],"type":["lgl"],"align":["right"]},{"label":["vec_cmp"],"name":[4],"type":["cplx"],"align":["right"]}],"data":[{"1":"1","2":"TRUE","3":"TRUE","4":"1+0i"},{"1":"2","2":"FALSE","3":"FALSE","4":"2+3i"},{"1":"3","2":"VOID","3":"TRUE","4":"3+5i"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>数の異なるデータからデータフレーム型を作るとどうなるでしょう？実際にご自分のコンソールで実行してみてください。</p>
+<pre class="r"><code>data_set &lt;- data.frame(vec_num, vec_str, vec_bool) </code></pre>
+<p>　</p>
+</div>
+<div id="リスト型" class="section level2">
+<h2>リスト型</h2>
+<p>リスト型はデータフレーム型と異なりデータ数の異なるデータ型の変数を複数まとめて格納できる変数型です。格納できる変数型（構造）はベクトル型に限らずマトリクス型やデータフレーム型、またリスト型自身も格納可能な柔軟は変数型です。関数の返り値としてよく使われますので多少厄介ではありますがリスト型変数内のデータの参照方法だけでも覚えておきましょう。</p>
+<pre class="r"><code>lst_num &lt;- list(c(1:10), c(0.5:5.5), seq(1, 4, 0.2))
+lst_num</code></pre>
+<pre><code>## [[1]]
+##  [1]  1  2  3  4  5  6  7  8  9 10
+## 
+## [[2]]
+## [1] 0.5 1.5 2.5 3.5 4.5 5.5
+## 
+## [[3]]
+##  [1] 1.0 1.2 1.4 1.6 1.8 2.0 2.2 2.4 2.6 2.8 3.0 3.2 3.4 3.6 3.8 4.0</code></pre>
+<pre class="r"><code>lst_mix &lt;- list(c(1:10), c(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;), c(TRUE, FALSE))
+lst_mix</code></pre>
+<pre><code>## [[1]]
+##  [1]  1  2  3  4  5  6  7  8  9 10
+## 
+## [[2]]
+## [1] &quot;a&quot; &quot;b&quot; &quot;c&quot;
+## 
+## [[3]]
+## [1]  TRUE FALSE</code></pre>
+<p>　</p>
+</div>
+<div id="Factor" class="section level2">
+<h2>因子型</h2>
+<p>因子型は”型”と書いていますが、変数型ではなく特殊な変数の構造です。因子型も<a href="https://www.r-project.org/" target="_blank" title="The R Project">R</a>の特徴の一つでデータを層別する場合に有用であり、用途に応じた「順序あり」と「順序なし」の二種類の因子型があります。</p>
+<table>
+<thead>
+<tr class="header">
+<th>因子型の種類</th>
+<th>作成に利用する関数</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>順序なし因子</td>
+<td><code>base::factor</code></td>
+</tr>
+<tr class="even">
+<td>順序あり因子</td>
+<td><code>base::ordered</code></td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>var_fac &lt;- factor(&quot;Food&quot;)
+var_FAC &lt;- factor(10)
+
+vec_fac &lt;- factor(c(&quot;Fruit&quot;, &quot;Vegetable&quot;, &quot;Fruit&quot;))
+vec_FAC &lt;- factor(c(1:5))</code></pre>
+<p>作成した因子型の変数を確認してみましょう。　</p>
+<pre class="r"><code>str(var_fac)</code></pre>
+<pre><code>##  Factor w/ 1 level &quot;Food&quot;: 1</code></pre>
+<pre class="r"><code>str(var_FAC)</code></pre>
+<pre><code>##  Factor w/ 1 level &quot;10&quot;: 1</code></pre>
+<pre class="r"><code>str(vec_fac)</code></pre>
+<pre><code>##  Factor w/ 2 levels &quot;Fruit&quot;,&quot;Vegetable&quot;: 1 2 1</code></pre>
+<pre class="r"><code>str(vec_FAC)</code></pre>
+<pre><code>##  Factor w/ 5 levels &quot;1&quot;,&quot;2&quot;,&quot;3&quot;,&quot;4&quot;,..: 1 2 3 4 5</code></pre>
+<p>このように同じ値は同じ因子とみなされていることが分かります。既に作成されている変数を因子型にすることも可能です。</p>
+<pre class="r"><code>VEC_fac &lt;- factor(vec_str)
+VEC_fac</code></pre>
+<pre><code>## [1] TRUE  FALSE VOID 
+## Levels: FALSE TRUE VOID</code></pre>
+<pre class="r"><code>vec_ord &lt;- ordered(vec_str)
+vec_ord</code></pre>
+<pre><code>## [1] TRUE  FALSE VOID 
+## Levels: FALSE &lt; TRUE &lt; VOID</code></pre>
+<pre class="r"><code>vec_ORD &lt;- factor(vec_num, ordered = TRUE)
+vec_ORD</code></pre>
+<pre><code>##  [1] 1  2  3  4  5  6  7  8  9  10
+## Levels: 1 &lt; 2 &lt; 3 &lt; 4 &lt; 5 &lt; 6 &lt; 7 &lt; 8 &lt; 9 &lt; 10</code></pre>
+<p>　</p>
+</div>
+<div id="ForcedConversion" class="section level2">
+<h2>強制型変換</h2>
+<p>さて、今までは変数を作成する際に常に同じデータ型のデータを指定してきましたが、データ型が混在するような変数を作成した場合どのようになるのでしょうか？まず、整数と実数が混在した場合の例を見てみます。データ型を確認するには<code>base::typeof</code>関数を使用します。</p>
+<pre class="r"><code>vec_test_0 &lt;- c(1L, 2L, 3L, 4L, 5L)
+typeof(vec_test_0)</code></pre>
+<pre><code>## [1] &quot;integer&quot;</code></pre>
+<pre class="r"><code>vec_test_1 &lt;- c(1,  2L, 3.5, 4, 5L)
+typeof(vec_test_1)</code></pre>
+<pre><code>## [1] &quot;double&quot;</code></pre>
+<p>このように整数と実数が混在した場合は実数型として扱われます。次に実数と複素数が混在した場合はどのようになるのでしょうか？</p>
+<pre class="r"><code>vec_test_2 &lt;- c(1, 2 + 1i, 3, 4 + 3i)
+typeof(vec_test_2)</code></pre>
+<pre><code>## [1] &quot;complex&quot;</code></pre>
+<p>整数と実数の混在のケースから容易に想像ができたとは思いますが、複素数型として扱われます。このように <a href="https://www.r-project.org/" target="_blank" title="The R Project">R <i class="fa fa-external-link"></i></a> では変数を最適なデータ型に変換してくれます。これはベクトル型の変数では常に一つのデータ型しか保持できませんので強制的に型を変換することで一つの型とします。これを強制型変換といいます。</p>
+<p>では、以下のような場合はどうなるでしょう。実際にやってみましょう。</p>
+<pre class="r"><code>vec_test_3 &lt;- c(1L, TRUE, 0L, FALSE)
+typeof(vec_test_3)
+
+vec_test_4 &lt;- c(&quot;String&quot;, 1L, TRUE, 0)
+typeof(vec_test_4)</code></pre>
+<p>強制型変換は下表のように左から右の優先順位で（柔軟性の高い方へ）型変換されます。</p>
+<table>
+<thead>
+<tr class="header">
+<th>low</th>
+<th></th>
+<th></th>
+<th></th>
+<th>high</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>logical</code></td>
+<td><code>integer</code></td>
+<td><code>double</code></td>
+<td><code>complex</code></td>
+<td><code>character</code></td>
+</tr>
+</tbody>
+</table>
+<p>　</p>
+<div id="特殊な定数の型変換" class="section level3">
+<h3>特殊な定数の型変換</h3>
+<p>さて、特殊な定数である<code>NULL</code>、<code>NA</code>、<code>NaN</code>、<code>Inf</code>が強制型変換されるとどうなるのでしょう？</p>
+<pre class="r"><code>typeof(NULL)</code></pre>
+<pre><code>## [1] &quot;NULL&quot;</code></pre>
+<pre class="r"><code>typeof(NA)</code></pre>
+<pre><code>## [1] &quot;logical&quot;</code></pre>
+<pre class="r"><code>typeof(NaN)</code></pre>
+<pre><code>## [1] &quot;double&quot;</code></pre>
+<pre class="r"><code>typeof(Inf)</code></pre>
+<pre><code>## [1] &quot;double&quot;</code></pre>
+<p>　<br />
+<code>NULL</code>は文字通りNULLですからデータとして存在しませんので<code>NULL</code>自体の型変換は行われません。</p>
+<pre class="r"><code>vec_test_5 &lt;- c(1L, 2, 3 + 4i, NULL, &quot;5&quot;)
+typeof(vec_test_5)</code></pre>
+<pre><code>## [1] &quot;character&quot;</code></pre>
+<pre class="r"><code>vec_test_5</code></pre>
+<pre><code>## [1] &quot;1&quot;    &quot;2&quot;    &quot;3+4i&quot; &quot;5&quot;</code></pre>
+<p>　<br />
+一方、<code>NA</code>, <code>NaN</code>, <code>Inf</code>は上記の通りデータ型を持っていますので型変換が行われます。</p>
+<pre class="r"><code>vec_test_6 &lt;- c(1L, 2, 3 + 4i, NULL, NaN, NA, Inf)
+typeof(vec_test_6)</code></pre>
+<pre><code>## [1] &quot;complex&quot;</code></pre>
+<pre class="r"><code>vec_test_6</code></pre>
+<pre><code>## [1]   1+0i   2+0i   3+4i NaN+0i     NA Inf+0i</code></pre>
+<p>　<br />
+なぜ、このような事になるかはこちらの<a href="http://blog.hoxo-m.com/2017/04/24/hoxom01_vector_type_coerce/" target="_blank" title="R の強制型変換と NA の取り扱い">参考資料 <i class="fa fa-external-link"></i></a>にてご確認ください。 　</p>
+</div>
+</div>
+</div>
+<div id="データの扱い方" class="section level1">
+<h1>データの扱い方</h1>
+<p>変数に代入したデータを参照する方法は変数型により多少ことなります。ベクトル型やマトリクス型では変数内の任意のデータを参照する場合、<code>[]</code>や<code>$</code>という演算子の一種であるアクセス演算子を用います。では、<a href="#VarType">変数型</a>で作成した変数を使って具体的に確認してみましょう。 　</p>
+<div id="ベクトル型変数" class="section level2">
+<h2>ベクトル型変数</h2>
+<p>ベクトル型、マトリクス型、アレイ型変数内のデータを参照する場合<code>[]</code>を利用します。</p>
+<pre class="r"><code>vec_str</code></pre>
+<pre><code>## [1] &quot;TRUE&quot;  &quot;FALSE&quot; &quot;VOID&quot;</code></pre>
+<pre class="r"><code>vec_str[3]</code></pre>
+<pre><code>## [1] &quot;VOID&quot;</code></pre>
+<pre class="r"><code>mat_num</code></pre>
+<pre><code>##      [,1] [,2] [,3]
+## [1,]   10   30   50
+## [2,]   20   40   60</code></pre>
+<pre class="r"><code>mat_num[3]</code></pre>
+<pre><code>## [1] 30</code></pre>
+<pre class="r"><code>mat_num[1, ]</code></pre>
+<pre><code>## [1] 10 30 50</code></pre>
+<pre class="r"><code>mat_num[, 2]</code></pre>
+<pre><code>## [1] 30 40</code></pre>
+<pre class="r"><code>mat_num[2, 3]</code></pre>
+<pre><code>## [1] 60</code></pre>
+<p><code>[n]</code>と指定した場合<code>n</code>番目のデータを参照し、<code>[n, ]</code>と指定場合<code>n</code>行のデータを参照し、<code>[, n]</code>と指定した場合<code>n</code>列のデータを参照します。アレイ型の場合は多次元配列ですので指定する数値が多くなる点に注意してください。</p>
+<pre class="r"><code>ary_num</code></pre>
+<pre><code>## , , 1
+## 
+##      [,1] [,2] [,3]
+## [1,]    1    3    5
+## [2,]    2    4    6
+## 
+## , , 2
+## 
+##      [,1] [,2] [,3]
+## [1,]    7    9   11
+## [2,]    8   10   12</code></pre>
+<pre class="r"><code>ary_num[8]</code></pre>
+<pre><code>## [1] 8</code></pre>
+<pre class="r"><code>ary_num[, , 2]</code></pre>
+<pre><code>##      [,1] [,2] [,3]
+## [1,]    7    9   11
+## [2,]    8   10   12</code></pre>
+<pre class="r"><code>ary_num[1, , 2]</code></pre>
+<pre><code>## [1]  7  9 11</code></pre>
+<pre class="r"><code>ary_num[, 3, 2]</code></pre>
+<pre><code>## [1] 11 12</code></pre>
+<p>　</p>
+</div>
+<div id="データフレーム型変数" class="section level2">
+<h2>データフレーム型変数</h2>
+<p>データフレーム型変数内のベクトル型変数を参照する場合は<code>$</code>を用います。更に参照したベクトル型変数内のデータを参照する場合には前述の<code>[]</code>を利用します。</p>
+<pre class="r"><code>dataset</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["vec_NUM"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["vec_str"],"name":[2],"type":["fctr"],"align":["left"]},{"label":["vec_BOOL"],"name":[3],"type":["lgl"],"align":["right"]},{"label":["vec_cmp"],"name":[4],"type":["cplx"],"align":["right"]}],"data":[{"1":"1","2":"TRUE","3":"TRUE","4":"1+0i"},{"1":"2","2":"FALSE","3":"FALSE","4":"2+3i"},{"1":"3","2":"VOID","3":"TRUE","4":"3+5i"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<pre class="r"><code>dataset$vec_NUM</code></pre>
+<pre><code>## [1] 1 2 3</code></pre>
+<pre class="r"><code>dataset$vec_str[3]</code></pre>
+<pre><code>## [1] VOID
+## Levels: FALSE TRUE VOID</code></pre>
+<p>　</p>
+</div>
+<div id="リスト型変数" class="section level2">
+<h2>リスト型変数</h2>
+<p>リスト型変数を参照する場合は<code>[[]]</code>を用います。<code>names</code>属性がある場合はデータフレーム型と同様に<code>$</code>を用いることが可能です。</p>
+<pre class="r"><code>lst_mix</code></pre>
+<pre><code>## [[1]]
+##  [1]  1  2  3  4  5  6  7  8  9 10
+## 
+## [[2]]
+## [1] &quot;a&quot; &quot;b&quot; &quot;c&quot;
+## 
+## [[3]]
+## [1]  TRUE FALSE</code></pre>
+<pre class="r"><code>lst_mix[[2]]</code></pre>
+<pre><code>## [1] &quot;a&quot; &quot;b&quot; &quot;c&quot;</code></pre>
+<pre class="r"><code>lst_mix[[2]][2]</code></pre>
+<pre><code>## [1] &quot;b&quot;</code></pre>
+<p>　</p>
+</div>
+</div>
+<div id="変数の扱い方" class="section level1">
+<h1>変数の扱い方</h1>
+<p><a href="https://www.r-project.org/" target="_blank" title="The R Project">R <i class="fa fa-external-link"></i></a> の変数で最も注意すべき点は、再代入により変数のデータ型は書き換えられてしまう場合があることです。例えば最初に整数型の変数として作成した<code>vec_num</code>ですが、以下のような代入を行うとデータ型が変わってしまうことがわかります。</p>
+<pre class="r"><code>str(vec_num)</code></pre>
+<pre><code>##  int [1:10] 1 2 3 4 5 6 7 8 9 10</code></pre>
+<pre class="r"><code>vec_num &lt;- c(&quot;char&quot;)
+str(vec_num)</code></pre>
+<pre><code>##  chr &quot;char&quot;</code></pre>
+<p>　</p>
+<div id="変数型を確認する" class="section level2">
+<h2>変数型を確認する</h2>
+<p>前述のようなことを避けるには<code>base::is.*</code>関数を用いることでデータ型の検査（確認）をすることができます。</p>
+<pre class="r"><code>is.numeric(vec_num)</code></pre>
+<pre><code>## [1] FALSE</code></pre>
+<pre class="r"><code>vec_num &lt;- c(1:10)
+is.numeric(vec_num)</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code>is.integer(vec_num)</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<p>　</p>
+<table>
+<thead>
+<tr class="header">
+<th>論理型</th>
+<th>整数型</th>
+<th>実数型</th>
+<th>数値型</th>
+<th>複素数型</th>
+<th>文字型</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>is.logical</code></td>
+<td><code>is.integer</code></td>
+<td><code>is.double</code></td>
+<td><code>is.numeric</code></td>
+<td><code>is.complex</code></td>
+<td><code>is.character</code></td>
+</tr>
+</tbody>
+</table>
+<p><code>base::is.numeric</code>関数は数値か否かを検査するので整数型に対しても<code>TRUE</code>を返すことに注意してください。<br />
+また、データ型だけでなく変数型も変更してしまうことができますので変数型を検査する場合も<code>base::is.*</code>関数を利用してください。</p>
+<table>
+<thead>
+<tr class="header">
+<th>ベクトル型</th>
+<th>マトリクス型</th>
+<th>アレイ型</th>
+<th>リスト型</th>
+<th>データフレーム型</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>is.vector</code></td>
+<td><code>is.matrix</code></td>
+<td><code>is.array</code></td>
+<td><code>is.list</code></td>
+<td><code>is.data.frame</code></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr class="header">
+<th>因子型</th>
+<th>順序あり因子型</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>is.factor</code></td>
+<td><code>is.ordered</code></td>
+</tr>
+</tbody>
+</table>
+<p>　</p>
+<div id="参考定数を確認する" class="section level3">
+<h3>参考）定数を確認する</h3>
+<p>特殊な定数に対する検査を行う関数も用意されています。</p>
+<table>
+<thead>
+<tr class="header">
+<th>NULL</th>
+<th>欠損値</th>
+<th>非数</th>
+<th>有限</th>
+<th>無限</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>id.null</code></td>
+<td><code>is.na</code></td>
+<td><code>is.nan</code></td>
+<td><code>is.finit</code></td>
+<td><code>is.infinit</code></td>
+</tr>
+</tbody>
+</table>
+<p>　</p>
+</div>
+</div>
+</div>
+<div id="演算子" class="section level1">
+<h1>演算子</h1>
+<p><a href="https://www.r-project.org/" target="_blank" title="The R Project">R <i class="fa fa-external-link"></i></a> の特徴はなんと行ってもベクトル演算が行えることです。これによりループ文を用いて面倒な演算処理を記述することなくベクトル型変数の演算が可能です。</p>
+<div id="単項演算子" class="section level2">
+<h2>単項演算子</h2>
+<p>単項演算子は文字通り1つの対象（オブジェクト）に作用する演算子です。 <a href="https://www.r-project.org/" target="_blank" title="The R Project">R <i class="fa fa-external-link"></i></a> における単項演算子は<code>-</code>（マイナス）ならびに<code>!</code>（否定, NOT）があります。</p>
+<pre class="r"><code>VAR_num</code></pre>
+<pre><code>## [1] 13.5</code></pre>
+<pre class="r"><code>-VAR_num</code></pre>
+<pre><code>## [1] -13.5</code></pre>
+<pre class="r"><code>!TRUE</code></pre>
+<pre><code>## [1] FALSE</code></pre>
+<p>　</p>
+</div>
+<div id="算術演算子" class="section level2">
+<h2>算術演算子</h2>
+<p>算術演算子（二項演算子）は演算の基本中の基本とも言える四則演算である加算、減算、乗算、除算、ならびに、べき算（べき乗）、整数除算（商、剰余）の六つの演算子です。では実際に演算を行ってみましょう。</p>
+<pre class="r"><code>a &lt;- c(1:10)
+b &lt;- c(10:1)
+a</code></pre>
+<pre><code>##  [1]  1  2  3  4  5  6  7  8  9 10</code></pre>
+<pre class="r"><code>b</code></pre>
+<pre><code>##  [1] 10  9  8  7  6  5  4  3  2  1</code></pre>
+<pre class="r"><code>a + b</code></pre>
+<pre><code>##  [1] 11 11 11 11 11 11 11 11 11 11</code></pre>
+<pre class="r"><code>a - b</code></pre>
+<pre><code>##  [1] -9 -7 -5 -3 -1  1  3  5  7  9</code></pre>
+<pre class="r"><code>a * b</code></pre>
+<pre><code>##  [1] 10 18 24 28 30 30 28 24 18 10</code></pre>
+<pre class="r"><code>a / b</code></pre>
+<pre><code>##  [1]  0.1000000  0.2222222  0.3750000  0.5714286  0.8333333  1.2000000
+##  [7]  1.7500000  2.6666667  4.5000000 10.0000000</code></pre>
+<pre class="r"><code>a ^ b</code></pre>
+<pre><code>##  [1]     1   512  6561 16384 15625  7776  2401   512    81    10</code></pre>
+<pre class="r"><code>a %/% b</code></pre>
+<pre><code>##  [1]  0  0  0  0  0  1  1  2  4 10</code></pre>
+<pre class="r"><code>a %% b</code></pre>
+<pre><code>##  [1] 1 2 3 4 5 1 3 2 1 0</code></pre>
+<p>　</p>
+</div>
+<div id="比較演算子" class="section level2">
+<h2>比較演算子</h2>
+<p>比較演算子は関係演算子とも呼ばれる2つの対象（オブジェクト）の関係を調べる演算子で、同値関係を調べる等号記号や順序関係を調べる不等号などがこれにあたります。返り値は論理型となります。</p>
+<table>
+<thead>
+<tr class="header">
+<th>大なり</th>
+<th>小なり</th>
+<th>以上</th>
+<th>以下</th>
+<th>等しい</th>
+<th>等しくない</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>&lt;</code></td>
+<td><code>&gt;</code></td>
+<td><code>&lt;=</code></td>
+<td><code>&gt;=</code></td>
+<td><code>==</code></td>
+<td><code>!=</code></td>
+</tr>
+</tbody>
+</table>
+<p>算術演算子と同様にベクトル型変数に適用可能です。</p>
+<pre class="r"><code>a</code></pre>
+<pre><code>##  [1]  1  2  3  4  5  6  7  8  9 10</code></pre>
+<pre class="r"><code>b</code></pre>
+<pre><code>##  [1] 10  9  8  7  6  5  4  3  2  1</code></pre>
+<pre class="r"><code>a &lt; b</code></pre>
+<pre><code>##  [1]  TRUE  TRUE  TRUE  TRUE  TRUE FALSE FALSE FALSE FALSE FALSE</code></pre>
+<pre class="r"><code>a &gt; b</code></pre>
+<pre><code>##  [1] FALSE FALSE FALSE FALSE FALSE  TRUE  TRUE  TRUE  TRUE  TRUE</code></pre>
+<pre class="r"><code>a == b</code></pre>
+<pre><code>##  [1] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE</code></pre>
+<pre class="r"><code>a != b</code></pre>
+<pre><code>##  [1] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE</code></pre>
+<p>　</p>
+</div>
+<div id="論理演算子" class="section level2">
+<h2>論理演算子</h2>
+<p>論理演算子は2つの対象（オブジェクト）のブール関数を評価するものです。論理和(AND)・論理積(OR)はベクトルを対象とするか否かで演算子が異なりますので注意してください。</p>
+<table>
+<thead>
+<tr class="header">
+<th>AND</th>
+<th>OR</th>
+<th>ベクトルAND</th>
+<th>ベクトルOR</th>
+<th>XOR</th>
+<th>NOT</th>
+<th>TRUEか否か</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>&amp;&amp;</code></td>
+<td><code>||</code></td>
+<td><code>&amp;</code></td>
+<td><code>|</code></td>
+<td><code>xor</code></td>
+<td><code>!</code></td>
+<td><code>isTRUE</code></td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>y &lt;- c(TRUE, FALSE, TRUE, FALSE)
+z &lt;- c(TRUE, TRUE, FALSE, FALSE)
+y &amp;&amp; z</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code>y &amp; z</code></pre>
+<pre><code>## [1]  TRUE FALSE FALSE FALSE</code></pre>
+<pre class="r"><code>y || z</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code>y | z</code></pre>
+<pre><code>## [1]  TRUE  TRUE  TRUE FALSE</code></pre>
+<pre class="r"><code>xor(y, z)</code></pre>
+<pre><code>## [1] FALSE  TRUE  TRUE FALSE</code></pre>
+<pre class="r"><code>!y</code></pre>
+<pre><code>## [1] FALSE  TRUE FALSE  TRUE</code></pre>
+<p>　<br />
+<code>TRUE</code>か否かは<code>base::isTRUE</code>関数でも確認できます。<code>FALSE</code>か否かを確認する関数はありませんので、否定演算子<code>!</code>と組み合わせてください。</p>
+<pre class="r"><code>isTRUE(TRUE)</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code>!isTRUE(FALSE)</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<p>ただし、<code>base::isTRUE</code>関数は以下の条件を満たす時のみ正しい値を返すことに注意してください。</p>
+<ul>
+<li>変数の長さが1であること</li>
+<li>変数の長さが1を超えている場合は全てTRUEであること</li>
+<li>変数に<code>names</code>等の属性が付加されていないこと</li>
+</ul>
+<p>ベクトルの個々の値に対して<code>base:isTRUE</code>を適用したい場合は<code>base::sapply</code>関数を用います。</p>
+<pre class="r"><code>y</code></pre>
+<pre><code>## [1]  TRUE FALSE  TRUE FALSE</code></pre>
+<pre class="r"><code>sapply(y, isTRUE)</code></pre>
+<pre><code>## [1]  TRUE FALSE  TRUE FALSE</code></pre>
+<p>　</p>
+</div>
+<div id="特殊演算子" class="section level2">
+<h2>特殊演算子</h2>
+<p>特殊演算子は<code>%</code>文字と<code>%</code>文字で挟まれた演算子です。前述の整数除算（商、剰余）厳密にいえば特殊演算子になりますが本資料では算術演算子として記載しています。なお、 <a href="https://www.r-project.org/" target="_blank" title="The R Project">R <i class="fa fa-external-link"></i></a> の特殊演算子は任意の演算子を定義することができますのでパッケージによっては特殊演算子を用意している場合もあります。なお、 <a href="https://www.r-project.org/" target="_blank" title="The R Project">R <i class="fa fa-external-link"></i></a> の基本パッケージで用意されている特殊演算子には以下のようなものがあります。</p>
+<table>
+<thead>
+<tr class="header">
+<th>特殊演算子</th>
+<th>演算内容</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>%*%</code></td>
+<td>内積（スカラー積）</td>
+</tr>
+<tr class="even">
+<td><code>%in%</code></td>
+<td>マッチング</td>
+</tr>
+<tr class="odd">
+<td><code>%o%</code></td>
+<td>外積（ベクトル積）</td>
+</tr>
+<tr class="even">
+<td><code>%x%</code></td>
+<td>クロネッカー積</td>
+</tr>
+</tbody>
+</table>
+<p>　</p>
+</div>
+<div id="演算子の優先順位" class="section level2">
+<h2>演算子の優先順位</h2>
+<p>演算子の優先順位は下表の通りとなります。優先順位を変えたい場合は<code>()</code>を利用して明示的に指定をしてください。下記以外はヘルプで<code>Syntax</code>と検索すると確認できます。</p>
+<table>
+<thead>
+<tr class="header">
+<th>演算子</th>
+<th>説明</th>
+<th>順位</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>$</code></td>
+<td>要素へのアクセス（データフレーム型、リスト型）</td>
+<td>高</td>
+</tr>
+<tr class="even">
+<td><code>[]</code>, <code>[[]]</code></td>
+<td>要素へのアクセス（ベクトル型、マトリクス型、アレイ型、リスト型）</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>^</code></td>
+<td>べき乗</td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>-</code></td>
+<td>マイナス（単項演算子）</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>:</code></td>
+<td>等差数列（c(1:10）のような数列）</td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>%%</code></td>
+<td>特殊演算子（二項演算子）</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>*</code>, <code>/</code></td>
+<td>乗算、除算（二項演算子）</td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>+</code>, <code>-</code></td>
+<td>加算、減算（二項演算子）</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code></td>
+<td>比較演算子（順序関係）</td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>==</code>, <code>!=</code></td>
+<td>比較演算子（同値関係）</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>!</code></td>
+<td>否定（論理演算子）</td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>&amp;</code>, <code>|</code>, <code>&amp;&amp;</code>, <code>||</code></td>
+<td>論理積、論理和（論理演算子）</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>&lt;&lt;-</code></td>
+<td>永続代入（グローバル変数への代入）</td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>&lt;-</code></td>
+<td>代入</td>
+<td>低</td>
+</tr>
+</tbody>
+</table>
+<p>　</p>
+</div>
+</div>
+<div id="条件分岐と繰り返し" class="section level1">
+<h1>条件分岐と繰り返し</h1>
+<p><a href="https://www.r-project.org/" target="_blank" title="The R Project">R <i class="fa fa-external-link"></i></a> における条件分岐（制御文）と繰り返し（ループ文）基本的に他の言語と同様で予約語になっています。 　</p>
+<div id="条件分岐" class="section level2">
+<h2>条件分岐</h2>
+<p><a href="https://www.r-project.org/" target="_blank" title="The R Project">R <i class="fa fa-external-link"></i></a> の基本的な条件分岐は以下の3つがあります。</p>
+<table>
+<thead>
+<tr class="header">
+<th>文・関数</th>
+<th>説明</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>if else</code></td>
+<td>基本的な条件分岐処理</td>
+</tr>
+<tr class="even">
+<td><code>switch</code></td>
+<td>条件が多数に分岐する場合に便利な条件分岐処理</td>
+</tr>
+<tr class="odd">
+<td><code>base::ifelse</code></td>
+<td>ExcelのIF関数に似た条件分岐処理でベクトル化された引数が扱える</td>
+</tr>
+</tbody>
+</table>
+<p>　</p>
+<div id="if-else" class="section level3">
+<h3>if, else</h3>
+<p><code>if</code>文と<code>else</code>文は最も基本的な条件分岐です。評価式には論理演算子または論理型変数を用います。コーディングスタイルとして以下のどちらも可能ですが、後者のスタイルの方を推奨します。</p>
+<pre class="r"><code>if (var_bool != TRUE) print(&quot;TRUE&quot;) else print(&quot;FALSE&quot;)</code></pre>
+<pre><code>## [1] &quot;FALSE&quot;</code></pre>
+<pre class="r"><code>if (var_bool == TRUE) {
+  print(&quot;TRUE&quot;)
+} else {
+  print(&quot;FALSE&quot;)
+}</code></pre>
+<pre><code>## [1] &quot;TRUE&quot;</code></pre>
+<p><code>if</code>文は入れ子にしても<code>else if</code>文として組み合わせて使うことも可能ですが、評価式は必ず<code>TRUE</code>か<code>FALSE</code>が単一で返るようにしなければなりません。</p>
+<pre class="r"><code>if (is.logical(var_bool)) {
+  print(&quot;Logical variable&quot;)
+  if (var_bool == TRUE) {
+    print(&quot;TRUE&quot;)
+  } else {
+    print(&quot;FALSE&quot;)
+  }
+} else if (is.numeric(var_bool)) {
+  print(&quot;Numeric variable&quot;)
+} else {
+  print(&quot;Unknown variable&quot;)
+}</code></pre>
+<pre><code>## [1] &quot;Logical variable&quot;
+## [1] &quot;TRUE&quot;</code></pre>
+<p>　</p>
+</div>
+<div id="switch" class="section level3">
+<h3>switch</h3>
+<p>分岐する条件の数が多い場合は<code>if</code>文でなく<code>switch</code>*文を利用するのが便利です。<code>if</code>文と同じで評価式は<code>TRUE</code>か<code>FALSE</code>が単一で返るようにしなければなりません。</p>
+<pre class="r"><code>switch(1, &quot;A&quot;, &quot;B&quot;, &quot;C&quot;, &quot;D&quot;, &quot;E&quot;, &quot;Error&quot;)</code></pre>
+<pre><code>## [1] &quot;A&quot;</code></pre>
+<pre class="r"><code>switch(6, &quot;A&quot;, &quot;B&quot;, &quot;C&quot;, &quot;D&quot;, &quot;E&quot;, &quot;Error&quot;)</code></pre>
+<pre><code>## [1] &quot;Error&quot;</code></pre>
+<pre class="r"><code>switch(8, &quot;A&quot;, &quot;B&quot;, &quot;C&quot;, &quot;D&quot;, &quot;E&quot;, &quot;Error&quot;)</code></pre>
+<p>　</p>
+</div>
+<div id="ifelse" class="section level3">
+<h3>ifelse</h3>
+<p><code>base::ifelse</code>は予約語でなく関数です。<code>if</code>文と異なるのはベクトル型の評価が一度に行える点です。第一引数に<code>TRUE</code>か<code>FALSE</code>が返る評価式であればベクトル型でも構いません。</p>
+<pre class="r"><code>vec_BOOL</code></pre>
+<pre><code>## [1]  TRUE FALSE  TRUE</code></pre>
+<pre class="r"><code>ifelse(vec_BOOL, &quot;Yes&quot;, &quot;No&quot;)</code></pre>
+<pre><code>## [1] &quot;Yes&quot; &quot;No&quot;  &quot;Yes&quot;</code></pre>
+<pre class="r"><code>ifelse(is.na(vec_BOOL), &quot;Yes&quot;, &quot;No&quot;)</code></pre>
+<pre><code>## [1] &quot;No&quot; &quot;No&quot; &quot;No&quot;</code></pre>
+<p>　</p>
+</div>
+</div>
+<div id="繰り返し" class="section level2">
+<h2>繰り返し</h2>
+<p>繰り返しは文字通り処理を任意の回数繰り返す場合に用いるもので予約語になっています。繰り返し文の処理は時間がかかるため <a href="https://www.r-project.org/" target="_blank" title="The R Project">R <i class="fa fa-external-link"></i></a> においては好ましくなく繰り返しは使わずベクトル演算で処理すべきと言われていますが、 <a href="https://www.r-project.org/" target="_blank" title="The R Project">R <i class="fa fa-external-link"></i></a>-3.4.0からJITコンパイラと呼ばれる繰り返し処理の高速化がデフォルトで有効化されており今後は処理記述の流れが変わる可能性があります。処理の高速化についてはこちらの <a href="http://masato-613.hatenablog.com/entry/2017/04/25/064632" target="_blank" title="R 3.4.0 のJITバイトコンパイラってどんくらい早くなるの？">参考資料 <i class="fa fa-external-link"></i></a> で確認してください。なお、繰り返し処理で注意すべき点は繰り返し文中では明示的に出力を指定しないと計算結果等が出力されない点です。</p>
+<p><a href="https://www.r-project.org/" target="_blank" title="The R Project">R <i class="fa fa-external-link"></i></a> の繰り返しには以下の3つがあります。</p>
+<table>
+<thead>
+<tr class="header">
+<th>文</th>
+<th>説明</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>for</code></td>
+<td>条件式に与えたベクトルやリストが空になるまで任意の回数繰り返す</td>
+</tr>
+<tr class="even">
+<td><code>while</code></td>
+<td>条件式に与えた条件が成立している限り繰り返す</td>
+</tr>
+<tr class="odd">
+<td><code>repeat</code></td>
+<td>無限に繰り返すが繰り返し処理中の<code>break</code>文で繰り返しを終了できる</td>
+</tr>
+</tbody>
+</table>
+<p>また、繰り返しを条件式以外で変更する処理用の文として以下が用意されています。これらも予約語です。</p>
+<table>
+<thead>
+<tr class="header">
+<th>文</th>
+<th>説明</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>next</code></td>
+<td>この文が実行された時点で強制的に次の繰り返し処理に入ります</td>
+</tr>
+<tr class="even">
+<td><code>break</code></td>
+<td>この文が実行された時点で繰り返し処理を終了します</td>
+</tr>
+</tbody>
+</table>
+<p>　</p>
+<div id="for" class="section level3">
+<h3>for</h3>
+<p><code>for</code>文は最も基本となる繰り返し処理で、条件式としてベクトルやリストを与える点が他の言語と異なる点です。</p>
+<pre class="r"><code>for (i in c(1:5, 7, 9:15)) {
+  if (i == 4) {
+    next
+  } else if (i &gt;= 10) {
+    break
+  } else {
+    print(as.character(i))
+  }
+}</code></pre>
+<pre><code>## [1] &quot;1&quot;
+## [1] &quot;2&quot;
+## [1] &quot;3&quot;
+## [1] &quot;5&quot;
+## [1] &quot;7&quot;
+## [1] &quot;9&quot;</code></pre>
+<p>　</p>
+</div>
+<div id="while-repeat" class="section level3">
+<h3>while, repeat</h3>
+<p><code>while</code>文と<code>repeat</code>文については、あまり使うこともないと思いますので省略します。 　</p>
+</div>
+</div>
+</div>
+<div id="データの読み書き" class="section level1">
+<h1>データの読み書き</h1>
+<p><a href="https://www.r-project.org/" target="_blank" title="The R Project">R <i class="fa fa-external-link"></i></a> に外部からデータを読み込む方法や読み込むための関数を用意したパッケージは様々ありますが、基本パッケージで読み書きする方法は以下の3つの方法があります。</p>
+<table>
+<thead>
+<tr class="header">
+<th>読み込み</th>
+<th>書き出し</th>
+<th>説明</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>util::read.table</code></td>
+<td><code>util::write.table</code></td>
+<td>クリップボード経由の読み書きもサポートする</td>
+</tr>
+<tr class="even">
+<td><code>util::read.csv</code></td>
+<td><code>util::write.csv</code></td>
+<td>CSVファルに特化している</td>
+</tr>
+<tr class="odd">
+<td><code>util::read.delmi</code></td>
+<td><code>util::write.delmi</code></td>
+<td>TAB区切りファイルに特化してる</td>
+</tr>
+</tbody>
+</table>
+<p>ファイルやクリップボードから読み込んだ結果はデータフレーム型として扱われます。 　</p>
+</div>
+<div id="自習のために" class="section level1">
+<h1>自習のために</h1>
+<p>更に詳しく <a href="https://www.r-project.org/" target="_blank" title="The R Project">R <i class="fa fa-external-link"></i></a> を学ぶには以下の図書やコミュニティを活用してください。</p>
+<p>統計の基礎と <a href="https://www.r-project.org/" target="_blank" title="The R Project">R <i class="fa fa-external-link"></i></a> で処理方法を学びたい場合は <a href="http://www.tokyo-tosho.co.jp/books/978-4-489-02227-2/" target="_blank" title="統計学基礎　統計検定２級対応">改定版 統計学基礎 <i class="fa fa-external-link"></i></a> や <a href="http://www.kyoritsu-pub.co.jp/bookdetail/9784320112414" target="_blank" title="Rで楽しむ統計(共立出版)">Rで楽しむ統計 <i class="fa fa-external-link"></i></a>。 <a href="https://www.r-project.org/" target="_blank" title="The R Project">R <i class="fa fa-external-link"></i></a> の基礎から学びたい場合は <a href="https://book.mynavi.jp/ec/products/detail/id=39763" target="_blank" title="みんなのR(マイナビブックス)">みんなのR <i class="fa fa-external-link"></i></a> や <a href="http://gihyo.jp/book/2017/978-4-7741-8812-6" target="_blank" title="パーフェクトR(技術評論社)">パーフェクトR <i class="fa fa-external-link"></i></a> がおすゝめです。</p>
+<p>ネットコミュニティで質問したい場合は、日本の <a href="https://www.r-project.org/" target="_blank" title="The R Project">R <i class="fa fa-external-link"></i></a> 界の著名人が集まっている <a href="http://qiita.com/uri/items/5583e91bb5301ed5a4ba" target="_blank" title="R-wakalang">R-wakalang <i class="fa fa-external-link"></i></a> や <a href="http://www.okadajp.org/RWiki/" target="_blank" title="RjpWiki">Rjp Wiki <i class="fa fa-external-link"></i></a> で、検索には <a href="https://www.r-project.org/" target="_blank" title="The R Project">R <i class="fa fa-external-link"></i></a> に特化した検索エンジンである <a href="http://seekr.jp/" target="_blank" title="seek R">seek R <i class="fa fa-external-link"></i></a> がすゝめです。 　</p>
+<hr />
+<!-- Footer -->
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-11-01(JST)]</p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
