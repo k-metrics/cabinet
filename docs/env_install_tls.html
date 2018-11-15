@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Rtoolsのインストール</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cerulean.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+<link href="site_libs/font-awesome-5.0.13/css/fa-svg-with-js.css" rel="stylesheet" />
+<script src="site_libs/font-awesome-5.0.13/js/fontawesome-all.min.js"></script>
+<script src="site_libs/font-awesome-5.0.13/js/fa-v4-shims.min.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="shared\style.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = false;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Project Cabinet</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-laptop"></span>
+     
+    Setup
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="./env_overall.html">Overall</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="./env_install_r.html">Install R</a>
+    </li>
+    <li>
+      <a href="./env_install_tls.html">Install Rtools</a>
+    </li>
+    <li>
+      <a href="./env_install_dtp.html">Install RStudio</a>
+    </li>
+    <li>
+      <a href="./env_install_pkg.html">Install R Packages</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="./env_install_tex.html">Install TeX</a>
+    </li>
+    <li>
+      <a href="./env_install_git.html">Install Git</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-info-circle"></span>
+     
+    Basics
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="./basics_overall.html">Overall</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="./basics_rstudio.html">RStudio Basics</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="./basics_rmd.html">R Markdown Basics</a>
+    </li>
+    <li>
+      <a href="./basics_rmdtable.html">　R Markdown Table</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="./basics_r.html">R Basics</a>
+    </li>
+    <li>
+      <a href="./basics_r_part2.html">　R Basics part2</a>
+    </li>
+    <li>
+      <a href="./basics_coding_style.html">　Coding Style</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Tidyverse Basics</li>
+    <li>
+      <a href="./basics_dplyr.html">　dplyr Basics</a>
+    </li>
+    <li class="dropdown-header">　tidyr Basics</li>
+    <li>
+      <a></a>
+    </li>
+    <li>
+      <a href="./basics_ggplot2.html">　ggplot2 Basics</a>
+    </li>
+    <li class="dropdown-header">　purrr Basics</li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-github"></span>
+     
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="https://github.com/k-metrics/cabinet/">
+        <span class="fa fa-github"></span>
+         
+        GitHub Repository
+      </a>
+    </li>
+    <li>
+      <a href="https://k-metrics.netlify.com/post/">
+        <span class="fa fa-rss-square"></span>
+         
+        Project Cabinet blog
+      </a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="https://sites.google.com/site/kantometrics/home/">
+        <span class="fa fa-google"></span>
+         
+        データ分析勉強会
+      </a>
+    </li>
+  </ul>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Rtoolsのインストール</h1>
+
+</div>
+
+
+<!-- Include shared Links -->
+<!-- SQiP and others -->
+<!-- Books -->
+<!-- 共立出版 -->
+<!-- 日科技連出版 -->
+<!-- O'Reilly Japan -->
+<!-- 東京図書 -->
+<!-- Docker -->
+<!-- eBooks -->
+<!-- Net Community -->
+<!-- Style Guide -->
+<!-- Creative Commons -->
+<!-- Others -->
+<!-- R -->
+<!-- R Packages -->
+<!-- RStudio -->
+<!-- Docker -->
+<!-- Cabinet Pages -->
+<p>Windows環境においてCRANからパッケージをインストールする場合、基本的にビルドされたバイナリパッケージがインストールされますが、一部のパッケージにおいてソース（tarball）からパッケージをインストールしなければならない場合があります。この場合、ソースからパッケージをビルドするために <a href="https://cran.r-project.org/bin/windows/Rtools/" target="_blank" title="CRAN">Rtools <i class="fa fa-external-link"></i></a> というツールが必要になります。</p>
+<p>ソースからのインストールをレコメンドされる例</p>
+<pre><code>  There are binary versions available but the source versions are later:
+           binary  source needs_compilation
+backports   1.0.5   1.1.0             FALSE
+Rcpp      0.12.10 0.12.11              TRUE
+
+Do you want to install from sources the package which needs compilation?
+y/n: </code></pre>
+<p>なお、パッケージのインストールや更新のタイミングによってレコメンドされるパッケージは異なる場合もありますし、レコメンドされない場合もあります。</p>
+<pre><code>  There are binary versions available but the source versions are later:
+          binary  source needs_compilation
+quantmod   0.4-8   0.4-9             FALSE
+tseries  0.10-40 0.10-41              TRUE
+
+Do you want to install from sources the package which needs compilation?
+y/n: 
+
+
+  There are binary versions available but the source versions are later:
+                   binary      source needs_compilation
+devtools           1.13.1      1.13.2             FALSE
+RcppArmadillo 0.7.800.2.0 0.7.900.2.0              TRUE
+
+Do you want to install from sources the package which needs compilation?
+y/n: </code></pre>
+<p>　</p>
+<div id="インストール" class="section level1">
+<h1>インストール</h1>
+<p><a href="https://cran.r-project.org/bin/windows/Rtools/" target="_blank" title="CRAN">Rtools <i class="fa fa-external-link"></i></a> から利用している <a href="https://www.r-project.org/" target="_blank" title="The R Project">R <i class="fa fa-external-link"></i></a> のバージョンにあったバイナリをダウンロードしてインストールして下さい。32bit版と64bit版が同梱されていますので環境に応じて選択して下さい。なお、インストール先はデフォルトのままとしてください。<br />
+　</p>
+<div id="インストールされるもの" class="section level2">
+<h2>インストールされるもの</h2>
+<p>環境にもよりますが、gccを始めとしたツール類がインストールされますので相応のインストール時間を要しますのでご注意下さい。インストールされるプログラム等については <a href="https://cran.r-project.org/bin/windows/Rtools/Rtools.txt" target="_blank" title="CRAN">Rtools README <i class="fa fa-external-link"></i></a> を参照して下さい。<br />
+　</p>
+</div>
+<div id="インストール手順" class="section level2">
+<h2>インストール手順</h2>
+<p>Rtoolsは前述のようにWinodws環境のみで必要です。Rtoolを起動したらウィザードにしたがってインストールしてください。<br />
+　</p>
+<div class="figure">
+<img src="shared/fig/rtools/rtools34_01.png" alt="Fig.1 Start Wizard" />
+<p class="caption">Fig.1 Start Wizard</p>
+</div>
+<p>　</p>
+<div class="figure">
+<img src="shared/fig/rtools/rtools34_02.png" alt="Fig.2 Disclaimer" />
+<p class="caption">Fig.2 Disclaimer</p>
+</div>
+<p>　<br />
+インストール先はデフォルト（<code>&quot;C:\Rtools&quot;</code>）のままとします。これは<code>packrat</code>を使用する際にデフォルト以外のインストール先にRtoolsがインストールされているとRtoolsを起動できなくなってしまう現象を回避するためです。</p>
+<div class="figure">
+<img src="shared/fig/rtools/rtools34_03.png" alt="Fig.3 インストール先の指定" />
+<p class="caption">Fig.3 インストール先の指定</p>
+</div>
+<p>　<br />
+<a href="https://www.r-project.org/" target="_blank" title="The R Project">R <i class="fa fa-external-link"></i></a> を利用するだけでしたらインストールするコンポーネントはデフォルトで構いません。</p>
+<div class="figure">
+<img src="shared/fig/rtools/rtools34_04.png" alt="Fig.4 インストール先の指定" />
+<p class="caption">Fig.4 インストール先の指定</p>
+</div>
+<p>　<br />
+PATHを追加しないとRtoolsが起動しない場合がありますのでPATHを追加しておきます。PATHに<code>&quot;C:\Rtools\bin&quot;</code>が含まれていない場合はチェクボックスにチェックを入れてください。</p>
+<div class="figure">
+<img src="shared/fig/rtools/rtools34_05_editpath.png" alt="Fig.5 PATHの設定" />
+<p class="caption">Fig.5 PATHの設定</p>
+</div>
+<p>　<br />
+<code>&quot;C:\Rtools\bin&quot;</code>がPATHに含まれていることを確認してください。Rtools34の場合は<code>&quot;C:\Rtools\mingw_32&quot;</code>へのPATHも自動的に追加されます。</p>
+<div class="figure">
+<img src="shared/fig/rtools/rtools34_06.png" alt="Fig.6 Rtools43の場合" />
+<p class="caption">Fig.6 Rtools43の場合</p>
+</div>
+<p>　<br />
+なお、Rtools35ではこのPATHは追加されません。Rtools34をインストールした後にRtools35をインストールする場合はPATHが重複する場合がありますので適宜編集してください。</p>
+<div class="figure">
+<img src="shared/fig/rtools/rtools35_05.png" alt="Fig.6-2 Rtools35の場合" />
+<p class="caption">Fig.6-2 Rtools35の場合</p>
+</div>
+<p>　<br />
+インストール条件を確認したらインストールを確認します。</p>
+<div class="figure">
+<img src="shared/fig/rtools/rtools34_07.png" alt="Fig.7" />
+<p class="caption">Fig.7</p>
+</div>
+<p>　</p>
+<div class="figure">
+<img src="shared/fig/rtools/rtools34_08_installing.png" alt="Fig.8 Installing" />
+<p class="caption">Fig.8 Installing</p>
+</div>
+<p>　</p>
+<div class="figure">
+<img src="shared/fig/rtools/rtools34_09_end.png" alt="Fig.9 Finish" />
+<p class="caption">Fig.9 Finish</p>
+</div>
+<p>　</p>
+</div>
+<div id="組み合わせについて" class="section level2">
+<h2>組み合わせについて</h2>
+<p>Rtools35を利用する場合は以下の組み合わせで利用する必要があります。<br />
+　</p>
+<table>
+<thead>
+<tr class="header">
+<th>Rtools</th>
+<th>R</th>
+<th>RStudio</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Rtools35</td>
+<td>3.3.x or later</td>
+<td><strong>1.1.447</strong> or later</td>
+</tr>
+<tr class="even">
+<td>Rtools34</td>
+<td>3.3.x or later</td>
+<td>1.0.x or later</td>
+</tr>
+</tbody>
+</table>
+<p>　</p>
+</div>
+</div>
+<div id="windows以外の環境" class="section level1">
+<h1>Windows以外の環境</h1>
+<p>Windows以外の環境では <a href="https://cran.r-project.org/bin/windows/Rtools/" target="_blank" title="CRAN">Rtools <i class="fa fa-external-link"></i></a> のインストールは必要ありません。<br />
+OS Xではビルド関連ツールを別途インストールする必要がある場合があります。その場合はOSの説明書などを参考に必要なツールをインストールしてください。<br />
+　</p>
+<hr />
+<!-- Include Footer -->
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-11-01(JST)]</p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
