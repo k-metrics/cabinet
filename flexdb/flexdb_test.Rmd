@@ -1,0 +1,192 @@
+---
+title: "Navigation Bar"
+output: 
+  flexdashboard::flex_dashboard:
+    navbar:
+      # - { title: "Prev Project", href: "", align: left}
+      # - { title: "Next Project", href: "", align: left}
+      - { title: "Prev", icon: "fa-chevron-circle-left", href: ""}
+      - { title: "Next", icon: "fa-chevron-circle-right ", href: ""}
+    self_contained: true
+    # social: [ "twitter", "facebook" ]
+    social: [ "menu" ]
+    source_code: embed
+    storyboard: true
+    vertical_layout: fill
+---
+
+Using flexdashboard - https://rmarkdown.rstudio.com/flexdashboard/using.html
+
+```{r setup, include=FALSE}
+require(psych)
+require(tidyverse)
+
+head_tail <- function (df, n = 3) {
+  psych::headTail(df, top = n, bottom = n) %>% knitr::kable()
+}
+```
+
+
+Menu A {data-icon="fa-list"}
+=====================================
+個々のページで記載したコメントは個々のページでしか表示されません。
+
+You can link to a dashboard page with either of the following syntaxes:
+
+[Page 2]
+
+[Page Two](#page-2)
+
+Link to hidden [Page 5](#page-5)
+
+The second syntax is used when you want a custom name for the link 
+(rather than just using the page title).
+
+```{r}
+iris %>% head_tail()
+```
+
+
+
+Page 1 {data-navmenu="Menu A" data-icon="fa-list" data-orientation=cols}
+=====================================
+Page 1
+
+### Chart A, Title as header
+    
+```{r}
+plot(mtcars)
+```
+
+> Note, as footer
+
+
+### Chart A-2 {.no-title}
+{.no-title}を指定するとタイトルを消すことができる。ただし、これはレベル３（`###`）見出しのみに適用可能。  
+
+```{r}
+plot(iris)
+```
+
+> Note as footer
+
+Page 2 {data-navmenu="Menu A" data-icon="fa-list" data-orientation=rows}
+=====================================  
+Page 2
+
+### Chart B
+    
+```{r}
+```
+
+### Chart C
+    
+```{r}
+```
+
+
+Page 3 {data-navmenu="Menu B"}
+=====================================
+Page 3
+
+
+Page 4 {data-navmenu="Menu B"}
+=====================================  
+Page 4
+
+
+Page 5 {.hidden}
+=====================================  
+Page 5
+
+
+Nav-bar {data-icon="fa-bars"}
+==============================================================================  
+[Navigation Bar <i class="fa fa-external-link"></i>](https://rmarkdown.rstudio.com/flexdashboard/using.html#navigation_bar){target="_blank" title="flexdashboard for R"}
+
+![](./navbar.png)  
+メニューの右側にこのようなメニューを表示させる場合、YAMLの`output`に以下のように指定をします。リンクは固定リンクとなる点に留意してください。  
+　  
+
+```
+---
+output: 
+  flexdashboard::flex_dashboard:
+    navbar:
+      - { title: "Prev", icon: "fa-chevron-circle-left", href: ""}
+      - { title: "Next", icon: "fa-chevron-circle-right ", href: ""}
+    social: [ "menu" ]
+    source_code: embed
+---
+```
+
+設定   | 概要
+-------|-----------------------------
+navbar | HTMLのリンクを設定します。アイコン表示は常に文字の左側になります。
+social | SNSシェアリンクを作成するためのリンク集が表示されます。
+source_code | flexdashboards自体のコードが表示されるようになります。
+
+
+
+　  
+このようなリンクを利用するとプロジェクトごとにflexdashboardページを作成し、順次表示させるような使い方ができます。  
+
+
+Storyboards {data-icon="fa-bars" .storyboard}
+==============================================================================  
+[Storyboards <i class="fa fa-external-link"></i>](https://rmarkdown.rstudio.com/flexdashboard/using.html#storyboards){target="_blank" title="flexdashboard for R"} style. 
+
+
+### Storyboadsは表示を最大三分割して表示することができる表示形式です。最上段は画面切り替えリンクを兼ねた要約表示部分です。
+
+```{r}
+plot(cars)
+```
+
+> この画面がメインとなるフレームです。
+
+***
+
+[Commentary <i class="fa fa-external-link"></i>](https://rmarkdown.rstudio.com/flexdashboard/using.html#commentary){target="_blank" title="flexdashboard for R"} フレームはメイン・フレームの左横に展開されるフレームで補足説明などを記載することが可能です。Commentaryフレームは`***`で区切って記述します。  
+　  
+
+```
+### Frame 1
+
+*** 
+
+Some commentary about Frame 1.
+```
+
+　  
+なお、Commentaryフレームではフッター（ノート）を記述することはできません。  
+
+
+### 紙芝居のようにストーリー立ててデータを見せることができます。ヘッダーの代わりにこのような切り替えフレームが表示されます。
+
+
+### 切り替えフレームの数に制限はなく、画面からあふれた場合は自動的に左右にスクロールしてくれます。
+
+### Storyboardsはページ単位（`#`レベル）で設定することができます。ページ単位で指定する場合は{.storyboard}をタイトルの後ろに記述してください。
+
+```
+---
+title: "Storyboard"
+output: 
+  flexdashboard::flex_dashboard:
+    storyboard: true
+---
+
+Analysis {.storyboard}
+=========================================
+
+### Frame 1
+
+
+### Frame 2
+
+
+Details
+=========================================
+```
+
