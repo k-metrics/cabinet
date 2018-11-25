@@ -2682,6 +2682,130 @@ output:
 </tbody>
 </table>
 </div>
+<div id="yaml" class="section level1" data-orientation="columns">
+<h1>YAML</h1>
+<div id="section" class="section level2" data-width="500">
+<h2></h2>
+<div id="yaml-1" class="section level3">
+<h3>YAML</h3>
+<p><code>flexdashboard</code>で利用できるYAML設定は基本的にはR Markdown（HTML document）と同様ですが、<code>df_print</code>のように利用できない項目もあります。</p>
+<pre><code>---
+title: &quot;flexdashboard&quot;
+output: 
+  flexdashboard::flex_dashboard:
+    css: 
+    favicon: 
+    fig_mobile: 
+    logo: 
+    md_extensions: -ascii_identifiers
+    navbar: 
+    orientation: columns or rows
+    self_contained: true or false
+    social: 
+    storyboard: true or false
+    theme: default
+    vertical_layout: fill or scroll
+---</code></pre>
+</div>
+</div>
+<div id="section-1" class="section level2 tabset" data-width="500">
+<h2></h2>
+<div class="section level3">
+<h3>利用可</h3>
+<table>
+<thead>
+<tr class="header">
+<th>YAML Option</th>
+<th>説明</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>css:</td>
+<td>カスタムCSSファイルの指定</td>
+</tr>
+<tr class="even">
+<td>favicon:</td>
+<td>faviconファイルの指定</td>
+</tr>
+<tr class="odd">
+<td>fig_mobile:</td>
+<td>モバイル画面用画像を作成するか否か（true or false）</td>
+</tr>
+<tr class="even">
+<td>logo:</td>
+<td>navbarに表示するロゴの指定（自動的に縮小されないのでサイズに注意）</td>
+</tr>
+<tr class="odd">
+<td>md_extensions:</td>
+<td>-ascii_identifiers</td>
+</tr>
+<tr class="even">
+<td>navbar:</td>
+<td>navbarの設定（詳細はNav-barメニュー参照方）</td>
+</tr>
+<tr class="odd">
+<td>orientation:</td>
+<td>分割方向の指定（columns or rows）</td>
+</tr>
+<tr class="even">
+<td>self_contained:</td>
+<td>ファイルを一つにまとめるか否か（true or false）</td>
+</tr>
+<tr class="odd">
+<td>social:</td>
+<td>SNSシェアリンクの作成</td>
+</tr>
+<tr class="even">
+<td>source_code:</td>
+<td>ソースコードを埋め込んでメニュー表示をするか否か（true or false）</td>
+</tr>
+<tr class="odd">
+<td>storyboard:</td>
+<td>ストーリーボード機能を使うか否か（true or false）</td>
+</tr>
+<tr class="even">
+<td>theme:</td>
+<td>bootswatchテーマ（defaultはcosmo相当、typeはinverseが適用されるっぽい）</td>
+</tr>
+<tr class="odd">
+<td>vertical_layout:</td>
+<td>縦方向の表示方法（fill or scroll）</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level3">
+<h3>利用不可</h3>
+<table>
+<thead>
+<tr class="header">
+<th>YAML Option</th>
+<th>説明</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>code_folding:</td>
+<td>指定してもコードは表示されない（元々コードは表示されないので）</td>
+</tr>
+<tr class="even">
+<td>df_print:</td>
+<td>指定するとknit時にSTOPエラーになる</td>
+</tr>
+<tr class="odd">
+<td>type:</td>
+<td>指定するとknit時にエラーが出て無視される</td>
+</tr>
+<tr class="even">
+<td>toc:</td>
+<td>指定してもエラーは出ないが無視される</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
 <div class="section level1">
 <h1>配置</h1>
 <div id="coloumn" class="section level2">
@@ -3134,6 +3258,7 @@ output:
     social: [ &quot;menu&quot; ]
     source_code: embed
     storyboard: true
+    theme: default
     vertical_layout: fill
 ---
 
@@ -3179,6 +3304,63 @@ output:
 iris %&gt;% head_tail(n = 2, caption = &quot;knitr::kableでの表示例&quot;)
 ```
 
+
+# YAML {data-orientation=columns}
+
+## {data-width=500}
+
+### YAML
+`flexdashboard`で利用できるYAML設定は基本的にはR Markdown（HTML document）と同様ですが、`df_print`のように利用できない項目もあります。  
+
+```
+---
+title: &quot;flexdashboard&quot;
+output: 
+  flexdashboard::flex_dashboard:
+    css: 
+    favicon: 
+    fig_mobile: 
+    logo: 
+    md_extensions: -ascii_identifiers
+    navbar: 
+    orientation: columns or rows
+    self_contained: true or false
+    social: 
+    storyboard: true or false
+    theme: default
+    vertical_layout: fill or scroll
+---
+```
+
+## {.tabset data-width=500}
+
+### 利用可
+
+YAML Option      | 説明
+-----------------|--------------------
+css:             | カスタムCSSファイルの指定
+favicon:         | faviconファイルの指定
+fig_mobile:      | モバイル画面用画像を作成するか否か（true or false）
+logo:            | navbarに表示するロゴの指定（自動的に縮小されないのでサイズに注意）
+md_extensions:   | -ascii_identifiers
+navbar:          | navbarの設定（詳細はNav-barメニュー参照方）
+orientation:     | 分割方向の指定（columns or rows）
+self_contained:  | ファイルを一つにまとめるか否か（true or false）
+social:          | SNSシェアリンクの作成
+source_code:     | ソースコードを埋め込んでメニュー表示をするか否か（true or false）
+storyboard:      | ストーリーボード機能を使うか否か（true or false）
+theme:           | bootswatchテーマ（defaultはcosmo相当、typeはinverseが適用されるっぽい）
+vertical_layout: | 縦方向の表示方法（fill or scroll）
+
+
+### 利用不可
+
+YAML Option      | 説明
+-----------------|--------------------
+code_folding:    | 指定してもコードは表示されない（元々コードは表示されないので）
+df_print:        | 指定するとknit時にSTOPエラーになる
+type:            | 指定するとknit時にエラーが出て無視される
+toc:             | 指定してもエラーは出ないが無視される
 
 
 # 配置
