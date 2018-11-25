@@ -11,6 +11,7 @@ output:
     social: [ "menu" ]
     source_code: embed
     storyboard: true
+    theme: default
     vertical_layout: fill
 ---
 
@@ -56,6 +57,63 @@ output:
 iris %>% head_tail(n = 2, caption = "knitr::kableでの表示例")
 ```
 
+
+# YAML {data-orientation=columns}
+
+## {data-width=500}
+
+### YAML
+`flexdashboard`で利用できるYAML設定は基本的にはR Markdown（HTML document）と同様ですが、`df_print`のように利用できない項目もあります。  
+
+```
+---
+title: "flexdashboard"
+output: 
+  flexdashboard::flex_dashboard:
+    css: 
+    favicon: 
+    fig_mobile: 
+    logo: 
+    md_extensions: -ascii_identifiers
+    navbar: 
+    orientation: 
+    self_contained: 
+    social: 
+    storyboard: 
+    theme: default
+    vertical_layout: 
+---
+```
+
+## {.tabset data-width=500}
+
+### 利用可
+
+YAML Option      | 説明
+-----------------|--------------------
+css:             | カスタムCSSファイルの指定
+favicon:         | faviconファイルの指定
+fig_mobile:      | モバイル画面用画像を作成するか否か（true or false）
+logo:            | navbarに表示するロゴの指定（自動的に縮小されないのでサイズに注意）
+md_extensions:   | -ascii_identifiers
+navbar:          | navbarの設定（詳細はNav-barメニュー参照方）
+orientation:     | 分割方向の指定（columns or rows）
+self_contained:  | ファイルを一つにまとめるか否か（true or false）
+social:          | SNSシェアリンクの作成
+source_code:     | ソースコードを埋め込んでメニュー表示をするか否か（true or false）
+storyboard:      | ストーリーボード機能を使うか否か（true or false）
+theme:           | bootswatchテーマ（defaultはcosmo相当、typeはinverseが適用されるっぽい）
+vertical_layout: | 縦方向の表示方法（fill or scroll）
+
+
+### 利用不可
+
+YAML Option      | 説明
+-----------------|--------------------
+code_folding:    | 指定してもコードは表示されない（元々コードは表示されないので）
+df_print:        | 指定するとknit時にSTOPエラーになる
+type:            | 指定するとknit時にエラーが出て無視される
+toc:             | 指定してもエラーは出ないが無視される
 
 
 # 配置
