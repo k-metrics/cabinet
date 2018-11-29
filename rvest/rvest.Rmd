@@ -138,3 +138,72 @@ rank_all %>%
     ggrepel::geom_label_repel(ggplot2::aes(label = text, colour = rank))
 ```
 
+
+# プロ野球
+
+```{r, include=FALSE}
+site_url <- "https://baseball.yahoo.co.jp/npb/standings/"
+xpath_ce <- "//*[@id=\"sta_c\"]/div/table"
+xpath_pa <- "//*[@id=\"sta_p\"]/div/table"
+xpath_in <- "//*[@id=\"sta_i\"]/div/table"
+xpath_op <- "//*[@id=\"sta_o\"]/div/table"
+```
+
+```{r}
+site_url %>% 
+  xml2::read_html() %>% 
+  rvest::html_node(xpath = xpath_ce) %>% 
+  rvest::html_table() 
+
+site_url %>% 
+  xml2::read_html() %>% 
+  rvest::html_node(xpath = xpath_pa) %>% 
+  rvest::html_table() 
+
+site_url %>% 
+  xml2::read_html() %>% 
+  rvest::html_node(xpath = xpath_in) %>% 
+  rvest::html_table() 
+
+site_url %>% 
+  xml2::read_html() %>% 
+  rvest::html_node(xpath = xpath_op) %>% 
+  rvest::html_table() 
+```
+
+# bitcoin
+スクレイピングは禁止
+```{r, include=FALSE}
+# site_url <- "https://coinmarketcap.com/ja/currencies/bitcoin/historical-data/"
+# xpath_hs <- "//*[@id=\"historical-data\"]/div/div[2]/table"
+```
+
+```{r}
+# site_url %>% 
+#   xml2::read_html() %>% 
+#   rvest::html_node(xpath = xpath_hs) %>% 
+#   rvest::html_table()
+```
+
+# 大相撲
+```{r, include=FALSE}
+site_url <- "https://sports.yahoo.co.jp/sumo/torikumi/stats/?bashoId=201811&day="
+xpath_mu <- "//*[@id=\"makuuchi\"]/table"
+```
+
+```{r}
+
+makuuchi <- purrr::map2(site_url, c(1:15), ~ paste(.x, .y, sep = "")) %>% 
+  purrr::map2(xpath_mu, 
+              .f = function(.x, .y) {xml2::read_html(.x) %>% 
+                                       rvest::xml_node(xpath = .y) %>% 
+                                       rvest::html_table()})
+
+makuuchi %>% purrr::map_df(.f = data.frame) %>% 
+  tidyr::separate(`東.1`, into = c("e_name", "e_lose"), sep = "[勝]") %>% 
+  dplyr::mutate(e_win = readr::parse_number(e_name)) %>% 
+  tidyr::separate(e_name, c("e_name"), sep = "[[:digit:]]") %>% 
+  dplyr::mutate(e_lose = readr::parse_number(e_lose)) %>% 
+  dplyr::select(e_pos = `東`, e_name, e_win, e_lose)
+```
+
