@@ -5,14 +5,23 @@ date: "`r Sys.Date()`"
 output:
   html_document:
     code_folding: hide
+    df_print: paged
+    toc: true
+    toc_float:
+      collapsed: true
+      smooth_scroll: false
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 
 require(rvest)
+require(xml2)
 require(tidyverse)
+```
 
+# ポケモンGO
+```{r, include=FALSE}
 site_url <- "https://appmedia.jp/pokemon_go/350150"
 xpath_ss <- "/html/body/div[3]/div[1]/div/div/div[3]/div[2]/div/div[2]/table[4]"
 xpath_s <- "/html/body/div[3]/div[1]/div/div/div[3]/div[2]/div/div[2]/table[5]"
@@ -35,7 +44,10 @@ xpath_a <- "/html/body/div[3]/div[1]/div/div/div[3]/div[2]/div/div[2]/table[7]"
                                       name),
                 memo = dplyr::if_else(!is.na(memo2), memo2, memo)) %>% 
   dplyr::select(rank, name, type = `タイプ`, memo, CP = `最大CP`,
-                skill = `おすすめわざ`)) %>% 
+                skill = `おすすめわざ`) %>% 
+  tidyr::separate(skill, c("skill", "type1", "skill1", "type2", "skill2"),
+                  sep = "([【】])") %>% 
+  dplyr::select(-skill)) %>% 
   DT::datatable()
 ```
 
@@ -54,7 +66,10 @@ xpath_a <- "/html/body/div[3]/div[1]/div/div/div[3]/div[2]/div/div[2]/table[7]"
                                       name),
                 memo = dplyr::if_else(!is.na(memo2), memo2, memo)) %>% 
   dplyr::select(rank, name, type = `タイプ`, memo, CP = `最大CP`,
-                skill = `おすすめわざ`)) %>% 
+                skill = `おすすめわざ`) %>% 
+  tidyr::separate(skill, c("skill", "type1", "skill1", "type2", "skill2"),
+                  sep = "([【】])") %>% 
+  dplyr::select(-skill)) %>% 
   DT::datatable()
 ```
 
@@ -73,7 +88,10 @@ xpath_a <- "/html/body/div[3]/div[1]/div/div/div[3]/div[2]/div/div[2]/table[7]"
                                       name),
                 memo = dplyr::if_else(!is.na(memo2), memo2, memo)) %>% 
   dplyr::select(rank, name, type = `タイプ`, memo, CP = `最大CP`,
-                skill = `おすすめわざ`)) %>% 
+                skill = `おすすめわざ`) %>% 
+  tidyr::separate(skill, c("skill", "type1", "skill1", "type2", "skill2"),
+                  sep = "([【】])") %>% 
+  dplyr::select(-skill)) %>% 
   DT::datatable()
 ```
 
@@ -92,7 +110,10 @@ xpath_a <- "/html/body/div[3]/div[1]/div/div/div[3]/div[2]/div/div[2]/table[7]"
                                       name),
                 memo = dplyr::if_else(!is.na(memo2), memo2, memo)) %>% 
   dplyr::select(rank, name, type = `タイプ`, memo, CP = `最大CP`,
-                skill = `おすすめわざ`)) %>% 
+                skill = `おすすめわざ`) %>% 
+  tidyr::separate(skill, c("skill", "type1", "skill1", "type2", "skill2"),
+                  sep = "([【】])") %>% 
+  dplyr::select(-skill)) %>% 
   DT::datatable()
 ```
 
@@ -149,61 +170,100 @@ xpath_in <- "//*[@id=\"sta_i\"]/div/table"
 xpath_op <- "//*[@id=\"sta_o\"]/div/table"
 ```
 
+## セ・リーグ
 ```{r}
 site_url %>% 
   xml2::read_html() %>% 
   rvest::html_node(xpath = xpath_ce) %>% 
-  rvest::html_table() 
+  rvest::html_table() %>% 
+  DT::datatable()
+```
 
+## パ・リーグ
+```{r}
 site_url %>% 
   xml2::read_html() %>% 
   rvest::html_node(xpath = xpath_pa) %>% 
-  rvest::html_table() 
+  rvest::html_table() %>% 
+  DT::datatable()
+```
 
+## 交流戦
+```{r}
 site_url %>% 
   xml2::read_html() %>% 
   rvest::html_node(xpath = xpath_in) %>% 
-  rvest::html_table() 
+  rvest::html_table() %>% 
+  DT::datatable()
+```
 
+## オープン戦
+```{r}
 site_url %>% 
   xml2::read_html() %>% 
   rvest::html_node(xpath = xpath_op) %>% 
-  rvest::html_table() 
+  rvest::html_table() %>% 
+  DT::datatable()
 ```
 
-# bitcoin
-スクレイピングは禁止
-```{r, include=FALSE}
-# site_url <- "https://coinmarketcap.com/ja/currencies/bitcoin/historical-data/"
-# xpath_hs <- "//*[@id=\"historical-data\"]/div/div[2]/table"
-```
 
-```{r}
-# site_url %>% 
-#   xml2::read_html() %>% 
-#   rvest::html_node(xpath = xpath_hs) %>% 
-#   rvest::html_table()
-```
-
-# 大相撲
+# 大相撲 平成30年11月場所
 ```{r, include=FALSE}
 site_url <- "https://sports.yahoo.co.jp/sumo/torikumi/stats/?bashoId=201811&day="
+```
+
+## 幕内（中入り後）取組一覧
+```{r, include=FALSE}
 xpath_mu <- "//*[@id=\"makuuchi\"]/table"
 ```
 
 ```{r}
+df <- purrr::map2(site_url, c(1:15), ~ paste(.x, .y, sep = "")) %>%
+  purrr::map2_df(c(1:15), .f = function(.x, .y) {
+    xml2::read_html(.x) %>% 
+      rvest::xml_node(xpath = xpath_mu) %>%
+      rvest::html_table(header = FALSE) %>%
+      dplyr::slice(-1) %>% 
+      dplyr::mutate(day = .y)})
 
-makuuchi <- purrr::map2(site_url, c(1:15), ~ paste(.x, .y, sep = "")) %>% 
-  purrr::map2(xpath_mu, 
-              .f = function(.x, .y) {xml2::read_html(.x) %>% 
-                                       rvest::xml_node(xpath = .y) %>% 
-                                       rvest::html_table()})
-
-makuuchi %>% purrr::map_df(.f = data.frame) %>% 
-  tidyr::separate(`東.1`, into = c("e_name", "e_lose"), sep = "[勝]") %>% 
-  dplyr::mutate(e_win = readr::parse_number(e_name)) %>% 
-  tidyr::separate(e_name, c("e_name"), sep = "[[:digit:]]") %>% 
-  dplyr::mutate(e_lose = readr::parse_number(e_lose)) %>% 
-  dplyr::select(e_pos = `東`, e_name, e_win, e_lose)
+result <- df %>% 
+  tidyr::extract(X2, "e_name", regex = "([^[:digit:]]+)", remove = FALSE) %>% 
+  tidyr::extract(X6, "w_name", regex = "([^[:digit:]]+)", remove = FALSE) %>% 
+  tidyr::extract(X2, c("e_win", "e_lose"),
+                 regex = "([[:digit:]])勝([[:digit:]])", remove = TRUE) %>% 
+  tidyr::extract(X6, c("w_win", "w_lose"),
+                 regex = "([[:digit:]])勝([[:digit:]])", remove = TRUE) %>% 
+  dplyr::select(day, e_class = X1, e_name, e_win, e_lose, e_mark = X3,
+                kimarite = X4, w_mark = X5, w_class = X7, w_name, w_win, w_lose)
+  
+result %>% DT::datatable()
 ```
+
+## 十両取組一覧
+```{r, include=FALSE}
+xpath_mu <- "//*[@id=\"juryo\"]/table"
+```
+
+```{r}
+df <- purrr::map2(site_url, c(1:15), ~ paste(.x, .y, sep = "")) %>%
+  purrr::map2_df(c(1:15), .f = function(.x, .y) {
+    xml2::read_html(.x) %>% 
+      rvest::xml_node(xpath = xpath_mu) %>%
+      rvest::html_table(header = FALSE) %>%
+      dplyr::slice(-1) %>% 
+      dplyr::mutate(day = .y)})
+
+result <- df %>% 
+  tidyr::extract(X2, "e_name", regex = "([^[:digit:]]+)", remove = FALSE) %>% 
+  tidyr::extract(X6, "w_name", regex = "([^[:digit:]]+)", remove = FALSE) %>% 
+  tidyr::extract(X2, c("e_win", "e_lose"),
+                 regex = "([[:digit:]])勝([[:digit:]])", remove = TRUE) %>% 
+  tidyr::extract(X6, c("w_win", "w_lose"),
+                 regex = "([[:digit:]])勝([[:digit:]])", remove = TRUE) %>% 
+  dplyr::select(day, e_class = X1, e_name, e_win, e_lose, e_mark = X3,
+                kimarite = X4, w_mark = X5, w_class = X7, w_name, w_win, w_lose)
+  
+result %>% DT::datatable()
+```
+
 
