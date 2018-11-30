@@ -219,6 +219,7 @@ site_url <- "https://sports.yahoo.co.jp/sumo/torikumi/stats/?bashoId=201811&day=
 xpath_mu <- "//*[@id=\"makuuchi\"]/table"
 ```
 
+取組一覧のヘッダが"東"と"西"にまとめられているために「ヘッダなし」で読みこまないとその後のデータフレーム化処理でおかしくなる点に注意。
 ```{r}
 df <- purrr::map2(site_url, c(1:15), ~ paste(.x, .y, sep = "")) %>%
   purrr::map2_df(c(1:15), .f = function(.x, .y) {
