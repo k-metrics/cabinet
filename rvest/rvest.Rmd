@@ -227,7 +227,8 @@ df <- purrr::map2(site_url, c(1:15), ~ paste(.x, .y, sep = "")) %>%
       rvest::xml_node(xpath = xpath_mu) %>%
       rvest::html_table(header = FALSE) %>%
       dplyr::slice(-1) %>% 
-      dplyr::mutate(day = .y)})
+      dplyr::mutate(day = .y)
+    })
 
 result <- df %>% 
   tidyr::extract(X2, "e_name", regex = "([^[:digit:]]+)", remove = FALSE) %>% 
@@ -338,8 +339,8 @@ yd_df %>%
   dplyr::select(date = `日付`,
                 Open = `始値`, High = `高値`, Low = `安値`, Close = `終値`) %>% 
   dplyr::arrange(date) %>% 
-  dplyr::mutate(MA25 = RcppRoll::roll_meanr(Close, n = 25L, fill = NA),
-                MA75 = RcppRoll::roll_meanr(Close, n = 75L, fill = NA)) %>% 
+  dplyr::mutate(MA5 = RcppRoll::roll_meanr(Close, n = 5L, fill = NA),
+                MA15 = RcppRoll::roll_meanr(Close, n = 15L, fill = NA)) %>% 
   zoo::read.zoo() %>% xts::as.xts() %>% 
   dygraphs::dygraph() %>% 
   dygraphs::dyCandlestick() %>% 
