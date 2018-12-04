@@ -402,28 +402,40 @@ time_now <- site_html %>%
 site_html %>% rvest::guess_encoding()
 ```
 
-[シフトJISを使い続ける上場企業をまとめてみた <i class="fa fa-external-link"></i>](https://www.megamouth.info/entry/2017/10/20/015056){target="_blank" title="megamouthの葬列"} を参考に`UTF-8`のサイトをチェックしてみると
+[シフトJISを使い続ける上場企業をまとめてみた <i class="fa fa-external-link"></i>](https://www.megamouth.info/entry/2017/10/20/015056){target="_blank" title="megamouthの葬列"} を参考に文字セットが`UTF-8`とは異なるサイトをチェックしてみると
 
-#### 日清オイリオ
+
+#### 日清オイリオ（Shift_JIS）
 ![](./fig/nisshin_oilio.png)
 ```{r}
 "http://www.nisshin-oillio.com/" %>% 
   xml2::read_html() %>% rvest::guess_encoding()
 ```
 
-#### マキタ
+
+#### マキタ（shift_jis）
 ![](./fig/makita.png)
 ```{r, error=TRUE}
 "https://www.makita.co.jp/" %>% 
   xml2::read_html() %>% rvest::guess_encoding()
 ```
 
-#### 楽天
+
+#### 楽天（euc-jp）
 ![](./fig/rakuten.png)
 ```{r}
 "https://www.rakuten.co.jp/" %>% 
   xml2::read_html() %>% rvest::guess_encoding()
 ```
+
+
+#### いすゞ自動車（Shift_JIS）
+![](./fig/isuzu.png)
+```{r}
+"http://www.isuzu.co.jp/" %>% 
+  xml2::read_html() %>% rvest::guess_encoding()
+```
+
 
 サイトによっては文字コードが`Shift JIS`などの場合`rvest`パッケージで取得した情報が文字化けする場合があります。このような場合、ヘッダーから文字セットの情報を取得してエンコードを変換する必要があります。  
 
