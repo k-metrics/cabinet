@@ -28,12 +28,13 @@ xpath_ss <- "/html/body/div[3]/div[1]/div/div/div[3]/div[2]/div/div[2]/table[4]"
 xpath_s <- "/html/body/div[3]/div[1]/div/div/div[3]/div[2]/div/div[2]/table[5]"
 xpath_ap <- "/html/body/div[3]/div[1]/div/div/div[3]/div[2]/div/div[2]/table[6]"
 xpath_a <- "/html/body/div[3]/div[1]/div/div/div[3]/div[2]/div/div[2]/table[7]"
+
+site_html <- site_url %>% xml2::read_html()
 ```
 
 ## Rank SS
 ```{r}
-(rank_ss <- site_url %>% 
-  xml2::read_html() %>% 
+(rank_ss <- site_html %>% 
   rvest::html_node(xpath = xpath_ss) %>% 
   rvest::html_table() %>% 
   dplyr::mutate(rank = "SS") %>% 
@@ -54,8 +55,7 @@ xpath_a <- "/html/body/div[3]/div[1]/div/div/div[3]/div[2]/div/div[2]/table[7]"
 
 ## Rank S
 ```{r}
-(rank_s <- site_url %>% 
-  xml2::read_html() %>% 
+(rank_s <- site_html %>% 
   rvest::html_node(xpath = xpath_s) %>% 
   rvest::html_table() %>% 
   dplyr::mutate(rank = "S") %>% 
@@ -76,8 +76,7 @@ xpath_a <- "/html/body/div[3]/div[1]/div/div/div[3]/div[2]/div/div[2]/table[7]"
 
 ## Rank A+
 ```{r}
-(rank_ap <- site_url %>% 
-  xml2::read_html() %>% 
+(rank_ap <- site_html %>% 
   rvest::html_node(xpath = xpath_ap) %>% 
   rvest::html_table() %>% 
   dplyr::mutate(rank = "A+") %>% 
@@ -98,8 +97,7 @@ xpath_a <- "/html/body/div[3]/div[1]/div/div/div[3]/div[2]/div/div[2]/table[7]"
 
 ## Rank A
 ```{r}
-(rank_a <- site_url %>% 
-  xml2::read_html() %>% 
+(rank_a <- site_html %>% 
   rvest::html_node(xpath = xpath_a) %>% 
   rvest::html_table() %>% 
   dplyr::mutate(rank = "A") %>% 
@@ -169,12 +167,13 @@ xpath_ce <- "//*[@id=\"sta_c\"]/div/table"
 xpath_pa <- "//*[@id=\"sta_p\"]/div/table"
 xpath_in <- "//*[@id=\"sta_i\"]/div/table"
 xpath_op <- "//*[@id=\"sta_o\"]/div/table"
+
+site_html <- site_url %>% xml2::read_html()
 ```
 
 ## セ・リーグ
 ```{r}
-site_url %>% 
-  xml2::read_html() %>% 
+site_html %>% 
   rvest::html_node(xpath = xpath_ce) %>% 
   rvest::html_table() %>% 
   DT::datatable()
@@ -182,8 +181,7 @@ site_url %>%
 
 ## パ・リーグ
 ```{r}
-site_url %>% 
-  xml2::read_html() %>% 
+site_html %>% 
   rvest::html_node(xpath = xpath_pa) %>% 
   rvest::html_table() %>% 
   DT::datatable()
@@ -191,8 +189,7 @@ site_url %>%
 
 ## 交流戦
 ```{r}
-site_url %>% 
-  xml2::read_html() %>% 
+site_html %>% 
   rvest::html_node(xpath = xpath_in) %>% 
   rvest::html_table() %>% 
   DT::datatable()
@@ -200,8 +197,7 @@ site_url %>%
 
 ## オープン戦
 ```{r}
-site_url %>% 
-  xml2::read_html() %>% 
+site_html %>% 
   rvest::html_node(xpath = xpath_op) %>% 
   rvest::html_table() %>% 
   DT::datatable()
@@ -245,14 +241,14 @@ result %>% DT::datatable()
 
 ## 十両取組一覧
 ```{r, include=FALSE}
-xpath_mu <- "//*[@id=\"juryo\"]/table"
+xpath_ju <- "//*[@id=\"juryo\"]/table"
 ```
 
 ```{r}
 df <- purrr::map2(site_url, c(1:15), ~ paste(.x, .y, sep = "")) %>%
   purrr::map2_df(c(1:15), .f = function(.x, .y) {
     xml2::read_html(.x) %>% 
-      rvest::xml_node(xpath = xpath_mu) %>%
+      rvest::xml_node(xpath = xpath_ju) %>%
       rvest::html_table(header = FALSE) %>%
       dplyr::slice(-1) %>% 
       dplyr::mutate(day = .y)})
@@ -321,7 +317,7 @@ xpath_yd <- "/html/body/div/div[3]/div[1]/div[8]/table[2]"
 css_yd <- ".stock_kabuka2"
 ```
 
-本来は10ページ目まであるが。謎のマルチバイト文字が含まれていてエラーになるので9ページ目までとしている。  
+本来は10ページ目まであるが。謎のマルチバイト文字（恐らく前週比の欄にある「－」）が含まれていてエラーになるので9ページ目までとしている。  
 ```{r}
 (yd_df <- purrr::map2(site_url, c(1:9), ~ paste(.x, .y, sep = "")) %>%
   purrr::map_df(.f = function(.x) {
@@ -351,33 +347,33 @@ yd_df %>%
 [東京アメダス（表形式） <i class="fa fa-external-link"></i>](http://www.jma.go.jp/jp/amedas_h/today-44132.html){target="_blank" title=""}
 ```{r, include=FALSE}
 site_url <- "http://www.jma.go.jp/jp/amedas_h/today-44132.html"
+
+site_html <- site_url %>% xml2::read_html()
 ```
 
 ## 実況データ
 ```{r, include=FALSE}
-xpath_po <- "//*[@id=\"tbl_title\"]"   # 日付ならびに地点名
-xpath_da <- "//*[@id=\"tbl_list\"]"                   # アメダス表形式データ部
-xpath_nw <- "//*[@id=\"main_table\"]/div[4]"          # 時現在
+xpath_po <- "//*[@id=\"tbl_title\"]"           # 日付ならびに地点名
+xpath_da <- "//*[@id=\"tbl_list\"]"            # アメダス表形式データ部
+xpath_nw <- "//*[@id=\"main_table\"]/div[4]"   # 時現在
 
-css_po <- ".td_title"   # CSSセレクター（Firefoxなら取れる）
+css_po <- ".td_title"                          # CSSセレクター
+css_da <- "#tbl_list"
 css_nw <- "#main_table > div:nth-child(5)"
 ```
 
 ```{r}
-date_loc <- site_url %>% 
-  xml2::read_html() %>% 
+date_loc <- site_html %>% 
   rvest::html_node(css = css_po) %>% 
   rvest::html_text()
 
-time_now <- site_url %>% 
-  xml2::read_html() %>% 
+time_now <- site_html %>% 
   rvest::html_node(css = css_nw) %>% 
   rvest::html_text() %>% 
   stringr::str_remove(pattern = "※")
 
-(amedas_df <- site_url %>% 
-  xml2::read_html() %>% 
-  rvest::html_node(xpath = xpath_da) %>% 
+(amedas_df <- site_html %>% 
+  rvest::html_node(css = css_da) %>% 
   rvest::html_table(header = TRUE) %>% 
   dplyr::slice(-1) %>% 
   dplyr::mutate(`時刻` = readr::parse_integer(`時刻`),
