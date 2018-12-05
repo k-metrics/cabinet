@@ -284,7 +284,7 @@ xpath_na <- "/html/body/div/div[2]/div[2]/div[1]/div[5]/table"
     xml2::read_html(.x) %>% 
       rvest::xml_node(xpath = xpath_na) %>%
       rvest::html_table()})) %>% 
-  DT::datatable()
+  head(1000) %>% DT::datatable()
 ```
 
 ## ローソクチャート
@@ -322,7 +322,7 @@ css_yd <- ".stock_kabuka2"
 (yd_df <- purrr::map2(site_url, c(1:9), ~ paste(.x, .y, sep = "")) %>%
   purrr::map_df(.f = function(.x) {
     xml2::read_html(.x) %>% 
-      rvest::xml_node(xpath = xpath_yd) %>%
+      rvest::xml_node(css = css_yd) %>%
       rvest::html_table()}) %>% 
   dplyr::mutate(`日付` = lubridate::as_date(`日付`)) %>% 
   dplyr::select(-`売買高(株)`)) %>% 
