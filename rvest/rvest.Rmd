@@ -278,7 +278,7 @@ site_url <- "https://info.finance.yahoo.co.jp/history/?code=998407.O&sy=1983&sm=
 xpath_na <- "/html/body/div/div[2]/div[2]/div[1]/div[5]/table"
 ```
 
-```{r}
+```{r, cache=TRUE}
 (df <- purrr::map2(site_url, c(1:344), ~ paste(.x, .y, sep = "")) %>%
   purrr::map_df(.f = function(.x, .y) {
     xml2::read_html(.x) %>% 
