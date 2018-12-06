@@ -230,9 +230,9 @@ result <- df %>%
   tidyr::extract(X2, "e_name", regex = "([^[:digit:]]+)", remove = FALSE) %>% 
   tidyr::extract(X6, "w_name", regex = "([^[:digit:]]+)", remove = FALSE) %>% 
   tidyr::extract(X2, c("e_win", "e_lose"),
-                 regex = "([[:digit:]])勝([[:digit:]])", remove = TRUE) %>% 
+                 regex = "([[:digit:]]+)勝([[:digit:]]+)", remove = TRUE) %>% 
   tidyr::extract(X6, c("w_win", "w_lose"),
-                 regex = "([[:digit:]])勝([[:digit:]])", remove = TRUE) %>% 
+                 regex = "([[:digit:]]+)勝([[:digit:]]+)", remove = TRUE) %>% 
   dplyr::select(day, e_class = X1, e_name, e_win, e_lose, e_mark = X3,
                 kimarite = X4, w_mark = X5, w_class = X7, w_name, w_win, w_lose)
   
@@ -257,9 +257,9 @@ result <- df %>%
   tidyr::extract(X2, "e_name", regex = "([^[:digit:]]+)", remove = FALSE) %>% 
   tidyr::extract(X6, "w_name", regex = "([^[:digit:]]+)", remove = FALSE) %>% 
   tidyr::extract(X2, c("e_win", "e_lose"),
-                 regex = "([[:digit:]])勝([[:digit:]])", remove = TRUE) %>% 
+                 regex = "([[:digit:]]+)勝([[:digit:]]+)", remove = TRUE) %>% 
   tidyr::extract(X6, c("w_win", "w_lose"),
-                 regex = "([[:digit:]])勝([[:digit:]])", remove = TRUE) %>% 
+                 regex = "([[:digit:]]+)勝([[:digit:]]+)", remove = TRUE) %>% 
   dplyr::select(day, e_class = X1, e_name, e_win, e_lose, e_mark = X3,
                 kimarite = X4, w_mark = X5, w_class = X7, w_name, w_win, w_lose)
   
@@ -284,7 +284,7 @@ xpath_na <- "/html/body/div/div[2]/div[2]/div[1]/div[5]/table"
     xml2::read_html(.x) %>% 
       rvest::xml_node(xpath = xpath_na) %>%
       rvest::html_table()})) %>% 
-  head(1000) %>% DT::datatable()
+  DT::datatable()
 ```
 
 ## ローソクチャート
