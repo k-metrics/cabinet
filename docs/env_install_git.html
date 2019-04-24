@@ -27,9 +27,8 @@
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 <link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
 <script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
-<link href="site_libs/font-awesome-5.0.13/css/fa-svg-with-js.css" rel="stylesheet" />
-<script src="site_libs/font-awesome-5.0.13/js/fontawesome-all.min.js"></script>
-<script src="site_libs/font-awesome-5.0.13/js/fa-v4-shims.min.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
@@ -78,9 +77,7 @@ h6 {
 
 <link rel="stylesheet" href="shared/style.css" type="text/css" />
 
-</head>
 
-<body>
 
 <style type = "text/css">
 .main-container {
@@ -105,6 +102,9 @@ img {
 button.code-folding-btn:focus {
   outline: none;
 }
+summary {
+  display: list-item;
+}
 </style>
 
 
@@ -119,7 +119,6 @@ body {
   padding-top: 56px;
   margin-top: -56px;
 }
-
 .section h2 {
   padding-top: 56px;
   margin-top: -56px;
@@ -139,6 +138,43 @@ body {
 .section h6 {
   padding-top: 56px;
   margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
 }
 </style>
 
@@ -160,18 +196,75 @@ $(document).ready(function () {
 });
 </script>
 
-
-<div class="container-fluid main-container">
-
 <!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
 <script>
 $(document).ready(function () {
   window.buildTabsets("TOC");
 });
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
 </script>
 
 <!-- code folding -->
-
 
 
 
@@ -259,6 +352,16 @@ div.tocify {
 
 
 </style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
 
 <!-- setup 3col/9col grid for toc_float and main content  -->
 <div class="row-fluid">
@@ -448,86 +551,56 @@ div.tocify {
 <ol style="list-style-type: decimal">
 <li><a href="https://gitforwindows.org/" target="_blank" title="We bring the awesome Git SCM to Windows">Git for Windows <i class="fa fa-external-link"></i></a> からインストーラをダウンロードして起動します</li>
 </ol>
-<div class="figure">
-<img src="shared/fig/git/Git_for_Winodws_01.png" />
-
-</div>
+<p><img src="shared/fig/git/Git_for_Winodws_01.png" /></p>
 <p>　</p>
 <ol start="2" style="list-style-type: decimal">
 <li>コンポーネントの選択は任意ですがRStudioやGUIクライアントで利用する場合はミニマムで構いません</li>
 </ol>
-<div class="figure">
-<img src="shared/fig/git/Git_for_Winodws_02.png" />
-
-</div>
+<p><img src="shared/fig/git/Git_for_Winodws_02.png" /></p>
 <p>　</p>
 <ol start="3" style="list-style-type: decimal">
 <li>（ソース）エディタはお好みのエディタを指定してください</li>
 </ol>
-<div class="figure">
-<img src="shared/fig/git/Git_for_Winodws_03_1.png" />
-
-</div>
+<p><img src="shared/fig/git/Git_for_Winodws_03_1.png" /></p>
 <p>特にお好みのエディタがない場合はMicrosoftの <a href="https://www.microsoft.com/ja-jp/dev/products/code-vs.aspx" target="_blank" title="Micorosoft Visual Studio Code">Visual Studio Code <i class="fa fa-external-link"></i></a> をおすゝめします。<br />
 　</p>
 <ol start="4" style="list-style-type: decimal">
 <li>Gitをコマンドラインで利用する方法を選択します</li>
 </ol>
-<div class="figure">
-<img src="shared/fig/git/Git_for_Winodws_04.png" />
-
-</div>
+<p><img src="shared/fig/git/Git_for_Winodws_04.png" /></p>
 <p>図ではGit Bashを選択していますが、Windows環境では標準のコマンドプロンプトを利用するのが無難です。<br />
 　</p>
 <ol start="5" style="list-style-type: decimal">
 <li>HTTPS接続の設定はOpenSSLを選択します</li>
 </ol>
-<div class="figure">
-<img src="shared/fig/git/Git_for_Winodws_05.png" />
-
-</div>
+<p><img src="shared/fig/git/Git_for_Winodws_05.png" /></p>
 <p>　</p>
 <ol start="6" style="list-style-type: decimal">
 <li>改行設定は何も変換しない“Checkout as-is, commit as-is”を選択しておきます</li>
 </ol>
-<div class="figure">
-<img src="shared/fig/git/Git_for_Winodws_06.png" />
-
-</div>
+<p><img src="shared/fig/git/Git_for_Winodws_06.png" /></p>
 <p>行末コードの自動変換は思わぬ問題を引き起こす可能性がありますので変換しない設定にしておくことをおすゝめします。<br />
 　</p>
 <ol start="7" style="list-style-type: decimal">
 <li>ターミナルエミュレータはお好みで選択してください</li>
 </ol>
-<div class="figure">
-<img src="shared/fig/git/Git_for_Winodws_07.png" />
-
-</div>
+<p><img src="shared/fig/git/Git_for_Winodws_07.png" /></p>
 <p>分からない場合は上図のようにWindowsのデフォルト・コンソールを設定しておいてください。<br />
 　</p>
 <ol start="8" style="list-style-type: decimal">
 <li>追加設定はデフォルトでかまいません（下図はデフォルトではありません）</li>
 </ol>
-<div class="figure">
-<img src="shared/fig/git/Git_for_Winodws_08.png" />
-
-</div>
+<p><img src="shared/fig/git/Git_for_Winodws_08.png" /></p>
 <p>　</p>
 <ol start="9" style="list-style-type: decimal">
 <li>インストールが開始されます</li>
 </ol>
-<div class="figure">
-<img src="shared/fig/git/Git_for_Winodws_09.png" />
-
-</div>
+<p><img src="shared/fig/git/Git_for_Winodws_09.png" /></p>
 <p>　</p>
 <ol start="10" style="list-style-type: decimal">
 <li>これでインストーラは終了です</li>
 </ol>
-<div class="figure">
-<img src="shared/fig/git/Git_for_Winodws_10.png" />
-
-</div>
+<p><img src="shared/fig/git/Git_for_Winodws_10.png" /></p>
 <p>引き続きGUIクライアントをインストールしておきます。 　</p>
 </div>
 <div id="ubuntu" class="section level2">
@@ -594,58 +667,37 @@ MacやWindows環境では <a href="https://www.sourcetreeapp.com/" target="_blan
 <ol style="list-style-type: decimal">
 <li><a href="https://www.syntevo.com/smartgit/" target="_blank" title="SmartGit">SmartGit <i class="fa fa-external-link"></i></a> からインストーラファイル（zip形式）をダウンロードしファイルを展開してインストーラを起動します</li>
 </ol>
-<div class="figure">
-<img src="shared/fig/git/SmartGit_01.png" />
-
-</div>
+<p><img src="shared/fig/git/SmartGit_01.png" /></p>
 <p>インストールフォルダを指定します。 　</p>
 <ol start="2" style="list-style-type: decimal">
 <li>メニューの登録名を指定します</li>
 </ol>
-<div class="figure">
-<img src="shared/fig/git/SmartGit_02.png" />
-
-</div>
+<p><img src="shared/fig/git/SmartGit_02.png" /></p>
 <p>　</p>
 <ol start="3" style="list-style-type: decimal">
 <li>デスクトップアイコンは任意で、他のオプションはデフォルトのままでも構いません</li>
 </ol>
-<div class="figure">
-<img src="shared/fig/git/SmartGit_03.png" />
-
-</div>
+<p><img src="shared/fig/git/SmartGit_03.png" /></p>
 <p>　</p>
 <ol start="4" style="list-style-type: decimal">
 <li>インストール設定を確認します</li>
 </ol>
-<div class="figure">
-<img src="shared/fig/git/SmartGit_04.png" />
-
-</div>
+<p><img src="shared/fig/git/SmartGit_04.png" /></p>
 <p>　</p>
 <ol start="5" style="list-style-type: decimal">
 <li>インストールの設定を確認したらインストールを開始します</li>
 </ol>
-<div class="figure">
-<img src="shared/fig/git/SmartGit_05.png" />
-
-</div>
+<p><img src="shared/fig/git/SmartGit_05.png" /></p>
 <p>　</p>
 <ol start="6" style="list-style-type: decimal">
 <li>インストールが開始されます</li>
 </ol>
-<div class="figure">
-<img src="shared/fig/git/SmartGit_06.png" />
-
-</div>
+<p><img src="shared/fig/git/SmartGit_06.png" /></p>
 <p>　</p>
 <ol start="7" style="list-style-type: decimal">
 <li>これでインストールは終了です</li>
 </ol>
-<div class="figure">
-<img src="shared/fig/git/SmartGit_07.png" />
-
-</div>
+<p><img src="shared/fig/git/SmartGit_07.png" /></p>
 <p>　</p>
 </div>
 <div id="初期設定" class="section level2">
@@ -655,46 +707,31 @@ MacやWindows環境では <a href="https://www.sourcetreeapp.com/" target="_blan
 <ol style="list-style-type: decimal">
 <li>ライセンス種別の確認</li>
 </ol>
-<div class="figure">
-<img src="shared/fig/smartgit/smartgit_01.png" />
-
-</div>
+<p><img src="shared/fig/smartgit/smartgit_01.png" /></p>
 <p>最初にライセンス許諾の確認が求められます。非商用利用であればサポートなしですがフル機能が使えます。利用形態に応じて次のステップでライセンス種別を選択してください。<br />
 　</p>
 <ol start="2" style="list-style-type: decimal">
 <li>ライセンス種別の選択</li>
 </ol>
-<div class="figure">
-<img src="shared/fig/smartgit/smartgit_02.png" />
-
-</div>
+<p><img src="shared/fig/smartgit/smartgit_02.png" /></p>
 <p>非商用利用の場合は一番したのラジオボタンをチェックします。商用利用の場合は有償登録を行わない場合は30日間のみ試用することが可能です。<br />
 　</p>
 <ol start="3" style="list-style-type: decimal">
 <li>利用条件の確認</li>
 </ol>
-<div class="figure">
-<img src="shared/fig/smartgit/smartgit_03-1.png" />
-
-</div>
+<p><img src="shared/fig/smartgit/smartgit_03-1.png" /></p>
 <p>「非商用利用」を選択した場合、利用条件の確認ダイアログが表示されますので条件を再確認してください。<br />
 　</p>
 <ol start="4" style="list-style-type: decimal">
 <li>利用条件の同意</li>
 </ol>
-<div class="figure">
-<img src="shared/fig/smartgit/smartgit_03-2.png" />
-
-</div>
+<p><img src="shared/fig/smartgit/smartgit_03-2.png" /></p>
 <p>次に進むためにはチェックボックスが有効になるまでしばらく待ってください。利用条件に同意できる場合はチェックボックスにチェックを入れ、［OK］ボタンをクリックします。<br />
 　</p>
 <ol start="5" style="list-style-type: decimal">
 <li>ユーザ情報の設定</li>
 </ol>
-<div class="figure">
-<img src="shared/fig/smartgit/smartgit_04.png" />
-
-</div>
+<p><img src="shared/fig/smartgit/smartgit_04.png" /></p>
 <p>ここで設定するはユーザ情報は <a href="https://git-scm.com/" target="_blank" title="Git公式">Git <i class="fa fa-external-link"></i></a> の操作履歴を識別するために使われる情報です。 <a href="https://www.syntevo.com/smartgit/" target="_blank" title="SmartGit">SmartGit <i class="fa fa-external-link"></i></a> に対する登録情報でもホスティング・サービスのアカウント情報でもありません。なお、ここで設定を行わなくても <a href="https://git-scm.com/" target="_blank" title="Git公式">Git <i class="fa fa-external-link"></i></a> から以下のコマンドを実行すれば設定できます。<br />
 　</p>
 <pre class="bash"><code>git config --global user.name &quot;your name&quot;
@@ -703,28 +740,19 @@ git config --global user.email &quot;your_mail@domain.com&quot;</code></pre>
 <ol start="6" style="list-style-type: decimal">
 <li>SSHクライアントの選択</li>
 </ol>
-<div class="figure">
-<img src="shared/fig/smartgit/smartgit_05.png" />
-
-</div>
+<p><img src="shared/fig/smartgit/smartgit_05.png" /></p>
 <p>SSHクライアントとしてOS側のクライアントを利用するか <a href="https://www.syntevo.com/smartgit/" target="_blank" title="SmartGit">SmartGit <i class="fa fa-external-link"></i></a> を利用するかを選択します。<br />
 　</p>
 <ol start="7" style="list-style-type: decimal">
 <li>ホスティング・プロバイダの設定</li>
 </ol>
-<div class="figure">
-<img src="shared/fig/smartgit/smartgit_06-1.png" />
-
-</div>
+<p><img src="shared/fig/smartgit/smartgit_06-1.png" /></p>
 <p><a href="https://github.com/" target="_blank" title="The world&#39;s leading software development platform">GitHub <i class="fa fa-external-link"></i></a> などのホスティング・サービスを利用する場合はプロバイダを指定します。<br />
 　</p>
 <ol start="8" style="list-style-type: decimal">
 <li>問題報告の設定</li>
 </ol>
-<div class="figure">
-<img src="shared/fig/smartgit/smartgit_07.png" />
-
-</div>
+<p><img src="shared/fig/smartgit/smartgit_07.png" /></p>
 <p>問題報告（クラッシュレポート）を自動送信したくない場合にはチェックを外してください。<br />
 　</p>
 </div>
@@ -740,11 +768,11 @@ git config --global user.email &quot;your_mail@domain.com&quot;</code></pre>
 </div>
 <div id="pro-git" class="section level2">
 <h2>Pro Git</h2>
-<p><a href="https://git-scm.com/book/ja/v2" target="_blank" title="&quot;&quot;">Pro Git <i class="fa fa-external-link"></i></a> は <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" target="_blank" title="The entire Pro Git book, written by Scott Chacon and Ben Straub">CC BY-NC-SA 3.0 <i class="fa fa-external-link"></i></a> で提供されている <a href="https://git-scm.com/" target="_blank" title="Git公式">Git <i class="fa fa-external-link"></i></a> の解説図書です。原著は英語ですが各国語に翻訳されており <a href="https://git-scm.com/" target="_blank" title="Git公式">Git <i class="fa fa-external-link"></i></a> を理解する上で最適な図書です。<br />
+<p><a href="https://git-scm.com/book/ja/v2" target="_blank" title="">Pro Git <i class="fa fa-external-link"></i></a> は <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" target="_blank" title="The entire Pro Git book, written by Scott Chacon and Ben Straub">CC BY-NC-SA 3.0 <i class="fa fa-external-link"></i></a> で提供されている <a href="https://git-scm.com/" target="_blank" title="Git公式">Git <i class="fa fa-external-link"></i></a> の解説図書です。原著は英語ですが各国語に翻訳されており <a href="https://git-scm.com/" target="_blank" title="Git公式">Git <i class="fa fa-external-link"></i></a> を理解する上で最適な図書です。<br />
 　</p>
 <hr />
 <!-- Include Footer -->
-<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2018-11-23(JST)]</p>
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2019-04-23(JST)]</p>
 </div>
 </div>
 
