@@ -1,0 +1,420 @@
+---
+title: "rvest"
+author: "Sampo Suzuki"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    code_folding: hide
+    df_print: paged
+    toc: true
+    toc_float:
+      collapsed: true
+      smooth_scroll: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+
+require(rvest)
+require(xml2)
+require(tidyverse)
+```
+
+# ポケモンGO
+[【ポケモンGO】最強ポケモンランキング【11/30最新版】 <i class="fa fa-external-link"></i>](https://appmedia.jp/pokemon_go/350150){target="_blank" title="ポケモンGO攻略Wiki"}
+```{r, include=FALSE}
+site_url <- "https://appmedia.jp/pokemon_go/350150"
+xpath_ss <- "/html/body/div[3]/div[1]/div/div/div[3]/div[2]/div/div[2]/table[4]"
+xpath_s <- "/html/body/div[3]/div[1]/div/div/div[3]/div[2]/div/div[2]/table[5]"
+xpath_ap <- "/html/body/div[3]/div[1]/div/div/div[3]/div[2]/div/div[2]/table[6]"
+xpath_a <- "/html/body/div[3]/div[1]/div/div/div[3]/div[2]/div/div[2]/table[7]"
+```
+
+## Rank SS
+```{r}
+(rank_ss <- site_url %>% 
+  xml2::read_html() %>% 
+  rvest::html_node(xpath = xpath_ss) %>% 
+  rvest::html_table() %>% 
+  dplyr::mutate(rank = "SS") %>% 
+  tidyr::separate(`ポケモン`, into = c("name", "memo", "memo2")) %>% 
+  dplyr::mutate(memo2 = dplyr::if_else(name == "アローラ", name, memo2),
+                name = dplyr::if_else(name == "アローラ", memo, name),
+                name = dplyr::if_else(!is.na(memo2),
+                                      paste(name, "（", memo2, "の姿）", sep = ""),
+                                      name),
+                memo = dplyr::if_else(!is.na(memo2), memo2, memo)) %>% 
+  dplyr::select(rank, name, type = `タイプ`, memo, CP = `最大CP`,
+                skill = `おすすめわざ`) %>% 
+  tidyr::separate(skill, c("skill", "type1", "skill1", "type2", "skill2"),
+                  sep = "([【】])") %>% 
+  dplyr::select(-skill)) %>% 
+  DT::datatable()
+```
+
+## Rank S
+```{r}
+(rank_s <- site_url %>% 
+  xml2::read_html() %>% 
+  rvest::html_node(xpath = xpath_s) %>% 
+  rvest::html_table() %>% 
+  dplyr::mutate(rank = "S") %>% 
+  tidyr::separate(`ポケモン`, into = c("name", "memo", "memo2")) %>% 
+  dplyr::mutate(memo2 = dplyr::if_else(name == "アローラ", name, memo2),
+                name = dplyr::if_else(name == "アローラ", memo, name),
+                name = dplyr::if_else(!is.na(memo2),
+                                      paste(name, "（", memo2, "の姿）", sep = ""),
+                                      name),
+                memo = dplyr::if_else(!is.na(memo2), memo2, memo)) %>% 
+  dplyr::select(rank, name, type = `タイプ`, memo, CP = `最大CP`,
+                skill = `おすすめわざ`) %>% 
+  tidyr::separate(skill, c("skill", "type1", "skill1", "type2", "skill2"),
+                  sep = "([【】])") %>% 
+  dplyr::select(-skill)) %>% 
+  DT::datatable()
+```
+
+## Rank A+
+```{r}
+(rank_ap <- site_url %>% 
+  xml2::read_html() %>% 
+  rvest::html_node(xpath = xpath_ap) %>% 
+  rvest::html_table() %>% 
+  dplyr::mutate(rank = "A+") %>% 
+  tidyr::separate(`ポケモン`, into = c("name", "memo", "memo2")) %>% 
+  dplyr::mutate(memo2 = dplyr::if_else(name == "アローラ", name, memo2),
+                name = dplyr::if_else(name == "アローラ", memo, name),
+                name = dplyr::if_else(!is.na(memo2),
+                                      paste(name, "（", memo2, "の姿）", sep = ""),
+                                      name),
+                memo = dplyr::if_else(!is.na(memo2), memo2, memo)) %>% 
+  dplyr::select(rank, name, type = `タイプ`, memo, CP = `最大CP`,
+                skill = `おすすめわざ`) %>% 
+  tidyr::separate(skill, c("skill", "type1", "skill1", "type2", "skill2"),
+                  sep = "([【】])") %>% 
+  dplyr::select(-skill)) %>% 
+  DT::datatable()
+```
+
+## Rank A
+```{r}
+(rank_a <- site_url %>% 
+  xml2::read_html() %>% 
+  rvest::html_node(xpath = xpath_a) %>% 
+  rvest::html_table() %>% 
+  dplyr::mutate(rank = "A") %>% 
+  tidyr::separate(`ポケモン`, into = c("name", "memo", "memo2")) %>% 
+  dplyr::mutate(memo2 = dplyr::if_else(name == "アローラ", name, memo2),
+                name = dplyr::if_else(name == "アローラ", memo, name),
+                name = dplyr::if_else(!is.na(memo2),
+                                      paste(name, "（", memo2, "の姿）", sep = ""),
+                                      name),
+                memo = dplyr::if_else(!is.na(memo2), memo2, memo)) %>% 
+  dplyr::select(rank, name, type = `タイプ`, memo, CP = `最大CP`,
+                skill = `おすすめわざ`) %>% 
+  tidyr::separate(skill, c("skill", "type1", "skill1", "type2", "skill2"),
+                  sep = "([【】])") %>% 
+  dplyr::select(-skill)) %>% 
+  DT::datatable()
+```
+
+## Total
+```{r}
+(rank_all <- rank_ss %>% 
+  dplyr::bind_rows(rank_s, rank_ap, rank_a)) %>% 
+  DT::datatable()
+```
+
+## Cross Table
+```{r}
+cp_table <- rank_all %>% 
+  dplyr::group_by(type) %>% 
+  dplyr::summarise(CP = round(max(CP)))
+
+rank_all %>% 
+  dplyr::count(rank, type) %>% 
+  tidyr::spread(key = rank, value = n) %>% 
+  dplyr::left_join(cp_table, .) %>% 
+  DT::datatable()
+```
+
+## Heat Map
+```{r, fig.height=10}
+rank_all %>% 
+  dplyr::group_by(type, rank) %>% 
+  dplyr::summarise(MaxCP = max(CP), MeanCP = round(mean(CP))) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = rank, y = type)) + 
+    ggplot2::geom_tile(ggplot2::aes(fill = MeanCP)) + 
+    ggplot2::geom_text(ggplot2::aes(label = MaxCP), colour = "#FFFFFF") +
+    ggplot2::scale_fill_continuous(type = "viridis") +
+    ggplot2::labs(subtitle = "白文字の数値は最大CP")
+```
+
+```{r}
+rank_all %>% 
+  dplyr::group_by(type, rank) %>% 
+  dplyr::summarise(MaxCP = max(CP), MeanCP = round(mean(CP))) %>% 
+  dplyr::mutate(text = dplyr::case_when(MaxCP > MeanCP ~ type, TRUE ~ "")) %>% 
+  ggplot2::ggplot(ggplot2::aes(x = MeanCP, y = MaxCP)) + 
+    ggplot2::geom_point(ggplot2::aes(colour = rank)) +
+    ggrepel::geom_label_repel(ggplot2::aes(label = text, colour = rank))
+```
+
+
+# プロ野球
+[プロ野球順位表 <i class="fa fa-external-link"></i>](https://baseball.yahoo.co.jp/npb/standings/){target="_blank" title="Sportsnavi"}
+```{r, include=FALSE}
+site_url <- "https://baseball.yahoo.co.jp/npb/standings/"
+xpath_ce <- "//*[@id=\"sta_c\"]/div/table"
+xpath_pa <- "//*[@id=\"sta_p\"]/div/table"
+xpath_in <- "//*[@id=\"sta_i\"]/div/table"
+xpath_op <- "//*[@id=\"sta_o\"]/div/table"
+```
+
+## セ・リーグ
+```{r}
+site_url %>% 
+  xml2::read_html() %>% 
+  rvest::html_node(xpath = xpath_ce) %>% 
+  rvest::html_table() %>% 
+  DT::datatable()
+```
+
+## パ・リーグ
+```{r}
+site_url %>% 
+  xml2::read_html() %>% 
+  rvest::html_node(xpath = xpath_pa) %>% 
+  rvest::html_table() %>% 
+  DT::datatable()
+```
+
+## 交流戦
+```{r}
+site_url %>% 
+  xml2::read_html() %>% 
+  rvest::html_node(xpath = xpath_in) %>% 
+  rvest::html_table() %>% 
+  DT::datatable()
+```
+
+## オープン戦
+```{r}
+site_url %>% 
+  xml2::read_html() %>% 
+  rvest::html_node(xpath = xpath_op) %>% 
+  rvest::html_table() %>% 
+  DT::datatable()
+```
+
+
+# 大相撲
+[平成30年11月場所 取組結果 <i class="fa fa-external-link"></i>](https://sports.yahoo.co.jp/sumo/torikumi/stats/?bashoId=201811){target="_blank" title="Sportsnavi"}
+```{r, include=FALSE}
+site_url <- "https://sports.yahoo.co.jp/sumo/torikumi/stats/?bashoId=201811&day="
+```
+
+## 幕内（中入り後）取組一覧
+```{r, include=FALSE}
+xpath_mu <- "//*[@id=\"makuuchi\"]/table"
+```
+
+取組一覧のヘッダが"東"と"西"にまとめられているために「ヘッダなし」で読みこまないとその後のデータフレーム化処理でおかしくなる点に注意。
+```{r}
+df <- purrr::map2(site_url, c(1:15), ~ paste(.x, .y, sep = "")) %>%
+  purrr::map2_df(c(1:15), .f = function(.x, .y) {
+    xml2::read_html(.x) %>% 
+      rvest::xml_node(xpath = xpath_mu) %>%
+      rvest::html_table(header = FALSE) %>%
+      dplyr::slice(-1) %>% 
+      dplyr::mutate(day = .y)})
+
+result <- df %>% 
+  tidyr::extract(X2, "e_name", regex = "([^[:digit:]]+)", remove = FALSE) %>% 
+  tidyr::extract(X6, "w_name", regex = "([^[:digit:]]+)", remove = FALSE) %>% 
+  tidyr::extract(X2, c("e_win", "e_lose"),
+                 regex = "([[:digit:]])勝([[:digit:]])", remove = TRUE) %>% 
+  tidyr::extract(X6, c("w_win", "w_lose"),
+                 regex = "([[:digit:]])勝([[:digit:]])", remove = TRUE) %>% 
+  dplyr::select(day, e_class = X1, e_name, e_win, e_lose, e_mark = X3,
+                kimarite = X4, w_mark = X5, w_class = X7, w_name, w_win, w_lose)
+  
+result %>% DT::datatable()
+```
+
+## 十両取組一覧
+```{r, include=FALSE}
+xpath_mu <- "//*[@id=\"juryo\"]/table"
+```
+
+```{r}
+df <- purrr::map2(site_url, c(1:15), ~ paste(.x, .y, sep = "")) %>%
+  purrr::map2_df(c(1:15), .f = function(.x, .y) {
+    xml2::read_html(.x) %>% 
+      rvest::xml_node(xpath = xpath_mu) %>%
+      rvest::html_table(header = FALSE) %>%
+      dplyr::slice(-1) %>% 
+      dplyr::mutate(day = .y)})
+
+result <- df %>% 
+  tidyr::extract(X2, "e_name", regex = "([^[:digit:]]+)", remove = FALSE) %>% 
+  tidyr::extract(X6, "w_name", regex = "([^[:digit:]]+)", remove = FALSE) %>% 
+  tidyr::extract(X2, c("e_win", "e_lose"),
+                 regex = "([[:digit:]])勝([[:digit:]])", remove = TRUE) %>% 
+  tidyr::extract(X6, c("w_win", "w_lose"),
+                 regex = "([[:digit:]])勝([[:digit:]])", remove = TRUE) %>% 
+  dplyr::select(day, e_class = X1, e_name, e_win, e_lose, e_mark = X3,
+                kimarite = X4, w_mark = X5, w_class = X7, w_name, w_win, w_lose)
+  
+result %>% DT::datatable()
+```
+
+
+# 株式
+[日経平均株価 <i class="fa fa-external-link"></i>](https://stocks.finance.yahoo.co.jp/stocks/detail/?code=998407.O){target="_blank" title="Yahoo!ファイナンス"}
+```{r, include=FALSE}
+site_url <- "https://info.finance.yahoo.co.jp/history/?code=998407.O&sy=1983&sm=1&sd=1&ey=2018&em=11&ed=30&tm=d&p="
+```
+
+## 日経平均株価
+```{r, include=FALSE}
+xpath_na <- "/html/body/div/div[2]/div[2]/div[1]/div[5]/table"
+```
+
+```{r}
+(df <- purrr::map2(site_url, c(1:344), ~ paste(.x, .y, sep = "")) %>%
+  purrr::map_df(.f = function(.x, .y) {
+    xml2::read_html(.x) %>% 
+      rvest::xml_node(xpath = xpath_na) %>%
+      rvest::html_table()})) %>% 
+  DT::datatable()
+```
+
+## ローソクチャート
+25日、75日移動平均線付
+```{r}
+na_df <- df
+df %>% 
+  dplyr::rename(date = `日付`,
+                Open = `始値`, High = `高値`, Low = `安値`, Close = `終値`) %>% 
+  dplyr::mutate(date = lubridate::as_date(date)) %>% 
+  dplyr::mutate_if(is.character, readr::parse_number) %>% 
+  dplyr::arrange(date) %>% 
+  dplyr::mutate(MA25 = RcppRoll::roll_meanr(Close, n = 25L, fill = NA),
+                MA75 = RcppRoll::roll_meanr(Close, n = 75L, fill = NA)) %>% 
+  zoo::read.zoo() %>% xts::as.xts() %>% 
+  dygraphs::dygraph() %>% 
+  dygraphs::dyCandlestick() %>% 
+  dygraphs::dyRangeSelector(dateWindow = c("2018-01-01", "2018-11-30"))
+```
+
+# 為替
+[米ドル/円 <i class="fa fa-external-link"></i>](https://kabutan.jp/stock/kabuka?code=0950){target="_blank" title="Kabutan"}
+```{r, include=FALSE}
+site_url <- "https://kabutan.jp/stock/kabuka?code=0950&ashi=wek&page="
+```
+
+## 週次レート
+```{r, include=FALSE}
+xpath_yd <- "/html/body/div/div[3]/div[1]/div[8]/table[2]"
+css_yd <- ".stock_kabuka2"
+```
+
+本来は10ページ目まであるが。謎のマルチバイト文字が含まれていてエラーになるので9ページ目までとしている。  
+```{r}
+(yd_df <- purrr::map2(site_url, c(1:9), ~ paste(.x, .y, sep = "")) %>%
+  purrr::map_df(.f = function(.x) {
+    xml2::read_html(.x) %>% 
+      rvest::xml_node(xpath = xpath_yd) %>%
+      rvest::html_table()}) %>% 
+  dplyr::mutate(`日付` = lubridate::as_date(`日付`)) %>% 
+  dplyr::select(-`売買高(株)`)) %>% 
+  DT::datatable()
+```
+
+## ロウソクチャート
+```{r}
+yd_df %>% 
+  dplyr::select(date = `日付`,
+                Open = `始値`, High = `高値`, Low = `安値`, Close = `終値`) %>% 
+  dplyr::arrange(date) %>% 
+  dplyr::mutate(MA25 = RcppRoll::roll_meanr(Close, n = 25L, fill = NA),
+                MA75 = RcppRoll::roll_meanr(Close, n = 75L, fill = NA)) %>% 
+  zoo::read.zoo() %>% xts::as.xts() %>% 
+  dygraphs::dygraph() %>% 
+  dygraphs::dyCandlestick() %>% 
+  dygraphs::dyRangeSelector()
+```
+
+# 気象
+[東京アメダス（表形式） <i class="fa fa-external-link"></i>](http://www.jma.go.jp/jp/amedas_h/today-44132.html){target="_blank" title=""}
+```{r, include=FALSE}
+site_url <- "http://www.jma.go.jp/jp/amedas_h/today-44132.html"
+```
+
+## 実況データ
+```{r, include=FALSE}
+xpath_po <- "//*[@id=\"tbl_title\"]"   # 日付ならびに地点名
+xpath_da <- "//*[@id=\"tbl_list\"]"                   # アメダス表形式データ部
+xpath_nw <- "//*[@id=\"main_table\"]/div[4]"          # 時現在
+
+css_po <- ".td_title"   # CSSセレクター（Firefoxなら取れる）
+css_nw <- "#main_table > div:nth-child(5)"
+```
+
+```{r}
+date_loc <- site_url %>% 
+  xml2::read_html() %>% 
+  rvest::html_node(css = css_po) %>% 
+  rvest::html_text()
+
+time_now <- site_url %>% 
+  xml2::read_html() %>% 
+  rvest::html_node(css = css_nw) %>% 
+  rvest::html_text() %>% 
+  stringr::str_remove(pattern = "※")
+
+(amedas_df <- site_url %>% 
+  xml2::read_html() %>% 
+  rvest::html_node(xpath = xpath_da) %>% 
+  rvest::html_table(header = TRUE) %>% 
+  dplyr::slice(-1) %>% 
+  dplyr::mutate(`時刻` = readr::parse_integer(`時刻`),
+                `気温` = readr::parse_double(`気温`),
+                `降水量` = readr::parse_double(`降水量`),
+                `風速` = readr::parse_double(`風速`),
+                `日照時間` = readr::parse_double(`日照時間`),
+                `積雪深` = readr::parse_double(`積雪深`),
+                `湿度` = readr::parse_integer(`湿度`),
+                `気圧` = readr::parse_double(`気圧`))) %>% 
+  DT::datatable(caption = paste(date_loc, time_now))
+```
+
+# Tips
+## 情報が取得できない
+`XPath`を利用してスクレイピングを行った際に情報が上手く取得できない場合があります。このような場合、`CSS selector`を使ってください。`CSS selector`の取得にはFirefoxの開発者ツールが向いています。
+
+
+## 文字セットを調べる方法
+サイトによっては文字コードが`Shift JIS`などの場合`rvest`パッケージで取得した情報が文字化けする場合があります。このような場合、ヘッダーから文字セットの情報を取得してエンコードを変換する必要があります。  
+
+まず、ヘッダ（<head></head>の間）にある文字セットのメタ情報（<meta></meta>で囲われていて`charset`が記載されいる部分）のCSSセレクタを取得します。  
+```{r}
+(meta <- site_url %>% 
+  xml2::read_html() %>% 
+  rvest::html_nodes(css = "head > meta:nth-child(1)") %>% 
+  rvest::html_attrs())
+```
+
+次に"charset="の文字列の終了位置と文字セットの文字コード指定の最終文字の位置を取得します。これらの操作には`stringr`パッケージを用います。
+```{r}
+start <- stringr::str_locate(meta, pattern = "charset=")[2]
+end <- stringr::str_locate(meta, pattern = '\\)')[1]
+```
+
+得られた二つの文字位置に囲まれた部分が文字コードになっていますので、位置指定で文字コードを文字列として取り出します。  
+```{r}
+stringr::str_sub(meta, start = start + 1, end = end - 2)
+```
+
+
