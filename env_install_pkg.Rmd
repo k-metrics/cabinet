@@ -196,12 +196,42 @@ $ sudo apt-get install libpq-dev
 
 　  
 
-## Ubuntu系のライブラリ
+## Ubuntu系のライブラリなど
+[RStudio Package Manager demo site <i class="fa fa-external-link"></i>](https://demo.rstudiopm.com/){target="_blank" title="RStudio"} にてパッケージが必要とするライブラリなどを確認することができます。意図的にインストールしなくても依存関係のあるパッケージがインストールされる際にライブラリを必要とすることもこともあります。下表はその代表的な例です。
 
-OpenCL | ocl-icd-opencl-dev
-RPostgres | libpq-dev
+Package   | libraries                                          | memo
+----------|----------------------------------------------------|---------------
+clipr | xclip
+OpenCL    | ocl-icd-opencl-dev | 
+magick    | libcurl4-openssl-dev libssl-dev imagemagick libmagick++-dev | for ggplot2
+rJava     | liblzma-dev libbz2-dev libicu-dev default-jdk zlib1g-dev | 
+Rmpi      | libopenmpi-dev libopenmpi2 | for paralleizarion
+RMySQL    | libmysqlclient-dev mysql-server |
+RODBC     | unixodbc-dev
+Rpoppler  | libglib2.0-dev libpoppler-cpp-dev libpoppler-glib-dev
+RPostgres | libpq-dev |
+rgl       | libfreetype6-dev libglu1-mesa-dev libgl1-mesa-dev
+ssh       | libcurl4-openssl-dev libssl-dev libssh2-1-dev
+tidyverse | libcurl4-openssl-dev libssl-dev libxml2-dev
+udunits2  | libudunits2-dev
 
 
+これらのライブラリまたはアプリケーションはパッケージをインストールする前にインストールしておいてください。インストール時のコマンド例を以下に示しておきます。
+
+```{bash, eval=FALSE}
+sudo apt-get update
+sudo apt-get install ocl-icd-opencl-dev libcurl4-openssl-dev libssl-dev \
+   libmagick++-dev liblzma-dev libbz2-dev libicu-dev zlib1g-dev \
+   libopenmpi-dev libopenmpi2 libmysqlclient-dev unixodbc-dev \
+   libglib2.0-dev libpoppler-cpp-dev libpoppler-glib-dev libpq-dev \
+   libfreetype6-dev libglu1-mesa-dev libgl1-mesa-dev \
+   libcurl4-openssl-dev libssl-dev libssh2-1-dev libxml2-dev libudunits2-dev \
+   imagemagick default-jdk mysql-server
+
+R CMD javaconf
+```
+
+　  
 
 # 参考）インストール用スクリプト
 モダンな[R <i class="fa fa-external-link"></i>][R] のプログラミングを行う際に一通り必要と思われるパッケージを一度にインストールできるスクリプトを用意しました。ご自分の環境初期設定用に必ずインストールするパッケージをリストアップしておきスクリプト化しておくとRのアップデートの際などに便利です。  

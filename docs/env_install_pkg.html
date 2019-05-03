@@ -711,8 +711,105 @@ libpq-dev: /usr/include/postgresql/libpq-fe.h
 $ sudo apt-get update
 $ sudo apt-get install libpq-dev</code></pre>
 <p>　</p>
-<p>これで必要なファイルが入手できましたので、再度、パッケージのインストールを実行します。<br />
-　</p>
+<p>これで必要なファイルが入手できましたので、再度、パッケージのインストールを実行します。</p>
+<p>　</p>
+</div>
+<div id="ubuntu系のライブラリなど" class="section level2">
+<h2>Ubuntu系のライブラリなど</h2>
+<p><a href="https://demo.rstudiopm.com/" target="_blank" title="RStudio">RStudio Package Manager demo site <i class="fa fa-external-link"></i></a> にてパッケージが必要とするライブラリなどを確認することができます。意図的にインストールしなくても依存関係のあるパッケージがインストールされる際にライブラリを必要とすることもこともあります。下表はその代表的な例です。</p>
+<table>
+<colgroup>
+<col width="12%" />
+<col width="67%" />
+<col width="19%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Package</th>
+<th>libraries</th>
+<th>memo</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>clipr</td>
+<td>xclip</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>OpenCL</td>
+<td>ocl-icd-opencl-dev</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>magick</td>
+<td>libcurl4-openssl-dev libssl-dev imagemagick libmagick++-dev</td>
+<td>for ggplot2</td>
+</tr>
+<tr class="even">
+<td>rJava</td>
+<td>liblzma-dev libbz2-dev libicu-dev default-jdk zlib1g-dev</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Rmpi</td>
+<td>libopenmpi-dev libopenmpi2</td>
+<td>for paralleizarion</td>
+</tr>
+<tr class="even">
+<td>RMySQL</td>
+<td>libmysqlclient-dev mysql-server</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>RODBC</td>
+<td>unixodbc-dev</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Rpoppler</td>
+<td>libglib2.0-dev libpoppler-cpp-dev libpoppler-glib-dev</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>RPostgres</td>
+<td>libpq-dev</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>rgl</td>
+<td>libfreetype6-dev libglu1-mesa-dev libgl1-mesa-dev</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>ssh</td>
+<td>libcurl4-openssl-dev libssl-dev libssh2-1-dev</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>tidyverse</td>
+<td>libcurl4-openssl-dev libssl-dev libxml2-dev</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>udunits2</td>
+<td>libudunits2-dev</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>これらのライブラリまたはアプリケーションはパッケージをインストールする前にインストールしておいてください。インストール時のコマンド例を以下に示しておきます。</p>
+<pre class="bash"><code>sudo apt-get update
+sudo apt-get install ocl-icd-opencl-dev libcurl4-openssl-dev libssl-dev \
+   libmagick++-dev liblzma-dev libbz2-dev libicu-dev zlib1g-dev \
+   libopenmpi-dev libopenmpi2 libmysqlclient-dev unixodbc-dev \
+   libglib2.0-dev libpoppler-cpp-dev libpoppler-glib-dev libpq-dev \
+   libfreetype6-dev libglu1-mesa-dev libgl1-mesa-dev \
+   libcurl4-openssl-dev libssl-dev libssh2-1-dev libxml2-dev libudunits2-dev \
+   imagemagick default-jdk mysql-server
+
+R CMD javaconf</code></pre>
+<p>　</p>
 </div>
 </div>
 <div id="参考インストール用スクリプト" class="section level1">
@@ -804,7 +901,7 @@ rm(pkg_lst, installed_list, install_list, install_pkg)</code></pre>
 　</p>
 <hr />
 <!-- Include Footer -->
-<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2019-04-23(JST)]</p>
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2019-05-03(JST)]</p>
 </div>
 </div>
 
