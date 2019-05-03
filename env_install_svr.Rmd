@@ -1,0 +1,170 @@
+---
+title: "RStudio Serverのインストール"
+output: 
+  html_document
+---
+
+<!-- Include shared Links -->
+```{r rstudio desktop, child="./shared/links.Rmd", include=FALSE}
+```
+
+Rの統合開発環境（Integrated Development Environment, IDE）のデファクトスタンダードともいえるRStudioにはサーバー版の [RStudio Server <i class="fa fa-external-link"></i>](https://www.rstudio.com/products/rstudio/#Server){target="_blank" title="RStudio"} が用意されています。RStudio ServerはWebサーバーベースなのでOS環境（プラットフォーム）への依存性が最小限です。コンテナ技術と併用することでプラットフォームをクリーンに保ち、環境の共有が楽になるというメリットがあります。ここでは最小限の知識と手間でRStudio Serverの環境を構築する方法を紹介します。
+
+　  
+
+## メリット
+[RStudio Server <i class="fa fa-external-link"></i>](https://www.rstudio.com/products/rstudio/#Server){target="_blank" title="RStudio"} はRStudio Desktopの使い勝手そのままにLinux上のWebサーバーをベースに動くRStudioです。RStudio Serverを使うと
+
+* 日本語版Windows環境における文字コードの問題が解決する
+* （18.04LTSより前の）Ubuntu環境での日本語入力問題が解決する
+* macOSでhomebrewを使わなくても済むようになる
+* GPUを利用する環境の構築が楽になる
+* Webブラウザがあればどの環境からも使える
+
+RStudio Desktopが各プラットフォームで抱えている固有の問題を解決することができます。このRStudio Serverを [Docker <i class="fa fa-external-link"></i>](https://www.docker.com/){target="_blank" title="Enterprise Container Platform for High Velocity Innovation"} のコンテナ技術を用いることで、Linuxサーバや仮想環境を立ち上げることなくWindows（要Hyper-V）、macOS、Linuxの各プラットフォームのローカル環境上で単一環境のRStudioを実現することができます。
+
+　  
+
+## "rocker", the Docker Container
+[rocker <i class="fa fa-external-link"></i>](https://hub.docker.com/u/rocker/){target="_blank" title="Docker Hub"} というDockerコンテナが公開されています。rockerはベーシックなR単体のコンテナをベースに様々なバリエーションが作られています。代表的なコンテナは下表の通りです。  
+
+Container        | Description
+-----------------|-------------------------------------------------------
+rocker/r-ver     | Versioned R (Base R)
+rocker/rstudio   | rocker/r-ver + RStudio Server
+rocker/tidyverse | rocker/rstudio + tidyverse, devtools
+rocker/verse     | rocker/tidyverse + TinyTex + bookdown, rticles, rJava, jdk
+
+この他に機械学習用のコンテナも用意されています。ただし、全てのコンテナには日本語ロケールや日本語フォントが含まれていませんので、日本語が必要な場合には追加が必要です。
+
+　  
+
+# 環境構築
+Dockerはサーバーだけでなくデスクトップ環境でも利用できますので、以降、デスクトップ環境を前提に簡単に説明します。DockerにはCE（Community Edition）とEE（Enterprise  Edition）の二つのエディションが存在しますが、ここではフリー版であるDocker CEを用います。CEとEEの違いについては [こちら <i class="fa fa-external-link"></i>](https://www.docker.com/products/docker-engine){target="_blank" title="Which Docker Engine is right for you?"} で確認してください。
+
+　  
+
+## Dockerのインストール
+Dockerのインストールに関しては公式ドキュメント [ <i class="fa fa-external-link"></i>](https://docs.docker.com/install/overview/){target="_blank" title="docker docs"} を参考にしています。
+
+    
+
+### Windows
+Windows環境でDockerを使う場合には**Hyper-Vが必須**です。 [公式ドキュメントの環境条件とインストール手順 <i class="fa fa-external-link"></i>](https://docs.docker.com/docker-for-windows/install/){target="_blank" title="docker docs"} を参考の上でインストールしてください。 
+
+　  
+
+### Ubuntu
+Ubuntuにおけるインストール手順は [公式ドキュメント <i class="fa fa-external-link"></i>](https://docs.docker.com/install/linux/docker-ce/ubuntu/){target="_blank" title="Get Docker CE for Ubuntu"} に記載されています。大まかな手順は以下のようになります。
+
+1. 旧バージョンをアンインストールする
+1. インストールするための準備
+    1. HTTPS経由でリポジトリが使えるように設定する
+    1. GPG keyを追加する
+    1. fingerprintを確認する
+    1. リポジトリを追加する
+1. Docker CEをインストールする
+    1. インストール結果を確認する
+1. 動作テスト
+
+　  
+
+## Dockerの使い方
+Docker CEがインストールできましたら。早速、使ってみましょう。例題で使われる`Hello World`では少しつまらないので [rocker <i class="fa fa-external-link"></i>](https://hub.docker.com/u/rocker/){target="_blank" title="Docker Hub"} の`rocker/tidyverse`を使ってみます。  
+
+最初に`rocker/tidyverse`を`pull`しますが、環境によってはダウンロードに時間がかかります。
+```{bash, eval=FALSE}
+sudo docker pull rocker/tidyverse
+```
+
+ダウンロードとパッケージの解凍が完了したら以下のコマンドでコンテナイメージが作成されていることを確認します。
+```{bash, eval=FALSE}
+sudo docker images
+```
+
+コンテナイメージが確認できたらコンテナを以下のコマンドを使って起動します。
+```{bash, eval=FALSE}
+sudo docker run -p 8787:8787 -v [host-dir]:[mp] -e PASSWORD=[password] rocker/tidyverse
+```
+
+オプションの詳細は [Docker run リファレンス <i class="fa fa-external-link"></i>](http://docs.docker.jp/engine/reference/run.html){target="_blank" title="Docker-docs-ja"} に記載されています。
+
+Option | オプション概要
+-------|-----------------------------------------------------------------------
+`-e`   | 環境変数を指定します（この場合はログインパスワードの指定です）
+`-d`   | コンテナをバックグラウンドで起動します（デタッチドモード）が最初は使わない方が動きが分かりやすいと思います
+`-p`   | 公開するポート番号を「ホスト側:コンテナ側」の形式で指定します
+`--rm` | コンテナ終了時に自動的にコンテナと関連するファイルシステムなどを削除します（デタッチドモードでは指定できません）
+`-v`   | ホスト側ディレクトリ（絶対パス）をコンテン側ディレクトリ（絶対パス）にマウントします
+
+`[host-dir]` - コンテナ環境にマウントしたいホスト側のディレクトリ（絶対パス）
+`[mp]` - コンテナ側のマウントポイント（絶対パス）
+    `rocker/*`のコンテナイメージはデフォルトユーザが`rstudio`ですので`/home/rstudio`ディレクトリ配下にマウントポイントを作ることをおすゝめします。
+
+`[password]` - RStudio Serverへのログインパスワード
+
+
+コンテナが起動したらブラウザで`localhost:8787`にアクセスします。
+起動状態は以下のコマンドで確認することができます。
+```{bash, eval=FALSE}
+sudo docker ps -a
+```
+
+
+コンテナで加えた変更（Rパッケージの追加、RStudioの設定変更）はコンテナを終了させると破棄されてしまいます。変更を保存するには`docker commit`コマンドを利用してコンテナイメージを保存してください。`ID`は`docker ps -a`コマンドで確認します。
+```{bash, eval=FALSE}
+sudo docker commit -m "Comment" ID rocker/tidyverse
+```
+
+　  
+
+# 日本語対応コンテナの作成
+Tokyo.Rの有志によるrocker/tidyverseの日本語対応のコンテナが [tokyor/rstudio <i class="fa fa-external-link"></i>](https://hub.docker.com/r/tokyor/rstudio){target="_blank" title="Docker Hub"} で公開されていますが、残念ながらこの1年程更新がなく、Rのバージョンが3.4.3で止まっています。日本語対応のrockerが欲しい場合には公開されている [Dockerfile <i class="fa fa-external-link"></i>](https://hub.docker.com/r/tokyor/rstudio/dockerfile){target="_blank" title="tokyor/rstudio, Docker Hub"} を利用してローカルビルドすることにより日本語対応のrockerコンテナを作成してください。
+
+　  
+
+## Dockerfileの例
+`rocker/tidyverse`をベースとして日本語が使えるようにするには以下のようなDockerfileを作成します。
+
+```
+# ベースとするコンテナ（任意のrocker/*に変更可能です）
+FROM rocker/tidyverse:latest
+
+# OS環境（rockerはdebianベース）に日本語ロケールを追加し切り替えます
+ENV LANG ja_JP.UTF-8
+ENV LC_ALL ja_JP.UTF-8
+RUN sed -i '$d' /etc/locale.gen \
+  && echo "ja_JP.UTF-8 UTF-8" >> /etc/locale.gen \
+	&& locale-gen ja_JP.UTF-8 \
+	&& /usr/sbin/update-locale LANG=ja_JP.UTF-8 LANGUAGE="ja_JP:ja"
+RUN /bin/bash -c "source /etc/default/locale"
+RUN ln -sf  /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
+
+# 日本語フォントをインストールします
+RUN apt-get update && apt-get install -y \
+  fonts-ipaexfont \
+  fonts-noto-cjk
+```
+
+`Dockerfike`の準備ができましたら以下のコマンドで、コンテナをビルドします。  
+```{bash, eval=FALSE}
+sudo docker build -f [dockerfile] -t [containername] .
+```
+
+Option | オプション概要
+-------|-----------------------------------------------------------------------
+`-f`   | `Dockerfile`を明示的に指定します
+`-t`   | 作成するコンテナ名を指定します
+
+ビルドが完了しましたら、`sudo docker run`コマンドでコンテナを起動してみましょう。引数は前述の通りです。
+
+　  
+
+* [ローカルでRStudio Serverを試してみる <i class="fa fa-external-link"></i>](http://kazutan.github.io/HiRoshimaR201602/RSS_on_local.html){target="_blank" title="GitHub"} 
+
+
+---
+
+<!-- Include Footer -->
+```{r, child="./shared/footer.Rmd", include=FALSE}
+```
