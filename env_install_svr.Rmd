@@ -8,7 +8,7 @@ output:
 ```{r rstudio desktop, child="./shared/links.Rmd", include=FALSE}
 ```
 
-Rの統合開発環境（Integrated Development Environment, IDE）のデファクトスタンダードともいえるRStudioにはサーバー版の [RStudio Server <i class="fa fa-external-link"></i>](https://www.rstudio.com/products/rstudio/#Server){target="_blank" title="RStudio"} が用意されています。RStudio ServerはWebサーバーベースなのでOS環境（プラットフォーム）への依存性が最小限です。コンテナ技術と併用することでプラットフォームをクリーンに保ち、環境の共有が楽になるというメリットがあります。ここでは最小限の知識と手間でRStudio Serverの環境を構築する方法を紹介します。
+Rの統合開発環境（Integrated Development Environment, IDE）のデファクトスタンダードともいえるRStudioにはサーバー版の [RStudio Server <i class="fa fa-external-link"></i>](https://www.rstudio.com/products/rstudio/#Server){target="_blank" title="RStudio"} が用意されています。RStudio ServerはWebサーバーベースなのでOS環境（プラットフォーム）への依存性が最小限です。イメージ技術と併用することでプラットフォームをクリーンに保ち、環境の共有が楽になるというメリットがあります。ここでは最小限の知識と手間でRStudio Serverの環境を構築する方法を紹介します。
 
 　  
 
@@ -21,21 +21,21 @@ Rの統合開発環境（Integrated Development Environment, IDE）のデファ�
 * GPUを利用する環境の構築が楽になる
 * Webブラウザがあればどの環境からも使える
 
-RStudio Desktopが各プラットフォームで抱えている固有の問題を解決することができます。このRStudio Serverを [Docker <i class="fa fa-external-link"></i>](https://www.docker.com/){target="_blank" title="Enterprise Container Platform for High Velocity Innovation"} のコンテナ技術を用いることで、Linuxサーバや仮想環境を立ち上げることなくWindows（要Hyper-V）、macOS、Linuxの各プラットフォームのローカル環境上で単一環境のRStudioを実現することができます。
+RStudio Desktopが各プラットフォームで抱えている固有の問題を解決することができます。このRStudio Serverを [Docker <i class="fa fa-external-link"></i>](https://www.docker.com/){target="_blank" title="Enterprise Container Platform for High Velocity Innovation"} のイメージ技術を用いることで、Linuxサーバや仮想環境を立ち上げることなくWindows（要Hyper-V）、macOS、Linuxの各プラットフォームのローカル環境上で単一環境のRStudioを実現することができます。
 
 　  
 
-## "rocker", the Docker Container
-[rocker <i class="fa fa-external-link"></i>](https://hub.docker.com/u/rocker/){target="_blank" title="Docker Hub"} というDockerコンテナが公開されています。rockerはベーシックなR単体のコンテナをベースに様々なバリエーションが作られています。代表的なコンテナは下表の通りです。  
+## "rocker", the Docker Images
+[rocker <i class="fa fa-external-link"></i>](https://hub.docker.com/u/rocker/){target="_blank" title="Docker Hub"} というDockerイメージが公開されています。rockerはベーシックなR単体のイメージをベースに様々なバリエーションが作られています。代表的なイメージは下表の通りです。  
 
-Container        | Description
+Image            | Description
 -----------------|-------------------------------------------------------
 rocker/r-ver     | Versioned R (Base R)
 rocker/rstudio   | rocker/r-ver + RStudio Server
 rocker/tidyverse | rocker/rstudio + tidyverse, devtools
 rocker/verse     | rocker/tidyverse + TinyTex + bookdown, rticles, rJava, jdk
 
-この他に機械学習用のコンテナも用意されています。ただし、全てのコンテナには日本語ロケールや日本語フォントが含まれていませんので、日本語が必要な場合には追加が必要です。
+この他に機械学習用のイメージも用意されています。ただし、全てのイメージには日本語ロケールや日本語フォントが含まれていませんので、日本語が必要な場合には追加が必要です。
 
 　  
 
@@ -77,12 +77,12 @@ Docker CEがインストールできましたら。早速、使ってみまし�
 sudo docker pull rocker/tidyverse
 ```
 
-ダウンロードとパッケージの解凍が完了したら以下のコマンドでコンテナイメージが作成されていることを確認します。
+ダウンロードとパッケージの解凍が完了したら以下のコマンドでイメージが作成されていることを確認します。
 ```{bash, eval=FALSE}
 sudo docker images
 ```
 
-コンテナイメージが確認できたらコンテナを以下のコマンドを使って起動します。
+イメージが確認できたらイメージを以下のコマンドを使って起動します。
 ```{bash, eval=FALSE}
 sudo docker run -p 8787:8787 -v [host-dir]:[mp] -e PASSWORD=[password] rocker/tidyverse
 ```
@@ -92,34 +92,34 @@ sudo docker run -p 8787:8787 -v [host-dir]:[mp] -e PASSWORD=[password] rocker/ti
 Option | オプション概要
 -------|-----------------------------------------------------------------------
 `-e`   | 環境変数を指定します（この場合はログインパスワードの指定です）
-`-d`   | コンテナをバックグラウンドで起動します（デタッチドモード）が最初は使わない方が動きが分かりやすいと思います
-`-p`   | 公開するポート番号を「ホスト側:コンテナ側」の形式で指定します
-`--rm` | コンテナ終了時に自動的にコンテナと関連するファイルシステムなどを削除します（デタッチドモードでは指定できません）
+`-d`   | イメージをバックグラウンドで起動します（デタッチドモード）が最初は使わない方が動きが分かりやすいと思います
+`-p`   | 公開するポート番号を「ホスト側:イメージ側」の形式で指定します
+`--rm` | イメージ終了時に自動的にイメージと関連するファイルシステムなどを削除します（デタッチドモードでは指定できません）
 `-v`   | ホスト側ディレクトリ（絶対パス）をコンテン側ディレクトリ（絶対パス）にマウントします
 
-`[host-dir]` - コンテナ環境にマウントしたいホスト側のディレクトリ（絶対パス）
-`[mp]` - コンテナ側のマウントポイント（絶対パス）
-    `rocker/*`のコンテナイメージはデフォルトユーザが`rstudio`ですので`/home/rstudio`ディレクトリ配下にマウントポイントを作ることをおすゝめします。
+`[host-dir]` - イメージ環境にマウントしたいホスト側のディレクトリ（絶対パス）
+`[mp]` - イメージ側のマウントポイント（絶対パス）
+    `rocker/*`のイメージはデフォルトユーザが`rstudio`ですので`/home/rstudio`ディレクトリ配下にマウントポイントを作ることをおすゝめします。
 
 `[password]` - RStudio Serverへのログインパスワード
 
 
-コンテナが起動したらブラウザで`localhost:8787`にアクセスします。
+イメージが起動したらブラウザで`localhost:8787`にアクセスします。
 起動状態は以下のコマンドで確認することができます。
 ```{bash, eval=FALSE}
 sudo docker ps -a
 ```
 
 
-コンテナで加えた変更（Rパッケージの追加、RStudioの設定変更）はコンテナを終了させると破棄されてしまいます。変更を保存するには`docker commit`コマンドを利用してコンテナイメージを保存してください。`ID`は`docker ps -a`コマンドで確認します。
+イメージで加えた変更（Rパッケージの追加、RStudioの設定変更）はイメージを終了させると破棄されてしまいます。変更を保存するには`docker commit`コマンドを利用してイメージを保存してください。`ID`は`docker ps -a`コマンドで確認します。
 ```{bash, eval=FALSE}
 sudo docker commit -m "Comment" ID rocker/tidyverse
 ```
 
 　  
 
-# 日本語対応コンテナの作成
-Tokyo.Rの有志によるrocker/tidyverseの日本語対応のコンテナが [tokyor/rstudio <i class="fa fa-external-link"></i>](https://hub.docker.com/r/tokyor/rstudio){target="_blank" title="Docker Hub"} で公開されていますが、残念ながらこの1年程更新がなく、Rのバージョンが3.4.3で止まっています。日本語対応のrockerが欲しい場合には公開されている [Dockerfile <i class="fa fa-external-link"></i>](https://hub.docker.com/r/tokyor/rstudio/dockerfile){target="_blank" title="tokyor/rstudio, Docker Hub"} を利用してローカルビルドすることにより日本語対応のrockerコンテナを作成してください。
+# 日本語対応イメージの作成
+Tokyo.Rの有志によるrocker/tidyverseの日本語対応のイメージが [tokyor/rstudio <i class="fa fa-external-link"></i>](https://hub.docker.com/r/tokyor/rstudio){target="_blank" title="Docker Hub"} で公開されていますが、残念ながらこの1年程更新がなく、Rのバージョンが3.4.3で止まっています。日本語対応のrockerが欲しい場合には公開されている [Dockerfile <i class="fa fa-external-link"></i>](https://hub.docker.com/r/tokyor/rstudio/dockerfile){target="_blank" title="tokyor/rstudio, Docker Hub"} を利用してローカルビルドすることにより日本語対応のrockerイメージを作成してください。
 
 　  
 
@@ -127,7 +127,7 @@ Tokyo.Rの有志によるrocker/tidyverseの日本語対応のコンテナが [t
 `rocker/tidyverse`をベースとして日本語が使えるようにするには以下のようなDockerfileを作成します。
 
 ```
-# ベースとするコンテナ（任意のrocker/*に変更可能です）
+# ベースとするイメージ（任意のrocker/*に変更可能です）
 FROM rocker/tidyverse:latest
 
 # OS環境（rockerはdebianベース）に日本語ロケールを追加し切り替えます
@@ -146,7 +146,7 @@ RUN apt-get update && apt-get install -y \
   fonts-noto-cjk
 ```
 
-`Dockerfike`の準備ができましたら以下のコマンドで、コンテナをビルドします。  
+`Dockerfike`の準備ができましたら以下のコマンドで、イメージをビルドします。  
 ```{bash, eval=FALSE}
 sudo docker build -f [dockerfile] -t [containername] .
 ```
@@ -154,9 +154,9 @@ sudo docker build -f [dockerfile] -t [containername] .
 Option | オプション概要
 -------|-----------------------------------------------------------------------
 `-f`   | `Dockerfile`を明示的に指定します
-`-t`   | 作成するコンテナ名を指定します
+`-t`   | 作成するイメージ名を指定します
 
-ビルドが完了しましたら、`sudo docker run`コマンドでコンテナを起動してみましょう。引数は前述の通りです。
+ビルドが完了しましたら、`sudo docker run`コマンドでイメージを起動してみましょう。引数は前述の通りです。
 
 　  
 
@@ -167,7 +167,7 @@ Option | オプション概要
 * [データ分析環境の構築にDockerを利用しよう <i class="fa fa-external-link"></i>](https://qiita.com/uri/items/475eb4dd158ee22f2635){target="_blank" title="Qiita"} 
 * [R Docker tutorial <i class="fa fa-external-link"></i>](http://ropenscilabs.github.io/r-docker-tutorial/){target="_blank" title="rOpenSci Labs"} 
 * [R Docker tutorial（私訳版） <i class="fa fa-external-link"></i>](https://qiita.com/nozma/items/4490d300594b883d054c){target="_blank" title="Qiita"} 
-* [ローカルのRStudioの設定をDockerコンテナ上のRStudio Serverに反映する <i class="fa fa-external-link"></i>](https://qiita.com/nozma/items/cae323708ff60cc2f67a){target="_blank" title="Qiita"} 
+* [ローカルのRStudioの設定をDockerイメージ上のRStudio Serverに反映する <i class="fa fa-external-link"></i>](https://qiita.com/nozma/items/cae323708ff60cc2f67a){target="_blank" title="Qiita"} 
 * [DockerイメージでGitHub上のRパッケージのインストールを行う際の注意 <i class="fa fa-external-link"></i>](https://uribo.hatenablog.com/entry/2019/01/15/064245){target="_blank" title="cucumber flesh"} 
 * [R使いのためのDocker「Rocker」を使ってみる(Windows) <i class="fa fa-external-link"></i>](https://notchained.hatenablog.com/entry/2014/12/20/151133){target="_blank" title="Technically, technophobic."} 
 * [RStudio ServerのDockerイメージのカスタマイズ <i class="fa fa-external-link"></i>](https://gihyo.jp/admin/serial/01/ubuntu-recipe/0531){target="_blank" title="Ubuntu Weekly Recipe 第531回"} 

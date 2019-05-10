@@ -75,7 +75,7 @@ h6 {
 }
 </style>
 
-<link rel="stylesheet" href="shared/style.css" type="text/css" />
+<link rel="stylesheet" href="shared\style.css" type="text/css" />
 
 
 
@@ -541,7 +541,7 @@ div.tocify {
 <!-- RStudio -->
 <!-- Docker -->
 <!-- Cabinet Pages -->
-<p>Rの統合開発環境（Integrated Development Environment, IDE）のデファクトスタンダードともいえるRStudioにはサーバー版の <a href="https://www.rstudio.com/products/rstudio/#Server" target="_blank" title="RStudio">RStudio Server <i class="fa fa-external-link"></i></a> が用意されています。RStudio ServerはWebサーバーベースなのでOS環境（プラットフォーム）への依存性が最小限です。コンテナ技術と併用することでプラットフォームをクリーンに保ち、環境の共有が楽になるというメリットがあります。ここでは最小限の知識と手間でRStudio Serverの環境を構築する方法を紹介します。</p>
+<p>Rの統合開発環境（Integrated Development Environment, IDE）のデファクトスタンダードともいえるRStudioにはサーバー版の <a href="https://www.rstudio.com/products/rstudio/#Server" target="_blank" title="RStudio">RStudio Server <i class="fa fa-external-link"></i></a> が用意されています。RStudio ServerはWebサーバーベースなのでOS環境（プラットフォーム）への依存性が最小限です。イメージ技術と併用することでプラットフォームをクリーンに保ち、環境の共有が楽になるというメリットがあります。ここでは最小限の知識と手間でRStudio Serverの環境を構築する方法を紹介します。</p>
 <p>　</p>
 <div id="メリット" class="section level2">
 <h2>メリット</h2>
@@ -553,16 +553,16 @@ div.tocify {
 <li>GPUを利用する環境の構築が楽になる</li>
 <li>Webブラウザがあればどの環境からも使える</li>
 </ul>
-<p>RStudio Desktopが各プラットフォームで抱えている固有の問題を解決することができます。このRStudio Serverを <a href="https://www.docker.com/" target="_blank" title="Enterprise Container Platform for High Velocity Innovation">Docker <i class="fa fa-external-link"></i></a> のコンテナ技術を用いることで、Linuxサーバや仮想環境を立ち上げることなくWindows（要Hyper-V）、macOS、Linuxの各プラットフォームのローカル環境上で単一環境のRStudioを実現することができます。</p>
+<p>RStudio Desktopが各プラットフォームで抱えている固有の問題を解決することができます。このRStudio Serverを <a href="https://www.docker.com/" target="_blank" title="Enterprise Container Platform for High Velocity Innovation">Docker <i class="fa fa-external-link"></i></a> のイメージ技術を用いることで、Linuxサーバや仮想環境を立ち上げることなくWindows（要Hyper-V）、macOS、Linuxの各プラットフォームのローカル環境上で単一環境のRStudioを実現することができます。</p>
 <p>　</p>
 </div>
-<div id="rocker-the-docker-container" class="section level2">
-<h2>“rocker”, the Docker Container</h2>
-<p><a href="https://hub.docker.com/u/rocker/" target="_blank" title="Docker Hub">rocker <i class="fa fa-external-link"></i></a> というDockerコンテナが公開されています。rockerはベーシックなR単体のコンテナをベースに様々なバリエーションが作られています。代表的なコンテナは下表の通りです。</p>
+<div id="rocker-the-docker-images" class="section level2">
+<h2>“rocker”, the Docker Images</h2>
+<p><a href="https://hub.docker.com/u/rocker/" target="_blank" title="Docker Hub">rocker <i class="fa fa-external-link"></i></a> というDockerイメージが公開されています。rockerはベーシックなR単体のイメージをベースに様々なバリエーションが作られています。代表的なイメージは下表の通りです。</p>
 <table>
 <thead>
 <tr class="header">
-<th>Container</th>
+<th>Image</th>
 <th>Description</th>
 </tr>
 </thead>
@@ -585,7 +585,7 @@ div.tocify {
 </tr>
 </tbody>
 </table>
-<p>この他に機械学習用のコンテナも用意されています。ただし、全てのコンテナには日本語ロケールや日本語フォントが含まれていませんので、日本語が必要な場合には追加が必要です。</p>
+<p>この他に機械学習用のイメージも用意されています。ただし、全てのイメージには日本語ロケールや日本語フォントが含まれていませんので、日本語が必要な場合には追加が必要です。</p>
 <p>　</p>
 </div>
 <div id="環境構築" class="section level1">
@@ -594,7 +594,7 @@ div.tocify {
 <p>　</p>
 <div id="dockerのインストール" class="section level2">
 <h2>Dockerのインストール</h2>
-<p>Dockerのインストールに関しては公式ドキュメント <a href="https://docs.docker.com/install/overview/" target="_blank" title="docker docs"><i class="fa fa-external-link"></i></a> を参考にしています。</p>
+<p>Dockerのインストールに関しては <a href="https://docs.docker.com/install/overview/" target="_blank" title="docker docs">公式ドキュメント <i class="fa fa-external-link"></i></a> を参考にしています。</p>
 <div id="windows" class="section level3">
 <h3>Windows</h3>
 <p>Windows環境でDockerを使う場合には<strong>Hyper-Vが必須</strong>です。 <a href="https://docs.docker.com/docker-for-windows/install/" target="_blank" title="docker docs">公式ドキュメントの環境条件とインストール手順 <i class="fa fa-external-link"></i></a> を参考の上でインストールしてください。</p>
@@ -626,9 +626,9 @@ div.tocify {
 <p>Docker CEがインストールできましたら。早速、使ってみましょう。例題で使われる<code>Hello World</code>では少しつまらないので <a href="https://hub.docker.com/u/rocker/" target="_blank" title="Docker Hub">rocker <i class="fa fa-external-link"></i></a> の<code>rocker/tidyverse</code>を使ってみます。</p>
 <p>最初に<code>rocker/tidyverse</code>を<code>pull</code>しますが、環境によってはダウンロードに時間がかかります。</p>
 <pre class="bash"><code>sudo docker pull rocker/tidyverse</code></pre>
-<p>ダウンロードとパッケージの解凍が完了したら以下のコマンドでコンテナイメージが作成されていることを確認します。</p>
+<p>ダウンロードとパッケージの解凍が完了したら以下のコマンドでイメージが作成されていることを確認します。</p>
 <pre class="bash"><code>sudo docker images</code></pre>
-<p>コンテナイメージが確認できたらコンテナを以下のコマンドを使って起動します。</p>
+<p>イメージが確認できたらイメージを以下のコマンドを使って起動します。</p>
 <pre class="bash"><code>sudo docker run -p 8787:8787 -v [host-dir]:[mp] -e PASSWORD=[password] rocker/tidyverse</code></pre>
 <p>オプションの詳細は <a href="http://docs.docker.jp/engine/reference/run.html" target="_blank" title="Docker-docs-ja">Docker run リファレンス <i class="fa fa-external-link"></i></a> に記載されています。</p>
 <table>
@@ -645,15 +645,15 @@ div.tocify {
 </tr>
 <tr class="even">
 <td><code>-d</code></td>
-<td>コンテナをバックグラウンドで起動します（デタッチドモード）が最初は使わない方が動きが分かりやすいと思います</td>
+<td>イメージをバックグラウンドで起動します（デタッチドモード）が最初は使わない方が動きが分かりやすいと思います</td>
 </tr>
 <tr class="odd">
 <td><code>-p</code></td>
-<td>公開するポート番号を「ホスト側:コンテナ側」の形式で指定します</td>
+<td>公開するポート番号を「ホスト側:イメージ側」の形式で指定します</td>
 </tr>
 <tr class="even">
 <td><code>--rm</code></td>
-<td>コンテナ終了時に自動的にコンテナと関連するファイルシステムなどを削除します（デタッチドモードでは指定できません）</td>
+<td>イメージ終了時に自動的にイメージと関連するファイルシステムなどを削除します（デタッチドモードでは指定できません）</td>
 </tr>
 <tr class="odd">
 <td><code>-v</code></td>
@@ -661,23 +661,23 @@ div.tocify {
 </tr>
 </tbody>
 </table>
-<p><code>[host-dir]</code> - コンテナ環境にマウントしたいホスト側のディレクトリ（絶対パス） <code>[mp]</code> - コンテナ側のマウントポイント（絶対パス） <code>rocker/*</code>のコンテナイメージはデフォルトユーザが<code>rstudio</code>ですので<code>/home/rstudio</code>ディレクトリ配下にマウントポイントを作ることをおすゝめします。</p>
+<p><code>[host-dir]</code> - イメージ環境にマウントしたいホスト側のディレクトリ（絶対パス） <code>[mp]</code> - イメージ側のマウントポイント（絶対パス） <code>rocker/*</code>のイメージはデフォルトユーザが<code>rstudio</code>ですので<code>/home/rstudio</code>ディレクトリ配下にマウントポイントを作ることをおすゝめします。</p>
 <p><code>[password]</code> - RStudio Serverへのログインパスワード</p>
-<p>コンテナが起動したらブラウザで<code>localhost:8787</code>にアクセスします。 起動状態は以下のコマンドで確認することができます。</p>
+<p>イメージが起動したらブラウザで<code>localhost:8787</code>にアクセスします。 起動状態は以下のコマンドで確認することができます。</p>
 <pre class="bash"><code>sudo docker ps -a</code></pre>
-<p>コンテナで加えた変更（Rパッケージの追加、RStudioの設定変更）はコンテナを終了させると破棄されてしまいます。変更を保存するには<code>docker commit</code>コマンドを利用してコンテナイメージを保存してください。<code>ID</code>は<code>docker ps -a</code>コマンドで確認します。</p>
+<p>イメージで加えた変更（Rパッケージの追加、RStudioの設定変更）はイメージを終了させると破棄されてしまいます。変更を保存するには<code>docker commit</code>コマンドを利用してイメージを保存してください。<code>ID</code>は<code>docker ps -a</code>コマンドで確認します。</p>
 <pre class="bash"><code>sudo docker commit -m &quot;Comment&quot; ID rocker/tidyverse</code></pre>
 <p>　</p>
 </div>
 </div>
-<div id="日本語対応コンテナの作成" class="section level1">
-<h1>日本語対応コンテナの作成</h1>
-<p>Tokyo.Rの有志によるrocker/tidyverseの日本語対応のコンテナが <a href="https://hub.docker.com/r/tokyor/rstudio" target="_blank" title="Docker Hub">tokyor/rstudio <i class="fa fa-external-link"></i></a> で公開されていますが、残念ながらこの1年程更新がなく、Rのバージョンが3.4.3で止まっています。日本語対応のrockerが欲しい場合には公開されている <a href="https://hub.docker.com/r/tokyor/rstudio/dockerfile" target="_blank" title="tokyor/rstudio, Docker Hub">Dockerfile <i class="fa fa-external-link"></i></a> を利用してローカルビルドすることにより日本語対応のrockerコンテナを作成してください。</p>
+<div id="日本語対応イメージの作成" class="section level1">
+<h1>日本語対応イメージの作成</h1>
+<p>Tokyo.Rの有志によるrocker/tidyverseの日本語対応のイメージが <a href="https://hub.docker.com/r/tokyor/rstudio" target="_blank" title="Docker Hub">tokyor/rstudio <i class="fa fa-external-link"></i></a> で公開されていますが、残念ながらこの1年程更新がなく、Rのバージョンが3.4.3で止まっています。日本語対応のrockerが欲しい場合には公開されている <a href="https://hub.docker.com/r/tokyor/rstudio/dockerfile" target="_blank" title="tokyor/rstudio, Docker Hub">Dockerfile <i class="fa fa-external-link"></i></a> を利用してローカルビルドすることにより日本語対応のrockerイメージを作成してください。</p>
 <p>　</p>
 <div id="dockerfileの例" class="section level2">
 <h2>Dockerfileの例</h2>
 <p><code>rocker/tidyverse</code>をベースとして日本語が使えるようにするには以下のようなDockerfileを作成します。</p>
-<pre><code># ベースとするコンテナ（任意のrocker/*に変更可能です）
+<pre><code># ベースとするイメージ（任意のrocker/*に変更可能です）
 FROM rocker/tidyverse:latest
 
 # OS環境（rockerはdebianベース）に日本語ロケールを追加し切り替えます
@@ -694,7 +694,7 @@ RUN ln -sf  /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
 RUN apt-get update &amp;&amp; apt-get install -y \
   fonts-ipaexfont \
   fonts-noto-cjk</code></pre>
-<p><code>Dockerfike</code>の準備ができましたら以下のコマンドで、コンテナをビルドします。</p>
+<p><code>Dockerfike</code>の準備ができましたら以下のコマンドで、イメージをビルドします。</p>
 <pre class="bash"><code>sudo docker build -f [dockerfile] -t [containername] .</code></pre>
 <table>
 <thead>
@@ -710,19 +710,32 @@ RUN apt-get update &amp;&amp; apt-get install -y \
 </tr>
 <tr class="even">
 <td><code>-t</code></td>
-<td>作成するコンテナ名を指定します</td>
+<td>作成するイメージ名を指定します</td>
 </tr>
 </tbody>
 </table>
-<p>ビルドが完了しましたら、<code>sudo docker run</code>コマンドでコンテナを起動してみましょう。引数は前述の通りです。</p>
+<p>ビルドが完了しましたら、<code>sudo docker run</code>コマンドでイメージを起動してみましょう。引数は前述の通りです。</p>
 <p>　</p>
+</div>
+</div>
+<div id="参考資料" class="section level1">
+<h1>参考資料</h1>
 <ul>
+<li><a href="https://www.slideshare.net/at_grandpa/docker-30608792" target="_blank" title="SlideShare">はじめてのdocker <i class="fa fa-external-link"></i></a></li>
+<li><a href="https://mzdgnk.gitlab.io/r-ml/Docker/rstudio.html" target="_blank" title="まつだげんき">DockerでRStudioサーバを構築 <i class="fa fa-external-link"></i></a></li>
 <li><a href="http://kazutan.github.io/HiRoshimaR201602/RSS_on_local.html" target="_blank" title="GitHub">ローカルでRStudio Serverを試してみる <i class="fa fa-external-link"></i></a></li>
+<li><a href="https://qiita.com/uri/items/475eb4dd158ee22f2635" target="_blank" title="Qiita">データ分析環境の構築にDockerを利用しよう <i class="fa fa-external-link"></i></a></li>
+<li><a href="http://ropenscilabs.github.io/r-docker-tutorial/" target="_blank" title="rOpenSci Labs">R Docker tutorial <i class="fa fa-external-link"></i></a></li>
+<li><a href="https://qiita.com/nozma/items/4490d300594b883d054c" target="_blank" title="Qiita">R Docker tutorial（私訳版） <i class="fa fa-external-link"></i></a></li>
+<li><a href="https://qiita.com/nozma/items/cae323708ff60cc2f67a" target="_blank" title="Qiita">ローカルのRStudioの設定をDockerイメージ上のRStudio Serverに反映する <i class="fa fa-external-link"></i></a></li>
+<li><a href="https://uribo.hatenablog.com/entry/2019/01/15/064245" target="_blank" title="cucumber flesh">DockerイメージでGitHub上のRパッケージのインストールを行う際の注意 <i class="fa fa-external-link"></i></a></li>
+<li><a href="https://notchained.hatenablog.com/entry/2014/12/20/151133" target="_blank" title="Technically, technophobic.">R使いのためのDocker「Rocker」を使ってみる(Windows) <i class="fa fa-external-link"></i></a></li>
+<li><a href="https://gihyo.jp/admin/serial/01/ubuntu-recipe/0531" target="_blank" title="Ubuntu Weekly Recipe 第531回">RStudio ServerのDockerイメージのカスタマイズ <i class="fa fa-external-link"></i></a></li>
 </ul>
+<p>　</p>
 <hr />
 <!-- Include Footer -->
-<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2019-05-03(JST)]</p>
-</div>
+<p><img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" alt="Sampo Suzuki" target="_blank" title="CC BY-NC-SA 4.0 icon" /> <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.ja" target="_blank" title="CC BY-NC-SA 4.0">CC BY-NC-SA 4.0 <i class="fa fa-external-link"></i></a>, Sampo Suzuki [2019-05-10(JST)]</p>
 </div>
 
 
